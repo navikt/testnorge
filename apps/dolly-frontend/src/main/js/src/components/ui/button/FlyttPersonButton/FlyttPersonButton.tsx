@@ -159,6 +159,24 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 		? gruppeIdenter?.map((person) => person?.value).filter((person) => person)
 		: []
 
+	const getRelatertePersoner = (identer, identerHentet = [] as Array<string>) => {
+		const relatertePersonerHentet = identerHentet
+		const identerNye = []
+		identer.forEach((ident) => {
+			const funnetIdent = gruppeIdenter?.find(
+				(gruppeIdent) => gruppeIdent?.value === ident && !relatertePersonerHentet.includes(ident)
+			)
+			if (funnetIdent) {
+				relatertePersonerHentet.push(funnetIdent.value)
+				identerNye.push(...funnetIdent.relasjoner)
+			}
+		})
+		if (identerNye.length > 0) {
+			getRelatertePersoner(identerNye, relatertePersonerHentet)
+		}
+		return relatertePersonerHentet
+	}
+
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback(
@@ -166,12 +184,9 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 			const submit = async () => {
 				setLoading(true)
 				const { gruppeId, identer } = formikBag
-				const relasjoner = [] as Array<string>
-				identer.forEach((ident) => {
-					relasjoner.push(
-						...gruppeIdenter?.find((gruppeIdent) => gruppeIdent.value === ident)?.relasjoner
-					)
-				})
+				const relasjoner = getRelatertePersoner(identer)
+				console.log('identer: ', identer) //TODO - SLETT MEG
+				console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
 				const identerSamlet = Array.from(new Set([...identer, ...relasjoner]))
 				await DollyApi.flyttPersonerTilGruppe(gruppeId, identerSamlet)
 					.then((response) => {
