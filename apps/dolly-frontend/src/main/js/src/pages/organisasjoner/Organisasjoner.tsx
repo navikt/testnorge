@@ -18,6 +18,8 @@ import { resetPaginering } from '~/ducks/finnPerson'
 import { bottom } from '@popperjs/core'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { ToggleGroup } from '@navikt/ds-react'
+import useBoolean from '~/utils/hooks/useBoolean'
+import { OrganisasjonBestillingsveilederModal } from '~/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
 import OrganisasjonHeaderConnector from '~/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 
 type OrganisasjonerProps = {
@@ -35,10 +37,12 @@ const VISNING_BESTILLINGER = 'bestillinger'
 
 export default ({ search, sidetall }: OrganisasjonerProps) => {
 	const {
-		currentBruker: { brukerId, brukertype },
+		currentBruker: { brukerId, brukertype, brukernavn },
 	} = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
+	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
+
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
@@ -61,8 +65,10 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (type: string) => {
-		navigate('/organisasjoner/bestilling', { state: { opprettOrganisasjon: type } })
+	const startBestilling = (values: Record<string, unknown>) => {
+		navigate('/organisasjoner/bestilling', {
+			state: { opprettOrganisasjon: BestillingType.NY, ...values },
+		})
 	}
 
 	return (
@@ -92,7 +98,11 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 				<OrganisasjonHeaderConnector antallOrganisasjoner={antallOrg} />
 
 				<div className="toolbar">
-					<NavButton variant={'primary'} onClick={() => startBestilling(BestillingType.NY)}>
+					<NavButton
+						variant={'primary'}
+						// onClick={() => startBestilling(BestillingType.NY)}
+						onClick={visStartBestilling}
+					>
 						Opprett organisasjon
 					</NavButton>
 
@@ -115,6 +125,14 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 
 					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
 				</div>
+
+				{startBestillingAktiv && (
+					<OrganisasjonBestillingsveilederModal
+						onSubmit={startBestilling}
+						onAvbryt={skjulStartBestilling}
+						brukernavn={brukernavn}
+					/>
+				)}
 
 				{visning === VISNING_ORGANISASJONER &&
 					(isFetching ? (

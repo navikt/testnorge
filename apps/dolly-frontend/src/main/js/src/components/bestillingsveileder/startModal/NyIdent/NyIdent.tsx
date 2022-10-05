@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Formik } from 'formik'
+import { Formik, FormikProps } from 'formik'
 import * as yup from 'yup'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
@@ -11,17 +11,22 @@ import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { Alert } from '@navikt/ds-react'
 import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
 
-import './nyIdent.less'
 import styled from 'styled-components'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import { tpsfAttributter } from '~/components/bestillingsveileder/utils'
-import { useDollyMaler } from '~/utils/hooks/useMaler'
+import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
 
 const initialValues = {
 	antall: 1,
 	identtype: Options('identtype')[0].value,
-	mal: null,
+	mal: null as string,
+}
+
+export type NyBestillingProps = {
+	brukernavn: any
+	onSubmit: (arg0: any, arg1: any) => any
+	onAvbryt: () => void
 }
 
 const InputDiv = styled.div`
@@ -38,27 +43,27 @@ const validationSchema = yup.object({
 	identtype: yup.string().required('Velg en identtype'),
 })
 
-export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
-	const [zIdent, setZIdent] = useState(zBruker)
+export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) => {
+	const [bruker, setBruker] = useState(brukernavn)
 	const [malAktiv, toggleMalAktiv] = useToggle(false)
 	const { maler, loading } = useDollyMaler()
 
-	const zIdentOptions = getZIdentOptions(maler)
-	const malOptions = getMalOptions(maler, zIdent)
+	const brukerOptions = getBrukerOptions(maler)
+	const malOptions = getMalOptions(maler, bruker)
 
-	const handleMalChange = (formikbag) => {
+	const handleMalChange = (formikbag: FormikProps<any>) => {
 		toggleMalAktiv()
 		if (formikbag.values.mal) {
 			formikbag.setFieldValue('mal', null)
 		}
 	}
 
-	const handleBrukerChange = (event, formikbag) => {
-		setZIdent(event.value)
+	const handleBrukerChange = (event: { value: any }, formikbag: FormikProps<any>) => {
+		setBruker(event.value)
 		formikbag.setFieldValue('mal', null)
 	}
 
-	const preSubmit = (values, formikBag) => {
+	const preSubmit = (values: { mal: any }, formikBag: any) => {
 		if (values.mal) values.mal = malOptions.find((m) => m.value === values.mal).data
 		return onSubmit(values, formikBag)
 	}
@@ -71,9 +76,9 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 				const erTpsfMal = tpsfAttributter.some((a) => _has(valgtMalTpsfValues, a))
 
 				return (
-					<div className="ny-ident-form">
+					<div className="ny-bestilling-form">
 						<h3>Velg type og antall</h3>
-						<div className="ny-ident-form_selects">
+						<div className="ny-bestilling-form_selects">
 							<FormikSelect
 								name="identtype"
 								label="Velg identtype"
@@ -83,7 +88,7 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 							/>
 							<FormikTextInput name="antall" label="Antall" type="number" size="medium" />
 						</div>
-						<div className="ny-ident-form_maler">
+						<div className="ny-bestilling-form_maler">
 							<div>
 								<DollyCheckbox
 									name="aktiver-maler"
@@ -100,10 +105,10 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 									name="zIdent"
 									label="Bruker"
 									isLoading={loading}
-									options={zIdentOptions}
+									options={brukerOptions}
 									size="medium"
 									onChange={(e) => handleBrukerChange(e, formikBag)}
-									value={zIdent}
+									value={bruker}
 									isClearable={false}
 									disabled={!malAktiv}
 								/>
@@ -144,15 +149,15 @@ export const NyIdent = ({ onAvbryt, onSubmit, zBruker }) => {
 	)
 }
 
-const getZIdentOptions = (malbestillinger) =>
+export const getBrukerOptions = (malbestillinger: [string, Mal[]]) =>
 	Object.keys(malbestillinger).map((ident) => ({
 		value: ident,
 		label: ident,
 	}))
 
-const getMalOptions = (malbestillinger, zIdent) => {
-	if (!malbestillinger || !malbestillinger[zIdent]) return []
-	return malbestillinger[zIdent].map((mal) => ({
+export const getMalOptions = (malbestillinger: [string, Mal[]], bruker: string | number) => {
+	if (!malbestillinger || !malbestillinger[bruker]) return []
+	return malbestillinger[bruker].map((mal: { id: any; malNavn: any; bestilling: any }) => ({
 		value: mal.id,
 		label: mal.malNavn,
 		data: { bestilling: mal.bestilling, malNavn: mal.malNavn },

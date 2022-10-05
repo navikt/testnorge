@@ -32,7 +32,7 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboksProps)
 	) {
 		return (
 			// @ts-ignore
-			<Alert style={{ marginTop: 20 }}>
+			<Alert variant={'info'} style={{ marginTop: 20 }}>
 				Tilgangsstyring basert på diskresjonskode har nattlig oppdatering, slik at riktig tilgang
 				mot miljø kan verifiseres først dagen etter. Ta kontakt med Team Dolly i morgen hvis ønsket
 				tilgang mot miljø ikke samsvarer med bestillingen. <br />

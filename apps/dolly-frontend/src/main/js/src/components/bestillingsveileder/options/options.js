@@ -6,6 +6,7 @@ const TYPE = Object.freeze({
 	OPPRETT_FRA_IDENTER: 'OPPRETT_FRA_IDENTER',
 	LEGG_TIL: 'LEGG_TIL',
 	NY_ORGANISASJON: 'NY_ORGANISASJON',
+	NY_ORGANISASJON_FRA_MAL: 'NY_ORGANISASJON_FRA_MAL',
 	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
 	IMPORT_TESTNORGE: 'IMPORT_TESTNORGE',
 })
@@ -113,6 +114,9 @@ export const BVOptions = (
 		if (opprettOrganisasjon === 'STANDARD') {
 			bestType = TYPE.NY_STANDARD_ORGANISASJON
 			initialValues = initialValuesStandardOrganisasjon
+		} else if (mal) {
+			bestType = TYPE.NY_ORGANISASJON_FRA_MAL
+			initialValues = Object.assign(initialValuesOrganisasjon, initialValuesBasedOnMal(mal))
 		} else {
 			bestType = TYPE.NY_ORGANISASJON
 			initialValues = initialValuesOrganisasjon
@@ -137,6 +141,7 @@ export const BVOptions = (
 			opprettFraIdenter: bestType === TYPE.OPPRETT_FRA_IDENTER,
 			leggTil: bestType === TYPE.LEGG_TIL,
 			nyOrganisasjon: bestType === TYPE.NY_ORGANISASJON,
+			nyOrganisasjonFraMal: bestType === TYPE.NY_ORGANISASJON_FRA_MAL,
 			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON,
 			importTestnorge: bestType === TYPE.IMPORT_TESTNORGE,
 		},

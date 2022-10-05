@@ -66,7 +66,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 		setVisning(value)
 	}
 
-	const startBestilling = (values: {}) =>
+	const startBestilling = (values: Record<string, unknown>) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast

@@ -9,12 +9,12 @@ import './Button.less'
 
 interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	kind?: string
-	onClick: () => void
+	onClick?: () => void
 	iconSize?: number
 	loading?: boolean
 }
 
-export default function Button({
+const Button = ({
 	kind,
 	onClick,
 	children,
@@ -23,10 +23,10 @@ export default function Button({
 	loading = false,
 	disabled,
 	...rest
-}: Button) {
+}: Button) => {
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.stopPropagation()
-		onClick()
+		onClick?.()
 	}
 
 	const cssClass = cn('dolly-button', className)
@@ -34,7 +34,6 @@ export default function Button({
 	const renderIcon = loading ? (
 		<Loading onlySpinner size={iconSize} />
 	) : kind ? (
-		// @ts-ignore
 		<Icon size={iconSize} kind={kind} />
 	) : null
 
@@ -45,3 +44,4 @@ export default function Button({
 		</button>
 	)
 }
+export default Button
