@@ -18,11 +18,9 @@ const gyldigDatoTom = Yup.lazy((val) =>
 const datoOverlapper = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 	if (!gjeldendeDatoFra || !gjeldendeDatoTil) return false
 
-	let tildato = new Date(gjeldendeDatoTil)
-	tildato.setDate(tildato.getDate() - 1)
-	return !(
-		isAfter(new Date(nyDatoFra), tildato) ||
-		isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoFra))
+	return (
+		isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoTil)) &&
+		!isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoFra))
 	)
 }
 
@@ -41,6 +39,7 @@ const overlapperMedAdresse = (originalFradato, originalTildato, adresseListe, ny
 		) {
 			return true
 		}
+
 		if (!tilDato) {
 			if (nyAdresse && isAfter(new Date(originalFradato), new Date(fraDato))) {
 				return true
@@ -48,7 +47,8 @@ const overlapperMedAdresse = (originalFradato, originalTildato, adresseListe, ny
 			if (
 				!nyAdresse &&
 				!originalTildato &&
-				!isAfter(new Date(originalFradato), new Date(fraDato))
+				(new Date(originalFradato).getDate() === new Date(fraDato).getDate() ||
+					!isAfter(new Date(originalFradato), new Date(fraDato)))
 			) {
 				return true
 			}
@@ -70,16 +70,19 @@ const validFradato = () => {
 
 				const nyeAdresser = values?.pdldata?.person?.bostedsadresse
 					? [...values.pdldata.person.bostedsadresse]
-					: []
+					: [values.bostedsadresse]
 				let tildato = null
 				let adresseIndex = null
 				for (let i = 0; i < nyeAdresser.length; i++) {
 					if (nyeAdresser[i]?.gyldigFraOgMed + '' === val) {
 						tildato = nyeAdresser[i].gyldigTilOgMed
+							? new Date(nyeAdresser[i].gyldigTilOgMed).toISOString()
+							: null
 						adresseIndex = i
 						break
 					}
 				}
+
 				nyeAdresser.splice(adresseIndex, 1)
 				const tidligereAdresser =
 					values.personFoerLeggTil?.pdlforvalter?.person?.bostedsadresse || []

@@ -6,7 +6,9 @@ import { Steg1Organisasjon } from './Steg1Organisasjon'
 export const Steg1 = ({ formikBag, stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
 
-	return opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon ? (
+	return opts.is.nyOrganisasjon ||
+		opts.is.nyStandardOrganisasjon ||
+		opts.is.nyOrganisasjonFraMal ? (
 		<Steg1Organisasjon formikBag={formikBag} stateModifier={stateModifier} />
 	) : (
 		<Steg1Person formikBag={formikBag} stateModifier={stateModifier} />

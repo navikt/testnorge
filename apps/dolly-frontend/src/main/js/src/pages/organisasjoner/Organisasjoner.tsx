@@ -11,16 +11,16 @@ import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import {
-	useOrganisasjonBestilling,
-	useOrganisasjonerForBruker,
-} from '~/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 import { sokSelector } from '~/ducks/bestillingStatus'
 import { useDispatch } from 'react-redux'
 import { resetPaginering } from '~/ducks/finnPerson'
 import { bottom } from '@popperjs/core'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { ToggleGroup } from '@navikt/ds-react'
+import useBoolean from '~/utils/hooks/useBoolean'
+import { OrganisasjonBestillingsveilederModal } from '~/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
+import OrganisasjonHeaderConnector from '~/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 
 type OrganisasjonerProps = {
 	search?: string
@@ -37,23 +37,24 @@ const VISNING_BESTILLINGER = 'bestillinger'
 
 export default ({ search, sidetall }: OrganisasjonerProps) => {
 	const {
-		currentBruker: { brukerId, brukertype },
+		currentBruker: { brukerId, brukertype, brukernavn },
 	} = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
+	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
+
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
-	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
 
 	const byttVisning = (value: string) => {
 		dispatch(resetPaginering())
 		setVisning(value)
 	}
 
-	const isFetching = loading || loadingOrganisasjoner
+	const isFetching = loading
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) {
@@ -64,8 +65,10 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (type: string) => {
-		navigate('/organisasjoner/bestilling', { state: { opprettOrganisasjon: type } })
+	const startBestilling = (values: Record<string, unknown>) => {
+		navigate('/organisasjoner/bestilling', {
+			state: { opprettOrganisasjon: BestillingType.NY, ...values },
+		})
 	}
 
 	return (
@@ -92,8 +95,14 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
 				)}
 
+				<OrganisasjonHeaderConnector antallOrganisasjoner={antallOrg} />
+
 				<div className="toolbar">
-					<NavButton variant={'primary'} onClick={() => startBestilling(BestillingType.NY)}>
+					<NavButton
+						variant={'primary'}
+						// onClick={() => startBestilling(BestillingType.NY)}
+						onClick={visStartBestilling}
+					>
 						Opprett organisasjon
 					</NavButton>
 
@@ -116,6 +125,14 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 
 					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
 				</div>
+
+				{startBestillingAktiv && (
+					<OrganisasjonBestillingsveilederModal
+						onSubmit={startBestilling}
+						onAvbryt={skjulStartBestilling}
+						brukernavn={brukernavn}
+					/>
+				)}
 
 				{visning === VISNING_ORGANISASJONER &&
 					(isFetching ? (

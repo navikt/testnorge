@@ -52,6 +52,10 @@ a {
   margin-bottom: 1rem;
 }
 
+.navds-table__header-cell--align-center, .navds-table__data-cell--align-center {
+  text-align: -webkit-center;
+}
+
 .miljo-velger {
   .navds-body-short {
     font-size: var(--navds-font-size-small)
@@ -127,4 +131,46 @@ a {
 
 .popover {
   max-width: 350px;
+}
+
+.ny-bestilling-form {
+  > h3 {
+    margin: 10px 0 0;
+  }
+
+  &_selects {
+    display: flex;
+    padding: 20px 0 0;
+  }
+
+  &_maler {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 25px -20px 0;
+    padding: 0 0 0 20px;
+
+    .mal-admin {
+      margin-bottom: 16px;
+
+      a {
+        text-decoration: none;
+        color: @navBla;
+      }
+
+      svg {
+        stroke: @navBla;
+      }
+    }
+
+    > div {
+      h3 {
+        margin-right: 10px;
+      }
+
+      display: flex;
+      width: 100%;
+      align-items: center;
+    }
+  }
 }

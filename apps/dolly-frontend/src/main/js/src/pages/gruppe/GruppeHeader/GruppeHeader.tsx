@@ -120,7 +120,8 @@ const GruppeHeader = ({
 						</SlettButton>
 					)}
 					<EksporterExcel
-						gruppeId={gruppe.id}
+						exportId={gruppe.id}
+						filPrefix={gruppe.id}
 						action={getGruppeExcelFil}
 						loading={isFetchingExcel}
 					/>

@@ -70,7 +70,7 @@ const animateNedboer = (millimeterNedboer: number) => {
 				))}
 			</>
 		)
-	} else if (month >= 5 && month <= 7) {
+	} else if (month >= 5 && month <= 10) {
 		return (
 			<>
 				{Array.from(Array(3 * round(millimeterNedboer) * 10).keys()).map((idx) => (

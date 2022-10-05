@@ -28,6 +28,7 @@ public class RsOrganisasjonBestillingStatus {
     private String feil;
     private Boolean ferdig;
     private LocalDateTime sistOppdatert;
+    private String malBestillingNavn;
     private List<String> environments;
     private String organisasjonNummer;
 

@@ -15,6 +15,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Slf4j
 @Service
+@Order(7)
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 

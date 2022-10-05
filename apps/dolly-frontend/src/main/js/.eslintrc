@@ -24,7 +24,8 @@
     "react/no-unescaped-entities": "off",
     "react/jsx-no-target-blank": "off",
     "@typescript-eslint/camelcase": "off",
-    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
+    "@typescript-eslint/no-namespace": "off",
     "@typescript-eslint/no-empty-function": "off",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-explicit-any": "off",
@@ -38,12 +39,7 @@
       "files": [
         "*.ts",
         "*.tsx"
-      ],
-      "rules": {
-        "@typescript-eslint/explicit-module-boundary-types": [
-          "error"
-        ]
-      }
+      ]
     }
   ]
 }
