@@ -201,6 +201,10 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/malbestilling/${malId}`
 	}
 
+	static malBestillingOrganisasjon(malId) {
+		return `${organisasjonBase}/bestilling/malbestilling/${malId}`
+	}
+
 	static getOrganisasjoner(brukerId) {
 		return `${organisasjonBase}?brukerId=${brukerId}`
 	}

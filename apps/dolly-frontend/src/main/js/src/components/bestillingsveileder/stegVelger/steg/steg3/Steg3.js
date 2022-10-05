@@ -10,6 +10,7 @@ import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/ste
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
+import { MalFormOrganisasjon } from '~/pages/organisasjoner/MalFormOrganisasjon'
 
 export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -28,7 +29,7 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {
-		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
+		if (bankIdBruker) {
 			return ['q1']
 		}
 		return []
@@ -40,8 +41,10 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
-		} else {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (formikBag.values?.sykemelding || bankIdBruker) {
+			formikBag.setFieldValue('environments', ['q1'])
+		} else if (!formikBag.values?.environments) {
+			formikBag.setFieldValue('environments', [])
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
@@ -84,6 +87,13 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 				!harRelatertPersonBarn && (
 					<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
 				)}
+			{erOrganisasjon && (
+				<MalFormOrganisasjon
+					brukerId={brukerId}
+					formikBag={formikBag}
+					opprettetFraMal={opts?.mal?.malNavn}
+				/>
+			)}
 			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>
 	)

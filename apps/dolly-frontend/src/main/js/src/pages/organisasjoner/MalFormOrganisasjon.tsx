@@ -1,23 +1,22 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
+import { useDollyOrganisasjonMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
 import Loading from '~/components/ui/loading/Loading'
+import {
+	MalerFormProps,
+	MalTyper,
+} from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
 import { MalOppsummering } from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
 
-export type MalerFormProps = {
-	brukerId: string
-	formikBag: { setFieldValue: (arg0: string, arg1: string) => void }
-	opprettetFraMal: string
-}
-
-export const MalForm = ({
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+export const MalFormOrganisasjon = ({
 	brukerId,
 	formikBag: { setFieldValue },
 	opprettetFraMal,
 }: MalerFormProps) => {
 	const [typeMal, setTypeMal] = useState(MalTyper.OPPRETT)
 	const [opprettMal, setOpprettMal] = useState(false)
-	const { maler, loading } = useDollyMalerBrukerOgMalnavn(brukerId, null)
+	const { maler, loading } = useDollyOrganisasjonMalerBrukerOgMalnavn(brukerId, null)
 
 	if (loading) {
 		return <Loading label="Laster maler..." />
@@ -48,32 +47,6 @@ export const MalForm = ({
 	)
 }
 
-MalForm.validation = {
+MalFormOrganisasjon.validation = {
 	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString.nullable()),
-}
-
-export enum MalTyper {
-	OPPRETT = 'OPPRETT',
-	ENDRE = 'ENDRE',
-}
-
-export const toggleMalValues = [
-	{
-		value: MalTyper.OPPRETT,
-		label: 'Legg til ny',
-	},
-	{
-		value: MalTyper.ENDRE,
-		label: 'Overskriv eksisterende',
-	},
-]
-
-export const getMalOptions = (malbestillinger: Mal[]) => {
-	if (!malbestillinger) {
-		return []
-	}
-	return malbestillinger.map((mal) => ({
-		value: mal.malNavn,
-		label: mal.malNavn,
-	}))
 }
