@@ -14,16 +14,15 @@ type PersondetaljerSamletTypes = {
 			sprakKode: string
 		}
 	}
-	skjermingData?: Skjerming
+	harSkjerming?: string
 }
 
 export const PersondetaljerSamlet = ({
 	formikBag,
 	tpsMessaging,
-	skjermingData,
+	harSkjerming,
 }: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
-	const skjerming = skjermingData?.skjermetFra
 
 	const sprakTekst = ' og språk'
 	const skjermingTekst = ' og skjerming'
@@ -33,7 +32,13 @@ export const PersondetaljerSamlet = ({
 		<>
 			<div className="flexbox--full-width">
 				<Alert variant={'info'}>{`Identnummer${
-					sprak && skjerming ? beggeTekst : sprak ? sprakTekst : skjerming ? skjermingTekst : ''
+					sprak && harSkjerming
+						? beggeTekst
+						: sprak
+						? sprakTekst
+						: harSkjerming
+						? skjermingTekst
+						: ''
 				} kan ikke endres her.`}</Alert>
 
 				<h3>Navn</h3>

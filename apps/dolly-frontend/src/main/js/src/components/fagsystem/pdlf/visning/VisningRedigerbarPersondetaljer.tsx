@@ -30,7 +30,6 @@ type VisningTypes = {
 	path: string
 	ident: string
 	tpsMessagingData?: any
-	skjermingData?: Skjerming
 }
 
 const FieldArrayEdit = styled.div`
@@ -78,7 +77,6 @@ export const VisningRedigerbarPersondetaljer = ({
 	redigertAttributt = null,
 	ident,
 	tpsMessagingData,
-	skjermingData,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -367,7 +365,7 @@ export const VisningRedigerbarPersondetaljer = ({
 										<PersondetaljerSamlet
 											formikBag={formikBag}
 											tpsMessaging={tpsMessagingData}
-											skjermingData={skjermingData}
+											harSkjerming={harSkjerming}
 										/>
 									</div>
 									<Knappegruppe>

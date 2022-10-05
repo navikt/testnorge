@@ -26,6 +26,7 @@ type PersondetaljerTypes = {
 
 type PersonTypes = {
 	person: PersonData
+	skjerming?: Skjerming
 }
 
 const getCurrentPersonstatus = (data: any) => {
@@ -54,7 +55,7 @@ export const Persondetaljer = ({
 	}
 	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
-	const PersondetaljerLes = ({ person }: PersonTypes) => {
+	const PersondetaljerLes = ({ person, skjerming }: PersonTypes) => {
 		const personNavn = person?.navn?.[0]
 		const personKjoenn = person?.kjoenn?.[0]
 		const personstatus = getCurrentPersonstatus(redigertPerson || person)
@@ -70,7 +71,7 @@ export const Persondetaljer = ({
 					title="Personstatus"
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
-				<SkjermingVisning data={skjermingData} />
+				<SkjermingVisning data={skjerming} />
 				<TpsMPersonInfo
 					data={tpsMessaging.tpsMessagingData}
 					loading={tpsMessaging.tpsMessagingLoading}
@@ -105,16 +106,20 @@ export const Persondetaljer = ({
 			: null
 
 		return erPdlVisning ? (
-			<PersondetaljerLes person={person} />
+			<PersondetaljerLes person={person} skjerming={skjermingData} />
 		) : (
 			<VisningRedigerbarPersondetaljerConnector
-				dataVisning={<PersondetaljerLes person={personValues} />}
+				dataVisning={
+					<PersondetaljerLes
+						person={personValues}
+						skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
+					/>
+				}
 				initialValues={initPerson}
 				redigertAttributt={redigertPersonValues}
 				path="person"
 				ident={ident}
 				tpsMessagingData={tpsMessaging}
-				skjermingData={skjermingData}
 			/>
 		)
 	}
