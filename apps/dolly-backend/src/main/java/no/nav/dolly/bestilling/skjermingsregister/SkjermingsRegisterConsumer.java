@@ -70,7 +70,7 @@ public class SkjermingsRegisterConsumer {
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-oppdater"})
     public void oppdaterPerson(SkjermingsDataRequest skjerming) {
 
-        var test = tokenService.exchange(serviceProperties)
+        tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
                             if (response.isEksistererIkke()) {
@@ -88,8 +88,6 @@ public class SkjermingsRegisterConsumer {
                             }
                         }))
                 .block();
-
-        System.out.println(test);
     }
 
     public Map<String, String> checkAlive() {
