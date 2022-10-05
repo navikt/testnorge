@@ -11,10 +11,7 @@ import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import {
-	useOrganisasjonBestilling,
-	useOrganisasjonerForBruker,
-} from '~/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 import { sokSelector } from '~/ducks/bestillingStatus'
 import { useDispatch } from 'react-redux'
 import { resetPaginering } from '~/ducks/finnPerson'
@@ -46,14 +43,13 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
-	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
 
 	const byttVisning = (value: string) => {
 		dispatch(resetPaginering())
 		setVisning(value)
 	}
 
-	const isFetching = loading || loadingOrganisasjoner
+	const isFetching = loading
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) {
