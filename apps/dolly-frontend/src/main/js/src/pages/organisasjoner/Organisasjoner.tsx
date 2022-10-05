@@ -18,6 +18,7 @@ import { resetPaginering } from '~/ducks/finnPerson'
 import { bottom } from '@popperjs/core'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { ToggleGroup } from '@navikt/ds-react'
+import OrganisasjonHeaderConnector from '~/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 
 type OrganisasjonerProps = {
 	search?: string
@@ -87,6 +88,8 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 					// @ts-ignore
 					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
 				)}
+
+				<OrganisasjonHeaderConnector antallOrganisasjoner={antallOrg} />
 
 				<div className="toolbar">
 					<NavButton variant={'primary'} onClick={() => startBestilling(BestillingType.NY)}>

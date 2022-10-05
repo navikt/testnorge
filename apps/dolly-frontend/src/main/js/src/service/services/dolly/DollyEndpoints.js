@@ -134,6 +134,10 @@ export default class DollyEndpoints {
 		return `${uri}/excel/gruppe/${gruppeId}`
 	}
 
+	static orgExcelFil(brukerId) {
+		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
+	}
+
 	static udiPerson(ident) {
 		return `${udiBase}/${ident}`
 	}
