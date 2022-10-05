@@ -3,6 +3,7 @@ import Loading from '~/components/ui/loading/Loading'
 
 type LoadingProps = {
 	visningModus: string
+	ignoreSlett?: boolean
 }
 
 export enum Modus {
@@ -16,7 +17,7 @@ export enum Modus {
 	LoadingSkjerming = 'LOADING_SKERMING',
 }
 
-export const RedigerLoading = ({ visningModus }: LoadingProps) => {
+export const RedigerLoading = ({ visningModus, ignoreSlett = false }: LoadingProps) => {
 	switch (visningModus) {
 		case Modus.LoadingPdlf:
 			return <Loading label="Oppdaterer PDL-forvalter..." />
@@ -26,6 +27,10 @@ export const RedigerLoading = ({ visningModus }: LoadingProps) => {
 			return <Loading label="Oppdaterer skjermingsregisteret..." />
 		case Modus.Loading:
 			return <Loading label="Oppdaterer..." />
+		case Modus.LoadingPdlfSlett:
+			return ignoreSlett ? null : <Loading label="Oppdaterer PDL-forvalter..." />
+		case Modus.LoadingPdlSlett:
+			return ignoreSlett ? null : <Loading label="Oppdaterer PDL..." />
 		default:
 			return null
 	}

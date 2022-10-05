@@ -192,7 +192,7 @@ export const VisningRedigerbarSamlet = ({
 
 	return (
 		<>
-			<RedigerLoading visningModus={visningModus} />
+			<RedigerLoading visningModus={visningModus} ignoreSlett />
 			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
 				<DollyFieldArray data={initialValuesListe} header="" nested>
 					{(item: any, idx: number) => {
@@ -201,12 +201,7 @@ export const VisningRedigerbarSamlet = ({
 
 						return (
 							<React.Fragment key={idx}>
-								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label={'Oppdaterer PDL-forvalter...'} />
-								)}
-								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
-									<Loading label={'Oppdaterer PDL...'} />
-								)}
+								{slettId === idx && <RedigerLoading visningModus={visningModus} />}
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
 										{slettetItem || alleSlettet ? (
