@@ -18,7 +18,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.getEgenansattDatoFom;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.getEgenansattDatoTom;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.isSkjerming;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.isTpsMessagingEgenansatt;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.isTpsfEgenansatt;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -83,50 +87,5 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .pdlfPerson(pdlfPerson)
                         .build(),
                 SkjermingsDataRequest.class);
-    }
-
-    private boolean isSkjerming(RsDollyUtvidetBestilling bestilling) {
-
-        return nonNull(bestilling.getSkjerming()) &&
-                (nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom()) ||
-                        nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom()));
-    }
-
-    private boolean isTpsMessagingEgenansatt(RsDollyUtvidetBestilling bestilling) {
-
-        return nonNull(bestilling.getTpsMessaging()) &&
-                (nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoFom()) ||
-                        nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()));
-    }
-
-    private boolean isTpsfEgenansatt(RsDollyUtvidetBestilling bestilling) {
-
-        return nonNull(bestilling.getTpsf()) &&
-                (nonNull(bestilling.getTpsf().getEgenAnsattDatoFom()) ||
-                        nonNull(bestilling.getTpsf().getEgenAnsattDatoTom()));
-    }
-
-    private LocalDateTime getEgenansattDatoFom(RsDollyUtvidetBestilling bestilling) {
-
-        if (isSkjerming(bestilling)) {
-            return bestilling.getSkjerming().getEgenAnsattDatoFom();
-
-        } else if (isTpsMessagingEgenansatt(bestilling)) {
-            return bestilling.getTpsMessaging().getEgenAnsattDatoFom().atStartOfDay();
-
-        } else
-            return bestilling.getTpsf().getEgenAnsattDatoFom();
-    }
-
-    private LocalDateTime getEgenansattDatoTom(RsDollyUtvidetBestilling bestilling) {
-
-        if (isSkjerming(bestilling)) {
-            return bestilling.getSkjerming().getEgenAnsattDatoTom();
-
-        } else if (isTpsMessagingEgenansatt(bestilling)) {
-            return bestilling.getTpsMessaging().getEgenAnsattDatoTom().atStartOfDay();
-
-        } else
-            return bestilling.getTpsf().getEgenAnsattDatoTom();
     }
 }
