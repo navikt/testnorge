@@ -20,4 +20,10 @@ export default {
 		const endpoint = `${getKrrUrl()}/sdp/leverandoer/${id}`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
 	},
+	slettKontaktinformasjon(id) {
+		const endpoint = `${getKrrUrl()}/kontaktinformasjon/${id}`
+		return Request.delete(endpoint, {
+			'Nav-Call-Id': _uuid(),
+		})
+	},
 }

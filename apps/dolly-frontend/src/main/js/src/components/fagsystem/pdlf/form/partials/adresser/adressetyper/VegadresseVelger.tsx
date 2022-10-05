@@ -1,6 +1,6 @@
 import React from 'react'
 import { initialVegadresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Vegadresse'
+import { Vegadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'

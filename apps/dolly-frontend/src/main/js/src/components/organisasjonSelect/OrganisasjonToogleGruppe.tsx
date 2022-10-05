@@ -13,14 +13,14 @@ export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToo
 		<ToggleGroup
 			size={'small'}
 			onChange={handleToggleChange}
-			defaultValue={inputValg.fraEgenListe}
+			defaultValue={inputValg.fraFellesListe}
 			style={{ margin: '5px 0 5px' }}
 		>
-			<ToggleGroup.Item key={inputValg.fraFellesListe} value={inputValg.fraFellesListe}>
-				Felles organisasjoner
-			</ToggleGroup.Item>
 			<ToggleGroup.Item key={inputValg.fraEgenListe} value={inputValg.fraEgenListe}>
 				Egen organisasjon
+			</ToggleGroup.Item>
+			<ToggleGroup.Item key={inputValg.fraFellesListe} value={inputValg.fraFellesListe}>
+				Felles organisasjoner
 			</ToggleGroup.Item>
 			<ToggleGroup.Item key={inputValg.skrivSelv} value={inputValg.skrivSelv}>
 				Skriv inn org.nr.

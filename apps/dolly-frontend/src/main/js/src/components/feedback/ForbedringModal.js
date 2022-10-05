@@ -8,11 +8,12 @@ import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
 import dolly from '~/assets/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
-import { useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import { useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
 import { Textarea } from '@navikt/ds-react'
 
 export const ForbedringModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()
+	const { currentBruker } = useCurrentBruker()
 
 	const MAX_LENGTH = 2000
 	const [uuid] = useState(_uuid())
@@ -25,6 +26,7 @@ export const ForbedringModal = ({ closeModal }) => {
 			message: forbedring,
 			uuid: uuid,
 			isAnonym: isAnonym,
+			brukerType: currentBruker.brukertype,
 		})
 		closeModal()
 	}

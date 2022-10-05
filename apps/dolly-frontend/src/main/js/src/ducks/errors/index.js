@@ -3,6 +3,7 @@ import { createSelector } from 'reselect'
 import _filter from 'lodash/filter'
 
 export const clearAllErrors = createAction('ERRORS/CLEAR_ALL_ERRORS')
+export const addGlobalError = createAction('ERRORS/ADD_GLOBAL_ERROR')
 
 // SELECTORS
 export const createErrorMessageSelector = (actions) => (state) => {
@@ -29,6 +30,13 @@ export default function errorReducer(state = initialState, action) {
 	const matches = /(.*)_(REQUEST|FAILURE)/.exec(type)
 
 	if (type === clearAllErrors.toString()) return initialState
+
+	if (type === addGlobalError.toString()) {
+		return {
+			...state,
+			errors: action.payload,
+		}
+	}
 
 	// not a *_REQUEST / *_FAILURE actions, so we ignore them
 	if (!matches) return state

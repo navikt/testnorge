@@ -11,10 +11,7 @@ import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import {
-	useOrganisasjonBestilling,
-	useOrganisasjonerForBruker,
-} from '~/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 import { sokSelector } from '~/ducks/bestillingStatus'
 import { useDispatch } from 'react-redux'
 import { resetPaginering } from '~/ducks/finnPerson'
@@ -23,6 +20,7 @@ import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { ToggleGroup } from '@navikt/ds-react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { OrganisasjonBestillingsveilederModal } from '~/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
+import OrganisasjonHeaderConnector from '~/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 
 type OrganisasjonerProps = {
 	search?: string
@@ -50,14 +48,13 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
-	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
 
 	const byttVisning = (value: string) => {
 		dispatch(resetPaginering())
 		setVisning(value)
 	}
 
-	const isFetching = loading || loadingOrganisasjoner
+	const isFetching = loading
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) {
@@ -97,6 +94,8 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 					// @ts-ignore
 					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
 				)}
+
+				<OrganisasjonHeaderConnector antallOrganisasjoner={antallOrg} />
 
 				<div className="toolbar">
 					<NavButton

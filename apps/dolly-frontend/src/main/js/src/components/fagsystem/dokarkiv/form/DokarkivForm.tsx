@@ -6,7 +6,7 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import styled from 'styled-components'
 import _get from 'lodash/get'
@@ -117,7 +117,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
-				startOpen={erForste(formikBag.values, [dokarkivAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [dokarkivAttributt])}
 			>
 				<Kategori
 					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}

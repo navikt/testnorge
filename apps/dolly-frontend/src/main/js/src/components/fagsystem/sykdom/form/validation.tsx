@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredDate, requiredNumber, requiredString } from '~/utils/YupValidations'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
 
 export const validation = {
 	sykemelding: ifPresent(

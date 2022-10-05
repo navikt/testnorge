@@ -19,11 +19,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
+                .and()
+                .csrf()
+                .disable()
                 .authorizeRequests()
                 .antMatchers("/api/**")
                 .fullyAuthenticated()
-                .and().oauth2ResourceServer().jwt();
+                .and()
+                .oauth2ResourceServer()
+                .jwt();
     }
 }
 

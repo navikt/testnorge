@@ -181,6 +181,10 @@ export default {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 
+	getOrgExcelFil(brukerId) {
+		return Request.getExcel(Endpoints.orgExcelFil(brukerId))
+	},
+
 	importerRelatertPerson(groupId, ident, master) {
 		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
@@ -239,5 +243,11 @@ export default {
 				console.error(error)
 				throw error
 			})
+	},
+
+	getAlleOrganisasjonerPaaBruker(brukerId) {
+		return Request.get(Endpoints.getOrganisasjoner(brukerId)).then((response) => {
+			return response.data
+		})
 	},
 }

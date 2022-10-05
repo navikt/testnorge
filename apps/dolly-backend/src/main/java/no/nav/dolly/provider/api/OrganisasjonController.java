@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;

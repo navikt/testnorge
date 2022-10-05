@@ -16,6 +16,7 @@ import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 } from '~/utils/hooks/useMaler'
+import { runningTestcafe } from '~/service/services/Request'
 
 const extractFeilmelding = (stackTrace: string) => {
 	if (stackTrace?.includes('miljoer')) {
@@ -29,8 +30,8 @@ const extractFeilmelding = (stackTrace: string) => {
 
 const logout = (stackTrace: string) => {
 	const feilmelding = extractFeilmelding(stackTrace)
-	logoutBruker(feilmelding)
-}
+	if (!runningTestcafe()) {logoutBruker(feilmelding)
+}}
 
 export const App = () => {
 	const [criticalError, setCriticalError] = useState(null)
@@ -50,7 +51,7 @@ export const App = () => {
 	}, [userError])
 
 	useEffect(() => {
-		if (criticalError) {
+		if (criticalError && !runningTestcafe()) {
 			logout(criticalError.stack)
 		}
 	}, [criticalError])

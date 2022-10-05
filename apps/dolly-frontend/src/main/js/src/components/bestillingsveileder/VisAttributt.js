@@ -13,7 +13,7 @@ const InternalVis = ({ formik = null, attributt, children }) => {
 		return attributtPath.some((v) => _has(values, v))
 	}
 
-	return isChecked(formik.values, attributt) && children
+	return isChecked(formik?.values, attributt) && children
 }
 
 export const Vis = connect(InternalVis)

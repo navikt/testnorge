@@ -73,6 +73,7 @@ export const FormikTextInput = ({
 	useControlled?: boolean
 	disabled?: boolean
 	onKeyPress?: Function
+	autoFocus?: boolean
 }) => {
 	const component = <FormikFieldInput {...props} />
 	// @ts-ignore

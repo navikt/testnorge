@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { validation } from '~/components/fagsystem/pensjon/form/validation'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -22,7 +22,7 @@ export const PensjonForm = ({ formikBag }) => (
 			heading="Pensjonsgivende inntekt (POPP)"
 			hasErrors={panelError(formikBag, pensjonPath)}
 			iconType="pensjon"
-			startOpen={erForste(formikBag.values, [pensjonPath])}
+			startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
 			informasjonstekst={hjelpetekst}
 		>
 			<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
