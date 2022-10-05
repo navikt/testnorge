@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import { ifPresent } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '~/components/ui/brukerAlert/AlertInntektskomponentenRequired'
@@ -33,7 +33,7 @@ export const ArenaForm = ({ formikBag }) => {
 				heading="Arbeidsytelser"
 				hasErrors={panelError(formikBag, arenaPath)}
 				iconType="arena"
-				startOpen={erForste(formikBag.values, [arenaPath])}
+				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
 			>
 				{dagpengerAktiv && (
 					<>

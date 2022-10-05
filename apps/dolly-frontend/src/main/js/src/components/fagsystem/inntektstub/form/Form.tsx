@@ -2,7 +2,7 @@ import React from 'react'
 import { FormikProps } from 'formik'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { validation } from './validation'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import InntektsinformasjonForm from './partials/inntektsinformasjonForm'
@@ -45,7 +45,7 @@ export const InntektstubForm = ({ formikBag }: InntektstubFormProps) => (
 			heading="A-ordningen (Inntektstub)"
 			hasErrors={panelError(formikBag, inntektstubAttributt)}
 			iconType="inntektstub"
-			startOpen={erForste(formikBag.values, [inntektstubAttributt])}
+			startOpen={erForsteEllerTest(formikBag.values, [inntektstubAttributt])}
 		>
 			<div className="flexbox--flex-wrap">
 				<FormikDollyFieldArray

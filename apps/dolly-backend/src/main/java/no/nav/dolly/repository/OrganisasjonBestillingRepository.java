@@ -17,9 +17,18 @@ public interface OrganisasjonBestillingRepository extends Repository<Organisasjo
     @Modifying
     OrganisasjonBestilling save(OrganisasjonBestilling bestilling);
 
+    @Query(value = "from OrganisasjonBestilling b where b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
+    List<OrganisasjonBestilling> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
+
+    @Query(value = "from OrganisasjonBestilling b where b.malBestillingNavn is not null and b.bruker = :bruker order by b.malBestillingNavn")
+    List<OrganisasjonBestilling> findMalBestillingByUser(@Param("bruker") Bruker bruker);
+
+    @Query(value = "from OrganisasjonBestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
+    List<OrganisasjonBestilling> findMalBestilling();
+
     @Modifying
     @Query(value = "delete from OrganisasjonBestilling b where b = :bestilling and not exists (select bp from OrganisasjonBestillingProgress bp where bp.bestilling = :bestilling)")
     int deleteBestillingWithNoChildren(@Param("bestilling") OrganisasjonBestilling bestilling);
 
-    Optional<List<OrganisasjonBestilling>> findByBruker(Bruker bruker);
+    List<OrganisasjonBestilling> findByBruker(Bruker bruker);
 }

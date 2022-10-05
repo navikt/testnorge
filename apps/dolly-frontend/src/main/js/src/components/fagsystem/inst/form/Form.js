@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import Panel from '~/components/ui/panel/Panel'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -36,7 +36,7 @@ export const InstForm = ({ formikBag }) => {
 				heading="Institusjonsopphold"
 				hasErrors={panelError(formikBag, instAttributt)}
 				iconType="institusjon"
-				startOpen={erForste(formikBag.values, [instAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [instAttributt])}
 			>
 				<FormikDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>
 					{(path, idx) => (

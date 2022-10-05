@@ -8,7 +8,7 @@ import {
 	requiredNumber,
 	requiredString,
 } from '~/utils/YupValidations'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
 
 const unikOrgMndTest = (unikValidation) => {
 	const errorMsg = 'Kombinasjonen av år, måned og virksomhet er ikke unik'

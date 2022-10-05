@@ -24,15 +24,14 @@ import { Persondetaljer } from '~/components/fagsystem/pdlf/visning/partials/Per
 import {
 	TpsfIdenthistorikk,
 	MidlertidigAdresse,
-	NorskBankkonto,
 	TpsfPersoninfo,
 	Postadresse,
 	Relasjoner,
-	UtenlandskBankkonto,
 	TpsfVergemaal,
 	TpsfNasjonalitet,
 	TpsfBoadresse,
 } from '~/components/fagsystem/tpsf/visning/partials'
+import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 

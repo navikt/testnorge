@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, ButtonProps } from '@navikt/ds-react'
 
 const NavButton = ({ variant = 'primary', children, ...restProps }: ButtonProps) => (
-	<Button variant={variant} {...restProps}>
+	<Button variant={variant} {...restProps} type={'submit'}>
 		{children}
 	</Button>
 )

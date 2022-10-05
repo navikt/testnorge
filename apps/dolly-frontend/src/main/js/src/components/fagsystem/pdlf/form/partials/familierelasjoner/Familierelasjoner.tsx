@@ -1,7 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikProps } from 'formik'
 import { DoedfoedtBarn } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
@@ -23,7 +23,7 @@ export const Familierelasjoner = ({ formikBag }: { formikBag: FormikProps<any> }
 				heading="Familierelasjoner"
 				hasErrors={panelError(formikBag, relasjonerAttributter)}
 				iconType={'relasjoner'}
-				startOpen={erForste(formikBag.values, relasjonerAttributter)}
+				startOpen={erForsteEllerTest(formikBag.values, relasjonerAttributter)}
 				checkAttributeArray={undefined}
 				uncheckAttributeArray={undefined}
 			>

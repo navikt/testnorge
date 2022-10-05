@@ -9,13 +9,35 @@ import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/Datepi
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Utflytting } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '~/components/bestillingsveileder/utils'
+import { FormikProps } from 'formik'
+import _get from 'lodash/get'
+import {
+	getFirstDateAfter,
+	getLastDateBefore,
+} from '~/components/fagsystem/pdlf/form/partials/utvandring/utils'
 
 type InnvandringTypes = {
 	path: string
 	minDate?: Date
+	maxDate?: Date
+}
+type RedigerTypes = {
+	formikBag: FormikProps<{}>
+	path: string
+	personFoerLeggTil: any
 }
 
-export const InnvandringForm = ({ path, minDate }: InnvandringTypes) => {
+export const RedigerInnvandringForm = ({ formikBag, path, personFoerLeggTil }: RedigerTypes) => {
+	const hoveddato = new Date(_get(formikBag.values, path)?.innflyttingsdato)
+	const datoer = personFoerLeggTil?.pdldata?.person?.utflytting?.map(
+		(utflytting: any) => new Date(utflytting.utflyttingsdato)
+	)
+	const minDate = getLastDateBefore(hoveddato, datoer)
+	const maxDate = getFirstDateAfter(hoveddato, datoer)
+	return <InnvandringForm path={path} minDate={minDate} maxDate={maxDate} />
+}
+
+const InnvandringForm = ({ path, minDate, maxDate }: InnvandringTypes) => {
 	return (
 		<>
 			<FormikSelect
@@ -31,6 +53,7 @@ export const InnvandringForm = ({ path, minDate }: InnvandringTypes) => {
 					name={`${path}.innflyttingsdato`}
 					label="Innflyttingsdato"
 					minDate={minDate}
+					maxDate={maxDate}
 				/>
 			</DatepickerWrapper>
 			<AvansertForm path={path} kanVelgeMaster={false} />

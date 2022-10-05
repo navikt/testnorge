@@ -5,7 +5,6 @@
     "noImplicitAny": true,
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
-    "inlineSourceMap": true,
     "removeComments": true,
     "typeRoots": [
       "node_modules/@types"
@@ -14,7 +13,7 @@
     "esModuleInterop": true,
     "module": "es6",
     "target": "ESNext",
-    //		"allowJs": true,
+    "allowJs": true,
     "jsx": "react",
     "lib": [
       "esnext",

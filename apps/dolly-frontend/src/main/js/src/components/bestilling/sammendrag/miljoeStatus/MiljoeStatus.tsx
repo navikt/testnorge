@@ -44,8 +44,8 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 
 	const statusListe: Status[] = []
 
-	bestillingsinformasjonListe.forEach((bestillingStatus: Bestillingsinformasjon) => {
-		bestillingStatus.statuser.forEach((status: Status) => {
+	bestillingsinformasjonListe?.forEach((bestillingStatus: Bestillingsinformasjon) => {
+		bestillingStatus.statuser?.forEach((status: Status) => {
 			const systeminfo = {
 				navn: bestillingStatus.navn,
 				id: bestillingStatus.id,
@@ -69,7 +69,7 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 			}
 
 			if (status.detaljert) {
-				status.detaljert.forEach((detaljertStatus: Detaljert) => {
+				status.detaljert?.forEach((detaljertStatus: Detaljert) => {
 					statusListe.push({
 						...systeminfo,
 						miljo: detaljertStatus.miljo?.toUpperCase(),
@@ -86,18 +86,18 @@ const mapStatusrapport = (bestillingsinformasjonListe: Bestillingsinformasjon[])
 
 const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {
 	const unikeStatusMeldingerPerSystem = statuser
-		.map((status) => ({
+		?.map((status) => ({
 			melding: status.melding,
 			navn: status.navn,
 		}))
-		.filter((value, index, self) => index === self.findIndex((status) => isEqual(status, value)))
+		?.filter((value, index, self) => index === self?.findIndex((status) => isEqual(status, value)))
 
-	return [...unikeStatusMeldingerPerSystem].map((statusMelding) =>
+	return [...unikeStatusMeldingerPerSystem]?.map((statusMelding) =>
 		statuser
-			.filter(
+			?.filter(
 				(status) => status.melding === statusMelding.melding && status.navn === statusMelding.navn
 			)
-			.reduce((previousValue, currentValue) => ({
+			?.reduce((previousValue, currentValue) => ({
 				...previousValue,
 				miljo: `${previousValue.miljo}, ${currentValue.miljo}`,
 			}))

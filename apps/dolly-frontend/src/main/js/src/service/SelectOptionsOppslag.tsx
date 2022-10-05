@@ -54,11 +54,11 @@ export const SelectOptionsOppslag = {
 			return null
 		}
 		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
-			if (gruppe.length < 1) {
+			if (gruppe?.length < 1) {
 				return null
 			}
 			const personListe: Array<PersonListe> = []
-			response.data.forEach((id: Person) => {
+			response?.data?.forEach((id: Person) => {
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
@@ -76,7 +76,7 @@ export const SelectOptionsOppslag = {
 			})
 			return personListe
 		})
-		return options ? options : Promise.resolve()
+		return options || Promise.resolve()
 	},
 
 	hentPdlOptions: async (gruppe: Array<{ ident: string }>) => {
@@ -216,17 +216,17 @@ export const SelectOptionsOppslag = {
 		return useAsync(async () => DollyApi.getTags(), [DollyApi.getTags])
 	},
 
-	hentVirksomheterFraOrgforvalter: () => {
-		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v2/organisasjoner/virksomheter`, {
-			method: 'GET',
-		})
-	},
-
 	formatOptions: (type: string, data: any) => {
+		if (!data?.value) {
+			if (!data?.loading) {
+				console.error('Fant ingen kodeverk for type: ' + type)
+			}
+			return []
+		}
 		if (type === 'personnavn') {
-			const persondata: any[] = data.value && data.value.data ? data.value.data : []
+			const persondata: any[] = data?.value?.data || []
 			const options: Option[] = []
-			persondata.length > 0 &&
+			persondata?.length > 0 &&
 				persondata.forEach((personInfo) => {
 					if (!_isNil(personInfo.fornavn)) {
 						const mellomnavn = !_isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
@@ -238,7 +238,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'fornavn' || type === 'mellomnavn' || type === 'etternavn') {
 			const navnData = data?.value?.data || []
 			const options: { value: string; label: string }[] = []
-			navnData.length > 0 &&
+			navnData?.length > 0 &&
 				navnData.forEach((navn: { [x: string]: any }) => {
 					options.push({ value: navn[type], label: navn[type] })
 				})
@@ -246,7 +246,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'navnOgFnr') {
 			const persondata = data.value && data.value.data ? data.value.data.liste : []
 			const options: Option[] = []
-			persondata.length > 0 &&
+			persondata?.length > 0 &&
 				persondata.forEach(
 					(personInfo: { fornavn: string; mellomnavn: string; etternavn: string; fnr: string }) => {
 						if (!_isNil(personInfo.fornavn)) {
@@ -262,7 +262,7 @@ export const SelectOptionsOppslag = {
 			return options
 		} else if (type === 'arbeidsforholdstyper') {
 			const options = data.value ? data.value.data.koder : []
-			options.length > 0 &&
+			options?.length > 0 &&
 				options.forEach((option: Option) => {
 					if (option.value === 'frilanserOppdragstakerHonorarPersonerMm') {
 						option.label = 'Frilansere/oppdragstakere, honorar, m.m.'
@@ -289,7 +289,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'navEnheter') {
 			const enheter = data.value ? Object.entries(data.value.data) : []
 			const options: Option[] = []
-			enheter.forEach((enhet: [string, any]) => {
+			enheter?.forEach((enhet: [string, any]) => {
 				options.push({
 					value: enhet?.[1]?.enhetNr,
 					label: `${enhet?.[1]?.navn} (${enhet?.[1]?.enhetNr})`,

@@ -7,8 +7,6 @@ import { TpsfIdenthistorikk } from './Identhistorikk'
 import { Relasjoner } from './Relasjoner'
 import { MidlertidigAdresse } from './MidlertidigAdresse'
 import { TpsfVergemaal } from './Vergemaal'
-import { UtenlandskBankkonto } from './UtenlandskBankkonto'
-import { NorskBankkonto } from './NorskBankkonto'
 
 export {
 	TpsfPersoninfo,
@@ -20,6 +18,4 @@ export {
 	Relasjoner,
 	TpsfVergemaal,
 	Fullmakt,
-	UtenlandskBankkonto,
-	NorskBankkonto,
 }

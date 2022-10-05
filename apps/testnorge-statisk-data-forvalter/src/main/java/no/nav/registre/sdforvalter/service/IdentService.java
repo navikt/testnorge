@@ -12,8 +12,6 @@ import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.Set;
-
 @Service
 @Slf4j
 public class IdentService {
@@ -44,8 +42,8 @@ public class IdentService {
 
     public void send(String environment, String gruppe) {
         TpsIdentListe liste = tpsIdenterAdapter.fetchBy(gruppe);
-        Set<String> exisistingFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
-        TpsIdentListe identer = new TpsIdentListe(liste
+        var exisistingFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
+        var identer = new TpsIdentListe(liste
                 .stream()
                 .filter(item -> !exisistingFnrs.contains(item.getFnr()))
                 .toList()
@@ -60,7 +58,7 @@ public class IdentService {
           Some methods may fail if at the very least TPS-ident (SKD) have not been created.
           TP and SAM are also critical databases for the fag applications
         */
-        Set<String> livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
+        var livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
         tpConsumer.send(livingFnrs, environment);
     }
 

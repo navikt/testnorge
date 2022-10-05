@@ -3,6 +3,10 @@ import Logger from '~/logger'
 
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 
+export const runningTestcafe = () => {
+	return window.location.port?.match('54321')
+}
+
 export default class Request {
 	static get(url: string, headers: Record<string, string> = {}) {
 		return api

@@ -1,5 +1,5 @@
 import React from 'react'
-import { validation } from './validation'
+import { validation } from './validation/validation'
 import { KontaktinformasjonForDoedsbo } from './partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { Adresser } from '~/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 import { Personinformasjon } from '~/components/fagsystem/pdlf/form/partials/personinformasjon/Personinformasjon'

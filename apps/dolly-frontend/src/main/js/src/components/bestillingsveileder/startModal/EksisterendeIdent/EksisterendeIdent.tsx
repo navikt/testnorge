@@ -14,7 +14,7 @@ export const EksisterendeIdent = ({
 	onAvbryt,
 	onSubmit,
 }: {
-	onSubmit: (arg0: { opprettFraIdenter: any }) => any
+	onSubmit: (arg0: any, arg1?: any) => any
 	onAvbryt: () => void
 }) => {
 	const [text, setText] = useState('')

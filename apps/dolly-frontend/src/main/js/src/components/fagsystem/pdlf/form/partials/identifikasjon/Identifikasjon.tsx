@@ -2,7 +2,7 @@ import React from 'react'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikProps } from 'formik'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FalskIdentitet } from '~/components/fagsystem/pdlf/form/partials/identifikasjon/falskIdentitet/FalskIdentitet'
 import { UtenlandsId } from '~/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
@@ -28,7 +28,7 @@ export const Identifikasjon = ({ formikBag }: IdentifikasjonValues) => {
 				heading="Identifikasjon"
 				hasErrors={panelError(formikBag, identifikasjonAttributter)}
 				iconType="identifikasjon"
-				startOpen={erForste(formikBag.values, identifikasjonAttributter)}
+				startOpen={erForsteEllerTest(formikBag.values, identifikasjonAttributter)}
 			>
 				<Kategori title="Falsk identitet" vis="pdldata.person.falskIdentitet">
 					<FalskIdentitet formikBag={formikBag} />
