@@ -1,12 +1,11 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import Loading from '~/components/ui/loading/Loading'
 import { Formik } from 'formik'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
+import { DollyApi, PdlforvalterApi, SkjermingApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
@@ -20,9 +19,11 @@ import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
 import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
+import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
+	getSkjermingsregister: Function
 	dataVisning: any
 	initialValues: any
 	redigertAttributt?: any
@@ -30,13 +31,6 @@ type VisningTypes = {
 	ident: string
 	tpsMessagingData?: any
 	skjermingData?: Skjerming
-}
-
-enum Modus {
-	Les = 'LES',
-	Skriv = 'SKRIV',
-	LoadingPdlf = 'LOADING_PDLF',
-	LoadingPdl = 'LOADING_PDL',
 }
 
 const FieldArrayEdit = styled.div`
@@ -78,6 +72,7 @@ const SlettCheckbox = styled(Checkbox)`
 
 export const VisningRedigerbarPersondetaljer = ({
 	getPdlForvalter,
+	getSkjermingsregister,
 	dataVisning,
 	initialValues,
 	redigertAttributt = null,
@@ -88,6 +83,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
+	const [errorMessageSkjerming, setErrorMessageSkjerming] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 
 	const pdlfError = (error: any) => {
@@ -100,6 +96,14 @@ export const VisningRedigerbarPersondetaljer = ({
 
 	const pdlError = (error: any) => {
 		error && setErrorMessagePdl(`Feil ved oppdatering i PDL: ${error.message || error.toString()}`)
+		setVisningModus(Modus.Les)
+	}
+
+	const skjermingError = (error: any) => {
+		error &&
+			setErrorMessageSkjerming(
+				`Feil ved sletting i skjermingsregisteret: ${error.message || error.toString()}`
+			)
 		setVisningModus(Modus.Les)
 	}
 
@@ -148,27 +152,47 @@ export const VisningRedigerbarPersondetaljer = ({
 	}, [])
 
 	const handleDelete = useCallback((slettAttr) => {
-		let harFeil = false
+		const pdlf = {
+			feil: false,
+			oppdatert: false,
+		}
+		const skjerming = {
+			feil: false,
+			oppdatert: false,
+		}
+
 		const slett = async () => {
-			setVisningModus(Modus.LoadingPdlf)
+			setVisningModus(Modus.Loading)
 			const deleteFn = async () => {
 				for (const attr of Object.keys(slettAttr)) {
 					if (slettAttr[attr]) {
-						const id = _get(initialValues, `${attr}[0].id`)
-						await PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
-							pdlfError(error)
-							harFeil = true
-						})
+						if (attr === 'skjerming') {
+							skjerming.oppdatert = true
+							setVisningModus(Modus.LoadingSkjerming)
+							await SkjermingApi.deleteSkjerming(ident).catch((error) => {
+								skjermingError(error)
+								skjerming.feil = true
+							})
+						} else {
+							pdlf.oppdatert = true
+							setVisningModus(Modus.LoadingPdlf)
+							const id = _get(initialValues, `${attr}[0].id`)
+							await PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
+								pdlfError(error)
+								pdlf.feil = true
+							})
+						}
 					}
 				}
 			}
+
 			return deleteFn()
 				.then(() => {
-					if (!harFeil) {
+					if (pdlf.oppdatert && !pdlf.feil) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
+								if (mountedRef.current && (!skjerming.oppdatert || !skjerming.feil)) {
 									setVisningModus(Modus.Les)
 								}
 							})
@@ -177,6 +201,16 @@ export const VisningRedigerbarPersondetaljer = ({
 				})
 				.catch((error) => {
 					pdlError(error)
+				})
+				.then(() => {
+					if (skjerming.oppdatert && !skjerming.feil) {
+						setVisningModus(Modus.LoadingSkjerming)
+						getSkjermingsregister().then(() => {
+							if (mountedRef.current) {
+								setVisningModus(Modus.Les)
+							}
+						})
+					}
 				})
 		}
 		mountedRef.current = false
@@ -215,11 +249,16 @@ export const VisningRedigerbarPersondetaljer = ({
 		? redigertAttributt?.folkeregisterpersonstatus?.[0]?.status
 		: initialValues?.folkeregisterpersonstatus?.[0]?.status
 
+	const harSkjerming = redigertAttributt?.skjermingsregister
+		? redigertAttributt?.skjermingsregister?.skjermetFra
+		: initialValues?.skjermingsregister?.skjermetFra
+
 	const SlettModal = () => {
 		const slettAttr = {
 			navn: false,
 			kjoenn: false,
 			folkeregisterpersonstatus: false,
+			skjerming: false,
 		}
 
 		return (
@@ -233,32 +272,46 @@ export const VisningRedigerbarPersondetaljer = ({
 							{harNavn && (
 								<SlettCheckbox
 									id={'navn'}
-									label={'Navn'}
 									size={'xxsmall'}
 									onChange={() => {
 										slettAttr.navn = !slettAttr.navn
 									}}
-								/>
+								>
+									Navn
+								</SlettCheckbox>
 							)}
 							{harKjoenn && (
 								<SlettCheckbox
 									id={'kjoenn'}
-									label={'Kjønn'}
 									size={'xxsmall'}
 									onChange={() => {
 										slettAttr.kjoenn = !slettAttr.kjoenn
 									}}
-								/>
+								>
+									Kjønn
+								</SlettCheckbox>
 							)}
 							{harPersonstatus && (
-								<Checkbox
+								<SlettCheckbox
 									id={'folkeregisterpersonstatus'}
-									label={'Personstatus'}
 									size={'xxsmall'}
 									onChange={() => {
 										slettAttr.folkeregisterpersonstatus = !slettAttr.folkeregisterpersonstatus
 									}}
-								/>
+								>
+									Personstatus
+								</SlettCheckbox>
+							)}
+							{harSkjerming && (
+								<Checkbox
+									id={'skjerming'}
+									size={'xxsmall'}
+									onChange={() => {
+										slettAttr.skjerming = !slettAttr.skjerming
+									}}
+								>
+									Skjerming
+								</Checkbox>
 							)}
 						</div>
 					</div>
@@ -281,14 +334,13 @@ export const VisningRedigerbarPersondetaljer = ({
 
 	return (
 		<>
-			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
-			{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
+			<RedigerLoading visningModus={visningModus} />
 			{visningModus === Modus.Les && (
 				<PersondetaljerVisning>
 					{dataVisning}
 					<EditDeleteKnapper>
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						{(harNavn || harKjoenn || harPersonstatus) && (
+						{(harNavn || harKjoenn || harPersonstatus || harSkjerming) && (
 							<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
 						)}
 						<SlettModal />
@@ -296,6 +348,7 @@ export const VisningRedigerbarPersondetaljer = ({
 					<div className="flexbox--full-width">
 						{errorMessagePdlf && <div className="error-message">{errorMessagePdlf}</div>}
 						{errorMessagePdl && <div className="error-message">{errorMessagePdl}</div>}
+						{errorMessageSkjerming && <div className="error-message">{errorMessageSkjerming}</div>}
 					</div>
 				</PersondetaljerVisning>
 			)}

@@ -52,7 +52,7 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
+	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
 	const PersondetaljerLes = ({ person }: PersonTypes) => {
 		const personNavn = person?.navn?.[0]
@@ -84,9 +84,11 @@ export const Persondetaljer = ({
 			navn: [data?.navn?.[0] || initialNavn],
 			kjoenn: [data?.kjoenn?.[0] || initialKjoenn],
 			folkeregisterpersonstatus: [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus],
+			skjermingsregister: skjermingData,
 		}
 
-		const redigertPersonPdlf = _get(tmpPersoner, `${ident}.person`)
+		const redigertPersonPdlf = _get(tmpPersoner?.pdlforvalter, `${ident}.person`)
+		const redigertSkjerming = _get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 		const personValues = redigertPersonPdlf ? redigertPersonPdlf : person
 		const redigertPersonValues = redigertPersonPdlf
@@ -98,6 +100,7 @@ export const Persondetaljer = ({
 							? redigertPersonPdlf?.folkeregisterPersonstatus?.[0]
 							: initialPersonstatus,
 					],
+					skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
 			  }
 			: null
 

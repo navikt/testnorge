@@ -49,6 +49,7 @@ export const PdlfVisning = ({
 
 	const ident = data ? data.person?.ident : tpsfData?.ident
 	const tpsMessaging = TpsMessagingData(ident, environments)
+	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
 
 	return (
 		<ErrorBoundary>
@@ -62,12 +63,12 @@ export const PdlfVisning = ({
 							tpsMessaging={tpsMessaging}
 							skjermingData={skjermingData}
 						/>
-						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPersoner} ident={ident} />
-						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
-						<Nasjonalitet data={data?.person} tmpPersoner={tmpPersoner} />
+						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
+						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
+						<Nasjonalitet data={data?.person} tmpPersoner={tmpPdlforvalter} />
 						<Telefonnummer
 							data={data?.person?.telefonnummer}
-							tmpPersoner={tmpPersoner}
+							tmpPersoner={tmpPdlforvalter}
 							ident={ident}
 						/>
 						<VergemaalVisning data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
@@ -78,7 +79,7 @@ export const PdlfVisning = ({
 				) : (
 					<>
 						<TpsfPersoninfo data={tpsfData} environments={environments} />
-						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
+						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
 						<TpsfNasjonalitet data={tpsfData} />
 						<Telefonnummer data={tpsfData?.telefonnumre} />
 						<TpsfVergemaal data={tpsfData?.vergemaal} />
@@ -106,7 +107,7 @@ export const PdlfVisning = ({
 				/>
 				<Boadresse
 					data={data?.person?.bostedsadresse}
-					tmpPersoner={tmpPersoner}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
 				/>
@@ -116,17 +117,17 @@ export const PdlfVisning = ({
 				<MidlertidigAdresse midlertidigAdresse={tpsfData?.midlertidigAdresse} />
 				<Oppholdsadresse
 					data={data?.person?.oppholdsadresse}
-					tmpPersoner={tmpPersoner}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 				/>
 				<Kontaktadresse
 					data={data?.person?.kontaktadresse}
-					tmpPersoner={tmpPersoner}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 				/>
 				<Adressebeskyttelse
 					data={data?.person?.adressebeskyttelse}
-					tmpPersoner={tmpPersoner}
+					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 					identtype={data?.person?.identtype}
 				/>
