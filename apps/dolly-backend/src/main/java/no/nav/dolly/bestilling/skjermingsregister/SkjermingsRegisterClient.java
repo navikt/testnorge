@@ -18,11 +18,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.getEgenansattDatoFom;
-import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.getEgenansattDatoTom;
-import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.isSkjerming;
-import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.isTpsMessagingEgenansatt;
-import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility.isTpsfEgenansatt;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoFom;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoTom;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEgenansatt;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j

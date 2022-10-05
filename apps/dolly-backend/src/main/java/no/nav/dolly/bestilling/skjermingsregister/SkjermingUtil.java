@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import static java.util.Objects.nonNull;
 
 @UtilityClass
-public class SkjermingUtility {
+public class SkjermingUtil {
 
     public static boolean isSkjerming(RsDollyUtvidetBestilling bestilling) {
 
@@ -64,7 +64,7 @@ public class SkjermingUtility {
         }
     }
 
-    private LocalDateTime toLocalDateTime(LocalDate dato) {
+    private static LocalDateTime toLocalDateTime(LocalDate dato) {
 
         return nonNull(dato) ? dato.atStartOfDay() : null;
     }

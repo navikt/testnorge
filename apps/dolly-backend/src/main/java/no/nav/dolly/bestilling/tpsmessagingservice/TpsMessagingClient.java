@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtility;
+import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -252,7 +252,7 @@ public class TpsMessagingClient implements ClientRegister {
 
     private TpsMessage sendEgenansatt(RsDollyUtvidetBestilling bestilling) {
 
-        if (nonNull(SkjermingUtility.getEgenansattDatoTom(bestilling))) {
+        if (nonNull(SkjermingUtil.getEgenansattDatoTom(bestilling))) {
 
             return (bestilling1, dollyPerson) ->
                     Map.of("Egenansatt_slett",
@@ -260,14 +260,14 @@ public class TpsMessagingClient implements ClientRegister {
                                     dollyPerson.getHovedperson(),
                                     null));
 
-        } else if (nonNull(SkjermingUtility.getEgenansattDatoFom(bestilling))) {
+        } else if (nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling))) {
 
             return (bestilling1, dollyPerson) ->
                     Map.of("Egenansatt_opprett",
                             tpsMessagingConsumer.sendEgenansattRequest(
                                     dollyPerson.getHovedperson(),
                                     null,
-                                    SkjermingUtility.getEgenansattDatoFom(bestilling).toLocalDate()));
+                                    SkjermingUtil.getEgenansattDatoFom(bestilling).toLocalDate()));
 
         } else {
 
