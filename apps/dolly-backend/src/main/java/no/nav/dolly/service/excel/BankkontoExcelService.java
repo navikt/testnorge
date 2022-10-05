@@ -37,7 +37,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class BankkontoExcelService {
 
-    private final static LocalDateTime NY_KONTOREGISTER_I_BRUK = LocalDateTime.of(2022, 8, 30, 0, 0);
+    private static final LocalDateTime NY_KONTOREGISTER_I_BRUK = LocalDateTime.of(2022, 8, 30, 0, 0);
 
     private final IdentRepository identRepository;
     private final TpsMessagingConsumer tpsMessagingConsumer;
@@ -226,7 +226,7 @@ public class BankkontoExcelService {
                 .map(list -> list.stream()
                         .map(BestillingProgress::getIdent)
                         .distinct()
-                        .collect(Collectors.toList())
+                        .toList()
                 )
                 .toList();
 
@@ -235,9 +235,9 @@ public class BankkontoExcelService {
                         kontoregisterBankkonto(bankKontoIdenter.get(1))
                 )
                 .parallelStream()
-                .map(m -> m.block())
+                .map(Mono::block)
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private Object[] unpackBankkonto(PersonDTO person) {
