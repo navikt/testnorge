@@ -25,14 +25,23 @@ const StyledOption = styled.div`
 					background-color: #2684ffff;
 				}
 			}
+
+			&_disabled {
+				color: grey;
+				background-color: #f2f2f2;
+				&:hover {
+					background-color: #f2f2f2;
+				}
+			}
 		}
 	}
 `
 
-const Option = ({ children, isSelected, innerProps }) => (
+const Option = ({ children, isSelected, isDisabled, innerProps }) => (
 	<StyledOption
 		className={cx('dolly-select__option', {
 			'dolly-select__option_selected': isSelected,
+			'dolly-select__option_disabled': isDisabled,
 		})}
 		id={innerProps.id}
 		tabIndex={innerProps.tabIndex}

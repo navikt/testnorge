@@ -65,9 +65,9 @@ export default handleActions(
 					const juridiskEnhet = getJuridiskEnhet(org.organisasjonsnummer, response)
 					return {
 						value: org.organisasjonsnummer,
-						label: `${juridiskEnhet ? '----' : ''}${org.organisasjonsnummer} (${
-							org.enhetstype
-						}) - ${org.organisasjonsnavn}`,
+						label: `${juridiskEnhet ? '---' : ''}${org.organisasjonsnummer} (${org.enhetstype}) - ${
+							org.organisasjonsnavn
+						}`,
 						orgnr: org.organisasjonsnummer,
 						navn: org.organisasjonsnavn,
 						enhetstype: org.enhetstype,
