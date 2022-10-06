@@ -5,7 +5,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi, SkjermingApi } from '~/service/Api'
+import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
@@ -166,10 +166,19 @@ export const VisningRedigerbarPersondetaljer = ({
 						if (attr === 'skjerming') {
 							skjerming.oppdatert = true
 							setVisningModus(Modus.LoadingSkjerming)
-							await SkjermingApi.deleteSkjerming(ident).catch((error) => {
-								skjermingError(error)
-								skjerming.feil = true
-							})
+							await SkjermingApi.deleteSkjerming(ident)
+								.catch((error) => {
+									skjermingError(error)
+									skjerming.feil = true
+								})
+								.then(() => {
+									if (!skjerming.feil) {
+										TpsMessagingApi.deleteSkjerming(ident).catch((error) => {
+											skjermingError(error)
+											skjerming.feil = true
+										})
+									}
+								})
 						} else {
 							pdlf.oppdatert = true
 							setVisningModus(Modus.LoadingPdlf)
