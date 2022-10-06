@@ -29,6 +29,7 @@ import no.nav.dolly.domain.PdlPerson.Navn;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.RsTransaksjonMapping;
@@ -50,6 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
@@ -129,7 +131,12 @@ public class OppslagController {
     @GetMapping("/skjerming/{ident}")
     @Operation(description = "Hent skjerming på ident")
     public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
-        return skjermingsRegisterConsumer.getSkjerming(ident);
+
+        var response = skjermingsRegisterConsumer.getSkjerming(ident);
+        if (response.isEksistererIkke()) {
+            throw new NotFoundException(format("Skjerming for ident %s ble ikke funnet", ident));
+        }
+        return response;
     }
 
     @GetMapping("/udistub/{ident}")

@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.skjermingsregister.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +19,7 @@ public class SkjermingsDataResponse {
     private String personident;
     private String skjermetFra;
     private String skjermetTil;
+
+    @JsonIgnore
+    private boolean eksistererIkke;
 }
