@@ -117,12 +117,6 @@ export const SelectOptionsOppslag = {
 		return useAsync(async () => DollyApi.getTags(), [DollyApi.getTags])
 	},
 
-	hentVirksomheterFraOrgforvalter: () => {
-		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v2/organisasjoner/virksomheter`, {
-			method: 'GET',
-		})
-	},
-
 	formatOptions: (type: string, data: any) => {
 		if (!data?.value) {
 			if (!data?.loading) {

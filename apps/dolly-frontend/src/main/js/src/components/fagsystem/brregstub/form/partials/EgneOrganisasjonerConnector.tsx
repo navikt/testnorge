@@ -13,7 +13,7 @@ const mapStateToProps = (state: { organisasjon: { egneOrganisasjoner: Organisasj
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-	hentOrganisasjoner: () => dispatch(actions.getOrganisasjonerPaaBruker()),
+	hentOrganisasjoner: (brukerId: string) => dispatch(actions.getOrganisasjonerPaaBruker(brukerId)),
 })
 
 // @ts-ignore

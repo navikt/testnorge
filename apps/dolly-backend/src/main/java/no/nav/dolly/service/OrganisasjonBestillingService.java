@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus.OrgStatus;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -98,6 +99,7 @@ public class OrganisasjonBestillingService {
                 .feil(bestilling.getFeil())
                 .environments(Arrays.asList(bestilling.getMiljoer().split(",")))
                 .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
+                .malBestillingNavn(bestilling.getMalBestillingNavn())
                 .build();
     }
 
@@ -118,9 +120,21 @@ public class OrganisasjonBestillingService {
                         .feil(progress.getBestilling().getFeil())
                         .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
+                        .malBestillingNavn(progress.getBestilling().getMalBestillingNavn())
                         .build())
                 .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
+    }
+
+    public List<OrganisasjonBestilling> fetchMalBestillinger() {
+        return bestillingRepository.findMalBestilling();
+    }
+
+    public List<OrganisasjonBestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        return nonNull(malNavn)
+                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
+                : bestillingRepository.findMalBestillingByUser(bruker);
     }
 
     @Transactional
@@ -157,6 +171,7 @@ public class OrganisasjonBestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
+                        .malBestillingNavn(request.getMalBestillingNavn())
                         .build());
     }
 
@@ -171,6 +186,7 @@ public class OrganisasjonBestillingService {
                         .miljoer(join(",", status.getEnvironments()))
                         .bestKriterier(toJson(status.getBestilling()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
+                        .malBestillingNavn(status.getMalBestillingNavn())
                         .build());
     }
 
@@ -207,6 +223,32 @@ public class OrganisasjonBestillingService {
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
         return bestillingRepository.findByBruker(bruker);
+    }
+    
+    @Transactional
+    public void redigerMalBestillingNavn(Long id, String malbestillingNavn) {
+
+        Optional<OrganisasjonBestilling> token = bestillingRepository.findById(id);
+        OrganisasjonBestilling bestilling = token.orElseThrow(() -> new NotFoundException(format("Id {%d} ikke funnet ", id)));
+        bestilling.setMalBestillingNavn(malbestillingNavn);
+    }
+
+    public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
+
+        var orgnumre = fetchOrganisasjonBestillingByBrukerId(brukerId).stream()
+                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert).reversed())
+                .map(OrganisasjonBestilling::getProgresser)
+                .flatMap(Collection::stream)
+                .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
+                .filter(orgnummer -> !"NA".equals(orgnummer))
+                .distinct()
+                .toList();
+
+        return Flux.range(0, orgnumre.size() / BLOCK_SIZE + 1)
+                .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
+                        orgnumre.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, orgnumre.size()))))
+                .collectList()
+                .block();
     }
 
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
