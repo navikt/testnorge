@@ -19,13 +19,13 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @Service
 @Order(5)
 @RequiredArgsConstructor
-public class AktoerIdSyncClient implements ClientRegister {
+public class PersonServiceClient implements ClientRegister {
 
     private static final int MAX_COUNT = 200;
     private static final int TIMEOUT = 50;
     private static final int ELAPSED = 10;
 
-    private final AktoerIdSyncConsumer personServiceConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -35,7 +35,7 @@ public class AktoerIdSyncClient implements ClientRegister {
         var startTime = now();
         try {
             while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED &&
-                    isBlank(personServiceConsumer.getAktoerId(dollyPerson.getHovedperson()).getIdent())) {
+                    !personServiceConsumer.isPerson(dollyPerson.getHovedperson())) {
                 Thread.sleep(TIMEOUT);
             }
 

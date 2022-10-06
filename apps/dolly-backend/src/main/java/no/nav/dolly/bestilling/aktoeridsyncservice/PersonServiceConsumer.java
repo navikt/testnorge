@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.aktoeridsyncservice;
 
-import no.nav.dolly.bestilling.aktoeridsyncservice.command.HentAktoerIdCommand;
+import no.nav.dolly.bestilling.aktoeridsyncservice.command.PersonServiceExistCommand;
 import no.nav.dolly.bestilling.aktoeridsyncservice.domain.AktoerIdent;
 import no.nav.dolly.config.credentials.PersonServiceProperties;
 import no.nav.dolly.metrics.Timed;
@@ -20,15 +20,15 @@ import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Service
-public class AktoerIdSyncConsumer {
+public class PersonServiceConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
 
-    public AktoerIdSyncConsumer(TokenExchange tokenService,
-                                PersonServiceProperties serverProperties,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+    public PersonServiceConsumer(TokenExchange tokenService,
+                                 PersonServiceProperties serverProperties,
+                                 ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
@@ -38,21 +38,13 @@ public class AktoerIdSyncConsumer {
                 .build();
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
+    @Timed(name = "providers", tags = {"operation", "personService_exists"})
+    public Boolean isPerson(String ident) {
 
-    @Timed(name = "providers", tags = {"operation", "aktoerregister_getId"})
-    public AktoerIdent getAktoerId(String ident) {
-
-        ResponseEntity<AktoerIdent> response =
-                new HentAktoerIdCommand(webClient, serviceProperties.getAccessToken(tokenService), ident, getNavCallId()).call()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token ->
+                new PersonServiceExistCommand(webClient, ident, token.getTokenValue()).call())
                         .block();
-
-        if (isNull(response) || !response.hasBody()) {
-            return new AktoerIdent();
-        }
-        return response.getBody();
     }
 
     public Map<String, String> checkAlive() {
