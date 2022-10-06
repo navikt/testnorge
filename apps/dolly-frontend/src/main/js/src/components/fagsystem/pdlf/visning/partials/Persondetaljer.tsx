@@ -92,7 +92,7 @@ export const Persondetaljer = ({
 		const redigertSkjerming = _get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 		const personValues = redigertPersonPdlf ? redigertPersonPdlf : person
-		const redigertPersonValues = redigertPersonPdlf
+		const redigertPdlfPersonValues = redigertPersonPdlf
 			? {
 					navn: [redigertPersonPdlf?.navn ? redigertPersonPdlf?.navn?.[0] : initialNavn],
 					kjoenn: [redigertPersonPdlf?.kjoenn ? redigertPersonPdlf?.kjoenn?.[0] : initialKjoenn],
@@ -101,9 +101,13 @@ export const Persondetaljer = ({
 							? redigertPersonPdlf?.folkeregisterPersonstatus?.[0]
 							: initialPersonstatus,
 					],
-					skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
 			  }
 			: null
+
+		const redigertPersonValues = {
+			pdlf: redigertPdlfPersonValues,
+			skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
+		}
 
 		return erPdlVisning ? (
 			<PersondetaljerLes person={person} skjerming={skjermingData} />
