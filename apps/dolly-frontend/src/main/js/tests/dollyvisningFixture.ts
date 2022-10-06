@@ -109,7 +109,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(remainingCallsResponseOk)
 	.respond([], 200)
 
-fixture`Hovedside`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
+fixture`Visning`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
 })
 
