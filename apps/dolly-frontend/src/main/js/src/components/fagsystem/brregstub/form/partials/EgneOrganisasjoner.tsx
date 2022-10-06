@@ -58,6 +58,20 @@ export const EgneOrganisasjoner = ({
 		}
 	}, [])
 
+	const getFilteredOptions = (organisasjoner: Organisasjon[]) => {
+		return organisasjoner
+			.filter(
+				(virksomhet) =>
+					validEnhetstyper.includes(virksomhet.enhetstype) || !virksomhet.juridiskEnhet
+			)
+			.map((virksomhet) => {
+				if (!virksomhet.juridiskEnhet) {
+					return { ...virksomhet, isDisabled: true }
+				}
+				return virksomhet
+			})
+	}
+
 	return (
 		<>
 			{isLoading && <Loading label="Laster organisasjoner" />}
@@ -82,13 +96,7 @@ export const EgneOrganisasjoner = ({
 				<DollySelect
 					name={path}
 					label={label ? label : 'Organisasjonsnummer'}
-					options={
-						filterValidEnhetstyper
-							? organisasjoner.filter((virksomhet) =>
-									validEnhetstyper.includes(virksomhet.enhetstype)
-							  )
-							: organisasjoner
-					}
+					options={filterValidEnhetstyper ? getFilteredOptions(organisasjoner) : organisasjoner}
 					size="xlarge"
 					onChange={handleChange}
 					value={_get(formikBag.values, path)}

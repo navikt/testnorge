@@ -13,6 +13,7 @@ export type Organisasjon = {
 	maalform?: string
 	adresser?: Adresse[]
 	underenheter?: Organisasjon[]
+	juridiskEnhet?: string
 }
 
 export type Adresse = {
