@@ -17,7 +17,7 @@ export enum Modus {
 	LoadingSkjerming = 'LOADING_SKERMING',
 }
 
-export const RedigerLoading = ({ visningModus, ignoreSlett = false }: LoadingProps) => {
+export const RedigerLoading = ({ visningModus }: LoadingProps) => {
 	switch (visningModus) {
 		case Modus.LoadingPdlf:
 			return <Loading label="Oppdaterer PDL-forvalter..." />
@@ -27,10 +27,6 @@ export const RedigerLoading = ({ visningModus, ignoreSlett = false }: LoadingPro
 			return <Loading label="Oppdaterer skjermingsregisteret..." />
 		case Modus.Loading:
 			return <Loading label="Oppdaterer..." />
-		case Modus.LoadingPdlfSlett:
-			return ignoreSlett ? null : <Loading label="Oppdaterer PDL-forvalter..." />
-		case Modus.LoadingPdlSlett:
-			return ignoreSlett ? null : <Loading label="Oppdaterer PDL..." />
 		default:
 			return null
 	}
