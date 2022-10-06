@@ -39,7 +39,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class BankkontoExcelService {
 
     private static final LocalDateTime NYTT_KONTOREGISTER_FRA_DATO = LocalDateTime.of(2022, 8, 30, 0, 0);
-
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final KontoregisterConsumer kontoregisterConsumer;
 
