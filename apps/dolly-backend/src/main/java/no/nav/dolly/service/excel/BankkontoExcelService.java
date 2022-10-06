@@ -24,6 +24,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -37,9 +38,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class BankkontoExcelService {
 
-    private static final LocalDateTime NY_KONTOREGISTER_I_BRUK = LocalDateTime.of(2022, 8, 30, 0, 0);
+    private static final LocalDateTime NYTT_KONTOREGISTER_FRA_DATO = LocalDateTime.of(2022, 8, 30, 0, 0);
 
-    private final IdentRepository identRepository;
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final KontoregisterConsumer kontoregisterConsumer;
 
@@ -212,27 +212,25 @@ public class BankkontoExcelService {
                 .flatMap(Collection::stream)
                 .collect(Collectors.teeing(
                         Collectors.filtering(
-                                p -> !p.getBestilling().getSistOppdatert().isAfter(NY_KONTOREGISTER_I_BRUK),
+                                p -> !p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO),
                                 Collectors.toList()
                         ),
                         Collectors.filtering(
-                                p -> p.getBestilling().getSistOppdatert().isAfter(NY_KONTOREGISTER_I_BRUK)
+                                p -> p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO)
                                         && !p.getKontoregisterStatus().contains("Feil"),
                                 Collectors.toList()
                         ),
-                        List::of
-                ))
-                .stream()
-                .map(list -> list.stream()
-                        .map(BestillingProgress::getIdent)
-                        .distinct()
-                        .toList()
-                )
-                .toList();
+                        (tps, kontoregister) -> {
+                            var result = new ConcurrentHashMap<String, List<String>>();
+                            result.put("tps", tps.stream().map(BestillingProgress::getIdent).distinct().toList());
+                            result.put("kontoregister", kontoregister.stream().map(BestillingProgress::getIdent).distinct().toList());
+                            return result;
+                        }
+                ));
 
         return List.of(
-                        tpsBankkonto(bankKontoIdenter.get(0)),
-                        kontoregisterBankkonto(bankKontoIdenter.get(1))
+                        tpsBankkonto(bankKontoIdenter.get("tps")),
+                        kontoregisterBankkonto(bankKontoIdenter.get("kontoregister"))
                 )
                 .parallelStream()
                 .map(Mono::block)
