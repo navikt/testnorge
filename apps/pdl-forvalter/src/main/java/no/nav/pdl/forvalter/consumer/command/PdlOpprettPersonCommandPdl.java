@@ -2,7 +2,7 @@ package no.nav.pdl.forvalter.consumer.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.pdl.forvalter.dto.HistoriskIdent;
+import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.PdlBestillingResponse;
 import no.nav.pdl.forvalter.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -23,11 +23,12 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
 
     private static final String IDENTHISTORIKK = "historiskePersonidenter";
+    private static final String OPPHOERT = "opphoert";
 
     private final WebClient webClient;
     private final String url;
     private final String ident;
-    private final HistoriskIdent historiskeIdenter;
+    private final OpprettIdent opprettIdent;
     private final String token;
 
     @Override
@@ -37,7 +38,8 @@ public class PdlOpprettPersonCommandPdl extends PdlTestdataCommand {
                 .post()
                 .uri(builder -> builder.path(url)
                         .queryParam("kilde", "Dolly")
-                        .queryParam(IDENTHISTORIKK, historiskeIdenter.getIdenter())
+                        .queryParam(IDENTHISTORIKK, opprettIdent.getHistoriskeIdenter())
+                        .queryParam(OPPHOERT, opprettIdent.isOpphoert())
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)

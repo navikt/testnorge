@@ -1,20 +1,44 @@
 {
-	"compilerOptions": {
-		"outDir": "./dist/dev",
-		"sourceMap": true,
-		"noImplicitAny": true,
-		"moduleResolution": "node",
-		"esModuleInterop": true,
-		"module": "es6",
-		"target": "ESNext",
-		"allowJs": true,
-		"jsx": "react",
-		"lib": ["esnext", "dom"],
-		"baseUrl": ".",
-		"paths": {
-			"~/*": ["./src/*"],
-			"@/*": ["./src/*"]
-		}
-	},
-	"exclude": ["node_modules", "**/node_modules/*"]
+  "compilerOptions": {
+    "outDir": "./dist/dev",
+    "sourceMap": true,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "removeComments": true,
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "module": "es6",
+    "target": "ESNext",
+    "allowJs": true,
+    "jsx": "react",
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "@/*": [
+        "./src/*"
+      ]
+    }
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules",
+    "/node_modules/",
+    "**/node_modules/*",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack"
+  ]
 }

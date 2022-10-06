@@ -17,7 +17,7 @@ import java.util.concurrent.Callable;
 @RequiredArgsConstructor
 @Slf4j
 public class SendHentKontoregisterCommand implements Callable<Mono<HentKontoResponseDTO>> {
-    private static final String KONTOREGISTER_API_URL = "/kontoregister/api/kontoregister/v1/hent-konto";
+    private static final String KONTOREGISTER_API_URL = "/api/system/v1/hent-konto";
 
     private final WebClient webClient;
     private final HentKontoRequestDTO body;

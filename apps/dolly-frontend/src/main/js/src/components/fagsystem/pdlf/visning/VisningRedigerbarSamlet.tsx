@@ -12,7 +12,7 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation'
+import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 
@@ -54,6 +54,7 @@ const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 8px;
 	margin-top: -10px;
+
 	&&& {
 		button {
 			position: relative;
@@ -261,7 +262,7 @@ export const VisningRedigerbarSamlet = ({
 																	closeModal()
 																	return handleDelete(idx)
 																}}
-																type="hoved"
+																variant={'primary'}
 															>
 																Ja, jeg er sikker
 															</NavButton>
@@ -311,8 +312,7 @@ export const VisningRedigerbarSamlet = ({
 								<FieldArrayEdit>
 									<Knappegruppe>
 										<NavButton
-											type="standard"
-											htmlType="reset"
+											variant={'primary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
@@ -320,8 +320,7 @@ export const VisningRedigerbarSamlet = ({
 											Avbryt
 										</NavButton>
 										<NavButton
-											type="hoved"
-											htmlType="submit"
+											variant={'primary'}
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

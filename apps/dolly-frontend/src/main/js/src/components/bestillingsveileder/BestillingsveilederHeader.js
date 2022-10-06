@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { Header } from '~/components/ui/header/Header'
 import Formatter from '~/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
-import { ImportFraEtikett } from '~/components/ui/etikett'
 import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
 
 const getImportFra = (opts) => {
@@ -21,12 +20,15 @@ export const BestillingsveilederHeader = () => {
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 	const importFra = getImportFra(opts)
 
-	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon) {
+	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (
 			<Header icon="organisasjon" iconClassName="org">
 				<div className="flexbox">
 					<Header.TitleValue title="Opprett ny" value={titleValue} />
+					{opts.is.nyOrganisasjonFraMal && (
+						<Header.TitleValue title="Basert på mal" value={opts.mal.malNavn} />
+					)}
 				</div>
 			</Header>
 		)
@@ -53,12 +55,7 @@ export const BestillingsveilederHeader = () => {
 				)}
 				{opts.is.importTestnorge && <Header.TitleValue title="Importer fra" value="Test-Norge" />}
 				{opts.is.leggTil && <Header.TitleValue title="Legg til/endre på person" value={ident} />}
-				{importFra !== undefined && (
-					<Header.TitleValue
-						title="Importert fra"
-						value={<ImportFraEtikett type="fokus" importFra={importFra} />}
-					/>
-				)}
+				{importFra !== undefined && <Header.TitleValue title="Importert fra" value={importFra} />}
 			</div>
 		</Header>
 	)

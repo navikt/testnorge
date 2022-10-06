@@ -12,7 +12,6 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -80,7 +79,7 @@ public class BrregstubConsumer {
         return null;
     }
 
-    public ResponseEntity<RolleoversiktTo> postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
+    public RolleoversiktTo postRolleoversikt(RolleoversiktTo rolleoversiktTo) {
 
         return
                 webClient.post().uri(uriBuilder -> uriBuilder.path(ROLLEOVERSIKT_URL).build())
@@ -88,7 +87,10 @@ public class BrregstubConsumer {
                         .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                         .bodyValue(rolleoversiktTo)
                         .retrieve()
-                        .toEntity(RolleoversiktTo.class)
+                        .bodyToMono(RolleoversiktTo.class)
+                        .onErrorResume(error -> Mono.just(RolleoversiktTo.builder()
+                                .error(WebClientFilter.getMessage(error))
+                                .build()))
                         .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                 .filter(WebClientFilter::is5xxException))
                         .block();

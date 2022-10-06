@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _isEmpty from 'lodash/isEmpty'
 import { ifPresent, requiredBoolean, requiredString } from '~/utils/YupValidations'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/pdlf/form/validation'
+import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
 
 const checkUndefined = (value) => {
 	if (value !== undefined) {
@@ -88,7 +88,7 @@ export const validation = {
 		Yup.object({
 			aliaser: ifPresent('$udistub.aliaser', aliaser),
 			arbeidsadgang: ifPresent('$udistub.arbeidsadgang', arbeidsadgang),
-			flyktning: ifPresent('$udistub.flyktning', requiredBoolean).nullable(),
+			flyktning: ifPresent('$udistub.flyktning', requiredBoolean.nullable()),
 			oppholdStatus: ifPresent('$udistub.oppholdStatus', oppholdStatus),
 			soeknadOmBeskyttelseUnderBehandling: ifPresent(
 				'$udistub.soeknadOmBeskyttelseUnderBehandling',

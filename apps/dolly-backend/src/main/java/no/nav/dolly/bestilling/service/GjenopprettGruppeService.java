@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aktoeridsyncservice.AktoerIdSyncClient;
@@ -23,25 +24,24 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
+import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import javax.persistence.EntityManager;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
+@Slf4j
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
 
@@ -50,8 +50,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private final ExecutorService dollyForkJoinPool;
     private final List<ClientRegister> clientRegisters;
     private final IdentService identService;
-    private final TransactionTemplate transactionTemplate;
-    private final EntityManager entityManager;
+    private final TransactionHelperService transactionHelperService;
 
     public GjenopprettGruppeService(TpsfService tpsfService,
                                     DollyPersonCache dollyPersonCache, IdentService identService,
@@ -61,7 +60,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                     ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                     PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                    PlatformTransactionManager transactionManager, EntityManager entityManager) {
+                                    TransactionHelperService transactionHelperService) {
+
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -71,13 +71,13 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.clientRegisters = clientRegisters;
         this.identService = identService;
-        this.transactionTemplate = new TransactionTemplate(transactionManager);
-        this.entityManager = entityManager;
+        this.transactionHelperService = transactionHelperService;
     }
 
     @Async
     public void executeAsync(Bestilling bestilling) {
 
+        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
@@ -87,65 +87,65 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             bestKriterier.setEkskluderEksternePersoner(true);
 
             List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
-            dollyForkJoinPool.submit(() -> {
-                bestilling.getGruppe().getTestidenter().parallelStream()
-                        .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .forEach(testident ->
-                                doGjenopprett(bestilling, bestKriterier, coBestillinger, testident));
 
-                oppdaterBestillingFerdig(bestilling);
-            });
+            var completableFuture = bestilling.getGruppe().getTestidenter().stream()
+                    .map(testident -> doGjenopprett(bestilling, bestKriterier, coBestillinger, testident))
+                    .map(completable -> supplyAsync(completable, dollyForkJoinPool))
+                    .toList();
 
+            completableFuture
+                    .forEach(GjenopprettUtil::executeCompleteableFuture);
+
+            oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
+            log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
         }
     }
 
-    @SuppressWarnings("java:S1143")
-    public void doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
-                              List<GruppeBestillingIdent> coBestillinger, Testident testident) {
+    public BestillingFuture doGjenopprett(Bestilling bestilling, RsDollyBestillingRequest bestKriterier,
+                                          List<GruppeBestillingIdent> coBestillinger, Testident testident) {
 
-        BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
-                testident.getMaster());
-        try {
-            Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
+        return () -> {
+            if (!bestillingService.isStoppet(bestilling.getId())) {
+                BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(),
+                        testident.getMaster());
+                try {
+                    Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
-            if (dollyPerson.isPresent()) {
-                gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+                    if (dollyPerson.isPresent()) {
+                        gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
 
-                coBestillinger.stream()
-                        .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
-                        .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                        .forEach(bestilling1 -> clientRegisters.stream()
-                                .filter(register ->
-                                        !(register instanceof PdlForvalterClient ||
-                                                register instanceof AktoerIdSyncClient ||
-                                                register instanceof PensjonforvalterClient))
-                                .forEach(register ->
-                                        register.gjenopprett(getDollyBestillingRequest(
-                                                Bestilling.builder()
-                                                        .bestKriterier(bestilling1.getBestkriterier())
-                                                        .miljoer(bestilling.getMiljoer())
-                                                        .build()), dollyPerson.get(), progress, false)));
+                        coBestillinger.stream()
+                                .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
+                                .sorted(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                                .forEach(bestilling1 -> clientRegisters.stream()
+                                        .filter(register ->
+                                                !(register instanceof PdlForvalterClient ||
+                                                        register instanceof AktoerIdSyncClient ||
+                                                        register instanceof PensjonforvalterClient))
+                                        .forEach(register ->
+                                                register.gjenopprett(getDollyBestillingRequest(
+                                                        Bestilling.builder()
+                                                                .bestKriterier(bestilling1.getBestkriterier())
+                                                                .miljoer(bestilling.getMiljoer())
+                                                                .build()), dollyPerson.get(), progress, false)));
 
-            } else {
-                progress.setFeil("NA:Feil= Finner ikke personen i database");
+                    } else {
+                        progress.setFeil("NA:Feil= Finner ikke personen i database");
+                    }
+
+                } catch (JsonProcessingException e) {
+                    progress.setFeil(errorStatusDecoder.decodeException(e));
+
+                } catch (RuntimeException e) {
+                    progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+
+                } finally {
+                    transactionHelperService.persist(progress);
+                }
+                return progress;
             }
-
-        } catch (JsonProcessingException e) {
-            progress.setFeil(errorStatusDecoder.decodeException(e));
-
-        } catch (RuntimeException e) {
-            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
-
-        } finally {
-            transactionTemplate.execute(status -> {
-                var best = entityManager.find(Bestilling.class, bestilling.getId());
-                entityManager.persist(progress);
-                best.setSistOppdatert(now());
-                entityManager.merge(best);
-                clearCache();
-                return null;
-            });
-        }
+            return null;
+        };
     }
 }

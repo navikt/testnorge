@@ -9,25 +9,24 @@ import './Button.less'
 
 interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 	kind?: string
-	onClick: () => void
+	onClick?: () => void
 	iconSize?: number
 	loading?: boolean
 }
 
-export default function Button({
+const Button = ({
 	kind,
 	onClick,
 	children,
 	className,
 	iconSize = 16,
 	loading = false,
-	type = 'button',
 	disabled,
 	...rest
-}: Button) {
+}: Button) => {
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.stopPropagation()
-		onClick()
+		onClick?.()
 	}
 
 	const cssClass = cn('dolly-button', className)
@@ -35,20 +34,14 @@ export default function Button({
 	const renderIcon = loading ? (
 		<Loading onlySpinner size={iconSize} />
 	) : kind ? (
-		// @ts-ignore
 		<Icon size={iconSize} kind={kind} />
 	) : null
 
 	return (
-		<button
-			type={type}
-			className={cssClass}
-			onClick={handleClick}
-			disabled={disabled || loading}
-			{...rest}
-		>
+		<button className={cssClass} onClick={handleClick} disabled={disabled || loading} {...rest}>
 			{renderIcon}
 			{children && <span>{children}</span>}
 		</button>
 	)
 }
+export default Button

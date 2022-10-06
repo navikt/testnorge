@@ -18,15 +18,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.common.usermodel.HyperlinkType;
-import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Hyperlink;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
-import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFCellStyle;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -45,12 +38,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.service.excel.ExcelUtil.PERSON_FANE;
+import static no.nav.dolly.service.excel.ExcelUtil.appendHyperlinkRelasjon;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -58,7 +51,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class PersonExcelService {
 
-    private static final Object[] header = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
+    private static final Object[] HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
             "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak"};
     private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14};
@@ -191,31 +184,6 @@ public class PersonExcelService {
                 .flatMap(Collection::stream)
                 .map(String::trim)
                 .toList();
-    }
-
-    private static List<String> getIdenter(Object personer) {
-
-        return Stream.of(personer)
-                .map(Object::toString)
-                .map(person -> person.split(","))
-                .map(Arrays::asList)
-                .flatMap(Collection::stream)
-                .map(String::trim)
-                .toList();
-    }
-
-    private static Map<String, Integer> createLinkReferanser(List<Object[]> personData) {
-
-        return IntStream.range(0, personData.size()).boxed()
-                .collect(Collectors.toMap(row -> (String) personData.get(row)[0], row -> row,
-                        (row1, row2) -> row1));
-    }
-
-    private static Hyperlink createHyperLink(CreationHelper helper, Integer row) {
-
-        var hyperLink = helper.createHyperlink(HyperlinkType.DOCUMENT);
-        hyperLink.setAddress(String.format("'%s'!A%d", PERSON_FANE, row + 2));
-        return hyperLink;
     }
 
     private static String formatUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse,
@@ -360,7 +328,7 @@ public class PersonExcelService {
 
         var sheet = workbook.createSheet(PERSON_FANE);
         var rows = getPersondataRowContents(identer);
-        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, header.length),
+        sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
                 IgnoredErrorType.NUMBER_STORED_AS_TEXT);
 
         var columnNo = new AtomicInteger(0);
@@ -368,28 +336,13 @@ public class PersonExcelService {
                 .forEach(colWidth -> sheet.setColumnWidth(columnNo.getAndIncrement(), colWidth * 256));
 
         ExcelService.appendRows(workbook, PERSON_FANE,
-                Stream.of(Collections.singletonList(header), rows)
+                Stream.of(Collections.singletonList(HEADER), rows)
                         .flatMap(Collection::stream)
                         .toList());
 
-        var linkReferences = createLinkReferanser(rows);
-
-        var hyperlinkStyle = createHyperlinkCellStyle(workbook);
-        appendHyperlinks(sheet, rows, linkReferences, hyperlinkStyle, workbook.getCreationHelper());
+        appendHyperlinks(workbook, rows);
 
         return Mono.empty();
-    }
-
-    private XSSFCellStyle createHyperlinkCellStyle(XSSFWorkbook workbook) {
-
-        var hyperlinkStyle = workbook.createCellStyle();
-        var hLinkFont = workbook.createFont();
-        hLinkFont.setFontName("Ariel");
-        hLinkFont.setUnderline(org.apache.poi.ss.usermodel.Font.U_SINGLE);
-        hLinkFont.setColor(IndexedColors.BLUE.getIndex());
-        hyperlinkStyle.setFont(hLinkFont);
-        hyperlinkStyle.setWrapText(true);
-        return hyperlinkStyle;
     }
 
     private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
@@ -413,39 +366,13 @@ public class PersonExcelService {
         return personer;
     }
 
-    private void appendHyperlinks(XSSFSheet sheet, List<Object[]> persondata,
-                                  Map<String, Integer> linkRefs,
-                                  XSSFCellStyle hyperlinkStyle,
-                                  CreationHelper helper) {
+    private void appendHyperlinks(XSSFWorkbook workbook, List<Object[]> persondata) {
 
-        appendHyperlinkRelasjon(sheet, persondata, PARTNER, linkRefs, hyperlinkStyle, helper);
-        appendHyperlinkRelasjon(sheet, persondata, BARN, linkRefs, hyperlinkStyle, helper);
-        appendHyperlinkRelasjon(sheet, persondata, FORELDRE, linkRefs, hyperlinkStyle, helper);
-        appendHyperlinkRelasjon(sheet, persondata, VERGE, linkRefs, hyperlinkStyle, helper);
-        appendHyperlinkRelasjon(sheet, persondata, FULLMEKTIG, linkRefs, hyperlinkStyle, helper);
-    }
-
-    @SuppressWarnings("all")
-    private void appendHyperLink(XSSFCell cell, List<String> identer,
-                                 Map<String, Integer> linkRefs, XSSFCellStyle hyperlinkStyle,
-                                 CreationHelper helper) {
-
-        if (identer.stream().anyMatch(linkRefs::containsKey)) {
-            cell.setHyperlink(createHyperLink(helper, linkRefs.get(identer.stream()
-                    .filter(linkRefs::containsKey)
-                    .findFirst()
-                    .get())));
-            cell.setCellStyle(hyperlinkStyle);
-        }
-    }
-
-    private void appendHyperlinkRelasjon(XSSFSheet sheet, List<Object[]> persondata, int relasjon,
-                                         Map<String, Integer> hyperlinks, XSSFCellStyle hyperlinkStyle,
-                                         CreationHelper helper) {
-        IntStream.range(0, persondata.size()).boxed()
-                .filter(row -> isNotBlank((String) persondata.get(row)[relasjon]))
-                .forEach(row -> appendHyperLink(sheet.getRow(row + 1).getCell(relasjon),
-                        getIdenter(persondata.get(row)[relasjon]), hyperlinks, hyperlinkStyle, helper));
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, PARTNER);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, BARN);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, FORELDRE);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, VERGE);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, FULLMEKTIG);
     }
 
     @SneakyThrows

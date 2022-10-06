@@ -16,10 +16,7 @@ import {
 	initialTpsSikkerhetstiltak,
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
-import {
-	InnflyttingTilNorge,
-	UtflyttingFraNorge,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Innflytting, Utflytting } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 const ignoreKeysTestnorge = [
@@ -44,8 +41,9 @@ const utvandret = 'utvandretTilLand'
 
 const getDisabledNasjonalitetField = (opts: any) => {
 	const personFoerLeggTil = opts.personFoerLeggTil
-	const innflytting = personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
-	const utflytting = personFoerLeggTil?.pdl?.hentPerson?.utflyttingFraNorge
+
+	const innflytting = personFoerLeggTil?.pdlforvalter?.person?.innflytting
+	const utflytting = personFoerLeggTil?.pdlforvalter?.person?.utflytting
 
 	const antallInnflyttet = innflytting ? innflytting.length : 0
 	const antallUtflyttet = utflytting ? utflytting.length : 0
@@ -56,13 +54,10 @@ const getDisabledNasjonalitetField = (opts: any) => {
 		return innvandret
 	} else {
 		const sisteInnflytting = getSisteDato(
-			innflytting
-				.map((val: InnflyttingTilNorge) => val?.folkeregistermetadata?.gyldighetstidspunkt)
-				.filter((val: string) => val)
-				.map((val: string) => new Date(val))
+			innflytting.map((val: Innflytting) => new Date(val.innflyttingsdato))
 		)
 		const sisteUtflytting = getSisteDato(
-			utflytting.map((val: UtflyttingFraNorge) => new Date(val.utflyttingsdato))
+			utflytting.map((val: Utflytting) => new Date(val.utflyttingsdato))
 		)
 
 		return sisteInnflytting > sisteUtflytting ? innvandret : utvandret
@@ -108,7 +103,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
-				<AttributtKategori title="Diverse">
+				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -133,13 +128,13 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
-			<AttributtKategori title="Alder">
+			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
 				<Attributt attr={sm.attrs.foedsel} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Nasjonalitet">
+			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
 				<Attributt
 					attr={sm.attrs.innvandretFraLand}
@@ -155,7 +150,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					}
 				/>
 			</AttributtKategori>
-			<AttributtKategori title="Diverse">
+			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.navn} />
 				<Attributt attr={sm.attrs.sprakKode} />
@@ -423,7 +418,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				set(paths.utenlandskBankkonto, {
 					kontonummer: '',
 					tilfeldigKontonummer: false,
-					swift: '',
+					swift: 'BANKXX11222',
 					landkode: null,
 					banknavn: '',
 					iban: '',
@@ -440,6 +435,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				set(paths.norskBankkonto, {
 					kontonummer: '',
+					tilfeldigKontonummer: opts.antall && opts.antall > 1,
 				}),
 			remove: () => del(paths.norskBankkonto),
 		},

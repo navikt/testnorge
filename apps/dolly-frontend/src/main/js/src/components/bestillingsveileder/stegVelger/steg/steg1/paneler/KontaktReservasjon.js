@@ -21,7 +21,7 @@ export const KontaktReservasjonsPanel = ({ stateModifier, formikBag }) => {
 			iconType="krr"
 			startOpen={harValgtAttributt(formikBag.values, [krrAttributt])}
 		>
-			<AttributtKategori>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.krrstub} />
 			</AttributtKategori>
 		</Panel>

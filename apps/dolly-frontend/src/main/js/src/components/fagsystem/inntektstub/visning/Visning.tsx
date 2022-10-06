@@ -10,7 +10,7 @@ import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import Panel from '~/components/ui/panel/Panel'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
@@ -98,9 +98,9 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente inntekt-data på person
-				</AlertStripeAdvarsel>
+				</Alert>
 			) : (
 				<ErrorBoundary>
 					{numInntekter > 5 ? (

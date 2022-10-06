@@ -4,10 +4,27 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { KrrApi } from '~/service/Api'
+import DollyModal from '~/components/ui/modal/DollyModal'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import Button from '~/components/ui/button/Button'
+import Icon from '~/components/ui/icon/Icon'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
+import styled from 'styled-components'
+import useBoolean from '~/utils/hooks/useBoolean'
+import { Alert } from '@navikt/ds-react'
+
+const EditDeleteKnapper = styled.div`
+	position: absolute;
+	right: 8px;
+	margin-top: -10px;
+	&&& {
+		button {
+			position: relative;
+		}
+	}
+`
 
 type KrrVisningProps = {
 	data: Array<Data>
@@ -27,6 +44,7 @@ type Data = {
 	spraak: string
 	gyldigFra: string
 	sdpAdresse: string
+	id?: string
 }
 
 type SdpLeverandoer = {
@@ -36,6 +54,17 @@ type SdpLeverandoer = {
 }
 
 export const Visning = ({ data }: VisningProps) => {
+	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [deleted, setDeleted] = useBoolean(false)
+	const disableSlett = !data.id
+
+	const handleDelete = (data: Data) =>
+		KrrApi.slettKontaktinformasjon(data.id).then(() => setDeleted())
+
+	if (deleted) {
+		return null
+	}
+
 	return (
 		<>
 			<LoadableComponent
@@ -72,6 +101,43 @@ export const Visning = ({ data }: VisningProps) => {
 								title="SDP Leverandør"
 								value={response ? response.navn : data.sdpLeverandoer}
 							/>
+
+							<EditDeleteKnapper>
+								<Button
+									kind="trashcan"
+									onClick={() => openModal()}
+									title="Slett"
+									disabled={disableSlett}
+								/>
+								<DollyModal
+									isOpen={modalIsOpen}
+									closeModal={closeModal}
+									width="40%"
+									overflow="auto"
+								>
+									<div className="slettModal">
+										<div className="slettModal slettModal-content">
+											<Icon size={50} kind="report-problem-circle" />
+											<h1>Sletting</h1>
+											<h4>
+												Er du sikker på at du vil slette denne kontaktinformasjon fra personen?
+											</h4>
+										</div>
+										<div className="slettModal-actions">
+											<NavButton onClick={closeModal}>Nei</NavButton>
+											<NavButton
+												onClick={() => {
+													closeModal()
+													return handleDelete(data)
+												}}
+												variant={'primary'}
+											>
+												Ja, jeg er sikker
+											</NavButton>
+										</div>
+									</div>
+								</DollyModal>
+							</EditDeleteKnapper>
 						</>
 					)
 				}
@@ -112,9 +178,9 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 					isWarning={manglerFagsystemdata}
 				/>
 				{manglerFagsystemdata ? (
-					<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 						Kunne ikke hente KRR-data på person
-					</AlertStripeAdvarsel>
+					</Alert>
 				) : (
 					<div className="person-visning_content">
 						<ArrayHistorikk

@@ -17,7 +17,7 @@ import JoarkDokumentService, {
 } from '~/service/services/JoarkDokumentService'
 import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 import Panel from '~/components/ui/panel/Panel'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -88,9 +88,9 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 								isWarning={manglerFagsystemdata}
 							/>
 							{manglerFagsystemdata ? (
-								<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+								<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 									Kunne ikke hente inntektsmelding-data på person
-								</AlertStripeAdvarsel>
+								</Alert>
 							) : data.length > 5 ? (
 								// @ts-ignore
 								<Panel heading={`Inntektsmeldinger`}>

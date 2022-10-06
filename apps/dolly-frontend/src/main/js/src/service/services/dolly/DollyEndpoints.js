@@ -134,6 +134,10 @@ export default class DollyEndpoints {
 		return `${uri}/excel/gruppe/${gruppeId}`
 	}
 
+	static orgExcelFil(brukerId) {
+		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
+	}
+
 	static udiPerson(ident) {
 		return `${udiBase}/${ident}`
 	}
@@ -195,5 +199,17 @@ export default class DollyEndpoints {
 
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
+	}
+
+	static malBestilling(malId) {
+		return `${bestillingBase}/malbestilling/${malId}`
+	}
+
+	static malBestillingOrganisasjon(malId) {
+		return `${organisasjonBase}/bestilling/malbestilling/${malId}`
+	}
+
+	static getOrganisasjoner(brukerId) {
+		return `${organisasjonBase}?brukerId=${brukerId}`
 	}
 }

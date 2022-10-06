@@ -2,23 +2,28 @@ import React from 'react'
 import { NavnForm } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { KjoennForm } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
 import { PersonstatusForm } from '~/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
-import Hjelpetekst from '~/components/hjelpetekst'
 import { FormikProps } from 'formik'
+import { Alert } from '@navikt/ds-react'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type PersondetaljerSamletTypes = {
 	formikBag: FormikProps<{}>
 	tpsMessaging?: {
 		tpsMessagingData: {
 			sprakKode: string
-			egenAnsattDatoFom: string
 		}
 	}
+	skjermingData?: Skjerming
 }
 
-export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: PersondetaljerSamletTypes) => {
+export const PersondetaljerSamlet = ({
+	formikBag,
+	tpsMessaging,
+	skjermingData,
+}: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
-	const skjerming = tpsMessaging?.tpsMessagingData?.egenAnsattDatoFom
+	const skjerming = skjermingData?.skjermetFra
 
 	const sprakTekst = ' og språk'
 	const skjermingTekst = ' og skjerming'
@@ -27,9 +32,9 @@ export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: Persondetaljer
 	return (
 		<>
 			<div className="flexbox--full-width">
-				<AlertStripeInfo>{`Identnummer${
+				<Alert variant={'info'}>{`Identnummer${
 					sprak && skjerming ? beggeTekst : sprak ? sprakTekst : skjerming ? skjermingTekst : ''
-				} kan ikke endres her.`}</AlertStripeInfo>
+				} kan ikke endres her.`}</Alert>
 
 				<h3>Navn</h3>
 				<div className="flexbox--flex-wrap">
@@ -41,7 +46,7 @@ export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: Persondetaljer
 
 				<div className="flexbox--align-center">
 					<h3>Personstatus</h3>
-					<Hjelpetekst hjelpetekstFor="Personstatus">
+					<Hjelpetekst>
 						Endring av personstatus er kun ment for negativ testing. Adresser og andre avhengige
 						verdier vil ikke bli oppdatert for å stemme overens med ny personstatus.
 					</Hjelpetekst>

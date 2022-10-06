@@ -24,19 +24,26 @@ import { Persondetaljer } from '~/components/fagsystem/pdlf/visning/partials/Per
 import {
 	TpsfIdenthistorikk,
 	MidlertidigAdresse,
-	NorskBankkonto,
 	TpsfPersoninfo,
 	Postadresse,
 	Relasjoner,
-	UtenlandskBankkonto,
 	TpsfVergemaal,
 	TpsfNasjonalitet,
 	TpsfBoadresse,
 } from '~/components/fagsystem/tpsf/visning/partials'
+import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
-export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments, master }) => {
+export const PdlfVisning = ({
+	data,
+	tpsfData,
+	skjermingData,
+	loading,
+	tmpPersoner,
+	environments,
+	master,
+}) => {
 	if (loading) return <Loading label="Laster PDL-data" />
 	if (!data && !tpsfData) return null
 
@@ -53,6 +60,7 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							tmpPersoner={tmpPersoner}
 							ident={ident}
 							tpsMessaging={tpsMessaging}
+							skjermingData={skjermingData}
 						/>
 						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPersoner} ident={ident} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPersoner} ident={ident} />
@@ -84,6 +92,8 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							? tpsMessaging?.tpsMessagingData?.bankkontonrUtland
 							: tpsfData?.bankkontonrUtland
 					}
+					extraButtons={true}
+					ident={ident}
 				/>
 				<NorskBankkonto
 					data={
@@ -91,6 +101,8 @@ export const PdlfVisning = ({ data, tpsfData, loading, tmpPersoner, environments
 							? tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
 							: tpsfData?.bankkontonrNorsk
 					}
+					extraButtons={true}
+					ident={ident}
 				/>
 				<Boadresse
 					data={data?.person?.bostedsadresse}

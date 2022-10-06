@@ -5,7 +5,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 const Visning = ({ data, header, expandable }) => {
 	if (!data || data.length === 0) {
@@ -65,9 +65,9 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 				/>
 			)}
 			{manglerFagsystemdata ? (
-				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente skatteoppgjør-data på person
-				</AlertStripeAdvarsel>
+				</Alert>
 			) : (
 				<ErrorBoundary>
 					{grunnlag?.length + svalbardGrunnlag?.length > 5 ? (

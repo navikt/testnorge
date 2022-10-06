@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import _get from 'lodash/get'
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
@@ -104,39 +104,12 @@ const fieldResolver = (
 	}
 	const filteredOptions = options.map((option) => ({ label: texts(option), value: option }))
 	const fieldPath = `${path}.${tilleggsinformasjonPaths(field)}`
-	const tomTilleggsinformasjonFieldPath =
-		tilleggsinformasjonAttributter[filteredOptions?.[0]?.value] &&
-		`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions?.[0]?.value]}`
-
-	if (
-		!resetForm &&
-		filteredOptions.length === 1 &&
-		tilleggsinformasjonAttributter[filteredOptions?.[0]?.value] &&
-		!_get(values, tomTilleggsinformasjonFieldPath)
-	) {
-		useEffect(() => {
-			formik.setFieldValue(
-				`${path}.tilleggsinformasjon.${tilleggsinformasjonAttributter[filteredOptions[0].value]}`,
-				{}
-			)
-			formik.setFieldValue(`${path}.tilleggsinformasjonstype`, filteredOptions?.[0]?.value)
-		}, [])
-	} else if (
-		!resetForm &&
-		filteredOptions.length === 1 &&
-		_get(values, fieldPath) !== filteredOptions?.[0]?.value &&
-		!tilleggsinformasjonAttributter[filteredOptions[0].value]
-	) {
-		useEffect(() => {
-			formik.setFieldValue(fieldPath, filteredOptions[0].value)
-		}, [])
-	}
 
 	return (
 		<FormikSelect
 			key={index}
 			name={fieldName}
-			value={filteredOptions.length === 1 ? filteredOptions[0].value : _get(values, fieldPath)}
+			value={_get(values, fieldPath)}
 			label={texts(field)}
 			options={filteredOptions.filter((option) => option.value !== '<TOM>')}
 			fastfield={false}

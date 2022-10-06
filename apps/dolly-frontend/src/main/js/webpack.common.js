@@ -65,10 +65,12 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.js|.ts(x?)$/,
-				include: path.resolve(__dirname, 'src'),
+				test: /\.(jsx|tsx|ts|js)?$/,
 				exclude: /node_modules/,
-				use: ['babel-loader?sourceMap&cacheDirectory'],
+				loader: 'babel-loader',
+				options: {
+					presets: ['@babel/preset-typescript', '@babel/preset-react', '@babel/preset-flow'],
+				},
 			},
 			{
 				test: /\.svg$/,

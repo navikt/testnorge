@@ -1,4 +1,3 @@
-// @ts-ignore
 import { connect } from 'react-redux'
 import Organisasjoner from './Organisasjoner'
 

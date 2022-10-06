@@ -8,7 +8,7 @@ import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Se
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
@@ -53,7 +53,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 				heading="Kontakt- og reservasjonsregisteret"
 				hasErrors={panelError(formikBag, krrAttributt)}
 				iconType="krr"
-				startOpen={erForste(formikBag.values, [krrAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [krrAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<DollySelect

@@ -1,52 +1,42 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.consumer.rs.command.GetAlleIdenterCommand;
+import no.nav.registre.sdforvalter.consumer.rs.command.GetLevendeIdenterCommand;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.net.URI;
-import java.util.Collections;
-import java.util.Set;
+import java.util.List;
 
 @Slf4j
 @Component
 public class HodejegerenConsumer {
 
-    private final RestTemplate restTemplate;
-    private final String hodejegerenUrl;
+    private final WebClient webClient;
 
-    private static final ParameterizedTypeReference<Set<String>> RESPONSE_TYPE_SET = new ParameterizedTypeReference<Set<String>>() {
-    };
+    public HodejegerenConsumer(
+            @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenServerUrl,
+            ExchangeFilterFunction metricsWebClientFilterFunction
+    ) {
 
-    public HodejegerenConsumer(RestTemplate restTemplate, @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenUrl) {
-        this.restTemplate = restTemplate;
-        this.hodejegerenUrl = hodejegerenUrl + "/v1";
+        this.webClient = WebClient.builder()
+                .baseUrl(hodejegerenServerUrl)
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
     /**
      * @param playgroupId AvspillergruppeId som man ønsker å hente fnr fra
-     * @return Et set med fnr som eksisterer i gruppen
+     * @return En liste med fnr som eksisterer i gruppen
      */
-    public Set<String> getPlaygroupFnrs(Long playgroupId) {
-        UriTemplate uriTemplate = new UriTemplate(hodejegerenUrl + "/alle-identer/{avspillergruppeId}");
-        return getFromHodejegeren(uriTemplate.expand(playgroupId));
+    public List<String> getPlaygroupFnrs(Long playgroupId) {
+        return new GetAlleIdenterCommand(playgroupId, webClient).call();
     }
 
-    public Set<String> getLivingFnrs(Long playgroupId, String environment) {
-        UriTemplate uriTemplate = new UriTemplate(hodejegerenUrl + "/levende-identer/{avspillergruppeId}?miljoe={miljoe}");
-        return getFromHodejegeren(uriTemplate.expand(playgroupId, environment));
+    public List<String> getLivingFnrs(Long playgroupId, String environment) {
+        return new GetLevendeIdenterCommand(playgroupId, environment, webClient).call();
     }
 
-    private Set<String> getFromHodejegeren(URI queryPath) {
-        ResponseEntity<Set<String>> response = restTemplate.exchange(queryPath, HttpMethod.GET, null, RESPONSE_TYPE_SET);
-        if (response.getBody() != null) {
-            return response.getBody();
-        }
-        return Collections.emptySet();
-    }
 }

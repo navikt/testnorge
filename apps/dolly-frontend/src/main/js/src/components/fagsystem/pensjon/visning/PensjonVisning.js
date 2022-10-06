@@ -5,7 +5,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 export const PensjonVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster pensjonforvalter-data" />
@@ -26,9 +26,9 @@ export const PensjonVisning = ({ data, loading }) => {
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente arbeidsforhold-data på person
-				</AlertStripeAdvarsel>
+				</Alert>
 			) : (
 				<Panel heading={`Pensjonsgivende inntekter (${foerste} - ${siste})`}>
 					<DollyFieldArray data={data.inntekter} nested>

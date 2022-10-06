@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import Hjelpetekst from '~/components/hjelpetekst'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import Icon from '~/components/ui/icon/Icon'
 import { SearchField } from '~/components/searchField/SearchField'
 import Loading from '~/components/ui/loading/Loading'
@@ -12,15 +10,17 @@ import OrganisasjonListe from './OrganisasjonListe'
 import { dollySlack } from '~/components/dollySlack/dollySlack'
 import TomOrgListe from './TomOrgliste'
 import { useNavigate } from 'react-router-dom'
-import { PopoverOrientering } from 'nav-frontend-popover'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import {
-	useOrganisasjonBestilling,
-	useOrganisasjonerForBruker,
-} from '~/utils/hooks/useOrganisasjoner'
+import { useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
 import { sokSelector } from '~/ducks/bestillingStatus'
 import { useDispatch } from 'react-redux'
 import { resetPaginering } from '~/ducks/finnPerson'
+import { bottom } from '@popperjs/core'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { ToggleGroup } from '@navikt/ds-react'
+import useBoolean from '~/utils/hooks/useBoolean'
+import { OrganisasjonBestillingsveilederModal } from '~/pages/organisasjoner/OrganisasjonBestillingsveilederModal'
+import OrganisasjonHeaderConnector from '~/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeaderConnector'
 
 type OrganisasjonerProps = {
 	search?: string
@@ -35,25 +35,26 @@ enum BestillingType {
 const VISNING_ORGANISASJONER = 'organisasjoner'
 const VISNING_BESTILLINGER = 'bestillinger'
 
-export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps) {
+export default ({ search, sidetall }: OrganisasjonerProps) => {
 	const {
-		currentBruker: { brukerId, brukertype },
+		currentBruker: { brukerId, brukertype, brukernavn },
 	} = useCurrentBruker()
 
 	const [visning, setVisning] = useState(VISNING_ORGANISASJONER)
+	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
+
 	const [antallOrg, setAntallOrg] = useState(null)
 	const navigate = useNavigate()
 	const dispatch = useDispatch()
 
 	const { bestillinger, bestillingerById, loading } = useOrganisasjonBestilling(brukerId)
-	const { loading: loadingOrganisasjoner } = useOrganisasjonerForBruker(brukerId)
 
-	const byttVisning = (event: React.ChangeEvent<any>) => {
+	const byttVisning = (value: string) => {
 		dispatch(resetPaginering())
-		setVisning(event.target.value)
+		setVisning(value)
 	}
 
-	const isFetching = loading || loadingOrganisasjoner
+	const isFetching = loading
 
 	const searchfieldPlaceholderSelector = () => {
 		if (visning === VISNING_BESTILLINGER) {
@@ -64,8 +65,10 @@ export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps
 
 	const antallBest = bestillinger?.length
 
-	const startBestilling = (type: string) => {
-		navigate('/organisasjoner/bestilling', { state: { opprettOrganisasjon: type } })
+	const startBestilling = (values: Record<string, unknown>) => {
+		navigate('/organisasjoner/bestilling', {
+			state: { opprettOrganisasjon: BestillingType.NY, ...values },
+		})
 	}
 
 	return (
@@ -74,7 +77,7 @@ export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps
 				<div className="toolbar">
 					<div className="page-header flexbox--align-center">
 						<h1>Organisasjoner</h1>
-						<Hjelpetekst hjelpetekstFor="Organisasjoner" type={PopoverOrientering.Under}>
+						<Hjelpetekst placement={bottom}>
 							Organisasjoner i Dolly er en del av NAVs syntetiske populasjon og dekker behov for
 							data knyttet til bedrifter/virksomheter (EREG). Løsningen er under utvikling, og det
 							legges til ny funksjonalitet fortløpende.
@@ -92,40 +95,50 @@ export default function Organisasjoner({ search, sidetall }: OrganisasjonerProps
 					<StatusListeConnector brukerId={brukerId} bestillingListe={bestillingerById} />
 				)}
 
+				<OrganisasjonHeaderConnector antallOrganisasjoner={antallOrg} />
+
 				<div className="toolbar">
-					<NavButton type="hoved" onClick={() => startBestilling(BestillingType.NY)}>
+					<NavButton
+						variant={'primary'}
+						// onClick={() => startBestilling(BestillingType.NY)}
+						onClick={visStartBestilling}
+					>
 						Opprett organisasjon
 					</NavButton>
 
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp
-							value={VISNING_ORGANISASJONER}
-							checked={visning === VISNING_ORGANISASJONER}
-						>
+					<ToggleGroup size={'small'} onChange={byttVisning} defaultValue={VISNING_ORGANISASJONER}>
+						<ToggleGroup.Item value={VISNING_ORGANISASJONER}>
 							<Icon
 								size={13}
 								kind={visning === VISNING_ORGANISASJONER ? 'organisasjonLight' : 'organisasjon'}
 							/>
 							{`Organisasjoner (${antallOrg ? antallOrg : 0})`}
-						</ToggleKnapp>
-						<ToggleKnapp value={VISNING_BESTILLINGER} checked={visning === VISNING_BESTILLINGER}>
+						</ToggleGroup.Item>
+						<ToggleGroup.Item value={VISNING_BESTILLINGER}>
 							<Icon
 								size={13}
 								kind={visning === VISNING_BESTILLINGER ? 'bestillingLight' : 'bestilling'}
 							/>
 							{`Bestillinger (${antallBest ? antallBest : 0})`}
-						</ToggleKnapp>
-					</ToggleGruppe>
+						</ToggleGroup.Item>
+					</ToggleGroup>
 
 					<SearchField placeholder={searchfieldPlaceholderSelector()} setText={undefined} />
 				</div>
+
+				{startBestillingAktiv && (
+					<OrganisasjonBestillingsveilederModal
+						onSubmit={startBestilling}
+						onAvbryt={skjulStartBestilling}
+						brukernavn={brukernavn}
+					/>
+				)}
 
 				{visning === VISNING_ORGANISASJONER &&
 					(isFetching ? (
 						<Loading label="Laster organisasjoner" panel />
 					) : antallOrg !== 0 ? (
 						<OrganisasjonListe
-							// @ts-ignore
 							bestillinger={bestillinger}
 							search={search}
 							setAntallOrg={setAntallOrg}

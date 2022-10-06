@@ -5,7 +5,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 const getSortedData = (data) => {
 	return Array.isArray(data)
@@ -33,9 +33,9 @@ export const InstVisning = ({ data, loading }) => {
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente institusjonsopphold-data på person
-				</AlertStripeAdvarsel>
+				</Alert>
 			) : (
 				<ErrorBoundary>
 					<DollyFieldArray data={sortedData} nested>

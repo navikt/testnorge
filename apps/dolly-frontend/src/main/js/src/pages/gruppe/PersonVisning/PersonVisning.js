@@ -32,8 +32,16 @@ import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import DollyService from '~/service/services/dolly/DollyService'
+import { Alert } from '@navikt/ds-react'
+import styled from 'styled-components'
+
+const StyledAlert = styled(Alert)`
+	margin-bottom: 20px;
+	.navds-alert__wrapper {
+		max-width: 100rem;
+	}
+`
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -50,13 +58,13 @@ export const PersonVisning = ({
 	data,
 	bestillingIdListe,
 	ident,
-	isAlive,
 	brukertype,
 	loading,
 	slettPerson,
 	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	tmpPersoner,
 }) => {
 	if (!data) {
 		return null
@@ -81,16 +89,17 @@ export const PersonVisning = ({
 	// udistub
 	// dokarkiv
 
-	const manglerFagsystemdata = [
-		aareg,
-		sigrunstub,
-		pensjonforvalter,
-		inntektstub,
-		brregstub,
-		krrstub,
-		instdata,
-		arenaforvalteren,
-	].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)
+	// const manglerFagsystemdata = [
+	// 	aareg,
+	// 	sigrunstub,
+	// 	pensjonforvalter,
+	// 	inntektstub,
+	// 	brregstub,
+	// 	krrstub,
+	// 	instdata,
+	// 	arenaforvalteren,
+	// ].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)
+	const manglerFagsystemdata = true
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillingerById)
@@ -131,7 +140,11 @@ export const PersonVisning = ({
 			})
 
 		data.pdl?.hentPerson?.forelderBarnRelasjon
-			?.filter((barn) => !barn?.metadata?.historisk && barn?.relatertPersonsRolle === 'BARN')
+			?.filter(
+				(forelderBarn) =>
+					!forelderBarn?.metadata?.historisk &&
+					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle)
+			)
 			?.forEach((person) => {
 				relatertePersoner.push({
 					type: person.relatertPersonsRolle,
@@ -153,16 +166,20 @@ export const PersonVisning = ({
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
-							onClick={() =>
+							onClick={() => {
+								let personData = data
+								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
+									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
+								}
 								leggTilPaaPerson(
-									data,
+									personData,
 									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
 									navigate
 								)
-							}
+							}}
 							kind="add-circle"
 						>
 							LEGG TIL/ENDRE
@@ -197,16 +214,17 @@ export const PersonVisning = ({
 					)}
 				</div>
 				{manglerFagsystemdata && (
-					<AlertStripeInfo style={{ marginBottom: '20px' }}>
+					<StyledAlert variant={'info'} size={'small'}>
 						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
 						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med team Dolly
 						dersom problemet vedvarer.
-					</AlertStripeInfo>
+					</StyledAlert>
 				)}
 				{ident.master !== 'PDL' && (
 					<PdlfVisningConnector
 						data={data.pdlforvalter}
 						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						skjermingData={data.skjermingsregister}
 						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
 						master={ident.master}

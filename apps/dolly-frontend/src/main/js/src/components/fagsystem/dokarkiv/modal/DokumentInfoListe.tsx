@@ -49,10 +49,7 @@ export const DokumentInfoListe = ({ filer, handleChange }: Data) => {
 			<DollyFieldArray data={filer} header={`Dokumentinfo`}>
 				{(fil: Vedlegg, index: number) => (
 					<div className="flexbox--space">
-						<PdfDocument
-							className={'dolly-form-input'}
-							file={'data:application/pdf;base64,' + fil.content.base64}
-						>
+						<PdfDocument file={'data:application/pdf;base64,' + fil.content.base64}>
 							<Page pageNumber={1} height={80} width={60} />
 						</PdfDocument>
 						<DollyTextInput

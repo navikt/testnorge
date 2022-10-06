@@ -5,7 +5,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 export const BrregVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster brreg-data" />
@@ -23,9 +23,9 @@ export const BrregVisning = ({ data, loading }) => {
 				isWarning={manglerFagsystemdata}
 			/>
 			{manglerFagsystemdata ? (
-				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente Brreg-data på person
-				</AlertStripeAdvarsel>
+				</Alert>
 			) : (
 				<div className="person-visning_content">
 					<TitleValue

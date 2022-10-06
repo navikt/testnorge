@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Collections.emptyList;
 
@@ -18,7 +17,7 @@ public class BestillingProgressService {
 
     private final BestillingProgressRepository bestillingProgressRepository;
 
-    public Optional<BestillingProgress> save(BestillingProgress progress) {
+    public BestillingProgress save(BestillingProgress progress) {
 
         return bestillingProgressRepository.save(progress);
     }

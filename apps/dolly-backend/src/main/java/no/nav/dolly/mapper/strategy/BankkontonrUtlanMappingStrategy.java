@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.UtenlandskKontoDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;

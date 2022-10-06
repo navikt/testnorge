@@ -14,11 +14,12 @@ import {
 	folkeregisterpersonstatus,
 	kjoenn,
 	navn,
-} from '~/components/fagsystem/pdlf/form/validation'
+} from '~/components/fagsystem/pdlf/form/validation/validation'
 import { ifPresent } from '~/utils/YupValidations'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
+import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -28,6 +29,7 @@ type VisningTypes = {
 	path: string
 	ident: string
 	tpsMessagingData?: any
+	skjermingData?: Skjerming
 }
 
 enum Modus {
@@ -81,6 +83,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	redigertAttributt = null,
 	ident,
 	tpsMessagingData,
+	skjermingData,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -266,7 +269,7 @@ export const VisningRedigerbarPersondetaljer = ({
 								closeModal()
 								return handleDelete(slettAttr)
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Slett
 						</NavButton>
@@ -308,12 +311,15 @@ export const VisningRedigerbarPersondetaljer = ({
 							<>
 								<FieldArrayEdit>
 									<div className="flexbox--flex-wrap">
-										<PersondetaljerSamlet formikBag={formikBag} tpsMessaging={tpsMessagingData} />
+										<PersondetaljerSamlet
+											formikBag={formikBag}
+											tpsMessaging={tpsMessagingData}
+											skjermingData={skjermingData}
+										/>
 									</div>
 									<Knappegruppe>
 										<NavButton
-											type="standard"
-											htmlType="reset"
+											variant={'primary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
@@ -321,8 +327,7 @@ export const VisningRedigerbarPersondetaljer = ({
 											Avbryt
 										</NavButton>
 										<NavButton
-											type="hoved"
-											htmlType="submit"
+											variant={'primary'}
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

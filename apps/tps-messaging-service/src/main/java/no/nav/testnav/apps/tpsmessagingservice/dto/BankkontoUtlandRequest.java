@@ -20,11 +20,12 @@ public class BankkontoUtlandRequest extends EndringsmeldingRequest {
     @Data
     @SuperBuilder
     @NoArgsConstructor
-    @XmlType(propOrder = {"systemInfo", "endreGironrUtl"})
+    @XmlType(propOrder = {"systemInfo", "endreGironrUtl", "opphorGironrUtl"})
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
         private EndreGironrUtl endreGironrUtl;
+        private BrukerIdentifikasjon opphorGironrUtl;
     }
 
     @Data
@@ -45,5 +46,14 @@ public class BankkontoUtlandRequest extends EndringsmeldingRequest {
         private String bankAdresse1;
         private String bankAdresse2;
         private String bankAdresse3;
+    }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @XmlType(propOrder = {"offentligIdent"})
+    public static class BrukerIdentifikasjon {
+
+        private String offentligIdent;
     }
 }

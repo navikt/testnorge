@@ -14,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -87,31 +88,53 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
     private void handle(BostedadresseDTO bostedadresse, PersonDTO person) {
 
-        if (!person.getUtflytting().isEmpty() && !person.getUtflytting().stream()
-                .findFirst().orElse(new UtflyttingDTO()).isVelkjentLand()) {
-
-            person.setBostedsadresse(person.getBostedsadresse().stream()
-                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
-                    .toList());
-
-            return;
-        }
-
-        if (FNR == getIdenttype(person.getIdent()) && person.getUtflytting().isEmpty()) {
+        if (FNR == getIdenttype(person.getIdent())) {
 
             if (STRENGT_FORTROLIG == person.getAdressebeskyttelse().stream()
                     .findFirst().orElse(new AdressebeskyttelseDTO()).getGradering()) {
+
+                person.setBostedsadresse(null);
                 return;
+
+            } else if (!person.getUtflytting().isEmpty() &&
+                    person.getInnflytting().stream()
+                            .noneMatch(innflytting -> person.getUtflytting().stream()
+                                    .anyMatch(utflytting -> innflytting.getInnflyttingsdato()
+                                            .isAfter(utflytting.getUtflyttingsdato())))) {
+
+                if (person.getUtflytting().get(0).isVelkjentLand()) {
+                    bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+
+                } else {
+                    person.setBostedsadresse(new ArrayList<>(person.getBostedsadresse().stream()
+                            .filter(adresse -> isNotTrue(adresse.getIsNew()))
+                            .toList()));
+                    return;
+                }
 
             } else if (bostedadresse.countAdresser() == 0) {
                 bostedadresse.setVegadresse(new VegadresseDTO());
             }
 
-        } else if (bostedadresse.countAdresser() == 0) {
+        } else if (bostedadresse.countAdresser() == 0 &&
+                person.getOppholdsadresse().isEmpty() &&
+                person.getKontaktadresse().isEmpty()) {
 
             bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+
+        } else {
+
+            person.setBostedsadresse(new ArrayList(person.getBostedsadresse().stream()
+                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
+                    .toList()));
+            return;
         }
 
+        buildBoadresse(bostedadresse, person);
+    }
+
+    private void buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {
+        
         if (nonNull(bostedadresse.getVegadresse())) {
 
             var vegadresse =

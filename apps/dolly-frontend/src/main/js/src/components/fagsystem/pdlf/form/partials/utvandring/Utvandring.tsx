@@ -7,15 +7,39 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '~/config/kodeverk'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { InnflyttingTilNorge } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Innflytting } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '~/components/bestillingsveileder/utils'
+import { FormikProps } from 'formik'
+import _get from 'lodash/get'
+
+import {
+	getFirstDateAfter,
+	getLastDateBefore,
+} from '~/components/fagsystem/pdlf/form/partials/utvandring/utils'
 
 type UtvandringTypes = {
 	path: string
 	minDate?: Date
+	maxDate?: Date
 }
 
-export const UtvandringForm = ({ path, minDate }: UtvandringTypes) => {
+type RedigerTypes = {
+	formikBag: FormikProps<{}>
+	path: string
+	personFoerLeggTil: any
+}
+
+export const RedigerUtvandringForm = ({ formikBag, path, personFoerLeggTil }: RedigerTypes) => {
+	const hoveddato = new Date(_get(formikBag.values, path)?.utflyttingsdato)
+	const datoer = personFoerLeggTil?.pdldata?.person?.innflytting?.map(
+		(innflytting: any) => new Date(innflytting.innflyttingsdato)
+	)
+	const minDate = getLastDateBefore(hoveddato, datoer)
+	const maxDate = getFirstDateAfter(hoveddato, datoer)
+	return <UtvandringForm path={path} minDate={minDate} maxDate={maxDate} />
+}
+
+const UtvandringForm = ({ path, minDate, maxDate }: UtvandringTypes) => {
 	return (
 		<>
 			<FormikSelect
@@ -31,6 +55,7 @@ export const UtvandringForm = ({ path, minDate }: UtvandringTypes) => {
 					name={`${path}.utflyttingsdato`}
 					label="Utflyttingsdato"
 					minDate={minDate}
+					maxDate={maxDate}
 				/>
 			</DatepickerWrapper>
 			<AvansertForm path={path} kanVelgeMaster={false} />
@@ -43,17 +68,16 @@ export const Utvandring = () => {
 
 	const sisteDatoInnflytting = () => {
 		if (opts.is.leggTil) {
-			const innflytting = opts?.personFoerLeggTil?.pdl?.hentPerson?.innflyttingTilNorge
-			let siste = getSisteDato(
-				innflytting
-					?.map((val: InnflyttingTilNorge) => val?.folkeregistermetadata?.gyldighetstidspunkt)
-					.filter((val: string) => val)
-					.map((val: string) => new Date(val))
-			)
-			if (siste !== null) {
-				siste.setDate(siste.getDate() + 1)
+			const innflytting = opts?.personFoerLeggTil?.pdlforvalter?.person?.innflytting
+			if (innflytting) {
+				let siste = getSisteDato(
+					innflytting.map((val: Innflytting) => new Date(val.innflyttingsdato))
+				)
+				if (siste !== null) {
+					siste.setDate(siste.getDate() + 1)
+				}
+				return siste
 			}
-			return siste
 		}
 		return null
 	}

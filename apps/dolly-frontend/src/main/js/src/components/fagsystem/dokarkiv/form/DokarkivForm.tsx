@@ -6,13 +6,13 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import FileUpload from 'filopplasting'
 import styled from 'styled-components'
 import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import FileUpload from '@navikt/filopplasting'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -49,6 +49,7 @@ const FilOpplaster = styled(FileUpload)`
 	.animate {
 		content-visibility: hidden;
 	}
+
 	div {
 		div {
 			margin-top: 15px;
@@ -70,7 +71,9 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 
 	const [skjemaValues, setSkjemaValues] = useState(null)
 
-	useEffect(() => handleSkjemaChange(skjemaValues), [files, skjemaValues])
+	useEffect(() => {
+		handleSkjemaChange(skjemaValues)
+	}, [files, skjemaValues])
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
@@ -114,7 +117,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
-				startOpen={erForste(formikBag.values, [dokarkivAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [dokarkivAttributt])}
 			>
 				<Kategori
 					title={`Oppretting av ${digitalInnsending ? 'digitalt' : 'skannet '} dokument`}
@@ -156,8 +159,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
-							className={'flexbox--full-width'}
-							acceptedMimetypes={['application/pdf']}
+							theme={'flexbox--full-width'}
 							files={files}
 							onFilesChanged={handleVedleggChange}
 						/>

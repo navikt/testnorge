@@ -2,7 +2,7 @@ import useSWR from 'swr'
 import { fetcher } from '~/api'
 
 const getGruppeUrl = `/dolly-backend/api/v1/gruppe`
-const getPaginertGruppeUrl = (gruppeId: number, pageNo: number, pageSize: number) =>
+const getPaginertGruppeUrl = (gruppeId: string, pageNo: number, pageSize: number) =>
 	`${getGruppeUrl}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}`
 
 export type Gruppe = {
@@ -18,7 +18,7 @@ export type Gruppe = {
 	tags: string[]
 }
 
-export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10, autoRefresh = false) => {
+export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoRefresh = false) => {
 	if (!gruppeId) {
 		return {
 			loading: false,
@@ -28,11 +28,13 @@ export const useGruppeById = (gruppeId: number, pageNo = 0, pageSize = 10, autoR
 	const { data, error } = useSWR<Gruppe, Error>(
 		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 1000 : null }
+		{
+			refreshInterval: autoRefresh ? 2000 : null,
+		}
 	)
 
 	return {
-		identer: data?.identer.reduce((acc, curr) => {
+		identer: data?.identer?.reduce((acc, curr) => {
 			acc[curr.ident] = { ...curr, gruppeId: data.id }
 			return acc
 		}, {}),

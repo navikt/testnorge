@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -29,6 +30,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -75,7 +78,7 @@ public class TpsMessagingClient implements ClientRegister {
         try {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-            Stream.of(
+            var completableFuture = Stream.of(
                             sendSpraakkode(bestilling),
                             sendBankkontonummer(bestilling),
                             sendEgenansatt(bestilling),
@@ -89,21 +92,22 @@ public class TpsMessagingClient implements ClientRegister {
                     )
                     .filter(Objects::nonNull)
                     .map(completable -> supplyAsync(() -> completable.apply(bestilling, dollyPerson), dollyForkJoinPool))
+                    .toList();
+
+            completableFuture
                     .forEach(future -> {
                         try {
-                            future.get()
+                            future.get(15, TimeUnit.SECONDS)
                                     .forEach((key, value) -> status.append(getResponse(key, value)));
-
                         } catch (InterruptedException e) {
-
                             log.error(e.getMessage(), e);
                             Thread.currentThread().interrupt();
-
                         } catch (ExecutionException e) {
-
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
-
+                        } catch (TimeoutException e) {
+                            log.warn("Tidsavbrudd (15 s) ved sending til TPS");
+                            Thread.interrupted();
                         }
                     });
 
@@ -248,7 +252,7 @@ public class TpsMessagingClient implements ClientRegister {
 
     private TpsMessage sendEgenansatt(RsDollyUtvidetBestilling bestilling) {
 
-        if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())) {
+        if (nonNull(SkjermingUtil.getEgenansattDatoTom(bestilling))) {
 
             return (bestilling1, dollyPerson) ->
                     Map.of("Egenansatt_slett",
@@ -256,14 +260,14 @@ public class TpsMessagingClient implements ClientRegister {
                                     dollyPerson.getHovedperson(),
                                     null));
 
-        } else if (nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoFom())) {
+        } else if (nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling))) {
 
             return (bestilling1, dollyPerson) ->
                     Map.of("Egenansatt_opprett",
                             tpsMessagingConsumer.sendEgenansattRequest(
                                     dollyPerson.getHovedperson(),
                                     null,
-                                    bestilling1.getSkjerming().getEgenAnsattDatoFom().toLocalDate()));
+                                    SkjermingUtil.getEgenansattDatoFom(bestilling).toLocalDate()));
 
         } else {
 

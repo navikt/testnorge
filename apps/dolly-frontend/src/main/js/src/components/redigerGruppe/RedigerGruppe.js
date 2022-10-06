@@ -37,10 +37,10 @@ export default class RedigerGruppe extends PureComponent {
 
 		const buttons = (
 			<Fragment>
-				<NavButton htmlType={'reset'} type={'fare'} onClick={() => this.onCancel()}>
+				<NavButton type={'reset'} variant={'danger'} onClick={() => this.onCancel()}>
 					Avbryt
 				</NavButton>
-				<NavButton type="hoved" htmlType="submit">
+				<NavButton variant={'primary'}>
 					{this.erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 				</NavButton>
 			</Fragment>

@@ -5,10 +5,12 @@ import _cloneDeep from 'lodash/cloneDeep'
 import { FormikProps } from 'formik'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
+import {
+	VegadresseVelger,
+	MatrikkeladresseVelger,
+	UkjentBosted,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
-import { UkjentBosted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UkjentBosted'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import {
 	initialMatrikkeladresse,

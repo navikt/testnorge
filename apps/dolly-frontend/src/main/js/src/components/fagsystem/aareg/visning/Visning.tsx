@@ -12,7 +12,7 @@ import { AntallTimerForTimeloennet } from './partials/AntallTimerForTimeloennet'
 import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 
 type AaregVisningProps = {
 	liste?: Array<Arbeidsforhold>
@@ -72,9 +72,9 @@ export const AaregVisning = ({ liste, loading }: AaregVisningProps) => {
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
-				<AlertStripeAdvarsel form="inline" style={{ marginBottom: '20px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente arbeidsforhold-data på person
-				</AlertStripeAdvarsel>
+				</Alert>
 			) : (
 				<ErrorBoundary>
 					<DollyFieldArray

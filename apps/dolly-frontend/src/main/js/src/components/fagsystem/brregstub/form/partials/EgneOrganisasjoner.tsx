@@ -1,16 +1,18 @@
 import React, { useEffect, useState } from 'react'
 import Loading from '~/components/ui/loading/Loading'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { Alert } from '@navikt/ds-react'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 interface OrgProps {
 	path: string
+	label?: string
 	formikBag: FormikProps<{}>
 	handleChange: (event: React.ChangeEvent<any>) => void
-	warningMessage?: AlertStripeAdvarsel
+	warningMessage?: string
 	isLoading: boolean
 	hentOrganisasjoner: Function
 	organisasjoner: Organisasjon[]
@@ -31,6 +33,7 @@ export const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: stri
 
 export const EgneOrganisasjoner = ({
 	path,
+	label,
 	formikBag,
 	handleChange,
 	warningMessage,
@@ -40,13 +43,16 @@ export const EgneOrganisasjoner = ({
 	filterValidEnhetstyper,
 }: OrgProps) => {
 	const [error, setError] = useState(false)
-	const harEgneOrganisasjoner = organisasjoner && organisasjoner.length > 0
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
 
+	const harEgneOrganisasjoner = organisasjoner && organisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
 	useEffect(() => {
 		if (!organisasjoner) {
-			hentOrganisasjoner().catch(() => {
+			hentOrganisasjoner(brukerId).catch(() => {
 				setError(true)
 			})
 		}
@@ -56,10 +62,10 @@ export const EgneOrganisasjoner = ({
 		<>
 			{isLoading && <Loading label="Laster organisasjoner" />}
 			{error && (
-				<AlertStripeAdvarsel>
+				<Alert variant={'warning'}>
 					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
 					eller kontakt Team Dolly ved vedvarende feil.
-				</AlertStripeAdvarsel>
+				</Alert>
 			)}
 			{!harEgneOrganisasjoner &&
 				!isLoading &&
@@ -67,15 +73,15 @@ export const EgneOrganisasjoner = ({
 				(warningMessage ? (
 					warningMessage
 				) : (
-					<AlertStripeAdvarsel>
+					<Alert variant={'warning'}>
 						Du har ingen egne organisasjoner. For å lage dine egne organisasjoner trykk{' '}
 						<a href="/organisasjoner">her</a>.
-					</AlertStripeAdvarsel>
+					</Alert>
 				))}
 			{harEgneOrganisasjoner && !error && (
 				<DollySelect
 					name={path}
-					label="Organisasjonsnummer"
+					label={label ? label : 'Organisasjonsnummer'}
 					options={
 						filterValidEnhetstyper
 							? organisasjoner.filter((virksomhet) =>

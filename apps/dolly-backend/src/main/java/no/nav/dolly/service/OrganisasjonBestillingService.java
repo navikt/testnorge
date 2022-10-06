@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeployStatus.OrgStatus;
+import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -23,9 +25,11 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -49,6 +53,8 @@ import static org.apache.logging.log4j.util.Strings.isBlank;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 @RequiredArgsConstructor
 public class OrganisasjonBestillingService {
+
+    private static final int BLOCK_SIZE = 50;
 
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
 
@@ -93,12 +99,13 @@ public class OrganisasjonBestillingService {
                 .feil(bestilling.getFeil())
                 .environments(Arrays.asList(bestilling.getMiljoer().split(",")))
                 .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
+                .malBestillingNavn(bestilling.getMalBestillingNavn())
                 .build();
     }
 
     public List<RsOrganisasjonBestillingStatus> fetchBestillingStatusByBrukerId(String brukerId) {
 
-        var bestillinger = fetchOrganisasjonBestillingProgressByBrukerId(brukerId);
+        var bestillinger = fetchOrganisasjonBestillingByBrukerId(brukerId);
 
         return bestillinger.stream()
                 .map(OrganisasjonBestilling::getProgresser)
@@ -113,9 +120,21 @@ public class OrganisasjonBestillingService {
                         .feil(progress.getBestilling().getFeil())
                         .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
+                        .malBestillingNavn(progress.getBestilling().getMalBestillingNavn())
                         .build())
                 .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
+    }
+
+    public List<OrganisasjonBestilling> fetchMalBestillinger() {
+        return bestillingRepository.findMalBestilling();
+    }
+
+    public List<OrganisasjonBestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
+        Bruker bruker = brukerService.fetchBruker(brukerId);
+        return nonNull(malNavn)
+                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
+                : bestillingRepository.findMalBestillingByUser(bruker);
     }
 
     @Transactional
@@ -152,6 +171,7 @@ public class OrganisasjonBestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .bestKriterier(toJson(request.getOrganisasjon()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
+                        .malBestillingNavn(request.getMalBestillingNavn())
                         .build());
     }
 
@@ -166,6 +186,7 @@ public class OrganisasjonBestillingService {
                         .miljoer(join(",", status.getEnvironments()))
                         .bestKriterier(toJson(status.getBestilling()))
                         .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
+                        .malBestillingNavn(status.getMalBestillingNavn())
                         .build());
     }
 
@@ -196,14 +217,38 @@ public class OrganisasjonBestillingService {
         bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
     }
 
-    @Transactional
-    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingProgressByBrukerId(String brukerId) {
+    public List<OrganisasjonBestilling> fetchOrganisasjonBestillingByBrukerId(String brukerId) {
 
         var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
                 .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
-        return bestillingRepository.findByBruker(bruker)
-                .orElseThrow(() -> new NotFoundException("Bestilling ikke funnet for bruker " + brukerId));
+        return bestillingRepository.findByBruker(bruker);
+    }
+    
+    @Transactional
+    public void redigerMalBestillingNavn(Long id, String malbestillingNavn) {
+
+        Optional<OrganisasjonBestilling> token = bestillingRepository.findById(id);
+        OrganisasjonBestilling bestilling = token.orElseThrow(() -> new NotFoundException(format("Id {%d} ikke funnet ", id)));
+        bestilling.setMalBestillingNavn(malbestillingNavn);
+    }
+
+    public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
+
+        var orgnumre = fetchOrganisasjonBestillingByBrukerId(brukerId).stream()
+                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert).reversed())
+                .map(OrganisasjonBestilling::getProgresser)
+                .flatMap(Collection::stream)
+                .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
+                .filter(orgnummer -> !"NA".equals(orgnummer))
+                .distinct()
+                .toList();
+
+        return Flux.range(0, orgnumre.size() / BLOCK_SIZE + 1)
+                .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
+                        orgnumre.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, orgnumre.size()))))
+                .collectList()
+                .block();
     }
 
     private void updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {

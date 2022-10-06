@@ -263,7 +263,7 @@ const mapKjoenn = (kjoenn, data) => {
 			header: 'Kjønn',
 			itemRows: kjoenn.map((item, idx) => {
 				return [
-					{ numberHeader: `Kjønn ${idx + 1}` },
+					{ numberHeader: kjoenn?.length > 1 && `Kjønn ${idx + 1}` },
 					obj('Kjønn', Formatters.showLabel('kjoenn', item.kjoenn)),
 				]
 			}),
@@ -994,19 +994,28 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 
 const mapTpsMessaging = (bestillingData, data) => {
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
+	const skjerming = _get(bestillingData, 'skjerming')
 	const bankkonto = _get(bestillingData, 'bankkonto')
 
 	if (
 		tpsMessaging?.spraakKode ||
+		skjerming?.egenAnsattDatoFom ||
 		tpsMessaging?.egenAnsattDatoFom ||
+		skjerming?.egenAnsattDatoTom ||
 		tpsMessaging?.egenAnsattDatoTom
 	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
 				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
-				obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
-				obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
+				obj(
+					'Skjerming fra',
+					Formatters.formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom)
+				),
+				obj(
+					'Skjerming til',
+					Formatters.formatDate(skjerming?.egenAnsattDatoTom || tpsMessaging?.egenAnsattDatoTom)
+				),
 			],
 		}
 		data.push(tpsMessagingData)
@@ -1016,7 +1025,10 @@ const mapTpsMessaging = (bestillingData, data) => {
 		if (bankkonto.norskBankkonto) {
 			const norskBankkontoData = {
 				header: 'Norsk bankkonto',
-				items: [obj('Kontonummer', bankkonto.norskBankkonto.kontonummer)],
+				items: [
+					obj('Kontonummer', bankkonto.norskBankkonto.kontonummer),
+					obj('Tilfeldig kontonummer', bankkonto.norskBankkonto.tilfeldigKontonummer && 'Ja'),
+				],
 			}
 			data.push(norskBankkontoData)
 		}
@@ -1026,10 +1038,7 @@ const mapTpsMessaging = (bestillingData, data) => {
 				header: 'Utenlandsk bankkonto',
 				items: [
 					obj('Kontonummer', bankkonto.utenlandskBankkonto.kontonummer),
-					obj(
-						'Tilfeldig kontonummer',
-						bankkonto.utenlandskBankkonto.tilfeldigKontonummer ? 'Ja' : ''
-					),
+					obj('Tilfeldig kontonummer', bankkonto.utenlandskBankkonto.tilfeldigKontonummer && 'Ja'),
 					obj('Swift kode', bankkonto.utenlandskBankkonto.swift),
 					obj('Land', bankkonto.utenlandskBankkonto.landkode),
 					obj('Banknavn', bankkonto.utenlandskBankkonto.banknavn),

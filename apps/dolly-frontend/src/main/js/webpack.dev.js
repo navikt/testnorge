@@ -18,9 +18,6 @@ module.exports = (env) =>
 			port: 3000,
 			open: {
 				target: [`http://localhost:3000/login`],
-				app: {
-					name: 'Google Chrome',
-				},
 			},
 			historyApiFallback: true,
 			client: {
@@ -194,7 +191,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-kontoregister-person-proxy/kontoregister/api': {
+				'/testnav-kontoregister-person-proxy/api/system': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
@@ -210,11 +207,7 @@ module.exports = (env) =>
 			rules: [
 				{
 					test: /\.less$/,
-					use: [
-						'style-loader',
-						'css-loader',
-						'less-loader?{"lessOptions":{"globalVars":{"nodeModulesPath":"\'~\'", "coreModulePath":"\'~\'"}}}',
-					],
+					use: ['style-loader', 'css-loader', 'less-loader'],
 				},
 				{
 					test: /\.css$/,
