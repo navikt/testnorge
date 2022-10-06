@@ -15,6 +15,7 @@ const StyledOption = styled.div`
 
 			&:hover {
 				background-color: #cde1f3;
+				cursor: pointer;
 			}
 
 			&_selected {
@@ -30,6 +31,7 @@ const StyledOption = styled.div`
 				color: grey;
 				background-color: #f2f2f2;
 				&:hover {
+					cursor: not-allowed;
 					background-color: #f2f2f2;
 				}
 			}
