@@ -207,7 +207,6 @@ export const VisningRedigerbarSamlet = ({
 								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
 									<Loading label={'Oppdaterer PDL...'} />
 								)}
-								{slettId === idx && <RedigerLoading visningModus={visningModus} />}
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
 										{slettetItem || alleSlettet ? (
