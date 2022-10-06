@@ -251,24 +251,6 @@ public class OrganisasjonBestillingService {
                 .block();
     }
 
-    public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
-
-        var orgnumre = fetchOrganisasjonBestillingByBrukerId(brukerId).stream()
-                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert).reversed())
-                .map(OrganisasjonBestilling::getProgresser)
-                .flatMap(Collection::stream)
-                .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
-                .filter(orgnummer -> !"NA".equals(orgnummer))
-                .distinct()
-                .toList();
-
-        return Flux.range(0, orgnumre.size() / BLOCK_SIZE + 1)
-                .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
-                        orgnumre.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, orgnumre.size()))))
-                .collectList()
-                .block();
-    }
-
     private void updateBestilling(OrganisasjonBestilling bestilling, List<OrgStatus> orgStatus) {
 
         var feil = orgStatus.stream()

@@ -1,6 +1,7 @@
 package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
@@ -10,6 +11,7 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,23 +56,6 @@ public class OrganisasjonController {
         return getStatus(bestilling, bestillingStatus.getOrganisasjonNummer());
     }
 
-    @GetMapping("/bestilling")
-    @Operation(description = "Hent status på bestilling basert på bestillingId")
-    public RsOrganisasjonBestillingStatus hentBestilling(
-            @Parameter(description = "ID på bestilling av organisasjon", example = "123") @RequestParam Long bestillingId) {
-
-        return bestillingService.fetchBestillingStatusById(bestillingId);
-    }
-
-    @GetMapping("/bestillingsstatus")
-    @Operation(description = "Hent status på bestilling basert på brukerId")
-    public List<RsOrganisasjonBestillingStatus> hentBestillingStatus(
-            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)",
-                    example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
-
-        return bestillingService.fetchBestillingStatusByBrukerId(brukerId);
-    }
-
     @GetMapping()
     @Operation(description = "Hent opprettede organisasjoner basert på brukerId")
     public List<OrganisasjonDetaljer> hentOrganisasjoner(
@@ -78,13 +63,6 @@ public class OrganisasjonController {
                     example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
 
         return bestillingService.getOrganisasjoner(brukerId);
-    }
-
-    @DeleteMapping("/bestilling/{orgnummer}")
-    @Operation(description = "Slett gruppe")
-    public void slettgruppe(@PathVariable("orgnummer") String orgnummer) {
-
-        bestillingService.slettBestillingByOrgnummer(orgnummer);
     }
 
     private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
