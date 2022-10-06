@@ -12,22 +12,17 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoFom;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoTom;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
+import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEgenansatt;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -44,20 +39,12 @@ public class SkjermingsRegisterClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
 
-        if ((nonNull(bestilling.getTpsf()) && nonNull(bestilling.getTpsf().getEgenAnsattDatoFom())) ||
-                ((nonNull(bestilling.getSkjerming())))) {
+        if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
 
             dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-            var skjermetFra = nonNull(bestilling.getSkjerming())
-                    ? bestilling.getSkjerming().getEgenAnsattDatoFom()
-                    : bestilling.getTpsf().getEgenAnsattDatoFom();
-
-            var skjermetTil = nonNull(bestilling.getSkjerming()) && nonNull(bestilling.getSkjerming().getEgenAnsattDatoTom())
-                    ? bestilling.getSkjerming().getEgenAnsattDatoTom()
-                    : nonNull(bestilling.getTpsf())
-                    ? bestilling.getTpsf().getEgenAnsattDatoTom()
-                    : null;
+            var skjermetFra = getEgenansattDatoFom(bestilling);
+            var skjermetTil = getEgenansattDatoTom(bestilling);
 
             StringBuilder status = new StringBuilder();
 
@@ -70,67 +57,23 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-            skjermingsRegisterConsumer.deleteSkjerming(identer)
-                    .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
+        skjermingsRegisterConsumer.deleteSkjerming(identer)
+                .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
     }
 
-    private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime skjermetTil, StringBuilder status) {
+    private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime
+            skjermetTil, StringBuilder status) {
 
-        List<SkjermingsDataRequest> skjerminger;
-
-        if (dollyPerson.isPdlfMaster()) {
-
-            skjerminger = Stream.of(List.of(prepRequest(null, dollyPerson.getPdlfPerson().getPerson(), skjermetFra, skjermetTil)),
-                            dollyPerson.getPdlfPerson().getRelasjoner().stream()
-                                    .filter(relasjon -> Stream.of(EKTEFELLE_PARTNER, FAMILIERELASJON_BARN, FAMILIERELASJON_FORELDER)
-                                            .anyMatch(relasjon2 -> relasjon2 == relasjon.getRelasjonType()))
-                                    .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
-                                    .map(person -> prepRequest(null, person, skjermetFra, skjermetTil))
-                                    .toList())
-                    .flatMap(Collection::stream)
-                    .toList();
-
-        } else {
-            skjerminger = Stream.of(List.of(prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil)),
-                            dollyPerson.getPartnere().stream()
-                                    .map(partner -> prepRequest(dollyPerson.getPerson(partner), null, skjermetFra, skjermetTil))
-                                    .toList(),
-                            dollyPerson.getBarn().stream()
-                                    .map(barn -> prepRequest(dollyPerson.getPerson(barn), null, skjermetFra, skjermetTil))
-                                    .toList(),
-                            dollyPerson.getForeldre().stream()
-                                    .map(foreldre -> prepRequest(dollyPerson.getPerson(foreldre), null, skjermetFra, skjermetTil))
-                                    .toList())
-                    .flatMap(Collection::stream)
-                    .toList();
-        }
+        SkjermingsDataRequest skjerming = dollyPerson.isPdlfMaster() ?
+                prepRequest(null, dollyPerson.getPdlfPerson().getPerson(), skjermetFra, skjermetTil) :
+                prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil);
 
         try {
-            skjerminger.forEach(skjerming -> {
-                if (isAlleredeSkjermet(skjerming.getPersonident()) && nonNull(skjermetTil)) {
-                    skjermingsRegisterConsumer.putSkjerming(skjerming.getPersonident(), skjermetTil);
-                } else if (!isAlleredeSkjermet(skjerming.getPersonident()) && isNull(skjermetTil)) {
-                    skjermingsRegisterConsumer.postSkjerming(List.of(skjerming));
-                }
-            });
+            skjermingsRegisterConsumer.oppdaterPerson(skjerming);
+
         } catch (RuntimeException e) {
             status.append(errorStatusDecoder.decodeRuntimeException(e));
             log.error("Feilet å skjerme person: {}", dollyPerson.getHovedperson(), e);
-        }
-    }
-
-    private boolean isAlleredeSkjermet(String ident) {
-
-        try {
-            var skjermingResponseEntity = skjermingsRegisterConsumer.getSkjerming(ident);
-            log.info("Respons fra skjermingsregister: {}", skjermingResponseEntity);
-            return true;
-
-        } catch (WebClientResponseException e) {
-            if (e.getStatusCode() == HttpStatus.NOT_FOUND) {
-                return false;
-            }
-            throw e;
         }
     }
 
