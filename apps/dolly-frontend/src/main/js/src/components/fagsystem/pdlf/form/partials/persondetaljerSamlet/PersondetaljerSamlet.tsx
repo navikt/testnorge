@@ -5,7 +5,6 @@ import { PersonstatusForm } from '~/components/fagsystem/pdlf/form/partials/pers
 import { FormikProps } from 'formik'
 import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
-import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type PersondetaljerSamletTypes = {
 	formikBag: FormikProps<{}>
@@ -24,22 +23,24 @@ export const PersondetaljerSamlet = ({
 }: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
 
-	const sprakTekst = ' og språk'
-	const skjermingTekst = ' og skjerming'
-	const beggeTekst = ', språk og skjerming'
+	const getTekst = () => {
+		if (sprak) {
+			if (harSkjerming) {
+				return ', språk og skjerming'
+			} else {
+				return ' og språk'
+			}
+		} else if (harSkjerming) {
+			return ' og skjerming'
+		} else {
+			return ''
+		}
+	}
 
 	return (
 		<>
 			<div className="flexbox--full-width">
-				<Alert variant={'info'}>{`Identnummer${
-					sprak && harSkjerming
-						? beggeTekst
-						: sprak
-						? sprakTekst
-						: harSkjerming
-						? skjermingTekst
-						: ''
-				} kan ikke endres her.`}</Alert>
+				<Alert variant={'info'}>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
 
 				<h3>Navn</h3>
 				<div className="flexbox--flex-wrap">
