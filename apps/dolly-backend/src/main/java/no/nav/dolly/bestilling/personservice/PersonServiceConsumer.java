@@ -1,23 +1,16 @@
-package no.nav.dolly.bestilling.aktoeridsyncservice;
+package no.nav.dolly.bestilling.personservice;
 
-import no.nav.dolly.bestilling.aktoeridsyncservice.command.PersonServiceExistCommand;
-import no.nav.dolly.bestilling.aktoeridsyncservice.domain.AktoerIdent;
+import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
 import no.nav.dolly.config.credentials.PersonServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
-import java.util.UUID;
-
-import static java.lang.String.format;
-import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Service
 public class PersonServiceConsumer {
@@ -38,13 +31,12 @@ public class PersonServiceConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "personService_exists"})
+    @Timed(name = "providers", tags = {"operation", "personService_isPerson"})
     public Boolean isPerson(String ident) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token ->
-                new PersonServiceExistCommand(webClient, ident, token.getTokenValue()).call())
-                        .block();
+                .flatMap(token -> new PersonServiceExistCommand(webClient, ident, token.getTokenValue()).call())
+                .block();
     }
 
     public Map<String, String> checkAlive() {

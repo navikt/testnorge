@@ -17,7 +17,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
-import no.nav.dolly.bestilling.aktoeridsyncservice.PersonServiceConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;

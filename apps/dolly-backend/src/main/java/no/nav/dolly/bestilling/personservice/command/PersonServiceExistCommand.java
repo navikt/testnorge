@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.aktoeridsyncservice.command;
+package no.nav.dolly.bestilling.personservice.command;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.util.WebClientFilter;
@@ -28,7 +28,7 @@ public class PersonServiceExistCommand implements Callable<Mono<Boolean>> {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
                         .build(ident))
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(Boolean.class)

@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.aktoeridsyncservice;
+package no.nav.dolly.bestilling.personservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service
@@ -40,17 +39,17 @@ public class PersonServiceClient implements ClientRegister {
             }
 
         } catch (InterruptedException e) {
-            log.error("Sync mot PersonService (AktoerId) ble avbrutt.", e);
+            log.error("Sync mot PersonService (isPerson) ble avbrutt.", e);
             Thread.currentThread().interrupt();
 
         } catch (RuntimeException e) {
-            log.error("Feilet å lese id fra PersonService (AktoerId) for ident {}.", dollyPerson.getHovedperson(), e);
+            log.error("Feilet å sjekke om person finnes for ident {}.", dollyPerson.getHovedperson(), e);
         }
 
         if (count < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED) {
-            log.info("Synkronisering mot PersonService (AktoerId) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
+            log.info("Synkronisering mot PersonService (isPerson) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
         } else {
-            log.warn("Synkronisering mot PersonService (AktoerId) gitt opp etter {} ms.",
+            log.warn("Synkronisering mot PersonService (isPerson) gitt opp etter {} ms.",
                     ChronoUnit.MILLIS.between(startTime, now()));
         }
     }
