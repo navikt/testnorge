@@ -26,6 +26,7 @@ type PersondetaljerTypes = {
 
 type PersonTypes = {
 	person: PersonData
+	skjerming?: Skjerming
 }
 
 const getCurrentPersonstatus = (data: any) => {
@@ -52,9 +53,9 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
+	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
-	const PersondetaljerLes = ({ person }: PersonTypes) => {
+	const PersondetaljerLes = ({ person, skjerming }: PersonTypes) => {
 		const personNavn = person?.navn?.[0]
 		const personKjoenn = person?.kjoenn?.[0]
 		const personstatus = getCurrentPersonstatus(redigertPerson || person)
@@ -70,7 +71,7 @@ export const Persondetaljer = ({
 					title="Personstatus"
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
-				<SkjermingVisning data={skjermingData} />
+				<SkjermingVisning data={skjerming} />
 				<TpsMPersonInfo
 					data={tpsMessaging.tpsMessagingData}
 					loading={tpsMessaging.tpsMessagingLoading}
@@ -84,9 +85,11 @@ export const Persondetaljer = ({
 			navn: [data?.navn?.[0] || initialNavn],
 			kjoenn: [data?.kjoenn?.[0] || initialKjoenn],
 			folkeregisterpersonstatus: [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus],
+			skjermingsregister: skjermingData,
 		}
 
-		const redigertPersonPdlf = _get(tmpPersoner, `${ident}.person`)
+		const redigertPersonPdlf = _get(tmpPersoner?.pdlforvalter, `${ident}.person`)
+		const redigertSkjerming = _get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 		const personValues = redigertPersonPdlf ? redigertPersonPdlf : person
 		const redigertPersonValues = redigertPersonPdlf
@@ -98,20 +101,25 @@ export const Persondetaljer = ({
 							? redigertPersonPdlf?.folkeregisterPersonstatus?.[0]
 							: initialPersonstatus,
 					],
+					skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
 			  }
 			: null
 
 		return erPdlVisning ? (
-			<PersondetaljerLes person={person} />
+			<PersondetaljerLes person={person} skjerming={skjermingData} />
 		) : (
 			<VisningRedigerbarPersondetaljerConnector
-				dataVisning={<PersondetaljerLes person={personValues} />}
+				dataVisning={
+					<PersondetaljerLes
+						person={personValues}
+						skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
+					/>
+				}
 				initialValues={initPerson}
 				redigertAttributt={redigertPersonValues}
 				path="person"
 				ident={ident}
 				tpsMessagingData={tpsMessaging}
-				skjermingData={skjermingData}
 			/>
 		)
 	}

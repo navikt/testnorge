@@ -196,6 +196,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-skjermingsregister-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 			},
 		},
 		plugins: [
