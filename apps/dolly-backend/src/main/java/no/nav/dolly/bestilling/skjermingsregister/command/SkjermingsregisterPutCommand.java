@@ -10,6 +10,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
+import static java.util.Objects.nonNull;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
@@ -29,7 +30,7 @@ public class SkjermingsregisterPutCommand implements Callable<Mono<Void>> {
         return webClient.put().uri(uriBuilder -> uriBuilder
                         .path(SKJERMINGOPPHOER_URL)
                         .pathSegment(ident)
-                        .queryParam(SKJERMING_TOM, tilDato.toLocalDate())
+                        .queryParam(SKJERMING_TOM, nonNull(tilDato) ? tilDato.toLocalDate() : null)
                         .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .retrieve()
