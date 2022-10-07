@@ -192,7 +192,7 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 
 	await testController
 		.click(ReactSelector('PdlPersonMiljoeInfo').findReact('DollyTooltip').withText('Q1'))
-		.wait(2500)
+		.wait(1500)
 
 	await testController
 		.expect(ReactSelector('AppError').exists)
