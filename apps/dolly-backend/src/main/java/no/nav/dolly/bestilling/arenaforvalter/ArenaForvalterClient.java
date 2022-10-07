@@ -54,47 +54,45 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            if (dollyPerson.isOpprettetIPDL()) {
-
-                var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
-
-                var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
-
-                availEnvironments.retainAll(bestilling.getEnvironments());
-
-                if (!availEnvironments.isEmpty()) {
-
-                    arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
-
-                    ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
-                    List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
-                    availEnvironments.forEach(environment -> {
-                        ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                        arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
-                        arenaNyBruker.setMiljoe(environment);
-                        arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
-
-                        if (!bestilling.getArenaforvalter().getDagpenger().isEmpty()) {
-                            ArenaDagpenger arenaDagpenger = mapperFacade.map(bestilling.getArenaforvalter(), ArenaDagpenger.class);
-                            arenaDagpenger.setPersonident(dollyPerson.getHovedperson());
-                            arenaDagpenger.setMiljoe(environment);
-                            dagpengerListe.add(arenaDagpenger);
-                        }
-                    });
-
-                    sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
-                    dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
-                }
-
-                if (status.length() > 1) {
-                    progress.setArenaforvalterStatus(status.substring(1));
-                }
-
-            } else {
-
+            if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
                         .collect(Collectors.joining(",")));
+                return;
+            }
+
+            var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
+
+            var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
+
+            availEnvironments.retainAll(bestilling.getEnvironments());
+
+            if (!availEnvironments.isEmpty()) {
+
+                arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
+
+                ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
+                List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
+                availEnvironments.forEach(environment -> {
+                    ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
+                    arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
+                    arenaNyBruker.setMiljoe(environment);
+                    arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
+
+                    if (!bestilling.getArenaforvalter().getDagpenger().isEmpty()) {
+                        ArenaDagpenger arenaDagpenger = mapperFacade.map(bestilling.getArenaforvalter(), ArenaDagpenger.class);
+                        arenaDagpenger.setPersonident(dollyPerson.getHovedperson());
+                        arenaDagpenger.setMiljoe(environment);
+                        dagpengerListe.add(arenaDagpenger);
+                    }
+                });
+
+                sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
+                dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
+            }
+
+            if (status.length() > 1) {
+                progress.setArenaforvalterStatus(status.substring(1));
             }
         }
     }

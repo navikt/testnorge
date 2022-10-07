@@ -49,52 +49,53 @@ public class DokarkivClient implements ClientRegister {
         if (nonNull(bestilling.getDokarkiv())) {
 
             StringBuilder status = new StringBuilder();
-            if (dollyPerson.isOpprettetIPDL()) {
 
-                DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
-
-                dollyPersonCache.fetchIfEmpty(dollyPerson);
-                dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
-                Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
-                if (isBlank(dokarkivRequest.getAvsenderMottaker().getId())) {
-                    dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
-                }
-                if (isBlank(dokarkivRequest.getAvsenderMottaker().getNavn())) {
-                    dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
-                }
-
-                bestilling.getEnvironments().stream()
-                        .filter(StringUtils::isNotBlank)
-                        .forEach(environment -> {
-
-                            if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
-
-                                var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
-                                if (nonNull(response) && isBlank(response.getFeilmelding())) {
-                                    status.append(',')
-                                            .append(environment)
-                                            .append(":OK");
-
-                                    saveTransaksjonId(response, dollyPerson.getHovedperson(),
-                                            progress.getBestilling().getId(), environment);
-                                } else {
-
-                                    status.append(',')
-                                            .append(environment)
-                                            .append(":FEIL=Teknisk feil se logg! ")
-                                            .append(nonNull(response) ?
-                                                    ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
-                                                    "UKJENT");
-                                }
-                            }
-                        });
-                progress.setDokarkivStatus(substring(status.toString(), 1));
-
-            } else {
+            if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setDokarkivStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
                         .collect(Collectors.joining(",")));
+                return;
             }
+
+            DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
+
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
+            dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
+            Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
+            if (isBlank(dokarkivRequest.getAvsenderMottaker().getId())) {
+                dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
+            }
+            if (isBlank(dokarkivRequest.getAvsenderMottaker().getNavn())) {
+                dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
+            }
+
+            bestilling.getEnvironments().stream()
+                    .filter(StringUtils::isNotBlank)
+                    .forEach(environment -> {
+
+                        if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
+
+                            var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
+                            if (nonNull(response) && isBlank(response.getFeilmelding())) {
+                                status.append(',')
+                                        .append(environment)
+                                        .append(":OK");
+
+                                saveTransaksjonId(response, dollyPerson.getHovedperson(),
+                                        progress.getBestilling().getId(), environment);
+                            } else {
+
+                                status.append(',')
+                                        .append(environment)
+                                        .append(":FEIL=Teknisk feil se logg! ")
+                                        .append(nonNull(response) ?
+                                                ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
+                                                "UKJENT");
+                            }
+                        }
+                    });
+
+            progress.setDokarkivStatus(substring(status.toString(), 1));
         }
     }
 

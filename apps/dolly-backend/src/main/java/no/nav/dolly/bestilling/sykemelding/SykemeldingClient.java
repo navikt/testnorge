@@ -53,34 +53,33 @@ public class SykemeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getSykemelding())) {
 
-            if (dollyPerson.isOpprettetIPDL()) {
-                try {
-                    dollyPersonCache.fetchIfEmpty(dollyPerson);
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setSykemeldingStatus(encodeStatus(getVarsel("Sykemelding")));
+                return;
+            }
 
-                    if (!transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) || isOpprettEndre) {
+            try {
+                dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-                        if (postSyntSykemelding(bestilling, dollyPerson)) {
-                            RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                            saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(),
-                                    progress.getBestilling().getId(), dollyPerson.getHovedperson());
+                if (!transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                        } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
-                            RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                            saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
-                                    progress.getBestilling().getId(), dollyPerson.getHovedperson());
-                        }
-                        progress.setSykemeldingStatus("OK");
+                    if (postSyntSykemelding(bestilling, dollyPerson)) {
+                        RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
+                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(),
+                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
+
+                    } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
+                        RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
+                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
+                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
                     }
-                } catch (RuntimeException e) {
-
-                    progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setSykemeldingStatus("OK");
                 }
+            } catch (RuntimeException e) {
 
-            } else {
-                progress.setInntektsmeldingStatus(encodeStatus(getVarsel("Sykemelding")));
+                progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
         }
-
     }
 
     @Override

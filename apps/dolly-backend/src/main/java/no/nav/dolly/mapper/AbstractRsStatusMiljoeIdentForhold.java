@@ -48,6 +48,7 @@ public class AbstractRsStatusMiljoeIdentForhold {
         return encodedMsg
                 .trim()
                 .replace(';', ',')
-                .replace('=', ':');
+                .replace('=', ':')
+                .replace('&', ',');
     }
 }

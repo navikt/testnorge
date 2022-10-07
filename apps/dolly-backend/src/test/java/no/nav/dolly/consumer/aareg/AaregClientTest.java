@@ -65,7 +65,8 @@ public class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+                DollyPerson.builder().hovedperson(IDENT)
+                        .opprettetIPDL(true).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
@@ -86,7 +87,8 @@ public class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+                DollyPerson.builder().hovedperson(IDENT)
+                        .opprettetIPDL(true).build(), new BestillingProgress(), false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
@@ -104,7 +106,8 @@ public class AaregClientTest {
                 .build()));
         request.setEnvironments(singletonList("u2"));
         aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+                DollyPerson.builder().hovedperson(IDENT)
+                        .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=0$OK")));
     }
@@ -121,7 +124,8 @@ public class AaregClientTest {
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .build()));
         request.setEnvironments(singletonList("u2"));
-        aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=0$OK")));
     }

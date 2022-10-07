@@ -25,24 +25,23 @@ public class KontoregisterClient implements ClientRegister {
 
         if (nonNull(bestilling.getBankkonto())) {
 
-            if (dollyPerson.isOpprettetIPDL()) {
-                if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
-                    progress.setKontoregisterStatus(
-                            kontoregisterConsumer
-                                    .sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto())
-                                    .block()
-                    );
-                }
-                if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
-                    progress.setKontoregisterStatus(
-                            kontoregisterConsumer
-                                    .sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getUtenlandskBankkonto())
-                                    .block()
-                    );
-                }
-            } else {
-
+            if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
+                return;
+            }
+            if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
+                progress.setKontoregisterStatus(
+                        kontoregisterConsumer
+                                .sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto())
+                                .block()
+                );
+            }
+            if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
+                progress.setKontoregisterStatus(
+                        kontoregisterConsumer
+                                .sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getUtenlandskBankkonto())
+                                .block()
+                );
             }
         } else if (nonNull(bestilling.getTpsMessaging())) {
             if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {

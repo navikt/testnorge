@@ -47,25 +47,26 @@ public class AaregClient implements ClientRegister {
 
         StringBuilder result = new StringBuilder();
 
-        if (dollyPerson.isOpprettetIPDL()) {
-            if (!bestilling.getAareg().isEmpty()) {
+        if (!bestilling.getAareg().isEmpty()) {
 
-                var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
-                miljoer.forEach(env -> {
-                    if (!bestilling.getAareg().get(0).getAmelding().isEmpty()) {
-                        ameldingService.sendAmelding(bestilling, dollyPerson, progress, result, env);
-                    } else {
-                        sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, result, env);
-                    }
-                });
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setAaregStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
+                        .collect(Collectors.joining(",")));
+                return;
             }
-            progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
 
-        } else {
-            progress.setAaregStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
-                    .collect(Collectors.joining(",")));
+            var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
+            miljoer.forEach(env -> {
+                if (!bestilling.getAareg().get(0).getAmelding().isEmpty()) {
+                    ameldingService.sendAmelding(bestilling, dollyPerson, progress, result, env);
+                } else {
+                    sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, result, env);
+                }
+            });
         }
+
+        progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
     @Override

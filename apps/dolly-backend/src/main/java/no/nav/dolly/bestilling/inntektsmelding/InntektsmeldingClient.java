@@ -43,25 +43,25 @@ public class InntektsmeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
-            if(dollyPerson.isOpprettetIPDL()) {
-
-                StringBuilder status = new StringBuilder();
-                InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
-                bestilling.getEnvironments().forEach(environment -> {
-
-                    inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
-                    inntektsmeldingRequest.setMiljoe(environment);
-                    postInntektsmelding(isOpprettEndre ||
-                                    !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
-                            inntektsmeldingRequest, progress.getBestilling().getId(), status);
-                });
-
-                progress.setInntektsmeldingStatus(status.toString());
-            } else {
+            if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
                         .collect(Collectors.joining(",")));
+                return;
             }
+
+            StringBuilder status = new StringBuilder();
+            InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
+            bestilling.getEnvironments().forEach(environment -> {
+
+                inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
+                inntektsmeldingRequest.setMiljoe(environment);
+                postInntektsmelding(isOpprettEndre ||
+                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
+                        inntektsmeldingRequest, progress.getBestilling().getId(), status);
+            });
+
+            progress.setInntektsmeldingStatus(status.toString());
         }
     }
 
