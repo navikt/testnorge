@@ -236,7 +236,7 @@ public class OrganisasjonBestillingService {
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
 
         var orgnumre = fetchOrganisasjonBestillingByBrukerId(brukerId).stream()
-                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert).reversed())
+                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert))
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
