@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import Loading from '~/components/ui/loading/Loading'
 import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -33,6 +32,7 @@ import {
 	statsborgerskap,
 } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '~/utils/YupValidations'
+import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -44,13 +44,6 @@ type VisningTypes = {
 	identtype?: string
 	disableSlett?: boolean
 	personFoerLeggTil?: any
-}
-
-enum Modus {
-	Les = 'LES',
-	Skriv = 'SKRIV',
-	LoadingPdlf = 'LOADING_PDLF',
-	LoadingPdl = 'LOADING_PDL',
 }
 
 enum Attributt {
@@ -256,8 +249,7 @@ export const VisningRedigerbar = ({
 
 	return (
 		<>
-			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
-			{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
+			<RedigerLoading visningModus={visningModus} />
 			{visningModus === Modus.Les && (
 				<>
 					{dataVisning}

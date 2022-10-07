@@ -15,6 +15,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -24,15 +25,6 @@ type VisningTypes = {
 	ident: string
 	alleSlettet: boolean
 	disableSlett: Function
-}
-
-enum Modus {
-	Les = 'LES',
-	Skriv = 'SKRIV',
-	LoadingPdlf = 'LOADING_PDLF',
-	LoadingPdl = 'LOADING_PDL',
-	LoadingPdlfSlett = 'LOADING_PDLF_SLETT',
-	LoadingPdlSlett = 'LOADING_PDL_SLETT',
 }
 
 enum Attributt {
@@ -196,15 +188,11 @@ export const VisningRedigerbarSamlet = ({
 	}
 	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
 
-	const loadingLabelPdlf = 'Oppdaterer PDL-forvalter...'
-	const loadingLabelPdl = 'Oppdaterer PDL...'
-
 	const disableIdx = disableSlett(_get(redigertAttributtListe, path) || initialValuesListe)
 
 	return (
 		<>
-			{visningModus === Modus.LoadingPdlf && <Loading label={loadingLabelPdlf} />}
-			{visningModus === Modus.LoadingPdl && <Loading label={loadingLabelPdl} />}
+			<RedigerLoading visningModus={visningModus} />
 			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
 				<DollyFieldArray data={initialValuesListe} header="" nested>
 					{(item: any, idx: number) => {
@@ -214,10 +202,10 @@ export const VisningRedigerbarSamlet = ({
 						return (
 							<React.Fragment key={idx}>
 								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label={loadingLabelPdlf} />
+									<Loading label={'Oppdaterer PDL-forvalter...'} />
 								)}
 								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
-									<Loading label={loadingLabelPdl} />
+									<Loading label={'Oppdaterer PDL...'} />
 								)}
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
