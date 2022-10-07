@@ -13,6 +13,7 @@ import _get from 'lodash/get'
 import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 import FileUpload from '@navikt/filopplasting'
+import { v4 as uuid } from 'uuid'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -65,7 +66,7 @@ enum Kodeverk {
 export const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
-	const sessionDokumenter = JSON.parse(sessionStorage.getItem('dokarkiv_vedlegg'))
+	const sessionDokumenter = _get(formikBag.values, 'dokarkiv.vedlegg')
 	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
 
@@ -97,16 +98,23 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 			: formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', skjema.data)
 	}
 
-	const handleVedleggChange = (filer: [Vedlegg]) => {
-		filer.map((fil) => {
-			const eksisterendeFil = files.find((file: Vedlegg) => file.id === fil.id && file.dokNavn)
-			if (eksisterendeFil) {
-				fil.dokNavn = eksisterendeFil.dokNavn
+	const handleNewFiles = (filer: [Vedlegg]) => {
+		const _uuid = uuid()
+		filer.map((f) => {
+			if (f.id.length != _uuid.length) {
+				f.id = _uuid
 			}
-			return fil
+			if (!f.dokNavn) {
+				f.dokNavn = f.name
+			}
 		})
+		const newFiles = (files || []).concat(filer)
+		handleVedleggChange(newFiles)
+	}
+
+	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
-		sessionStorage.setItem('dokarkiv_vedlegg', JSON.stringify(filer))
+		formikBag.setFieldValue('dokarkiv.vedlegg', filer)
 	}
 
 	return (
@@ -159,9 +167,10 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FilOpplaster
+							key={new Date().getTime()}
 							theme={'flexbox--full-width'}
-							files={files}
-							onFilesChanged={handleVedleggChange}
+							files={[]}
+							onFilesChanged={handleNewFiles}
 						/>
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />

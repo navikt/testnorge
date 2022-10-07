@@ -30,8 +30,10 @@ const extractFeilmelding = (stackTrace: string) => {
 
 const logout = (stackTrace: string) => {
 	const feilmelding = extractFeilmelding(stackTrace)
-	if (!runningTestcafe()) {logoutBruker(feilmelding)
-}}
+	if (!runningTestcafe()) {
+		logoutBruker(feilmelding)
+	}
+}
 
 export const App = () => {
 	const [criticalError, setCriticalError] = useState(null)

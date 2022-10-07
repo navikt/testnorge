@@ -40,15 +40,14 @@ export const DokumentInfoListe = ({ filer, handleChange }: Data) => {
 		)
 	}
 
-	const handleDelete = (file: Vedlegg) => {
-		handleChange(filer.filter((fil) => fil.id !== file.id))
-	}
+	const handleDeleteByIndex = (deleteIndex: number) =>
+		handleChange(filer.filter((fil, index) => index !== deleteIndex))
 
 	return (
 		<ErrorBoundary>
 			<DollyFieldArray data={filer} header={`Dokumentinfo`}>
 				{(fil: Vedlegg, index: number) => (
-					<div className="flexbox--space">
+					<div className="flexbox--space" key={fil.id + '-' + fil.dokNavn + '-' + fil.name}>
 						<PdfDocument file={'data:application/pdf;base64,' + fil.content.base64}>
 							<Page pageNumber={1} height={80} width={60} />
 						</PdfDocument>
@@ -61,7 +60,7 @@ export const DokumentInfoListe = ({ filer, handleChange }: Data) => {
 							onBlur={(event: BaseSyntheticEvent) => handleBlur(index, event.target.value)}
 							label={`Tittel på dokument #${index + 1}`}
 						/>
-						<StyledSlettKnapp kind="trashcan" onClick={() => handleDelete(fil)} />
+						<StyledSlettKnapp kind="trashcan" onClick={() => handleDeleteByIndex(index)} />
 					</div>
 				)}
 			</DollyFieldArray>
