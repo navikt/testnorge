@@ -19,7 +19,7 @@ const log = (
 		uuid: uuid || _uuid(),
 		rating: rating,
 		isAnonym: isAnonym,
-		brukerType: brukerType
+		brukerType: brukerType,
 	})
 }
 

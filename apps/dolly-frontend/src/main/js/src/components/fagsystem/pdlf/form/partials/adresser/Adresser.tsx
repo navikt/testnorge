@@ -3,9 +3,7 @@ import { Bostedsadresse } from '~/components/fagsystem/pdlf/form/partials/adress
 import { Oppholdsadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { Kontaktadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
-import {
-	Adressebeskyttelse
-} from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import { FormikProps } from 'formik'
 import Panel from '~/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'

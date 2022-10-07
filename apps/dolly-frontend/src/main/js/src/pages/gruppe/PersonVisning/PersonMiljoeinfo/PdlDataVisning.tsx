@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import Tooltip from 'rc-tooltip'
 import { useBoolean } from 'react-use'
 import { DollyApi } from '~/service/Api'
 import Icon from '~/components/ui/icon/Icon'
 import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
 import { Ident, PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import DollyTooltip from '~/components/ui/button/DollyTooltip'
 
 type PdlDataVisningProps = {
 	ident: Ident
@@ -56,34 +56,28 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<Tooltip
+			<DollyTooltip
 				overlay={getPersonInfo}
-				placement="top"
 				align={{
 					offset: [0, -10],
 				}}
-				mouseEnterDelay={0.1}
-				mouseLeaveDelay={0.1}
 				arrowContent={<div className="rc-tooltip-arrow-inner" />}
 				overlayStyle={{ opacity: 1 }}
 				destroyTooltipOnHide={{ keepParent: false }}
 			>
 				<div className="miljoe-knapp">PDL</div>
-			</Tooltip>
-			<Tooltip
+			</DollyTooltip>
+			<DollyTooltip
 				overlay={() => getPersonInfo('Q1')}
-				placement="top"
 				align={{
 					offset: [0, -10],
 				}}
-				mouseEnterDelay={0.1}
-				mouseLeaveDelay={0.1}
 				arrowContent={<div className="rc-tooltip-arrow-inner" />}
 				overlayStyle={{ opacity: 1 }}
 				destroyTooltipOnHide={{ keepParent: false }}
 			>
 				<div className="miljoe-knapp">Q1</div>
-			</Tooltip>
+			</DollyTooltip>
 		</div>
 	)
 }

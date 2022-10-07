@@ -4,7 +4,7 @@ import Logger from '~/logger'
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 
 export const runningTestcafe = () => {
-	return window.location.port?.match('54321')
+	return window?.hasOwnProperty('%testCafeAutomation%')
 }
 
 export default class Request {
