@@ -239,20 +239,20 @@ export const VisningRedigerbarPersondetaljer = ({
 		]
 	)
 
-	const harNavn = redigertAttributt
-		? redigertAttributt?.navn?.[0]?.fornavn ||
-		  redigertAttributt?.navn?.[0]?.mellomnavn ||
-		  redigertAttributt?.navn?.[0]?.etternavn
+	const harNavn = redigertAttributt?.pdlf
+		? redigertAttributt?.pdlf?.navn?.[0]?.fornavn ||
+		  redigertAttributt?.pdlf?.navn?.[0]?.mellomnavn ||
+		  redigertAttributt?.pdlf?.navn?.[0]?.etternavn
 		: initialValues?.navn?.[0]?.fornavn ||
 		  initialValues?.navn?.[0]?.mellomnavn ||
 		  initialValues?.navn?.[0]?.etternavn
 
-	const harKjoenn = redigertAttributt
-		? redigertAttributt?.kjoenn?.[0]?.kjoenn
+	const harKjoenn = redigertAttributt?.pdlf
+		? redigertAttributt?.pdlf?.kjoenn?.[0]?.kjoenn
 		: initialValues?.kjoenn?.[0]?.kjoenn
 
-	const harPersonstatus = redigertAttributt
-		? redigertAttributt?.folkeregisterpersonstatus?.[0]?.status
+	const harPersonstatus = redigertAttributt?.pdlf
+		? redigertAttributt?.pdlf?.folkeregisterpersonstatus?.[0]?.status
 		: initialValues?.folkeregisterpersonstatus?.[0]?.status
 
 	const harSkjerming = redigertAttributt?.skjermingsregister
@@ -360,7 +360,7 @@ export const VisningRedigerbarPersondetaljer = ({
 			)}
 			{visningModus === Modus.Skriv && (
 				<Formik
-					initialValues={redigertAttributt ? redigertAttributt : initialValues}
+					initialValues={redigertAttributt.pdlf ? redigertAttributt.pdlf : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
 					validationSchema={validationSchema}
