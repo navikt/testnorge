@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.aktoeridsyncservice.domain;
+package no.nav.dolly.bestilling.personservice.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;

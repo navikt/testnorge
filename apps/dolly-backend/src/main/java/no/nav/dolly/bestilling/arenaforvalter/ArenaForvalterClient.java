@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -51,6 +53,13 @@ public class ArenaForvalterClient implements ClientRegister {
         if (nonNull(bestilling.getArenaforvalter())) {
 
             StringBuilder status = new StringBuilder();
+
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
+                        .collect(Collectors.joining(",")));
+                return;
+            }
 
             var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
 

@@ -22,10 +22,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.substring;
 
@@ -46,6 +49,14 @@ public class DokarkivClient implements ClientRegister {
         if (nonNull(bestilling.getDokarkiv())) {
 
             StringBuilder status = new StringBuilder();
+
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setDokarkivStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
+                        .collect(Collectors.joining(",")));
+                return;
+            }
+
             DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
 
             dollyPersonCache.fetchIfEmpty(dollyPerson);
@@ -83,6 +94,7 @@ public class DokarkivClient implements ClientRegister {
                             }
                         }
                     });
+
             progress.setDokarkivStatus(substring(status.toString(), 1));
         }
     }

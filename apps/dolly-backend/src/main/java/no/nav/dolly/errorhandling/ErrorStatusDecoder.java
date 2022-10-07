@@ -20,12 +20,20 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ErrorStatusDecoder {
 
+    private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
+            "Forsøk gjenopprett for å fikse dette!";
+
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
     private static final String DETAILS = "details";
     private static final String FEIL = "Feil= ";
 
     private final ObjectMapper objectMapper;
+
+    public static String getVarsel(String system) {
+
+        return String.format(VARSEL, system);
+    }
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 

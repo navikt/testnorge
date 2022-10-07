@@ -66,4 +66,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-person-service.dev.intern.nav.no"
-    - "https://testnav-person-service.dev.adeo.no"

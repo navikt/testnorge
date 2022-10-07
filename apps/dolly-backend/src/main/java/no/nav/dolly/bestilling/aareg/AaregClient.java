@@ -22,11 +22,14 @@ import org.springframework.stereotype.Service;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtil.appendResult;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Order(6)
@@ -46,6 +49,13 @@ public class AaregClient implements ClientRegister {
 
         if (!bestilling.getAareg().isEmpty()) {
 
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setAaregStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
+                        .collect(Collectors.joining(",")));
+                return;
+            }
+
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
             miljoer.forEach(env -> {
                 if (!bestilling.getAareg().get(0).getAmelding().isEmpty()) {
@@ -55,6 +65,7 @@ public class AaregClient implements ClientRegister {
                 }
             });
         }
+
         progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
@@ -63,20 +74,20 @@ public class AaregClient implements ClientRegister {
 
         try {
             aaregConsumer.slettArbeidsforholdFraAlleMiljoer(identer)
-                .subscribe(response -> {
-                    var status = response.stream()
-                        .map(AaregResponse::getStatusPerMiljoe)
-                        .map(Map::values)
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .map(string -> string.replace("\n", ""))
-                        .toList();
-                    if (status.isEmpty()) {
-                        log.info("Sletting mot Aareg utført");
-                    } else {
-                        log.info("Sletting mot Aareg utført: {}", String.join("\n", status));
-                    }
-                });
+                    .subscribe(response -> {
+                        var status = response.stream()
+                                .map(AaregResponse::getStatusPerMiljoe)
+                                .map(Map::values)
+                                .flatMap(Collection::stream)
+                                .distinct()
+                                .map(string -> string.replace("\n", ""))
+                                .toList();
+                        if (status.isEmpty()) {
+                            log.info("Sletting mot Aareg utført");
+                        } else {
+                            log.info("Sletting mot Aareg utført: {}", String.join("\n", status));
+                        }
+                    });
 
         } catch (RuntimeException e) {
             log.error("Slettet fra aareg feilet: " + String.join(", ", identer));
@@ -90,21 +101,21 @@ public class AaregClient implements ClientRegister {
             MappingContext context = new MappingContext.Factory().getContext();
 
             List<Arbeidsforhold> arbeidsforholdRequest =
-                nonNull(bestilling.getAareg().get(0)) ? mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context) : emptyList();
+                    nonNull(bestilling.getAareg().get(0)) ? mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context) : emptyList();
             List<ArbeidsforholdResponse> eksisterendeArbeidsforhold = aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), env);
 
             List<Arbeidsforhold> arbeidsforhold = AaregUtil.merge(
-                arbeidsforholdRequest,
-                eksisterendeArbeidsforhold,
-                dollyPerson.getHovedperson(), isOpprettEndre);
+                    arbeidsforholdRequest,
+                    eksisterendeArbeidsforhold,
+                    dollyPerson.getHovedperson(), isOpprettEndre);
 
             arbeidsforhold.forEach(arbforhold -> {
                 AaregOpprettRequest aaregOpprettRequest = AaregOpprettRequest.builder()
-                    .arbeidsforhold(arbforhold)
-                    .environments(singletonList(env))
-                    .build();
+                        .arbeidsforhold(arbforhold)
+                        .environments(singletonList(env))
+                        .build();
                 aaregConsumer.opprettArbeidsforhold(aaregOpprettRequest).getStatusPerMiljoe().entrySet().forEach(entry ->
-                    appendResult(entry, arbforhold.getArbeidsforholdID(), result));
+                        appendResult(entry, arbforhold.getArbeidsforholdID(), result));
             });
 
             if (arbeidsforhold.isEmpty()) {

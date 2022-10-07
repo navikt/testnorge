@@ -71,17 +71,6 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .retrieve()
                 .bodyToMono(PdlAktoer.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
-                                "Feil ved henting av aktoer fra pdl. Feilmelding: {}.",
-                                ((WebClientResponseException) error).getResponseBodyAsString(),
-                                error
-                        );
-                    } else {
-                        log.error("Feil ved henting av aktoer fra pdl.", error);
-                    }
-                });
+                        .filter(WebClientFilter::is5xxException));
     }
 }
