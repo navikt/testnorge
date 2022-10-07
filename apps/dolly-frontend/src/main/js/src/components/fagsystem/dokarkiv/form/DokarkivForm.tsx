@@ -69,8 +69,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 	const sessionDokumenter = _get(formikBag.values, 'dokarkiv.vedlegg')
 	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
-
-	const [skjemaValues, setSkjemaValues] = useState(null)
+	const [skjemaValues, setSkjemaValues] = useState(_get(formikBag.values, 'dokarkiv.skjema'))
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
@@ -80,8 +79,11 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		if (!skjema) {
 			return
 		}
+
 		setSkjemaValues(skjema)
 		formikBag.setFieldValue('dokarkiv.tittel', skjema.data)
+		formikBag.setFieldValue('dokarkiv.skjema', skjema)
+
 		const dokumentVarianter = files.map((vedl: Vedlegg, index: number) => ({
 			tittel: vedl.dokNavn ? vedl.dokNavn : vedl.name,
 			brevkode: (index === 0 && skjema?.value) || undefined,
@@ -93,6 +95,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 				},
 			],
 		}))
+
 		dokumentVarianter.length > 0
 			? formikBag.setFieldValue('dokarkiv.dokumenter', dokumentVarianter)
 			: formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', skjema.data)
