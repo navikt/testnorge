@@ -18,6 +18,7 @@ import Loading from '~/components/ui/loading/Loading'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { Alert } from '@navikt/ds-react'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -96,6 +97,10 @@ const PersonKolonne = styled.div`
 	display: flex;
 	flex-direction: column;
 	width: 50%;
+	.navds-alert {
+		margin-left: 20px;
+		color: #368da8;
+	}
 	&&& {
 		div {
 			margin-right: 0;
@@ -197,6 +202,19 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 			getRelatertePersoner(identerNye, relatertePersonerHentet)
 		}
 		return relatertePersonerHentet
+	}
+
+	const harRelatertePersoner = (identer: Array<string>) => {
+		if (!identer || identer?.length < 1) {
+			return false
+		}
+		let relatert = false
+		identer.forEach((ident) => {
+			if (gruppeOptions.find((option: Option) => option.value === ident)?.relasjoner?.length > 0) {
+				relatert = true
+			}
+		})
+		return relatert
 	}
 
 	const mountedRef = useRef(true)
@@ -347,6 +365,12 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 
 										<PersonKolonne>
 											<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
+											{harRelatertePersoner(_get(formikBag.values, 'identer')) && (
+												<Alert variant="info" size="small" inline>
+													Du har valgt én eller flere personer som har relaterte personer. Disse vil
+													også flyttes.
+												</Alert>
+											)}
 											<ValgtePersonerList>
 												{_get(formikBag.values, 'identer')?.length > 0 ? (
 													<ul>
