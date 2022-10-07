@@ -10,6 +10,6 @@ export const clickAllSiblings = async (controller: TestController, selector: Sel
 
 export const scrollThroughPage = async (controller: TestController, timesToScroll: number) => {
 	for (let i = 0; i < timesToScroll; i++) {
-		await controller.scrollBy(0, 50).wait(50)
+		await controller.scrollBy(0, 70).wait(50)
 	}
 }

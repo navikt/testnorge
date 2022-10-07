@@ -7,7 +7,7 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
 	const mountedRef = useRef(true)
-	const dispatch = useDispatch();
+	const dispatch = useDispatch()
 
 	const execute = useCallback(() => {
 		const tpsMessaging = async () => {

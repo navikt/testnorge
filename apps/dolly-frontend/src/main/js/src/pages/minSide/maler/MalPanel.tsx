@@ -132,4 +132,4 @@ export const MalPanel = ({
 }
 
 const malerFiltrert = (malListe: Mal[], searchText: string) =>
-	malListe.filter((mal) => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))
+	malListe?.filter?.((mal) => mal.malNavn.toLowerCase().includes(searchText.toLowerCase()))

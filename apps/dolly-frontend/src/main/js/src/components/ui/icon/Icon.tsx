@@ -77,6 +77,7 @@ import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
 import ChildHalo from '~/assets/icons/custom/ChildHalo2.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
+import Testcafe from '~/assets/img/testcafe.png'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
 import RIP from '~/assets/icons/custom/RIP.svg'
@@ -154,6 +155,7 @@ export const icons = {
 	barn: Baby,
 	doedfoedt: ChildHalo,
 	dolly: Dolly,
+	testcafe: Testcafe,
 	pensjon: PiggyBank,
 	brreg: BrregLogo,
 	dokarkiv: Files,

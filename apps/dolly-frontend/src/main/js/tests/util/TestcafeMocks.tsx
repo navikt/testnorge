@@ -1,6 +1,6 @@
 export const gjeldendeProfilMock = {
-	visningsNavn: 'Cafe, Test',
-	epost: 'Testcafe@nav.no',
+	visningsNavn: 'BeASt, BugTerminator',
+	epost: 'BeASt@bugexterminator.no',
 	avdeling: '1234 Testytest',
 	organisasjon: 'TESTCAFE',
 	type: 'Testbruker',
@@ -8,9 +8,9 @@ export const gjeldendeProfilMock = {
 
 export const gjeldendeBrukerMock = {
 	brukerId: '1234-5678-12',
-	brukernavn: 'Cafe, Test',
+	brukernavn: 'BeASt, BugTerminator',
 	brukertype: 'BASIC',
-	epost: 'testcafe@nav.no',
+	epost: 'BeASt@bugexterminator.no',
 }
 
 export const kodeverkMock = {
@@ -24,6 +24,36 @@ export const kodeverkMock = {
 		},
 	],
 }
+
+export const brukerMalerMock = [
+	{
+		id: 1,
+		malNavn: 'beast maskinlæring',
+	},
+	{
+		id: 2,
+		malNavn: 'the cake is a lie',
+	},
+	{
+		id: 3,
+		malNavn: 'bugspedition',
+	},
+]
+
+export const brukerOrganisasjonMalerMock = [
+	{
+		id: 1,
+		malNavn: 'Organisasjon issues',
+	},
+	{
+		id: 2,
+		malNavn: 'Organisasjon issues #2',
+	},
+	{
+		id: 3,
+		malNavn: 'Organisasjon issues #3',
+	},
+]
 
 export const krrstubMock = {
 	id: 1,
@@ -41,7 +71,7 @@ export const backendTransaksjonMock = [
 		miljoe: 'q1',
 		transaksjonId: {
 			journalpostId: '999999999',
-			dokumentInfoId: '999999999',
+			dokumentInfoId: '888888888',
 		},
 		datoEndret: '2022-01-01T11:58:58.227916',
 	},
@@ -53,7 +83,7 @@ export const backendTransaksjonMock = [
 		miljoe: 'q2',
 		transaksjonId: {
 			journalpostId: '999999999',
-			dokumentInfoId: '999999999',
+			dokumentInfoId: '888888888',
 		},
 		datoEndret: '2022-01-01T11:58:59.289252',
 	},
@@ -97,6 +127,106 @@ export const aaregMock = [
 		innrapportertEtterAOrdningen: false,
 		permisjonPermitteringer: [],
 		type: 'forenkletOppgjoersordning',
+	},
+]
+
+export const tpsMessagingMock = [
+	{
+		miljoe: 'q1',
+		person: {
+			ident: '12345678912',
+			identtype: 'FNR',
+			kjonn: 'M',
+			fornavn: 'Cafe',
+			etternavn: 'Test',
+			forkortetNavn: 'Test Cafe',
+			statsborgerskap: {
+				statsborgerskap: 'NOR',
+				statsborgerskapRegdato: '1992-01-11T00:00:00',
+			},
+			spesregDato: '2022-01-01T10:23:34.609245681',
+			sivilstand: {
+				sivilstand: 'GIFT',
+				sivilstandRegdato: '2022-10-03T00:00:00',
+			},
+			egenAnsattDatoFom: '2022-10-03T00:00:00',
+			boadresse: {
+				adressetype: 'GATE',
+				kommunenr: '3819',
+				flyttedato: '1992-01-11T00:00:00',
+				postnr: '3697',
+				adresse: 'TESTEVEIEN',
+				husnummer: '2077',
+				gatekode: '01007',
+			},
+			relasjoner: [
+				{
+					personRelasjonMed: {
+						ident: '09876543210',
+						identtype: 'FNR',
+						kjonn: 'K',
+						fornavn: 'Relasjon',
+						etternavn: 'Test',
+						forkortetNavn: 'Test Relasjon',
+						statsborgerskap: {
+							statsborgerskap: 'NOR',
+							statsborgerskapRegdato: '1979-02-20T00:00:00',
+						},
+						spesregDato: '2022-10-06T10:23:34.609135334',
+						sivilstand: {
+							sivilstand: 'GIFT',
+							sivilstandRegdato: '2022-10-03T00:00:00',
+						},
+						gtRegel: 'A',
+						personStatus: 'BOSA',
+						importFra: 'TPS',
+					},
+					relasjonTypeNavn: 'PARTNER',
+				},
+				{
+					personRelasjonMed: {
+						ident: '23456789123',
+						identtype: 'FNR',
+						kjonn: 'K',
+						fornavn: 'Barn',
+						etternavn: 'Test',
+						forkortetNavn: 'Test Barn',
+						statsborgerskap: {
+							statsborgerskap: 'NOR',
+							statsborgerskapRegdato: '2020-01-21T00:00:00',
+						},
+						spesregDato: '2022-10-06T10:23:34.609153124',
+						sivilstand: {
+							sivilstand: 'UGIF',
+							sivilstandRegdato: '2020-01-21T00:00:00',
+						},
+						gtRegel: 'A',
+						personStatus: 'BOSA',
+						importFra: 'TPS',
+					},
+					relasjonTypeNavn: 'BARN',
+				},
+			],
+			sprakKode: 'AB',
+			gtType: 'KNR',
+			gtVerdi: '3819',
+			gtRegel: 'A',
+			personStatus: 'BOSA',
+			importFra: 'TPS',
+			telefonnumre: [
+				{
+					telefonnummer: '12345678',
+					landkode: '+376',
+					telefontype: 'MOBI',
+				},
+			],
+			bankkontonrNorsk: {
+				kontonummer: '0043.84.08177',
+				kontoRegdato: '2022-10-03T00:00:00',
+				tilfeldigKontonummer: null,
+			},
+		},
+		status: 'OK',
 	},
 ]
 
@@ -235,7 +365,7 @@ export const kontoregisterMock = {
 }
 
 export const joarkJournalpostMock = {
-	journalpostId: 123123123,
+	journalpostId: 999999999,
 	tittel: 'Syntetisk Inntektsmelding',
 	tema: 'Sykepenger',
 	avsenderMottaker: {
@@ -245,7 +375,7 @@ export const joarkJournalpostMock = {
 	},
 	dokumenter: [
 		{
-			dokumentInfoId: 231231231,
+			dokumentInfoId: 888888888,
 			tittel: 'Syntetisk Inntektsmelding',
 		},
 	],
@@ -351,12 +481,86 @@ export const backendBestillingerMock = [
 		antallIdenter: 1,
 		antallLevert: 1,
 		ferdig: true,
-		sistOppdatert: '2022-01-01T15:36:35.474418',
+		sistOppdatert: '2022-01-01T11:59:25.998969',
 		bruker: gjeldendeBrukerMock,
 		gruppeId: 1,
 		stoppet: false,
-		environments: [''],
+		environments: ['q1'],
 		status: [
+			{
+				id: 'TPS_MESSAGING',
+				navn: 'Meldinger til TPS',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'KRRSTUB',
+				navn: 'Digital kontaktinformasjon (DKIF)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'SIGRUNSTUB',
+				navn: 'Skatteinntekt grunnlag (SIGRUN)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'AAREG',
+				navn: 'Arbeidsregister (AAREG)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'ARENA',
+				navn: 'Arena fagsystem',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
 			{
 				id: 'PDL_FORVALTER',
 				navn: 'Persondataløsningen (PDL)',
@@ -367,8 +571,597 @@ export const backendBestillingerMock = [
 					},
 				],
 			},
+			{
+				id: 'INST2',
+				navn: 'Institusjonsopphold (INST2)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'UDISTUB',
+				navn: 'Utlendingsdirektoratet (UDI)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'INNTK',
+				navn: 'Inntektskomponenten (INNTK)',
+				statuser: [
+					{
+						melding: 'Kombinasjonen av feltene i inntekten er ikke gyldig',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'PEN_INNTEKT',
+				navn: 'Pensjonsopptjening (POPP)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'TP_FORVALTER',
+				navn: 'Tjenestepensjon (TP)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'PEN_FORVALTER',
+				navn: 'Pensjon (PEN)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'INNTKMELD',
+				navn: 'Inntektsmelding (ALTINN/JOARK)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'BRREGSTUB',
+				navn: 'Brønnøysundregistrene (BRREGSTUB)',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'DOKARKIV',
+				navn: 'Dokumentarkiv (JOARK)',
+				statuser: [
+					{
+						melding: 'OK',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['12345678912'],
+							},
+						],
+					},
+				],
+			},
+			{
+				id: 'SYKEMELDING',
+				navn: 'Testnorge Sykemelding',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'SKJERMINGSREGISTER',
+				navn: 'Skjermingsregisteret',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
+			{
+				id: 'KONTOREGISTER',
+				navn: 'Bankkontoregister',
+				statuser: [
+					{
+						melding: 'OK',
+						identer: ['12345678912'],
+					},
+				],
+			},
 		],
-		bestilling: {},
+		bestilling: {
+			krrstub: {
+				reservert: false,
+				mobil: '12345678',
+				epost: 'jiodjawsd@jidwa.no',
+				registrert: true,
+				sdpAdresse: 'sikkerdigipost@superdupersecure.no',
+				sdpLeverandoer: 1,
+				spraak: 'nb',
+			},
+			instdata: [
+				{
+					institusjonstype: 'AS',
+					startdato: '2022-09-27T00:00:00',
+				},
+			],
+			aareg: [
+				{
+					arbeidsforholdstype: 'forenkletOppgjoersordning',
+					ansettelsesPeriode: {
+						fom: '2002-10-03T00:00:00',
+					},
+					arbeidsavtale: {
+						yrke: '2521106',
+					},
+					arbeidsgiver: {
+						aktoertype: 'ORG',
+						orgnummer: '896929119',
+					},
+				},
+			],
+			sigrunstub: [
+				{
+					grunnlag: [
+						{
+							tekniskNavn: 'formuePrimaerbolig',
+							verdi: '12345',
+						},
+					],
+					inntektsaar: '2022',
+					svalbardGrunnlag: [],
+					tjeneste: 'BEREGNET_SKATT',
+				},
+			],
+			inntektstub: {
+				inntektsinformasjon: [
+					{
+						sisteAarMaaned: '2022-07',
+						opplysningspliktig: '963743254',
+						virksomhet: '947064649',
+						inntektsliste: [
+							{
+								inntektstype: 'LOENNSINNTEKT',
+								beloep: 13245,
+								inngaarIGrunnlagForTrekk: false,
+								utloeserArbeidsgiveravgift: false,
+								fordel: 'naturalytelse',
+								beskrivelse: 'losji',
+								antall: 2,
+							},
+						],
+					},
+				],
+			},
+			arenaforvalter: {
+				arenaBrukertype: 'MED_SERVICEBEHOV',
+				kvalifiseringsgruppe: 'IKVAL',
+				aap115: [
+					{
+						fraDato: '2022-09-26T00:00:00',
+					},
+				],
+				aap: [
+					{
+						fraDato: '2022-09-28T00:00:00',
+						tilDato: '2022-10-03T00:00:00',
+					},
+				],
+				dagpenger: [
+					{
+						rettighetKode: 'DAGO',
+						fraDato: '2022-08-09T00:00:00',
+						tilDato: '2022-08-18T00:00:00',
+					},
+				],
+			},
+			udistub: {
+				aliaser: [
+					{
+						nyIdent: false,
+					},
+				],
+				arbeidsadgang: {
+					harArbeidsAdgang: 'JA',
+					periode: {},
+					typeArbeidsadgang: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER',
+					hjemmel: 'kapplah',
+				},
+				oppholdStatus: {
+					eosEllerEFTAVedtakOmVarigOppholdsrett: 'VARIG',
+					eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {},
+				},
+				flyktning: true,
+				soeknadOmBeskyttelseUnderBehandling: 'NEI',
+			},
+			pensjonforvalter: {
+				inntekt: {
+					fomAar: 2012,
+					tomAar: 2018,
+					belop: 12345,
+					redusertMedGrunnbelop: true,
+				},
+				tp: [
+					{
+						ordning: '3010',
+						ytelser: [
+							{
+								type: 'ALDER',
+								datoInnmeldtYtelseFom: '2022-09-03',
+								datoYtelseIverksattFom: '2022-09-03',
+							},
+						],
+					},
+				],
+			},
+			inntektsmelding: {
+				inntekter: [
+					{
+						aarsakTilInnsending: 'NY',
+						arbeidsforhold: {
+							arbeidsforholdId: '',
+							beregnetInntekt: {
+								beloep: 12345,
+							},
+						},
+						arbeidsgiver: {
+							virksomhetsnummer: '947064649',
+						},
+						avsendersystem: {
+							innsendingstidspunkt: '2022-10-03T11:48:20',
+						},
+						naerRelasjon: false,
+						refusjon: {},
+						sykepengerIArbeidsgiverperioden: {},
+						ytelse: 'SYKEPENGER',
+					},
+				],
+				joarkMetadata: {
+					tema: 'SYK',
+				},
+			},
+			brregstub: {
+				enheter: [
+					{
+						foretaksNavn: {
+							navn1: 'Mitt helt eget selskap',
+						},
+						forretningsAdresse: {
+							adresse1: 'Sokndalsveien 51',
+							kommunenr: '1101',
+							landKode: 'NO',
+							postnr: '4372',
+							poststed: 'EGERSUND',
+						},
+						orgNr: 905203975,
+						registreringsdato: '2022-10-03T11:48:27',
+						rolle: 'BOBE',
+						personroller: [],
+					},
+				],
+				understatuser: [0],
+			},
+			dokarkiv: {
+				tittel: 'Anke',
+				tema: 'AGR',
+				kanal: 'NAV_NO',
+				avsenderMottaker: {
+					id: '12345678912',
+					idType: 'FNR',
+				},
+				dokumenter: [
+					{
+						tittel: 'Anke',
+						brevkode: 'NAV 90-00.08 A',
+					},
+				],
+			},
+			sykemelding: {
+				syntSykemelding: {
+					orgnummer: '947064649',
+					startDato: '2022-10-03T11:48:22',
+				},
+			},
+			pdldata: {
+				opprettNyPerson: {
+					identtype: 'FNR',
+					alder: 30,
+				},
+				person: {
+					navn: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							hasMellomnavn: false,
+						},
+					],
+					forelderBarnRelasjon: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							minRolleForPerson: 'FORELDER',
+							relatertPersonsRolle: 'BARN',
+							partnerErIkkeForelder: false,
+						},
+					],
+					sivilstand: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							type: 'GIFT',
+							borIkkeSammen: false,
+							nyRelatertPerson: {
+								syntetisk: true,
+								nyttNavn: {
+									hasMellomnavn: false,
+								},
+							},
+						},
+					],
+					doedsfall: [
+						{
+							kilde: 'Dolly',
+							master: 'PDL',
+							doedsdato: '2022-09-29T11:46:47',
+						},
+					],
+					bostedsadresse: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							gyldigFraOgMed: '2022-09-26T01:00:00',
+							vegadresse: {
+								postnummer: '7318',
+							},
+						},
+					],
+					kontaktadresse: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+						},
+					],
+					kjoenn: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							kjoenn: 'MANN',
+						},
+					],
+					oppholdsadresse: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+						},
+					],
+					innflytting: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							fraflyttingsland: 'AGO',
+							fraflyttingsstedIUtlandet: '',
+							innflyttingsdato: '2004-10-06T00:00:00',
+						},
+					],
+					utflytting: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							tilflyttingsland: 'BTN',
+							tilflyttingsstedIUtlandet: '',
+							utflyttingsdato: '2019-10-17T00:00:00',
+						},
+					],
+					foreldreansvar: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							ansvar: 'ANDRE',
+						},
+					],
+					kontaktinformasjonForDoedsbo: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							skifteform: 'OFFENTLIG',
+							attestutstedelsesdato: '2022-09-07T00:00:00',
+							adresse: {
+								adresselinje1: '',
+								adresselinje2: '',
+								postnummer: '',
+								poststedsnavn: '',
+								landkode: '',
+							},
+							organisasjonSomKontakt: {
+								kontaktperson: {
+									etternavn: 'KATALYSATOR',
+									fornavn: 'NONFIGURATIV',
+									mellomnavn: 'REFLEKTERENDE',
+								},
+								organisasjonsnavn: 'Sjokkerende elektriker',
+								organisasjonsnummer: '947064649',
+							},
+						},
+					],
+					utenlandskIdentifikasjonsnummer: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							identifikasjonsnummer: '12345',
+							opphoert: false,
+							utstederland: 'AND',
+						},
+					],
+					falskIdentitet: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							erFalsk: true,
+						},
+					],
+					adressebeskyttelse: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							gradering: 'FORTROLIG',
+						},
+					],
+					tilrettelagtKommunikasjon: [
+						{
+							kilde: 'Dolly',
+							master: 'PDL',
+							spraakForTaletolk: 'AZ',
+							spraakForTegnspraakTolk: 'ES',
+						},
+					],
+					statsborgerskap: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							landkode: 'DZA',
+						},
+					],
+					opphold: [
+						{
+							type: 'OPPLYSNING_MANGLER',
+						},
+					],
+					telefonnummer: [
+						{
+							kilde: 'Dolly',
+							master: 'PDL',
+							landskode: '+376',
+							nummer: '12345678',
+							prioritet: 1,
+						},
+					],
+					fullmakt: [
+						{
+							kilde: 'Dolly',
+							master: 'PDL',
+							nyFullmektig: {
+								nyttNavn: {
+									hasMellomnavn: false,
+								},
+							},
+							gyldigFraOgMed: '2022-09-26T00:00:00',
+							gyldigTilOgMed: '2022-10-28T00:00:00',
+							omraader: ['AAR'],
+						},
+					],
+					vergemaal: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							vergemaalEmbete: 'FMIN',
+							sakType: 'ANN',
+							nyVergeIdent: {
+								syntetisk: true,
+								nyttNavn: {
+									hasMellomnavn: false,
+								},
+							},
+						},
+					],
+					sikkerhetstiltak: [
+						{
+							kilde: 'Dolly',
+							master: 'PDL',
+							tiltakstype: 'TFUS',
+							beskrivelse: 'Telefonisk utestengelse',
+							kontaktperson: {
+								personident: 'Z577742',
+								enhet: '0211',
+							},
+							gyldigFraOgMed: '2022-10-03T00:00:00',
+							gyldigTilOgMed: '2022-11-16T00:00:00',
+						},
+					],
+					nyident: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							syntetisk: true,
+							nyttNavn: {
+								hasMellomnavn: false,
+							},
+						},
+					],
+					doedfoedtBarn: [
+						{
+							kilde: 'Dolly',
+							master: 'FREG',
+							dato: '2022-01-01T11:46:47',
+						},
+					],
+				},
+			},
+			tpsMessaging: {
+				spraakKode: 'AB',
+			},
+			bankkonto: {
+				norskBankkonto: {
+					kontonummer: '99999999999',
+					tilfeldigKontonummer: false,
+				},
+			},
+			skjerming: {
+				egenAnsattDatoFom: '2022-10-03T11:48:14',
+			},
+		},
 	},
 	{
 		id: 2,
@@ -410,14 +1203,6 @@ export const backendBestillingerMock = [
 						detaljert: [
 							{
 								miljo: 'q1',
-								identer: ['01418221999'],
-							},
-							{
-								miljo: 'q2',
-								identer: ['01418221999'],
-							},
-							{
-								miljo: 'q4',
 								identer: ['01418221999'],
 							},
 						],

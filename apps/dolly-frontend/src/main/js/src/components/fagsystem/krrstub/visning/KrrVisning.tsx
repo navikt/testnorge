@@ -55,9 +55,10 @@ type SdpLeverandoer = {
 export const Visning = ({ data }: VisningProps) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const [deleted, setDeleted] = useBoolean(false)
-	const disableSlett = !data.id;
+	const disableSlett = !data.id
 
-	const handleDelete = (data: Data) => KrrApi.slettKontaktinformasjon(data.id).then( () => setDeleted() )
+	const handleDelete = (data: Data) =>
+		KrrApi.slettKontaktinformasjon(data.id).then(() => setDeleted())
 
 	if (deleted) {
 		return null
@@ -117,7 +118,9 @@ export const Visning = ({ data }: VisningProps) => {
 										<div className="slettModal slettModal-content">
 											<Icon size={50} kind="report-problem-circle" />
 											<h1>Sletting</h1>
-											<h4>Er du sikker på at du vil slette denne kontaktinformasjon fra personen?</h4>
+											<h4>
+												Er du sikker på at du vil slette denne kontaktinformasjon fra personen?
+											</h4>
 										</div>
 										<div className="slettModal-actions">
 											<NavButton onClick={closeModal}>Nei</NavButton>

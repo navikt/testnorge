@@ -1,5 +1,3 @@
-// noinspection TypeScriptValidateTypes
-
 import { RequestMock } from 'testcafe'
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
 import {
@@ -7,6 +5,8 @@ import {
 	backendBestillingerMock,
 	backendTransaksjonMock,
 	brregstubMock,
+	brukerMalerMock,
+	brukerOrganisasjonMalerMock,
 	gjeldendeBrukerMock,
 	gjeldendeGruppeMock,
 	gjeldendeProfilMock,
@@ -16,25 +16,27 @@ import {
 	kodeverkMock,
 	kontoregisterMock,
 	krrstubMock,
-	malerMock,
 	miljoeMock,
 	nyGruppeMock,
 	pensjonMock,
 	sigrunstubMock,
 	skjermingMock,
+	tpsMessagingMock,
 	udistubMock,
 } from './util/TestcafeMocks'
-import { pdlBulkpersonerMock, pdlForvalterMock } from './util/TestcafePdlMocks'
+import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from './util/TestcafePdlMocks'
 import { scrollThroughPage } from './util/TestcafeUtils'
 
 const miljoer = new RegExp(/\/miljoer/)
 const current = new RegExp(/current/)
-const profil = new RegExp(/\/profil/)
-const bilde = new RegExp(/\/bilde/)
+const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
+const profil = new RegExp(/testnorge-profil-api\/api\/v1\/profil$/)
 const hentGrupper = new RegExp(/gruppe\?brukerId/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
 const pdlPersonBolk = new RegExp(/\/api\/v1\/pdlperson\/identer/)
+const pdlPersonEnkelt = new RegExp(/dolly-backend\/api\/v1\/pdlperson\/ident/)
+const tpsMessaging = new RegExp(/testnav-tps-messaging-service\/api\/v1\/personer/)
 const pdlForvalter = new RegExp(/testnav-pdl-forvalter\/api\/v1\/personer/)
 const spesifikkGruppe = new RegExp(/\/gruppe$/)
 const kontoregister = new RegExp(/testnav-kontoregister-person-proxy\/api/)
@@ -49,7 +51,10 @@ const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2\/sdp/)
 const udistub = new RegExp(/dolly-backend\/api\/v1\/udistub/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
-const bestillingMaler = new RegExp(/\/bestilling\/malbestilling/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\/bruker\?/)
+const brukerOrganisasjonMaler = new RegExp(
+	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\/bruker\?/
+)
 const joarkDokJournalpost = new RegExp(/testnav-joark-dokument-service\/api\/v2\/journalpost/)
 const joarkDokDokument = new RegExp(/dokumentType=ORIGINAL/)
 
@@ -71,11 +76,11 @@ const cookieMock = RequestMock()
 	.onRequestTo(profil)
 	.respond(gjeldendeProfilMock, 200)
 	.onRequestTo(bilde)
-	.respond(null, 404)
-	.onRequestTo(bestillingMaler)
-	.respond(malerMock, 200)
+	.respond(undefined, 404)
 	.onRequestTo(pdlPersonBolk)
 	.respond(pdlBulkpersonerMock, 200)
+	.onRequestTo(pdlPersonEnkelt)
+	.respond(pdlPersonEnkeltMock, 200)
 	.onRequestTo(pdlForvalter)
 	.respond(pdlForvalterMock, 200)
 	.onRequestTo(kontoregister)
@@ -84,6 +89,10 @@ const cookieMock = RequestMock()
 	.respond({}, 200)
 	.onRequestTo(backendTransaksjon)
 	.respond(backendTransaksjonMock, 200)
+	.onRequestTo(brukerMaler)
+	.respond(brukerMalerMock, 200)
+	.onRequestTo(brukerOrganisasjonMaler)
+	.respond(brukerOrganisasjonMalerMock, 200)
 	.onRequestTo(brregstub)
 	.respond(brregstubMock, 200)
 	.onRequestTo(joarkDokJournalpost)
@@ -94,6 +103,8 @@ const cookieMock = RequestMock()
 	.respond(krrstubMock, 200)
 	.onRequestTo(aareg)
 	.respond(aaregMock, 200)
+	.onRequestTo(tpsMessaging)
+	.respond(tpsMessagingMock, 200)
 	.onRequestTo(skjerming)
 	.respond(skjermingMock, 200)
 	.onRequestTo(inst)
@@ -111,6 +122,34 @@ const cookieMock = RequestMock()
 
 fixture`Visning`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
+})
+
+test('Naviger til min side og test mal funksjonalitet', async (testController) => {
+	await testController
+		.click(ReactSelector('NavLink').withKey('naviger-minside'))
+		.wait(1000)
+		.typeText(ReactSelector('SearchField'), 'org')
+
+	await testController
+		.expect(ReactSelector('AppError').exists)
+		.eql(
+			false,
+			'ErrorBoundary utløst, en komponent kaster Error under visning av bestillingsstatus'
+		)
+		.expect(
+			ReactSelector('MalPanel')
+				.withText('Organisasjoner')
+				.findReact('ExpandButton')
+				.getReact(({ props }) => props.expanded)
+		)
+		.eql(true, 'Maler checkbox på opprett person ble ikke expanded etter søk.')
+
+	await testController
+		.expect(ReactSelector('AppError').exists)
+		.eql(
+			false,
+			'ErrorBoundary utløst, en komponent kaster Error under visning av bestillingsstatus'
+		)
 })
 
 test('Naviger til bestilling tab ved hjelp av keyboard og åpne bestilling med tre forskjellige statuser', async (testController) => {
@@ -139,9 +178,23 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 		.click(ReactSelector('TableRow').withKey('12345678912'))
 		.wait(1500)
 
-	await scrollThroughPage(testController, 60)
+	await scrollThroughPage(testController, 90)
 
 	await testController
 		.expect(ReactSelector('AppError').exists)
 		.eql(false, 'ErrorBoundary utløst, en komponent kaster Error under visning av ident')
+
+	await testController.click(ReactSelector('TpsDataVisning').findReact('DollyTooltip')).wait(1500)
+
+	await testController
+		.expect(ReactSelector('AppError').exists)
+		.eql(false, 'ErrorBoundary utløst, Error under visning av TPS miljø info')
+
+	await testController
+		.click(ReactSelector('PdlPersonMiljoeInfo').findReact('DollyTooltip').withText('Q1'))
+		.wait(2500)
+
+	await testController
+		.expect(ReactSelector('AppError').exists)
+		.eql(false, 'ErrorBoundary utløst, Error under visning av PDL miljø info')
 })
