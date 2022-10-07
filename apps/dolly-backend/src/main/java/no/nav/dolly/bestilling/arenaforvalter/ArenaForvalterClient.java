@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -52,38 +54,47 @@ public class ArenaForvalterClient implements ClientRegister {
 
             StringBuilder status = new StringBuilder();
 
-            var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
+            if (dollyPerson.isOpprettetIPDL()) {
 
-            var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
+                var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
 
-            availEnvironments.retainAll(bestilling.getEnvironments());
+                var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
 
-            if (!availEnvironments.isEmpty()) {
+                availEnvironments.retainAll(bestilling.getEnvironments());
 
-                arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
+                if (!availEnvironments.isEmpty()) {
 
-                ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
-                List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
-                availEnvironments.forEach(environment -> {
-                    ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                    arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
-                    arenaNyBruker.setMiljoe(environment);
-                    arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
+                    arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
 
-                    if (!bestilling.getArenaforvalter().getDagpenger().isEmpty()) {
-                        ArenaDagpenger arenaDagpenger = mapperFacade.map(bestilling.getArenaforvalter(), ArenaDagpenger.class);
-                        arenaDagpenger.setPersonident(dollyPerson.getHovedperson());
-                        arenaDagpenger.setMiljoe(environment);
-                        dagpengerListe.add(arenaDagpenger);
-                    }
-                });
+                    ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
+                    List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
+                    availEnvironments.forEach(environment -> {
+                        ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
+                        arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
+                        arenaNyBruker.setMiljoe(environment);
+                        arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
 
-                sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
-                dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
-            }
+                        if (!bestilling.getArenaforvalter().getDagpenger().isEmpty()) {
+                            ArenaDagpenger arenaDagpenger = mapperFacade.map(bestilling.getArenaforvalter(), ArenaDagpenger.class);
+                            arenaDagpenger.setPersonident(dollyPerson.getHovedperson());
+                            arenaDagpenger.setMiljoe(environment);
+                            dagpengerListe.add(arenaDagpenger);
+                        }
+                    });
 
-            if (status.length() > 1) {
-                progress.setArenaforvalterStatus(status.substring(1));
+                    sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
+                    dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
+                }
+
+                if (status.length() > 1) {
+                    progress.setArenaforvalterStatus(status.substring(1));
+                }
+
+            } else {
+
+                progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
+                        .collect(Collectors.joining(",")));
             }
         }
     }

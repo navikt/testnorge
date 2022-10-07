@@ -22,10 +22,13 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.substring;
 
@@ -46,44 +49,52 @@ public class DokarkivClient implements ClientRegister {
         if (nonNull(bestilling.getDokarkiv())) {
 
             StringBuilder status = new StringBuilder();
-            DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
+            if (dollyPerson.isOpprettetIPDL()) {
 
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-            dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
-            Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
-            if (isBlank(dokarkivRequest.getAvsenderMottaker().getId())) {
-                dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
-            }
-            if (isBlank(dokarkivRequest.getAvsenderMottaker().getNavn())) {
-                dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
-            }
+                DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
 
-            bestilling.getEnvironments().stream()
-                    .filter(StringUtils::isNotBlank)
-                    .forEach(environment -> {
+                dollyPersonCache.fetchIfEmpty(dollyPerson);
+                dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
+                Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
+                if (isBlank(dokarkivRequest.getAvsenderMottaker().getId())) {
+                    dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
+                }
+                if (isBlank(dokarkivRequest.getAvsenderMottaker().getNavn())) {
+                    dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
+                }
 
-                        if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
+                bestilling.getEnvironments().stream()
+                        .filter(StringUtils::isNotBlank)
+                        .forEach(environment -> {
 
-                            var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
-                            if (nonNull(response) && isBlank(response.getFeilmelding())) {
-                                status.append(',')
-                                        .append(environment)
-                                        .append(":OK");
+                            if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
 
-                                saveTransaksjonId(response, dollyPerson.getHovedperson(),
-                                        progress.getBestilling().getId(), environment);
-                            } else {
+                                var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
+                                if (nonNull(response) && isBlank(response.getFeilmelding())) {
+                                    status.append(',')
+                                            .append(environment)
+                                            .append(":OK");
 
-                                status.append(',')
-                                        .append(environment)
-                                        .append(":FEIL=Teknisk feil se logg! ")
-                                        .append(nonNull(response) ?
-                                                ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
-                                                "UKJENT");
+                                    saveTransaksjonId(response, dollyPerson.getHovedperson(),
+                                            progress.getBestilling().getId(), environment);
+                                } else {
+
+                                    status.append(',')
+                                            .append(environment)
+                                            .append(":FEIL=Teknisk feil se logg! ")
+                                            .append(nonNull(response) ?
+                                                    ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
+                                                    "UKJENT");
+                                }
                             }
-                        }
-                    });
-            progress.setDokarkivStatus(substring(status.toString(), 1));
+                        });
+                progress.setDokarkivStatus(substring(status.toString(), 1));
+
+            } else {
+                progress.setDokarkivStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
+                        .collect(Collectors.joining(",")));
+            }
         }
     }
 

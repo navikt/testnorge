@@ -32,9 +32,10 @@ public class PersonServiceClient implements ClientRegister {
         var count = 0;
 
         var startTime = now();
+        boolean isPerson = false;
         try {
             while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED &&
-                    !personServiceConsumer.isPerson(dollyPerson.getHovedperson())) {
+                    !(isPerson = personServiceConsumer.isPerson(dollyPerson.getHovedperson()))) {
                 Thread.sleep(TIMEOUT);
             }
 
@@ -44,14 +45,19 @@ public class PersonServiceClient implements ClientRegister {
 
         } catch (RuntimeException e) {
             log.error("Feilet å sjekke om person finnes for ident {}.", dollyPerson.getHovedperson(), e);
+
+        } finally {
+
+            dollyPerson.setOpprettetIPDL(isPerson);
         }
 
         if (count < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED) {
             log.info("Synkronisering mot PersonService (isPerson) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
         } else {
-            log.warn("Synkronisering mot PersonService (isPerson) gitt opp etter {} ms.",
+            log.error("Synkronisering mot PersonService (isPerson) gitt opp etter {} ms.",
                     ChronoUnit.MILLIS.between(startTime, now()));
         }
+
     }
 
     @Override

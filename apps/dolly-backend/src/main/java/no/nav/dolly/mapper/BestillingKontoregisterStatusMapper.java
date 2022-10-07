@@ -14,6 +14,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.KONTOREGISTER;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static no.nav.dolly.util.ListUtil.listOf;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -36,7 +37,7 @@ public final class BestillingKontoregisterStatusMapper {
         return statusMap.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(KONTOREGISTER).navn(KONTOREGISTER.getBeskrivelse())
                         .statuser(statusMap.entrySet().stream().map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey())
+                                        .melding(decodeMsg(entry.getKey()))
                                         .identer(entry.getValue())
                                         .build())
                                 .collect(Collectors.toList()))

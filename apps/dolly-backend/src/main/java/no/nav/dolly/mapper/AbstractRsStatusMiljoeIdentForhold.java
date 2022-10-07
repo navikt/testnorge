@@ -22,12 +22,12 @@ public class AbstractRsStatusMiljoeIdentForhold {
         if (errMsg.contains("$")) {
             String[] forholdStatus = errMsg.split("\\$");
             String forhold = forholdStatus[0];
-            status = (forholdStatus.length > 1 ? forholdStatus[1] : "").replace('&', ',').replace('=', ':');
+            status = decodeMsg(forholdStatus.length > 1 ? forholdStatus[1] : "");
             if (!OK_RESULT.equals(status)) {
                 status = format("%s: %s", forhold, status);
             }
         } else {
-            status = errMsg.replace('&', ',').replace('=', ':');
+            status = decodeMsg(errMsg);
         }
 
         if (statusEnvIdents.containsKey(status)) {
@@ -41,5 +41,13 @@ public class AbstractRsStatusMiljoeIdentForhold {
             envIdent.put(environ, new HashSet<>(Set.of(ident)));
             statusEnvIdents.put(status, envIdent);
         }
+    }
+
+    public static String decodeMsg(String encodedMsg) {
+
+        return encodedMsg
+                .trim()
+                .replace(';', ',')
+                .replace('=', ':');
     }
 }

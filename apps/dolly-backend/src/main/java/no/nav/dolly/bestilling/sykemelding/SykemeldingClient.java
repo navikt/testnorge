@@ -30,6 +30,8 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -51,26 +53,31 @@ public class SykemeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getSykemelding())) {
 
-            try {
-                dollyPersonCache.fetchIfEmpty(dollyPerson);
+            if (dollyPerson.isOpprettetIPDL()) {
+                try {
+                    dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-                if (!transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) || isOpprettEndre) {
+                    if (!transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) || isOpprettEndre) {
 
-                    if (postSyntSykemelding(bestilling, dollyPerson)) {
-                        RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(),
-                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
+                        if (postSyntSykemelding(bestilling, dollyPerson)) {
+                            RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
+                            saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(),
+                                    progress.getBestilling().getId(), dollyPerson.getHovedperson());
 
-                    } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
-                        RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
-                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
+                        } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
+                            RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
+                            saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
+                                    progress.getBestilling().getId(), dollyPerson.getHovedperson());
+                        }
+                        progress.setSykemeldingStatus("OK");
                     }
-                    progress.setSykemeldingStatus("OK");
-                }
-            } catch (RuntimeException e) {
+                } catch (RuntimeException e) {
 
-                progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
+                }
+
+            } else {
+                progress.setInntektsmeldingStatus(encodeStatus(getVarsel("Sykemelding")));
             }
         }
 
@@ -86,9 +93,9 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = dollyPerson.getPerson(dollyPerson.getHovedperson());
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                    .person(pasient)
-                    .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                    .build(),
+                            .person(pasient)
+                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
+                            .build(),
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);

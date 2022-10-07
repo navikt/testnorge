@@ -17,6 +17,7 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingInntektsmeldingStatusMapper {
@@ -29,9 +30,9 @@ public final class BestillingInntektsmeldingStatusMapper {
         progressList.forEach(progress -> {
             if (nonNull(progress.getInntektsmeldingStatus())) {
                 List.of(progress.getInntektsmeldingStatus().split(",")).forEach(status -> {
-                    String[] environErrMsg = status.split(":", 2);
-                    String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("&", ",") : "";
+                    var environErrMsg = status.split(":", 2);
+                    var environ = environErrMsg[0];
+                    var errMsg = decodeMsg(environErrMsg.length > 1 ? environErrMsg[1] : "");
                     checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
                 });
             }

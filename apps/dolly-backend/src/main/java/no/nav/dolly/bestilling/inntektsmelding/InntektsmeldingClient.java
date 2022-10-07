@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -41,18 +43,25 @@ public class InntektsmeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
-            StringBuilder status = new StringBuilder();
-            InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
-            bestilling.getEnvironments().forEach(environment -> {
+            if(dollyPerson.isOpprettetIPDL()) {
 
-                inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
-                inntektsmeldingRequest.setMiljoe(environment);
-                postInntektsmelding(isOpprettEndre ||
-                        !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
-                        inntektsmeldingRequest, progress.getBestilling().getId(), status);
-            });
+                StringBuilder status = new StringBuilder();
+                InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
+                bestilling.getEnvironments().forEach(environment -> {
 
-            progress.setInntektsmeldingStatus(status.toString());
+                    inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
+                    inntektsmeldingRequest.setMiljoe(environment);
+                    postInntektsmelding(isOpprettEndre ||
+                                    !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
+                            inntektsmeldingRequest, progress.getBestilling().getId(), status);
+                });
+
+                progress.setInntektsmeldingStatus(status.toString());
+            } else {
+                progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
+                        .collect(Collectors.joining(",")));
+            }
         }
     }
 

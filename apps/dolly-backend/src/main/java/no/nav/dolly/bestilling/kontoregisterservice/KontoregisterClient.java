@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -20,20 +22,27 @@ public class KontoregisterClient implements ClientRegister {
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+
         if (nonNull(bestilling.getBankkonto())) {
-            if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
-                progress.setKontoregisterStatus(
-                        kontoregisterConsumer
-                                .sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto())
-                                .block()
-                );
-            }
-            if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
-                progress.setKontoregisterStatus(
-                        kontoregisterConsumer
-                                .sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getUtenlandskBankkonto())
-                                .block()
-                );
+
+            if (dollyPerson.isOpprettetIPDL()) {
+                if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
+                    progress.setKontoregisterStatus(
+                            kontoregisterConsumer
+                                    .sendNorskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getNorskBankkonto())
+                                    .block()
+                    );
+                }
+                if (nonNull(bestilling.getBankkonto().getUtenlandskBankkonto())) {
+                    progress.setKontoregisterStatus(
+                            kontoregisterConsumer
+                                    .sendUtenlandskBankkontoRequest(dollyPerson.getHovedperson(), bestilling.getBankkonto().getUtenlandskBankkonto())
+                                    .block()
+                    );
+                }
+            } else {
+
+                progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
             }
         } else if (nonNull(bestilling.getTpsMessaging())) {
             if (nonNull(bestilling.getTpsMessaging().getNorskBankkonto())) {
