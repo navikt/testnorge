@@ -13,6 +13,10 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 				if (underenhet.organisasjonsnummer === orgnr) {
 					return enhet.organisasjonsnummer
 				}
+				const juridisk: string = getJuridiskEnhet(orgnr, enhet.underenheter)
+				if (juridisk !== '') {
+					return juridisk
+				}
 			}
 		}
 	}
@@ -65,7 +69,7 @@ export default handleActions(
 					const juridiskEnhet = getJuridiskEnhet(org.organisasjonsnummer, response)
 					return {
 						value: org.organisasjonsnummer,
-						label: `${juridiskEnhet ? '---' : ''}${org.organisasjonsnummer} (${org.enhetstype}) - ${
+						label: `${juridiskEnhet ? '   ' : ''}${org.organisasjonsnummer} (${org.enhetstype}) - ${
 							org.organisasjonsnavn
 						}`,
 						orgnr: org.organisasjonsnummer,

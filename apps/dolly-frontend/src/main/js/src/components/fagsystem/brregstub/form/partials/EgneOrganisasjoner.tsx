@@ -65,7 +65,10 @@ export const EgneOrganisasjoner = ({
 					validEnhetstyper.includes(virksomhet.enhetstype) || !virksomhet.juridiskEnhet
 			)
 			.map((virksomhet) => {
-				return { ...virksomhet, isDisabled: !virksomhet.juridiskEnhet }
+				return {
+					...virksomhet,
+					isDisabled: !virksomhet.juridiskEnhet,
+				}
 			})
 	}
 

@@ -35,15 +35,19 @@ const StyledOption = styled.div`
 					background-color: #f2f2f2;
 				}
 			}
+			&_indented {
+				padding-left: 30px;
+			}
 		}
 	}
 `
 
-const Option = ({ children, isSelected, isDisabled, innerProps }) => (
+const Option = ({ children, isSelected, isDisabled, label, innerProps }) => (
 	<StyledOption
 		className={cx('dolly-select__option', {
 			'dolly-select__option_selected': isSelected,
 			'dolly-select__option_disabled': isDisabled,
+			'dolly-select__option_indented': label.startsWith('   '),
 		})}
 		id={innerProps.id}
 		tabIndex={innerProps.tabIndex}
