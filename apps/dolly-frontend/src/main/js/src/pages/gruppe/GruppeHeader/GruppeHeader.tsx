@@ -16,6 +16,7 @@ import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { Gruppe } from '~/utils/hooks/useGruppe'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { FlyttPersonButton } from '~/components/ui/button/FlyttPersonButton/FlyttPersonButton'
 
 type GruppeHeaderProps = {
 	gruppe: Gruppe
@@ -92,6 +93,7 @@ const GruppeHeader = ({
 							REDIGER
 						</Button>
 					)}
+					{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
 					<Button
 						onClick={visGjenopprettModal}
 						kind="synchronize"

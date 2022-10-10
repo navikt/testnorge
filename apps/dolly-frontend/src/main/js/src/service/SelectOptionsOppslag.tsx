@@ -1,9 +1,10 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getAlder } from '~/ducks/fagsystem'
+import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -16,7 +17,8 @@ export type Option = {
 	vergemaal?: boolean
 	doedsfall?: boolean
 	foreldre?: Array<string>
-	foreldreansvar: Array<string>
+	foreldreansvar?: Array<string>
+	relasjoner?: Array<string>
 }
 
 type Data = {
@@ -75,6 +77,103 @@ export const SelectOptionsOppslag = {
 			return personListe
 		})
 		return options || Promise.resolve()
+	},
+
+	hentPdlOptions: async (gruppe: Array<{ ident: string }>) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
+
+		const options = await PdlforvalterApi.getPersoner(gruppe.map((p) => p.ident)).then(
+			(response: any) => {
+				const personListe: Array<Option> = []
+				response.data.forEach((id: Person) => {
+					const navn = id?.person?.navn?.[0]
+					const fornavn = navn?.fornavn || ''
+					const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
+					const etternavn = navn?.etternavn || ''
+					personListe.push({
+						value: id?.person?.ident,
+						label: `${id?.person?.ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
+						relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
+					})
+				})
+				return personListe
+			}
+		)
+		return options ? options : Promise.resolve()
+	},
+
+	hentTestnorgeOptions: async (gruppe: Array<{ ident: string }>) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
+
+		const personListe: Array<Option> = []
+		const maxAntall = 40
+
+		const getRelatertePersoner = (person: HentPerson) => {
+			if (!person) return null
+			const relasjoner = [] as Array<string>
+			person.forelderBarnRelasjon?.forEach((relasjon) =>
+				relasjoner.push(relasjon.relatertPersonsIdent)
+			)
+			person.fullmakt?.forEach((relasjon) => relasjoner.push(relasjon.motpartsPersonident))
+			person.kontaktinformasjonForDoedsbo?.forEach((relasjon) =>
+				relasjoner.push(relasjon.personSomKontakt?.identifikasjonsnummer)
+			)
+			person.sivilstand?.forEach(
+				(relasjon) =>
+					relasjon.relatertVedSivilstand && relasjoner.push(relasjon.relatertVedSivilstand)
+			)
+			person.vergemaalEllerFremtidsfullmakt?.forEach((relasjon) =>
+				relasjoner.push(relasjon.vergeEllerFullmektig?.motpartsPersonident)
+			)
+			return relasjoner
+		}
+
+		for (let i = 0; i < gruppe.length; i += maxAntall) {
+			const listeDel = gruppe.slice(i, i + maxAntall)
+			const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
+				(response: any) => {
+					const optionsListe = [] as Array<Option>
+					response.data?.data?.hentPersonBolk?.forEach(
+						(id: { ident: string; person: HentPerson }) => {
+							const navn = id?.person?.navn?.[0]
+							const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
+							optionsListe.push({
+								value: id?.ident,
+								label: `${id?.ident} - ${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`,
+								relasjoner: getRelatertePersoner(id?.person),
+							})
+						}
+					)
+					return optionsListe
+				}
+			)
+			personListe.push(...options)
+		}
+		return personListe
+	},
+
+	hentTpsOptions: async (gruppe: Array<{ ident: string }>) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
+
+		const options = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then((response: any) => {
+			const personListe: Array<Option> = []
+			response.data.forEach((id: any) => {
+				const mellomnavn = id?.mellomnavn ? `${id?.mellomnavn?.charAt(0)}.` : ''
+				personListe.push({
+					value: id?.ident,
+					label: `${id?.ident} - ${id?.fornavn} ${mellomnavn} ${id?.etternavn}`,
+					relasjoner: id?.relasjoner?.map((r: any) => r?.personRelasjonMed?.ident),
+				})
+			})
+			return personListe
+		})
+		return options ? options : Promise.resolve()
 	},
 
 	hentHelsepersonell: () => Api.fetchJson(`${uri}/helsepersonell`, { method: 'GET' }),

@@ -4,6 +4,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { DollyApi } from '~/service/Api'
+import styled from 'styled-components'
 
 interface NyGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -12,6 +13,10 @@ const initialValues = {
 	navn: '',
 	hensikt: '',
 }
+
+const FeedbackText = styled.div`
+	margin-top: 10px;
+`
 
 const validation = () =>
 	yup.object().shape({
@@ -45,16 +50,20 @@ export default ({ setValgtGruppe }: NyGruppe) => {
 			<Formik initialValues={initialValues} validationSchema={validation} onSubmit={onHandleSubmit}>
 				{() => (
 					<Form className="ny-gruppe" autoComplete="off">
-						<div className="fields">
+						<div className="flexbox--flex-wrap">
 							<FormikTextInput name="navn" label="NAVN" size="small" autoFocus />
 							<FormikTextInput name="hensikt" label="HENSIKT" size="medium" />
-							<NavButton variant={'primary'}>Opprett</NavButton>
 						</div>
+						<NavButton variant="primary" type="submit">
+							Opprett
+						</NavButton>
 					</Form>
 				)}
 			</Formik>
-			{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
-			{feilmelding && <div className="error-message">{feilmelding}</div>}
+			<FeedbackText>
+				{nyGruppe.length > 0 && <div>Gruppe ble opprettet: {nyGruppe}</div>}
+				{feilmelding && <div className="error-message">{feilmelding}</div>}
+			</FeedbackText>
 		</>
 	)
 }
