@@ -19,10 +19,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,10 +41,10 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class OrganisasjonExcelService {
 
     public static final String ORGANISASJON_FANE = "Organisasjoner";
-    private static final Object[] HEADER = {"Organisasjonsnummer", "Organisasjonsnavn", "Enhetstype", "Stiftelsesdato",
+    private static final Object[] HEADER = {"Hierarki", "Organisasjonsnummer", "Organisasjonsnavn", "Enhetstype", "Stiftelsesdato",
             "Naeringskode", "Sektorkode", "Målform", "Formål", "Nettside", "Telefon", "Epost", "Forretningsadresse",
             "Postadresse", "Underenheter"};
-    private static final Integer[] COL_WIDTHS = {20, 25, 15, 15, 15, 15, 15, 30, 20, 20, 20, 30, 30, 15};
+    private static final Integer[] COL_WIDTHS = {10, 20, 25, 15, 15, 15, 15, 15, 30, 20, 20, 20, 30, 30, 15};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private static final int FETCH_BLOCK_SIZE = 10;
@@ -53,41 +54,56 @@ public class OrganisasjonExcelService {
     private final OrganisasjonConsumer organisasjonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
-    private static List<Object[]> unpackOrganisasjon(OrganisasjonDetaljer organisasjon,
+    private static List<Object[]> unpackOrganisasjon(Integer posisjon, OrganisasjonDetaljer organisasjon,
                                                      Map<String, String> postnumre,
                                                      Map<String, String> landkoder) {
 
-        return getAlleEnheter(new ArrayList<>(), organisasjon).stream()
+        return getAlleEnheter(new HashMap<>(), posisjon.toString(), organisasjon)
+                .entrySet().stream()
                 .map(firma -> getFirma(firma, postnumre, landkoder))
                 .toList();
     }
 
-    private static List<OrganisasjonDetaljer> getAlleEnheter(List<OrganisasjonDetaljer> organisasjoner, OrganisasjonDetaljer organisasjon) {
+    private static Map<String, OrganisasjonDetaljer> getAlleEnheter(Map<String, OrganisasjonDetaljer> organisasjoner,
+                                                             String hierarki, OrganisasjonDetaljer organisasjon) {
 
-            organisasjoner.add(organisasjon);
-            for (OrganisasjonDetaljer underenhet : organisasjon.getUnderenheter()) {
-                getAlleEnheter(organisasjoner, underenhet);
+            organisasjoner.put(hierarki, organisasjon);
+            if (!organisasjon.getUnderenheter().isEmpty()) {
+
+                hierarki += ".0";
+                for (OrganisasjonDetaljer underenhet : organisasjon.getUnderenheter()) {
+                    getAlleEnheter(organisasjoner, incrementAndGet(hierarki), underenhet);
+                }
             }
             return organisasjoner;
     }
 
-    private static Object[] getFirma(OrganisasjonDetaljer organisasjon, Map<String, String> postnumre, Map<String, String> landkoder) {
+    private static String incrementAndGet(String hierarki) {
+
+        var levels = hierarki.split("\\.");
+        var counter = Integer.parseInt(levels[levels.length-1]);
+        levels[levels.length-1] = Integer.toString(++counter);
+        return StringUtils.join(levels, ".");
+    }
+
+    private static Object[] getFirma(Map.Entry <String, OrganisasjonDetaljer> organisasjon, Map<String, String> postnumre, Map<String, String> landkoder) {
 
         return new Object[]{
-                nvl(organisasjon.getOrganisasjonsnummer()),
-                nvl(organisasjon.getOrganisasjonsnavn()),
-                nvl(organisasjon.getEnhetstype()),
-                nvl(organisasjon.getStiftelsesdato()),
-                nvl(organisasjon.getNaeringskode()),
-                nvl(organisasjon.getSektorkode()),
-                nvl(organisasjon.getMaalform()),
-                nvl(organisasjon.getFormaal()),
-                nvl(organisasjon.getNettside()),
-                nvl(organisasjon.getTelefon()),
-                nvl(organisasjon.getEpost()),
-                getForretningsadresse(organisasjon.getAdresser(), postnumre, landkoder),
-                getPostadresse(organisasjon.getAdresser(), postnumre, landkoder),
-                getUnderenheter(organisasjon)
+                organisasjon.getKey(),
+                nvl(organisasjon.getValue().getOrganisasjonsnummer()),
+                nvl(organisasjon.getValue().getOrganisasjonsnavn()),
+                nvl(organisasjon.getValue().getEnhetstype()),
+                nvl(organisasjon.getValue().getStiftelsesdato()),
+                nvl(organisasjon.getValue().getNaeringskode()),
+                nvl(organisasjon.getValue().getSektorkode()),
+                nvl(organisasjon.getValue().getMaalform()),
+                nvl(organisasjon.getValue().getFormaal()),
+                nvl(organisasjon.getValue().getNettside()),
+                nvl(organisasjon.getValue().getTelefon()),
+                nvl(organisasjon.getValue().getEpost()),
+                getForretningsadresse(organisasjon.getValue().getAdresser(), postnumre, landkoder),
+                getPostadresse(organisasjon.getValue().getAdresser(), postnumre, landkoder),
+                getUnderenheter(organisasjon.getValue())
         };
     }
 
@@ -169,11 +185,13 @@ public class OrganisasjonExcelService {
         var organisasjoner = organisasjonBestillingRepository.findByBruker(bruker).stream()
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId).reversed())
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
                 .filter(orgnr -> !"NA".equals(orgnr))
                 .distinct()
                 .toList();
 
+        var counter = new AtomicInteger(0);
         return Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
                         kodeverkConsumer.getKodeverkByName("LandkoderISO2"))
                 .flatMapMany(kodeverk -> Flux.range(0, organisasjoner.size() / FETCH_BLOCK_SIZE + 1)
@@ -181,7 +199,8 @@ public class OrganisasjonExcelService {
                                 organisasjoner.subList(index * FETCH_BLOCK_SIZE,
                                         Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))
                         ))
-                        .map(organisasjon -> unpackOrganisasjon(organisasjon, kodeverk.getT1(), kodeverk.getT2())))
+                        .map(organisasjon -> unpackOrganisasjon(counter.incrementAndGet(), organisasjon,
+                                kodeverk.getT1(), kodeverk.getT2())))
                 .flatMap(Flux::fromIterable)
                 .collectList()
                 .block();
