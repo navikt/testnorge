@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import no.nav.dolly.service.excel.dto.ExceldataOrdering;
 import no.nav.dolly.service.excel.dto.OrganisasjonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
@@ -55,35 +56,36 @@ public class OrganisasjonExcelService {
     private final OrganisasjonConsumer organisasjonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
 
-    private static List<Object[]> unpackOrganisasjon(Integer posisjon, OrganisasjonDetaljer organisasjon,
-                                                     Map<String, String> postnumre,
-                                                     Map<String, String> landkoder) {
+    private static ExceldataOrdering unpackOrganisasjon(Integer posisjon, OrganisasjonDetaljer organisasjon,
+                                                        Map<String, String> postnumre,
+                                                        Map<String, String> landkoder) {
 
-        return getAlleEnheter(new ArrayList<>(), posisjon.toString(), organisasjon).stream()
-                .map(firma -> getFirma(firma, postnumre, landkoder))
-                .toList();
+        return new ExceldataOrdering(organisasjon.getId(),
+                getAlleEnheter(new ArrayList<>(), posisjon.toString(), organisasjon).stream()
+                        .map(firma -> getFirma(firma, postnumre, landkoder))
+                        .toList());
     }
 
     private static List<OrganisasjonDTO> getAlleEnheter(List<OrganisasjonDTO> organisasjoner,
-                                                             String hierarki, OrganisasjonDetaljer organisasjon) {
+                                                        String hierarki, OrganisasjonDetaljer organisasjon) {
 
-            organisasjoner.add(new OrganisasjonDTO(hierarki, organisasjon));
-            if (!organisasjon.getUnderenheter().isEmpty()) {
+        organisasjoner.add(new OrganisasjonDTO(hierarki, organisasjon));
+        if (!organisasjon.getUnderenheter().isEmpty()) {
 
-                hierarki += ".0";
-                for (OrganisasjonDetaljer underenhet : organisasjon.getUnderenheter()) {
-                    hierarki = incrementAndGet(hierarki);
-                    getAlleEnheter(organisasjoner, hierarki, underenhet);
-                }
+            hierarki += ".0";
+            for (OrganisasjonDetaljer underenhet : organisasjon.getUnderenheter()) {
+                hierarki = incrementAndGet(hierarki);
+                getAlleEnheter(organisasjoner, hierarki, underenhet);
             }
-            return organisasjoner;
+        }
+        return organisasjoner;
     }
 
     private static String incrementAndGet(String hierarki) {
 
         var levels = hierarki.split("\\.");
-        var siblingNo = Integer.parseInt(levels[levels.length-1]);
-        levels[levels.length-1] = Integer.toString(++siblingNo);
+        var siblingNo = Integer.parseInt(levels[levels.length - 1]);
+        levels[levels.length - 1] = Integer.toString(++siblingNo);
         return StringUtils.join(levels, ".");
     }
 
@@ -177,7 +179,7 @@ public class OrganisasjonExcelService {
                             .flatMap(Collection::stream)
                             .toList());
 
-            appendHyperlinkRelasjon(workbook, ORGANISASJON_FANE, rows, UNDERENHET);
+            appendHyperlinkRelasjon(workbook, ORGANISASJON_FANE, rows, 1, UNDERENHET);
         }
     }
 
@@ -186,7 +188,7 @@ public class OrganisasjonExcelService {
         var organisasjoner = organisasjonBestillingRepository.findByBruker(bruker).stream()
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId).reversed())
+                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId))
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
                 .filter(orgnr -> !"NA".equals(orgnr))
                 .distinct()
@@ -197,14 +199,14 @@ public class OrganisasjonExcelService {
                         kodeverkConsumer.getKodeverkByName("LandkoderISO2"))
                 .flatMapMany(kodeverk -> Flux.range(0, organisasjoner.size() / FETCH_BLOCK_SIZE + 1)
                         .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
-                                organisasjoner.subList(index * FETCH_BLOCK_SIZE,
-                                        Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))
-                        ))
-                        .map(organisasjon -> unpackOrganisasjon(counter.incrementAndGet(), organisasjon,
-                                kodeverk.getT1(), kodeverk.getT2())))
+                                        organisasjoner.subList(index * FETCH_BLOCK_SIZE,
+                                                Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size())))
+                                .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed())
+                                .map(organisasjon -> unpackOrganisasjon(counter.incrementAndGet(), organisasjon,
+                                        kodeverk.getT1(), kodeverk.getT2()))))
+                .map(ExceldataOrdering::exceldata)
                 .flatMap(Flux::fromIterable)
                 .collectList()
                 .block();
-
     }
 }
