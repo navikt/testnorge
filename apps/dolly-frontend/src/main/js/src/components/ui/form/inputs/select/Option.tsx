@@ -12,12 +12,15 @@ const StyledOption = styled.div`
 			width: 100%;
 			user-select: none;
 			box-sizing: border-box;
+
 			&:hover {
 				background-color: #cde1f3;
 			}
+
 			&_selected {
 				background-color: #2684ffff;
 				color: #ffffff;
+
 				&:hover {
 					background-color: #2684ffff;
 				}
