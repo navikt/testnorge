@@ -1,8 +1,8 @@
 import React from 'react'
 import cx from 'classnames'
+import cn from 'classnames'
 import styled from 'styled-components'
 import { createFilter, default as ReactSelect } from 'react-select'
-import cn from 'classnames'
 import MenuList from '~/components/ui/form/inputs/select/MenuList'
 import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 import { Label } from '~/components/ui/form/inputs/label/Label'
@@ -65,7 +65,15 @@ const StyledOption = styled.div`
 	}
 `
 
-const Option = ({ children, isSelected, isDisabled, label, innerProps }) => (
+type OptionProps = {
+	children?: any
+	isSelected?: boolean
+	isDisabled?: boolean
+	label: string
+	innerProps: any
+}
+
+const Option = ({ children, isSelected, isDisabled, label, innerProps }: OptionProps) => (
 	<StyledOption
 		className={cx('dolly-select__option', {
 			selected: isSelected,
