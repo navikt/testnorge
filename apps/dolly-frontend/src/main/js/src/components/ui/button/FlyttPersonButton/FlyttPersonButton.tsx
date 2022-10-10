@@ -6,7 +6,7 @@ import NavButton from '~/components/ui/button/NavButton/NavButton'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { DollyApi } from '~/service/Api'
 import _get from 'lodash/get'
-import { FieldArray, Formik } from 'formik'
+import { FieldArray, Formik, FormikProps } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
 import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
@@ -64,7 +64,6 @@ const ValgtePersonerList = styled.div`
 
 const ModalContent = styled.div`
 	display: flex;
-	align-items: left;
 	flex-direction: column;
 	&&& {
 		h2 {
@@ -254,6 +253,133 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 		gruppeId: Yup.string().required('Velg eksisterende gruppe eller opprett ny gruppe'),
 	})
 
+	const FlyttPersonForm = ({ formikBag }: { formikBag: FormikProps<FormikBagTypes> }) => {
+		return (
+			<>
+				<h1>Flytt personer til gruppe</h1>
+				<GruppeVelger>
+					<VelgGruppe
+						formikBag={formikBag}
+						title={'Velg hvilken gruppe du ønsker å flytte personer til'}
+						fraGruppe={gruppeId}
+					/>
+					<StyledErrorMessageWithFocus name="gruppe" className="error-message" component="div" />
+				</GruppeVelger>
+				<PersonVelger>
+					<FieldArray name="identer">
+						{({ push, remove, form }) => {
+							const values = form.values?.identer
+							const isChecked = (id: string) => values?.includes(id)
+							const onClick = (e: { target: any }) => {
+								const { id } = e.target
+								isChecked(id) ? remove(values?.indexOf(id)) : push(id)
+							}
+							return (
+								<PersonKolonne>
+									<div className="flexbox--align-center">
+										<h2>Velg personer</h2>
+										<Hjelpetekst>
+											Personer vil bli flyttet til valgt gruppe. Dersom valgte personer har
+											relaterte personer vil disse også bli flyttet.
+										</Hjelpetekst>
+									</div>
+									<PersonSoek>
+										<DollyTextInput
+											name="search"
+											value={searchText}
+											onChange={(e: any) => setSearchText(e.target.value)}
+											size="grow"
+											placeholder="Søk etter person"
+										/>
+										<Icon kind="search" size={20} />
+									</PersonSoek>
+									{!gruppeOptions || gruppeOptions?.length < 1 ? (
+										<Loading label="Laster personer..." />
+									) : (
+										<PersonvelgerCheckboxes>
+											{gruppeOptions?.map((person: Option) => {
+												if (person?.label?.toUpperCase().includes(searchText?.toUpperCase())) {
+													return (
+														<div key={person.value}>
+															<DollyCheckbox
+																key={person.value}
+																id={person.value}
+																label={person.label}
+																checked={values?.includes(person.value)}
+																onChange={onClick}
+																size="small"
+																attributtCheckbox
+															/>
+														</div>
+													)
+												}
+											})}
+										</PersonvelgerCheckboxes>
+									)}
+									<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
+										<Button onClick={() => formikBag.setFieldValue('identer', gruppeIdenterListe)}>
+											VELG ALLE
+										</Button>
+										<Button onClick={() => formikBag.setFieldValue('identer', [])}>
+											NULLSTILL
+										</Button>
+									</div>
+									<StyledErrorMessageWithFocus
+										name="identer"
+										className="error-message"
+										component="div"
+									/>
+								</PersonKolonne>
+							)
+						}}
+					</FieldArray>
+
+					<PersonKolonne>
+						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
+						{harRelatertePersoner(_get(formikBag.values, 'identer')) && (
+							<Alert variant="info" size="small" inline>
+								Du har valgt én eller flere personer som har relaterte personer. Disse vil også
+								flyttes.
+							</Alert>
+						)}
+						<ValgtePersonerList>
+							{_get(formikBag.values, 'identer')?.length > 0 ? (
+								<ul>
+									{_get(formikBag.values, 'identer')?.map((ident: string) => (
+										<li key={ident}>
+											{gruppeOptions?.find((person: Option) => person?.value === ident)?.label}
+										</li>
+									))}
+								</ul>
+							) : (
+								<span className="utvalg--empty-result">Ingenting er valgt</span>
+							)}
+						</ValgtePersonerList>
+					</PersonKolonne>
+				</PersonVelger>
+
+				<div className="flexbox--full-width">
+					{error && <div className="error-message">{`Feil: ${error}`}</div>}
+				</div>
+				<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
+					<NavButton onClick={handleClose} variant="secondary">
+						Avbryt
+					</NavButton>
+					<NavButton
+						onClick={() => formikBag.handleSubmit()}
+						variant="primary"
+						disabled={loading}
+						loading={loading}
+						style={{ marginLeft: '10px' }}
+						type="submit"
+					>
+						Flytt personer
+					</NavButton>
+				</div>
+			</>
+		)
+	}
+
 	return (
 		<>
 			<Button
@@ -273,143 +399,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 						validationSchema={validation}
 					>
 						{(formikBag) => {
-							return (
-								<>
-									<h1>Flytt personer til gruppe</h1>
-									<GruppeVelger>
-										<VelgGruppe
-											formikBag={formikBag}
-											title={'Velg hvilken gruppe du ønsker å flytte personer til'}
-											fraGruppe={gruppeId}
-										/>
-										<StyledErrorMessageWithFocus
-											name="gruppe"
-											className="error-message"
-											component="div"
-										/>
-									</GruppeVelger>
-									<PersonVelger>
-										<FieldArray name="identer">
-											{({ push, remove, form }) => {
-												const values = form.values?.identer
-												const isChecked = (id: string) => values?.includes(id)
-												const onClick = (e: { target: any }) => {
-													const { id } = e.target
-													isChecked(id) ? remove(values?.indexOf(id)) : push(id)
-												}
-												return (
-													<PersonKolonne>
-														<div className="flexbox--align-center">
-															<h2>Velg personer</h2>
-															<Hjelpetekst>
-																Personer vil bli flyttet til valgt gruppe. Dersom valgte personer
-																har relaterte personer vil disse også bli flyttet.
-															</Hjelpetekst>
-														</div>
-														<PersonSoek>
-															<DollyTextInput
-																name="search"
-																value={searchText}
-																onChange={(e: any) => setSearchText(e.target.value)}
-																size="grow"
-																placeholder="Søk etter person"
-															/>
-															<Icon kind="search" size={20} />
-														</PersonSoek>
-														{!gruppeOptions || gruppeOptions?.length < 1 ? (
-															<Loading label="Laster personer..." />
-														) : (
-															<PersonvelgerCheckboxes>
-																{gruppeOptions?.map((person: Option) => {
-																	if (
-																		person?.label?.toUpperCase().includes(searchText?.toUpperCase())
-																	) {
-																		return (
-																			<div key={person.value}>
-																				<DollyCheckbox
-																					key={person.value}
-																					id={person.value}
-																					label={person.label}
-																					checked={values?.includes(person.value)}
-																					onChange={onClick}
-																					size="small"
-																					attributtCheckbox
-																				/>
-																			</div>
-																		)
-																	}
-																})}
-															</PersonvelgerCheckboxes>
-														)}
-														<div className="flexbox--flex-wrap" style={{ marginTop: '10px' }}>
-															<Button
-																onClick={() =>
-																	formikBag.setFieldValue('identer', gruppeIdenterListe)
-																}
-															>
-																VELG ALLE
-															</Button>
-															<Button onClick={() => formikBag.setFieldValue('identer', [])}>
-																NULLSTILL
-															</Button>
-														</div>
-														<StyledErrorMessageWithFocus
-															name="identer"
-															className="error-message"
-															component="div"
-														/>
-													</PersonKolonne>
-												)
-											}}
-										</FieldArray>
-
-										<PersonKolonne>
-											<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
-											{harRelatertePersoner(_get(formikBag.values, 'identer')) && (
-												<Alert variant="info" size="small" inline>
-													Du har valgt én eller flere personer som har relaterte personer. Disse vil
-													også flyttes.
-												</Alert>
-											)}
-											<ValgtePersonerList>
-												{_get(formikBag.values, 'identer')?.length > 0 ? (
-													<ul>
-														{_get(formikBag.values, 'identer')?.map((ident: string) => (
-															<li key={ident}>
-																{
-																	gruppeOptions?.find((person: Option) => person?.value === ident)
-																		?.label
-																}
-															</li>
-														))}
-													</ul>
-												) : (
-													<span className="utvalg--empty-result">Ingenting er valgt</span>
-												)}
-											</ValgtePersonerList>
-										</PersonKolonne>
-									</PersonVelger>
-
-									<div className="flexbox--full-width">
-										{error && <div className="error-message">{`Feil: ${error}`}</div>}
-									</div>
-									<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
-										<NavButton onClick={handleClose} variant="secondary">
-											Avbryt
-										</NavButton>
-										<NavButton
-											onClick={() => formikBag.handleSubmit()}
-											variant="primary"
-											disabled={loading}
-											loading={loading}
-											style={{ marginLeft: '10px' }}
-											type="submit"
-										>
-											Flytt personer
-										</NavButton>
-									</div>
-								</>
-							)
+							return <FlyttPersonForm formikBag={formikBag} />
 						}}
 					</Formik>
 				</ModalContent>
