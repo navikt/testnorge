@@ -188,7 +188,7 @@ public class OrganisasjonExcelService {
         var organisasjoner = organisasjonBestillingRepository.findByBruker(bruker).stream()
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId))
+                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId).reversed())
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
                 .filter(orgnr -> !"NA".equals(orgnr))
                 .distinct()
