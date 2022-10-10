@@ -47,6 +47,10 @@ public class InntektstubClient implements ClientRegister {
                 InntektsinformasjonWrapper inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(), InntektsinformasjonWrapper.class);
                 inntektsinformasjonWrapper.getInntektsinformasjon().forEach(info -> info.setNorskIdent(dollyPerson.getHovedperson()));
 
+                if (!isOpprettEndre) {
+                    inntektstubConsumer.deleteInntekter(List.of(dollyPerson.getHovedperson())).block();
+                }
+
                 if (isOpprettEndre || !existInntekter(inntektsinformasjonWrapper.getInntektsinformasjon())) {
                     opprettInntekter(inntektsinformasjonWrapper.getInntektsinformasjon(), progress);
                 } else {
