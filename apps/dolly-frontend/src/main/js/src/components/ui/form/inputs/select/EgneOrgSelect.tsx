@@ -22,36 +22,42 @@ const StyledOption = styled.div`
 			&:hover {
 				background-color: #cde1f3;
 				cursor: pointer;
+
+				&.selected {
+					background-color: #2684ffff;
+				}
+
+				&.disabled {
+					cursor: not-allowed;
+					background-color: #f2f2f2;
+				}
+
+				&.main {
+					background-color: #cde1f3;
+				}
 			}
 
 			&.selected {
 				background-color: #2684ffff;
 				color: #ffffff;
 
-				&:hover {
+				&.main {
 					background-color: #2684ffff;
 				}
 			}
-			&.disabled.main {
+
+			&.disabled {
 				color: grey;
 				background-color: #f2f2f2;
-				&:hover {
-					cursor: not-allowed;
+			}
+
+			&.main {
+				background-color: #eaf3fa;
+				&.disabled {
 					background-color: #f2f2f2;
 				}
 			}
-			&.disabled {
-				color: grey;
-				&:hover {
-					cursor: not-allowed;
-				}
-			}
-			&.main {
-				background-color: #f2f2f2;
-				&:hover {
-					background-color: #cde1f3;
-				}
-			}
+
 			&.indented {
 				padding-left: 30px;
 			}
