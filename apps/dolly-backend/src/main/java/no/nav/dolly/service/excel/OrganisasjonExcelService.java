@@ -72,7 +72,8 @@ public class OrganisasjonExcelService {
 
                 hierarki += ".0";
                 for (OrganisasjonDetaljer underenhet : organisasjon.getUnderenheter()) {
-                    getAlleEnheter(organisasjoner, incrementAndGet(hierarki), underenhet);
+                    hierarki = incrementAndGet(hierarki);
+                    getAlleEnheter(organisasjoner, hierarki, underenhet);
                 }
             }
             return organisasjoner;
@@ -81,8 +82,8 @@ public class OrganisasjonExcelService {
     private static String incrementAndGet(String hierarki) {
 
         var levels = hierarki.split("\\.");
-        var counter = Integer.parseInt(levels[levels.length-1]);
-        levels[levels.length-1] = Integer.toString(++counter);
+        var siblingNo = Integer.parseInt(levels[levels.length-1]);
+        levels[levels.length-1] = Integer.toString(++siblingNo);
         return StringUtils.join(levels, ".");
     }
 
