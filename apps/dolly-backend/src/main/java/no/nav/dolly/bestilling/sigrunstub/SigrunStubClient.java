@@ -28,7 +28,7 @@ public class SigrunStubClient implements ClientRegister {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
-                List<OpprettSkattegrunnlag> skattegrunnlag = mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class);
+                var skattegrunnlag = mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class);
                 skattegrunnlag.forEach(inntektsaar ->
                         inntektsaar.setPersonidentifikator(dollyPerson.getHovedperson()));
 
