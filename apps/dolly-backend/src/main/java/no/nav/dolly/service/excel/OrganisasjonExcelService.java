@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
+import no.nav.dolly.service.excel.dto.OrganisasjonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -19,11 +20,11 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -48,7 +49,7 @@ public class OrganisasjonExcelService {
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     private static final int FETCH_BLOCK_SIZE = 10;
-    private static final int UNDERENHET = 13;
+    private static final int UNDERENHET = 14;
 
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
     private final OrganisasjonConsumer organisasjonConsumer;
@@ -58,16 +59,15 @@ public class OrganisasjonExcelService {
                                                      Map<String, String> postnumre,
                                                      Map<String, String> landkoder) {
 
-        return getAlleEnheter(new HashMap<>(), posisjon.toString(), organisasjon)
-                .entrySet().stream()
+        return getAlleEnheter(new ArrayList<>(), posisjon.toString(), organisasjon).stream()
                 .map(firma -> getFirma(firma, postnumre, landkoder))
                 .toList();
     }
 
-    private static Map<String, OrganisasjonDetaljer> getAlleEnheter(Map<String, OrganisasjonDetaljer> organisasjoner,
+    private static List<OrganisasjonDTO> getAlleEnheter(List<OrganisasjonDTO> organisasjoner,
                                                              String hierarki, OrganisasjonDetaljer organisasjon) {
 
-            organisasjoner.put(hierarki, organisasjon);
+            organisasjoner.add(new OrganisasjonDTO(hierarki, organisasjon));
             if (!organisasjon.getUnderenheter().isEmpty()) {
 
                 hierarki += ".0";
@@ -87,24 +87,24 @@ public class OrganisasjonExcelService {
         return StringUtils.join(levels, ".");
     }
 
-    private static Object[] getFirma(Map.Entry <String, OrganisasjonDetaljer> organisasjon, Map<String, String> postnumre, Map<String, String> landkoder) {
+    private static Object[] getFirma(OrganisasjonDTO firma, Map<String, String> postnumre, Map<String, String> landkoder) {
 
         return new Object[]{
-                organisasjon.getKey(),
-                nvl(organisasjon.getValue().getOrganisasjonsnummer()),
-                nvl(organisasjon.getValue().getOrganisasjonsnavn()),
-                nvl(organisasjon.getValue().getEnhetstype()),
-                nvl(organisasjon.getValue().getStiftelsesdato()),
-                nvl(organisasjon.getValue().getNaeringskode()),
-                nvl(organisasjon.getValue().getSektorkode()),
-                nvl(organisasjon.getValue().getMaalform()),
-                nvl(organisasjon.getValue().getFormaal()),
-                nvl(organisasjon.getValue().getNettside()),
-                nvl(organisasjon.getValue().getTelefon()),
-                nvl(organisasjon.getValue().getEpost()),
-                getForretningsadresse(organisasjon.getValue().getAdresser(), postnumre, landkoder),
-                getPostadresse(organisasjon.getValue().getAdresser(), postnumre, landkoder),
-                getUnderenheter(organisasjon.getValue())
+                firma.hierarki(),
+                nvl(firma.organisasjon().getOrganisasjonsnummer()),
+                nvl(firma.organisasjon().getOrganisasjonsnavn()),
+                nvl(firma.organisasjon().getEnhetstype()),
+                nvl(firma.organisasjon().getStiftelsesdato()),
+                nvl(firma.organisasjon().getNaeringskode()),
+                nvl(firma.organisasjon().getSektorkode()),
+                nvl(firma.organisasjon().getMaalform()),
+                nvl(firma.organisasjon().getFormaal()),
+                nvl(firma.organisasjon().getNettside()),
+                nvl(firma.organisasjon().getTelefon()),
+                nvl(firma.organisasjon().getEpost()),
+                getForretningsadresse(firma.organisasjon().getAdresser(), postnumre, landkoder),
+                getPostadresse(firma.organisasjon().getAdresser(), postnumre, landkoder),
+                getUnderenheter(firma.organisasjon())
         };
     }
 
