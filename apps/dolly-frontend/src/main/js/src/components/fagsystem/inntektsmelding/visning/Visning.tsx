@@ -127,9 +127,6 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 }
 
 InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: string) => {
-	console.log('bestillinger: ', bestillinger) //TODO - SLETT MEG
-	console.log('ident: ', ident) //TODO - SLETT MEG
-
 	if (!bestillinger) {
 		return false
 	}

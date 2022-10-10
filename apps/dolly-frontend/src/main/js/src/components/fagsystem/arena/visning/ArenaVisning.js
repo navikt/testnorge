@@ -115,7 +115,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
 
 	fyllVisningData(sisteArenaBestilling, visningData)
-	console.log('visningData: ', visningData) //TODO - SLETT MEG
+
 	const TagAlert = () => (
 		<Alert variant={'info'} style={{ marginBottom: '20px' }}>
 			Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser.

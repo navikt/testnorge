@@ -35,6 +35,7 @@ import { DollyApi } from '~/service/Api'
 import DollyService from '~/service/services/dolly/DollyService'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/GjenopprettPerson'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -86,8 +87,37 @@ export const PersonVisning = ({
 		arenaforvalteren,
 	} = data
 
-	// udistub
-	// dokarkiv
+	// const aareg = []
+	// const sigrunstub = []
+	// const pensjonforvalter = {
+	// 	miljo: 'q2',
+	// 	fnr: '05496300434',
+	// 	inntekter: [],
+	// }
+	// const inntektstub = []
+
+	// console.log('data: ', data) //TODO - SLETT MEG
+
+	const manglerFagsystemdata = () => {
+		let manglerData = false
+
+		if (
+			[aareg, sigrunstub, inntektstub, brregstub, krrstub, instdata, arenaforvalteren].some(
+				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
+			)
+		) {
+			manglerData = true
+		}
+
+		if (
+			pensjonforvalter &&
+			(!pensjonforvalter?.inntekter || pensjonforvalter?.inntekter?.length < 1)
+		) {
+			manglerData = true
+		}
+
+		return manglerData
+	}
 
 	// const manglerFagsystemdata = [
 	// 	aareg,
@@ -99,7 +129,11 @@ export const PersonVisning = ({
 	// 	instdata,
 	// 	arenaforvalteren,
 	// ].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)
-	const manglerFagsystemdata = true
+	// Inntektsmelding
+	// Udistub
+	// Dokarkiv
+
+	// const manglerFagsystemdata = true
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillingerById)
@@ -185,9 +219,10 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-					<Button onClick={() => DollyService.gjenopprettPerson(ident?.ident)} kind="synchronize">
-						GJENOPPRETT PERSON
-					</Button>
+					{/*<Button onClick={() => DollyService.gjenopprettPerson(ident?.ident)} kind="synchronize">*/}
+					{/*	GJENOPPRETT PERSON*/}
+					{/*</Button>*/}
+					<GjenopprettPerson ident={ident?.ident} />
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
@@ -213,7 +248,7 @@ export const PersonVisning = ({
 						/>
 					)}
 				</div>
-				{manglerFagsystemdata && (
+				{manglerFagsystemdata() && (
 					<StyledAlert variant={'info'} size={'small'}>
 						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
 						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med team Dolly
