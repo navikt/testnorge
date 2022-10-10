@@ -71,7 +71,7 @@ export default handleActions(
 						value: org.organisasjonsnummer,
 						label: `${juridiskEnhet ? '   ' : ''}${org.organisasjonsnummer} (${org.enhetstype}) - ${
 							org.organisasjonsnavn
-						}`,
+						} ${juridiskEnhet ? '' : '   '}`,
 						orgnr: org.organisasjonsnummer,
 						navn: org.organisasjonsnavn,
 						enhetstype: org.enhetstype,

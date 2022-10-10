@@ -18,7 +18,7 @@ const StyledOption = styled.div`
 				cursor: pointer;
 			}
 
-			&_selected {
+			&.selected {
 				background-color: #2684ffff;
 				color: #ffffff;
 
@@ -26,8 +26,7 @@ const StyledOption = styled.div`
 					background-color: #2684ffff;
 				}
 			}
-
-			&_disabled {
+			&.disabled.main {
 				color: grey;
 				background-color: #f2f2f2;
 				&:hover {
@@ -35,7 +34,19 @@ const StyledOption = styled.div`
 					background-color: #f2f2f2;
 				}
 			}
-			&_indented {
+			&.disabled {
+				color: grey;
+				&:hover {
+					cursor: not-allowed;
+				}
+			}
+			&.main {
+				background-color: #f2f2f2;
+				&:hover {
+					background-color: #cde1f3;
+				}
+			}
+			&.indented {
 				padding-left: 30px;
 			}
 		}
@@ -45,9 +56,10 @@ const StyledOption = styled.div`
 const Option = ({ children, isSelected, isDisabled, label, innerProps }) => (
 	<StyledOption
 		className={cx('dolly-select__option', {
-			'dolly-select__option_selected': isSelected,
-			'dolly-select__option_disabled': isDisabled,
-			'dolly-select__option_indented': label.startsWith('   '),
+			selected: isSelected,
+			disabled: isDisabled,
+			indented: label.startsWith('   '),
+			main: label.endsWith('   '),
 		})}
 		id={innerProps.id}
 		tabIndex={innerProps.tabIndex}
