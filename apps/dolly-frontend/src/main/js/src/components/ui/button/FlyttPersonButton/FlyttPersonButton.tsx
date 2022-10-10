@@ -124,7 +124,6 @@ const StyledErrorMessageWithFocus = styled(ErrorMessageWithFocus)`
 
 export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
-	const [searchText, setSearchText] = useState('')
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
@@ -254,6 +253,8 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 	})
 
 	const FlyttPersonForm = ({ formikBag }: { formikBag: FormikProps<FormikBagTypes> }) => {
+		const [searchText, setSearchText] = useState('')
+
 		return (
 			<>
 				<h1>Flytt personer til gruppe</h1>
@@ -398,9 +399,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 						onSubmit={handleSubmit}
 						validationSchema={validation}
 					>
-						{(formikBag) => {
-							return <FlyttPersonForm formikBag={formikBag} />
-						}}
+						{(formikBag) => <FlyttPersonForm formikBag={formikBag} />}
 					</Formik>
 				</ModalContent>
 			</DollyModal>
