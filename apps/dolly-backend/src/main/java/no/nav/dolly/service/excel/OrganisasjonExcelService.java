@@ -37,9 +37,14 @@ import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonA
 import static no.nav.dolly.service.excel.ExcelUtil.appendHyperlinkRelasjon;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.poi.ss.usermodel.IgnoredErrorType.CALCULATED_COLUMN;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.EMPTY_CELL_REFERENCE;
 import static org.apache.poi.ss.usermodel.IgnoredErrorType.EVALUATION_ERROR;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.FORMULA;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.FORMULA_RANGE;
 import static org.apache.poi.ss.usermodel.IgnoredErrorType.LIST_DATA_VALIDATION;
 import static org.apache.poi.ss.usermodel.IgnoredErrorType.NUMBER_STORED_AS_TEXT;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.TWO_DIGIT_TEXT_YEAR;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.UNLOCKED_FORMULA;
 
 @Service
 @RequiredArgsConstructor
@@ -171,7 +176,15 @@ public class OrganisasjonExcelService {
             var sheet = workbook.createSheet(ORGANISASJON_FANE);
 
             sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
-                    CALCULATED_COLUMN, EVALUATION_ERROR, NUMBER_STORED_AS_TEXT, LIST_DATA_VALIDATION);
+                    CALCULATED_COLUMN,
+                    EMPTY_CELL_REFERENCE,
+                    EVALUATION_ERROR,
+                    FORMULA,
+                    FORMULA_RANGE,
+                    LIST_DATA_VALIDATION,
+                    NUMBER_STORED_AS_TEXT,
+                    TWO_DIGIT_TEXT_YEAR,
+                    UNLOCKED_FORMULA);
 
             var columnNo = new AtomicInteger(0);
             Arrays.stream(COL_WIDTHS)
