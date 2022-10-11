@@ -99,7 +99,7 @@ export const EgneOrganisasjoner = ({
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
-	const getFilteredOptions = (organisasjoner: Organisasjon[]) => {
+	const getFilteredOptions = (organisasjoner: any) => {
 		return organisasjoner
 			.filter(
 				(virksomhet) =>
