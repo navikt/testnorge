@@ -31,9 +31,10 @@ public class ExcelUtil {
     public static void appendHyperlinkRelasjon(XSSFWorkbook workbook,
                                         String fane,
                                         List<Object[]> verdier,
+                                        int indekskolonne,
                                         int kolonne) {
 
-        var hyperLinks = createLinkReferanser(verdier);
+        var hyperLinks = createLinkReferanser(verdier, indekskolonne);
         IntStream.range(0, verdier.size()).boxed()
                 .filter(row -> isNotBlank((String) verdier.get(row)[kolonne]))
                 .forEach(row -> appendHyperLink(workbook, fane,
@@ -43,10 +44,10 @@ public class ExcelUtil {
                         hyperLinks));
     }
 
-    private static Map<String, Integer> createLinkReferanser(List<Object[]> opplysninger) {
+    private static Map<String, Integer> createLinkReferanser(List<Object[]> opplysninger, int indekskolonne) {
 
         return IntStream.range(0, opplysninger.size()).boxed()
-                .collect(Collectors.toMap(row -> (String) opplysninger.get(row)[0], row -> row,
+                .collect(Collectors.toMap(row -> (String) opplysninger.get(row)[indekskolonne], row -> row,
                         (row1, row2) -> row1));
     }
 

@@ -59,8 +59,8 @@ public class OrganisasjonController {
     @GetMapping()
     @Operation(description = "Hent opprettede organisasjoner basert på brukerId")
     public List<OrganisasjonDetaljer> hentOrganisasjoner(
-            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)",
-                    example = "1k9242uc-638g-1234-5678-7894k0j7lu6n") @RequestParam String brukerId) {
+            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)")
+            @RequestParam (required = false) String brukerId) {
 
         return bestillingService.getOrganisasjoner(brukerId);
     }
