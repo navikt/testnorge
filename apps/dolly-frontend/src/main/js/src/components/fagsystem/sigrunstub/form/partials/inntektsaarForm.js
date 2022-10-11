@@ -44,6 +44,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								disabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
 								fastfield={false}
 								isClearable={false}
+								size="large"
 							/>
 						</div>
 						{tjenesteErValgt(formikBag, path) && (
@@ -52,6 +53,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								header="Grunnlag fra Fastlands-Norge"
 								initialGrunnlag={initialGrunnlag}
 								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+								formikBag={formikBag}
 							/>
 						)}
 						{_get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
@@ -60,6 +62,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								header="Grunnlag fra Svalbard"
 								initialGrunnlag={initialGrunnlag}
 								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+								formikBag={formikBag}
 							/>
 						)}
 
