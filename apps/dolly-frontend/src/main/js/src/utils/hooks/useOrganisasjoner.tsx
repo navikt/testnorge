@@ -4,11 +4,8 @@ import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { isEmpty } from 'lodash'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
-const getOrganisasjonerUrl = (organisasjoner: string[]) =>
-	`/testnav-organisasjon-forvalter/api/v2/organisasjoner?orgnumre=${organisasjoner}`
-
-const getOrganisasjonerForBrukerUrl = (brukerId: string) =>
-	`/testnav-organisasjon-forvalter/api/v2/organisasjoner/alle?brukerId=${brukerId}`
+const getOrganisasjonerUrl = (brukerId: string) =>
+	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
 
 const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling/bestillingsstatus?brukerId=${brukerId}`
@@ -31,37 +28,15 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjonerForBruker = (brukerId: string | number) => {
+export const useOrganisasjoner = (brukerId: string) => {
 	if (!brukerId) {
 		return {
 			loading: false,
 			error: 'BrukerId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Organisasjon[], Error>(
-		getOrganisasjonerForBrukerUrl(brukerId),
-		fetcher
-	)
 
-	return {
-		organisasjoner: data,
-		loading: !error && !data,
-		error: error,
-	}
-}
-
-export const useOrganisasjoner = (organisasjoner: string[]) => {
-	if (!organisasjoner || isEmpty(organisasjoner)) {
-		return {
-			loading: false,
-			error: 'Organisasjoner mangler!',
-		}
-	}
-
-	const { data, error } = useSWR<Organisasjon[], Error>(
-		getOrganisasjonerUrl(organisasjoner),
-		fetcher
-	)
+	const { data, error } = useSWR<Organisasjon[], Error>(getOrganisasjonerUrl(brukerId), fetcher)
 
 	return {
 		organisasjoner: data,

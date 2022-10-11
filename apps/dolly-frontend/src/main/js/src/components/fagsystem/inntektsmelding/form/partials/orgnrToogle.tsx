@@ -6,7 +6,7 @@ import {
 	inputValg,
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 
 interface OrgnrToggleProps {
 	path: string
@@ -42,7 +42,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<EgneOrganisasjonerConnector
+				<EgneOrganisasjoner
 					path={path}
 					label="Arbeidsgiver (orgnr)"
 					formikBag={formikBag}

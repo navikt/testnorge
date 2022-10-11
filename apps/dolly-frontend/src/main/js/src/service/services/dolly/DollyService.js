@@ -248,10 +248,4 @@ export default {
 				throw error
 			})
 	},
-
-	getAlleOrganisasjonerPaaBruker(brukerId) {
-		return Request.get(Endpoints.getOrganisasjoner(brukerId)).then((response) => {
-			return response.data
-		})
-	},
 }

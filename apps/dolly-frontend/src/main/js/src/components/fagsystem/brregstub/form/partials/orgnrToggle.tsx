@@ -7,7 +7,7 @@ import {
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
-import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
@@ -67,7 +67,7 @@ export const OrgnrToggle = ({
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<EgneOrganisasjonerConnector
+				<EgneOrganisasjoner
 					path={`${path}.orgNr`}
 					formikBag={formikBag}
 					handleChange={handleChange}
