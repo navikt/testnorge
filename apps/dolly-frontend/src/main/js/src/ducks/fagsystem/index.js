@@ -303,7 +303,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 	const personId = person.ident
 
 	// Bestillingen(e) fra bestillingStatuser
-	const bestillinger = person.bestillingId.map((id) => bestillingerById?.[id])
+	const bestillinger = person.bestillingId.map((id) => bestillingerById?.[id]).filter((b) => b)
 
 	// Samlet liste over alle statuser
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
