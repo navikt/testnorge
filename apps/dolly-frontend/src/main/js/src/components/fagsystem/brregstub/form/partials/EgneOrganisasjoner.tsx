@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import Loading from '~/components/ui/loading/Loading'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 
 interface OrgProps {
 	path: string
@@ -58,6 +58,20 @@ export const EgneOrganisasjoner = ({
 		}
 	}, [])
 
+	const getFilteredOptions = (organisasjoner: Organisasjon[]) => {
+		return organisasjoner
+			.filter(
+				(virksomhet) =>
+					validEnhetstyper.includes(virksomhet.enhetstype) || !virksomhet.juridiskEnhet
+			)
+			.map((virksomhet) => {
+				return {
+					...virksomhet,
+					isDisabled: !virksomhet.juridiskEnhet,
+				}
+			})
+	}
+
 	return (
 		<>
 			{isLoading && <Loading label="Laster organisasjoner" />}
@@ -79,16 +93,10 @@ export const EgneOrganisasjoner = ({
 					</Alert>
 				))}
 			{harEgneOrganisasjoner && !error && (
-				<DollySelect
+				<EgneOrgSelect
 					name={path}
 					label={label ? label : 'Organisasjonsnummer'}
-					options={
-						filterValidEnhetstyper
-							? organisasjoner.filter((virksomhet) =>
-									validEnhetstyper.includes(virksomhet.enhetstype)
-							  )
-							: organisasjoner
-					}
+					options={filterValidEnhetstyper ? getFilteredOptions(organisasjoner) : organisasjoner}
 					size="xlarge"
 					onChange={handleChange}
 					value={_get(formikBag.values, path)}

@@ -13,6 +13,10 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 				if (underenhet.organisasjonsnummer === orgnr) {
 					return enhet.organisasjonsnummer
 				}
+				const juridisk: string = getJuridiskEnhet(orgnr, enhet.underenheter)
+				if (juridisk !== '') {
+					return juridisk
+				}
 			}
 		}
 	}
@@ -62,16 +66,18 @@ export default handleActions(
 				state.egneOrganisasjoner = egneOrg.map((org: Organisasjon) => {
 					const fAdresser = getAdresseWithAdressetype(org.adresser, 'FADR')
 					const pAdresser = getAdresseWithAdressetype(org.adresser, 'PADR')
-
+					const juridiskEnhet = getJuridiskEnhet(org.organisasjonsnummer, response)
 					return {
 						value: org.organisasjonsnummer,
-						label: `${org.organisasjonsnummer} (${org.enhetstype}) - ${org.organisasjonsnavn}`,
+						label: `${juridiskEnhet ? '   ' : ''}${org.organisasjonsnummer} (${org.enhetstype}) - ${
+							org.organisasjonsnavn
+						} ${juridiskEnhet ? '' : '   '}`,
 						orgnr: org.organisasjonsnummer,
 						navn: org.organisasjonsnavn,
 						enhetstype: org.enhetstype,
 						forretningsAdresse: fAdresser.length > 0 ? fAdresser[0] : null,
 						postAdresse: pAdresser.length > 0 ? pAdresser[0] : null,
-						juridiskEnhet: getJuridiskEnhet(org.organisasjonsnummer, response),
+						juridiskEnhet: juridiskEnhet,
 					}
 				})
 			}
