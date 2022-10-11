@@ -73,8 +73,9 @@ public class SykemeldingClient implements ClientRegister {
                         saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
                                 progress.getBestilling().getId(), dollyPerson.getHovedperson());
                     }
-                    progress.setSykemeldingStatus("OK");
                 }
+                progress.setSykemeldingStatus("OK");
+
             } catch (RuntimeException e) {
 
                 progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
