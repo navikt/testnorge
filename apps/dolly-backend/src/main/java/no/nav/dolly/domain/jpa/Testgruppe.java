@@ -73,6 +73,7 @@ public class Testgruppe implements Serializable {
     @Column(unique = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @OrderBy("id DESC")
     private List<Testident> testidenter;
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)

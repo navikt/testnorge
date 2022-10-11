@@ -26,7 +26,7 @@ import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.web.credentials.UdiStubProxyProperties;
+import no.nav.dolly.web.credentials.SkjermingsregisterProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -84,12 +84,12 @@ public class DollyFrontendApplicationStarter {
     private final TestnavOrganisasjonForvalterProperties testnavOrganisasjonForvalterProperties;
     private final TestnavOrganisasjonServiceProperties testnavOrganisasjonServiceProperties;
     private final TestnavMiljoerServiceProperties testnavMiljoerServiceProperties;
-    private final UdiStubProxyProperties udiStubProxyProperties;
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
     private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
     private final KontoregisterProxyProperties kontoregisterProxyProperties;
+    private final SkjermingsregisterProxyProperties skjermingsregisterProxyProperties;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -121,6 +121,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(personSearchServiceProperties))
                 .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
                 .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
+                .route(createRoute(skjermingsregisterProxyProperties))
                 .build();
     }
 

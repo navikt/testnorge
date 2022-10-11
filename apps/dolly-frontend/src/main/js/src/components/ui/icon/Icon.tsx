@@ -77,9 +77,11 @@ import Love from '~/assets/icons/custom/Love.svg'
 import Baby from '~/assets/icons/custom/Baby.svg'
 import ChildHalo from '~/assets/icons/custom/ChildHalo2.svg'
 import Dolly from '~/assets/icons/custom/Dolly.svg'
+import Testcafe from '~/assets/img/testcafe.png'
 import BrregLogo from '~/assets/icons/custom/Brreg_logo.svg'
 import LockedGroup from '~/assets/icons/custom/LockedGroup.svg'
 import RIP from '~/assets/icons/custom/RIP.svg'
+import Flytt from '~/assets/icons/custom/Flytt.svg'
 
 import './Icon.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
@@ -154,6 +156,7 @@ export const icons = {
 	barn: Baby,
 	doedfoedt: ChildHalo,
 	dolly: Dolly,
+	testcafe: Testcafe,
 	pensjon: PiggyBank,
 	brreg: BrregLogo,
 	dokarkiv: Files,
@@ -171,6 +174,7 @@ export const icons = {
 	foedsel: Infants,
 	foreldreansvar: Group2,
 	grav: RIP,
+	flytt: Flytt,
 }
 
 const px = (v: number) => `${v}px`

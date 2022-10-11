@@ -1,6 +1,7 @@
 package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
@@ -10,6 +11,7 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -52,6 +54,15 @@ public class OrganisasjonController {
         organisasjonClient.gjenopprett(request, bestilling);
 
         return getStatus(bestilling, bestillingStatus.getOrganisasjonNummer());
+    }
+
+    @GetMapping()
+    @Operation(description = "Hent opprettede organisasjoner basert på brukerId")
+    public List<OrganisasjonDetaljer> hentOrganisasjoner(
+            @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)")
+            @RequestParam (required = false) String brukerId) {
+
+        return bestillingService.getOrganisasjoner(brukerId);
     }
 
     private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

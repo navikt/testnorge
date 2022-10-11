@@ -193,6 +193,10 @@ export default {
 		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
 	},
 
+	flyttPersonerTilGruppe(gruppeId, ident) {
+		return Request.putWithoutResponse(Endpoints.flyttPersonerTilGruppe(gruppeId, ident))
+	},
+
 	slettMal(malId) {
 		return Request.delete(Endpoints.malBestilling(malId))
 			.then((response) => {

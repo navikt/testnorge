@@ -503,7 +503,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			getPdlDoedsdato(pdlIdent)
 		),
-		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId?.[ident?.bestillingId?.[0]]),
 	}
 }
 

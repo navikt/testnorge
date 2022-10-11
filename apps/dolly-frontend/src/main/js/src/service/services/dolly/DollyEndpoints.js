@@ -201,6 +201,13 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}
 
+	static flyttPersonerTilGruppe(gruppeId, identer) {
+		return `${groupBase}/${gruppeId}/identer/${Formatters.arrayToString(identer).replaceAll(
+			' ',
+			''
+		)}`
+	}
+
 	static malBestilling(malId) {
 		return `${bestillingBase}/malbestilling/${malId}`
 	}

@@ -197,6 +197,9 @@ export const PersonVisning = ({
 								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
 									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
 								}
+								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
+									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,

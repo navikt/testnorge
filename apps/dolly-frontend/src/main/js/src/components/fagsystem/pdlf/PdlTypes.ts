@@ -1,5 +1,6 @@
 export type Person = {
 	id: number
+	ident?: string
 	person: PersonData
 	relasjoner?: Array<Relasjon>
 }

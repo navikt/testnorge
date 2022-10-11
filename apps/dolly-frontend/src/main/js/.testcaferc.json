@@ -1,4 +1,9 @@
 {
+  "compilerOptions": {
+    "typescript": {
+      "configPath": "tsconfig.json"
+    }
+  },
   "skipJsErrors": true,
   "skipUncaughtErrors": true,
   "hostname": "localhost",

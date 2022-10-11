@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
@@ -16,6 +15,7 @@ import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
+import DollyTooltip from '~/components/ui/button/DollyTooltip'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -171,12 +171,10 @@ export default function PersonListe({
 			formatter: (_cell, row) => {
 				if (row.ident.beskrivelse) {
 					return (
-						<Tooltip
+						<DollyTooltip
 							overlay={getKommentarTekst(row.ident.beskrivelse)}
-							placement="top"
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
-							mouseLeaveDelay={0.1}
 							onClick={(event) => {
 								setSelectedIdent(row.ident)
 								openKommentarModal()
@@ -190,7 +188,7 @@ export default function PersonListe({
 							<div style={{ textAlign: 'center' }}>
 								<Icon kind="kommentar" size={20} />
 							</div>
-						</Tooltip>
+						</DollyTooltip>
 					)
 				}
 			},

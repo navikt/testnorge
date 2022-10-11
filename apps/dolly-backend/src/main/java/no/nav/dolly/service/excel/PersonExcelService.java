@@ -368,11 +368,11 @@ public class PersonExcelService {
 
     private void appendHyperlinks(XSSFWorkbook workbook, List<Object[]> persondata) {
 
-        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, PARTNER);
-        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, BARN);
-        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, FORELDRE);
-        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, VERGE);
-        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, FULLMEKTIG);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, 0, PARTNER);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, 0, BARN);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, 0, FORELDRE);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, 0, VERGE);
+        appendHyperlinkRelasjon(workbook, PERSON_FANE, persondata, 0, FULLMEKTIG);
     }
 
     @SneakyThrows

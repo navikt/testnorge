@@ -42,7 +42,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 				antallEgneMaler={antallEgneMaler}
 				malListe={egneMaler}
 				searchText={searchText}
-				heading={'Identer'}
+				heading={'Personer'}
 				iconType={'identifikasjon'}
 				startOpen={true}
 				mutate={() => {

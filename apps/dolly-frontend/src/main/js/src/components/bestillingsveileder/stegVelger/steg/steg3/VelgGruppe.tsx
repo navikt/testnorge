@@ -8,9 +8,11 @@ import * as Yup from 'yup'
 
 type VelgGruppeProps = {
 	formikBag: FormikProps<{}>
+	title: string
+	fraGruppe?: number
 }
 
-export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
+export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppeProps) => {
 	const [valgtGruppe, setValgtGruppe] = useState(_get(formikBag.values, `gruppeId`))
 
 	useEffect(() => {
@@ -23,12 +25,12 @@ export const VelgGruppe = ({ formikBag }: VelgGruppeProps) => {
 
 	return (
 		<div className="input-oppsummering">
-			<div className="flexbox--align-center">
-				<div>
-					<h2>Hvilken gruppe vil du importere til?</h2>
-					<VelgGruppeToggle valgtGruppe={valgtGruppe} setValgtGruppe={setValgtGruppe} />
-				</div>
-			</div>
+			<h2>{title}</h2>
+			<VelgGruppeToggle
+				valgtGruppe={valgtGruppe}
+				setValgtGruppe={setValgtGruppe}
+				fraGruppe={fraGruppe}
+			/>
 			<ErrorMessageWithFocus name="gruppeId" className="error-message" component="div" />
 		</div>
 	)

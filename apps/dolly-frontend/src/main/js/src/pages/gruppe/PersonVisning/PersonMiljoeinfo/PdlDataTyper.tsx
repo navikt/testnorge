@@ -48,7 +48,7 @@ export type HentPerson = {
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
 	foreldreansvar: Array<Foreldreansvar>
-	kontaktinformasjonForDoedsbo: Array<{}>
+	kontaktinformasjonForDoedsbo: Array<any>
 	utenlandskIdentifikasjonsnummer: Array<{}>
 	falskIdentitet: FalskIdentitet
 	opphold: Array<OppholdData>

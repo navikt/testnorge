@@ -24,13 +24,13 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 	const bestillingsListe = []
 	for (let id of IDer) {
 		const bestilling = {
-			data: bestillinger[id].bestilling,
+			data: bestillinger[id]?.bestilling,
 			id: id,
-			erGjenopprettet: bestillinger[id].hasOwnProperty('opprettetFraId'),
+			erGjenopprettet: bestillinger[id]?.hasOwnProperty('opprettetFraId'),
 		}
-		const suksessMiljoer = successMiljoSelector(bestillinger[id].status)
+		const suksessMiljoer = successMiljoSelector(bestillinger[id]?.status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet
-		if (!bestilling.hasOwnProperty('arenaforvalter') || suksessMiljoer?.hasOwnProperty('ARENA')) {
+		if (!bestilling?.hasOwnProperty('arenaforvalter') || suksessMiljoer?.hasOwnProperty('ARENA')) {
 			bestillingsListe.push(bestilling)
 		}
 	}

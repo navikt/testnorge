@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -20,7 +22,13 @@ public class KontoregisterClient implements ClientRegister {
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+
         if (nonNull(bestilling.getBankkonto())) {
+
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
+                return;
+            }
             if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
                 progress.setKontoregisterStatus(
                         kontoregisterConsumer

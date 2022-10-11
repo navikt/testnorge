@@ -1,4 +1,4 @@
-package no.nav.registre.tp.provider.rs.request;
+package no.nav.registre.tp.provider.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

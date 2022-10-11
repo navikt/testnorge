@@ -59,8 +59,10 @@ public class ExcelService {
     public Resource getExcelWorkbook(Long gruppeId) {
 
         long timestamp = System.currentTimeMillis();
-        var testidenter = testgruppeRepository.findById(gruppeId)
-                .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId))
+        var testgruppe = testgruppeRepository.findById(gruppeId)
+                .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
+
+        var testidenter = testgruppe
                 .getTestidenter().stream()
                 .map(Testident::getIdent)
                 .toList();
@@ -69,7 +71,7 @@ public class ExcelService {
 
         Mono.zip(
                         personExcelService.preparePersonSheet(workbook, testidenter),
-                        bankkontoExcelService.prepareBankkontoSheet(workbook, testidenter))
+                        bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
                 .block();
 
         BankkontoToPersonHelper.appendData(workbook);

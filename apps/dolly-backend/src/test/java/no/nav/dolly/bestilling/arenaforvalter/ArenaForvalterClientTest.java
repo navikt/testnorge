@@ -67,7 +67,8 @@ public class ArenaForvalterClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments();
@@ -95,7 +96,8 @@ public class ArenaForvalterClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feilstatus: \"DUPLIKAT\". Se detaljer i logg.")));
         verify(arenaForvalterConsumer).getEnvironments();
@@ -113,7 +115,8 @@ public class ArenaForvalterClientTest {
         request.setEnvironments(singletonList(ENV));
 
         Assertions.assertThrows(NullPointerException.class, () ->
-                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false));
+                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                        .opprettetIPDL(true).build(), progress, false));
     }
 
     @Test
@@ -124,7 +127,8 @@ public class ArenaForvalterClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList("t3"));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
     }
@@ -136,7 +140,8 @@ public class ArenaForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setEnvironments(singletonList(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                .opprettetIPDL(true).build(), progress, false);
 
         verifyNoInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));

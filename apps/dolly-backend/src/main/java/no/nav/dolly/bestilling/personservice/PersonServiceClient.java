@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.aktoeridsyncservice;
+package no.nav.dolly.bestilling.personservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,19 +13,18 @@ import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service
 @Order(5)
 @RequiredArgsConstructor
-public class AktoerIdSyncClient implements ClientRegister {
+public class PersonServiceClient implements ClientRegister {
 
     private static final int MAX_COUNT = 200;
     private static final int TIMEOUT = 50;
     private static final int ELAPSED = 10;
 
-    private final AktoerIdSyncConsumer personServiceConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -33,26 +32,32 @@ public class AktoerIdSyncClient implements ClientRegister {
         var count = 0;
 
         var startTime = now();
+        boolean isPerson = false;
         try {
             while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED &&
-                    isBlank(personServiceConsumer.getAktoerId(dollyPerson.getHovedperson()).getIdent())) {
+                    !(isPerson = personServiceConsumer.isPerson(dollyPerson.getHovedperson()))) {
                 Thread.sleep(TIMEOUT);
             }
 
         } catch (InterruptedException e) {
-            log.error("Sync mot PersonService (AktoerId) ble avbrutt.", e);
+            log.error("Sync mot PersonService (isPerson) ble avbrutt.", e);
             Thread.currentThread().interrupt();
 
         } catch (RuntimeException e) {
-            log.error("Feilet å lese id fra PersonService (AktoerId) for ident {}.", dollyPerson.getHovedperson(), e);
+            log.error("Feilet å sjekke om person finnes for ident {}.", dollyPerson.getHovedperson(), e);
+
+        } finally {
+
+            dollyPerson.setOpprettetIPDL(isPerson);
         }
 
         if (count < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED) {
-            log.info("Synkronisering mot PersonService (AktoerId) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
+            log.info("Synkronisering mot PersonService (isPerson) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
         } else {
-            log.warn("Synkronisering mot PersonService (AktoerId) gitt opp etter {} ms.",
+            log.error("Synkronisering mot PersonService (isPerson) gitt opp etter {} ms.",
                     ChronoUnit.MILLIS.between(startTime, now()));
         }
+
     }
 
     @Override

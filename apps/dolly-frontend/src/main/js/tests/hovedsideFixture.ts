@@ -12,15 +12,15 @@ import {
 	miljoeMock,
 	nyGruppeMock,
 	varslingerRequestMock,
-	varslingerResponseMock,
+	varslingerVelkommenResponseMock,
 } from './util/TestcafeMocks'
 
 const miljoer = new RegExp(/\/miljoer/)
 const dollyLogg = new RegExp(/\/dolly-logg/)
 const azureAuth = new RegExp(/\/oauth2\/authorization\/aad/)
 const current = new RegExp(/current/)
-const profil = new RegExp(/\/profil/)
-const bilde = new RegExp(/\/bilde/)
+const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
+const profil = new RegExp(/testnorge-profil-api\/api\/v1\/profil$/)
 const hentGrupper = new RegExp(/gruppe\?brukerId/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const spesifikkGruppe = new RegExp(/\/gruppe$/)
@@ -43,7 +43,7 @@ const cookieMock = RequestMock()
 	.onRequestTo(spesifikkGruppe)
 	.respond(nyGruppeMock, 201)
 	.onRequestTo(varslinger)
-	.respond(varslingerResponseMock, 200)
+	.respond(varslingerVelkommenResponseMock, 200)
 	.onRequestTo(ids)
 	.respond(varslingerRequestMock, 200)
 	.onRequestTo(azureAuth)

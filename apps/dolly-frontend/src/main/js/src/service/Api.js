@@ -18,6 +18,7 @@ import PdlForvalterService from '~/service/services/pdl/PdlForvalterService'
 import TpsMessagingService from '~/service/services/tpsmessaging/TpsMessagingService'
 import SessionService from '~/service/services/session/SessionService'
 import KontoregisterService from '~/service/services/kontoregister/KontoregisterService'
+import SkjermingService from '~/service/services/skjerming/SkjermingService'
 
 export const DollyApi = DollyService
 export const TpsfApi = TpsfService
@@ -39,6 +40,7 @@ export const BrukerApi = BrukerService
 export const PdlforvalterApi = PdlForvalterService
 export const SessionApi = SessionService
 export const BankkontoApi = KontoregisterService
+export const SkjermingApi = SkjermingService
 
 export default {
 	DollyApi: DollyService,
@@ -60,4 +62,5 @@ export default {
 	PdlforvalterApi: PdlForvalterService,
 	SessionApi: SessionService,
 	BankkontoApi: KontoregisterService,
+	SkjermingApi: SkjermingService,
 }
