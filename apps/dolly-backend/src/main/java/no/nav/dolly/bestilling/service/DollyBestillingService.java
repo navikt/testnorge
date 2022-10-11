@@ -38,12 +38,14 @@ import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -156,7 +158,7 @@ public class DollyBestillingService {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
-            bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
+            bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
             return bestKriterier;
 
@@ -213,5 +215,10 @@ public class DollyBestillingService {
         }
 
         return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
+    }
+
+    public static List<String> getEnvironments(String miljoer){
+
+        return new ArrayList<>(isNotBlank(miljoer) ? (List.of(miljoer.split(","))) : emptyList());
     }
 }
