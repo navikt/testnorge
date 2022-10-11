@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +42,7 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
         private boolean iBruk;
         private String beskrivelse;
         private List<Long> bestillingId;
+        private List<RsBestillingStatus> bestillinger;
         private Testident.Master master;
     }
 }
