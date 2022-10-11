@@ -199,11 +199,12 @@ public class OrganisasjonExcelService {
                         kodeverkConsumer.getKodeverkByName("LandkoderISO2"))
                 .flatMapMany(kodeverk -> Flux.range(0, organisasjoner.size() / FETCH_BLOCK_SIZE + 1)
                         .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
-                                        organisasjoner.subList(index * FETCH_BLOCK_SIZE,
-                                                Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size())))
-                                .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed())
-                                .map(organisasjon -> unpackOrganisasjon(counter.incrementAndGet(), organisasjon,
-                                        kodeverk.getT1(), kodeverk.getT2()))))
+                                organisasjoner.subList(index * FETCH_BLOCK_SIZE,
+                                        Math.min((index + 1) * FETCH_BLOCK_SIZE, organisasjoner.size()))))
+                        .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed())
+                        .map(organisasjon -> unpackOrganisasjon(counter.incrementAndGet(), organisasjon,
+                                kodeverk.getT1(), kodeverk.getT2())))
+                .sort(Comparator.comparing(ExceldataOrdering::organisasjonId).reversed())
                 .map(ExceldataOrdering::exceldata)
                 .flatMap(Flux::fromIterable)
                 .collectList()

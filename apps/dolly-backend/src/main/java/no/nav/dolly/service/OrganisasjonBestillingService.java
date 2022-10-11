@@ -219,12 +219,13 @@ public class OrganisasjonBestillingService {
 
     public List<OrganisasjonBestilling> fetchOrganisasjonBestillingByBrukerId(String brukerId) {
 
-        var bruker = brukerRepository.findBrukerByBrukerId(brukerId)
-                .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
+        var bruker = isNull(brukerId) ? brukerService.fetchOrCreateBruker(getUserId(getUserInfo)) :
+                brukerRepository.findBrukerByBrukerId(brukerId)
+                        .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
         return bestillingRepository.findByBruker(bruker);
     }
-    
+
     @Transactional
     public void redigerMalBestillingNavn(Long id, String malbestillingNavn) {
 
@@ -236,9 +237,9 @@ public class OrganisasjonBestillingService {
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
 
         var orgnumre = fetchOrganisasjonBestillingByBrukerId(brukerId).stream()
-                .sorted(Comparator.comparing(OrganisasjonBestilling::getSistOppdatert))
                 .map(OrganisasjonBestilling::getProgresser)
                 .flatMap(Collection::stream)
+                .sorted(Comparator.comparing(OrganisasjonBestillingProgress::getId).reversed())
                 .map(OrganisasjonBestillingProgress::getOrganisasjonsnummer)
                 .filter(orgnummer -> !"NA".equals(orgnummer))
                 .distinct()
@@ -247,6 +248,7 @@ public class OrganisasjonBestillingService {
         return Flux.range(0, orgnumre.size() / BLOCK_SIZE + 1)
                 .flatMap(index -> organisasjonConsumer.hentOrganisasjon(
                         orgnumre.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, orgnumre.size()))))
+                .sort(Comparator.comparing(OrganisasjonDetaljer::getId).reversed())
                 .collectList()
                 .block();
     }
