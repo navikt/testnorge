@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.ARENA;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingArenaforvalterStatusMapper {
@@ -25,7 +25,7 @@ public final class BestillingArenaforvalterStatusMapper {
         Map<String, Map<String, List<String>>> statusEnvIdents = new HashMap();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getArenaforvalterStatus())) {
+            if (isNotBlank(progress.getArenaforvalterStatus())) {
                 List.of(progress.getArenaforvalterStatus().split(",")).forEach(
                         entry -> {
                             var envStatus = entry.split("\\$");

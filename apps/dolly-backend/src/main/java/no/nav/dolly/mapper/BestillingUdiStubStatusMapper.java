@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.UDISTUB;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingUdiStubStatusMapper {
@@ -24,7 +24,7 @@ public final class BestillingUdiStubStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getUdistubStatus())) {
+            if (isNotBlank(progress.getUdistubStatus())) {
                 if (statusMap.containsKey(progress.getUdistubStatus())) {
                     statusMap.get(progress.getUdistubStatus()).add(progress.getIdent());
                 } else {

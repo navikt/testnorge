@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SKJERMINGSREGISTER;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSkjermingsRegisterStatusMapper {
@@ -24,7 +24,7 @@ public final class BestillingSkjermingsRegisterStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getSkjermingsregisterStatus())) {
+            if (isNotBlank(progress.getSkjermingsregisterStatus())) {
                 if (statusMap.containsKey(progress.getSkjermingsregisterStatus())) {
                     statusMap.get(progress.getSkjermingsregisterStatus()).add(progress.getIdent());
                 } else {

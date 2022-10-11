@@ -20,6 +20,7 @@ import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
 import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPensjonforvalterStatusMapper {
@@ -30,7 +31,7 @@ public final class BestillingPensjonforvalterStatusMapper {
         Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents = new HashMap();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getPensjonforvalterStatus())) {
+            if (isNotBlank(progress.getPensjonforvalterStatus())) {
                 List.of(progress.getPensjonforvalterStatus()
                         .split("\\$")).forEach(meldingMiljoStatus -> {
                     String melding = meldingMiljoStatus.split("\\#")[0];
