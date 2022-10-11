@@ -1,10 +1,11 @@
-package no.nav.registre.tp.provider.rs;
+package no.nav.registre.tp.provider;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.tp.provider.request.OrkestreringRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -16,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import no.nav.registre.tp.provider.rs.request.OrkestreringRequest;
 import no.nav.registre.tp.service.TpService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
