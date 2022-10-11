@@ -7,13 +7,18 @@ import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 
+export const sjekkManglerBrregData = (brregData) => {
+	return (
+		(!brregData?.understatuser || brregData?.understatuser?.length < 1) &&
+		(!brregData?.enheter || brregData?.enheter?.length < 1)
+	)
+}
+
 export const BrregVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster brreg-data" />
 	if (data === undefined) return null
 
-	const manglerFagsystemdata =
-		(!data?.understatuser || data?.understatuser?.length < 1) &&
-		(!data?.enheter || data?.enheter?.length < 1)
+	const manglerFagsystemdata = sjekkManglerBrregData(data)
 
 	return (
 		<div>

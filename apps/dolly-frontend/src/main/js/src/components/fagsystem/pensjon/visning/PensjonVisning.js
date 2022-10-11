@@ -8,11 +8,15 @@ import Panel from '~/components/ui/panel/Panel'
 import { runningTestcafe } from '~/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 
+export const sjekkManglerPensjonData = (pensjonData) => {
+	return !pensjonData?.inntekter || pensjonData?.inntekter?.length === 0
+}
+
 export const PensjonVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster pensjonforvalter-data" />
 	if (!data) return null
 
-	const manglerFagsystemdata = !data?.inntekter || data?.inntekter?.length === 0
+	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
 	const inntektsaar = data?.inntekter?.map((inntekt) => inntekt.inntektAar)
 	const foerste = Math.min(...inntektsaar)
@@ -31,9 +35,9 @@ export const PensjonVisning = ({ data, loading }) => {
 				</Alert>
 			) : (
 				<Panel
-				startOpen={runningTestcafe()}
-				heading={`Pensjonsgivende inntekter (${foerste} - ${siste})`}
-			>
+					startOpen={runningTestcafe()}
+					heading={`Pensjonsgivende inntekter (${foerste} - ${siste})`}
+				>
 					<DollyFieldArray data={data.inntekter} nested>
 						{(inntekt, idx) => (
 							<div className="person-visning_content" key={idx}>

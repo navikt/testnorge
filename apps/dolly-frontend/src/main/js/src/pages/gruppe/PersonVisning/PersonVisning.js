@@ -32,11 +32,12 @@ import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
-import DollyService from '~/service/services/dolly/DollyService'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/GjenopprettPerson'
-import { hasProperty } from 'dot-prop'
+import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
+import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
+import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -68,12 +69,34 @@ export const PersonVisning = ({
 	iLaastGruppe,
 	tmpPersoner,
 }) => {
+	const { gruppeId } = ident
+	const { bestillingerById } = useBestillingerGruppe(gruppeId)
+
+	useEffect(() => {
+		fetchDataFraFagsystemer(bestillingerById)
+	}, [])
+
+	const getGruppeIdenter = () => {
+		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	}
+
+	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
+
+	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
+	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
+
+	const mountedRef = useRef(true)
+	const navigate = useNavigate()
+
+	useEffect(() => {
+		return () => {
+			mountedRef.current = false
+		}
+	}, [])
+
 	if (!data) {
 		return null
 	}
-
-	const { gruppeId } = ident
-	const { bestillingerById } = useBestillingerGruppe(gruppeId)
 
 	const {
 		aareg,
@@ -98,56 +121,20 @@ export const PersonVisning = ({
 			manglerData = true
 		}
 
-		if (
-			pensjonforvalter &&
-			(!pensjonforvalter?.inntekter || pensjonforvalter?.inntekter?.length < 1)
-		) {
+		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
 			manglerData = true
 		}
 
-		if (
-			brregstub &&
-			(!brregstub?.understatuser || brregstub?.understatuser?.length < 1) &&
-			(!brregstub?.enheter || brregstub?.enheter?.length < 1)
-		) {
+		if (brregstub && sjekkManglerBrregData(brregstub)) {
 			manglerData = true
 		}
 
-		if (
-			udistub &&
-			(!udistub.oppholdStatus || Object.keys(udistub.oppholdStatus)?.length < 1) &&
-			(!udistub.arbeidsadgang || Object.keys(udistub.arbeidsadgang)?.length < 1) &&
-			(!udistub.aliaser || (Array.isArray(udistub.aliaser) && udistub.aliaser.length < 1)) &&
-			!hasProperty(udistub, 'flyktning') &&
-			!hasProperty(udistub, 'soeknadOmBeskyttelseUnderBehandling')
-		) {
+		if (udistub && sjekkManglerUdiData(udistub)) {
 			manglerData = true
 		}
 
 		return manglerData
 	}
-
-	useEffect(() => {
-		fetchDataFraFagsystemer(bestillingerById)
-	}, [])
-
-	const getGruppeIdenter = () => {
-		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
-	}
-
-	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
-
-	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
-	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
-
-	const mountedRef = useRef(true)
-	const navigate = useNavigate()
-
-	useEffect(() => {
-		return () => {
-			mountedRef.current = false
-		}
-	}, [])
 
 	const pdlRelatertPerson = () => {
 		const relatertePersoner = []
