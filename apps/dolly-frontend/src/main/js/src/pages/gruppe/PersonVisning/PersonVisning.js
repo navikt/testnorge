@@ -36,6 +36,7 @@ import DollyService from '~/service/services/dolly/DollyService'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/GjenopprettPerson'
+import { hasProperty } from 'dot-prop'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -70,8 +71,6 @@ export const PersonVisning = ({
 	if (!data) {
 		return null
 	}
-	// console.log('data: ', data) //TODO - SLETT MEG
-	// console.log('ident: ', ident) //TODO - SLETT MEG
 
 	const { gruppeId } = ident
 	const { bestillingerById } = useBestillingerGruppe(gruppeId)
@@ -85,24 +84,14 @@ export const PersonVisning = ({
 		krrstub,
 		instdata,
 		arenaforvalteren,
+		udistub,
 	} = data
-
-	// const aareg = []
-	// const sigrunstub = []
-	// const pensjonforvalter = {
-	// 	miljo: 'q2',
-	// 	fnr: '05496300434',
-	// 	inntekter: [],
-	// }
-	// const inntektstub = []
-
-	// console.log('data: ', data) //TODO - SLETT MEG
 
 	const manglerFagsystemdata = () => {
 		let manglerData = false
 
 		if (
-			[aareg, sigrunstub, inntektstub, brregstub, krrstub, instdata, arenaforvalteren].some(
+			[aareg, sigrunstub, inntektstub, krrstub, instdata].some(
 				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
 			)
 		) {
@@ -116,24 +105,27 @@ export const PersonVisning = ({
 			manglerData = true
 		}
 
+		if (
+			brregstub &&
+			(!brregstub?.understatuser || brregstub?.understatuser?.length < 1) &&
+			(!brregstub?.enheter || brregstub?.enheter?.length < 1)
+		) {
+			manglerData = true
+		}
+
+		if (
+			udistub &&
+			(!udistub.oppholdStatus || Object.keys(udistub.oppholdStatus)?.length < 1) &&
+			(!udistub.arbeidsadgang || Object.keys(udistub.arbeidsadgang)?.length < 1) &&
+			(!udistub.aliaser || (Array.isArray(udistub.aliaser) && udistub.aliaser.length < 1)) &&
+			!hasProperty(udistub, 'flyktning') &&
+			!hasProperty(udistub, 'soeknadOmBeskyttelseUnderBehandling')
+		) {
+			manglerData = true
+		}
+
 		return manglerData
 	}
-
-	// const manglerFagsystemdata = [
-	// 	aareg,
-	// 	sigrunstub,
-	// 	pensjonforvalter,
-	// 	inntektstub,
-	// 	brregstub,
-	// 	krrstub,
-	// 	instdata,
-	// 	arenaforvalteren,
-	// ].some((fagsystem) => Array.isArray(fagsystem) && !fagsystem.length)
-	// Inntektsmelding
-	// Udistub
-	// Dokarkiv
-
-	// const manglerFagsystemdata = true
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillingerById)
@@ -219,9 +211,6 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-					{/*<Button onClick={() => DollyService.gjenopprettPerson(ident?.ident)} kind="synchronize">*/}
-					{/*	GJENOPPRETT PERSON*/}
-					{/*</Button>*/}
 					<GjenopprettPerson ident={ident?.ident} />
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
@@ -287,7 +276,7 @@ export const PersonVisning = ({
 					ident={ident}
 				/>
 				<UdiVisning
-					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
+					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
 				/>
 				<DokarkivVisning ident={ident.ident} />
