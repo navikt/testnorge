@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 import static java.lang.String.format;
+import static no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag.Tjeneste.BEREGNET_SKATT;
 
 @Component
 public class SigrunstubDataMapper implements MappingStrategy {
@@ -26,8 +27,10 @@ public class SigrunstubDataMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(OpprettSkattegrunnlag kilde, OpprettSkattegrunnlag destinasjon, MappingContext context) {
 
-                        addOppgjoersdato(destinasjon.getGrunnlag(), destinasjon.getInntektsaar());
-                        addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), destinasjon.getInntektsaar());
+                        if (destinasjon.getTjeneste() == BEREGNET_SKATT) {
+                            addOppgjoersdato(destinasjon.getGrunnlag(), destinasjon.getInntektsaar());
+                            addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), destinasjon.getInntektsaar());
+                        }
                     }
 
                     private void addOppgjoersdato(List<KodeverknavnGrunnlag> spesifiktGrunnlag, String aar) {
