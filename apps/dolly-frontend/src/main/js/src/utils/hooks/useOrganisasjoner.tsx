@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '~/api'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
-import { isEmpty } from 'lodash'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
 const getOrganisasjonerUrl = (brukerId: string) =>
