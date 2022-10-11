@@ -1,8 +1,9 @@
-package no.nav.registre.tp.provider.rs;
+package no.nav.registre.tp.provider;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.tp.provider.request.OrkestreringRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -16,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import no.nav.registre.tp.database.multitenancy.TenantContext;
-import no.nav.registre.tp.provider.rs.request.OrkestreringRequest;
 import no.nav.registre.tp.service.TpService;
 
 @Slf4j
