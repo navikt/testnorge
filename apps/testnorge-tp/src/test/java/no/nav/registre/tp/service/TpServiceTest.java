@@ -2,12 +2,11 @@ package no.nav.registre.tp.service;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import no.nav.registre.tp.consumer.HodejegerenConsumer;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.stream.Collectors;
 
-import no.nav.registre.testnorge.consumers.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.tp.database.models.TForhold;
 import no.nav.registre.tp.database.models.TPerson;
 import no.nav.registre.tp.database.repository.TForholdRepository;
@@ -56,7 +54,6 @@ public class TpServiceTest {
         person.setFnrFk("123");
 
         when(hodejegerenConsumer.getLevende(anyLong())).thenReturn(fnrs);
-        when(hodejegerenConsumer.getLevende(anyLong(), anyString(), anyInt(), anyInt())).thenReturn(fnrs);
         when(tPersonRepository.save(any())).thenReturn(person);
         when(tForholdRepository.save(any())).thenReturn(expectedForhold);
 
