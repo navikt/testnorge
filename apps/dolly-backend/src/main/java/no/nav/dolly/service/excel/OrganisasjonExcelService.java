@@ -12,7 +12,6 @@ import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.dolly.service.excel.dto.ExceldataOrdering;
 import no.nav.dolly.service.excel.dto.OrganisasjonDTO;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -37,6 +36,10 @@ import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonA
 import static no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonAdresse.AdresseType.PADR;
 import static no.nav.dolly.service.excel.ExcelUtil.appendHyperlinkRelasjon;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.CALCULATED_COLUMN;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.EVALUATION_ERROR;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.LIST_DATA_VALIDATION;
+import static org.apache.poi.ss.usermodel.IgnoredErrorType.NUMBER_STORED_AS_TEXT;
 
 @Service
 @RequiredArgsConstructor
@@ -168,7 +171,7 @@ public class OrganisasjonExcelService {
             var sheet = workbook.createSheet(ORGANISASJON_FANE);
 
             sheet.addIgnoredErrors(new CellRangeAddress(0, rows.size(), 0, HEADER.length),
-                    IgnoredErrorType.NUMBER_STORED_AS_TEXT);
+                    CALCULATED_COLUMN, EVALUATION_ERROR, NUMBER_STORED_AS_TEXT, LIST_DATA_VALIDATION);
 
             var columnNo = new AtomicInteger(0);
             Arrays.stream(COL_WIDTHS)
