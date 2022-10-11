@@ -42,7 +42,14 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                 .filter(bestillingProgress ->
                                                         bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(BestillingProgress::getBestilling)
-                                                .map(bestilling ->  factory.getMapperFacade().map(bestilling, RsBestillingStatus.class))
+                                                .map(bestilling ->  {
+                                                    var status = factory.getMapperFacade().map(bestilling, RsBestillingStatus.class);
+                                                    return RsBestillingStatus.builder()
+                                                            .id(bestilling.getId())
+                                                            .status(status.getStatus())
+                                                            .bestilling(status.getBestilling())
+                                                            .build();
+                                                })
                                                 .collect(Collectors.toList()))
                                         .build())
                                 .collect(Collectors.toList()));
