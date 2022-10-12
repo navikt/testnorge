@@ -26,8 +26,3 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: udi-stub
-  testnav-udistub-dev:
-    url: https://udi-stub-dev.dev.intern.nav.no
-    cluster: dev-fss
-    namespace: dolly
-    name: udi-stub-dev

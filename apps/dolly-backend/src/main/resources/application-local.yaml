@@ -48,5 +48,3 @@ consumers:
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
-  testnav-udistub-proxy:
-    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev
