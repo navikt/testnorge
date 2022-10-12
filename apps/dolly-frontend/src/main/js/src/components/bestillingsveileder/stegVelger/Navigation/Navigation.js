@@ -7,7 +7,8 @@ import { AvbrytButton } from '~/components/ui/button/AvbrytButton/AvbrytButton'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { useNavigate } from 'react-router-dom'
 
-export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) => {
+export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
+	const showPrevious = step > 0
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts.is.importTestnorge
 
@@ -27,6 +28,8 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 		return 'Opprett'
 	}
 
+	const hasInntektstubError = step === 1 && formikBag?.errors?.hasOwnProperty('inntektstub')
+
 	return (
 		<div className="step-navknapper-wrapper">
 			<div className="step-navknapper">
@@ -37,7 +40,11 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 				<div className="step-navknapper--right">
 					{showPrevious && <NavButton onClick={() => onPrevious(formikBag)}>Tilbake</NavButton>}
 					{!isLastStep && (
-						<NavButton variant={'primary'} disabled={isSubmitting} onClick={handleSubmit}>
+						<NavButton
+							variant={'primary'}
+							disabled={isSubmitting}
+							onClick={hasInntektstubError ? () => {} : handleSubmit}
+						>
 							Videre
 						</NavButton>
 					)}
