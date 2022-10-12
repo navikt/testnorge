@@ -97,7 +97,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) =>
 						{devEnabled && <DisplayFormikState {...formikBag} />}
 
 						<Navigation
-							showPrevious={step > 0}
+							step={step}
 							onPrevious={handleBack}
 							isLastStep={isLastStep()}
 							formikBag={formikBag}
