@@ -67,7 +67,7 @@ const _getTpsfBestillingData = (data) => {
 	]
 }
 
-const mapBestillingsinformasjon = (bestillingsinformasjon, data) => {
+const mapBestillingsinformasjon = (bestillingsinformasjon, data, identtype) => {
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
@@ -81,6 +81,7 @@ const mapBestillingsinformasjon = (bestillingsinformasjon, data) => {
 					bestillingsinformasjon.antallLevert && bestillingsinformasjon.antallLevert.toString()
 				),
 				obj('Type person', bestillingsinformasjon.navSyntetiskIdent ? 'NAV syntetisk' : 'Standard'),
+				obj('Identtype', identtype),
 				obj(
 					'Sist oppdatert',
 					Formatters.formatDateTimeWithSeconds(bestillingsinformasjon.sistOppdatert)
@@ -1929,8 +1930,10 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	}
 
 	const data = []
+	const identtype =
+		bestillingData.pdldata?.opprettNyPerson?.identtype || bestillingData.tpsf?.identtype
 
-	mapBestillingsinformasjon(bestillingsinformasjon, data)
+	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype)
 	mapTpsfBestillingsinformasjon(bestillingData, data)
 	mapPdlNyPerson(bestillingData, data)
 
