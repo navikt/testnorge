@@ -30,8 +30,6 @@ const StatusListe = ({
 	const mutate = useMatchMutate()
 	const [nyeBestillinger, setNyeBestillinger] = useState([])
 	const [autoRefresh, setAutoRefresh] = useState(true)
-	useBestillingerGruppe(gruppeId)
-	useOrganisasjonBestilling(brukerId, autoRefresh)
 
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
 		const nyBestillingListe = Object.values(bestillinger).filter(

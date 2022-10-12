@@ -57,9 +57,8 @@ export const PersonVisning = ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
-	const { bestillingerById } = useBestillingerGruppe(gruppeId)
 
-	const bestillinger = ident.bestillinger ? [] : bestillingerById
+	const bestillinger = []
 
 	if (ident.bestillinger) {
 		ident.bestillinger.map((b) => {
