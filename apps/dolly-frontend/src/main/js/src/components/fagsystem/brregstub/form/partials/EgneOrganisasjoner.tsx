@@ -17,7 +17,11 @@ interface OrgProps {
 	filterValidEnhetstyper?: boolean
 }
 
-export const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: string) => {
+const getAdresseWithAdressetype = (adresser: Adresse[], adressetype: string) => {
+	if (!adresser || adresser.length === 0) {
+		return []
+	}
+
 	return adresser
 		.filter((adr) => adr.adressetype === adressetype)
 		.map((adr) => ({
@@ -74,8 +78,8 @@ const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
 			orgnr: org.organisasjonsnummer,
 			navn: org.organisasjonsnavn,
 			enhetstype: org.enhetstype,
-			forretningsAdresse: fAdresser.length > 0 ? fAdresser[0] : null,
-			postAdresse: pAdresser.length > 0 ? pAdresser[0] : null,
+			forretningsAdresse: fAdresser?.length > 0 ? fAdresser[0] : null,
+			postAdresse: pAdresser?.length > 0 ? pAdresser[0] : null,
 			juridiskEnhet: juridiskEnhet,
 		}
 	})
