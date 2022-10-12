@@ -12,6 +12,7 @@ spring:
   jpa:
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         default-schema: public
   cloud:
     vault:
