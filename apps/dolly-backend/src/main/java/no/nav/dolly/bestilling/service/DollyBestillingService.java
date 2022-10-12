@@ -32,7 +32,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -219,6 +218,6 @@ public class DollyBestillingService {
 
     public static List<String> getEnvironments(String miljoer){
 
-        return new ArrayList<>(isNotBlank(miljoer) ? (List.of(miljoer.split(","))) : emptyList());
+        return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
     }
 }
