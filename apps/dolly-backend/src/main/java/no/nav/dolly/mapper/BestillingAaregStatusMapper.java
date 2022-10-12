@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingAaregStatusMapper {
@@ -26,7 +26,7 @@ public final class BestillingAaregStatusMapper {
         Map<String, Map<String, Set<String>>> errorEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getAaregStatus())) {
+            if (isNotBlank(progress.getAaregStatus())) {
                 List.of(progress.getAaregStatus().split(",")).forEach(status -> {
                     String[] environErrMsg = status.split(":");
                     String environ = environErrMsg[0];

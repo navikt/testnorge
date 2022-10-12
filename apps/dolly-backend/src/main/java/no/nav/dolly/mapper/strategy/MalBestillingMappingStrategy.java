@@ -11,8 +11,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
 
 @Slf4j
 @Component
@@ -30,7 +29,7 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
                         mapperFacade.map(bestillingRequest, malBestilling);
-                        malBestilling.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
+                        malBestilling.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         malBestilling.setTpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()));
                         malBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
                     }

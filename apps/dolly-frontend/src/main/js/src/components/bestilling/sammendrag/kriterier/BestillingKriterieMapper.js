@@ -1184,7 +1184,8 @@ const mapSigrunStub = (bestillingData, data) => {
 					flatSigrunStubKriterier.push({
 						...inntektObj,
 						grunnlag: gr.tekniskNavn,
-						verdi: gr.verdi,
+						verdi:
+							gr.tekniskNavn === 'skatteoppgjoersdato' ? Formatters.formatDate(gr.verdi) : gr.verdi,
 						inntektssted: 'Fastlands-Norge',
 					})
 				})
@@ -1210,7 +1211,7 @@ const mapSigrunStub = (bestillingData, data) => {
 					numberHeader: `Inntekt ${i + 1}`,
 				},
 				obj('År', inntekt.inntektsaar),
-				obj('Beløp', inntekt.verdi),
+				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Beløp', inntekt.verdi),
 				obj('Tjeneste', Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
 				{
 					label: 'Grunnlag (Fastlands-Norge)',

@@ -22,6 +22,12 @@ export const InntektsaarForm = ({ formikBag }) => {
 		verdi: '',
 	}
 
+	const handleTjenesteChange = (target, path) => {
+		formikBag.setFieldValue(`${path}.tjeneste`, target.value)
+		formikBag.setFieldValue(`${path}.grunnlag`, [])
+		formikBag.setFieldValue(`${path}.svalbardGrunnlag`, [])
+	}
+
 	return (
 		<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
 			{(path) => (
@@ -44,6 +50,8 @@ export const InntektsaarForm = ({ formikBag }) => {
 								disabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
 								fastfield={false}
 								isClearable={false}
+								size="large"
+								onChange={(target) => handleTjenesteChange(target, path)}
 							/>
 						</div>
 						{tjenesteErValgt(formikBag, path) && (
@@ -52,6 +60,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								header="Grunnlag fra Fastlands-Norge"
 								initialGrunnlag={initialGrunnlag}
 								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+								formikBag={formikBag}
 							/>
 						)}
 						{_get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
@@ -60,6 +69,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								header="Grunnlag fra Svalbard"
 								initialGrunnlag={initialGrunnlag}
 								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+								formikBag={formikBag}
 							/>
 						)}
 
