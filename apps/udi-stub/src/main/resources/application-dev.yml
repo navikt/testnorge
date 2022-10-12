@@ -1,4 +1,9 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
 spring:
+  application:
+    name: testnav-udi-stub-dev
   flyway:
     enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
     locations: classpath:db/migration
@@ -13,6 +18,7 @@ spring:
     properties:
       hibernate:
         default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     vault:
       database:
@@ -27,3 +33,11 @@ spring:
         jwt:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           accepted-audience: ${client_id}, api://${client_secret}
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-fss:dolly:testnav-udi-stub-dev

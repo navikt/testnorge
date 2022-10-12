@@ -45,7 +45,6 @@ spec:
         - application: testnav-inst-service
         - application: dolly-backend-dev
       external:
-        - host: udi-stub-dev.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
