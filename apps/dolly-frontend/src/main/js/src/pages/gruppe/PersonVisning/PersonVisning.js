@@ -111,29 +111,27 @@ export const PersonVisning = ({
 	} = data
 
 	const manglerFagsystemdata = () => {
-		let manglerData = false
-
 		if (
 			[aareg, sigrunstub, inntektstub, krrstub, instdata].some(
 				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
 			)
 		) {
-			manglerData = true
+			return true
 		}
 
 		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
-			manglerData = true
+			return true
 		}
 
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
-			manglerData = true
+			return true
 		}
 
 		if (udistub && sjekkManglerUdiData(udistub)) {
-			manglerData = true
+			return true
 		}
 
-		return manglerData
+		return false
 	}
 
 	const pdlRelatertPerson = () => {
