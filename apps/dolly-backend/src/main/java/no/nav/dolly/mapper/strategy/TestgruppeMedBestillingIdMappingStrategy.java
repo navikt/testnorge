@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -37,6 +38,19 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                 .sorted(Comparator.reverseOrder())
                                                 .collect(Collectors.toList()))
                                         .master(testident.getMaster())
+                                        .bestillinger(testident.getBestillingProgress().stream()
+                                                .filter(bestillingProgress ->
+                                                        bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
+                                                .map(BestillingProgress::getBestilling)
+                                                .map(bestilling ->  {
+                                                    var status = factory.getMapperFacade().map(bestilling, RsBestillingStatus.class);
+                                                    return RsBestillingStatus.builder()
+                                                            .id(bestilling.getId())
+                                                            .status(status.getStatus())
+                                                            .bestilling(status.getBestilling())
+                                                            .build();
+                                                })
+                                                .collect(Collectors.toList()))
                                         .build())
                                 .collect(Collectors.toList()));
                         testgruppeMedBestillingId.setErLaast(isTrue(testgruppe.getErLaast()));
