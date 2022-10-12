@@ -32,6 +32,19 @@ import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '~/service/Api'
+import { Alert } from '@navikt/ds-react'
+import styled from 'styled-components'
+import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/GjenopprettPerson'
+import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
+import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
+import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+
+const StyledAlert = styled(Alert)`
+	margin-bottom: 20px;
+	.navds-alert__wrapper {
+		max-width: 100rem;
+	}
+`
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -88,6 +101,46 @@ export const PersonVisning = ({
 			mountedRef.current = false
 		}
 	}, [])
+
+	if (!data) {
+		return null
+	}
+
+	const {
+		aareg,
+		sigrunstub,
+		pensjonforvalter,
+		inntektstub,
+		brregstub,
+		krrstub,
+		instdata,
+		arenaforvalteren,
+		udistub,
+	} = data
+
+	const manglerFagsystemdata = () => {
+		if (
+			[aareg, sigrunstub, inntektstub, krrstub, instdata].some(
+				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
+			)
+		) {
+			return true
+		}
+
+		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
+			return true
+		}
+
+		if (brregstub && sjekkManglerBrregData(brregstub)) {
+			return true
+		}
+
+		if (udistub && sjekkManglerUdiData(udistub)) {
+			return true
+		}
+
+		return false
+	}
 
 	const pdlRelatertPerson = () => {
 		const relatertePersoner = []
@@ -154,7 +207,7 @@ export const PersonVisning = ({
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-
+					<GjenopprettPerson ident={ident?.ident} />
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
@@ -180,6 +233,13 @@ export const PersonVisning = ({
 						/>
 					)}
 				</div>
+				{manglerFagsystemdata() && (
+					<StyledAlert variant={'info'} size={'small'}>
+						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
+						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med team Dolly
+						dersom problemet vedvarer.
+					</StyledAlert>
+				)}
 				{ident.master !== 'PDL' && (
 					<PdlfVisningConnector
 						data={data.pdlforvalter}
@@ -193,26 +253,26 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning liste={data.aareg} loading={loading.aareg} />
-				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
-				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
-				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
+				<AaregVisning liste={aareg} loading={loading.aareg} />
+				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
+				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
 				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
-				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
-				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-				<InstVisning data={data.instdata} loading={loading.instdata} />
+				<BrregVisning data={brregstub} loading={loading.brregstub} />
+				<KrrVisning data={krrstub} loading={loading.krrstub} />
+				<InstVisning data={instdata} loading={loading.instdata} />
 				<ArenaVisning
-					data={data.arenaforvalteren}
+					data={arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 					ident={ident}
 				/>
 				<UdiVisning
-					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
+					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
 				/>
 				<DokarkivVisning ident={ident.ident} />

@@ -147,6 +147,10 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}`
 	}
 
+	static gjenopprettPerson(ident) {
+		return `${identBase}/gjenopprett/${ident}`
+	}
+
 	static identBeskrivelse(ident) {
 		return `${identBase}/${ident}/beskrivelse`
 	}

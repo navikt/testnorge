@@ -95,11 +95,11 @@ const FinnPersonBestilling = ({
 
 		if (finnesTpsf || finnesPdlf || finnesPdl) {
 			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
-			${finnesTpsf ? ' TPSF' : ''}
+			${finnesTpsf ? ' TPS' : ''}
 			${finnesTpsf && finnesPdlf ? ', ' : ''}
-			${finnesPdlf ? 'PDLF' : ''}
+			${finnesPdlf ? 'PDL' : ''}
 			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
-			${finnesPdl ? 'PDL' : ''}
+			${finnesPdl ? 'Test-Norge' : ''}
 			, og eksisterer ikke i Dolly.`
 		}
 
