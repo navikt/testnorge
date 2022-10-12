@@ -17,11 +17,12 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
-import no.nav.dolly.bestilling.aktoeridsyncservice.AktoerIdSyncConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.SykemeldingConsumer;
+import no.nav.dolly.bestilling.sykemelding.SyntSykemeldingConsumer;
 import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
 import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
@@ -62,11 +63,12 @@ public class EnvironmentIsAliveController {
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final OrganisasjonConsumer organisasjonConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final AktoerIdSyncConsumer personServiceConsumer;
+    private final PersonServiceConsumer personServiceConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final PdlForvalterConsumer pdlForvalterConsumer;
     private final SykemeldingConsumer sykemeldingConsumer;
+    private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final SigrunStubConsumer sigrunStubConsumer;
     private final UdiStubConsumer udiStubConsumer;
@@ -100,6 +102,7 @@ public class EnvironmentIsAliveController {
                         sigrunStubConsumer.checkAlive().entrySet(),
                         skjermingsRegisterConsumer.checkAlive().entrySet(),
                         sykemeldingConsumer.checkAlive().entrySet(),
+                        syntSykemeldingConsumer.checkAlive().entrySet(),
                         udiStubConsumer.checkAlive().entrySet()
                 )
                 .flatMap(Set::stream)

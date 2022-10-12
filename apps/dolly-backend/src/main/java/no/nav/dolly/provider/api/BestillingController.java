@@ -79,6 +79,12 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
 
+    @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
+    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
+    public List<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId), RsBestillingStatus.class);
+    }
+
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
@@ -113,6 +119,7 @@ public class BestillingController {
         return malBestillingService.getMalbestillingByNavnAndUser(brukerId, malNavn);
     }
 
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @DeleteMapping("/malbestilling/{id}")
     @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {

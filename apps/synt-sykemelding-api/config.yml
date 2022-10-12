@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-synt-sykemelding-api
+  name: testnav-synt-sykemelding-api
   namespace: dolly
   annotations:
     nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
@@ -42,7 +42,32 @@ spec:
     limits:
       cpu: 500m
       memory: 5000Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: synthdata-elsam-gcp
+          cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
+        - application: testnav-arbeidsforhold-service
+          cluster: dev-gcp
+        - application: testnav-helsepersonell-service
+          cluster: dev-gcp
+      external:
+        - host: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
-    - "https://testnorge-synt-sykemelding-api.nais.preprod.local"
-    - "https://testnorge-synt-sykemelding-api.dev.adeo.no"
-    - "https://testnorge-synt-sykemelding-api.dev.intern.nav.no"
+    - "https://testnav-synt-sykemelding-api.dev.intern.nav.no"

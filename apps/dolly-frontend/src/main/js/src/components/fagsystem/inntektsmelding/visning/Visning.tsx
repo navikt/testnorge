@@ -77,6 +77,7 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 					const gyldigeBestillinger = liste.filter((bestilling) =>
 						data.find((x) => (x && x.bestillingId ? x.bestillingId === bestilling.id : x))
 					)
+
 					if (gyldigeBestillinger && gyldigeBestillinger.length > 0) {
 						return (
 							<>

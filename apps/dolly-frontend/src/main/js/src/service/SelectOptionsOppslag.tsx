@@ -1,9 +1,10 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi } from '~/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '~/service/Api'
 import Api from '~/api'
 import _isNil from 'lodash/isNil'
 import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getAlder } from '~/ducks/fagsystem'
+import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -16,7 +17,8 @@ export type Option = {
 	vergemaal?: boolean
 	doedsfall?: boolean
 	foreldre?: Array<string>
-	foreldreansvar: Array<string>
+	foreldreansvar?: Array<string>
+	relasjoner?: Array<string>
 }
 
 type Data = {
@@ -52,11 +54,11 @@ export const SelectOptionsOppslag = {
 			return null
 		}
 		const options = await PdlforvalterApi.getPersoner(gruppe).then((response: any) => {
-			if (gruppe.length < 1) {
+			if (gruppe?.length < 1) {
 				return null
 			}
 			const personListe: Array<PersonListe> = []
-			response.data.forEach((id: Person) => {
+			response?.data?.forEach((id: Person) => {
 				personListe.push({
 					value: id.person.ident,
 					label: `${id.person.ident} - ${id.person.navn[0].fornavn} ${id.person.navn[0].etternavn}`,
@@ -70,6 +72,103 @@ export const SelectOptionsOppslag = {
 					foreldreansvar: id.relasjoner
 						?.filter((relasjon) => relasjon.relasjonType === 'FORELDREANSVAR_BARN')
 						?.map((relasjon) => relasjon.relatertPerson?.ident),
+				})
+			})
+			return personListe
+		})
+		return options || Promise.resolve()
+	},
+
+	hentPdlOptions: async (gruppe: Array<{ ident: string }>) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
+
+		const options = await PdlforvalterApi.getPersoner(gruppe.map((p) => p.ident)).then(
+			(response: any) => {
+				const personListe: Array<Option> = []
+				response.data.forEach((id: Person) => {
+					const navn = id?.person?.navn?.[0]
+					const fornavn = navn?.fornavn || ''
+					const mellomnavn = navn?.mellomnavn ? `${navn?.mellomnavn?.charAt(0)}.` : ''
+					const etternavn = navn?.etternavn || ''
+					personListe.push({
+						value: id?.person?.ident,
+						label: `${id?.person?.ident} - ${fornavn} ${mellomnavn} ${etternavn}`,
+						relasjoner: id?.relasjoner?.map((r) => r?.relatertPerson?.ident),
+					})
+				})
+				return personListe
+			}
+		)
+		return options ? options : Promise.resolve()
+	},
+
+	hentTestnorgeOptions: async (gruppe: Array<{ ident: string }>) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
+
+		const personListe: Array<Option> = []
+		const maxAntall = 40
+
+		const getRelatertePersoner = (person: HentPerson) => {
+			if (!person) return null
+			const relasjoner = [] as Array<string>
+			person.forelderBarnRelasjon?.forEach((relasjon) =>
+				relasjoner.push(relasjon.relatertPersonsIdent)
+			)
+			person.fullmakt?.forEach((relasjon) => relasjoner.push(relasjon.motpartsPersonident))
+			person.kontaktinformasjonForDoedsbo?.forEach((relasjon) =>
+				relasjoner.push(relasjon.personSomKontakt?.identifikasjonsnummer)
+			)
+			person.sivilstand?.forEach(
+				(relasjon) =>
+					relasjon.relatertVedSivilstand && relasjoner.push(relasjon.relatertVedSivilstand)
+			)
+			person.vergemaalEllerFremtidsfullmakt?.forEach((relasjon) =>
+				relasjoner.push(relasjon.vergeEllerFullmektig?.motpartsPersonident)
+			)
+			return relasjoner
+		}
+
+		for (let i = 0; i < gruppe.length; i += maxAntall) {
+			const listeDel = gruppe.slice(i, i + maxAntall)
+			const options = await DollyApi.getPersonerFraPdl(listeDel.map((p) => p.ident)).then(
+				(response: any) => {
+					const optionsListe = [] as Array<Option>
+					response.data?.data?.hentPersonBolk?.forEach(
+						(id: { ident: string; person: HentPerson }) => {
+							const navn = id?.person?.navn?.[0]
+							const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''
+							optionsListe.push({
+								value: id?.ident,
+								label: `${id?.ident} - ${navn?.fornavn} ${mellomnavn} ${navn?.etternavn}`,
+								relasjoner: getRelatertePersoner(id?.person),
+							})
+						}
+					)
+					return optionsListe
+				}
+			)
+			personListe.push(...options)
+		}
+		return personListe
+	},
+
+	hentTpsOptions: async (gruppe: Array<{ ident: string }>) => {
+		if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
+			return null
+		}
+
+		const options = await TpsfApi.getPersoner(gruppe.map((p) => p.ident)).then((response: any) => {
+			const personListe: Array<Option> = []
+			response.data.forEach((id: any) => {
+				const mellomnavn = id?.mellomnavn ? `${id?.mellomnavn?.charAt(0)}.` : ''
+				personListe.push({
+					value: id?.ident,
+					label: `${id?.ident} - ${id?.fornavn} ${mellomnavn} ${id?.etternavn}`,
+					relasjoner: id?.relasjoner?.map((r: any) => r?.personRelasjonMed?.ident),
 				})
 			})
 			return personListe
@@ -117,17 +216,17 @@ export const SelectOptionsOppslag = {
 		return useAsync(async () => DollyApi.getTags(), [DollyApi.getTags])
 	},
 
-	hentVirksomheterFraOrgforvalter: () => {
-		return Api.fetchJson(`/testnav-organisasjon-forvalter/api/v2/organisasjoner/virksomheter`, {
-			method: 'GET',
-		})
-	},
-
 	formatOptions: (type: string, data: any) => {
+		if (!data?.value) {
+			if (!data?.loading) {
+				console.error('Fant ingen kodeverk for type: ' + type)
+			}
+			return []
+		}
 		if (type === 'personnavn') {
-			const persondata: any[] = data.value && data.value.data ? data.value.data : []
+			const persondata: any[] = data?.value?.data || []
 			const options: Option[] = []
-			persondata.length > 0 &&
+			persondata?.length > 0 &&
 				persondata.forEach((personInfo) => {
 					if (!_isNil(personInfo.fornavn)) {
 						const mellomnavn = !_isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
@@ -139,7 +238,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'fornavn' || type === 'mellomnavn' || type === 'etternavn') {
 			const navnData = data?.value?.data || []
 			const options: { value: string; label: string }[] = []
-			navnData.length > 0 &&
+			navnData?.length > 0 &&
 				navnData.forEach((navn: { [x: string]: any }) => {
 					options.push({ value: navn[type], label: navn[type] })
 				})
@@ -147,7 +246,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'navnOgFnr') {
 			const persondata = data.value && data.value.data ? data.value.data.liste : []
 			const options: Option[] = []
-			persondata.length > 0 &&
+			persondata?.length > 0 &&
 				persondata.forEach(
 					(personInfo: { fornavn: string; mellomnavn: string; etternavn: string; fnr: string }) => {
 						if (!_isNil(personInfo.fornavn)) {
@@ -163,7 +262,7 @@ export const SelectOptionsOppslag = {
 			return options
 		} else if (type === 'arbeidsforholdstyper') {
 			const options = data.value ? data.value.data.koder : []
-			options.length > 0 &&
+			options?.length > 0 &&
 				options.forEach((option: Option) => {
 					if (option.value === 'frilanserOppdragstakerHonorarPersonerMm') {
 						option.label = 'Frilansere/oppdragstakere, honorar, m.m.'
@@ -190,7 +289,7 @@ export const SelectOptionsOppslag = {
 		} else if (type === 'navEnheter') {
 			const enheter = data.value ? Object.entries(data.value.data) : []
 			const options: Option[] = []
-			enheter.forEach((enhet: [string, any]) => {
+			enheter?.forEach((enhet: [string, any]) => {
 				options.push({
 					value: enhet?.[1]?.enhetNr,
 					label: `${enhet?.[1]?.navn} (${enhet?.[1]?.enhetNr})`,

@@ -29,7 +29,22 @@ import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerBu
 import { useNavigate } from 'react-router-dom'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { getBestillingsListe } from '~/ducks/bestillingStatus'
-import { PartnerImportButton } from '~/components/ui/button/PartnerImportButton/PartnerImportButton'
+import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
+import { useAsync } from 'react-use'
+import { DollyApi } from '~/service/Api'
+import { Alert } from '@navikt/ds-react'
+import styled from 'styled-components'
+import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/GjenopprettPerson'
+import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
+import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
+import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+
+const StyledAlert = styled(Alert)`
+	margin-bottom: 20px;
+	.navds-alert__wrapper {
+		max-width: 100rem;
+	}
+`
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -46,25 +61,37 @@ export const PersonVisning = ({
 	data,
 	bestillingIdListe,
 	ident,
-	isAlive,
 	brukertype,
-	gruppeIdenter,
 	loading,
 	slettPerson,
-	slettPersonOgPartner,
+	slettPersonOgRelatertePersoner,
 	leggTilPaaPerson,
 	iLaastGruppe,
+	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
-
 	const { bestillingerById } = useBestillingerGruppe(gruppeId)
 
+	const bestillinger = ident.bestillinger ? [] : bestillingerById
+
+	if (ident.bestillinger) {
+		ident.bestillinger.map((b) => {
+			bestillinger[b.id] = b
+		})
+	}
+
 	useEffect(() => {
-		fetchDataFraFagsystemer(bestillingerById)
+		fetchDataFraFagsystemer(bestillinger)
 	}, [])
 
-	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
-	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
+	const getGruppeIdenter = () => {
+		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
+	}
+
+	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
+
+	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
+	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -75,13 +102,82 @@ export const PersonVisning = ({
 		}
 	}, [])
 
-	const pdlPartner = () => {
-		return data.pdl?.hentPerson?.sivilstand?.filter(
-			(siv) =>
-				!siv?.metadata?.historisk &&
-				['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
-		)?.[0]?.relatertVedSivilstand
+	if (!data) {
+		return null
 	}
+
+	const {
+		aareg,
+		sigrunstub,
+		pensjonforvalter,
+		inntektstub,
+		brregstub,
+		krrstub,
+		instdata,
+		arenaforvalteren,
+		udistub,
+	} = data
+
+	const manglerFagsystemdata = () => {
+		if (
+			[aareg, sigrunstub, inntektstub, krrstub, instdata].some(
+				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
+			)
+		) {
+			return true
+		}
+
+		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
+			return true
+		}
+
+		if (brregstub && sjekkManglerBrregData(brregstub)) {
+			return true
+		}
+
+		if (udistub && sjekkManglerUdiData(udistub)) {
+			return true
+		}
+
+		return false
+	}
+
+	const pdlRelatertPerson = () => {
+		const relatertePersoner = []
+
+		data.pdl?.hentPerson?.sivilstand
+			?.filter(
+				(siv) =>
+					!siv?.metadata?.historisk &&
+					['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER'].includes(siv?.type)
+			)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'PARTNER',
+					id: person.relatertVedSivilstand,
+				})
+			})
+
+		data.pdl?.hentPerson?.forelderBarnRelasjon
+			?.filter(
+				(forelderBarn) =>
+					!forelderBarn?.metadata?.historisk &&
+					['BARN', 'MOR', 'MEDMOR', 'FAR'].includes(forelderBarn?.relatertPersonsRolle)
+			)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: person.relatertPersonsRolle,
+					id: person.relatertPersonsIdent,
+				})
+			})
+
+		return relatertePersoner
+	}
+
+	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
+	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
+		gruppeIdenter?.includes(ident.id)
+	)
 
 	return (
 		<ErrorBoundary>
@@ -89,26 +185,33 @@ export const PersonVisning = ({
 				<div className="person-visning_actions">
 					{!iLaastGruppe && (
 						<Button
-							onClick={() =>
+							onClick={() => {
+								let personData = data
+								if (tmpPersoner?.pdlforvalter?.hasOwnProperty(ident.ident)) {
+									personData.pdlforvalter = tmpPersoner.pdlforvalter[ident.ident]
+								}
+								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
+									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
+								}
 								leggTilPaaPerson(
-									data,
+									personData,
 									bestillingListe,
 									ident.master,
 									getIdenttype(ident.ident),
 									gruppeId,
 									navigate
 								)
-							}
+							}}
 							kind="add-circle"
 						>
 							LEGG TIL/ENDRE
 						</Button>
 					)}
-
-					{!iLaastGruppe && (
-						<PartnerImportButton
+					<GjenopprettPerson ident={ident?.ident} />
+					{!iLaastGruppe && harPdlRelatertPerson && (
+						<RelatertPersonImportButton
 							gruppeId={gruppeId}
-							partnerIdent={pdlPartner()}
+							relatertPersonIdenter={pdlRelatertPerson()}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>
@@ -122,16 +225,26 @@ export const PersonVisning = ({
 					{!iLaastGruppe && ident.master === 'PDL' && (
 						<FrigjoerButton
 							slettPerson={slettPerson}
-							slettPersonOgPartner={slettPersonOgPartner}
-							loading={loading.slettPerson || loading.slettPersonOgPartner}
-							importertPartner={gruppeIdenter.includes(pdlPartner()) ? pdlPartner() : null}
+							slettPersonOgRelatertePersoner={slettPersonOgRelatertePersoner}
+							loading={loading.slettPerson || loading.slettPersonOgRelatertePersoner}
+							importerteRelatertePersoner={
+								importerteRelatertePersoner.length > 0 ? importerteRelatertePersoner : null
+							}
 						/>
 					)}
 				</div>
+				{manglerFagsystemdata() && (
+					<StyledAlert variant={'info'} size={'small'}>
+						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
+						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med team Dolly
+						dersom problemet vedvarer.
+					</StyledAlert>
+				)}
 				{ident.master !== 'PDL' && (
 					<PdlfVisningConnector
 						data={data.pdlforvalter}
 						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
+						skjermingData={data.skjermingsregister}
 						loading={loading.pdlforvalter}
 						environments={bestilling?.environments}
 						master={ident.master}
@@ -140,26 +253,26 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning liste={data.aareg} loading={loading.aareg} />
-				<SigrunstubVisning data={data.sigrunstub} loading={loading.sigrunstub} />
-				<PensjonVisning data={data.pensjonforvalter} loading={loading.pensjonforvalter} />
-				<InntektstubVisning liste={data.inntektstub} loading={loading.inntektstub} />
+				<AaregVisning liste={aareg} loading={loading.aareg} />
+				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
+				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
 				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
-				<BrregVisning data={data.brregstub} loading={loading.brregstub} />
-				<KrrVisning data={data.krrstub} loading={loading.krrstub} />
-				<InstVisning data={data.instdata} loading={loading.instdata} />
+				<BrregVisning data={brregstub} loading={loading.brregstub} />
+				<KrrVisning data={krrstub} loading={loading.krrstub} />
+				<InstVisning data={instdata} loading={loading.instdata} />
 				<ArenaVisning
-					data={data.arenaforvalteren}
+					data={arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 					ident={ident}
 				/>
 				<UdiVisning
-					data={UdiVisning.filterValues(data.udistub, bestilling?.bestilling.udistub)}
+					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
 				/>
 				<DokarkivVisning ident={ident.ident} />

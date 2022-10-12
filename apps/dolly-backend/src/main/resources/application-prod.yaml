@@ -5,8 +5,13 @@ spring:
     url: jdbc:postgresql://${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_HOST}:${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_PORT}/${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_DATABASE}?user=${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_USERNAME}&password=${NAIS_DATABASE_TESTNAV_DOLLY_BACKEND_TESTNAV_DOLLY_BACKEND_PASSWORD}
     driverClassName: org.postgresql.Driver
     hikari:
-      maximum-pool-size: 3
+      maximum-pool-size: 5
       minimum-idle: 1
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
 
 #consumers:
 #  testnav-helsepersonell-service:

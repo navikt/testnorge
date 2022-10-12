@@ -30,6 +30,8 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -39,6 +41,7 @@ public class SykemeldingClient implements ClientRegister {
     private static final String STANDARD_ARBEIDSFORHOLD_ID = "1";
 
     private final SykemeldingConsumer sykemeldingConsumer;
+    private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransaksjonMappingService transaksjonMappingService;
     private final DollyPersonCache dollyPersonCache;
@@ -49,6 +52,11 @@ public class SykemeldingClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getSykemelding())) {
+
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setSykemeldingStatus(encodeStatus(getVarsel("Sykemelding")));
+                return;
+            }
 
             try {
                 dollyPersonCache.fetchIfEmpty(dollyPerson);
@@ -65,14 +73,14 @@ public class SykemeldingClient implements ClientRegister {
                         saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
                                 progress.getBestilling().getId(), dollyPerson.getHovedperson());
                     }
-                    progress.setSykemeldingStatus("OK");
                 }
+                progress.setSykemeldingStatus("OK");
+
             } catch (RuntimeException e) {
 
                 progress.setSykemeldingStatus(errorStatusDecoder.decodeRuntimeException(e));
             }
         }
-
     }
 
     @Override
@@ -85,9 +93,9 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
             Person pasient = dollyPerson.getPerson(dollyPerson.getHovedperson());
             DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                    .person(pasient)
-                    .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                    .build(),
+                            .person(pasient)
+                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
+                            .build(),
                     DetaljertSykemeldingRequest.class);
 
             ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
@@ -105,7 +113,7 @@ public class SykemeldingClient implements ClientRegister {
                 syntSykemeldingRequest.setArbeidsforholdId(STANDARD_ARBEIDSFORHOLD_ID);
             }
 
-            ResponseEntity<String> response = sykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
+            ResponseEntity<String> response = syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
             return HttpStatus.OK.equals(response.getStatusCode());
         }
         return false;

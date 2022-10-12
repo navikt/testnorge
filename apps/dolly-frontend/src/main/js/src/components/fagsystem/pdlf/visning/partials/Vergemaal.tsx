@@ -37,6 +37,7 @@ export const Vergemaal = ({
 
 	const retatertPersonIdent = data.vergeIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
+	const harFullmektig = data.sakType === 'FRE'
 
 	const VergemaalLes = ({ vergemaalData, idx }) => {
 		if (!vergemaalData) {
@@ -70,15 +71,15 @@ export const Vergemaal = ({
 						value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
 					/>
 					{!relasjoner && (
-						<TitleValue
-							title="Verge"
-							value={
-								vergemaalData.vergeIdent || vergemaalData.vergeEllerFullmektig?.motpartsPersonident
-							}
-						/>
+						<TitleValue title={harFullmektig ? 'Fullmektig' : 'Verge'} value={vergemaalData.vergeIdent || vergemaalData.vergeEllerFullmektig?.motpartsPersonident} />
 					)}
 				</div>
-				{relasjon && <RelatertPerson data={relasjon.relatertPerson} tittel="Verge" />}
+				{relasjon && (
+					<RelatertPerson
+						data={relasjon.relatertPerson}
+						tittel={harFullmektig ? 'Fullmektig' : 'Verge'}
+					/>
+				)}
 			</ErrorBoundary>
 		)
 	}

@@ -49,7 +49,7 @@ export type HentPerson = {
 	forelderBarnRelasjon: Array<ForeldreBarnRelasjon>
 	doedfoedtBarn: Array<DoedfoedtBarn>
 	foreldreansvar: Array<Foreldreansvar>
-	kontaktinformasjonForDoedsbo: Array<{}>
+	kontaktinformasjonForDoedsbo: Array<any>
 	utenlandskIdentifikasjonsnummer: Array<{}>
 	falskIdentitet: FalskIdentitet
 	opphold: Array<OppholdData>
@@ -330,4 +330,26 @@ type Navn = {
 	etternavn: string
 	forkortetNavn?: string
 	metadata: Metadata
+}
+
+export type VergemaalData = {
+	type: string
+	embete: string
+	vergeEllerFullmektig: VergeEllerFullmektig
+	folkeregistermetadata: {
+		gyldighetstidspunkt: string
+		opphoerstidspunkt?: string
+	}
+	metadata: Metadata
+}
+
+export type VergeEllerFullmektig = {
+	navn: {
+		fornavn: string
+		mellomnavn?: string
+		etternavn: string
+	}
+	motpartsPersonident: string
+	omfang: string
+	omfangetErInnenPersonligOmraade: string
 }

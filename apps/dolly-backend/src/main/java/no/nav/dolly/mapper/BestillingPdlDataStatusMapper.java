@@ -22,8 +22,8 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DATA;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @UtilityClass
@@ -38,7 +38,7 @@ public final class BestillingPdlDataStatusMapper {
         Map<String, List<String>> meldingIdents = new HashMap<>();
 
         bestProgress.forEach(progress -> {
-            if (nonNull(progress.getPdlDataStatus())) {
+            if (isNotBlank(progress.getPdlDataStatus())) {
 
                 if (progress.getPdlDataStatus().contains("PDL_OPPRETT_PERSON")) {
                     extractStatus(meldingIdents, progress, objectMapper);

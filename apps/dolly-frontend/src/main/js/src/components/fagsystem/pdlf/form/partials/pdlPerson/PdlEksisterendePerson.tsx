@@ -9,7 +9,7 @@ import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
 import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
+import { Alert } from '@navikt/ds-react'
 import { useParams } from 'react-router-dom'
 
 interface PdlEksisterendePersonValues {
@@ -161,9 +161,9 @@ export const PdlEksisterendePerson = ({
 				/>
 			) : (
 				!loadingIdentOptions && (
-					<AlertStripeInfo style={{ marginBottom: '15px' }}>
-						Det finnes ingen gyldige personer i denne gruppen.
-					</AlertStripeInfo>
+					<Alert variant={'info'} style={{ marginBottom: '15px' }}>
+						Det finnes ingen eksisterende personer i denne gruppen.
+					</Alert>
 				)
 			)}
 		</div>

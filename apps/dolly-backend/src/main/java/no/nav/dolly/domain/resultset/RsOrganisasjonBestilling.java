@@ -23,10 +23,11 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsOrganisasjonBestilling {
 
-    public enum MaalformType {B, N}
-
     @Schema(description = "Liste av miljøer bestillingen skal deployes til")
     private List<String> environments;
+    private SyntetiskOrganisasjon organisasjon;
+    @Schema(description = "Navn på malbestillling")
+    private String malBestillingNavn;
 
     public List<String> getEnvironments() {
         if (isNull(environments)) {
@@ -35,7 +36,7 @@ public class RsOrganisasjonBestilling {
         return environments;
     }
 
-    private SyntetiskOrganisasjon organisasjon;
+    public enum MaalformType {B, N}
 
     @Data
     @Builder

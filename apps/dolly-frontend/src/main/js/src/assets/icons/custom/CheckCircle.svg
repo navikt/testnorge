@@ -1,4 +1,4 @@
-<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" role="img">
     <title>Checkmark-success</title>
     <g>
         <circle className="circle" cx="12" cy="12" r="11.5"/>

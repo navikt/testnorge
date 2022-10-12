@@ -14,6 +14,10 @@ export default function FavoriteButton({ hideLabel, addFavorite, removeFavorite,
 
 	const mutate = useMatchMutate()
 
+	if (!favoritter) {
+		return null
+	}
+
 	const isFavorite = favoritter.some((fav) => fav.id === groupId)
 
 	const handleClick = () =>

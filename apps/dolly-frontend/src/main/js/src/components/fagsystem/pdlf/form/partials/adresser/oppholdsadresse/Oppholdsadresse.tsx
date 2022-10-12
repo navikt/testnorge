@@ -13,12 +13,14 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
+import {
+	VegadresseVelger,
+	UtenlandskAdresse,
+	OppholdAnnetSted,
+	MatrikkeladresseVelger,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { OppholdAnnetSted } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/OppholdAnnetSted'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { MatrikkeladresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/MatrikkeladresseVelger'
 import { FormikProps } from 'formik'
 import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'

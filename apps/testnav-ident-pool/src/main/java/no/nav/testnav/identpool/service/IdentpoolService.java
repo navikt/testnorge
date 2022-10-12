@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -44,10 +43,6 @@ public class IdentpoolService {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final WhitelistRepository whitelistRepository;
 
-    private static boolean isSyntetisk(String ident) {
-        return ident.charAt(2) > '3';
-    }
-
     public Boolean erLedig(String personidentifikator) {
 
         var ident = identRepository.findByPersonidentifikator(personidentifikator);
@@ -63,6 +58,14 @@ public class IdentpoolService {
                     .orElseThrow(() -> new HttpServerErrorException(INTERNAL_SERVER_ERROR,
                             "Fikk ikke riktig antall statuser tilbake på metodekall til checkIdentsInTps"));
         }
+    }
+
+    public List<TpsStatusDTO> finnesIProd(Set<String> identer) {
+
+        var tpsStatus = tpsMessagingConsumer.getIdenterProdStatus(identer);
+        return tpsStatus.stream()
+                .filter(TpsStatusDTO::isInUse)
+                .toList();
     }
 
     public void markerBrukt(MarkerBruktRequest markerBruktRequest) {
@@ -183,21 +186,6 @@ public class IdentpoolService {
         return leggTilLedigeIdenterIMiljoer(ledigeIdenter, fnrMedIdent, tpsStatusDTOS);
     }
 
-    private List<String> leggTilLedigeIdenterIMiljoer(List<String> ledigeIdenter, Map<String,
-            Ident> fnrMedIdent, Set<TpsStatusDTO> tpsStatuser) {
-
-        for (TpsStatusDTO tpsStatusDTO : tpsStatuser) {
-            if (!tpsStatusDTO.isInUse()) {
-                Ident ident = fnrMedIdent.get(tpsStatusDTO.getIdent());
-                ident.setRekvireringsstatus(LEDIG);
-                ident.setRekvirertAv(null);
-                identRepository.save(ident);
-                ledigeIdenter.add(tpsStatusDTO.getIdent());
-            }
-        }
-        return ledigeIdenter;
-    }
-
     public Ident lesInnhold(String personidentifikator) {
 
         return identRepository.findByPersonidentifikator(personidentifikator);
@@ -240,5 +228,24 @@ public class IdentpoolService {
                 whitelist -> whiteFnrs.add(whitelist.getFnr())
         );
         return whiteFnrs;
+    }
+
+    private List<String> leggTilLedigeIdenterIMiljoer(List<String> ledigeIdenter, Map<String,
+            Ident> fnrMedIdent, Set<TpsStatusDTO> tpsStatuser) {
+
+        for (TpsStatusDTO tpsStatusDTO : tpsStatuser) {
+            if (!tpsStatusDTO.isInUse()) {
+                Ident ident = fnrMedIdent.get(tpsStatusDTO.getIdent());
+                ident.setRekvireringsstatus(LEDIG);
+                ident.setRekvirertAv(null);
+                identRepository.save(ident);
+                ledigeIdenter.add(tpsStatusDTO.getIdent());
+            }
+        }
+        return ledigeIdenter;
+    }
+
+    private static boolean isSyntetisk(String ident) {
+        return ident.charAt(2) > '3';
     }
 }

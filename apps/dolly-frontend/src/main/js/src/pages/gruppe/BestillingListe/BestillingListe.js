@@ -2,14 +2,12 @@ import React from 'react'
 import _orderBy from 'lodash/orderBy'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import Loading from '~/components/ui/loading/Loading'
 import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
 import { BestillingIconItem } from '~/components/ui/icon/IconItem'
 
 import Icon from '~/components/ui/icon/Icon'
 import Spinner from '~/components/ui/loading/Spinner'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
 
 const ikonTypeMap = {
@@ -23,22 +21,22 @@ export default function BestillingListe({
 	searchActive,
 	iLaastGruppe,
 	brukertype,
-	gruppeId,
+	bestillingerById,
 	navigerBestillingId,
 	visBestilling,
 	sidetall,
 }) {
-	const { bestillingerById, loading } = useBestillingerGruppe(gruppeId)
-	if (loading) return <Loading label="Laster bestillinger" panel />
 	if (!bestillingerById) return null
 	const bestillingListe = Object.values(bestillingerById)
 
 	if (bestillingListe.length === 0) {
-		let infoTekst = 'Trykk på opprett personer-knappen for å starte en bestilling.'
+		let infoTekst =
+			'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+			'søke opp og importere identer til gruppen.'
 		if (searchActive) infoTekst = 'Søket gav ingen resultater.'
 		else if (brukertype === 'BANKID')
 			infoTekst =
-				'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
+				'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
 
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}

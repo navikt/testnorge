@@ -3,6 +3,10 @@ import Logger from '~/logger'
 
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 
+export const runningTestcafe = () => {
+	return window?.hasOwnProperty('%testCafeAutomation%')
+}
+
 export default class Request {
 	static get(url: string, headers: Record<string, string> = {}) {
 		return api

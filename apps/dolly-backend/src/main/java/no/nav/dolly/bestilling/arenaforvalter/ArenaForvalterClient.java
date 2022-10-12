@@ -24,6 +24,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -33,12 +35,31 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
 
+    private static void appendErrorText(StringBuilder status, RuntimeException e) {
+
+        status.append("Feil: ")
+                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
+
+        if (e instanceof HttpClientErrorException) {
+            status.append(" (")
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
+                    .append(')');
+        }
+    }
+
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
             StringBuilder status = new StringBuilder();
+
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
+                        .collect(Collectors.joining(",")));
+                return;
+            }
 
             var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
 
@@ -79,14 +100,8 @@ public class ArenaForvalterClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
-            arenaForvalterConsumer.deleteIdenter(identer)
-                    .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
-
-        } catch (RuntimeException e) {
-
-            log.error("Feilet å slette identer mot Arena-forvalteren: {}", String.join(", ", identer), e);
-        }
+        arenaForvalterConsumer.deleteIdenter(identer)
+                .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
     }
 
     private void sendArenadagpenger(ArenaDagpenger arenaNyeDagpenger, StringBuilder status) {
@@ -187,17 +202,5 @@ public class ArenaForvalterClient implements ClientRegister {
                 .filter(arenaNyBruker ->
                         (!isNull(arenaNyBruker.getKvalifiseringsgruppe()) || !isNull(arenaNyBruker.getUtenServicebehov())))
                 .collect(Collectors.toList()));
-    }
-
-    private static void appendErrorText(StringBuilder status, RuntimeException e) {
-
-        status.append("Feil: ")
-                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
-
-        if (e instanceof HttpClientErrorException) {
-            status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
-                    .append(')');
-        }
     }
 }

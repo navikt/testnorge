@@ -95,6 +95,7 @@ export default <T extends {}>({
           onFound: 'Person funnet',
           onNotFound: 'Person ikke funnet',
           onError: 'Noe gikk galt',
+          syntIdent: 'Endringsmelding støtter ikke synt-identer.',
         }}
       />
       {state.show && (

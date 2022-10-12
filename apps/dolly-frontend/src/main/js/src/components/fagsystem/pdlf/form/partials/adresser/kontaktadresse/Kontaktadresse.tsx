@@ -12,10 +12,12 @@ import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { VegadresseVelger } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/VegadresseVelger'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/UtenlandskAdresse'
+import {
+	VegadresseVelger,
+	UtenlandskAdresse,
+	Postboksadresse,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { Postboksadresse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper/Postboksadresse'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikProps } from 'formik'
 import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'

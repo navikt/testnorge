@@ -119,8 +119,8 @@ export default class DollyEndpoints {
 		return `${bestillingBase}/stop/${bestillingId}?organisasjonBestilling=${erOrganisasjon}`
 	}
 
-	static personoppslag(ident) {
-		return `${personoppslagBase}/ident/${ident}`
+	static personoppslag(ident, pdlMiljoe = null) {
+		return `${personoppslagBase}/ident/${ident}${pdlMiljoe ? '?pdlMiljoe=' + pdlMiljoe : ''}`
 	}
 
 	static personoppslagMange(identer) {
@@ -134,6 +134,10 @@ export default class DollyEndpoints {
 		return `${uri}/excel/gruppe/${gruppeId}`
 	}
 
+	static orgExcelFil(brukerId) {
+		return `${uri}/excel/organisasjoner?brukerId=${brukerId}`
+	}
+
 	static udiPerson(ident) {
 		return `${udiBase}/${ident}`
 	}
@@ -141,6 +145,10 @@ export default class DollyEndpoints {
 	//TESTPERSON-CONTROLLER
 	static slettPerson(ident) {
 		return `${identBase}/${ident}`
+	}
+
+	static gjenopprettPerson(ident) {
+		return `${identBase}/gjenopprett/${ident}`
 	}
 
 	static identBeskrivelse(ident) {
@@ -191,5 +199,24 @@ export default class DollyEndpoints {
 
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
+	}
+
+	static flyttPersonerTilGruppe(gruppeId, identer) {
+		return `${groupBase}/${gruppeId}/identer/${Formatters.arrayToString(identer).replaceAll(
+			' ',
+			''
+		)}`
+	}
+
+	static malBestilling(malId) {
+		return `${bestillingBase}/malbestilling/${malId}`
+	}
+
+	static malBestillingOrganisasjon(malId) {
+		return `${organisasjonBase}/bestilling/malbestilling/${malId}`
+	}
+
+	static getOrganisasjoner(brukerId) {
+		return `${organisasjonBase}?brukerId=${brukerId}`
 	}
 }

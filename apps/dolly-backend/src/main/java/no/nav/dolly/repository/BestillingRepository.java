@@ -5,16 +5,14 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface BestillingRepository extends Repository<Bestilling, Long> {
-
-    @Query("from Bestilling b where b.id = :id")
-    Optional<Bestilling> findById(@Param("id") Long id);
+public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
     @Query(value = "select b.id, g.navn " +
             "from Bestilling b " +
@@ -48,6 +46,14 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
             nativeQuery = true)
     Optional<Integer> getPaginertBestillingIndex(@Param("bestillingId") Long bestillingId, @Param("gruppeId") Long gruppe);
 
+    @Query(value = "from Bestilling b join BestillingProgress bp on b.id = bp.bestilling.id where bp.ident = :ident order by b.id asc")
+    List<Bestilling> findBestillingerByIdent(@Param("ident") String ident);
+
+    @Query(value = "from Bestilling b " +
+            "join BestillingProgress bp on b.id = bp.bestilling.id " +
+            "and bp.ident in (:identer) order by b.id asc")
+    List<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
+
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
 
@@ -57,11 +63,21 @@ public interface BestillingRepository extends Repository<Bestilling, Long> {
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();
 
-    int deleteByGruppeId(Long gruppeId);
+    @Modifying
+    @Query(value = "delete from Bestilling b where b.gruppe.id = :gruppeId and b.malBestillingNavn is null")
+    int deleteByGruppeIdExcludeMaler(@Param("gruppeId") Long gruppeId);
 
     @Modifying
-    @Query(value = "delete from Bestilling b where b.id = :bestillingId and not exists " +
-            "(select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
+    @Query(value = "update Bestilling b " +
+            "set b.gruppe = null, b.opprettetFraGruppeId = null " +
+            "where b.gruppe.id = :gruppeId")
+    int updateBestillingNullifyGruppe(@Param("gruppeId") Long gruppeId);
+
+    @Modifying
+    @Query(value = "delete from Bestilling b " +
+            "where b.id = :bestillingId " +
+            "and b.malBestillingNavn is null " +
+            "and not exists (select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
     int deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 
     @Modifying

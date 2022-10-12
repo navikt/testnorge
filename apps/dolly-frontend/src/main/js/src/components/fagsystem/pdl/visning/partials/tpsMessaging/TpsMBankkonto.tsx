@@ -1,6 +1,6 @@
 import React from 'react'
 import Loading from '~/components/ui/loading/Loading'
-import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/tpsf/visning/partials'
+import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 
 type TpsMBankkontoProps = {
 	data: any

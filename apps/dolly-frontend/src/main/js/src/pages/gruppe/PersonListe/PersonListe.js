@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
 import Loading from '~/components/ui/loading/Loading'
@@ -16,7 +15,7 @@ import { selectPersonListe, sokSelector } from '~/ducks/fagsystem'
 import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
-import { useGruppeById } from '~/utils/hooks/useGruppe'
+import DollyTooltip from '~/components/ui/button/DollyTooltip'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -28,13 +27,15 @@ const ikonTypeMap = {
 export default function PersonListe({
 	isFetching,
 	search,
-	gruppeId,
-	fagsystem,
-	bestillingStatuser,
+	gruppeInfo,
+	identer,
 	sidetall,
 	sideStoerrelse,
+	fagsystem,
+	bestillingStatuser,
 	brukertype,
 	visPerson,
+	hovedperson,
 	iLaastGruppe,
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
@@ -43,7 +44,6 @@ export default function PersonListe({
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
-	const { gruppe: gruppeInfo, identer, loading } = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -65,20 +65,22 @@ export default function PersonListe({
 
 	useEffect(() => {
 		if (isEmpty(identListe)) {
-			return null
+			return
 		}
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe, fagsystem)
-	}, [identListe, visPerson])
+	}, [identListe, visPerson, bestillingStatuser])
 
-	if (isFetching || loading || (personListe?.length === 0 && !isEmpty(identer)))
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
 		return <Loading label="Laster personer" panel />
+	}
 
 	if (isEmpty(identer)) {
 		const infoTekst =
 			brukertype === 'BANKID'
-				? 'Trykk på importer personer-knappen for å kunne søke opp og importere identer til gruppen.'
-				: 'Trykk på opprett personer-knappen for å starte en bestilling.'
+				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
+				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+				  'søke opp og importere identer til gruppen.'
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
@@ -157,6 +159,7 @@ export default function PersonListe({
 		{
 			text: 'Brukt',
 			width: '10',
+			style: { paddingLeft: '3px' },
 			dataField: 'ibruk',
 			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
@@ -168,12 +171,10 @@ export default function PersonListe({
 			formatter: (_cell, row) => {
 				if (row.ident.beskrivelse) {
 					return (
-						<Tooltip
+						<DollyTooltip
 							overlay={getKommentarTekst(row.ident.beskrivelse)}
-							placement="top"
 							destroyTooltipOnHide={true}
 							mouseEnterDelay={0}
-							mouseLeaveDelay={0.1}
 							onClick={(event) => {
 								setSelectedIdent(row.ident)
 								openKommentarModal()
@@ -187,7 +188,7 @@ export default function PersonListe({
 							<div style={{ textAlign: 'center' }}>
 								<Icon kind="kommentar" size={20} />
 							</div>
-						</Tooltip>
+						</DollyTooltip>
 					)
 				}
 			},
@@ -205,9 +206,9 @@ export default function PersonListe({
 				}}
 				pagination
 				iconItem={(bruker) => {
-					if (bruker.kjonn === 'MANN') {
+					if (bruker.kjonn === 'MANN' || bruker.kjonn === 'GUTT') {
 						return <ManIconItem />
-					} else if (bruker.kjonn === 'KVINNE') {
+					} else if (bruker.kjonn === 'KVINNE' || bruker.kjonn === 'JENTE') {
 						return <WomanIconItem />
 					} else {
 						return <UnknownIconItem />
@@ -215,6 +216,7 @@ export default function PersonListe({
 				}}
 				visSide={sidetall}
 				visPerson={visPerson}
+				hovedperson={hovedperson}
 				onExpand={(bruker) => (
 					<PersonVisningConnector
 						ident={bruker.ident}
@@ -222,8 +224,6 @@ export default function PersonListe({
 						bestillingIdListe={bruker.ident.bestillingId}
 						iLaastGruppe={iLaastGruppe}
 						brukertype={brukertype}
-						isAlive={!bruker.alder.includes('død')}
-						gruppeIdenter={personListe?.map((person) => person.identNr)}
 					/>
 				)}
 			/>

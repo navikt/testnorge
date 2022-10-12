@@ -13,7 +13,9 @@ const loadingSelectorArena = createLoadingSelector(actions.getArena)
 const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
-const loadingSelectorSlettPersonOgPartner = createLoadingSelector(actions.slettPersonOgPartner)
+const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
+	actions.slettPersonOgRelatertePersoner
+)
 const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 
@@ -30,7 +32,7 @@ const loadingSelector = createSelector(
 			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
-			slettPersonOgPartner: loadingSelectorSlettPersonOgPartner({ loading }),
+			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
 			pensjonforvalter: loadingSelectorPensjon({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
 		}
@@ -50,8 +52,10 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 		slettPerson: () => {
 			return dispatch(actions.slettPerson(ownProps.personId))
 		},
-		slettPersonOgPartner: (partnerident) => {
-			return dispatch(actions.slettPersonOgPartner(ownProps.personId, partnerident))
+		slettPersonOgRelatertePersoner: (relatertPersonIdenter) => {
+			return dispatch(
+				actions.slettPersonOgRelatertePersoner(ownProps.personId, relatertPersonIdenter)
+			)
 		},
 		leggTilPaaPerson: (data, bestillinger, master, type, gruppeId, navigate) =>
 			navigate(`/gruppe/${gruppeId}/bestilling/${ownProps.personId}`, {

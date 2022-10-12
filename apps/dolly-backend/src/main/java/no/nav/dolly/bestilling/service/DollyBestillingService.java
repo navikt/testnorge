@@ -32,19 +32,19 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
-import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -67,11 +67,6 @@ public class DollyBestillingService {
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
-
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
@@ -89,17 +84,21 @@ public class DollyBestillingService {
 
                 dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
                         .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())));
+                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())),
+                        progress.getBestilling().getGruppe().getTags());
 
             } else if (originator.isPdlf()) {
                 try {
-                    var ident = pdlDataConsumer.oppdaterPdl(testident.getIdent(),
-                            PersonUpdateRequestDTO.builder()
-                                    .person(originator.getPdlBestilling().getPerson())
-                                    .build());
+                    if (nonNull(originator.getPdlBestilling())) {
+                        pdlDataConsumer.oppdaterPdl(testident.getIdent(),
+                                PersonUpdateRequestDTO.builder()
+                                        .person(originator.getPdlBestilling().getPerson())
+                                        .build());
+                    }
 
-                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(ident));
-                    dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()));
+                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
+                    dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()),
+                            progress.getBestilling().getGruppe().getTags());
 
                 } catch (WebClientResponseException e) {
 
@@ -136,7 +135,12 @@ public class DollyBestillingService {
         }
     }
 
-    private void clearCache() {
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
+    }
+
+    protected void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }
@@ -153,7 +157,7 @@ public class DollyBestillingService {
                 bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
             }
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
-            bestKriterier.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
+            bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
             return bestKriterier;
 
@@ -189,19 +193,20 @@ public class DollyBestillingService {
         clearCache();
     }
 
-
     protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
 
         DollyPerson dollyPerson = null;
         if (progress.isTpsf()) {
             var personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
             if (!personer.isEmpty()) {
-                dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0));
+                dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0),
+                        progress.getBestilling().getGruppe().getTags());
             }
 
         } else if (progress.isPdlf()) {
             var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent()));
-            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()));
+            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
+                    progress.getBestilling().getGruppe().getTags());
 
         } else if (progress.isPdl()) {
             var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
@@ -209,5 +214,10 @@ public class DollyBestillingService {
         }
 
         return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
+    }
+
+    public static List<String> getEnvironments(String miljoer){
+
+        return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
     }
 }

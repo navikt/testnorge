@@ -1,5 +1,6 @@
 export type Person = {
 	id: number
+	ident?: string
 	person: PersonData
 	relasjoner?: Array<Relasjon>
 }
@@ -67,14 +68,14 @@ export type StatsborgerskapData = {
 	id?: number
 }
 
-type Innflytting = {
+export type Innflytting = {
 	fraflyttingsland: string
 	fraflyttingsstedIUtlandet: string
 	innflyttingsdato: string
 	id?: number
 }
 
-type Utflytting = {
+export type Utflytting = {
 	tilflyttingsland: string
 	tilflyttingsstedIUtlandet: string
 	utflyttingsdato: string
@@ -147,17 +148,11 @@ export type ForeldreansvarUtenId = {
 
 export type VergemaalValues = {
 	vergemaalEmbete?: string
-	embete?: string
 	mandatType?: string
 	sakType?: string
-	type?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
 	vergeIdent?: string
-	vergeEllerFullmektig?: {
-		motpartsPersonident: string
-		omfang?: string
-	}
 	id: number
 }
 

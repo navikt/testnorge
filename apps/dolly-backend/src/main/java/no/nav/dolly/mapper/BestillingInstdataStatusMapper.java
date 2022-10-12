@@ -14,9 +14,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INST2;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingInstdataStatusMapper {
@@ -27,7 +27,7 @@ public final class BestillingInstdataStatusMapper {
         Map<String, Map<String, Set<String>>> statusEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getInstdataStatus())) {
+            if (isNotBlank(progress.getInstdataStatus())) {
                 List.of(progress.getInstdataStatus().split(",")).forEach(status -> {
                     String[] environErrMsg = status.split(":", 2);
                     String environ = environErrMsg[0];

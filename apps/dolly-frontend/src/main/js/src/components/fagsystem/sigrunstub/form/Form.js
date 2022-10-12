@@ -2,9 +2,9 @@ import React from 'react'
 import * as Yup from 'yup'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
-import { ifPresent } from '~/utils/YupValidations'
+import { ifPresent, requiredDate } from '~/utils/YupValidations'
 
 export const sigrunAttributt = 'sigrunstub'
 export const SigrunstubForm = ({ formikBag }) => (
@@ -13,7 +13,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
 			iconType="sigrun"
-			startOpen={erForste(formikBag.values, [sigrunAttributt])}
+			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
 		>
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>
@@ -29,9 +29,13 @@ SigrunstubForm.validation = {
 					.of(
 						Yup.object({
 							tekniskNavn: Yup.string().required('Velg en type inntekt'),
-							verdi: Yup.number()
-								.min(0, 'Tast inn et gyldig beløp')
-								.typeError('Tast inn et gyldig beløp'),
+							verdi: Yup.mixed().when('tekniskNavn', {
+								is: 'skatteoppgjoersdato',
+								then: requiredDate.nullable(),
+								otherwise: Yup.number()
+									.min(0, 'Tast inn et gyldig beløp')
+									.typeError('Tast inn et gyldig beløp'),
+							}),
 						})
 					)
 					.test('is-required', 'Legg til minst én inntekt', function checkTjenesteGrunnlag(_val) {

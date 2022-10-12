@@ -49,6 +49,7 @@ import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
@@ -112,6 +113,13 @@ public class BestillingService {
     public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
+    }
+
+    public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
+        return testgruppe.isPresent()
+                ? testgruppe.get().getBestillinger().stream().filter(b -> !b.isFerdig()).collect(toSet())
+                : emptySet();
     }
 
     public List<Bestilling> fetchMalBestillinger() {
@@ -227,10 +235,34 @@ public class BestillingService {
                         .antallIdenter(bestilling.getAntallIdenter())
                         .opprettFraIdenter(bestilling.getOpprettFraIdenter())
                         .sistOppdatert(now())
-                        .miljoer(miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
+                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
                         .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
+                        .bruker(fetchOrCreateBruker())
+                        .build());
+    }
+
+
+    @Transactional
+    // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
+    public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
+
+        var bestillingerByIdent = identRepository.getBestillingerByIdent(ident);
+        if (bestillingerByIdent.isEmpty()) {
+            throw new DollyFunctionalException(format("Identen: %s har ingen gyldige bestillinger", ident));
+        }
+
+        return saveBestillingToDB(
+                Bestilling.builder()
+                        .gruppe(testgruppe)
+                        .ident(ident)
+                        .antallIdenter(1)
+                        .tpsfKriterier("{}")
+                        .bestKriterier("{}")
+                        .sistOppdatert(now())
+                        .miljoer(isNull(miljoer) || miljoer.isEmpty() ? "" : join(",", miljoer))
+                        .gjenopprettetFraIdent(ident)
                         .bruker(fetchOrCreateBruker())
                         .build());
     }
@@ -326,15 +358,16 @@ public class BestillingService {
 
         bestillingKontrollRepository.deleteByGruppeId(gruppeId);
         bestillingProgressRepository.deleteByGruppeId(gruppeId);
-        bestillingRepository.deleteByGruppeId(gruppeId);
+        bestillingRepository.deleteByGruppeIdExcludeMaler(gruppeId);
+        bestillingRepository.updateBestillingNullifyGruppe(gruppeId);
     }
 
     public void slettBestillingByTestIdent(String ident) {
 
-        List<BestillingProgress> bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
+        var bestillingProgresses = bestillingProgressRepository.findByIdent(ident);
         bestillingProgressRepository.deleteByIdent(ident);
 
-        Set<Long> bestillingIds = bestillingProgresses.stream()
+        var bestillingIds = bestillingProgresses.stream()
                 .map(BestillingProgress::getBestilling)
                 .map(Bestilling::getId)
                 .collect(toSet());
@@ -346,6 +379,13 @@ public class BestillingService {
         });
     }
 
+    public List<Long> fetchBestillingerByTestident(String ident) {
+
+        var bestillinger = bestillingRepository.findBestillingerByIdent(ident);
+        return bestillinger.stream().map(Bestilling::getId).toList();
+    }
+
+
     @Transactional
     public void swapIdent(String oldIdent, String newIdent) {
         bestillingRepository.swapIdent(oldIdent, newIdent);
@@ -356,16 +396,13 @@ public class BestillingService {
     }
 
     private void overskrivDuplikateMalbestillinger(Bestilling bestilling) {
+
         if (isBlank(bestilling.getMalBestillingNavn())) {
             return;
         }
-        List<Bestilling> gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
-        if (!gamleMalBestillinger.isEmpty()) {
-            gamleMalBestillinger.forEach(malBestilling -> {
-                malBestilling.setMalBestillingNavn(null);
-                saveBestillingToDB(malBestilling);
-            });
-        }
+        var gamleMalBestillinger = fetchMalbestillingByNavnAndUser(bestilling.getBruker().getBrukerId(), bestilling.getMalBestillingNavn());
+        gamleMalBestillinger.forEach(malBestilling ->
+                malBestilling.setMalBestillingNavn(null));
     }
 
     private Bruker fetchOrCreateBruker() {

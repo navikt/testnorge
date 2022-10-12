@@ -1,5 +1,5 @@
 # Prod config
-POST_LOGOUT_REDIRECT_URI: http://dolly-frontend.dolly.svc.cluster.local/login
+POST_LOGOUT_REDIRECT_URI: https://dolly.ekstern.dev.nav.no/login
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
@@ -7,39 +7,39 @@ spring:
     host: ${REDIS_HOST}
     port: 6379
 
-#consumers:
-#  # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
-#  # Konsumenter for prod
-#  testnorge-profil-api:
-#    url: http://testnorge-profil-api.dolly.svc.cluster.local
-#  testnav-varslinger-service:
-#    url: http://testnav-varslinger-service.dolly.svc.cluster.local
-#  testnav-person-organisasjon-tilgang-service:
-#    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
-#  testnav-bruker-service:
-#    url: http://testnav-varslinger-service.dolly.svc.cluster.local
-#  testnav-pdl-forvalter:
-#    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
-#  dolly-backend:
-#    url: http://dolly-backend.dolly.svc.cluster.local
-#  # Konsumenter felles
-#  testnav-tps-messaging-service:
-#    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
-#  testnav-organisasjon-faste-data-service:
-#    url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
-#  testnav-joark-dokument-service:
-#    url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
-#  testnav-inst-service:
-#    url: http://testnav-inst-service.dolly.svc.cluster.local
-#  testnav-organisasjon-forvalter:
-#    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
-#  testnav-organisasjon-service:
-#    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
-#  testnav-miljoer-service:
-#    url: http://testnav-miljoer-service.dolly.svc.cluster.local
-#  testnav-person-search-service:
-#    url: http://testnav-person-search-service.dolly.svc.cluster.local
-#  testnav-adresse-service:
-#    url: http://testnav-adresse-service.dolly.svc.cluster.local
-#  testnorge-tilbakemelding-api:
-#    url: http://testnorge-tilbakemelding-api.dolly.svc.cluster.local
+consumers:
+  # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
+  # Konsumenter for prod
+  testnorge-profil-api:
+    url: http://testnorge-profil-api.dolly.svc.cluster.local
+  testnav-varslinger-service:
+    url: http://testnav-varslinger-service.dolly.svc.cluster.local
+  testnav-person-organisasjon-tilgang-service:
+    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+  testnav-bruker-service:
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
+  testnav-pdl-forvalter:
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+  dolly-backend:
+    url: http://dolly-backend.dolly.svc.cluster.local
+  # Konsumenter felles
+  testnav-tps-messaging-service:
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
+  testnav-organisasjon-faste-data-service:
+    url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
+  testnav-joark-dokument-service:
+    url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
+  testnav-inst-service:
+    url: http://testnav-inst-service.dolly.svc.cluster.local
+  testnav-organisasjon-forvalter:
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
+  testnav-organisasjon-service:
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
+  testnav-miljoer-service:
+    url: http://testnav-miljoer-service.dolly.svc.cluster.local
+  testnav-person-search-service:
+    url: http://testnav-person-search-service.dolly.svc.cluster.local
+  testnav-adresse-service:
+    url: http://testnav-adresse-service.dolly.svc.cluster.local
+  testnorge-tilbakemelding-api:
+    url: http://testnorge-tilbakemelding-api.dolly.svc.cluster.local

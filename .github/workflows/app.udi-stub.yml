@@ -1,4 +1,4 @@
-name: App udi-stub
+name: App testnav-udi-stub
 
 on:
   push:
@@ -30,17 +30,6 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/udi-stub/nais.yaml'
-      app-name: 'testnav-udi-stub'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-udi-stub-dev')}}
-    with:
-      resource: 'apps/udi-stub/nais-dev.yaml'
       app-name: 'testnav-udi-stub'
       cluster: 'dev-fss'
     secrets:

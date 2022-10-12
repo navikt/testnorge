@@ -4,7 +4,7 @@ TOKEN_X_CLIENT_ID: dev-gcp:dolly:import-fra-tpsf-service
 
 consumers:
   dolly-backend:
-    url: https://dolly-backend-dev.dev-fss-pub.nais.io
+    url: https://dolly-backend-dev.dev.intern.nav.no
     name: dolly-backend-dev
   tps-forvalteren:
     url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io

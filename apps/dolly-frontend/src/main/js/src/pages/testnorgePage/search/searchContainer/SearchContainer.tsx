@@ -55,7 +55,7 @@ export default ({ left, right, formikBag, onSubmit, onEmpty }: Props) => {
 			<Left>
 				{left}
 				<Button
-					type="hoved"
+					variant={'primary'}
 					onClick={() => onSubmit()}
 					disabled={Object.keys(formikBag.errors).length > 0}
 				>

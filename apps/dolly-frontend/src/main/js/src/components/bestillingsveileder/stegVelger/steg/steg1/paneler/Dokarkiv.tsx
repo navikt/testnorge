@@ -16,7 +16,7 @@ export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
 			iconType="dokarkiv"
 			startOpen={harValgtAttributt(formikBag.values, [dokarkivAttributt])}
 		>
-			<AttributtKategori title="Oppretting av dokument">
+			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.dokarkiv} disabled={sm.attrs.digitalInnsending.checked} />
 				<Attributt attr={sm.attrs.digitalInnsending} disabled={sm.attrs.dokarkiv.checked} />
 			</AttributtKategori>

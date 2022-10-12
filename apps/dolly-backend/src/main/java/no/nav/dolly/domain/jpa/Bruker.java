@@ -22,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -35,7 +36,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BRUKER")
-public class Bruker {
+public class Bruker implements Serializable {
 
     @Id
     @GeneratedValue(generator = "brukerIdGenerator")

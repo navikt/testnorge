@@ -7,14 +7,18 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 // @ts-ignore
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
-import Logger from '~/logger'
-import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'
+import { getDefaultImage } from '~/pages/minSide/Profil'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
+	const {
+		currentBruker: { brukertype },
+	} = useCurrentBruker()
 
+	const bankidBruker = brukertype === 'BANKID'
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">
@@ -29,30 +33,14 @@ export default () => {
 				<NavLink to="/gruppe">Personer</NavLink>
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<NavLink to="/testnorge">Test-Norge</NavLink>
-				<NavLink to="/endringsmelding">Endringsmelding</NavLink>
-				<a
-					href="https://navikt.github.io/testnorge/applications/dolly/"
-					target="_blank"
-					onClick={() => Logger.log({ event: 'Trykket på dokumentasjon header' })}
-				>
-					Dokumentasjon
-				</a>
-				<a
-					href={
-						window.location.hostname.includes('frontend')
-							? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
-							: 'https://dolly-backend.dev.intern.nav.no/swagger'
-					}
-					target="_blank"
-				>
-					API-dok
-				</a>
+				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
+				<NavLink to="/dokumentasjon">Dokumentasjon</NavLink>
 			</div>
 			<div className="flexbox--all-center">
 				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker()} />
 				<div className="profil-area flexbox--all-center">
-					<NavLink to="/minside">
-						<img alt="Profilbilde" src={brukerBilde || dolly} />
+					<NavLink to="/minside" key={'naviger-minside'}>
+						<img alt="Profilbilde" src={brukerBilde || getDefaultImage()} />
 						<div className="profil-navn">
 							<p className="min-side">MIN SIDE</p>
 							<p>{brukerProfil?.visningsNavn}</p>

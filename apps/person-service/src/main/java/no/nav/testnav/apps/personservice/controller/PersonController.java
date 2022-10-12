@@ -55,8 +55,8 @@ public class PersonController {
     public Mono<ResponseEntity<?>> getPerson(
             @RequestHeader Persondatasystem persondatasystem,
             @RequestHeader(required = false) String miljoe,
-            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident
-    ) {
+            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
+
         if (persondatasystem == Persondatasystem.TPS && miljoe == null) {
             return Mono.just(ResponseEntity.badRequest().body("Kunne ikke hente person fra TPS. Miljø ikke satt"));
         }
@@ -67,6 +67,13 @@ public class PersonController {
                         .map(person -> ResponseEntity.ok(person.toDTO()))
                         .orElse(ResponseEntity.notFound().build())
                 );
+    }
+
+    @GetMapping("/{ident}/exists")
+    public Mono<Boolean> isPerson(
+            @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
+
+        return service.isPerson(ident);
     }
 
     @GetMapping("/{ident}/aktoerId")

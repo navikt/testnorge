@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
@@ -28,6 +29,7 @@ import static no.nav.dolly.mapper.BestillingImportFraTpsStatusMapper.buildImport
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
+import static no.nav.dolly.mapper.BestillingKontoregisterStatusMapper.buildKontoregisterStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
@@ -57,7 +59,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.setAntallLevert(bestilling.getProgresser().stream()
                                 .filter(BestillingProgress::isIdentGyldig)
                                 .toList().size());
-                        bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
+                        bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
@@ -76,6 +78,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .pdldata(bestillingRequest.getPdldata())
@@ -113,7 +116,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     public void mapAtoB(OrganisasjonBestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
                         bestillingStatus.setAntallLevert(0);
-                        bestillingStatus.setEnvironments(Arrays.asList(bestilling.getMiljoer().split(",")));
+                        bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                     }
                 })
                 .byDefault()

@@ -26,6 +26,7 @@ import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMe
 import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
+import { PdlVergemaal } from '~/components/fagsystem/pdl/visning/partials/vergemaal/PdlVergemaal'
 
 type PdlVisningProps = {
 	pdlData: PdlData
@@ -78,6 +79,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
 				<Vergemaal data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
+				{/*<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />*/} //TODO hva er dette?
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

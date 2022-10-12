@@ -23,6 +23,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "GRUPPE")
-public class Testgruppe {
+public class Testgruppe implements Serializable {
 
     @Id
     @GeneratedValue(generator = "gruppeIdGenerator")
@@ -72,6 +73,7 @@ public class Testgruppe {
     @Column(unique = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
+    @OrderBy("id DESC")
     private List<Testident> testidenter;
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)

@@ -7,7 +7,8 @@ import { AvbrytButton } from '~/components/ui/button/AvbrytButton/AvbrytButton'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { useNavigate } from 'react-router-dom'
 
-export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) => {
+export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
+	const showPrevious = step > 0
 	const opts = useContext(BestillingsveilederContext)
 	const importTestnorge = opts.is.importTestnorge
 
@@ -19,13 +20,15 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 	const getLastButtonText = () => {
 		if (importTestnorge) {
 			if (harAvhukedeAttributter(formikBag.values)) {
-				return 'IMPORTER OG OPPRETT'
+				return 'Importer og opprett'
 			} else {
-				return 'IMPORTER'
+				return 'Importer'
 			}
 		}
-		return 'OPPRETT'
+		return 'Opprett'
 	}
+
+	const hasInntektstubError = step === 1 && formikBag?.errors?.hasOwnProperty('inntektstub')
 
 	return (
 		<div className="step-navknapper-wrapper">
@@ -37,12 +40,16 @@ export const Navigation = ({ showPrevious, onPrevious, isLastStep, formikBag }) 
 				<div className="step-navknapper--right">
 					{showPrevious && <NavButton onClick={() => onPrevious(formikBag)}>Tilbake</NavButton>}
 					{!isLastStep && (
-						<NavButton type="hoved" disabled={isSubmitting} onClick={handleSubmit}>
+						<NavButton
+							variant={'primary'}
+							disabled={isSubmitting}
+							onClick={hasInntektstubError ? () => {} : handleSubmit}
+						>
 							Videre
 						</NavButton>
 					)}
 					{isLastStep && (
-						<NavButton type="hoved" onClick={handleSubmit} disabled={isSubmitting}>
+						<NavButton variant={'primary'} onClick={handleSubmit} disabled={isSubmitting}>
 							{getLastButtonText()}
 						</NavButton>
 					)}

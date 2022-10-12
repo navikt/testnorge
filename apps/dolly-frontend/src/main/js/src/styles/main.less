@@ -1,9 +1,7 @@
 // - Normalize.css
-@import '~nav-frontend-core/less/core';
+@import '~@navikt/ds-css';
 @import './variables';
 @import './utils';
-
-@import '~nav-frontend-tabell-style';
 
 // TODO: rydd i shared styling
 // shared stylings across pages
@@ -11,6 +9,8 @@
 @import './shared/Toolbar';
 
 body {
+  line-height: unset;
+  font-size: unset;
   font-family: 'Source Sans Pro', sans-serif;
   background-color: @color-bg-grey;
   color: @color-textbase;
@@ -31,6 +31,46 @@ h3 {
   font-size: 1rem;
 }
 
+a {
+  background-color: unset;
+  color: unset;
+
+  :hover {
+    cursor: pointer;
+  }
+}
+
+.navds-button svg {
+  fill: #0067c5;
+}
+
+.navds-checkbox {
+  margin-bottom: 6px;
+}
+
+.navds-checkboxes {
+  margin-bottom: 1rem;
+}
+
+.navds-table__header-cell--align-center, .navds-table__data-cell--align-center {
+  text-align: -webkit-center;
+}
+
+.miljo-velger {
+  .navds-body-short {
+    font-size: var(--navds-font-size-small)
+  }
+}
+
+.toggle--wrapper {
+  width: 100%;
+}
+
+.ReactModal__Body--open {
+  overflow: auto;
+}
+
+
 // NAV skjema override
 .skjemaelement {
   line-height: 1.375rem;
@@ -38,12 +78,12 @@ h3 {
 
   .skjemaelement__input {
     width: 100%;
+    height: 38px;
     padding: 7px 10px;
 
-    &:disabled,
     &:read-only {
       background-color: #f2f2f2;
-      border-color: #e6e6e6;
+      border-width: thin;
       color: #99a4bd;
     }
   }
@@ -54,6 +94,7 @@ h3 {
     font-weight: 400;
   }
 
+
   .skjemaelement__feilmelding {
     font-style: italic;
     color: #ba3a26;
@@ -63,10 +104,11 @@ h3 {
 
   .svg-icon {
     pointer-events: none;
-    position: absolute;
-    top: 9px;
-    right: 8px;
   }
+}
+
+.error {
+  margin-bottom: 0;
 }
 
 .inputPanel {
@@ -74,10 +116,61 @@ h3 {
 }
 
 // NAV hjelpetekst
-.hjelpetekst {
+.navds-help-text {
   margin-left: 10px;
+  margin-bottom: 4px;
+}
+
+.navds-help-text__button {
+  margin: 0 10px 0 0
+}
+
+.navds-button {
+  min-width: unset;
 }
 
 .popover {
   max-width: 350px;
+}
+
+.ny-bestilling-form {
+  > h3 {
+    margin: 10px 0 0;
+  }
+
+  &_selects {
+    display: flex;
+    padding: 20px 0 0;
+  }
+
+  &_maler {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin: 25px -20px 0;
+    padding: 0 0 0 20px;
+
+    .mal-admin {
+      margin-bottom: 16px;
+
+      a {
+        text-decoration: none;
+        color: @navBla;
+      }
+
+      svg {
+        stroke: @navBla;
+      }
+    }
+
+    > div {
+      h3 {
+        margin-right: 10px;
+      }
+
+      display: flex;
+      width: 100%;
+      align-items: center;
+    }
+  }
 }

@@ -12,9 +12,10 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation'
+import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -24,15 +25,6 @@ type VisningTypes = {
 	ident: string
 	alleSlettet: boolean
 	disableSlett: Function
-}
-
-enum Modus {
-	Les = 'LES',
-	Skriv = 'SKRIV',
-	LoadingPdlf = 'LOADING_PDLF',
-	LoadingPdl = 'LOADING_PDL',
-	LoadingPdlfSlett = 'LOADING_PDLF_SLETT',
-	LoadingPdlSlett = 'LOADING_PDL_SLETT',
 }
 
 enum Attributt {
@@ -54,6 +46,7 @@ const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 8px;
 	margin-top: -10px;
+
 	&&& {
 		button {
 			position: relative;
@@ -195,15 +188,11 @@ export const VisningRedigerbarSamlet = ({
 	}
 	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
 
-	const loadingLabelPdlf = 'Oppdaterer PDL-forvalter...'
-	const loadingLabelPdl = 'Oppdaterer PDL...'
-
 	const disableIdx = disableSlett(_get(redigertAttributtListe, path) || initialValuesListe)
 
 	return (
 		<>
-			{visningModus === Modus.LoadingPdlf && <Loading label={loadingLabelPdlf} />}
-			{visningModus === Modus.LoadingPdl && <Loading label={loadingLabelPdl} />}
+			<RedigerLoading visningModus={visningModus} />
 			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
 				<DollyFieldArray data={initialValuesListe} header="" nested>
 					{(item: any, idx: number) => {
@@ -213,10 +202,10 @@ export const VisningRedigerbarSamlet = ({
 						return (
 							<React.Fragment key={idx}>
 								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label={loadingLabelPdlf} />
+									<Loading label={'Oppdaterer PDL-forvalter...'} />
 								)}
 								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
-									<Loading label={loadingLabelPdl} />
+									<Loading label={'Oppdaterer PDL...'} />
 								)}
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
@@ -261,7 +250,7 @@ export const VisningRedigerbarSamlet = ({
 																	closeModal()
 																	return handleDelete(idx)
 																}}
-																type="hoved"
+																variant={'primary'}
 															>
 																Ja, jeg er sikker
 															</NavButton>
@@ -311,8 +300,7 @@ export const VisningRedigerbarSamlet = ({
 								<FieldArrayEdit>
 									<Knappegruppe>
 										<NavButton
-											type="standard"
-											htmlType="reset"
+											variant={'primary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
@@ -320,8 +308,7 @@ export const VisningRedigerbarSamlet = ({
 											Avbryt
 										</NavButton>
 										<NavButton
-											type="hoved"
-											htmlType="submit"
+											variant={'primary'}
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

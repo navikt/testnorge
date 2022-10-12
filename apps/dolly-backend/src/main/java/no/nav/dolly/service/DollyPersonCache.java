@@ -144,14 +144,15 @@ public class DollyPersonCache {
         return dollyPerson;
     }
 
-    public DollyPerson prepareTpsPerson(String ident) {
+    public DollyPerson prepareTpsPerson(String ident, List<Tags> tags) {
         return DollyPerson.builder()
                 .hovedperson(ident)
                 .master(Master.TPSF)
+                .tags(tags)
                 .build();
     }
 
-    public DollyPerson prepareTpsPersoner(Person person) {
+    public DollyPerson prepareTpsPersoner(Person person, List<Tags> tags) {
 
         var personer = new ArrayList<Person>();
         personer.add(person);
@@ -160,6 +161,7 @@ public class DollyPersonCache {
                 .hovedperson(person.getIdent())
                 .persondetaljer(personer)
                 .master(Master.TPSF)
+                .tags(tags)
                 .build());
     }
 
@@ -194,12 +196,13 @@ public class DollyPersonCache {
                 .build();
     }
 
-    public DollyPerson preparePdlfPerson(FullPersonDTO pdlfPerson) {
+    public DollyPerson preparePdlfPerson(FullPersonDTO pdlfPerson, List<Tags> tags) {
 
         return DollyPerson.builder()
                 .hovedperson(pdlfPerson.getPerson().getIdent())
                 .pdlfPerson(pdlfPerson)
                 .master(Master.PDLF)
+                .tags(tags)
                 .build();
     }
 }

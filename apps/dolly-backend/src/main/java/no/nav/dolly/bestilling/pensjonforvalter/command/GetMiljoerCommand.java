@@ -14,6 +14,7 @@ import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import static java.util.Collections.emptySet;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
@@ -42,9 +43,9 @@ public class GetMiljoerCommand implements Callable<Mono<Set<String>>> {
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<Set<String>>() {
                 })
-                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .onErrorResume(throwable -> Mono.empty());
+                .onErrorResume(throwable -> Mono.just(emptySet()));
     }
 }

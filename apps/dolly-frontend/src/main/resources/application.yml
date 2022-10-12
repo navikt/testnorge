@@ -160,6 +160,16 @@ consumers:
     namespace: dolly
     name: testnav-pdl-forvalter
     url: https://testnav-pdl-forvalter.dev.intern.nav.no
+  testnav-kontoregister-person-proxy:
+    name: testnav-kontoregister-person-proxy
+    namespace: dolly
+    url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-skjermingsregister-proxy:
+    name: testnav-skjermingsregister-proxy
+    namespace: dolly
+    url: https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 management:
   endpoints:

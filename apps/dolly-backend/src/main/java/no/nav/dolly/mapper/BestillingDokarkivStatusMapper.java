@@ -14,9 +14,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingDokarkivStatusMapper {
@@ -27,11 +28,11 @@ public final class BestillingDokarkivStatusMapper {
         Map<String, Map<String, Set<String>>> statusEnvIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getDokarkivStatus())) {
+            if (isNotBlank(progress.getDokarkivStatus())) {
                 List.of(progress.getDokarkivStatus().split(",")).forEach(status -> {
-                    String[] environErrMsg = status.split(":", 2);
-                    String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replace('&', ',') : "";
+                    var environErrMsg = status.split(":", 2);
+                    var environ = environErrMsg[0];
+                    var errMsg = decodeMsg(environErrMsg.length > 1 ? environErrMsg[1] : "");
                     checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
                 });
             }

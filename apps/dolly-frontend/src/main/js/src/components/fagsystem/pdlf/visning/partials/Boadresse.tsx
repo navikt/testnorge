@@ -68,6 +68,16 @@ export const Boadresse = ({
 					bostedsadresse: Object.assign(_cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
 			  }
 			: null
+
+		const filtrertData = [...data]
+		filtrertData.splice(idx, 1)
+		const personFoerLeggTil = {
+			pdlforvalter: {
+				person: {
+					bostedsadresse: filtrertData,
+				},
+			},
+		}
 		return erPdlVisning ? (
 			<Adresse boadresseData={boadresseData} idx={idx} />
 		) : (
@@ -78,6 +88,7 @@ export const Boadresse = ({
 				path="bostedsadresse"
 				ident={ident}
 				identtype={identtype}
+				personFoerLeggTil={personFoerLeggTil}
 			/>
 		)
 	}

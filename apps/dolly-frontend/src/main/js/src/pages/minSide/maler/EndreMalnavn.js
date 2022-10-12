@@ -1,22 +1,19 @@
 import React, { useState } from 'react'
-import { malerApi } from './MalerApi'
 import Button from '~/components/ui/button/Button'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { DollyApi } from '~/service/Api'
 
-export const EndreMalnavn = ({ malInfo, avbrytRedigering }) => {
-	const lagreEndring = (nyttMalnavn, id) => {
-		malerApi
-			.endreMalNavn(id, nyttMalnavn)
-			.then(() => mutate(REGEX_BACKEND_BESTILLINGER))
-			.then(() => avbrytRedigering(id))
-	}
-
-	const { malNavn, id } = malInfo
+export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => {
 	const [nyttMalnavn, setMalnavn] = useState(malNavn)
 
-	const mutate = useMatchMutate()
+	const erOrganisasjon = bestilling?.organisasjon
+
+	const lagreEndring = (nyttMalnavn, id) => {
+		erOrganisasjon
+			? DollyApi.endreMalNavnOrganisasjon(id, nyttMalnavn).then(() => avsluttRedigering(id))
+			: DollyApi.endreMalNavn(id, nyttMalnavn).then(() => avsluttRedigering(id))
+	}
 
 	return (
 		<ErrorBoundary>
@@ -28,7 +25,7 @@ export const EndreMalnavn = ({ malInfo, avbrytRedigering }) => {
 					className="navnInput"
 				/>
 				<Button className="lagre" onClick={() => lagreEndring(nyttMalnavn, id)}>
-					LAGRE
+					Lagre
 				</Button>
 			</div>
 		</ErrorBoundary>

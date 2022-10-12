@@ -1,12 +1,9 @@
 package no.nav.testnav.apps.hodejegeren.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.hodejegeren.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
@@ -32,8 +29,6 @@ public class GetTpsIdenterCommand implements Callable<Set<String>> {
                 )
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
                 .block();
 
     }

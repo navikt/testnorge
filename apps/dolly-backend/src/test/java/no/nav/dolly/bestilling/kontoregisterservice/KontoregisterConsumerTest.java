@@ -3,14 +3,17 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoResponseDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +55,9 @@ class KontoregisterConsumerTest {
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
+    @Autowired
+    private MapperFacade mapperFacade;
+
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -64,6 +70,27 @@ class KontoregisterConsumerTest {
     public void cleanUp() {
         WireMock.getAllServeEvents()
                 .stream().forEach(e -> WireMock.removeServeEvent(e.getId()));
+    }
+
+    @Test
+    void testBankkontoMapping() {
+        var bankkonto1 = new BankkontonrUtlandDTO();
+
+        bankkonto1.setTilfeldigKontonummer(true);
+        bankkonto1.setLandkode("SE");
+
+        var mapped1 = mapperFacade.map(bankkonto1, OppdaterKontoRequestDTO.class);
+        assertThat("genererer kontonummer", StringUtils.isNoneBlank(mapped1.getKontonummer()));
+        assertThat("generert kontonummer starter med SE", mapped1.getKontonummer().startsWith("SE"));
+
+        var bankkonto2 = new BankkontonrUtlandDTO();
+
+        bankkonto2.setKontonummer("123");
+        bankkonto2.setLandkode("SWE");
+
+        var mapped2 = mapperFacade.map(bankkonto2, OppdaterKontoRequestDTO.class);
+        assertThat("kontonummer er 123", "123".equals(mapped2.getKontonummer()));
+        assertThat("landkode er SE", "SE".equals(mapped2.getUtenlandskKonto().getBankLandkode()));
     }
 
     @Test
@@ -191,7 +218,7 @@ class KontoregisterConsumerTest {
     @Test
     void oppdaterUtenlandskbankkonto() {
         stubFor(
-                post(urlPathMatching("(.*)/api/kontoregister/v1/oppdater-konto"))
+                post(urlPathMatching("(.*)/api/system/v1/oppdater-konto"))
                         .willReturn(ok()
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
@@ -245,7 +272,7 @@ class KontoregisterConsumerTest {
     @Test
     void testHentBankkonto() {
         stubFor(
-                post(urlPathMatching("(.*)/api/kontoregister/v1/hent-konto"))
+                post(urlPathMatching("(.*)/api/system/v1/hent-konto"))
                         .willReturn(ok()
                                 .withBody(hentKontoResponse())
                                 .withHeader("Content-Type", "application/json")));
@@ -273,5 +300,32 @@ class KontoregisterConsumerTest {
         assertThat("ident", IDENT.equals(hentResponse.getAktivKonto().getKontohaver()));
         assertThat("bankkode", "XXXX".equals(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getBankkode()));
         assertThat("swift", "SHEDSE22".equals(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getSwiftBicKode()));
+    }
+
+    private boolean mod11Kontroll(String kontonummer) {
+        var lastDigit = kontonummer.substring(kontonummer.length() - 1);
+        var m11 = String.valueOf(
+                KontoregisterConsumer.NorskBankkontoGenerator.getCheckDigit(kontonummer.substring(0, kontonummer.length()-1))
+        ); // exclude kontroll tall
+        return lastDigit.equals(m11);
+    }
+
+    private boolean validerNorskKonto(String kontonummer) {
+        if (kontonummer.length() != 11 || kontonummer.equals("00000000000") || !mod11Kontroll(kontonummer)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Test
+    void testTilfeldigNorskkonto() {
+        var test = "3654737113";
+        var digit = KontoregisterConsumer.NorskBankkontoGenerator.getCheckDigit(test);
+
+        IntStream.range(0, 100).forEach(i -> {
+            var norskKonto = KontoregisterConsumer.tilfeldigNorskBankkonto();
+            var validatingResult = validerNorskKonto(norskKonto);
+            assertThat("tilfeldig norsk bankkonto", validatingResult);
+        });
     }
 }

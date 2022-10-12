@@ -15,7 +15,7 @@ export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
 			iconType="institusjon"
 			startOpen={harValgtAttributt(formikBag.values, [instAttributt])}
 		>
-			<AttributtKategori>
+			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.instdata} />
 			</AttributtKategori>
 		</Panel>

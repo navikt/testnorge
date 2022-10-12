@@ -27,7 +27,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
-
 import static java.util.Objects.nonNull;
 
 @Service
@@ -69,6 +68,23 @@ public class NavigasjonService {
                 .sidetall(Math.floorDiv(
                         identService.getPaginertIdentIndex(testident.getIdent(), testident.getTestgruppe().getId())
                                 .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i database")), 10))
+                .build();
+    }
+
+    public RsWhereAmI navigerTilBestilling(Long bestillingId) {
+
+        var bestilling = bestillingService.fetchBestillingById(bestillingId);
+
+        if (isNull(bestilling)) {
+            throw new NotFoundException(bestillingId + " ble ikke funnet i database");
+        }
+
+        return RsWhereAmI.builder()
+                .bestillingNavigerTil(bestillingId)
+                .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
+                .sidetall(Math.floorDiv(
+                        bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId())
+                                .orElseThrow(() -> new NotFoundException(bestillingId + " ble ikke funnet i database")), 10))
                 .build();
     }
 
@@ -124,22 +140,5 @@ public class NavigasjonService {
                 .flatMap(Flux::fromIterable)
                 .collectList()
                 .block();
-    }
-
-    public RsWhereAmI navigerTilBestilling(Long bestillingId) {
-
-        var bestilling = bestillingService.fetchBestillingById(bestillingId);
-
-        if (isNull(bestilling)) {
-            throw new NotFoundException(bestillingId + " ble ikke funnet i database");
-        }
-
-        return RsWhereAmI.builder()
-                .bestillingNavigerTil(bestillingId)
-                .gruppe(mapperFacade.map(bestilling.getGruppe(), RsTestgruppe.class))
-                .sidetall(Math.floorDiv(
-                        bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId())
-                                .orElseThrow(() -> new NotFoundException(bestillingId + " ble ikke funnet i database")), 10))
-                .build();
     }
 }

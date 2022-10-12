@@ -1,6 +1,5 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import Loading from '~/components/ui/loading/Loading'
 import { Formik, FormikProps } from 'formik'
 import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -13,14 +12,17 @@ import DollyModal from '~/components/ui/modal/DollyModal'
 import useBoolean from '~/utils/hooks/useBoolean'
 import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
 import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { InnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
-import { UtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
+import { RedigerInnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { RedigerUtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
-import { AdressebeskyttelseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import {
-	doedsfall,
+	AdressebeskyttelseForm,
+	getIdenttype,
+} from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import { doedsfall } from '~/components/fagsystem/pdlf/form/validation/validation'
+import {
 	innflytting,
 	statsborgerskap,
 	utflytting,
@@ -29,9 +31,10 @@ import {
 	kontaktadresse,
 	oppholdsadresse,
 	vergemaal,
-} from '~/components/fagsystem/pdlf/form/validation'
-import { ifPresent } from '~/utils/YupValidations'
+} from '~/components/fagsystem/pdlf/form/validation/partials'
+import { ifPresent, validate  } from '~/utils/YupValidations'
 import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -41,13 +44,8 @@ type VisningTypes = {
 	path: string
 	ident: string
 	identtype?: string
-}
-
-enum Modus {
-	Les = 'LES',
-	Skriv = 'SKRIV',
-	LoadingPdlf = 'LOADING_PDLF',
-	LoadingPdl = 'LOADING_PDL',
+	disableSlett?: boolean
+	personFoerLeggTil?: any
 }
 
 enum Attributt {
@@ -78,6 +76,7 @@ const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 8px;
 	margin-top: -10px;
+
 	&&& {
 		button {
 			position: relative;
@@ -98,6 +97,8 @@ export const VisningRedigerbar = ({
 	path,
 	ident,
 	identtype,
+	disableSlett = false,
+	personFoerLeggTil = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -125,10 +126,10 @@ export const VisningRedigerbar = ({
 			const itemData = _get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlfError(error)
 				})
-				.then((putResponse) => {
+				.then((putResponse: any) => {
 					if (putResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -140,7 +141,7 @@ export const VisningRedigerbar = ({
 						})
 					}
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlError(error)
 				})
 		}
@@ -153,10 +154,10 @@ export const VisningRedigerbar = ({
 			const id = _get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlfError(error)
 				})
-				.then((deleteResponse) => {
+				.then((deleteResponse: any) => {
 					if (deleteResponse) {
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
@@ -168,7 +169,7 @@ export const VisningRedigerbar = ({
 						})
 					}
 				})
-				.catch((error) => {
+				.catch((error: Error) => {
 					pdlError(error)
 				})
 		}
@@ -185,9 +186,21 @@ export const VisningRedigerbar = ({
 			case Attributt.Statsborgerskap:
 				return <StatsborgerskapForm path={path} />
 			case Attributt.Innvandring:
-				return <InnvandringForm path={path} />
+				return (
+					<RedigerInnvandringForm
+						formikBag={formikBag}
+						path={path}
+						personFoerLeggTil={personFoerLeggTil}
+					/>
+				)
 			case Attributt.Utvandring:
-				return <UtvandringForm path={path} />
+				return (
+					<RedigerUtvandringForm
+						formikBag={formikBag}
+						path={path}
+						personFoerLeggTil={personFoerLeggTil}
+					/>
+				)
 			case Attributt.Vergemaal:
 				return <VergemaalForm formikBag={formikBag} path={path} />
 			case Attributt.Boadresse:
@@ -197,7 +210,13 @@ export const VisningRedigerbar = ({
 			case Attributt.Kontaktadresse:
 				return <KontaktadresseForm formikBag={formikBag} path={path} />
 			case Attributt.Adressebeskyttelse:
-				return <AdressebeskyttelseForm formikBag={formikBag} path={path} identtype={identtype} />
+				return (
+					<AdressebeskyttelseForm
+						formikBag={formikBag}
+						path={path}
+						identtype={getIdenttype(formikBag, identtype)}
+					/>
+				)
 		}
 	}
 
@@ -226,16 +245,29 @@ export const VisningRedigerbar = ({
 		]
 	)
 
+	const _validate = (values: any) =>
+		validate(
+			{
+				...values,
+				personFoerLeggTil: personFoerLeggTil,
+			},
+			validationSchema
+		)
+
 	return (
 		<>
-			{visningModus === Modus.LoadingPdlf && <Loading label="Oppdaterer PDL-forvalter..." />}
-			{visningModus === Modus.LoadingPdl && <Loading label="Oppdaterer PDL..." />}
+			<RedigerLoading visningModus={visningModus} />
 			{visningModus === Modus.Les && (
 				<>
 					{dataVisning}
 					<EditDeleteKnapper>
 						<Button kind="edit" onClick={() => setVisningModus(Modus.Skriv)} title="Endre" />
-						<Button kind="trashcan" onClick={() => openModal()} title="Slett" />
+						<Button
+							kind="trashcan"
+							onClick={() => openModal()}
+							title="Slett"
+							disabled={disableSlett}
+						/>
 						<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
 							<div className="slettModal">
 								<div className="slettModal slettModal-content">
@@ -250,7 +282,7 @@ export const VisningRedigerbar = ({
 											closeModal()
 											return handleDelete()
 										}}
-										type="hoved"
+										variant={'primary'}
 									>
 										Ja, jeg er sikker
 									</NavButton>
@@ -269,7 +301,7 @@ export const VisningRedigerbar = ({
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
 					onSubmit={handleSubmit}
 					enableReinitialize
-					validationSchema={validationSchema}
+					validate={_validate}
 				>
 					{(formikBag) => {
 						return (
@@ -278,8 +310,7 @@ export const VisningRedigerbar = ({
 									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
 									<Knappegruppe>
 										<NavButton
-											type="standard"
-											htmlType="reset"
+											type="reset"
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}
@@ -287,8 +318,7 @@ export const VisningRedigerbar = ({
 											Avbryt
 										</NavButton>
 										<NavButton
-											type="hoved"
-											htmlType="submit"
+											variant={'primary'}
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

@@ -9,12 +9,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class BestillingSykemeldingStatusMapper {
@@ -24,7 +24,7 @@ public class BestillingSykemeldingStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getSykemeldingStatus())) {
+            if (isNotBlank(progress.getSykemeldingStatus())) {
                 if (statusMap.containsKey(progress.getSykemeldingStatus())) {
                     statusMap.get(progress.getSykemeldingStatus()).add(progress.getIdent());
                 } else {
@@ -37,10 +37,10 @@ public class BestillingSykemeldingStatusMapper {
                 : singletonList(RsStatusRapport.builder().id(SYKEMELDING).navn(SYKEMELDING.getBeskrivelse())
                 .statuser(statusMap.entrySet().stream()
                         .map(entry -> RsStatusRapport.Status.builder()
-                                .melding(entry.getKey().replaceAll("=", ":"))
+                                .melding(decodeMsg(entry.getKey()))
                                 .identer(entry.getValue())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build());
     }
 }

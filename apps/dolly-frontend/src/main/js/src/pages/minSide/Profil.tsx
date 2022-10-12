@@ -1,7 +1,13 @@
 import React from 'react'
 // @ts-ignore
 import dolly from '~/assets/favicon.ico'
+import testcafe from '~/assets/img/testcafe.png'
 import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
+import { runningTestcafe } from '~/service/services/Request'
+
+export const getDefaultImage = () => {
+	return runningTestcafe() ? testcafe : dolly
+}
 
 export default function Profil() {
 	const { brukerProfil: info } = useBrukerProfil()
@@ -11,7 +17,7 @@ export default function Profil() {
 
 	return (
 		<div className="profil">
-			<img alt="Profilbilde" src={bilde || dolly} />
+			<img alt="Profilbilde" src={bilde || getDefaultImage()} />
 			{info && !bankIdProfil && (
 				<div className="person-info">
 					<p>

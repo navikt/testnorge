@@ -1,0 +1,49 @@
+@import (reference) '~lessVars';
+
+.relatertPersonImportModal {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+
+  h1 {
+    border: none;
+    margin: 15px 0 0;
+    border-bottom: 1px solid @color-bg-divider;
+  }
+
+  &-content {
+    .dolly-form-input {
+      margin-right: 0;
+    }
+
+    &-center {
+      text-align: center;
+    }
+
+  }
+  &-actions {
+    padding: 20px 0 0;
+    button {
+      margin: 0 10px;
+    }
+  }
+  .svg-icon-personinformasjon{
+    g {
+      fill: @navBla !important;
+    }
+  }
+}
+
+.success-text{
+  color: @color-success;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.8rem;
+  padding: 5px 0 5px 5px;
+
+  span {
+    padding: 0 5px;
+  }
+}

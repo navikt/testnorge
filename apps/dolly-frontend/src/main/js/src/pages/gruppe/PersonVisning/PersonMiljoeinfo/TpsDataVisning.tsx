@@ -4,6 +4,7 @@ import './DataVisning.less'
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'
 import { TpsfVisning } from '~/components/fagsystem'
+import DollyTooltip from '~/components/ui/button/DollyTooltip'
 
 type TpsData = {
 	data: Array<Data>
@@ -37,20 +38,17 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 		<div className="flexbox--flex-wrap">
 			{data.map((miljoe, idx) => {
 				return (
-					<Tooltip
+					<DollyTooltip
 						overlay={getPersonInfo(miljoe.person)}
-						placement="top"
 						align={{
 							offset: ['0', '-10'],
 						}}
-						mouseEnterDelay={0.1}
-						mouseLeaveDelay={0.1}
 						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 						key={idx}
 						overlayStyle={{ opacity: 1 }}
 					>
 						<div className="miljoe-knapp">{miljoe.miljoe.toUpperCase()}</div>
-					</Tooltip>
+					</DollyTooltip>
 				)
 			})}
 		</div>

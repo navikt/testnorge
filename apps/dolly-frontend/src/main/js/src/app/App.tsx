@@ -12,21 +12,39 @@ import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
 import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import logoutBruker from '~/components/utlogging/logoutBruker'
-import { useDollyMaler } from '~/utils/hooks/useMaler'
+import {
+	useDollyMalerBrukerOgMalnavn,
+	useDollyOrganisasjonMalerBrukerOgMalnavn,
+} from '~/utils/hooks/useMaler'
+import { runningTestcafe } from '~/service/services/Request'
 
-type Props = {
-	updateVarslingerBruker?: Function
+const extractFeilmelding = (stackTrace: string) => {
+	if (stackTrace?.includes('miljoer')) {
+		return 'miljoe_error'
+	} else if (stackTrace?.includes('current')) {
+		return 'azure_error'
+	} else {
+		return 'unknown_error'
+	}
 }
 
-export const App = ({ updateVarslingerBruker }: Props) => {
+const logout = (stackTrace: string) => {
+	const feilmelding = extractFeilmelding(stackTrace)
+	if (!runningTestcafe()) {
+		logoutBruker(feilmelding)
+	}
+}
+
+export const App = () => {
 	const [criticalError, setCriticalError] = useState(null)
 
-	const { loading, error: userError } = useCurrentBruker()
+	const { loading, error: userError, currentBruker } = useCurrentBruker()
 
-	// Lazyloader miljøer, maler og profilData så det ligger cachet når det trengs
+	// Lazyloader miljøer, brukerens maler og profilData så det ligger cachet ved oppstart
 	useDollyEnvironments()
-	useDollyMaler()
 	useBrukerProfil()
+	useDollyMalerBrukerOgMalnavn(currentBruker?.brukerId)
+	useDollyOrganisasjonMalerBrukerOgMalnavn(currentBruker?.brukerId)
 
 	useEffect(() => {
 		if (userError) {
@@ -34,50 +52,28 @@ export const App = ({ updateVarslingerBruker }: Props) => {
 		}
 	}, [userError])
 
-	function extractFeilmelding(stackTrace: string) {
-		if (stackTrace?.includes('miljoer')) {
-			return 'miljoe_error'
-		} else if (stackTrace?.includes('current')) {
-			return 'azure_error'
-		} else {
-			return 'unknown_error'
-		}
-	}
-
-	const logout = (stackTrace: string) => {
-		const feilmelding = extractFeilmelding(stackTrace)
-		logoutBruker(feilmelding)
-	}
-
 	useEffect(() => {
-		if (criticalError) {
+		if (criticalError && !runningTestcafe()) {
 			logout(criticalError.stack)
 		}
 	}, [criticalError])
 
-	if (loading) {
+	if (loading || criticalError) {
 		return <Loading label="Laster Dolly" fullpage />
 	}
 
 	return (
 		<React.Fragment>
 			<Utlogging />
-			<VarslingerModal updateVarslingerBruker={updateVarslingerBruker} />
+			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
 			<main>
 				<Suspense fallback={<Loading label="Laster inn" />}>
 					<Routes>
-						{allRoutes.map((route, idx) =>
+						{allRoutes.map((route: { element: any; path: string }, idx: React.Key) =>
 							route.element ? (
-								<Route
-									key={idx}
-									path={route.path}
-									element={
-										// @ts-ignore
-										<route.element />
-									}
-								/>
+								<Route key={idx} path={route.path} element={<route.element />} />
 							) : (
 								<React.Fragment />
 							)

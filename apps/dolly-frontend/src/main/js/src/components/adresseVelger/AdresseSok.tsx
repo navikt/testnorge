@@ -3,10 +3,9 @@ import React, { useState } from 'react'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import { AdresseKodeverk } from '~/config/kodeverk'
-import Hjelpetekst from '~/components/hjelpetekst'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
-
-import { Søkeknapp } from 'nav-frontend-ikonknapper'
+import { Button } from '@navikt/ds-react'
 
 type Props = {
 	onSubmit: (search: { fritekst?: string; postnummer?: string; kommunenummer?: string }) => void
@@ -32,7 +31,7 @@ export default ({ onSubmit, loading = false }: Props) => {
 		<div>
 			<HeaderGroup>
 				<h4>Søk etter gyldig adresse</h4>
-				<Hjelpetekst hjelpetekstFor="Søk etter gyldig adresse">{informasjonstekst}</Hjelpetekst>
+				<Hjelpetekst>{informasjonstekst}</Hjelpetekst>
 			</HeaderGroup>
 			<InputGroup>
 				<DollyTextInput
@@ -58,13 +57,13 @@ export default ({ onSubmit, loading = false }: Props) => {
 					onChange={(e: any) => setKommunenummer(e ? e.value : null)}
 				/>
 			</InputGroup>
-			<Søkeknapp
+			<Button
 				onClick={() => onSubmit({ fritekst, postnummer, kommunenummer })}
 				disabled={loading}
-				spinner={loading}
+				loading={loading}
 			>
-				<span>Hent gyldige adresser</span>
-			</Søkeknapp>
+				Hent gyldige adresser
+			</Button>
 		</div>
 	)
 }

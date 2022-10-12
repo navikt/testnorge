@@ -18,12 +18,19 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 
 	const sivilstand = _get(bestilling, 'bestilling.pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
+	const harLevertPersoner = bestilling.antallLevert > 0
 
 	const nyIdent = _get(bestilling, 'bestilling.pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
 	const forelderBarnRelasjon = _get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
+
+	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
+
+	const gjenopprettTitle = harLevertPersoner
+		? 'Gjenopprett bestilling'
+		: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
 
 	return (
 		<div className="bestilling-detaljer">
@@ -32,14 +39,20 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			{harIdenterOpprettet && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
-						<Button onClick={openGjenopprettModal} kind="synchronize">
+						<Button
+							onClick={openGjenopprettModal}
+							kind="synchronize"
+							disabled={!harLevertPersoner}
+							title={gjenopprettTitle}
+						>
 							GJENOPPRETT
 						</Button>
 					)}
 					{!alleredeMal &&
 						!harRelatertPersonVedSivilstand &&
 						!harEksisterendeNyIdent &&
-						!harRelatertPersonBarn && (
+						!harRelatertPersonBarn &&
+						!gjenopprettingsId && (
 							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
 								OPPRETT NY MAL
 							</Button>

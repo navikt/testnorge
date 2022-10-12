@@ -39,6 +39,7 @@ type ResponsBestilling = {
 
 const StyledAsyncSelect = styled(AsyncSelect)`
 	width: 78%;
+	margin-top: 2px;
 `
 
 const FinnPersonBestilling = ({
@@ -94,11 +95,11 @@ const FinnPersonBestilling = ({
 
 		if (finnesTpsf || finnesPdlf || finnesPdl) {
 			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
-			${finnesTpsf ? ' TPSF' : ''}
+			${finnesTpsf ? ' TPS' : ''}
 			${finnesTpsf && finnesPdlf ? ', ' : ''}
-			${finnesPdlf ? 'PDLF' : ''}
+			${finnesPdlf ? 'PDL' : ''}
 			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
-			${finnesPdl ? 'PDL' : ''}
+			${finnesPdl ? 'Test-Norge' : ''}
 			, og eksisterer ikke i Dolly.`
 		}
 
@@ -106,9 +107,9 @@ const FinnPersonBestilling = ({
 	}, [feilmelding])
 
 	useEffect(() => {
-		setError(null)
+		resetFeilmelding()
 		if (!searchQuery) {
-			return null
+			return
 		}
 		soekType === SoekTypeValg.PERSON
 			? navigerTilPerson(searchQuery)
@@ -118,7 +119,7 @@ const FinnPersonBestilling = ({
 
 	useEffect(() => {
 		if (fragment && !feilmelding) {
-			setError(null)
+			resetFeilmelding()
 		}
 	}, [fragment])
 
@@ -197,7 +198,7 @@ const FinnPersonBestilling = ({
 		async (tekst) => {
 			return soekType === SoekTypeValg.BESTILLING
 				? soekBestillinger(tekst).catch((err: Error) => setError(err.message))
-				: soekPersoner(tekst)
+				: soekPersoner(tekst).catch((err: Error) => setError(err.message))
 		},
 		[soekType]
 	)
@@ -205,7 +206,6 @@ const FinnPersonBestilling = ({
 	const handleChange = (tekst: string) => {
 		fetchOptions(tekst)
 		setFragment(tekst)
-		resetFeilmelding()
 	}
 
 	// @ts-ignore
@@ -230,9 +230,11 @@ const FinnPersonBestilling = ({
 		)
 	}
 
-	if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
-		navigate(`/gruppe/${gruppe}`, { replace: true })
-	}
+	useEffect(() => {
+		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
+			navigate(`/gruppe/${gruppe}`, { replace: true })
+		}
+	})
 
 	return (
 		<ErrorBoundary>
@@ -247,7 +249,6 @@ const FinnPersonBestilling = ({
 						onInputChange={handleChange}
 						components={{
 							Option: CustomOption,
-							// @ts-ignore
 							DropdownIndicator,
 						}}
 						isClearable={true}

@@ -5,6 +5,9 @@ spring:
     name: UDI-stub
     version: 1.1
     description: Stub av persontjenesten til UDI
+  datasource:
+    testOnBorrow: true
+    validationQuery: select 1
   security:
     oauth2:
       resourceserver:
@@ -33,5 +36,4 @@ server:
   servlet:
     encoding:
       charset: UTF-8
-  use-forward-headers: true
 

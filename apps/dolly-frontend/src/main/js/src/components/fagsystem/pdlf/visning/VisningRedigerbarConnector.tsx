@@ -1,11 +1,11 @@
 import { connect } from 'react-redux'
 import { VisningRedigerbar } from '~/components/fagsystem/pdlf/visning/VisningRedigerbar'
 import { Dispatch } from 'redux'
-import { hentPdlforvalterPersoner } from '~/ducks/redigertePersoner'
+import { actions } from '~/ducks/redigertePersoner'
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: any) => {
 	return {
-		getPdlForvalter: () => dispatch(hentPdlforvalterPersoner(ownProps.ident)),
+		getPdlForvalter: () => dispatch(actions.hentPdlforvalterPersoner(ownProps.ident)),
 	}
 }
 

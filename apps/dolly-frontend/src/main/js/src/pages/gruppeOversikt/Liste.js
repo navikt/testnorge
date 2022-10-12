@@ -5,22 +5,13 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
 import { GruppeIconItem } from '~/components/ui/icon/IconItem'
 import Icon from '~/components/ui/icon/Icon'
-import ImporterGrupperConnector from './ImporterGrupperConnector'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import { useNavigate } from 'react-router-dom'
 
-export default function Liste({
-	items,
-	searchActive,
-	isFetching,
-	gruppeDetaljer,
-	visSide,
-	brukertype,
-}) {
+export default function Liste({ items, searchActive, isFetching, gruppeDetaljer, visSide }) {
 	const navigate = useNavigate()
 	if (isFetching) return <Loading label="Laster grupper" panel />
-	const azureAdProfil = brukertype === 'AZURE'
 
 	if (!items || !items.length) {
 		return (
@@ -31,17 +22,6 @@ export default function Liste({
 					<>
 						<p>Du har for øyeblikket ingen grupper på denne brukerkontoen.</p>
 						<p>For å opprette en ny gruppe, trykk på "Ny gruppe"-knappen over.</p>
-						{azureAdProfil && (
-							<>
-								<p>
-									Om dette er første gang du bruker din personlige brukerkonto kan du importere
-									grupper fra Z-brukeren(e) du har benyttet tidligere ved å trykke på knappen
-									nedenfor. Du kan når som helst importere grupper fra Z-brukere via Min side øverst
-									til høyre.
-								</p>
-								<ImporterGrupperConnector />
-							</>
-						)}
 					</>
 				)}
 			</ContentContainer>

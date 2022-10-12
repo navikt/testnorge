@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.KRRSTUB;
 import static no.nav.dolly.util.ListUtil.listOf;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingKrrStubStatusMapper {
@@ -24,7 +24,7 @@ public final class BestillingKrrStubStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getKrrstubStatus())) {
+            if (isNotBlank(progress.getKrrstubStatus())) {
                 if (statusMap.containsKey(progress.getKrrstubStatus())) {
                     statusMap.get(progress.getKrrstubStatus()).add(progress.getIdent());
                 } else {

@@ -14,9 +14,9 @@ import java.util.Map;
 @Slf4j
 public class AaregBehandleArbeidsforhold {
 
-    private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-services/BehandleArbeidsforholdService/v1";
+    private static final String BEHANDLE_ARBEIDSFORHOLD_SERVICE_URL = "https://modapp-$.adeo.no/aareg-core/BehandleArbeidsforholdService/v1";
     private static final List<String> validEnvironments =
-            List.of("q0", "q1", "q2", "q4", "q5", "q6", "t0", "t1", "t2", "t3", "t4", "t5", "t6");
+            List.of("q1", "q2", "q4", "q5", "t0", "t1", "t2", "t3", "t4", "t5");
 
     private final MiljoerConsumer miljoerConsumer;
 

@@ -1,6 +1,5 @@
 package no.nav.testnav.apps.syntsykemeldingapi.provider;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,8 +25,6 @@ public class SyntSykemeldingController {
 
     @PostMapping
     public ResponseEntity<HttpStatus> opprett(@RequestBody SyntSykemeldingDTO sykemelding) {
-        log.info("SyntSykemeldong mottatt: {}", Json.pretty(sykemelding));
-
         service.opprettSykemelding(sykemelding);
         return ResponseEntity.ok().build();
     }

@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { Textarea } from 'nav-frontend-skjema'
 import Button from '~/components/ui/button/Button'
 import useBoolean from '~/utils/hooks/useBoolean'
 
 import './TextEditor.less'
+import { Textarea } from '@navikt/ds-react'
 
 export const TextEditor = ({ text, handleSubmit, placeholder, maxLength = 1000 }) => {
 	const [isEditing, turnOnEditing, turnOffEditing] = useBoolean(false)

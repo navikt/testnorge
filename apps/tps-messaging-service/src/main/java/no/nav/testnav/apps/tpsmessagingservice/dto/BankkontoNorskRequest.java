@@ -20,11 +20,12 @@ public class BankkontoNorskRequest extends EndringsmeldingRequest {
     @Data
     @SuperBuilder
     @NoArgsConstructor
-    @XmlType(propOrder = {"systemInfo", "endreGironrNorsk"})
+    @XmlType(propOrder = {"systemInfo", "endreGironrNorsk", "opphorGironrNorsk"})
     public static class SfeAjourforing {
 
         private TpsSystemInfo systemInfo;
         private EndreGironrNorsk endreGironrNorsk;
+        private BrukerIdentifikasjon opphorGironrNorsk;
     }
 
     @Data
@@ -36,5 +37,14 @@ public class BankkontoNorskRequest extends EndringsmeldingRequest {
         private String offentligIdent;
         private String giroNrNorsk;
         private String datoGiroNrNorsk;
+    }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @XmlType(propOrder = {"offentligIdent"})
+    public static class BrukerIdentifikasjon {
+
+        private String offentligIdent;
     }
 }
