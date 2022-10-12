@@ -79,7 +79,6 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
     }
 
-    @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
     @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
     public List<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
