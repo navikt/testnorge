@@ -5,6 +5,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
+import Formatters from '~/utils/DataFormatter'
 
 const Visning = ({ data, header, expandable }) => {
 	if (!data || data.length === 0) {
@@ -17,7 +18,14 @@ const Visning = ({ data, header, expandable }) => {
 					<TitleValue title="Inntektsår" value={inntekt.inntektsaar} />
 					<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
 					<TitleValue title="Type inntekt" value={inntekt.grunnlag} kodeverk={inntekt.tjeneste} />
-					<TitleValue title="Beløp" value={inntekt.verdi} />
+					<TitleValue
+						title={inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Beløp'}
+						value={
+							inntekt.grunnlag === 'skatteoppgjoersdato'
+								? Formatters.formatDate(inntekt.verdi)
+								: inntekt.verdi
+						}
+					/>
 				</React.Fragment>
 			)}
 		</DollyFieldArray>
