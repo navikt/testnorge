@@ -19,7 +19,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 			iconType="arena"
 			startOpen={harValgtAttributt(formikBag.values, [arenaPath])}
 		>
-			<AttributtKategori title={'Aktiv bruker'}>
+			<AttributtKategori title={'Aktiv bruker'} attr={sm.attrs}>
 				<Attributt
 					disabled={
 						sm.attrs.ikkeServicebehov.checked ||
@@ -43,7 +43,7 @@ export const ArenaPanel = ({ stateModifier, formikBag }) => {
 				/>
 			</AttributtKategori>
 
-			<AttributtKategori title={'Inaktiv bruker'}>
+			<AttributtKategori title={'Inaktiv bruker'} attr={sm.attrs}>
 				<Attributt
 					disabled={
 						sm.attrs.ingenYtelser.checked ||

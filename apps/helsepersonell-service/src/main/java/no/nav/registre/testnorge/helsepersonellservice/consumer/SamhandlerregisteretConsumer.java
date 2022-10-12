@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -48,7 +47,7 @@ public class SamhandlerregisteretConsumer {
                 () -> Arrays
                         .stream(new GetSamhandlerCommand(ident, webClient, accessToken.getTokenValue()).call())
                         .map(Samhandler::new)
-                        .collect(Collectors.toList()),
+                        .toList(),
                 executor
         );
     }

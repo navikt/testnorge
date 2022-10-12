@@ -9,34 +9,39 @@ import Loading from '~/components/ui/loading/Loading'
 import './FrigjoerModal.less'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
 
+type RelatertPersonProps = {
+	type: string
+	id: string
+}
+
 type Props = {
 	slettPerson: Function
-	slettPersonOgPartner: Function
+	slettPersonOgRelatertePersoner: Function
 	loading: boolean
-	importertPartner: boolean
+	importerteRelatertePersoner: Array<RelatertPersonProps>
 	disabled?: boolean
 }
 
 export const FrigjoerButton = ({
 	slettPerson,
-	slettPersonOgPartner,
+	slettPersonOgRelatertePersoner,
 	loading,
-	importertPartner,
+	importerteRelatertePersoner,
 	disabled = false,
 }: Props) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
 	const mutate = useMatchMutate()
 
 	if (loading) {
-		return <Loading label="frigjører..." />
+		return <Loading label="frigjør..." />
 	}
 
 	const infoTekst = () => {
-		if (importertPartner) {
+		if (importerteRelatertePersoner) {
 			return (
-				'Er du sikker på at du vil frigjøre denne personen og dens partner? All ekstra informasjon ' +
-				'lagt til på personen og partneren via Dolly vil bli slettet og personen og partneren vil bli ' +
-				'frigjort fra gruppen.'
+				'Er du sikker på at du vil frigjøre denne personen og dens relaterte personer? All ekstra ' +
+				'informasjon lagt til på personen og relaterte personer via Dolly vil bli slettet og personen og ' +
+				'relaterte personer vil bli frigjort fra gruppen.'
 			)
 		} else {
 			return (
@@ -68,14 +73,14 @@ export const FrigjoerButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								if (importertPartner) {
-									slettPersonOgPartner(importertPartner)
+								if (importerteRelatertePersoner) {
+									slettPersonOgRelatertePersoner(importerteRelatertePersoner)
 								} else {
 									slettPerson()
 								}
 								return mutate(REGEX_BACKEND_GRUPPER)
 							}}
-							type="hoved"
+							variant={'primary'}
 						>
 							Ja, jeg er sikker
 						</NavButton>

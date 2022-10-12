@@ -1,0 +1,52 @@
+azure.app.client.id: ${client_id}
+azure.app.client.secret: ${client_secret}
+
+spring:
+  application:
+    name: dolly-backend-dev
+  cloud:
+    vault:
+      host: vault.adeo.no
+      port: 443
+      fail-fast: true
+      connection-timeout: 15000
+      read-timeout: 30000
+      generic:
+        enabled: false
+      database:
+        backend: postgresql/preprod-fss
+        enabled: true
+        role: dolly-test-admin
+  datasource:
+    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/dolly-test
+    hikari:
+      maximum-pool-size: 3
+      minimum-idle: 1
+    driver-class-name: org.postgresql.Driver
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+  jpa:
+    open-in-view: true #TODO Endre til false og refaktorere til å håndtere LazyInitializationException
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
+consumers:
+  testnav-profil-api:
+    name: testnorge-profil-api-dev
+    url: https://testnorge-profil-api-dev.dev.intern.nav.no
+  tps-forvalteren-proxy:
+    name: tps-forvalteren-dev-proxy
+    url: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
+  testnav-pdl-forvalter:
+    name: testnav-pdl-forvalter-dev
+    url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+  testnav-udistub-proxy:
+    url: https://testnav-udistub-proxy.dev-fss-pub.nais.io/udistub-dev

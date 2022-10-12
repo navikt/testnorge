@@ -1,11 +1,10 @@
 import { Box } from '@/components/Box'
-import { Input } from 'nav-frontend-skjema'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Hovedknapp } from 'nav-frontend-knapper'
 import BrukerService from '@/services/BrukerService'
+import { InputFormItem, Knapp } from '@navikt/dolly-komponenter/lib'
 
-const StyledHovedknapp = styled(Hovedknapp)`
+const StyledHovedknapp = styled(Knapp)`
 	margin: 5px 0;
 `
 
@@ -19,17 +18,17 @@ const CreateUserBox = () => {
 			header="Opprett bruker"
 			onRender={({ onSubmit, loading }) => (
 				<>
-					<Input
+					<InputFormItem
 						label="Brukernavn"
 						type="text"
 						onBlur={(event) => setBurkernavn(event.target.value)}
 					/>
-					<Input
+					<InputFormItem
 						label="Orgnummer"
 						type="text"
 						onBlur={(event) => setOrgnummer(event.target.value)}
 					/>
-					<StyledHovedknapp spinner={loading} onClick={onSubmit}>
+					<StyledHovedknapp loading={loading} onClick={onSubmit}>
 						Opprett
 					</StyledHovedknapp>
 				</>

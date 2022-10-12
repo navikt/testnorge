@@ -21,4 +21,5 @@ public class DagpengerRequestDTO {
     private String miljoe;
     private List<DagpengesoknadDTO> nyeMottaDagpengesoknad;
     private List<DagpengevedtakDTO> nyeMottaDagpengevedtak;
+    private List<DagpengevedtakDTO> nyeDagp;
 }

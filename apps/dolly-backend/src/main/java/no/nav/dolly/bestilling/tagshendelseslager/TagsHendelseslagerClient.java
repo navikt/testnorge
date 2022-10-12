@@ -7,7 +7,6 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -15,6 +14,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -55,26 +55,25 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getHovedperson()));
         }
 
-        if (Master.PDL == dollyPerson.getMaster() && !isOpprettEndre) {
-
-            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                    .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-                            dollyPerson.getHovedperson(), response));
-        }
+        // Midlertidig ? publisering fra identhendelseslager
+        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
+                .contextWrite(c -> {
+                    var mdcContext = MDC.getCopyOfContextMap();
+                    if (null != mdcContext) {
+                        return c.put("mdc", mdcContext);
+                    }
+                    return c;
+                })
+                .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}", dollyPerson.getHovedperson(), response));
     }
 
     @Override
     public void release(List<String> identer) {
 
-        try {
-            getPdlIdenter(identer)
-                    .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
-                    .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å slette tags for identer: {}", String.join(", ", identer));
-        }
+        getPdlIdenter(identer)
+                .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
+                .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
     }
 
     private Flux<List<String>> getPdlIdenter(List<String> identer) {

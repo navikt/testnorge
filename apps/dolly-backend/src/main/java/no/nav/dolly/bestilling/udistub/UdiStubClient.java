@@ -38,8 +38,7 @@ public class UdiStubClient implements ClientRegister {
                 UdiPersonWrapper wrapper = udiMergeService.merge(bestilling.getUdistub(), eksisterendeUdiPerson,
                         isOpprettEndre, dollyPerson);
 
-                wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(wrapper.getAliasRequest(),
-                        bestilling.getEnvironments(), dollyPerson));
+                wrapper.getUdiPerson().setAliaser(udiMergeService.getAliaser(dollyPerson));
 
                 sendUdiPerson(wrapper);
                 status.append("OK");
@@ -54,13 +53,8 @@ public class UdiStubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        try {
             udiStubConsumer.deleteUdiPerson(identer)
                     .subscribe(response -> log.info("Slettet identer fra Udistub"));
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å slette identer fra Udistub: ", String.join(", ", identer));
-        }
     }
 
     private void sendUdiPerson(UdiPersonWrapper wrapper) {

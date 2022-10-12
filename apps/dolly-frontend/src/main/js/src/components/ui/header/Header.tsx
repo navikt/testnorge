@@ -7,7 +7,7 @@ import './header.less'
 type HeaderProps = {
 	icon?: string
 	iconSize?: number
-	className: string
+	className?: string
 	iconClassName?: string
 	children: any
 }

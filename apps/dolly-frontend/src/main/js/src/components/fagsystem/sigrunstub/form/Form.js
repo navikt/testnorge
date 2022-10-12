@@ -2,7 +2,7 @@ import React from 'react'
 import * as Yup from 'yup'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { InntektsaarForm } from './partials/inntektsaarForm'
 import { ifPresent } from '~/utils/YupValidations'
 
@@ -13,7 +13,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 			heading="Skatteoppgjør (Sigrun)"
 			hasErrors={panelError(formikBag, sigrunAttributt)}
 			iconType="sigrun"
-			startOpen={erForste(formikBag.values, [sigrunAttributt])}
+			startOpen={erForsteEllerTest(formikBag.values, [sigrunAttributt])}
 		>
 			<InntektsaarForm formikBag={formikBag} />
 		</Panel>

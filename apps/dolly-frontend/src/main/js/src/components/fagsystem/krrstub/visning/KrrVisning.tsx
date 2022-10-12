@@ -3,10 +3,27 @@ import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
-import { Historikk } from '~/components/ui/historikk/Historikk'
 import { KrrApi } from '~/service/Api'
+import DollyModal from '~/components/ui/modal/DollyModal'
 import LoadableComponent from '~/components/ui/loading/LoadableComponent'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import Button from '~/components/ui/button/Button'
+import Icon from '~/components/ui/icon/Icon'
+import NavButton from '~/components/ui/button/NavButton/NavButton'
+import styled from 'styled-components'
+import useBoolean from '~/utils/hooks/useBoolean'
+
+const EditDeleteKnapper = styled.div`
+	position: absolute;
+	right: 8px;
+	margin-top: -10px;
+	&&& {
+		button {
+			position: relative;
+		}
+	}
+`
 
 type KrrVisningProps = {
 	data: Array<Data>
@@ -26,6 +43,7 @@ type Data = {
 	spraak: string
 	gyldigFra: string
 	sdpAdresse: string
+	id?: string
 }
 
 type SdpLeverandoer = {
@@ -35,6 +53,17 @@ type SdpLeverandoer = {
 }
 
 export const Visning = ({ data }: VisningProps) => {
+	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [deleted, setDeleted] = useBoolean(false)
+	const disableSlett = !data.id
+
+	const handleDelete = (data: Data) =>
+		KrrApi.slettKontaktinformasjon(data.id).then(() => setDeleted())
+
+	if (deleted) {
+		return null
+	}
+
 	return (
 		<>
 			<LoadableComponent
@@ -48,6 +77,7 @@ export const Visning = ({ data }: VisningProps) => {
 				render={(response) =>
 					data && (
 						<>
+							<TitleValue title="Gyldig fra" value={Formatters.formatDate(data.gyldigFra)} />
 							<TitleValue
 								title="Registrert i KRR"
 								value={Formatters.oversettBoolean(data.registrert)}
@@ -65,12 +95,48 @@ export const Visning = ({ data }: VisningProps) => {
 									Formatters.showLabel('spraaktype', data.spraak.toLowerCase().replace(' ', ''))
 								}
 							/>
-							<TitleValue title="Gyldig fra" value={Formatters.formatDate(data.gyldigFra)} />
 							<TitleValue title="SDP Adresse" value={data.sdpAdresse} />
 							<TitleValue
 								title="SDP Leverandør"
 								value={response ? response.navn : data.sdpLeverandoer}
 							/>
+
+							<EditDeleteKnapper>
+								<Button
+									kind="trashcan"
+									onClick={() => openModal()}
+									title="Slett"
+									disabled={disableSlett}
+								/>
+								<DollyModal
+									isOpen={modalIsOpen}
+									closeModal={closeModal}
+									width="40%"
+									overflow="auto"
+								>
+									<div className="slettModal">
+										<div className="slettModal slettModal-content">
+											<Icon size={50} kind="report-problem-circle" />
+											<h1>Sletting</h1>
+											<h4>
+												Er du sikker på at du vil slette denne kontaktinformasjon fra personen?
+											</h4>
+										</div>
+										<div className="slettModal-actions">
+											<NavButton onClick={closeModal}>Nei</NavButton>
+											<NavButton
+												onClick={() => {
+													closeModal()
+													return handleDelete(data)
+												}}
+												variant={'primary'}
+											>
+												Ja, jeg er sikker
+											</NavButton>
+										</div>
+									</div>
+								</DollyModal>
+							</EditDeleteKnapper>
 						</>
 					)
 				}
@@ -84,18 +150,32 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster KRR data" />
 	}
-	if (!data) {
+	if (!data || data.length === 0) {
 		return false
 	}
 
 	const sortedData = Array.isArray(data) ? data.slice().reverse() : data
+
+	const antallKrr = sortedData.length
+	const antallFremtidige = sortedData.filter(
+		(krr) => krr.gyldigFra && new Date(krr.gyldigFra) > new Date()
+	).length
+
+	const gyldigeData =
+		antallKrr > antallFremtidige ? sortedData.slice(0, antallFremtidige + 1) : sortedData
+	const historiskeData = antallKrr > gyldigeData.length ? sortedData.slice(gyldigeData.length) : []
 
 	return (
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="Kontaktinformasjon og reservasjon" iconKind="krr" />
 				<div className="person-visning_content">
-					<Historikk component={Visning} data={sortedData} />
+					<ArrayHistorikk
+						component={Visning}
+						data={gyldigeData}
+						historiskData={historiskeData}
+						header={''}
+					/>
 				</div>
 			</div>
 		</ErrorBoundary>

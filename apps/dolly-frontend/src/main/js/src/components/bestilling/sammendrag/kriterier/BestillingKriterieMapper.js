@@ -178,13 +178,12 @@ const personRelatertTil = (personData, path) => {
 		statsborgerskapLandkode,
 		statsborgerskap,
 		gradering,
-		syntetisk,
 		nyttNavn,
 		navn,
 	} = _get(personData, path)
 
 	return [
-		expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path)), [
+		expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path), ['syntetisk']), [
 			obj('Identtype', identtype),
 			obj('Kjønn', kjoenn),
 			obj('Født etter', Formatters.formatDate(foedtEtter)),
@@ -197,7 +196,6 @@ const personRelatertTil = (personData, path) => {
 				AdresseKodeverk.StatsborgerskapLand
 			),
 			obj('Gradering', Formatters.showLabel('gradering', gradering)),
-			obj('Er syntetisk', syntetisk && 'JA'),
 			obj('Har mellomnavn', nyttNavn?.hasMellomnavn && 'JA'),
 			obj('Fornavn', navn?.fornavn),
 			obj('Mellomnavn', navn?.mellomnavn),
@@ -265,7 +263,7 @@ const mapKjoenn = (kjoenn, data) => {
 			header: 'Kjønn',
 			itemRows: kjoenn.map((item, idx) => {
 				return [
-					{ numberHeader: `Kjønn ${idx + 1}` },
+					{ numberHeader: kjoenn?.length > 1 && `Kjønn ${idx + 1}` },
 					obj('Kjønn', Formatters.showLabel('kjoenn', item.kjoenn)),
 				]
 			}),
@@ -777,7 +775,6 @@ const mapForeldreansvar = (foreldreansvar, data) => {
 						AdresseKodeverk.StatsborgerskapLand
 					),
 					obj('Gradering', Formatters.showLabel('gradering', item.nyAnsvarlig?.gradering)),
-					obj('Syntetisk', item.nyAnsvarlig?.syntetisk && 'JA'),
 					obj('Har mellomnavn', item.nyAnsvarlig?.nyttNavn?.hasMellomnavn && 'JA'),
 					obj('Kjønn', item.ansvarligUtenIdentifikator?.kjoenn),
 					obj('Fødselsdato', Formatters.formatDate(item.ansvarligUtenIdentifikator?.foedselsdato)),
@@ -886,7 +883,6 @@ const mapNyIdent = (nyident, data) => {
 					obj('Født etter', Formatters.formatDate(item.foedtEtter)),
 					obj('Født før', Formatters.formatDate(item.foedtFoer)),
 					obj('Alder', item.alder),
-					obj('Er syntetisk', item.syntetisk && 'JA'),
 					obj('Har mellomnavn', item.nyttNavn?.hasMellomnavn && 'JA'),
 				]
 			}),
@@ -970,7 +966,6 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 						obj('Organisasjonsnavn', advokatSomKontakt.organisasjonsnavn),
 						...kontaktperson(advokatSomKontakt.kontaktperson),
 						...kontaktinfoAdresse,
-						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
 					]
 				}
 
@@ -982,7 +977,6 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 						obj('Organisasjonsnavn', organisasjonSomKontakt.organisasjonsnavn),
 						...kontaktperson(organisasjonSomKontakt.kontaktperson),
 						...kontaktinfoAdresse,
-						...personRelatertTil(item, 'personSomKontakt.nyKontaktperson'),
 					]
 				}
 
@@ -1000,19 +994,28 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 
 const mapTpsMessaging = (bestillingData, data) => {
 	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
+	const skjerming = _get(bestillingData, 'skjerming')
 	const bankkonto = _get(bestillingData, 'bankkonto')
 
 	if (
 		tpsMessaging?.spraakKode ||
+		skjerming?.egenAnsattDatoFom ||
 		tpsMessaging?.egenAnsattDatoFom ||
+		skjerming?.egenAnsattDatoTom ||
 		tpsMessaging?.egenAnsattDatoTom
 	) {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
 				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
-				obj('Skjerming fra', Formatters.formatDate(tpsMessaging.egenAnsattDatoFom)),
-				obj('Skjerming til', Formatters.formatDate(tpsMessaging.egenAnsattDatoTom)),
+				obj(
+					'Skjerming fra',
+					Formatters.formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom)
+				),
+				obj(
+					'Skjerming til',
+					Formatters.formatDate(skjerming?.egenAnsattDatoTom || tpsMessaging?.egenAnsattDatoTom)
+				),
 			],
 		}
 		data.push(tpsMessagingData)
@@ -1022,7 +1025,10 @@ const mapTpsMessaging = (bestillingData, data) => {
 		if (bankkonto.norskBankkonto) {
 			const norskBankkontoData = {
 				header: 'Norsk bankkonto',
-				items: [obj('Kontonummer', bankkonto.norskBankkonto.kontonummer)],
+				items: [
+					obj('Kontonummer', bankkonto.norskBankkonto.kontonummer),
+					obj('Tilfeldig kontonummer', bankkonto.norskBankkonto.tilfeldigKontonummer && 'Ja'),
+				],
 			}
 			data.push(norskBankkontoData)
 		}
@@ -1032,10 +1038,7 @@ const mapTpsMessaging = (bestillingData, data) => {
 				header: 'Utenlandsk bankkonto',
 				items: [
 					obj('Kontonummer', bankkonto.utenlandskBankkonto.kontonummer),
-					obj(
-						'Tilfeldig kontonummer',
-						bankkonto.utenlandskBankkonto.tilfeldigKontonummer ? 'Ja' : ''
-					),
+					obj('Tilfeldig kontonummer', bankkonto.utenlandskBankkonto.tilfeldigKontonummer && 'Ja'),
 					obj('Swift kode', bankkonto.utenlandskBankkonto.swift),
 					obj('Land', bankkonto.utenlandskBankkonto.landkode),
 					obj('Banknavn', bankkonto.utenlandskBankkonto.banknavn),
@@ -1395,6 +1398,13 @@ const mapBrregstub = (bestillingData, data) => {
 	}
 }
 
+const jaNeiNull = (verdi) => {
+	if (null === verdi) {
+		return null
+	}
+	return verdi ? 'JA' : 'NEI'
+}
+
 const mapKrr = (bestillingData, data) => {
 	const krrKriterier = bestillingData.krrstub
 
@@ -1405,7 +1415,7 @@ const mapKrr = (bestillingData, data) => {
 				obj('Registrert i KRR', krrKriterier.registrert ? 'JA' : 'NEI'),
 				{
 					label: 'RESERVERT MOT DIGITALKOMMUNIKASJON',
-					value: krrKriterier.reservert === null ? null : krrKriterier.reservert ? 'JA' : 'NEI',
+					value: jaNeiNull(krrKriterier.reservert),
 					width: 'medium',
 				},
 				obj('Epost', krrKriterier.epost),

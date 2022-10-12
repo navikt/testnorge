@@ -15,15 +15,6 @@ interface OrgProps {
 	onMiljoeChange: (event: any) => void
 }
 
-const sortMiljoe = (miljoe: string[]) => {
-	return miljoe.sort((a, b) =>
-		a.localeCompare(b, undefined, {
-			numeric: true,
-			sensitivity: 'base',
-		})
-	)
-}
-
 export const OrganisasjonMedMiljoeSelect = ({
 	path,
 	environment,
@@ -36,9 +27,9 @@ export const OrganisasjonMedMiljoeSelect = ({
 }: OrgProps) => {
 	const options =
 		miljoeOptions &&
-		sortMiljoe(miljoeOptions).map((value) => ({
-			value: value,
-			label: value.toUpperCase(),
+		miljoeOptions?.Q?.concat(miljoeOptions?.T)?.map((value: { id: string; label: string }) => ({
+			value: value.id,
+			label: value.label,
 		}))
 
 	return (

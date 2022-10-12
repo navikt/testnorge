@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.IOException;
@@ -21,12 +20,20 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ErrorStatusDecoder {
 
+    private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
+            "Forsøk gjenopprett for å fikse dette!";
+
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
     private static final String DETAILS = "details";
     private static final String FEIL = "Feil= ";
 
     private final ObjectMapper objectMapper;
+
+    public static String getVarsel(String system) {
+
+        return String.format(VARSEL, system);
+    }
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
@@ -66,30 +73,25 @@ public class ErrorStatusDecoder {
                 .toString();
     }
 
-    public String decodeRuntimeException(RuntimeException e) {
+    public String decodeRuntimeException(RuntimeException error) {
 
         StringBuilder builder = new StringBuilder()
                 .append(FEIL);
 
-        if (e instanceof HttpClientErrorException || e instanceof WebClientResponseException) {
+        if (error instanceof WebClientResponseException webClientResponseException) {
 
-            if (e instanceof HttpClientErrorException && !((HttpClientErrorException) e).getResponseBodyAsString().isEmpty()) {
+            if (!webClientResponseException.getResponseBodyAsString().isEmpty()) {
 
-                appendStatusMessage(((HttpClientErrorException) e).getResponseBodyAsString(StandardCharsets.UTF_8), builder);
-
-            } else if (e instanceof WebClientResponseException && !((WebClientResponseException) e).getResponseBodyAsString().isEmpty()) {
-
-                appendStatusMessage(((WebClientResponseException) e).getResponseBodyAsString(StandardCharsets.UTF_8), builder);
-                log.error(((WebClientResponseException) e).getResponseBodyAsString(StandardCharsets.UTF_8), e);
+                appendStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else {
-                builder.append(e.getMessage());
+                builder.append(error.getMessage());
             }
 
         } else {
             builder.append("Teknisk feil. Se logg! ");
-            builder.append(encodeStatus(e.getMessage()));
-            log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
+            builder.append(encodeStatus(error.getMessage()));
+            log.error("Teknisk feil {} mottatt fra system", error.getMessage(), error);
         }
 
         return builder.toString();

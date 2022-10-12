@@ -38,17 +38,16 @@ public class BrukerController {
     ) {
         validateMiljoe(syntetiserArenaRequest.getMiljoe());
 
-        var identer = identService.getUtvalgteIdenterIAldersgruppe(
+        var personer = identService.getUtvalgteIdenterIAldersgruppe(
                         syntetiserArenaRequest.getAntallNyeIdenter(),
                         MINIMUM_ALDER,
                         MAKSIMUM_ALDER,
                         false
-                )
-                .stream().map(PersonDTO::getIdent).toList();
+                );
 
-        if (tagsService.opprettetTagsPaaIdenter(identer)) {
+        if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
             return arenaForvalterService.opprettArbeidssoekereUtenVedtak(
-                    identer,
+                    personer.stream().map(PersonDTO::getIdent).toList(),
                     syntetiserArenaRequest.getMiljoe());
         } else {
             return Collections.emptyMap();
@@ -59,7 +58,7 @@ public class BrukerController {
     public Map<String, List<DagpengerResponseDTO>> registrerBrukereIArenaMedDagpenger(
             @RequestBody SyntetiserArenaRequest syntetiserArenaRequest
     ) {
-        return arenaDagpengerService.registrerArenaBrukereMedDagpenger(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getMiljoe());
+        return arenaDagpengerService.registrerArenaBrukereMedDagpenger(syntetiserArenaRequest.getAntallNyeIdenter(), syntetiserArenaRequest.getMiljoe(), true);
     }
 
 }

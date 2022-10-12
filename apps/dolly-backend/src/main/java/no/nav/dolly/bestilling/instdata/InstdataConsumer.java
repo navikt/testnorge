@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.config.credentials.InstServiceProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -52,7 +52,7 @@ public class InstdataConsumer {
     private final NaisServerProperties serviceProperties;
 
     public InstdataConsumer(TokenExchange tokenService,
-                            InstProxyProperties serverProperties,
+                            InstServiceProperties serverProperties,
                             ObjectMapper objectMapper,
                             ExchangeFilterFunction metricsWebClientFilterFunction) {
 

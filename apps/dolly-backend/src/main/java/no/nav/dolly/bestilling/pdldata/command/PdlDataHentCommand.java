@@ -8,6 +8,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -19,7 +20,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
+public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
 
     private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer";
     private static final String IDENTER = "identer";
@@ -32,7 +33,7 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
     private final Integer sidestorrelse;
     private final String token;
 
-    public Mono<FullPersonDTO[]> call() {
+    public Flux<FullPersonDTO> call() {
 
         return webClient
                 .get()
@@ -41,11 +42,11 @@ public class PdlDataHentCommand implements Callable<Mono<FullPersonDTO[]>> {
                         .queryParam(PAGE_NO, sidenummer)
                         .queryParam(PAGE_SIZE, sidestorrelse)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(FullPersonDTO[].class)
-                .doOnError(error -> log.error(WebClientFilter.getMessage(error), error))
+                .bodyToFlux(FullPersonDTO.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,

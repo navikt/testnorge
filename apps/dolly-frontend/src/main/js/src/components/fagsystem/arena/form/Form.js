@@ -3,13 +3,13 @@ import _get from 'lodash/get'
 import { ifPresent } from '~/utils/YupValidations'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import { MedServicebehov } from './partials/MedServicebehov'
 import { AlertInntektskomponentenRequired } from '~/components/ui/brukerAlert/AlertInntektskomponentenRequired'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { validation } from '~/components/fagsystem/arena/form/validation'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { Alert } from '@navikt/ds-react'
 
 export const arenaPath = 'arenaforvalter'
 
@@ -33,18 +33,18 @@ export const ArenaForm = ({ formikBag }) => {
 				heading="Arbeidsytelser"
 				hasErrors={panelError(formikBag, arenaPath)}
 				iconType="arena"
-				startOpen={erForste(formikBag.values, [arenaPath])}
+				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
 			>
 				{dagpengerAktiv && (
 					<>
 						{!formikBag.values.hasOwnProperty('inntektstub') && (
 							<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />
 						)}
-						<AlertStripeInfo style={{ marginBottom: '20px' }}>
+						<Alert variant={'info'} style={{ marginBottom: '20px' }}>
 							For å kunne få gyldig dagpengevedtak må det være knyttet inntektsmelding for 12
 							måneder før vedtakets fra dato. Dette kan enkelt gjøres i innteksinformasjon ved å
 							benytte "Generer antall måneder" feltet.
-						</AlertStripeInfo>
+						</Alert>
 					</>
 				)}
 				{!servicebehovAktiv && (
@@ -59,7 +59,7 @@ export const ArenaForm = ({ formikBag }) => {
 					<FormikCheckbox
 						name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
 						label="Automatisk innsending av meldekort"
-						size="large"
+						size="small"
 					/>
 				)}
 			</Panel>

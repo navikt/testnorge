@@ -14,7 +14,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -59,7 +58,8 @@ public class DokarkivConsumer {
         log.info("Sender dokarkiv melding: callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
 
         return webClient.post()
-                .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(environment))
+                .uri(builder ->
+                        builder.path("/api/{miljo}/v1/journalpost").build(environment))
                 .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
@@ -69,18 +69,10 @@ public class DokarkivConsumer {
                 .bodyToMono(DokarkivResponse.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> {
-                    if (error instanceof WebClientResponseException webClientResponseException) {
-                        log.error(
-                                "Feil ved opprettelse av journalpost av med body: {}.",
-                                webClientResponseException.getResponseBodyAsString(),
-                                error
-                        );
-                    } else {
-                        log.error("Feil ved opprettelse av journalpost.", error);
-                    }
-                });
-
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(error -> Mono.just(DokarkivResponse.builder()
+                        .feilmelding(WebClientFilter.getMessage(error))
+                        .build()));
     }
 
     public Map<String, String> checkAlive() {

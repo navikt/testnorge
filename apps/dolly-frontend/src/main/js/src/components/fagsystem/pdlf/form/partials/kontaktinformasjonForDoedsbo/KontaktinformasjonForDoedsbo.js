@@ -8,7 +8,7 @@ import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialKontaktinfoForDoedebo } from '~/components/fagsystem/pdlf/form/initialValues'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 
 export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
@@ -20,7 +20,7 @@ export const KontaktinformasjonForDoedsbo = ({ formikBag }) => {
 				heading="Kontaktinformasjon for dødsbo"
 				hasErrors={panelError(formikBag, doedsboAttributt)}
 				iconType="doedsbo"
-				startOpen={erForste(formikBag.values, [doedsboAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [doedsboAttributt])}
 			>
 				<FormikDollyFieldArray
 					name="pdldata.person.kontaktinformasjonForDoedsbo"

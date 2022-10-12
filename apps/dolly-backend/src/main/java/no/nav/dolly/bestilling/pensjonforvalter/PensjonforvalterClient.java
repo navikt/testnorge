@@ -15,6 +15,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Slf4j
 @Service
+@Order(7)
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
@@ -107,16 +109,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         // Pensjonforvalter / POPP støtter pt ikke sletting
 
-        slettPersonTpForhold(identer);
-    }
-
-    private void slettPersonTpForhold(List<String> identer) {
-        try {
-            identer.stream()
-                    .forEach(ident -> pensjonforvalterConsumer.sletteTpForhold(ident));
-        } catch (RuntimeException e) {
-            log.error("Sletting fra TP feilet på identer: " + String.join(", ", identer), e);
-        }
+        pensjonforvalterConsumer.sletteTpForhold(identer);
     }
 
     private void opprettPerson(DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
@@ -137,7 +130,8 @@ public class PensjonforvalterClient implements ClientRegister {
             });
         } catch (RuntimeException e) {
 
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append("ALLE:")
+                    .append(errorStatusDecoder.decodeRuntimeException(e));
         }
     }
 

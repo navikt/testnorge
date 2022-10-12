@@ -25,10 +25,10 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			iconType="pensjon"
 			startOpen={harValgtAttributt(formikBag.values, [pensjonPath, tpPath])}
 		>
-			<AttributtKategori title="Pensjonsgivende inntekt (POPP)">
+			<AttributtKategori title="Pensjonsgivende inntekt (POPP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.inntekt} />
 			</AttributtKategori>
-			<AttributtKategori title="Tjenestepensjon (TP)">
+			<AttributtKategori title="Tjenestepensjon (TP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.tp} />
 			</AttributtKategori>
 		</Panel>

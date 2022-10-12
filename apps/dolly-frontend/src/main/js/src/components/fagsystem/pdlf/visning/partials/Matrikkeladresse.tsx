@@ -44,7 +44,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Postnummer">
 					{postnummer && (
 						<KodeverkConnector navn="Postnummer" value={postnummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : postnummer}</span>
 							)}
 						</KodeverkConnector>
@@ -53,7 +53,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Kommunenummer">
 					{kommunenummer && (
 						<KodeverkConnector navn="Kommuner" value={kommunenummer}>
-							{(v: Kodeverk, verdi: KodeverkValues) => (
+							{(_v: Kodeverk, verdi: KodeverkValues) => (
 								<span>{verdi ? verdi.label : kommunenummer}</span>
 							)}
 						</KodeverkConnector>

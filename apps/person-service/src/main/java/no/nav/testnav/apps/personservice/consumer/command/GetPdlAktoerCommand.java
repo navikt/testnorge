@@ -32,6 +32,7 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
     private static final String TEMA_GENERELL = "GEN";
 
     private final WebClient webClient;
+    private final String url;
     private final String ident;
     private final String token;
 
@@ -57,10 +58,11 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .variables(variables)
                 .build();
 
-
         return webClient
                 .post()
-                .uri("/pdl-api/graphql")
+                .uri(uriBuilder -> uriBuilder.path(url)
+                        .path("/graphql")
+                        .build())
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(PdlHeaders.HEADER_NAV_CALL_ID, "Dolly: " + UUID.randomUUID())
                 .header(PdlHeaders.TEMA, TEMA_GENERELL)
@@ -69,17 +71,6 @@ public class GetPdlAktoerCommand implements Callable<Mono<PdlAktoer>> {
                 .retrieve()
                 .bodyToMono(PdlAktoer.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .doOnError(error -> {
-                    if (error instanceof WebClientResponseException) {
-                        log.error(
-                                "Feil ved henting av aktoer fra pdl. Feilmelding: {}.",
-                                ((WebClientResponseException) error).getResponseBodyAsString(),
-                                error
-                        );
-                    } else {
-                        log.error("Feil ved henting av aktoer fra pdl.", error);
-                    }
-                });
+                        .filter(WebClientFilter::is5xxException));
     }
 }

@@ -63,11 +63,9 @@ spec:
         - application: dolly-frontend
           cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
-        - application: ident-pool
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-ident-pool
           cluster: dev-gcp
         - application: synthdata-tps-gcp

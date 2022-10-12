@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.tpsmessagingservice.dto.PostadresseRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
+import no.nav.testnav.apps.tpsmessagingservice.utils.TranslittereringUtil;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
 import org.springframework.stereotype.Component;
 
@@ -42,6 +43,9 @@ public class PostadresseUtlandMappingStrategy implements MappingStrategy {
                         target.setTypeAdresse(ADRESSE_UTLAND);
                         target.setDatoAdresse((isNull(source.getDatoAdresse()) ? LocalDate.now() :
                                 source.getDatoAdresse().toLocalDate()).toString());
+                        target.setAdresse1(TranslittereringUtil.translitterer(source.getAdresse1()));
+                        target.setAdresse2(TranslittereringUtil.translitterer(source.getAdresse2()));
+                        target.setAdresse3(TranslittereringUtil.translitterer(source.getAdresse3()));
                     }
                 })
                 .byDefault()

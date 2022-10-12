@@ -24,13 +24,13 @@ export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 			iconType="adresse"
 			startOpen={harValgtAttributt(formikBag.values, adresseAttributter)}
 		>
-			<AttributtKategori title="Adresser">
+			<AttributtKategori title="Adresser" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.bostedsadresse} />
 				<Attributt attr={sm.attrs.oppholdsadresse} />
 				<Attributt attr={sm.attrs.kontaktadresse} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Adressebeskyttelse">
+			<AttributtKategori title="Adressebeskyttelse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.adressebeskyttelse} />
 			</AttributtKategori>
 		</Panel>

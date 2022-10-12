@@ -1,7 +1,7 @@
 package no.nav.dolly.bestilling.instdata;
 
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.config.credentials.InstProxyProperties;
+import no.nav.dolly.config.credentials.InstServiceProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -60,7 +60,7 @@ public class InstdataConsumerTest {
     @BeforeEach
     public void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(InstServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -70,7 +70,7 @@ public class InstdataConsumerTest {
 
         instdataConsumer.deleteInstdata(List.of(IDENT)).block();
 
-        verify(tokenService).exchange(ArgumentMatchers.any(InstProxyProperties.class));
+        verify(tokenService).exchange(ArgumentMatchers.any(InstServiceProperties.class));
     }
 
     @Test

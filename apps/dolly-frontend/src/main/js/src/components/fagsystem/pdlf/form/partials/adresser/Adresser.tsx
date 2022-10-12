@@ -6,7 +6,7 @@ import { Kontaktadresse } from '~/components/fagsystem/pdlf/form/partials/adress
 import { Adressebeskyttelse } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import { FormikProps } from 'formik'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 
 interface AdresserValues {
 	formikBag: FormikProps<{}>
@@ -26,7 +26,7 @@ export const Adresser = ({ formikBag }: AdresserValues) => {
 				heading="Adresser"
 				hasErrors={panelError(formikBag, adresseAttributter)}
 				iconType="adresse"
-				startOpen={erForste(formikBag.values, adresseAttributter)}
+				startOpen={erForsteEllerTest(formikBag.values, adresseAttributter)}
 			>
 				<Vis attributt={'pdldata.person.bostedsadresse'}>
 					<Bostedsadresse formikBag={formikBag} />

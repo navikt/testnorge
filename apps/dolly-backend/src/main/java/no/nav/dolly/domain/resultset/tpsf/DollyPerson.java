@@ -33,6 +33,7 @@ public class DollyPerson {
     private List<String> identhistorikk;
     private List<Tags> tags;
     private Testident.Master master;
+    private boolean opprettetIPDL;
 
     public List<String> getPartnere() {
         if (isNull(partnere)) {

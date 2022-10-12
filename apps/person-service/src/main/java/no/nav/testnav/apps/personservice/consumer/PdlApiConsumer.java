@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlAktoerCommand;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
 import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -22,6 +23,9 @@ import java.util.Optional;
 @Slf4j
 @Component
 public class PdlApiConsumer {
+
+    private static final String PDL_URL = "/pdl-api";
+    private static final String PDL_Q1_URL = "/pdl-api-q1";
 
     private final WebClient webClient;
     private final PdlServiceProperties serviceProperties;
@@ -53,10 +57,11 @@ public class PdlApiConsumer {
     }
 
     public Mono<Optional<Person>> getPerson(String ident) {
+
         log.info("Henter person {} fra PDL", ident);
         return tokenExchange
                 .exchange(serviceProperties)
-                .flatMap(token -> new GetPdlPersonCommand(webClient, ident, token.getTokenValue()).call())
+                .flatMap(token -> new GetPdlPersonCommand(webClient, PDL_URL, ident, token.getTokenValue()).call())
                 .map(pdlPerson -> {
                     if (pdlPerson.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"))) {
                         return Optional.empty();
@@ -65,17 +70,38 @@ public class PdlApiConsumer {
                 });
     }
 
+    private boolean isNotPresent(PdlAktoer pdlAktoer) {
+
+        return pdlAktoer.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"));
+    }
+
+    private boolean isPresent(PdlPerson pdlAktoer) {
+
+        return pdlAktoer.getErrors().stream().noneMatch(value -> value.getMessage().equals("Fant ikke person"));
+    }
+
     public Mono<Optional<PdlAktoer.AktoerIdent>> getAktoer(String ident) {
+
         log.info("Henter ident {} fra PDL", ident);
         return tokenExchange
                 .exchange(serviceProperties)
-                .flatMap(token -> new GetPdlAktoerCommand(webClient, ident, token.getTokenValue()).call())
-                .map(pdlAktoer -> {
-                    if (pdlAktoer.getErrors().stream().anyMatch(value -> value.getMessage().equals("Fant ikke person"))) {
-                        return Optional.empty();
-                    }
-                    return Optional.of(pdlAktoer.getData().getHentIdenter().getIdenter().get(0));
-                });
+                .flatMap(token -> Mono.zip(new GetPdlAktoerCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
+                                new GetPdlAktoerCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
+                        .map(tuple -> {
+                            if (isNotPresent(tuple.getT1()) || isNotPresent(tuple.getT2())) {
+                                return Optional.empty();
+                            }
+                            return Optional.of(tuple.getT1().getData().getHentIdenter().getIdenter().get(0));
+                        }));
+    }
 
+    public Mono<Boolean> isPerson(String ident) {
+
+        log.info("Henter ident {} fra PDL", ident);
+        return tokenExchange
+                .exchange(serviceProperties)
+                .flatMap(token -> Mono.zip(new GetPdlPersonCommand(webClient, PDL_URL, ident, token.getTokenValue()).call(),
+                                new GetPdlPersonCommand(webClient, PDL_Q1_URL, ident, token.getTokenValue()).call())
+                        .map(tuple -> isPresent(tuple.getT1()) && isPresent(tuple.getT2())));
     }
 }

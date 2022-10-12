@@ -3,7 +3,7 @@ import { PdlfVisning } from '~/components/fagsystem'
 
 const mapStateToProps = (state: RootStateOrAny) => {
 	return {
-		tmpPersoner: state?.redigertePersoner?.pdlforvalter,
+		tmpPersoner: state?.redigertePersoner,
 	}
 }
 

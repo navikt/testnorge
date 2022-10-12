@@ -13,7 +13,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        return http.csrf()
+        return http.cors().and().csrf()
                 .disable()
                 .authorizeExchange()
                 .pathMatchers("/internal/isReady", "/internal/isAlive").permitAll()

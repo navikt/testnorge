@@ -7,7 +7,7 @@ import Button from '~/components/ui/button/Button'
 import FavoriteButton from '~/components/ui/button/FavoriteButton/FavoriteButton'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
-import ExpandButton from '~/components/ui/button/ExpandButton'
+import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
 import { PersonIBrukButton } from '~/components/ui/button/PersonIBrukButton/PersonIBrukButton'
 
 // Loading
@@ -58,8 +58,8 @@ export default function () {
 			<FavoriteButton isFavorite={false} hideLabel={true} />
 
 			<h3>NAV knapp</h3>
-			<NavButton type={'fare'}>Avbryt</NavButton>
-			<NavButton type="hoved">OPPRETT</NavButton>
+			<NavButton variant={'danger'}>Avbryt</NavButton>
+			<NavButton variant={'primary'}>OPPRETT</NavButton>
 
 			<h3>Link knapp</h3>
 			<LinkButton text="Velg alle" />

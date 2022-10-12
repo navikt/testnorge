@@ -11,25 +11,25 @@ public class AddAuthenticationRequestGatewayFilterFactory extends AbstractGatewa
     public static final String HEADER_NAV_CONSUMER_TOKEN = "Nav-Consumer-Token";
 
     public static GatewayFilter bearerAuthenticationHeaderFilter(Supplier<Mono<String>> getToken) {
-        return new AddAuthenticationRequestGatewayFilterFactory().apply((builder) -> {
+        return new AddAuthenticationRequestGatewayFilterFactory().apply(builder -> {
             return getToken.get().map(token -> builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token));
         });
     }
 
     public static GatewayFilter basicAuthAuthenticationHeaderFilter(String username, String password) {
-        return new AddAuthenticationRequestGatewayFilterFactory().apply((builder) -> {
+        return new AddAuthenticationRequestGatewayFilterFactory().apply(builder -> {
             return Mono.just(builder.headers(headers -> headers.setBasicAuth(username, password)));
         });
     }
 
     public static GatewayFilter apiKeyAuthenticationHeaderFilter(String apiKey) {
-        return new AddAuthenticationRequestGatewayFilterFactory().apply((builder) -> {
+        return new AddAuthenticationRequestGatewayFilterFactory().apply(builder -> {
             return Mono.just(builder.headers(headers -> builder.header(HttpHeaders.AUTHORIZATION, apiKey)));
         });
     }
 
     public static GatewayFilter bearerAuthenticationAndNavConsumerTokenHeaderFilter(Supplier<Mono<String>> getToken) {
-        return new AddAuthenticationRequestGatewayFilterFactory().apply((builder) -> {
+        return new AddAuthenticationRequestGatewayFilterFactory().apply(builder -> {
             return getToken.get().map(token -> builder
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .header(HEADER_NAV_CONSUMER_TOKEN, "Bearer " + token)

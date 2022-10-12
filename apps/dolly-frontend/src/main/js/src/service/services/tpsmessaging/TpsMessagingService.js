@@ -9,8 +9,16 @@ export default {
 	getTpsPersonInfo(ident, miljoe) {
 		return Request.get(getTpsMessagingUrl(ident, miljoe))
 	},
-
 	getTpsPersonInfoAllEnvs(ident) {
 		return Request.get(getTpsMessagingUrlAllEnvs(ident))
+	},
+	deleteBankkontoNorsk(ident) {
+		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/bankkonto-norsk`)
+	},
+	deleteBankkontoUtenlandsk(ident) {
+		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/bankkonto-utenlandsk`)
+	},
+	deleteSkjerming(ident) {
+		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/egenansatt`)
 	},
 }

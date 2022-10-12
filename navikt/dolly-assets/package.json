@@ -1,28 +1,23 @@
 {
   "name": "@navikt/dolly-assets",
-  "version": "1.0.1",
+  "version": "1.1.12",
   "description": "Dolly assets",
   "main": "lib/index.js",
   "scripts": {
-    "build": "webpack"
+    "build": "webpack --mode=production"
   },
+  "types": "lib",
   "author": {
     "name": "Team dolly",
     "email": "dolly@nav.no"
   },
   "license": "MIT",
   "devDependencies": {
-    "webpack": "^5.35.1",
-    "prettier": "2.2.1",
-    "webpack-cli": "^4.6.0"
+    "webpack": "^5.74.0",
+    "prettier": "^2.7.1",
+    "webpack-cli": "^4.10.0"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/navikt/testnorge.git"
-  },
+  "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
     "singleQuote": true,
     "semi": true,

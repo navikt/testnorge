@@ -1,7 +1,10 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.domain.dto.DeleteZIdentResponse;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -33,6 +36,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TestgruppeService {
@@ -45,6 +49,7 @@ public class TestgruppeService {
     private final BestillingService bestillingService;
     private final PersonService personService;
     private final GetUserInfo getUserInfo;
+    private final PdlDataConsumer pdlDataConsumer;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -114,7 +119,7 @@ public class TestgruppeService {
         try {
             return testgrupper.stream()
                     .map(testgruppeRepository::save)
-                    .collect(Collectors.toList());
+                    .toList();
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("En Testgruppe DB constraint er brutt! Kan ikke lagre testgruppe. Error: " + e.getMessage(), e);
         } catch (NonTransientDataAccessException e) {
@@ -122,19 +127,20 @@ public class TestgruppeService {
         }
     }
 
-    public void deleteGruppeById(Long gruppeId) {
+    public Long deleteGruppeById(Long gruppeId) {
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
         var testIdenter = mapperFacade.mapAsList(testgruppe.getTestidenter(), TestidentDTO.class);
 
-        transaksjonMappingRepository.deleteAllByIdentIn(testgruppe.getTestidenter().stream()
-                .map(Testident::getIdent)
-                .toList());
+        transaksjonMappingRepository.deleteByGruppeId(gruppeId);
+
         bestillingService.slettBestillingerByGruppeId(gruppeId);
         identService.slettTestidenterByGruppeId(gruppeId);
 
         personService.recyclePersoner(testIdenter);
         brukerService.sletteBrukerFavoritterByGroupId(gruppeId);
         testgruppeRepository.deleteTestgruppeById(gruppeId);
+
+        return gruppeId;
     }
 
     public Testgruppe oppdaterTestgruppe(Long gruppeId, RsOpprettEndreTestgruppe endreGruppe) {
@@ -172,12 +178,30 @@ public class TestgruppeService {
 
         var testgruppe = fetchTestgruppeById(gruppeId);
         identService.saveIdentTilGruppe(ident, testgruppe, master, null);
+        pdlDataConsumer.putStandalone(ident, true)
+                .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 
-    public void slettIdent(Long gruppeId, String ident) {
+    public List<DeleteZIdentResponse> sletteGrupperForIkkemigrerteNavIdenter(Set<String> brukere) {
 
-        fetchTestgruppeById(gruppeId);
-        identService.getTestIdent(ident);
-        identService.slettTestident(ident);
+        return brukere.stream()
+                .map(bruker -> DeleteZIdentResponse.builder()
+                        .bruker(bruker)
+                        .grupper(
+                                testgruppeRepository.getIkkemigrerteTestgrupperByNavId(bruker).stream()
+                                        .map(testgruppe -> {
+                                            var gruppe = DeleteZIdentResponse.Gruppe.builder()
+                                                    .id(testgruppe.getId())
+                                                    .identer(testgruppe.getTestidenter().stream()
+                                                            .map(Testident::getIdent)
+                                                            .toList())
+                                                    .build();
+                                            deleteGruppeById(testgruppe.getId());
+                                            log.info("Slettet gruppe {} for bruker {}", testgruppe.getId(), bruker);
+                                            return gruppe;
+                                        })
+                                        .toList())
+                        .build())
+                .toList();
     }
 }

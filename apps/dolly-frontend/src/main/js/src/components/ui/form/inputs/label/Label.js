@@ -3,8 +3,8 @@ import cn from 'classnames'
 import _isNil from 'lodash/isNil'
 import _isEmpty from 'lodash/isEmpty'
 import styled from 'styled-components'
-import NavHjelpeTekst from 'nav-frontend-hjelpetekst'
 import './Label.less'
+import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 
 const StyledLabel = styled.label`
 	font-size: 0.75em;
@@ -25,7 +25,7 @@ export const Label = ({ name, label, feil, info = null, containerClass, children
 						{label}
 					</StyledLabel>
 					<div className="label-hjelpetekst">
-						<NavHjelpeTekst>{info}</NavHjelpeTekst>
+						<Hjelpetekst>{info}</Hjelpetekst>
 					</div>
 				</div>
 			) : (

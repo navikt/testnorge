@@ -57,8 +57,12 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 					{ value: 'UGIFT', label: 'Ugift' },
 					{ value: 'SEPARERT', label: 'Separert' },
 					{ value: 'SKILT', label: 'Skilt' },
+					{ value: 'ENKE_ELLER_ENKEMANN', label: 'Enke eller enkemann' },
 					{ value: 'REGISTRERT_PARTNER', label: 'Registrert partner' },
 					{ value: 'SEPARERT_PARTNER', label: 'Separert partner' },
+					{ value: 'SKILT_PARTNER', label: 'Skilt partner' },
+					{ value: 'GJENLEVENDE_PARTNER', label: 'Gjenlevende partner' },
+					{ value: 'UOPPGITT', label: 'Uoppgitt' },
 				]}
 				size="medium"
 			/>
@@ -76,26 +80,23 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 			/>
 			<div className="options-title">Har forelder</div>
 			<DollyCheckbox
-				label={foreldreRoller.FAR}
+				label={'Far'}
 				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.FAR)}
 				onChange={() => handleForelderChange(foreldreRoller.FAR)}
-				checkboxMargin={false}
 				size="small"
 			/>
 			<DollyCheckbox
-				label={foreldreRoller.MOR}
+				label={'Mor'}
 				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.MOR)}
 				onChange={() => handleForelderChange(foreldreRoller.MOR)}
-				checkboxMargin={false}
 				size="small"
 			/>
 			<DollyCheckbox
-				label={foreldreRoller.MEDMOR}
+				label={'Medmor'}
 				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(
 					foreldreRoller.MEDMOR
 				)}
 				onChange={() => handleForelderChange(foreldreRoller.MEDMOR)}
-				checkboxMargin={false}
 				size="small"
 			/>
 			<FormikSelect

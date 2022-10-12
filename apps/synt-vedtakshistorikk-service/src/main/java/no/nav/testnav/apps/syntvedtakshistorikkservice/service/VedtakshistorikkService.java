@@ -100,7 +100,7 @@ public class VedtakshistorikkService {
                 log.error("Kunne ikke opprette vedtakshistorikk på ident med minimum alder {}.", minimumAlder);
             } else {
                 var utvalgtIdent = getUtvalgtIdentIAldersgruppe(vedtakshistorikk, tidligsteDatoBarnetillegg, minimumAlder, maksimumAlder);
-                if (nonNull(utvalgtIdent) && tagsService.opprettetTagsPaaIdenter(Collections.singletonList(utvalgtIdent.getIdent()))) {
+                if (nonNull(utvalgtIdent) && tagsService.opprettetTagsPaaIdenterOgPartner(Collections.singletonList(utvalgtIdent))) {
                     responses.putAll(opprettHistorikkOgSendTilArena(utvalgtIdent, miljoe, vedtakshistorikk, tidligsteDato));
                 }
             }
@@ -169,7 +169,7 @@ public class VedtakshistorikkService {
         arenaAapService.opprettVedtakUngUfoer(vedtakshistorikk, person, miljoe, rettigheter);
         arenaAapService.opprettVedtakTvungenForvaltning(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaAapService.opprettVedtakFritakMeldekort(vedtakshistorikk, personident, miljoe, rettigheter);
-        arenaTiltakService.oppdaterTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, tiltak, senesteVedtak, tidligsteDato);
+        arenaTiltakService.oppdaterTiltaksdeltakelse(vedtakshistorikk, person, miljoe, tiltak, senesteVedtak, tidligsteDato);
         arenaTiltakService.opprettVedtakTiltaksdeltakelse(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaTiltakService.opprettFoersteVedtakEndreDeltakerstatus(vedtakshistorikk, personident, miljoe, rettigheter);
         arenaTiltakService.opprettVedtakTiltakspenger(vedtakshistorikk, personident, miljoe, rettigheter);
@@ -179,12 +179,12 @@ public class VedtakshistorikkService {
 
         if (!rettigheter.isEmpty()) {
             if (!opprettetNoedvendigInfoIPopp(vedtakshistorikk, person, miljoe)) {
-                tagsService.removeTagsPaaIdent(personident);
+                tagsService.removeTagsPaaIdentOgPartner(person);
                 arenaForvalterService.slettArbeidssoekerIArena(personident, miljoe);
                 return Collections.emptyMap();
             }
             try {
-                arenaForvalterService.opprettArbeidssoekerVedtakshistorikk(personident, miljoe, senesteVedtak, tidligsteDato);
+                arenaForvalterService.opprettArbeidssoekerVedtakshistorikk(person, miljoe, senesteVedtak, tidligsteDato);
             } catch (Exception e) {
                 log.error(e.getMessage());
                 return Collections.emptyMap();

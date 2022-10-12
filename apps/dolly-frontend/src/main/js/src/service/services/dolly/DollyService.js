@@ -114,8 +114,16 @@ export default {
 		return Request.delete(Endpoints.slettPerson(ident))
 	},
 
-	slettPersonOgPartner(ident, _partnerident) {
-		return Request.delete(Endpoints.slettPerson(ident))
+	slettPersonOgRelatertePersoner(ident, relatertPersonIdenter) {
+		return Request.delete(Endpoints.slettPerson(ident)).then(() => {
+			return Promise.all(
+				relatertPersonIdenter.map((person) => {
+					Request.delete(Endpoints.slettPerson(person.id)).catch((error) => {
+						console.error(error)
+					})
+				})
+			)
+		})
 	},
 
 	importerPersoner: (gruppeId, request) => {
@@ -126,8 +134,8 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
-	getPersonFraPdl(ident) {
-		return Request.get(Endpoints.personoppslag(ident))
+	getPersonFraPdl(ident, pdlMiljoe) {
+		return Request.get(Endpoints.personoppslag(ident, pdlMiljoe))
 	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
@@ -164,12 +172,86 @@ export default {
 		return Request.get(Endpoints.getTags())
 	},
 
+	getTagsForIdent(ident) {
+		return Request.get(Endpoints.getIdentTags(ident))
+	},
+
 	//* Excel
 	getExcelFil(groupId) {
 		return Request.getExcel(Endpoints.gruppeExcelFil(groupId))
 	},
 
-	importerPartner(groupId, ident, master) {
+	getOrgExcelFil(brukerId) {
+		return Request.getExcel(Endpoints.orgExcelFil(brukerId))
+	},
+
+	importerRelatertPerson(groupId, ident, master) {
 		return Request.putWithoutResponse(Endpoints.leggTilPersonIGruppe(groupId, ident, master))
+	},
+
+	flyttPersonerTilGruppe(gruppeId, ident) {
+		return Request.putWithoutResponse(Endpoints.flyttPersonerTilGruppe(gruppeId, ident))
+	},
+
+	slettMal(malId) {
+		return Request.delete(Endpoints.malBestilling(malId))
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	endreMalNavn(malID, malNavn) {
+		return Request.putWithoutResponse(Endpoints.malBestilling(malID), malNavn)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	slettMalOrganisasjon(malId) {
+		return Request.delete(Endpoints.malBestillingOrganisasjon(malId))
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	endreMalNavnOrganisasjon(malID, malNavn) {
+		return Request.putWithoutResponse(Endpoints.malBestillingOrganisasjon(malID), malNavn)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	getAlleOrganisasjonerPaaBruker(brukerId) {
+		return Request.get(Endpoints.getOrganisasjoner(brukerId)).then((response) => {
+			return response.data
+		})
 	},
 }

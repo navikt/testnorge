@@ -45,8 +45,9 @@ public class ArenaForvalterConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
 
-    private static final String DAGPENGESOKNAD_PATH = "/api/v1/mottadagpengesoknad";
-    private static final String DAGPENGEVEDTAK_PATH = "/api/v1/mottadagpengevedtak";
+    private static final String MOTTA_DAGPENGESOKNAD_PATH = "/api/v1/mottadagpengesoknad";
+    private static final String MOTTA_DAGPENGEVEDTAK_PATH = "/api/v1/mottadagpengevedtak";
+    private static final String DAGPENGEVEDTAK_PATH = "/api/v1/dagpenger";
 
     public ArenaForvalterConsumer(
             ArenaForvalterenProxyProperties serviceProperties,
@@ -216,9 +217,14 @@ public class ArenaForvalterConsumer {
         return arbeidssoekere;
     }
 
-    public DagpengerResponseDTO opprettDagpengerSoknad(DagpengerRequestDTO soknad) {
-        log.info("Sender inn dagpengesoknad til Arena-forvalteren");
-        return opprettDagpenger(soknad, DAGPENGESOKNAD_PATH);
+    public DagpengerResponseDTO opprettMottaDagpengerSoknad(DagpengerRequestDTO soknad) {
+        log.info("Sender inn motta dagpengesoknad til Arena-forvalteren");
+        return opprettDagpenger(soknad, MOTTA_DAGPENGESOKNAD_PATH);
+    }
+
+    public DagpengerResponseDTO opprettMottaDagpengerVedtak(DagpengerRequestDTO vedtak) {
+        log.info("Sender inn motta dagpengevedtak til Arena-forvalteren");
+        return opprettDagpenger(vedtak, MOTTA_DAGPENGEVEDTAK_PATH);
     }
 
     public DagpengerResponseDTO opprettDagpengerVedtak(DagpengerRequestDTO vedtak) {

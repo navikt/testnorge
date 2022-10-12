@@ -1,52 +1,28 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { FormikProps } from 'formik'
 import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import {
-	OrganisasjonToogleGruppe,
 	inputValg,
+	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
 
 interface OrgnrToggleProps {
 	path: string
 	formikBag: FormikProps<{}>
 }
 
-type Virksomhet = {
-	enhetstype: string
-	orgnavn: string
-	orgnummer: string
-}
-
 export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 	const [inputType, setInputType] = useState(inputValg.fraFellesListe)
-	const [egneOrganisasjoner, setEgneOrganisasjoner] = useState([])
 
-	useEffect(() => {
-		const fetchEgneOrg = async () => {
-			const resp = await SelectOptionsOppslag.hentVirksomheterFraOrgforvalter()
-				.then((response) => {
-					if (!response || response.length === 0) {
-						return []
-					}
-					return response.map((virksomhet: Virksomhet) => ({
-						value: virksomhet.orgnummer,
-						label: `${virksomhet.orgnummer} (${virksomhet.enhetstype}) - ${virksomhet.orgnavn}`,
-					}))
-				})
-				.catch((e: Error) => {
-					return []
-				})
-			setEgneOrganisasjoner(resp)
-		}
-		fetchEgneOrg()
-	}, [])
-
-	const handleToggleChange = (event: React.ChangeEvent<any>) => {
-		setInputType(event.target.value)
+	const handleToggleChange = (value: string) => {
+		setInputType(value)
 		formikBag.setFieldValue(path, '')
+	}
+
+	const handleChangeEgne = (value: { orgnr: string }) => {
+		formikBag.setFieldValue(`${path}`, value.orgnr)
 	}
 
 	return (
@@ -55,6 +31,7 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				path={path}
 				inputType={inputType}
 				handleToggleChange={handleToggleChange}
+				style={{ margin: '5px 0 5px' }}
 			/>
 			{inputType === inputValg.fraFellesListe && (
 				<OrganisasjonMedArbeidsforholdSelect
@@ -65,11 +42,13 @@ export const OrgnrToggle = ({ path, formikBag }: OrgnrToggleProps) => {
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<FormikSelect
-					name={path}
+				<EgneOrganisasjonerConnector
+					path={path}
 					label="Arbeidsgiver (orgnr)"
-					size="xlarge"
-					options={egneOrganisasjoner}
+					formikBag={formikBag}
+					filterValidEnhetstyper={true}
+					// @ts-ignore
+					handleChange={handleChangeEgne}
 				/>
 			)}
 			{inputType === inputValg.skrivSelv && (

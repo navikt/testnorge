@@ -49,7 +49,7 @@ public abstract class FasteDataListe<T extends FasteData> {
         return liste
                 .stream()
                 .filter(item -> !other.getListe().contains(item))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public Stream<T> stream() {
@@ -63,6 +63,6 @@ public abstract class FasteDataListe<T extends FasteData> {
         return liste
                 .stream()
                 .filter(item -> Strings.isNotBlank(item.getGruppe()) && item.getGruppe().equals(gruppe))
-                .collect(Collectors.toList());
+                .toList();
     }
 }

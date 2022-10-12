@@ -7,7 +7,8 @@ metadata:
   name: dolly-dev-redis-session
   namespace: dolly
   annotations:
-    nais.io/security-does-not-matter: "true"
+    nais.io/run-as-user: "999"
+    nais.io/read-only-file-system: "false"
 spec:
   image: redis:6.2.5
   port: 6379
@@ -72,7 +73,8 @@ metadata:
   name: dolly-redis-session
   namespace: dolly
   annotations:
-    nais.io/security-does-not-matter: "true"
+    nais.io/run-as-user: "999"
+    nais.io/read-only-file-system: "false"
 spec:
   image: redis:6.2.5
   port: 6379

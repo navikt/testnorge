@@ -19,6 +19,7 @@ import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtak;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakAap;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakTiltak;
 
+import no.nav.testnav.libs.dto.personsearchservice.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -85,7 +86,7 @@ public class ArenaTiltakService {
 
     public void oppdaterTiltaksdeltakelse(
             Vedtakshistorikk historikk,
-            String personident,
+            PersonDTO person,
             String miljoe,
             List<NyttVedtakTiltak> tiltaksliste,
             NyttVedtak senesteVedtak,
@@ -95,7 +96,7 @@ public class ArenaTiltakService {
         if (nonNull(tiltaksdeltakelser) && !tiltaksdeltakelser.isEmpty()) {
             Kvalifiseringsgrupper kvalifiseringsgruppe;
             try {
-                kvalifiseringsgruppe = arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(personident, miljoe, senesteVedtak.getRettighetType(), tidligsteDato);
+                kvalifiseringsgruppe = arenaForvalterService.opprettArbeidssoekerTiltaksdeltakelse(person, miljoe, senesteVedtak.getRettighetType(), tidligsteDato);
             } catch (Exception e) {
                 historikk.setTiltaksdeltakelse(Collections.emptyList());
                 return;
@@ -105,11 +106,11 @@ public class ArenaTiltakService {
                 if (harIkkeGyldigTiltakKode(deltakelse, kvalifiseringsgruppe)) {
                     deltakelse.setTiltakKode(getGyldigTiltakKode(deltakelse, kvalifiseringsgruppe));
                 }
-                deltakelse.setFodselsnr(personident);
+                deltakelse.setFodselsnr(person.getIdent());
                 deltakelse.setTiltakYtelse("J");
             });
             tiltaksdeltakelser.forEach(deltakelse -> {
-                var tiltak = arenaForvalterService.finnTiltak(personident, miljoe, deltakelse);
+                var tiltak = arenaForvalterService.finnTiltak(person.getIdent(), miljoe, deltakelse);
 
                 if (nonNull(tiltak)) {
                     deltakelse.setTiltakId(tiltak.getTiltakId());

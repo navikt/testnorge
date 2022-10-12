@@ -1,10 +1,9 @@
-import React, { BaseSyntheticEvent } from 'react'
+import React from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import PersonListeConnector from './PersonListe/PersonListeConnector'
 import BestillingListeConnector from './BestillingListe/BestillingListeConnector'
-import { ToggleGruppe, ToggleKnapp } from '~/components/ui/toggle/Toggle'
 import { BestillingsveilederModal } from '~/components/bestillingsveileder/startModal/StartModal'
 import Icon from '~/components/ui/icon/Icon'
 import { useNavigate, useParams } from 'react-router-dom'
@@ -17,10 +16,14 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
+import ManglerTilgang from '~/pages/gruppe/ManglerTilgang/ManglerTilgang'
+import { ToggleGroup } from '@navikt/ds-react'
 
 export type GruppeProps = {
 	visning: string
 	setVisning: Function
+	sidetall: number
+	sideStoerrelse: number
 }
 
 export enum VisningType {
@@ -28,37 +31,48 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default function Gruppe({ visning, setVisning }: GruppeProps) {
+export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
-	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(Number(gruppeId))
-	const { gruppe, loading: loadingGruppe } = useGruppeById(Number(gruppeId))
+
+	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(gruppeId)
+
+	const {
+		gruppe,
+		identer,
+		loading: loadingGruppe,
+	} = useGruppeById(gruppeId, sidetall, sideStoerrelse)
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 
 	const dispatch = useDispatch()
 	const navigate = useNavigate()
 
+	const bankIdBruker = brukertype === 'BANKID'
+
 	if (loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
 
-	const byttVisning = (event: BaseSyntheticEvent) => {
-		dispatch(resetNavigering())
-		dispatch(resetPaginering())
-		setVisning(typeof event === 'string' ? event : event.target.value)
+	if (bankIdBruker && !gruppe?.erEierAvGruppe) {
+		return <ManglerTilgang />
 	}
 
-	const startBestilling = (values: {}) =>
+	const byttVisning = (value: VisningType) => {
+		dispatch(resetNavigering())
+		dispatch(resetPaginering())
+		setVisning(value)
+	}
+
+	const startBestilling = (values: Record<string, unknown>) =>
 		navigate(`/gruppe/${gruppeId}/bestilling`, { state: values })
 
 	const erLaast = gruppe.erLaast
-
 	return (
 		<div className="gruppe-container">
-			<GruppeHeaderConnector gruppeId={gruppe.id} />
+			<GruppeHeaderConnector gruppe={gruppe} />
 
 			{bestillingerById && (
 				// @ts-ignore
@@ -67,9 +81,9 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
-					{brukertype === 'AZURE' && (
+					{!bankIdBruker && (
 						<NavButton
-							type="hoved"
+							variant={'primary'}
 							onClick={visStartBestilling}
 							disabled={erLaast}
 							title={
@@ -82,7 +96,7 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 					)}
 
 					<NavButton
-						type={brukertype === 'BANKID' ? 'hoved' : 'standard'}
+						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
 							navigate(`/testnorge`, {
 								state: {
@@ -99,35 +113,33 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 
 					<div style={{ flexGrow: '2' }}></div>
 
-					<FinnPersonBestillingConnector />
+					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
-					<ToggleGruppe onChange={byttVisning} name="toggler">
-						<ToggleKnapp
-							key={visning}
+					<ToggleGroup size={'small'} value={visning} onChange={byttVisning}>
+						<ToggleGroup.Item
+							key={VisningType.VISNING_PERSONER}
 							value={VisningType.VISNING_PERSONER}
-							checked={visning === VisningType.VISNING_PERSONER}
 						>
 							<Icon
-								key={visning}
+								key={VisningType.VISNING_PERSONER}
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
 							{`Personer (${gruppe.antallIdenter})`}
-						</ToggleKnapp>
-						<ToggleKnapp
-							key={visning}
+						</ToggleGroup.Item>
+						<ToggleGroup.Item
+							key={VisningType.VISNING_BESTILLING}
 							value={VisningType.VISNING_BESTILLING}
-							checked={visning === VisningType.VISNING_BESTILLING}
 						>
 							<Icon
-								key={visning}
+								key={VisningType.VISNING_BESTILLING}
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
 							{`Bestillinger (${Object.keys(bestillingerById).length})`}
-						</ToggleKnapp>
-					</ToggleGruppe>
+						</ToggleGroup.Item>
+					</ToggleGroup>
 				</div>
 			</div>
 
@@ -140,13 +152,18 @@ export default function Gruppe({ visning, setVisning }: GruppeProps) {
 			)}
 
 			{visning === VisningType.VISNING_PERSONER && (
-				<PersonListeConnector iLaastGruppe={erLaast} brukertype={brukertype} gruppeId={gruppeId} />
+				<PersonListeConnector
+					iLaastGruppe={erLaast}
+					brukertype={brukertype}
+					gruppeInfo={gruppe}
+					identer={identer}
+				/>
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (
 				<BestillingListeConnector
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
-					gruppeId={gruppeId}
+					bestillingerById={bestillingerById}
 				/>
 			)}
 		</div>

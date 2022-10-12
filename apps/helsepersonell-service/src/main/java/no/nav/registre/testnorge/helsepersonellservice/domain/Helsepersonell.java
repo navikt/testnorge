@@ -10,15 +10,14 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor
 public class Helsepersonell {
     private final Samhandler samhandler;
-    private final CompletableFuture<Persondata> persondataFuture;
+    private final Persondata persondata;
 
     public HelsepersonellDTO toDTO() {
         try {
-            Persondata persondata = persondataFuture.get();
             return HelsepersonellDTO
                     .builder()
-                    .fnr(persondata.getFnr())
-                    .fornavn(persondata.getFornvan())
+                    .fnr(persondata.getIdent())
+                    .fornavn(persondata.getFornavn())
                     .mellomnavn(persondata.getMellomnavn())
                     .etternavn(persondata.getEtternavn())
                     .hprId(samhandler.getHprId())

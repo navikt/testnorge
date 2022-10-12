@@ -10,7 +10,7 @@ export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 	const historikkHeader = header !== '' ? header + ' historikk' : 'Historikk'
 
 	return (
-		<div className="med-historikk">
+		<div className="array-historikk">
 			{data?.length > 0 && (
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header={header} nested>
@@ -19,15 +19,13 @@ export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 				</ErrorBoundary>
 			)}
 			{historiskData?.length > 0 && (
-				<div className="med-historikk-blokk">
-					<Panel heading={historikkHeader}>
-						{historiskData.map((element, idx) => (
-							<div key={idx} className="med-historikk-content">
-								<Main idx={idx} data={element} />
-							</div>
-						))}
-					</Panel>
-				</div>
+				<Panel heading={historikkHeader}>
+					<ErrorBoundary>
+						<DollyFieldArray data={historiskData} header={header} nested>
+							{(element, idx) => <Main idx={idx} data={element} />}
+						</DollyFieldArray>
+					</ErrorBoundary>
+				</Panel>
 			)}
 		</div>
 	)

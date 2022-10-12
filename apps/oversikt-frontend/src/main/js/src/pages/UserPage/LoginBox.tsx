@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
 import { Box } from '@/components/Box'
 import styled from 'styled-components'
-import { Hovedknapp, Knapp } from 'nav-frontend-knapper'
 import Search from '@/pages/UserPage/Search'
 import BrukerService from '@/services/BrukerService'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
+import { Knapp } from '@navikt/dolly-komponenter/lib'
 // @ts-ignore
 
 const AccessTokenTextArea = styled.textarea`

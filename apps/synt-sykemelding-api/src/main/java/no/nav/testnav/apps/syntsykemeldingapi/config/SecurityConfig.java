@@ -1,27 +1,34 @@
 package no.nav.testnav.apps.syntsykemeldingapi.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 
 
-/**
- * Remove this call with AzureAd config
- */
-@Slf4j
-@Configuration
 @Order(1)
+@EnableWebSecurity
+@Configuration
+@Profile({"prod", "dev"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
-    public void configure(HttpSecurity http) throws Exception {
-        http
-                .httpBasic()
+    protected void configure(HttpSecurity http) throws Exception {
+        http.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .csrf().disable()
-                .formLogin().disable();
+                .csrf()
+                .disable()
+                .authorizeRequests()
+                .antMatchers("/api/**")
+                .fullyAuthenticated()
+                .and()
+                .oauth2ResourceServer()
+                .jwt();
     }
+
 }
+

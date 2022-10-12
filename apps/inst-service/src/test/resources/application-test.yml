@@ -1,0 +1,19 @@
+consumers:
+  testnav-inst-proxy:
+    url: http://localhost:${wiremock.server.port:0}/inst2
+    cluster: dummy
+    namespace: dummy
+    name: testnav-inst-proxy
+
+spring:
+  cloud:
+    vault:
+      enabled: false
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+TOKEN_X_CLIENT_ID: test

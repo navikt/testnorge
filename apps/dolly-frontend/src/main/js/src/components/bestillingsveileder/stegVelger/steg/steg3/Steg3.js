@@ -9,6 +9,8 @@ import { IdentVelger } from './IdentVelger'
 import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import _get from 'lodash/get'
+import { MalFormOrganisasjon } from '~/pages/organisasjoner/MalFormOrganisasjon'
 
 export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const opts = useContext(BestillingsveilederContext)
@@ -17,8 +19,17 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
 	const bankIdBruker = brukertype === 'BANKID'
 
+	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
+	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
+
+	const nyIdent = _get(formikBag.values, 'pdldata.person.nyident')
+	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
+
+	const forelderBarnRelasjon = _get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
+
 	const alleredeValgtMiljoe = () => {
-		if (bankIdBruker || (formikBag.values && formikBag.values.sykemelding)) {
+		if (bankIdBruker) {
 			return ['q1']
 		}
 		return []
@@ -30,8 +41,13 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
-		} else {
-			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (formikBag.values?.sykemelding || bankIdBruker) {
+			formikBag.setFieldValue('environments', ['q1'])
+		} else if (!formikBag.values?.environments) {
+			formikBag.setFieldValue('environments', [])
+		}
+		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
+			formikBag.setFieldValue('malBestillingNavn', undefined)
 		}
 	}, [])
 
@@ -53,7 +69,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
-			{importTestnorge && !opts.gruppe && <VelgGruppe formikBag={formikBag} />}
+			{importTestnorge && !opts.gruppe && (
+				<VelgGruppe formikBag={formikBag} title={'Hvilken gruppe vil du importere til?'} />
+			)}
 			{importTestnorge && opts.gruppe && (
 				<div className="oppsummering">
 					<div className="bestilling-detaljer">
@@ -64,8 +82,19 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 					</div>
 				</div>
 			)}
-			{!erOrganisasjon && !importTestnorge && (
-				<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+			{!erOrganisasjon &&
+				!importTestnorge &&
+				!harRelatertPersonVedSivilstand &&
+				!harEksisterendeNyIdent &&
+				!harRelatertPersonBarn && (
+					<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+				)}
+			{erOrganisasjon && (
+				<MalFormOrganisasjon
+					brukerId={brukerId}
+					formikBag={formikBag}
+					opprettetFraMal={opts?.mal?.malNavn}
+				/>
 			)}
 			{!erOrganisasjon && !importTestnorge && <OppsummeringKommentarForm formikBag={formikBag} />}
 		</div>

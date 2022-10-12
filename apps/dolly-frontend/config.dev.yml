@@ -19,7 +19,6 @@ spec:
   azure:
     application:
       enabled: true
-      # enum of {trygdeetaten.no, nav.no}
       tenant: nav.no
       replyURLs:
         - https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad
@@ -43,16 +42,16 @@ spec:
         - application: testnav-pdl-forvalter-dev
         - application: testnav-bruker-service-dev
         - application: testnav-person-search-service
+        - application: testnav-inst-service
+        - application: dolly-backend-dev
       external:
         - host: udi-stub-dev.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-testnorge-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
-        - host: dolly-backend-dev.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -84,37 +83,5 @@ spec:
       memory: 2048Mi
   image: {{ image }}
   env:
-    - name: DOLLY_BACKEND_NAME
-      value: dolly-backend-dev
-    - name: DOLLY_BACKEND_URL
-      value: https://dolly-backend-dev.dev-fss-pub.nais.io
-    - name: TPS_FORVALTERN_PROXY_NAME
-      value: tps-forvalteren-dev-proxy
-    - name: TPS_FORVALTERN_PROXY_URL
-      value: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
-    - name: POST_LOGOUT_REDIRECT_URI
-      value: https://dolly-frontend-dev.dev.intern.nav.no/login
-    - name: REDIS_HOST
-      value: dolly-dev-redis-session.dolly.svc.cluster.local
-    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_NAME
-      value: testnav-person-organisasjon-tilgang-service-dev
-    - name: TESTNAV_PERSON_ORG_TILGANG_SERVICE_URL
-      value: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
-    - name: PDL_FORVALTER_URL
-      value: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
-    - name: PDL_FORVALTER_NAME
-      value: testnav-pdl-forvalter-dev
-    - name: TESTNAV_BRUKER_SERVICE_NAME
-      value: testnav-bruker-service-dev
-    - name: TESTNAV_BRUKER_SERVICE_URL
-      value: https://testnav-bruker-service-dev.dev.intern.nav.no
-    - name: VARSLINGER_NAME
-      value: testnav-varslinger-service-dev
-    - name: VARSLINGER_URL
-      value: https://testnav-varslinger-service-dev.dev.intern.nav.no
-    - name: TESTNORGE_PROFIL_API_NAME
-      value: testnorge-profil-api-dev
-    - name: TESTNORGE_PROFIL_API_URL
-      value: https://testnorge-profil-api-dev.dev.intern.nav.no
-    - name: IDPORTEN_ISSUER_URI
-      value: https://oidc-ver2.difi.no/idporten-oidc-provider/
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev

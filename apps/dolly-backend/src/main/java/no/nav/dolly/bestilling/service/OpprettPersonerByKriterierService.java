@@ -10,6 +10,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
@@ -18,29 +19,40 @@ import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.ThreadLocalContextLifter;
+import no.nav.dolly.util.TransactionHelperService;
+import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Hooks;
+import reactor.core.publisher.Operators;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.stream.IntStream;
 
 import static java.util.Objects.nonNull;
+import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
+import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
-    private BestillingService bestillingService;
-    private ErrorStatusDecoder errorStatusDecoder;
-    private MapperFacade mapperFacade;
-    private IdentService identService;
-    private TpsfService tpsfService;
-    private ExecutorService dollyForkJoinPool;
-    private PdlDataConsumer pdlDataConsumer;
+    private final BestillingService bestillingService;
+    private final ErrorStatusDecoder errorStatusDecoder;
+    private final MapperFacade mapperFacade;
+    private final IdentService identService;
+    private final TpsfService tpsfService;
+    private final ExecutorService dollyForkJoinPool;
+    private final PdlDataConsumer pdlDataConsumer;
+    private final TransactionHelperService transactionHelperService;
 
     public OpprettPersonerByKriterierService(TpsfService tpsfService,
                                              DollyPersonCache dollyPersonCache, IdentService identService,
@@ -49,7 +61,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              CacheManager cacheManager, ObjectMapper objectMapper,
                                              List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                              ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                             PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer) {
+                                             PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
@@ -61,6 +73,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         this.tpsfService = tpsfService;
         this.dollyForkJoinPool = dollyForkJoinPool;
         this.pdlDataConsumer = pdlDataConsumer;
+        this.transactionHelperService = transactionHelperService;
     }
 
     private static BestillingProgress buildProgress(Bestilling bestilling, Testident.Master master, String error) {
@@ -77,49 +90,86 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
+        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
+        MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
+        Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
+
         var bestKriterier = getDollyBestillingRequest(bestilling);
 
         if (nonNull(bestKriterier)) {
 
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
-            dollyForkJoinPool.submit(() -> {
-                Collections.nCopies(bestilling.getAntallIdenter(), true).parallelStream()
-                        .filter(ident -> !bestillingService.isStoppet(bestilling.getId()))
-                        .forEach(ident -> {
+            var computableFuture = IntStream.range(0, bestilling.getAntallIdenter()).boxed()
+                    .map(index -> doBestilling(bestilling, bestKriterier, originator))
+                    .map(completable -> supplyAsync(completable, dollyForkJoinPool))
+                    .toList();
 
-                            BestillingProgress progress = null;
-                            try {
-                                var opprettedeIdenter = getOpprettedeIdenter(originator);
+            computableFuture
+                    .forEach(future -> {
+                        try {
+                            future.get(60, TimeUnit.SECONDS);
+                        } catch (InterruptedException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.currentThread().interrupt();
+                        } catch (ExecutionException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
+                        } catch (TimeoutException e) {
+                            log.error("Tidsavbrudd (60 s) ved opprett personer kriterier");
+                            Thread.interrupted();
+                        }
+                    });
 
-                                var dollyPerson = DollyPerson.builder()
-                                        .hovedperson(opprettedeIdenter.get(0))
-                                        .master(originator.getMaster())
-                                        .tags(bestilling.getGruppe().getTags())
-                                        .build();
-
-                                progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
-
-                                identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
-                                        originator.getMaster(), bestKriterier.getBeskrivelse());
-
-                                gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
-
-                            } catch (RuntimeException e) {
-                                progress = buildProgress(bestilling, originator.getMaster(),
-                                        errorStatusDecoder.decodeRuntimeException(e));
-
-                            } finally {
-                                oppdaterProgress(bestilling, progress);
-                            }
-                        });
-                oppdaterBestillingFerdig(bestilling);
-            });
+            doFerdig(bestilling);
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
-            oppdaterBestillingFerdig(bestilling);
+            doFerdig(bestilling);
         }
+    }
+
+    private void doFerdig(Bestilling bestilling) {
+
+        transactionHelperService.oppdaterBestillingFerdig(bestilling);
+        MDC.remove(MDC_KEY_BESTILLING);
+        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
+    }
+
+    private BestillingFuture doBestilling(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, OriginatorCommand.Originator originator) {
+
+        return () -> {
+
+            if (!bestillingService.isStoppet(bestilling.getId())) {
+
+                BestillingProgress progress = null;
+                try {
+                    var opprettedeIdenter = getOpprettedeIdenter(originator);
+
+                    var dollyPerson = DollyPerson.builder()
+                            .hovedperson(opprettedeIdenter.get(0))
+                            .master(originator.getMaster())
+                            .tags(bestilling.getGruppe().getTags())
+                            .build();
+
+                    progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
+
+                    identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
+                            originator.getMaster(), bestKriterier.getBeskrivelse());
+
+                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+
+                } catch (RuntimeException e) {
+                    progress = buildProgress(bestilling, originator.getMaster(),
+                            errorStatusDecoder.decodeRuntimeException(e));
+
+                } finally {
+                    transactionHelperService.persist(progress);
+                }
+                return progress;
+            }
+            return null;
+        };
     }
 
     private List<String> getOpprettedeIdenter(OriginatorCommand.Originator originator) {

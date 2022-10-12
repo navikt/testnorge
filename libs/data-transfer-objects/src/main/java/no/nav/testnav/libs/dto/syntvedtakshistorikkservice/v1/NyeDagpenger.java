@@ -38,4 +38,10 @@ public class NyeDagpenger {
 
     @JsonProperty
     private String avbruddBeskrivelse;
+
+    @JsonProperty
+    private String utfall;
+
+    @JsonProperty
+    private String begrunnelse;
 }

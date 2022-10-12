@@ -1,6 +1,6 @@
 import * as React from 'react'
-import { AlertStripeInfo } from 'nav-frontend-alertstriper'
 import { Bestillingsdata } from '~/components/bestillingsveileder/bestillingTypes'
+import { Alert } from '@navikt/ds-react'
 
 type BestillingInfoboksProps = {
 	bestillingsdata: Bestillingsdata
@@ -32,11 +32,11 @@ export const BestillingInfoboks = ({ bestillingsdata }: BestillingInfoboksProps)
 	) {
 		return (
 			// @ts-ignore
-			<AlertStripeInfo style={{ marginTop: 20 }}>
+			<Alert variant={'info'} style={{ marginTop: 20 }}>
 				Tilgangsstyring basert på diskresjonskode har nattlig oppdatering, slik at riktig tilgang
 				mot miljø kan verifiseres først dagen etter. Ta kontakt med Team Dolly i morgen hvis ønsket
 				tilgang mot miljø ikke samsvarer med bestillingen. <br />
-			</AlertStripeInfo>
+			</Alert>
 		)
 	}
 	return null

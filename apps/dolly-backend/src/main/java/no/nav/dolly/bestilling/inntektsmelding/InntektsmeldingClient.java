@@ -23,6 +23,8 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -41,6 +43,13 @@ public class InntektsmeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
+                        .collect(Collectors.joining(",")));
+                return;
+            }
+
             StringBuilder status = new StringBuilder();
             InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
             bestilling.getEnvironments().forEach(environment -> {
@@ -48,7 +57,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
                 inntektsmeldingRequest.setMiljoe(environment);
                 postInntektsmelding(isOpprettEndre ||
-                        !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
+                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
                         inntektsmeldingRequest, progress.getBestilling().getId(), status);
             });
 

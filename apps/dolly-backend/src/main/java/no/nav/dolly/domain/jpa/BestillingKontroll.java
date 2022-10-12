@@ -1,20 +1,21 @@
 package no.nav.dolly.domain.jpa;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
+import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
 @Getter
@@ -23,7 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BESTILLING_KONTROLL")
-public class BestillingKontroll {
+public class BestillingKontroll implements Serializable {
 
     @Id
     @GeneratedValue(generator = "bestillingKontrollIdGenerator")

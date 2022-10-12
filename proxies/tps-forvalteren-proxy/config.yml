@@ -36,8 +36,10 @@ spec:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-import-fra-tpsf-service
+          cluster: dev-gcp
+        - application: testnav-skd-service
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive

@@ -216,6 +216,7 @@ const selectOptions: SelectOptions = {
 		{ value: 'UOPPGITT', label: 'Uoppgitt' },
 		{ value: 'UGIFT', label: 'Ugift' },
 		{ value: 'GIFT', label: 'Gift' },
+		{ value: 'SAMBOER', label: 'Samboer' },
 		{ value: 'ENKE_ELLER_ENKEMANN', label: 'Enke eller enkemann' },
 		{ value: 'SKILT', label: 'Skilt' },
 		{ value: 'SEPARERT', label: 'Separert' },

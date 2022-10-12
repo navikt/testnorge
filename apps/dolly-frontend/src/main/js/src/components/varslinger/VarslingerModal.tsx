@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { isAfter, isBefore } from 'date-fns'
 import DollyModal from '~/components/ui/modal/DollyModal'
-import Stegindikator from 'nav-frontend-stegindikator'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
 import { VarslingerTekster } from './VarslingerTekster'
 import './varslingerModal.less'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { updateVarslingerBruker } from '~/ducks/varslinger'
 import { VarslingerApi } from '~/service/Api'
 import { useBoolean } from 'react-use'
-
-interface Varslinger {
-	updateVarslingerBruker: Function
-}
+import { Stepper } from '@navikt/ds-react'
+import { useDispatch } from 'react-redux'
 
 type Varsling = {
 	fom: string
@@ -19,11 +17,12 @@ type Varsling = {
 	varslingId: string
 }
 
-export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
+export const VarslingerModal = () => {
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 	const [varslinger, setVarslinger] = useState(null)
 	const [varslingerBruker, setVarslingerbruker] = useState(null)
+	const dispatch = useDispatch()
 
 	const [isLoadingVarslinger, setIsLoadingVarslinger] = useBoolean(true)
 	const [isLoadingVarslingerBruker, setIsLoadingVarslingerBruker] = useBoolean(true)
@@ -73,34 +72,26 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 
 	const submitSettVarsling = (siste: boolean) => {
 		siste ? setModalOpen(false) : setSteg(steg + 1)
-		updateVarslingerBruker(gyldigeVarslinger[steg].varslingId)
+		dispatch(updateVarslingerBruker(gyldigeVarslinger[steg].varslingId))
 	}
 
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen={modalOpen} noCloseButton={true} width="70%" overflow="auto">
 				<div className="varslinger-modal">
-					{/* 
-                //@ts-ignore */}
-					{antallVarslinger > 1 && (
-						<Stegindikator aktivtSteg={steg} steg={varslingerSteg} kompakt />
-					)}
+					{antallVarslinger > 1 && <Stepper activeStep={steg}>{varslingerSteg}</Stepper>}
 
 					<VarslingerTekster varslingId={gyldigeVarslinger[steg].varslingId} />
 
 					<div className="varslinger-buttons">
 						{steg > 0 && (
-							<NavButton
-								type="standard"
-								onClick={() => setSteg(steg - 1)}
-								style={{ float: 'left' }}
-							>
+							<NavButton onClick={() => setSteg(steg - 1)} style={{ float: 'left' }}>
 								Forrige side
 							</NavButton>
 						)}
 						{steg < antallVarslinger - 1 ? (
 							<NavButton
-								type="hoved"
+								variant={'primary'}
 								onClick={() => submitSettVarsling(false)}
 								style={{ float: 'right' }}
 							>
@@ -108,7 +99,7 @@ export const VarslingerModal = ({ updateVarslingerBruker }: Varslinger) => {
 							</NavButton>
 						) : (
 							<NavButton
-								type="hoved"
+								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}
 							>

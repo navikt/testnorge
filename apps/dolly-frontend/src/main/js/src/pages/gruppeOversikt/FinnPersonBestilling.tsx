@@ -39,6 +39,7 @@ type ResponsBestilling = {
 
 const StyledAsyncSelect = styled(AsyncSelect)`
 	width: 78%;
+	margin-top: 2px;
 `
 
 const FinnPersonBestilling = ({
@@ -52,6 +53,10 @@ const FinnPersonBestilling = ({
 	const [searchQuery, setSearchQuery] = useState(null)
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
+
+	const [tpsfIdenter, setTpsfIdenter] = useState([])
+	const [pdlfIdenter, setPdlfIdenter] = useState([])
+	const [pdlIdenter, setPdlIdenter] = useState([])
 
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
@@ -69,9 +74,42 @@ const FinnPersonBestilling = ({
 	const navigate = useNavigate()
 
 	useEffect(() => {
-		setError(null)
+		const feilmeldingIdent = feilmelding?.substring(0, 11)
+		let finnesTpsf = false
+		let finnesPdlf = false
+		let finnesPdl = false
+
+		if (feilmelding) {
+			if (tpsfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesTpsf = true
+			}
+			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdlf = true
+			}
+			if (pdlIdenter.find((element) => element.ident === feilmeldingIdent)) {
+				finnesPdl = true
+			}
+		}
+
+		let beskrivendeFeilmelding = feilmelding
+
+		if (finnesTpsf || finnesPdlf || finnesPdl) {
+			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
+			${finnesTpsf ? ' TPSF' : ''}
+			${finnesTpsf && finnesPdlf ? ', ' : ''}
+			${finnesPdlf ? 'PDLF' : ''}
+			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
+			${finnesPdl ? 'PDL' : ''}
+			, og eksisterer ikke i Dolly.`
+		}
+
+		setError(beskrivendeFeilmelding)
+	}, [feilmelding])
+
+	useEffect(() => {
+		resetFeilmelding()
 		if (!searchQuery) {
-			return null
+			return
 		}
 		soekType === SoekTypeValg.PERSON
 			? navigerTilPerson(searchQuery)
@@ -80,18 +118,19 @@ const FinnPersonBestilling = ({
 	}, [searchQuery])
 
 	useEffect(() => {
-		if (fragment) {
-			setError(null)
+		if (fragment && !feilmelding) {
+			resetFeilmelding()
 		}
 	}, [fragment])
 
 	function mapToPersoner(personList: any, personer: Array<Option>) {
-		if (!Array.isArray(personList)) {
+		const personData = personList?.value?.data
+		if (!Array.isArray(personData)) {
 			return
 		}
-		personList
+		personData
 			.filter((person: Person) => person.fornavn && person.etternavn)
-			.map((person: Person) => {
+			.forEach((person: Person) => {
 				const navn = person.mellomnavn
 					? `${person.fornavn} ${person.mellomnavn} ${person.etternavn}`
 					: `${person.fornavn} ${person.etternavn}`
@@ -121,13 +160,36 @@ const FinnPersonBestilling = ({
 		if (!tekst) {
 			return []
 		}
-		const { data: tpsfIdenter }: any = await TpsfApi.soekPersoner(tekst)
-		const { data: pdlfIdenter }: any = await PdlforvalterApi.soekPersoner(tekst)
-		const { data: pdlIdenter }: any = await PersonSearch.searchPdlFragment(tekst)
+
+		const [tpsfValues, pdlfValues, pdlValues] = (await Promise.allSettled([
+			TpsfApi.soekPersoner(tekst),
+			PdlforvalterApi.soekPersoner(tekst),
+			PersonSearch.searchPdlFragment(tekst),
+		])) as any
+
 		const personer: Array<Option> = []
-		mapToPersoner(tpsfIdenter, personer)
-		mapToPersoner(pdlfIdenter, personer)
-		mapToPersoner(pdlIdenter, personer)
+
+		if (tpsfValues?.status === 'fulfilled') {
+			mapToPersoner(tpsfValues, personer)
+			setTpsfIdenter(tpsfValues?.value?.data)
+		} else {
+			setError(tpsfValues?.reason?.message)
+		}
+
+		if (pdlfValues?.status === 'fulfilled') {
+			mapToPersoner(pdlfValues, personer)
+			setPdlfIdenter(pdlfValues?.value?.data)
+		} else {
+			setError(pdlfValues?.reason?.message)
+		}
+
+		if (pdlValues?.status === 'fulfilled') {
+			mapToPersoner(pdlValues, personer)
+			setPdlIdenter(pdlValues?.value?.data)
+		} else {
+			setError(pdlValues?.reason?.message)
+		}
+
 		return personer
 	}
 
@@ -144,7 +206,6 @@ const FinnPersonBestilling = ({
 	const handleChange = (tekst: string) => {
 		fetchOptions(tekst)
 		setFragment(tekst)
-		resetFeilmelding()
 	}
 
 	// @ts-ignore
@@ -169,9 +230,11 @@ const FinnPersonBestilling = ({
 		)
 	}
 
-	if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
-		navigate(`/gruppe/${gruppe}`, { replace: true })
-	}
+	useEffect(() => {
+		if (gruppe && !window.location.pathname.includes(`/${gruppe}`)) {
+			navigate(`/gruppe/${gruppe}`, { replace: true })
+		}
+	})
 
 	return (
 		<ErrorBoundary>
@@ -186,7 +249,6 @@ const FinnPersonBestilling = ({
 						onInputChange={handleChange}
 						components={{
 							Option: CustomOption,
-							// @ts-ignore
 							DropdownIndicator,
 						}}
 						isClearable={true}
@@ -200,10 +262,11 @@ const FinnPersonBestilling = ({
 								? 'Søk etter navn eller ident'
 								: 'Søk etter bestilling'
 						}
+						noOptionsMessage={() => 'Ingen treff'}
 					/>
 				</div>
 				{error && (
-					<div className="error-message" style={{ marginTop: '10px' }}>
+					<div className="error-message" style={{ marginTop: '10px', maxWidth: '330px' }}>
 						{error}
 					</div>
 				)}

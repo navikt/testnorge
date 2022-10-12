@@ -1,4 +1,17 @@
-﻿apiVersion: "nais.io/v1alpha1"
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-pdl-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-pdl-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnav-pdl-proxy
@@ -31,13 +44,22 @@ spec:
         - application: testnav-person-service
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
         - application: testnav-person-search-service
           cluster: dev-gcp
+        - application: testnav-synt-sykemelding-api
+          cluster: dev-gcp
+        - application: testnav-helsepersonell-service
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: pdl-testdata
+          cluster: dev-fss
+          namespace: pdl
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -60,6 +82,8 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-pdl-proxy-trygdeetaten
   ingresses:
     - "https://testnav-pdl-proxy.dev-fss-pub.nais.io"
     - "https://testnav-pdl-proxy.dev.intern.nav.no"

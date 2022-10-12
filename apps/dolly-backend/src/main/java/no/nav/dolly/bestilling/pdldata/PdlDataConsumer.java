@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataOpprettingCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
+import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -54,14 +55,14 @@ public class PdlDataConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
+    @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
     public String sendOrdre(String ident, boolean isTpsfMaster, boolean ekskluderEksternePersoner) {
 
         return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, ekskluderEksternePersoner,
                 serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_delete"})
+    @Timed(name = "providers", tags = { "operation", "pdl_delete" })
     public Mono<List<Void>> slettPdl(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -72,7 +73,7 @@ public class PdlDataConsumer {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_delete_utenom"})
+    @Timed(name = "providers", tags = { "operation", "pdl_delete_utenom" })
     public Mono<List<Void>> slettPdlUtenom(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -85,13 +86,13 @@ public class PdlDataConsumer {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
+    @Timed(name = "providers", tags = { "operation", "pdl_opprett" })
     public String opprettPdl(BestillingRequestDTO request) {
 
         return new PdlDataOpprettingCommand(webClient, request, serviceProperties.getAccessToken(tokenService)).call().block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
+    @Timed(name = "providers", tags = { "operation", "pdl_oppdater" })
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return nonNull(request.getPerson()) ?
@@ -101,22 +102,31 @@ public class PdlDataConsumer {
 
     public List<FullPersonDTO> getPersoner(List<String> identer) {
 
-        return getPersoner(identer, 0, 10);
+        return getPersoner(identer, 0, 10).collectList().block();
     }
 
-    public List<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
+    public Flux<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {
 
-        return List.of(new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
-                serviceProperties.getAccessToken(tokenService)).call().block());
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataHentCommand(webClient, identer, sidenummer, sidestoerrelse,
+                        token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_identCheck"})
+    @Timed(name = "providers", tags = { "operation", "pdl_identCheck" })
     public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
 
         return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})
+    @Timed(name = "providers", tags = { "operation", "pdl_identer_standalone" })
+    public Mono<Void> putStandalone(String ident, Boolean standalone) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new PdlDataStanaloneCommand(webClient, ident, standalone, token.getTokenValue())
+                        .call());
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_dataforvalter_alive" })
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }

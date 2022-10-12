@@ -11,7 +11,7 @@ const getOrganisasjonerForBrukerUrl = (brukerId: string) =>
 	`/testnav-organisasjon-forvalter/api/v2/organisasjoner/alle?brukerId=${brukerId}`
 
 const getOrganisasjonBestillingerUrl = (brukerId: string) =>
-	`/dolly-backend/api/v1/organisasjon/bestillingsstatus?brukerId=${brukerId}`
+	`/dolly-backend/api/v1/organisasjon/bestilling/bestillingsstatus?brukerId=${brukerId}`
 
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
@@ -31,7 +31,7 @@ export type Bestillingsstatus = {
 	stoppet: boolean
 }
 
-export const useOrganisasjonerForBruker = (brukerId: string) => {
+export const useOrganisasjonerForBruker = (brukerId: string | number) => {
 	if (!brukerId) {
 		return {
 			loading: false,
@@ -80,7 +80,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 3000 : 0 }
+		{ refreshInterval: autoRefresh ? 4000 : 0 }
 	)
 
 	const bestillingerSorted = data
@@ -95,11 +95,21 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	}
 }
 
-export const useOrganisasjonBestillingStatus = (bestillingId: number, autoRefresh = false) => {
+export const useOrganisasjonBestillingStatus = (
+	bestillingId: number | string,
+	erOrganisasjon: boolean,
+	autoRefresh = false
+) => {
+	if (!erOrganisasjon) {
+		return {
+			loading: false,
+			error: 'Bestilling er ikke org!',
+		}
+	}
 	if (!bestillingId) {
 		return {
 			loading: false,
-			error: 'bestillingId mangler!',
+			error: 'BestillingId mangler!',
 		}
 	}
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(

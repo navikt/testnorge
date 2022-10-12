@@ -24,15 +24,11 @@ spec:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: dolly-backend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend-dev
-          cluster: dev-fss
-        - application: dolly-frontend
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-fss
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
@@ -98,3 +94,4 @@ spec:
     pool: nav-dev
   envFrom:
     - secret: google-sql-testnav-organisasjon-forvalter
+    - secret: user-encryption-prod

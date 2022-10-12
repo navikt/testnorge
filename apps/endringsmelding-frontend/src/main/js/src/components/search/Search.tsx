@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 
 import styled from 'styled-components';
-import { Input as NavInput } from 'nav-frontend-skjema';
-import { Knapp as NavKnapp } from 'nav-frontend-knapper';
-import { ErrorAlert, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter';
+import { TextField as NavInput } from '@navikt/ds-react';
+import {
+  ErrorAlert,
+  Knapp,
+  SuccessAlert,
+  WarningAlert,
+  WarningAlertstripe,
+} from '@navikt/dolly-komponenter';
 import { NotFoundError } from '@navikt/dolly-lib';
 
 const Search = styled.div`
@@ -15,6 +20,10 @@ const Input = styled(NavInput)`
   width: 50%;
 `;
 
+const StyledKnapp = styled(Knapp)`
+  min-width: 150px;
+`;
+
 type Props<T> = {
   onSearch: (value: string) => Promise<T>;
   labels: {
@@ -23,6 +32,7 @@ type Props<T> = {
     onFound: string;
     onNotFound: string;
     onError: string;
+    syntIdent: string;
   };
   onChange?: (value: string) => void;
 };
@@ -35,11 +45,14 @@ const Alert = styled.div`
   padding-left: 7px;
 `;
 
-const Knapp = styled(NavKnapp)`
-  width: 25%;
-  height: 30px;
-  align-self: flex-end;
-  margin-left: 20px;
+const isSyntheticIdent = (value: string) => {
+  return value.match('[0-9]{2}[4-9]{1}[0-9]{8}');
+};
+
+const StyledWarning = styled(WarningAlertstripe)`
+  margin: 30px 0 0 15px;
+  height: 50px;
+  width: -webkit-fill-available;
 `;
 
 export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
@@ -78,9 +91,14 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           setValue(e.target.value);
         }}
       />
-      <Knapp onClick={() => _onSearch(value)} disabled={loading} spinner={loading}>
+      <StyledKnapp
+        onClick={() => _onSearch(value)}
+        disabled={loading || isSyntheticIdent(value)}
+        loading={loading}
+      >
         {labels.button}
-      </Knapp>
+      </StyledKnapp>
+      {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
         {success == undefined ? null : !success ? (
           error ? (

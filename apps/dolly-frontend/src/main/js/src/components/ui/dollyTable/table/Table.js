@@ -44,6 +44,7 @@ export default function Table({
 	onRowClick,
 	header = true,
 	visPerson,
+	hovedperson,
 	visBestilling,
 	onExpand,
 }) {
@@ -56,7 +57,12 @@ export default function Table({
 			{header && (
 				<div className={headerClass}>
 					{columns.map((cell, idx) => (
-						<Column key={idx} width={cell.width} value={getColumnHeader(cell, data)} />
+						<Column
+							key={idx}
+							width={cell.width}
+							value={getColumnHeader(cell, data)}
+							style={cell.style}
+						/>
 					))}
 					{onExpand && <Column />}
 				</div>
@@ -70,7 +76,8 @@ export default function Table({
 				const expandPerson =
 					expandComponent &&
 					visPerson &&
-					_get(expandComponent, 'props.personId') === visPerson.toString()
+					(_get(expandComponent, 'props.personId') === visPerson.toString() ||
+						_get(expandComponent, 'props.personId') === hovedperson.toString())
 				const expandBestilling =
 					expandComponent &&
 					visBestilling &&

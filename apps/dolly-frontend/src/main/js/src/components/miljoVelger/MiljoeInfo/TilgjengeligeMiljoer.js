@@ -3,11 +3,13 @@ import { useAsync } from 'react-use'
 import Formatters from '~/utils/DataFormatter'
 
 export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
-	if (!endepunkt) return false
-
 	const state = useAsync(async () => {
-		return endepunkt()
+		if (endepunkt) {
+			return endepunkt()
+		}
 	}, [endepunkt])
+
+	if (!endepunkt) return false
 
 	let message = 'Laster tilgjengelige miljøer..'
 
@@ -21,7 +23,7 @@ export default function TilgjengeligeMiljoer({ endepunkt, dollyEnvironments }) {
 }
 
 export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
-	if (utvalgteMiljoer === null) return []
+	if (!utvalgteMiljoer) return []
 	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
 
 	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,

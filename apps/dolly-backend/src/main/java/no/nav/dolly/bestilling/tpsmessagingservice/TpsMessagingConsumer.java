@@ -12,7 +12,8 @@ import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.BankkontonrUtlandDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -21,15 +22,14 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
-import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigNorskBankkonto;
+import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -44,8 +44,6 @@ public class TpsMessagingConsumer {
     private static final String EGENANSATT_URL = BASE_URL + "/egenansatt";
     private static final String TELEFONNUMMER_URL = BASE_URL + "/telefonnumre";
     private static final String ADRESSE_UTLAND_URL = BASE_URL + "/adresse-utland";
-
-    private static final Random random = new SecureRandom();
 
     private static final List<String> TELEFONTYPER_LISTE = Arrays.asList("ARBT", "HJET", "MOBI");
 
@@ -67,34 +65,22 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    public static String tilfeldigUtlandskBankkonto() {
-        var kontonummerLengde = 15;
-
-        return Stream.concat(
-            random.ints(2, 'A', 'Z')
-                    .boxed()
-                    .map(i -> Character.toString(i.intValue()))
-            ,
-            random.ints(kontonummerLengde, 0, 10)
-                    .boxed()
-                    .map(Integer::toUnsignedString)
-        ).collect(Collectors.joining());
-    }
-
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createUtenlandskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, Object body) {
+    public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, BankkontonrUtlandDTO body) {
 
-        if ((body instanceof BankkontonrUtlandDTO bankkontoUtland)
-                && (null != bankkontoUtland.getTilfeldigKontonummer())
-                && bankkontoUtland.getTilfeldigKontonummer()) {
-            body = bankkontoUtland.withKontonummer(tilfeldigUtlandskBankkonto());
+        if (nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
+            body = body.withKontonummer(tilfeldigUtlandskBankkonto(body.getLandkode()));
         }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "tps_messaging_createNorskBankkonto"})
-    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, Object body) {
+    public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
+
+        if (nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
+            body = body.withKontonummer(tilfeldigNorskBankkonto());
+        }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
     }

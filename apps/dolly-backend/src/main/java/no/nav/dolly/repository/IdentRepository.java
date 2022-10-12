@@ -26,6 +26,11 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
     @Modifying
     int deleteTestidentByIdent(String testident);
 
+    @Override // nødvendig da eksplisitt query sikrer at sletting skjer før oppretting!
+    @Modifying
+    @Query(value = "delete from Testident ti where ti.id = :id")
+    void deleteById(@Param("id") Long id);
+
     @Modifying
     int deleteTestidentByTestgruppeId(Long gruppeId);
 
@@ -41,6 +46,16 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
             "and b.bestKriterier is not null and b.bestKriterier <> '{}' " +
             "and bp.ident is not null and length(bp.ident) = 11")
     List<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe);
+
+    @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
+            "b.bestKriterier as bestkriterier from Bestilling b " +
+            "join BestillingProgress bp on bp.bestilling.id = b.id " +
+            "and bp.ident = :ident " +
+            "and b.opprettetFraId is null " +
+            "and b.opprettetFraGruppeId is null " +
+            "and b.gjenopprettetFraIdent is null " +
+            "and b.bestKriterier is not null and b.bestKriterier <> '{}' ")
+    List<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
 
     @Query("select ti from Testident ti " +
             "where ti.testgruppe.id = :gruppeId " +

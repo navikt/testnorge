@@ -21,7 +21,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 @Slf4j
 @Getter
 @Component
-//@EnableScheduling
+@EnableScheduling
 @RequiredArgsConstructor
 public class BatchController {
 
@@ -57,25 +57,26 @@ public class BatchController {
      */
     @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedOppfoelgingBatch() {
-        var identer = identService.getUtvalgteIdenterIAldersgruppe(
+        var personer = identService.getUtvalgteIdenterIAldersgruppe(
                         antallBrukere,
                         MINIMUM_ALDER,
                         MAKSIMUM_ALDER,
                         false
-                )
-                .stream().map(PersonDTO::getIdent).toList();
+                );
 
-        if (tagsService.opprettetTagsPaaIdenter(identer)) {
-            arenaForvalterService.opprettArbeidssoekereUtenVedtak(identer, miljoe);
+        if (tagsService.opprettetTagsPaaIdenterOgPartner(personer)) {
+            arenaForvalterService.opprettArbeidssoekereUtenVedtak(personer.stream().map(PersonDTO::getIdent).toList(), miljoe);
         }
     }
 
     /**
-     * PÅ VENT: kan ikke kjøre batch-kjøring før bedre dagpenger vedtak kvalitet.
-     * Denne metoden oppretter dagpengesoknad og vedtak i Arena. Metoden kjører hver natt kl 00:30.
+     * PÅ VENT: bytt fra forenklet versjon til versjon som oppretter dagpengesoknad og vedtak
+     * når synt-dagpenger har fått trent på bedre uttrekk
+     *
+     * Denne metoden oppretter dagpengevedtak i Arena. Metoden kjører hver natt kl 00:30.
      */
-//    @Scheduled(cron = "0 30 0 * * *")
+    @Scheduled(cron = "0 30 0 * * *")
     public void genererBrukereMedDagpengerBatch() {
-        arenaDagpengerService.registrerArenaBrukereMedDagpenger(antallDagpenger, miljoe);
+        arenaDagpengerService.registrerArenaBrukereMedDagpenger(antallDagpenger, miljoe, true);
     }
 }

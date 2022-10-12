@@ -6,7 +6,10 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -24,4 +27,18 @@ public class OpprettSkattegrunnlag {
     private List<KodeverknavnGrunnlag> svalbardGrunnlag;
     private String testdataEier;
     private Tjeneste tjeneste;
+
+    public List<KodeverknavnGrunnlag> getGrunnlag() {
+        if (isNull(grunnlag)) {
+            grunnlag = new ArrayList<>();
+        }
+        return grunnlag;
+    }
+
+    public List<KodeverknavnGrunnlag> getSvalbardGrunnlag() {
+        if (isNull(svalbardGrunnlag)) {
+            svalbardGrunnlag = new ArrayList<>();
+        }
+        return svalbardGrunnlag;
+    }
 }

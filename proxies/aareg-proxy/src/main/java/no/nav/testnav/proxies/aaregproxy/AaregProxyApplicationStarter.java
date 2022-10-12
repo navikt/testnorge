@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @SpringBootApplication
 public class AaregProxyApplicationStarter {
 
-    @Value("${app.modapp.uri.pattern:https://modapp-{{ENV}}.adeo.no}")
+    @Value("${app.modapp.uri.pattern:https://aareg-services-{{ENV}}.dev.intern.nav.no}")
     private String modappUriPattern;
 
     public static void main(String[] args) {
@@ -59,7 +59,7 @@ public class AaregProxyApplicationStarter {
 
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
-        Stream.of("q1", "q2", "q4", "q5", "qx")
+        Stream.of("q1", "q2", "q4", "q5")
             .forEach(env -> routes
                 .route(createRoute(env, preprodFilter))
                 .route(env, createQueryBasedRoute(env, preprodFilter))
@@ -67,7 +67,7 @@ public class AaregProxyApplicationStarter {
 
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
-        Stream.of("t0", "t1", "t2", "t3", "t4", "t5", "t13")
+        Stream.of("t0", "t1", "t2", "t3", "t4", "t5")
             .forEach(env -> routes
                 .route(createRoute(env, testFilter))
                 .route(env, createQueryBasedRoute(env, testFilter))

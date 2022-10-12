@@ -6,14 +6,31 @@ import GjenopprettConnector from '~/components/bestilling/gjenopprett/Gjenoppret
 
 import './BestillingDetaljer.less'
 import { MalModal } from '~/pages/minSide/maler/MalModal'
+import _get from 'lodash/get'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
-	const [isOpenMalModalOpen, openOpenMalModal, closeOpenMalModal] = useBoolean(false)
+	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
+
+	const sivilstand = _get(bestilling, 'bestilling.pdldata.person.sivilstand')
+	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
+	const harLevertPersoner = bestilling.antallLevert > 0
+
+	const nyIdent = _get(bestilling, 'bestilling.pdldata.person.nyident')
+	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
+
+	const forelderBarnRelasjon = _get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
+	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
+
+	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId
+
+	const gjenopprettTitle = harLevertPersoner
+		? 'Gjenopprett bestilling'
+		: 'Kan ikke gjenopprette bestilling fordi den har ingen leverte identer'
 
 	return (
 		<div className="bestilling-detaljer">
@@ -22,15 +39,24 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 			{harIdenterOpprettet && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
-						<Button onClick={openGjenopprettModal} kind="synchronize">
+						<Button
+							onClick={openGjenopprettModal}
+							kind="synchronize"
+							disabled={!harLevertPersoner}
+							title={gjenopprettTitle}
+						>
 							GJENOPPRETT
 						</Button>
 					)}
-					{!alleredeMal && (
-						<Button onClick={openOpenMalModal} kind={'maler'} className="svg-icon-blue">
-							OPPRETT NY MAL
-						</Button>
-					)}
+					{!alleredeMal &&
+						!harRelatertPersonVedSivilstand &&
+						!harEksisterendeNyIdent &&
+						!harRelatertPersonBarn &&
+						!gjenopprettingsId && (
+							<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+								OPPRETT NY MAL
+							</Button>
+						)}
 				</div>
 			)}
 
@@ -58,7 +84,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				/>
 			)}
 
-			{isOpenMalModalOpen && <MalModal id={bestilling.id} closeModal={closeOpenMalModal} />}
+			{isMalModalOpen && <MalModal id={bestilling.id} closeModal={closeMalModal} />}
 		</div>
 	)
 }

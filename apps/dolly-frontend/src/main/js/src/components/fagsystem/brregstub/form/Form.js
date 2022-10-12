@@ -5,7 +5,7 @@ import { Vis } from '~/components/bestillingsveileder/VisAttributt'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import Panel from '~/components/ui/panel/Panel'
-import { erForste, panelError } from '~/components/ui/form/formUtils'
+import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { EnheterForm } from './partials/enheterForm'
 
 export const brregAttributt = 'brregstub'
@@ -20,7 +20,7 @@ export const BrregstubForm = ({ formikBag }) => {
 				heading="Brønnøysundregistrene"
 				hasErrors={panelError(formikBag, brregAttributt)}
 				iconType="brreg"
-				startOpen={erForste(formikBag.values, [brregAttributt])}
+				startOpen={erForsteEllerTest(formikBag.values, [brregAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect

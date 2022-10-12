@@ -16,6 +16,8 @@ import {
 	initialTpsSikkerhetstiltak,
 	initialVergemaal,
 } from '~/components/fagsystem/pdlf/form/initialValues'
+import { Innflytting, Utflytting } from '~/components/fagsystem/pdlf/PdlTypes'
+import { getSisteDato } from '~/components/bestillingsveileder/utils'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -34,6 +36,34 @@ const ignoreKeysTestnorge = [
 	'tilrettelagtKommunikasjon',
 ]
 
+const innvandret = 'innvandretFraLand'
+const utvandret = 'utvandretTilLand'
+
+const getDisabledNasjonalitetField = (opts: any) => {
+	const personFoerLeggTil = opts.personFoerLeggTil
+
+	const innflytting = personFoerLeggTil?.pdlforvalter?.person?.innflytting
+	const utflytting = personFoerLeggTil?.pdlforvalter?.person?.utflytting
+
+	const antallInnflyttet = innflytting ? innflytting.length : 0
+	const antallUtflyttet = utflytting ? utflytting.length : 0
+
+	if (antallInnflyttet === 0) {
+		return antallUtflyttet > 0 ? utvandret : innvandret
+	} else if (antallUtflyttet === 0) {
+		return innvandret
+	} else {
+		const sisteInnflytting = getSisteDato(
+			innflytting.map((val: Innflytting) => new Date(val.innflyttingsdato))
+		)
+		const sisteUtflytting = getSisteDato(
+			utflytting.map((val: Utflytting) => new Date(val.utflyttingsdato))
+		)
+
+		return sisteInnflytting > sisteUtflytting ? innvandret : utvandret
+	}
+}
+
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const sm = stateModifier(PersoninformasjonPanel.initialValues)
@@ -44,6 +74,8 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const harFnr = opts.identtype === 'FNR'
 	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
+	const disabledInnUtflyttingField = leggTil ? getDisabledNasjonalitetField(opts) : ''
+
 	const getIgnoreKeys = () => {
 		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
 		if (sm.attrs.utenlandskBankkonto.checked) {
@@ -52,8 +84,12 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			ignoreKeys.push('utenlandskBankkonto')
 		}
 		if (!testnorgeIdent && !harFnr) {
-			ignoreKeys.push('utvandretTilLand')
+			ignoreKeys.push(utvandret)
 		}
+		if (!testnorgeIdent && disabledInnUtflyttingField !== '') {
+			ignoreKeys.push(disabledInnUtflyttingField)
+		}
+
 		return ignoreKeys
 	}
 
@@ -67,7 +103,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				uncheckAttributeArray={sm.batchRemove}
 				iconType={'personinformasjon'}
 			>
-				<AttributtKategori title="Diverse">
+				<AttributtKategori title="Diverse" attr={sm.attrs}>
 					<Attributt attr={sm.attrs.sprakKode} />
 					<Attributt attr={sm.attrs.egenAnsattDatoFom} />
 					<Attributt
@@ -92,18 +128,21 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 			uncheckAttributeArray={sm.batchRemove}
 			iconType={'personinformasjon'}
 		>
-			<AttributtKategori title="Alder">
+			<AttributtKategori title="Alder" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.alder} vis={!opprettFraEksisterende && !leggTil} />
 				<Attributt attr={sm.attrs.foedsel} />
 				<Attributt attr={sm.attrs.doedsdato} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Nasjonalitet">
+			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt attr={sm.attrs.innvandretFraLand} />
+				<Attributt
+					attr={sm.attrs.innvandretFraLand}
+					disabled={disabledInnUtflyttingField === innvandret}
+				/>
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!harFnr}
+					disabled={!harFnr || disabledInnUtflyttingField === utvandret}
 					title={
 						!harFnr
 							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
@@ -111,7 +150,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 					}
 				/>
 			</AttributtKategori>
-			<AttributtKategori title="Diverse">
+			<AttributtKategori title="Diverse" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.kjonn} vis={!opprettFraEksisterende} />
 				<Attributt attr={sm.attrs.navn} />
 				<Attributt attr={sm.attrs.sprakKode} />
@@ -221,7 +260,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							{
 								fraflyttingsland: '',
 								fraflyttingsstedIUtlandet: '',
-								innflyttingsdato: new Date(),
+								innflyttingsdato: null as string,
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
@@ -241,7 +280,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							{
 								tilflyttingsland: '',
 								tilflyttingsstedIUtlandet: '',
-								utflyttingsdato: new Date(),
+								utflyttingsdato: null as string,
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
@@ -379,7 +418,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				set(paths.utenlandskBankkonto, {
 					kontonummer: '',
 					tilfeldigKontonummer: false,
-					swift: '',
+					swift: 'BANKXX11222',
 					landkode: null,
 					banknavn: '',
 					iban: '',
@@ -396,6 +435,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			add: () =>
 				set(paths.norskBankkonto, {
 					kontonummer: '',
+					tilfeldigKontonummer: opts.antall && opts.antall > 1,
 				}),
 			remove: () => del(paths.norskBankkonto),
 		},
