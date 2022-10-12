@@ -54,7 +54,7 @@ public class TransaksjonMappingService {
         return transaksjonMappingRepository.findAllBySystemAndIdent(system.name(), ident)
                 .orElse(emptyList())
                 .stream()
-                .anyMatch(mapping -> miljoe.equals(mapping.getMiljoe()));
+                .anyMatch(mapping -> isNull(miljoe) || miljoe.equals(mapping.getMiljoe()));
     }
 
     public void saveAll(Collection<TransaksjonMapping> entries) {

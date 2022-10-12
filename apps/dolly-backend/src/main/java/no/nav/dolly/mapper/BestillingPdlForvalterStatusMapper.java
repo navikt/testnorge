@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
 import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.UTENLANDS_IDENTIFIKASJONSNUMMER;
@@ -26,6 +25,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FALSKID;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_UTENLANDSID;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPdlForvalterStatusMapper {
@@ -38,7 +38,7 @@ public final class BestillingPdlForvalterStatusMapper {
         Map<String, Map<String, List<String>>> msgStatusIdents = new HashMap();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getPdlforvalterStatus())) {
+            if (isNotBlank(progress.getPdlforvalterStatus())) {
                 List.of(progress.getPdlforvalterStatus().split("\\$")).forEach(
                         resolveStatus(msgStatusIdents, progress)
                 );

@@ -43,7 +43,7 @@ public class InstdataClient implements ClientRegister {
             List<String> availEnvironments = instdataConsumer.getMiljoer();
 
             List<String> environments = new ArrayList<>(List.copyOf(availEnvironments));
-            environments.retainAll(bestilling.getEnvironments());
+            environments.retainAll(bestilling.getEnvironments().isEmpty() ? environments : bestilling.getEnvironments());
 
             if (!environments.isEmpty()) {
 

@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.KONTOREGISTER;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static no.nav.dolly.util.ListUtil.listOf;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingKontoregisterStatusMapper {
@@ -25,7 +25,7 @@ public final class BestillingKontoregisterStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getKontoregisterStatus())) {
+            if (isNotBlank(progress.getKontoregisterStatus())) {
                 if (statusMap.containsKey(progress.getKontoregisterStatus())) {
                     statusMap.get(progress.getKontoregisterStatus()).add(progress.getIdent());
                 } else {

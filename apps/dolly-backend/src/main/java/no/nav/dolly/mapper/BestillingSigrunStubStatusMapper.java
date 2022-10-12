@@ -12,9 +12,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SIGRUNSTUB;
 import static no.nav.dolly.util.ListUtil.listOf;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingSigrunStubStatusMapper {
@@ -24,7 +24,7 @@ public final class BestillingSigrunStubStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (nonNull(progress.getSigrunstubStatus())) {
+            if (isNotBlank(progress.getSigrunstubStatus())) {
                 if (statusMap.containsKey(progress.getSigrunstubStatus())) {
                     statusMap.get(progress.getSigrunstubStatus()).add(progress.getIdent());
                 } else {

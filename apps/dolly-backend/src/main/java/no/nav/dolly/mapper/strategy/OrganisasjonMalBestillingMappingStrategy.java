@@ -10,8 +10,7 @@ import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
 
 @Slf4j
 @Component
@@ -27,7 +26,7 @@ public class OrganisasjonMalBestillingMappingStrategy implements MappingStrategy
                     @Override
                     public void mapAtoB(OrganisasjonBestilling bestilling, RsOrganisasjonBestilling malBestilling, MappingContext context) {
 
-                        malBestilling.setEnvironments(new ArrayList<>(List.of(bestilling.getMiljoer().split(","))));
+                        malBestilling.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         malBestilling.setOrganisasjon(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()));
                         malBestilling.setMalBestillingNavn(null);
                     }
