@@ -22,6 +22,12 @@ export const InntektsaarForm = ({ formikBag }) => {
 		verdi: '',
 	}
 
+	const handleTjenesteChange = (target, path) => {
+		formikBag.setFieldValue(`${path}.tjeneste`, target.value)
+		formikBag.setFieldValue(`${path}.grunnlag`, [])
+		formikBag.setFieldValue(`${path}.svalbardGrunnlag`, [])
+	}
+
 	return (
 		<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
 			{(path) => (
@@ -45,6 +51,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								fastfield={false}
 								isClearable={false}
 								size="large"
+								onChange={(target) => handleTjenesteChange(target, path)}
 							/>
 						</div>
 						{tjenesteErValgt(formikBag, path) && (
