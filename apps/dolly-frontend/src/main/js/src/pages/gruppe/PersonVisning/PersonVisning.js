@@ -58,16 +58,17 @@ export const PersonVisning = ({
 }) => {
 	const { gruppeId } = ident
 
-	//const { bestillingerById } = useBestillingerGruppe(gruppeId)
+	const bestillinger = ident.bestillinger ? [] : useBestillingerGruppe(gruppeId).bestillingerById
 
-	const identBestillinger = ident.bestillinger
-	const bestillingerById = []
-	identBestillinger.map((b) => {
-		bestillingerById[b.id] = b
-	})
+	if (ident.bestillinger) {
+		ident.bestillinger.map((b) => {
+			bestillinger[b.id] = b
+		})
+	}
+	console.log('bestillinger', bestillinger, ident.bestilling)
 
 	useEffect(() => {
-		fetchDataFraFagsystemer(bestillingerById)
+		fetchDataFraFagsystemer(bestillinger)
 	}, [])
 
 	const getGruppeIdenter = () => {
@@ -76,8 +77,8 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const bestillingListe = getBestillingsListe(bestillingerById, bestillingIdListe)
-	const bestilling = bestillingerById?.[bestillingIdListe?.[0]]
+	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
+	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
