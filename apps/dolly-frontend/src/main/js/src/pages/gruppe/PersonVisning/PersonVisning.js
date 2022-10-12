@@ -57,15 +57,15 @@ export const PersonVisning = ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
+	const { bestillingerById } = useBestillingerGruppe(gruppeId)
 
-	const bestillinger = ident.bestillinger ? [] : useBestillingerGruppe(gruppeId).bestillingerById
+	const bestillinger = ident.bestillinger ? [] : bestillingerById
 
 	if (ident.bestillinger) {
 		ident.bestillinger.map((b) => {
 			bestillinger[b.id] = b
 		})
 	}
-	console.log('bestillinger', bestillinger, ident.bestilling)
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillinger)
