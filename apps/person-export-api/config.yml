@@ -51,5 +51,8 @@ spec:
       external:
         - host: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: https://testnav-kodeverk-proxy.dev-fss-pub.nais.io
+        - host: slack.com
+  envFrom:
+    - secret: person-export-slack-secret
   ingresses:
     - "https://testnav-person-export-api.dev.intern.nav.no"
