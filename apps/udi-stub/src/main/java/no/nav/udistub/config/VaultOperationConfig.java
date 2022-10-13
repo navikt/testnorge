@@ -11,6 +11,7 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.core.VaultOperations;
 import org.springframework.vault.core.VaultTemplate;
+import org.springframework.vault.core.lease.SecretLeaseContainer;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -37,5 +38,11 @@ public class VaultOperationConfig {
             log.info("Vault token: {}", token);
         }
         return new VaultTemplate(VaultEndpoint.create(vaultHost, vaultPort), new TokenAuthentication(token));
+    }
+
+    @ConditionalOnMissingBean(SecretLeaseContainer.class)
+    @Bean
+    public SecretLeaseContainer secretLeaseContainer(VaultOperations vaultOperations) {
+        return new SecretLeaseContainer(vaultOperations);
     }
 }
