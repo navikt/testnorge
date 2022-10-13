@@ -5,14 +5,12 @@ import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 import { Alert } from '@navikt/ds-react'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, udistub } =
-		bestillingsdata
+	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
 	if (
 		!instdata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
 		!sykemelding &&
-		!_get(udistub, 'oppholdStatus') &&
 		!_get(pdldata, 'bostedsadresse') &&
 		!_get(pdldata, 'fullmakt') &&
 		!_get(pdldata, 'falskIdentitet') &&
@@ -69,13 +67,6 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				)}
 
 				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
-
-				{udistub && udistub.oppholdStatus && (
-					<li>
-						Oppholdsstatus i PDL: Q1, Q2 (Dersom du kun ønsker å sende oppholdsstatus til UDI-stub
-						er det ingen krav til valg av miljø.)
-					</li>
-				)}
 			</ul>
 		</Alert>
 	)
