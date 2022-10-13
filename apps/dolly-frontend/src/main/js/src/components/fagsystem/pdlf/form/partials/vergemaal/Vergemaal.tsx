@@ -22,7 +22,7 @@ export const VergemaalForm = ({ formikBag, path }: VergemaalForm) => {
 				name={`${path}.vergemaalEmbete`}
 				label="Fylkesmannsembete"
 				kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
-				size="xlarge"
+				size="large"
 			/>
 			<FormikSelect
 				name={`${path}.sakType`}

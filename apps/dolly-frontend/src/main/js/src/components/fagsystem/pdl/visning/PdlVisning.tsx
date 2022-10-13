@@ -78,8 +78,9 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 				<GeografiskTilknytning data={hentGeografiskTilknytning} />
 				<PdlNasjonalitet data={hentPerson} />
 				<Telefonnummer data={telefonnummer} erPdlVisning />
-				<Vergemaal data={vergemaalEllerFremtidsfullmakt} relasjoner={null} />
-				{/*<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />*/} //TODO hva er dette?
+				<Vergemaal data={vergemaalEllerFremtidsfullmakt} relasjoner={null} erPdlVisning />
+				<PdlVergemaal data={vergemaalEllerFremtidsfullmakt} />
+				{/*// TODO: Kan denne fjernes?*/}
 				<PdlFullmakt data={fullmakt} />
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />

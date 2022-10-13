@@ -26,14 +26,12 @@ export const Vergemaal = ({
 	data,
 	tmpPersoner,
 	ident,
-	erPdlVisning,
+	erPdlVisning = false,
 	relasjoner,
 }: VergemaalTypes) => {
 	if (!data || data.length < 1) {
 		return null
 	}
-
-	// console.log('data: ', data) //TODO - SLETT MEG
 
 	const retatertPersonIdent = data.vergeIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
@@ -45,7 +43,7 @@ export const Vergemaal = ({
 		}
 
 		return (
-			<ErrorBoundary>
+			<>
 				<div className="person-visning_redigerbar" key={idx}>
 					<TitleValue
 						title="Fylkesmannsembete"
@@ -71,7 +69,12 @@ export const Vergemaal = ({
 						value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
 					/>
 					{!relasjoner && (
-						<TitleValue title={harFullmektig ? 'Fullmektig' : 'Verge'} value={vergemaalData.vergeIdent || vergemaalData.vergeEllerFullmektig?.motpartsPersonident} />
+						<TitleValue
+							title={harFullmektig ? 'Fullmektig' : 'Verge'}
+							value={
+								vergemaalData.vergeIdent || vergemaalData.vergeEllerFullmektig?.motpartsPersonident
+							}
+						/>
 					)}
 				</div>
 				{relasjon && (
@@ -80,12 +83,11 @@ export const Vergemaal = ({
 						tittel={harFullmektig ? 'Fullmektig' : 'Verge'}
 					/>
 				)}
-			</ErrorBoundary>
+			</>
 		)
 	}
 
 	const VergemaalVisning = ({ vergemaalData, idx }) => {
-		// console.log('vergemaalData: ', vergemaalData) //TODO - SLETT MEG
 		const initVergemaal = Object.assign(_cloneDeep(initialVergemaal), data[idx])
 		const initialValues = { vergemaal: initVergemaal }
 
@@ -119,12 +121,15 @@ export const Vergemaal = ({
 	return (
 		<div>
 			<SubOverskrift label="Vergemål" iconKind="vergemaal" />
-
-			<DollyFieldArray data={data} nested>
-				{(vergemaal: VergemaalValues, idx: number) => (
-					<VergemaalVisning vergemaalData={vergemaal} idx={idx} />
-				)}
-			</DollyFieldArray>
+			<div className="person-visning_content">
+				<ErrorBoundary>
+					<DollyFieldArray data={data} nested>
+						{(vergemaal: VergemaalValues, idx: number) => (
+							<VergemaalVisning vergemaalData={vergemaal} idx={idx} />
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			</div>
 		</div>
 	)
 }

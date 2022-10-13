@@ -32,7 +32,7 @@ import {
 	oppholdsadresse,
 	vergemaal,
 } from '~/components/fagsystem/pdlf/form/validation/partials'
-import { ifPresent, validate  } from '~/utils/YupValidations'
+import { ifPresent, validate } from '~/utils/YupValidations'
 import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
 
@@ -310,15 +310,14 @@ export const VisningRedigerbar = ({
 									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
 									<Knappegruppe>
 										<NavButton
-											type="reset"
+											variant="secondary"
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
-											style={{ top: '1.75px' }}
 										>
 											Avbryt
 										</NavButton>
 										<NavButton
-											variant={'primary'}
+											variant="primary"
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

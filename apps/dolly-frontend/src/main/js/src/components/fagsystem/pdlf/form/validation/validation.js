@@ -128,7 +128,7 @@ export const validation = {
 			sivilstand: ifPresent('$pdldata.person.sivilstand', sivilstand),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),
 			navn: ifPresent('$pdldata.person.navn', Yup.array().of(navn)),
-			vergemaal: ifPresent('$pdldata.person.vergemaal', vergemaal),
+			vergemaal: ifPresent('$pdldata.person.vergemaal', Yup.array().of(vergemaal)),
 			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
 		}).nullable(),
 	}),

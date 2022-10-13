@@ -71,7 +71,12 @@ export const PdlfVisning = ({
 							tmpPersoner={tmpPdlforvalter}
 							ident={ident}
 						/>
-						<Vergemaal data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
+						<Vergemaal
+							data={data?.person?.vergemaal}
+							tmpPersoner={tmpPdlforvalter}
+							ident={ident}
+							relasjoner={data?.relasjoner}
+						/>
 						<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
 						<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 						<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />

@@ -37,7 +37,7 @@ export const PdlEksisterendePerson = ({
 	// console.log('opts: ', opts) //TODO - SLETT MEG
 
 	const { gruppeId } = useParams()
-	console.log('gruppeId: ', gruppeId) //TODO - SLETT MEG
+	// console.log('gruppeId: ', gruppeId) //TODO - SLETT MEG
 	//TODO Fortsett her!!
 
 	const isTestnorgeIdent = identFraTestnorge(opts)
@@ -84,6 +84,7 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const filterOptions = (person: Option) => {
+		// console.log('person: ', person) //TODO - SLETT MEG
 		if (harSivilstand) {
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
 		} else if (eksisterendePersonPath?.includes('vergemaal')) {
@@ -147,7 +148,7 @@ export const PdlEksisterendePerson = ({
 		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath), ['syntetisk'])
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
-
+	// console.log('identOptions: ', identOptions) //TODO - SLETT MEG
 	return (
 		<div className={'flexbox--full-width'}>
 			{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
@@ -161,8 +162,8 @@ export const PdlEksisterendePerson = ({
 				/>
 			) : (
 				!loadingIdentOptions && (
-					<Alert variant={'info'} style={{ marginBottom: '15px' }}>
-						Det finnes ingen eksisterende personer i denne gruppen.
+					<Alert variant="info" size="small" style={{ marginBottom: '15px' }}>
+						Det finnes ingen eksisterende gyldige personer i denne gruppen.
 					</Alert>
 				)
 			)}
