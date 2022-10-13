@@ -21,6 +21,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   cloud:
     vault:
+      host: vault.adeo.no
+      port: 443
       database:
         backend: postgresql/preprod-fss
         enabled: true

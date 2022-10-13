@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: UDI-stub
+    name: Testnav-UDI-stub
     version: 1.1
     description: Stub av persontjenesten til UDI
   datasource:
@@ -18,7 +18,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-fss:dolly:udi-stub
+          accepted-audience: dev-fss:dolly:testnav-udi-stub
 
 management:
   endpoints:
