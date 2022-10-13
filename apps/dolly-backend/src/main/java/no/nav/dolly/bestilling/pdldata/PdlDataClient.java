@@ -10,7 +10,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
 
@@ -44,7 +43,7 @@ public class PdlDataClient implements ClientRegister {
                         isTrue(bestilling.getEkskluderEksternePersoner())));
             }
 
-        } catch (WebClientResponseException e) {
+        } catch (RuntimeException e) {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
         }
