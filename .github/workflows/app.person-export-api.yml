@@ -23,7 +23,7 @@ jobs:
       app-name: 'person-export-api'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
+  deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
@@ -31,6 +31,6 @@ jobs:
     with:
       resource: 'apps/person-export-api/config.yml'
       app-name: 'person-export-api'
-      cluster: 'dev-fss'
+      cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
