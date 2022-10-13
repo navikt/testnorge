@@ -53,6 +53,6 @@ spec:
         - host: https://testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: slack.com
   envFrom:
-    - secret: person-export-slack-secret
+    - secret: testnav-person-export-api-slack-secret
   ingresses:
     - "https://testnav-person-export-api.dev.intern.nav.no"
