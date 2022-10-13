@@ -4,11 +4,11 @@ title: Person Export API
 parent: Applikasjoner
 ---
 
-# testnorge-person-export-api
+# testnav-person-export-api
 Api for å eksportere personer.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnorge-person-export-api.dev.adeo.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-person-export-api.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør PersonExportApiApplicationStarter med følgende argumenter:

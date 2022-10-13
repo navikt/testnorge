@@ -28,7 +28,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnorge-person-export-api
+          accepted-audience: dev-gcp:dolly:testnav-person-export-api
 
 management:
   endpoints:
