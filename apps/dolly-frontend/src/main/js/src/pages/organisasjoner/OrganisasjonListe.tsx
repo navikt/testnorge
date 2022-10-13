@@ -12,6 +12,7 @@ import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 import Loading from '~/components/ui/loading/Loading'
 import _isEmpty from 'lodash/isEmpty'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
 type OrganisasjonListeProps = {
 	bestillinger: Array<EnhetBestilling>
@@ -33,6 +34,10 @@ export default function OrganisasjonListe({
 	setAntallOrg,
 	sidetall,
 }: OrganisasjonListeProps) {
+	const {
+		currentBruker: { brukerId },
+	} = useCurrentBruker()
+
 	const sokSelectorOrg = (
 		items: {
 			organisasjonsnavn: string
@@ -113,11 +118,7 @@ export default function OrganisasjonListe({
 		})
 	}
 
-	const { organisasjoner, loading } = useOrganisasjoner(
-		bestillinger
-			?.filter((org) => org.ferdig && org.organisasjonNummer !== 'NA')
-			?.map((org) => org.organisasjonNummer)
-	)
+	const { organisasjoner, loading } = useOrganisasjoner(brukerId)
 
 	const [filtrertOrgListe, setfiltrertOrgListe] = useState([])
 
