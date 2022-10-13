@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import no.nav.testnav.apps.personexportapi.consumer.dto.PersonStatusMapper;
-import no.nav.testnav.apps.personexportapi.consumer.kodeverk.KodeverkConsumer;
+import no.nav.testnav.apps.personexportapi.consumer.KodeverkConsumer;
 import no.nav.testnav.apps.personexportapi.domain.Person;
 import org.springframework.stereotype.Service;
 

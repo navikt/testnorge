@@ -1,34 +1,40 @@
 package no.nav.testnav.apps.personexportapi.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personexportapi.consumer.dto.GruppeDTO;
-import no.nav.testnav.apps.personexportapi.util.WebClientFilter;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
+import static no.nav.testnav.apps.personexportapi.consumer.command.GetKodeverkCommand.getMessage;
+
+@Slf4j
 @RequiredArgsConstructor
-public class GetTpsfGrupperCommand implements Callable<List<GruppeDTO>> {
+public class GetTpsfGrupperCommand implements Callable<Mono<List<GruppeDTO>>> {
+    private static final ParameterizedTypeReference<List<GruppeDTO>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final WebClient webClient;
-    private final String username;
-    private final String password;
+    private final String token;
 
     @Override
-    public List<GruppeDTO> call() {
-        GruppeDTO[] response = webClient
+    public Mono<List<GruppeDTO>> call() {
+        return webClient
                 .get()
-                .uri("/api/v1/endringsmelding/skd/grupper")
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .uri(builder -> builder
+                        .path("/api/v1/endringsmelding/skd/grupper")
+                        .build()
+                )
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToMono(GruppeDTO[].class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
-        return Arrays.stream(response).collect(Collectors.toList());
+                .bodyToMono(RESPONSE_TYPE)
+                .onErrorResume(throwable -> {
+                    log.error("Feil i henting av tpsf grupper: " + getMessage(throwable));
+                    return Mono.just(Collections.emptyList());
+                });
     }
 }

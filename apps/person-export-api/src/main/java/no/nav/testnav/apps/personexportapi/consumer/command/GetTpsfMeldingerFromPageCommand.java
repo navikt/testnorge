@@ -1,39 +1,43 @@
 package no.nav.testnav.apps.personexportapi.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personexportapi.consumer.dto.EndringsmeldingDTO;
-import no.nav.testnav.apps.personexportapi.util.WebClientFilter;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Mono;
 
-import java.time.Duration;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
+import static no.nav.testnav.apps.personexportapi.consumer.command.GetKodeverkCommand.getMessage;
+
+@Slf4j
 @RequiredArgsConstructor
-public class GetTpsfMeldingerFromPageCommand implements Callable<List<EndringsmeldingDTO>> {
+public class GetTpsfMeldingerFromPageCommand implements Callable<Mono<List<EndringsmeldingDTO>>> {
+
+    private static final ParameterizedTypeReference<List<EndringsmeldingDTO>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
+    };
     private final WebClient webClient;
-    private final String username;
-    private final String password;
+    private final String token;
     private final String avspillingsgruppe;
     private final int pageNumber;
 
     @Override
-    public List<EndringsmeldingDTO> call() {
-        var array = webClient
+    public Mono<List<EndringsmeldingDTO>> call() {
+        return webClient
                 .get()
                 .uri(builder -> builder
                         .path("/api/v1/endringsmelding/skd/gruppe/meldinger/{avspillingsgruppe}/{pageNumber}")
                         .build(avspillingsgruppe, pageNumber)
                 )
-                .headers(httpHeaders -> httpHeaders.setBasicAuth(username, password))
+                .header("Authorization", "Bearer " + token)
                 .retrieve()
-                .bodyToMono(EndringsmeldingDTO[].class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
-        return Arrays.stream(array).collect(Collectors.toList());
+                .bodyToMono(RESPONSE_TYPE)
+                .onErrorResume(throwable -> {
+                    log.error("Feil i henting av tpsf mledinger: " + getMessage(throwable));
+                    return Mono.just(Collections.emptyList());
+                });
     }
 }

@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.personexportapi.consumer.kodeverk;
+package no.nav.testnav.apps.personexportapi.consumer.response;
 
 import static java.util.Objects.isNull;
 

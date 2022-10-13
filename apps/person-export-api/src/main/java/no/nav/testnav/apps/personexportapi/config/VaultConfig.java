@@ -12,7 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Profile("dev")
 @VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "kv/preprod/fss/testnorge-person-export-api/dev", ignoreSecretNotFound = false)
-public class DevVaultConfig extends AbstractVaultConfiguration {
+public class VaultConfig extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -23,7 +23,7 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
     public ClientAuthentication clientAuthentication() {
         var token = System.getProperty("spring.cloud.vault.token");
         if (token == null) {
-            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkrevd property 'spring.cloud.vault.token' er ikke satt.");
         }
         return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
     }

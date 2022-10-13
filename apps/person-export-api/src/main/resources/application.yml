@@ -2,21 +2,25 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 consumers:
   tps-forvalter:
-    url: https://tps-forvalteren.dev.adeo.no
-    password: ${TPSF_PASSWORD}
-    username: ${TPSF_USERNAME}
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: tps-forvalteren-proxy
     threads: 5
   slack:
     token: ${SLACK_TOKEN}
     channel: ${SLACK_CHANNEL}
     baseUrl: https://slack.com
   kodeverk:
-    url: https://kodeverk.dev.adeo.no
+    url: https://testnav-kodeverk-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-kodeverk-proxy
 
 spring:
   application:
     version: application.version.todo //TODO Finn ut hvordan denne kan settes fra gradle
-    name: person-export-api
+    name: testnav-person-export-api
     description: Api for å eksportere personer.
   security:
     oauth2:

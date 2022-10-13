@@ -3,8 +3,11 @@ package no.nav.testnav.apps.personexportapi.consumer;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personexportapi.consumer.command.GetTpsfGrupperCommand;
 import no.nav.testnav.apps.personexportapi.consumer.command.GetTpsfMeldingerFromPageCommand;
+import no.nav.testnav.apps.personexportapi.consumer.credential.TpsfProperties;
 import no.nav.testnav.apps.personexportapi.consumer.dto.GruppeDTO;
 import no.nav.testnav.apps.personexportapi.domain.Person;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -29,21 +32,20 @@ import static java.lang.String.format;
 @Component
 public class TpsfConsumer {
     private final WebClient webClient;
-    private final String username;
-    private final String password;
+    private final TokenExchange tokenExchange;
+    private final ServerProperties properties;
     private final ExecutorService executorService;
 
     public TpsfConsumer(
-            @Value("${consumers.tps-forvalter.username}") String username,
-            @Value("${consumers.tps-forvalter.password}") String password,
-            @Value("${consumers.tps-forvalter.url}") String baseUrl,
+            TokenExchange tokenExchange,
+            TpsfProperties serviceProperties,
             @Value("${consumers.tps-forvalter.threads}") Integer threads,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
-        this.username = username;
-        this.password = password;
+        this.tokenExchange = tokenExchange;
+        this.properties = serviceProperties;
         this.webClient = WebClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl(properties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
         this.executorService = Executors.newFixedThreadPool(threads);
@@ -51,8 +53,12 @@ public class TpsfConsumer {
 
     private GruppeDTO getGruppe(String avspillingsgruppe) {
         log.info("Henter avspillingsgruppe med id {}...", avspillingsgruppe);
-        List<GruppeDTO> list = new GetTpsfGrupperCommand(webClient, username, password).call();
-        GruppeDTO gruppeDTO = list.stream()
+
+        var list = tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new GetTpsfGrupperCommand(webClient, accessToken.getTokenValue()).call())
+                .block();
+
+        var gruppeDTO = list.stream()
                 .filter(value -> value.getId().equals(avspillingsgruppe))
                 .findFirst()
                 .orElseThrow(() -> new HttpClientErrorException(HttpStatus.NOT_FOUND, "Finner ikke gruppe med avspillergruppeId " + avspillingsgruppe));
@@ -68,7 +74,10 @@ public class TpsfConsumer {
 
     private CompletableFuture<List<Person>> getPersonFromPage(String avspillingsgruppe, int page, int numberOfPages) {
         return CompletableFuture.supplyAsync(
-                () -> new GetTpsfMeldingerFromPageCommand(webClient, username, password, avspillingsgruppe, page).call(),
+                () -> tokenExchange.exchange(properties)
+                        .flatMap(accessToken -> new GetTpsfMeldingerFromPageCommand(
+                                webClient, accessToken.getTokenValue(), avspillingsgruppe, page).call())
+                        .block(),
                 executorService
         ).thenApply(meldinger -> {
             log.info("Har hentet {}/{} sider fra avspillingsgruppeID {}", page + 1, numberOfPages, avspillingsgruppe);
