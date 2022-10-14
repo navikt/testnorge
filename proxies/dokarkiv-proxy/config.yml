@@ -18,7 +18,9 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
-  nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{ image }}
   port: 8080
