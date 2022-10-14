@@ -18,6 +18,7 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
   image: {{ image }}
   port: 8080
