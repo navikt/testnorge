@@ -19,6 +19,7 @@ import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
 import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
+import { Alert } from '@navikt/ds-react'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -274,6 +275,13 @@ export const VisningRedigerbarPersondetaljer = ({
 						<Icon size={50} kind="report-problem-circle" />
 						<h1>Sletting</h1>
 						<h4>Hvilke opplysninger ønsker du å slette?</h4>
+						{slettAttr.skjerming === true && (
+							<Alert variant={'info'}>
+								Sletting av skjerming sletter all data på person i skjermingregisteret. Hvis du
+								heller ønsker å avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en
+								sluttdato for skjermingen.
+							</Alert>
+						)}
 						<div className="flexbox--flex-wrap">
 							{harNavn && (
 								<SlettCheckbox
