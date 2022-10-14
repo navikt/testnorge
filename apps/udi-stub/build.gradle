@@ -52,7 +52,9 @@ repositories {
 }
 dependencies {
 
-    implementation 'no.nav.testnav.libs:security-core'
+//    implementation 'org.springframework.boot:spring-boot-test'
+
+//    implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:database'
@@ -63,6 +65,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
@@ -92,6 +95,7 @@ dependencies {
     implementation 'wsdl4j:wsdl4j:1.6.3'
 
     testImplementation 'javax.inject:javax.inject:1'
+    testImplementation 'com.h2database:h2'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5
 
