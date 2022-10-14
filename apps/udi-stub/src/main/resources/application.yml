@@ -11,6 +11,9 @@ spring:
   security:
     oauth2:
       resourceserver:
+        jwt:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.secret}
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
@@ -19,6 +22,14 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-fss:dolly:testnav-udi-stub
+  cloud:
+    vault:
+      host: vault.adeo.no
+      port: 443
+      database:
+        enabled: true
+      kv:
+        enabled: false
 
 management:
   endpoints:
