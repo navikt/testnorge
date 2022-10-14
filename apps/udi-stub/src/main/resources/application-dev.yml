@@ -4,10 +4,7 @@ azure.app.client.secret: ${client_secret}
 spring:
   application:
     name: testnav-udi-stub-dev
-  flyway:
-    enabled: true
-    locations: classpath:db/migration
-    baseline-on-migrate: true
+
   datasource:
     url: jdbc:postgresql://b27dbvl023.preprod.local:5432/udi-stub-dev
     hikari:

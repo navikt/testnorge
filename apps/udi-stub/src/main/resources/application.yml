@@ -8,6 +8,10 @@ spring:
   datasource:
     testOnBorrow: true
     validationQuery: select 1
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   security:
     oauth2:
       resourceserver:
