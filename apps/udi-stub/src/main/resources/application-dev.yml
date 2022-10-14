@@ -24,9 +24,9 @@ spring:
   security:
     oauth2:
       resourceserver:
-        jwt:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          accepted-audience: ${client_id}, api://${client_secret}
+#        jwt:
+#          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+#          accepted-audience: ${client_id}, api://${client_secret}
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
