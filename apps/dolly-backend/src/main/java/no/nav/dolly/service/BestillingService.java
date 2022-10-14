@@ -110,9 +110,14 @@ public class BestillingService {
         }
     }
 
-    public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId) {
+    public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId, Integer page, Integer pageSize) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
+        if (page == null || pageSize == null) {
+            return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
+        }
+        return testgruppe.isPresent()
+                ? testgruppe.get().getBestillinger().stream().skip(page * pageSize).limit(pageSize).collect(toSet())
+                : emptySet();
     }
 
     public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {

@@ -75,8 +75,10 @@ public class BestillingController {
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
-    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
+    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
+                                                    @RequestParam(value = "page", required = false) Integer page,
+                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize) {
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId, page, pageSize), RsBestillingStatus.class);
     }
 
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
