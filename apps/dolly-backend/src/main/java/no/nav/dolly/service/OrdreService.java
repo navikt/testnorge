@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -12,6 +13,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper;
+import no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper;
 import no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper;
 import no.nav.dolly.repository.IdentRepository;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class OrdreService {
     private final IdentRepository identRepository;
     private final PdlDataConsumer pdlDataConsumer;
     private final TpsMessagingClient tpsMessagingClient;
+    private final PensjonforvalterClient pensjonforvalterClient;
     private final ExecutorService dollyForkJoinPool;
     private final ObjectMapper objectMapper;
 
@@ -61,7 +64,10 @@ public class OrdreService {
         List.of(CompletableFuture.supplyAsync(
                                 () -> pdlDataConsumer.sendOrdre(ident, testident.isTpsf(), false), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
-                                () -> sendTpsMessaging(ident, progress), dollyForkJoinPool))
+                                () -> sendTpsMessaging(ident, progress), dollyForkJoinPool),
+                        CompletableFuture.supplyAsync(
+                                () -> sendPensjonPersoninfo(ident, progress), dollyForkJoinPool)
+                        )
                 .forEach(future -> {
                     try {
                         var resultat = future.get(1, TimeUnit.MINUTES);
@@ -77,7 +83,8 @@ public class OrdreService {
 
         return RsOrdreStatus.builder()
                 .status(Stream.of(getStatus(BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap(List.of(progress), objectMapper)),
-                                getStatus(BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(List.of(progress))))
+                                getStatus(BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(List.of(progress))),
+                                getStatus(BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap(List.of(progress))))
                         .filter(Objects::nonNull)
                         .toList())
                 .build();
@@ -93,5 +100,17 @@ public class OrdreService {
                 progress, false);
 
         return progress.getTpsMessagingStatus();
+    }
+
+    private String sendPensjonPersoninfo(String ident, BestillingProgress progress) {
+
+        pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(),
+                DollyPerson.builder()
+                        .hovedperson(ident)
+                        .master(progress.getMaster())
+                        .build(),
+                progress, false);
+
+        return progress.getPensjonforvalterStatus();
     }
 }
