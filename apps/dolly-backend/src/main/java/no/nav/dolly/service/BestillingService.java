@@ -33,6 +33,8 @@ import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,6 +136,20 @@ public class BestillingService {
     public Optional<Integer> getPaginertBestillingIndex(Long bestillingId, Long gruppeId) {
 
         return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
+    }
+
+    public Page<Bestilling> getBestillingerFromGruppePaginert(Long gruppeId, Integer page, Integer pageSize) {
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
+        if (!testgruppe.isPresent()) {
+            return Page.empty();
+        }
+        return getBestillingerFromGruppePaginert(testgruppe.get(), page, pageSize);
+    }
+
+    public Page<Bestilling> getBestillingerFromGruppePaginert(Testgruppe gruppe, Integer pageNo, Integer pageSize) {
+
+        return bestillingRepository
+                .getBestillingerFromGruppe(gruppe, PageRequest.of(pageNo, pageSize));
     }
 
     @Transactional

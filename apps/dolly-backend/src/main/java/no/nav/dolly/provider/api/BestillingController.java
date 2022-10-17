@@ -78,7 +78,12 @@ public class BestillingController {
     public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
                                                     @RequestParam(value = "page", required = false) Integer page,
                                                     @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId, page, pageSize), RsBestillingStatus.class);
+        //return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId, page, pageSize), RsBestillingStatus.class);
+        var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
+        if (!bestillinger.isEmpty()) {
+            return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
+        }
+        return mapperFacade.mapAsList(emptyList(), RsBestillingStatus.class);
     }
 
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")

@@ -73,7 +73,7 @@ public class TestgruppeService {
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
 
-        var bestillingerPage = identService.getBestillingerFromGruppePaginert(testgruppe, 0, 1);
+        var bestillingerPage = bestillingService.getBestillingerFromGruppePaginert(testgruppe, 0, 1);
         rsTestgruppe.setAntallBestillinger(bestillingerPage.getTotalElements());
         return rsTestgruppe;
     }

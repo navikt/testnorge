@@ -120,12 +120,6 @@ public class IdentService {
                 .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
     }
 
-    public Page<GruppeBestillingIdent> getBestillingerFromGruppePaginert(Testgruppe gruppe, Integer pageNo, Integer pageSize) {
-
-        return identRepository
-                .getBestillingerFromGruppe(gruppe, PageRequest.of(pageNo, pageSize));
-    }
-
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {
 
         return identRepository.getPaginertTestidentIndex(ident, gruppeId);
