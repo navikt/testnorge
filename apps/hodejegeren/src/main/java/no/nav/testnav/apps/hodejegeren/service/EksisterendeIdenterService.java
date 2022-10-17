@@ -64,7 +64,7 @@ public class EksisterendeIdenterService {
     private final TpsStatusQuoService tpsStatusQuoService;
     private final CacheService cacheService;
     private final TpsfFiltreringService tpsfFiltreringService;
-    private final Random rand;
+    private final Random rand = new Random();
 
     public Flux<String> hentLevendeIdenter(
             Long gruppeId,
