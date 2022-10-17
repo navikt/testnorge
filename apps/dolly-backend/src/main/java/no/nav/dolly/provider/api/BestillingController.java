@@ -33,6 +33,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -79,6 +80,12 @@ public class BestillingController {
                                                     @RequestParam(value = "page", required = false) Integer page,
                                                     @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         //return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId, page, pageSize), RsBestillingStatus.class);
+        if (isNull(page)) {
+            page = 0;
+        }
+        if (isNull(pageSize)) {
+            pageSize = 10;
+        }
         var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
         if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
             return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
