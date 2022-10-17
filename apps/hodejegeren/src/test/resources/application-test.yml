@@ -1,7 +1,3 @@
-testnorges.ida.credential.tpsf:
-  username: dummy
-  password: dummy
-
 consumers:
   tpsf-proxy:
     name: tps-forvalteren-proxy
