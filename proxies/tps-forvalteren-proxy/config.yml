@@ -41,6 +41,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-skd-service
           cluster: dev-gcp
+        - application: testnav-person-export-api
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
