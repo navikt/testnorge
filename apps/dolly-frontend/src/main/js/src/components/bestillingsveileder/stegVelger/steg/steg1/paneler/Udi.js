@@ -29,9 +29,9 @@ export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
 				<Attributt attr={sm.attrs.hjemmel} />
 			</AttributtKategori>
 
-			<AttributtKategori title="Alias" attr={sm.attrs}>
-				<Attributt disabled={testnorgeIdent} attr={sm.attrs.aliaser} />
-			</AttributtKategori>
+			{/*<AttributtKategori title="Alias" attr={sm.attrs}>*/}
+			{/*	<Attributt disabled={testnorgeIdent} attr={sm.attrs.aliaser} />*/}
+			{/*</AttributtKategori>*/}
 
 			<AttributtKategori title="Annet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.flyktning} />
