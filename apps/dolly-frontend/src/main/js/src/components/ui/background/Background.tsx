@@ -24,24 +24,29 @@ import '~/flowers.scss'
 import { useWeatherFyrstikkAlleen } from '~/utils/hooks/useWeather'
 import { round } from 'lodash'
 
+const month = new Date().getMonth()
+const day = new Date().getDate()
+const weekDay = new Date().getDay()
+
+const isHalloween = (month === 9 && day > 14) || (month === 10 && day === 0)
+const isWinter = month === 0 || month === 1
+const isChristmas = month === 11
+
 const DefaultBackground = styled.div`
 	background-image: url(data:image/svg+xml;base64,${() => {
-		const month = new Date().getMonth()
-		const day = new Date().getDate()
-		const weekDay = new Date().getDay()
 		if (month >= 2 && month <= 4) {
 			return btoa(Spring)
 		} else if (month >= 5 && month <= 7) {
 			return btoa(Sommer)
-		} else if ((month === 9 && day > 14) || (month === 10 && day === 0)) {
+		} else if (isHalloween) {
 			return btoa(Halloween)
 		} else if (month === 8 && day > 23 && weekDay === 4) {
 			return btoa(Faarikaal)
 		} else if (month >= 8 && month <= 10) {
 			return btoa(Fall)
-		} else if (month === 0 || month === 1) {
+		} else if (isWinter) {
 			return btoa(Winter)
-		} else if (month === 11) {
+		} else if (isChristmas) {
 			return btoa(Christmas)
 		}
 		return btoa(Default)
@@ -49,7 +54,14 @@ const DefaultBackground = styled.div`
 	background-size: 100%;
 	background-repeat: no-repeat;
 	background-position: center bottom;
-	background-color: rgb(204, 228, 238);
+	background-color: ${() => {
+		if (isHalloween) {
+			return '#c0b2d2'
+		} else if (isWinter || isChristmas) {
+			return '#005077'
+		}
+		return '#cce4ee'
+	}};
 `
 
 const PaaskeBackground = styled.div`
