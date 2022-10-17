@@ -15,7 +15,7 @@ import { AdresseKodeverk } from '~/config/kodeverk'
 import { initialKontaktadresse } from '~/components/fagsystem/pdlf/form/initialValues'
 import _cloneDeep from 'lodash/cloneDeep'
 import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import Formatters from '~/utils/DataFormatter'
 
 type KontaktadresseTypes = {

@@ -1,5 +1,5 @@
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
-import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
+import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/PdlfVisning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'

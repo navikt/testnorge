@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
-import { VisningRedigerbar } from '~/components/fagsystem/pdlf/visning/VisningRedigerbar'
 import { Dispatch } from 'redux'
 import { actions } from '~/ducks/redigertePersoner'
+import { VisningRedigerbarSamlet } from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamlet'
 
 const mapDispatchToProps = (dispatch: Dispatch, ownProps: any) => {
 	return {
@@ -9,4 +9,4 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: any) => {
 	}
 }
 
-export default connect(null, mapDispatchToProps)(VisningRedigerbar)
+export default connect(null, mapDispatchToProps)(VisningRedigerbarSamlet)

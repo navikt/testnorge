@@ -8,7 +8,7 @@ import { DoedsfallData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
 import _cloneDeep from 'lodash/cloneDeep'
 import { initialDoedsfall, initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type DoedsfallTypes = {
 	data: Array<DoedsfallData>
