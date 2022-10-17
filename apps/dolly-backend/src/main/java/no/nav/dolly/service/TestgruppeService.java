@@ -67,11 +67,14 @@ public class TestgruppeService {
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize) {
 
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
-        var testidentPage = identService.getBestillingerFromGruppePaginert(gruppeId, pageNo, pageSize);
-
+        var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize);
         testgruppe.setTestidenter(testidentPage.toList());
+
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
+
+        var bestillingerPage = identService.getBestillingerFromGruppePaginert(testgruppe, 0, 1);
+        rsTestgruppe.setAntallBestillinger(bestillingerPage.getTotalElements());
         return rsTestgruppe;
     }
 

@@ -60,9 +60,9 @@ public class BestillingControllerTest {
         when(mapperFacade.mapAsList(anySet(), eq(RsBestillingStatus.class)))
                 .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
-        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID).get(0);
+        RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID, 0, 10).get(0);
 
-        verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID);
+        verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID, 0, 10);
         verify(mapperFacade).mapAsList(anySet(), eq(RsBestillingStatus.class));
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
