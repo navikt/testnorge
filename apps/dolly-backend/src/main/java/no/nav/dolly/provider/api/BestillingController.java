@@ -77,15 +77,8 @@ public class BestillingController {
     @GetMapping("/gruppe/{gruppeId}")
     @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
     public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
-                                                    @RequestParam(value = "page", required = false) Integer page,
-                                                    @RequestParam(value = "pageSize", required = false) Integer pageSize) {
-        //return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId, page, pageSize), RsBestillingStatus.class);
-        if (isNull(page)) {
-            page = 0;
-        }
-        if (isNull(pageSize)) {
-            pageSize = 10;
-        }
+                                                    @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                    @RequestParam(value = "pageSize", required = false, defaultValue = "2000") Integer pageSize) {
         var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
         if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
             return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
