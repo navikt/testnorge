@@ -80,7 +80,7 @@ public class BestillingController {
                                                     @RequestParam(value = "pageSize", required = false) Integer pageSize) {
         //return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId, page, pageSize), RsBestillingStatus.class);
         var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
-        if (!bestillinger.isEmpty()) {
+        if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
             return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
         }
         return mapperFacade.mapAsList(emptyList(), RsBestillingStatus.class);

@@ -16,9 +16,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anySet;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,13 +55,13 @@ public class BestillingControllerTest {
 
     @Test
     public void getBestillingerOk() {
-        when(mapperFacade.mapAsList(anySet(), eq(RsBestillingStatus.class)))
+        when(mapperFacade.mapAsList(anyList(), eq(RsBestillingStatus.class)))
                 .thenReturn(singletonList(RsBestillingStatus.builder().id(BESTILLING_ID).build()));
 
         RsBestillingStatus bestilling = bestillingController.getBestillinger(GRUPPE_ID, 0, 10).get(0);
 
-        verify(bestillingService).fetchBestillingerByGruppeId(GRUPPE_ID, 0, 10);
-        verify(mapperFacade).mapAsList(anySet(), eq(RsBestillingStatus.class));
+        verify(bestillingService).getBestillingerFromGruppePaginert(GRUPPE_ID, 0, 10);
+        verify(mapperFacade).mapAsList(anyList(), eq(RsBestillingStatus.class));
 
         assertThat(bestilling.getId(), is(equalTo(BESTILLING_ID)));
     }
