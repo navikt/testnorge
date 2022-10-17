@@ -82,18 +82,18 @@ UdiPanel.initialValues = ({ set, setMulti, del, has }) => ({
 			}),
 		remove: () => del('udistub.arbeidsadgang.hjemmel'),
 	},
-	aliaser: {
-		label: 'Har aliaser',
-		checked: has('udistub.aliaser'),
-		add: () =>
-			set('udistub.aliaser', [
-				{
-					identtype: null,
-					nyIdent: false,
-				},
-			]),
-		remove: () => del('udistub.aliaser'),
-	},
+	// aliaser: {
+	// 	label: 'Har aliaser',
+	// 	checked: has('udistub.aliaser'),
+	// 	add: () =>
+	// 		set('udistub.aliaser', [
+	// 			{
+	// 				identtype: null,
+	// 				nyIdent: false,
+	// 			},
+	// 		]),
+	// 	remove: () => del('udistub.aliaser'),
+	// },
 	flyktning: {
 		label: 'Flyktningstatus',
 		checked: has('udistub.flyktning'),
