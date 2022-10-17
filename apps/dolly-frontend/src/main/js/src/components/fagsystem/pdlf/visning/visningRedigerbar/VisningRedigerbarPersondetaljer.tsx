@@ -18,7 +18,11 @@ import { ifPresent } from '~/utils/YupValidations'
 import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
-import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
+import {
+	RedigerLoading,
+	Modus,
+} from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { Alert } from '@navikt/ds-react'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -68,6 +72,13 @@ const SlettCheckbox = styled(Checkbox)`
 	margin-right: 20px;
 `
 
+const initialSlettAttr = {
+	navn: false,
+	kjoenn: false,
+	folkeregisterpersonstatus: false,
+	skjerming: false,
+}
+
 export const VisningRedigerbarPersondetaljer = ({
 	getPdlForvalter,
 	getSkjermingsregister,
@@ -82,6 +93,7 @@ export const VisningRedigerbarPersondetaljer = ({
 	const [errorMessagePdl, setErrorMessagePdl] = useState(null)
 	const [errorMessageSkjerming, setErrorMessageSkjerming] = useState(null)
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)
+	const [slettAttr, setSlettAttr] = useState(initialSlettAttr)
 
 	const pdlfError = (error: any) => {
 		error &&
@@ -260,27 +272,35 @@ export const VisningRedigerbarPersondetaljer = ({
 		: initialValues?.skjermingsregister?.skjermetFra
 
 	const SlettModal = () => {
-		const slettAttr = {
-			navn: false,
-			kjoenn: false,
-			folkeregisterpersonstatus: false,
-			skjerming: false,
+		const close = () => {
+			setSlettAttr(initialSlettAttr)
+			closeModal()
 		}
-
 		return (
-			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="40%" overflow="auto">
+			<DollyModal isOpen={modalIsOpen} closeModal={close} width="40%" overflow="auto">
 				<div className="slettModal">
 					<div className="slettModal slettModal-content">
 						<Icon size={50} kind="report-problem-circle" />
 						<h1>Sletting</h1>
 						<h4>Hvilke opplysninger ønsker du å slette?</h4>
+						{slettAttr.skjerming && (
+							<Alert variant={'info'}>
+								Sletting av skjerming sletter all data på person i skjermingregisteret. For å heller
+								avslutte skjermingen bruk "LEGG TIL/ENDRE" for å legge til en sluttdato for
+								skjermingen.
+							</Alert>
+						)}
 						<div className="flexbox--flex-wrap">
 							{harNavn && (
 								<SlettCheckbox
 									id={'navn'}
 									size={'xxsmall'}
+									checked={slettAttr.navn}
 									onChange={() => {
-										slettAttr.navn = !slettAttr.navn
+										setSlettAttr({
+											...slettAttr,
+											navn: !slettAttr.navn,
+										})
 									}}
 								>
 									Navn
@@ -290,8 +310,12 @@ export const VisningRedigerbarPersondetaljer = ({
 								<SlettCheckbox
 									id={'kjoenn'}
 									size={'xxsmall'}
+									checked={slettAttr.kjoenn}
 									onChange={() => {
-										slettAttr.kjoenn = !slettAttr.kjoenn
+										setSlettAttr({
+											...slettAttr,
+											kjoenn: !slettAttr.kjoenn,
+										})
 									}}
 								>
 									Kjønn
@@ -301,8 +325,12 @@ export const VisningRedigerbarPersondetaljer = ({
 								<SlettCheckbox
 									id={'folkeregisterpersonstatus'}
 									size={'xxsmall'}
+									checked={slettAttr.folkeregisterpersonstatus}
 									onChange={() => {
-										slettAttr.folkeregisterpersonstatus = !slettAttr.folkeregisterpersonstatus
+										setSlettAttr({
+											...slettAttr,
+											folkeregisterpersonstatus: !slettAttr.folkeregisterpersonstatus,
+										})
 									}}
 								>
 									Personstatus
@@ -312,8 +340,12 @@ export const VisningRedigerbarPersondetaljer = ({
 								<Checkbox
 									id={'skjerming'}
 									size={'xxsmall'}
+									checked={slettAttr.skjerming}
 									onChange={() => {
-										slettAttr.skjerming = !slettAttr.skjerming
+										setSlettAttr({
+											...slettAttr,
+											skjerming: !slettAttr.skjerming,
+										})
 									}}
 								>
 									Skjerming
@@ -322,10 +354,10 @@ export const VisningRedigerbarPersondetaljer = ({
 						</div>
 					</div>
 					<div className="slettModal-actions">
-						<NavButton onClick={closeModal}>Avbryt</NavButton>
+						<NavButton onClick={close}>Avbryt</NavButton>
 						<NavButton
 							onClick={() => {
-								closeModal()
+								close()
 								return handleDelete(slettAttr)
 							}}
 							variant={'primary'}

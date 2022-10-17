@@ -32,7 +32,10 @@ import {
 	statsborgerskap,
 } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '~/utils/YupValidations'
-import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
+import {
+	RedigerLoading,
+	Modus,
+} from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function

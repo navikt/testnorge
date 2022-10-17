@@ -11,7 +11,7 @@ import _cloneDeep from 'lodash/cloneDeep'
 import { initialOppholdsadresse } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
 import { OppholdsadresseData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type OppholdsadresseTypes = {
 	data: Array<any>

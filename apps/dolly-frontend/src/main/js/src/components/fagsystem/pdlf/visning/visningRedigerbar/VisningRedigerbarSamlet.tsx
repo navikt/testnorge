@@ -15,7 +15,10 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { RedigerLoading, Modus } from '~/components/fagsystem/pdlf/visning/RedigerLoading'
+import {
+	RedigerLoading,
+	Modus,
+} from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function
