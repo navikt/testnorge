@@ -2,9 +2,6 @@ azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
 spring:
-  application:
-    name: testnav-udi-stub-dev
-
   datasource:
     url: jdbc:postgresql://b27dbvl023.preprod.local:5432/udi-stub-dev
     hikari:
@@ -21,17 +18,3 @@ spring:
       database:
         backend: postgresql/preprod-fss
         role: udi-stub-dev-admin
-  security:
-    oauth2:
-      resourceserver:
-#        jwt:
-#          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-#          accepted-audience: ${client_id}, api://${client_secret}
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-fss:dolly:testnav-udi-stub-dev
