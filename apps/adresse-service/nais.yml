@@ -57,8 +57,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: synthdata-tps-gcp
-          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
