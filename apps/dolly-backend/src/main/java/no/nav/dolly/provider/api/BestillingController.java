@@ -33,6 +33,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -75,8 +76,20 @@ public class BestillingController {
     @Cacheable(value = CACHE_BESTILLING)
     @GetMapping("/gruppe/{gruppeId}")
     @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
-    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId) {
-        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeId(gruppeId), RsBestillingStatus.class);
+    public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
+                                                    @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
+                                                    @RequestParam(value = "pageSize", required = false, defaultValue = "2000") Integer pageSize) {
+        var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
+        if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
+            return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
+        }
+        return mapperFacade.mapAsList(emptyList(), RsBestillingStatus.class);
+    }
+
+    @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
+    @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
+    public List<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
+        return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId), RsBestillingStatus.class);
     }
 
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")

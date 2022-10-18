@@ -18,12 +18,14 @@ type ProgresjonProps = {
 	bestillingID: string
 	erOrganisasjon: boolean
 	cancelBestilling: Function
+	onFinishBestilling: Function
 }
 
 export const BestillingProgresjon = ({
 	bestillingID,
 	erOrganisasjon,
 	cancelBestilling,
+	onFinishBestilling,
 }: ProgresjonProps) => {
 	const setDetaljertOrgStatus = (status: any) => {
 		const detaljertStatus = status?.status?.[0]?.statuser?.[0]?.detaljert?.[0]?.detaljertStatus
@@ -59,6 +61,7 @@ export const BestillingProgresjon = ({
 	}
 
 	const ferdigstillBestilling = () => {
+		onFinishBestilling(bestilling)
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_BESTILLINGER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
@@ -123,6 +126,11 @@ export const BestillingProgresjon = ({
 	}
 
 	const { percentFinished, tittel, description } = calculateStatus()
+
+	if (percentFinished >= 100) {
+		onFinishBestilling(bestilling)
+		return null
+	}
 
 	return (
 		<Fragment>
