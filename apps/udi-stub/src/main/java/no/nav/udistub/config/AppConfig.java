@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({ ApplicationCoreConfig.class,
+@Import({ApplicationCoreConfig.class,
         FlywayConfiguration.class,
         VaultHikariConfiguration.class,
         SecureOAuth2ServerToServerConfiguration.class
