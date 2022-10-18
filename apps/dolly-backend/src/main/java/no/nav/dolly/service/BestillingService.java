@@ -129,13 +129,6 @@ public class BestillingService {
                 : emptySet();
     }
 
-    public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.isPresent()
-                ? testgruppe.get().getBestillinger().stream().filter(b -> !b.isFerdig()).collect(toSet())
-                : emptySet();
-    }
-
     public List<Bestilling> fetchMalBestillinger() {
         return bestillingRepository.findMalBestilling().orElse(emptyList());
     }
