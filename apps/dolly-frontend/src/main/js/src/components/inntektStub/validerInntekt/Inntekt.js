@@ -17,10 +17,12 @@ const sjekkFelt = (formik, field, options, values, path) => {
 		_get(fieldValue, fieldPath) !== false
 	) {
 		if (fieldValue['inntektstype'] !== '' && !formik.errors?.hasOwnProperty('inntektstub')) {
+			console.log('field: ', field) //TODO - SLETT MEG
 			formik.setFieldError(`inntektstub.${field}`, 'Feltet er påkrevd')
 		}
 		return { feilmelding: 'Feltet er påkrevd' }
 	}
+	return null
 }
 
 const dateFields = [
