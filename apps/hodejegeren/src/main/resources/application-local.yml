@@ -1,7 +1,3 @@
 azure.app.client.id: ${client_id}
 azure.app.client.secret: ${client_secret}
 
-consumers:
-  tpsf-proxy:
-    name: tps-forvalteren-proxy-dev
-    url: https://tps-forvalteren-proxy-dev.dev.intern.nav.no
