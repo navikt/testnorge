@@ -118,7 +118,7 @@ public class BestillingService {
             return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
         }
         return testgruppe.isPresent()
-                ? testgruppe.get().getBestillinger().stream().skip(page * pageSize).limit(pageSize).collect(toSet())
+                ? testgruppe.get().getBestillinger().stream().skip(page.longValue() * pageSize).limit(pageSize).collect(toSet())
                 : emptySet();
     }
 
