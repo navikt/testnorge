@@ -20,7 +20,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
-        - application: mn-synt-arbeidsforhold-service
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   liveness:
