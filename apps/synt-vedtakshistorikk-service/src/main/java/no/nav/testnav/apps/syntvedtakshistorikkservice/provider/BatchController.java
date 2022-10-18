@@ -21,7 +21,7 @@ import static no.nav.testnav.apps.syntvedtakshistorikkservice.service.util.Servi
 @Slf4j
 @Getter
 @Component
-//@EnableScheduling
+@EnableScheduling
 @RequiredArgsConstructor
 public class BatchController {
 
