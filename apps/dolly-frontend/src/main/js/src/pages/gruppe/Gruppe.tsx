@@ -37,7 +37,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
 
-	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(gruppeId)
+	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(gruppeId, visning, sidetall, sideStoerrelse)
 
 	const {
 		gruppe,
@@ -137,7 +137,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
-							{`Bestillinger (${Object.keys(bestillingerById).length})`}
+							{`Bestillinger (${gruppe.antallBestillinger})`}
 						</ToggleGroup.Item>
 					</ToggleGroup>
 				</div>
@@ -164,6 +164,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
 					bestillingerById={bestillingerById}
+					gruppeInfo={gruppe}
 				/>
 			)}
 		</div>

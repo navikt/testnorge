@@ -37,7 +37,7 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 			error: 'GruppeId mangler!',
 		}
 	}
-	console.log('useBestillingerGruppe', gruppeId)
+
 	const { data, error } = useSWR<Bestilling[], Error>(getBestillingerGruppeUrl(gruppeId), fetcher)
 
 	const bestillingerSorted = data
@@ -52,14 +52,18 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 	}
 }
 
-export const useIkkeFerdigBestillingerGruppe = (gruppeId: string | number) => {
+export const useIkkeFerdigBestillingerGruppe = (gruppeId: string | number, visning, sidetall: number, sideStoerrelse: number) => {
 	if (!gruppeId) {
 		return {
 			loading: false,
 			error: 'GruppeId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Bestilling[], Error>(getIkkeFerdigBestillingerGruppeUrl(gruppeId), fetcher)
+
+	const url = visning == 'personer'
+		? getIkkeFerdigBestillingerGruppeUrl(gruppeId)
+		: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
+	const { data, error } = useSWR<Bestilling[], Error>(url, fetcher)
 
 	const bestillingerSorted = data
 		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
