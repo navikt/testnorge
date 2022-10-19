@@ -57,6 +57,7 @@ const FinnPersonBestilling = ({
 	const [tpsfIdenter, setTpsfIdenter] = useState([])
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
 	const [pdlIdenter, setPdlIdenter] = useState([])
+	const [pdlAktoerer, setPdlAktoerer] = useState([])
 
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
@@ -86,7 +87,10 @@ const FinnPersonBestilling = ({
 			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
 				finnesPdlf = true
 			}
-			if (pdlIdenter.find((element) => element.ident === feilmeldingIdent)) {
+			if (
+				pdlIdenter.find((element) => element.ident === feilmeldingIdent) ||
+				pdlAktoerer.find((element) => element.ident === feilmeldingIdent)
+			) {
 				finnesPdl = true
 			}
 		}
@@ -161,10 +165,11 @@ const FinnPersonBestilling = ({
 			return []
 		}
 
-		const [tpsfValues, pdlfValues, pdlValues] = (await Promise.allSettled([
+		const [tpsfValues, pdlfValues, pdlValues, pdlAktoer] = (await Promise.allSettled([
 			TpsfApi.soekPersoner(tekst),
 			PdlforvalterApi.soekPersoner(tekst),
 			PersonSearch.searchPdlFragment(tekst),
+			DollyApi.getPersonFraPdl(tekst),
 		])) as any
 
 		const personer: Array<Option> = []
@@ -185,6 +190,12 @@ const FinnPersonBestilling = ({
 
 		if (pdlValues?.status === 'fulfilled') {
 			mapToPersoner(pdlValues, personer)
+			setPdlIdenter(pdlValues?.value?.data)
+		} else {
+			setError(pdlValues?.reason?.message)
+		}
+		if (pdlAktoer?.status === 'fulfilled') {
+			mapToPersoner(pdlAktoer, personer)
 			setPdlIdenter(pdlValues?.value?.data)
 		} else {
 			setError(pdlValues?.reason?.message)
