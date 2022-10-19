@@ -104,7 +104,7 @@ public class KrrstubClientTest {
     }
 
     @Test
-    public void gjenopprett_krrdata_feil_med_status_kode_ved_4xx() {
+    void gjenopprett_krrdata_feil_med_status_kode_ved_4xx() {
 
         BestillingProgress progress = BestillingProgress.builder()
                 .bestilling(Bestilling.builder().id(BESTILLING_ID).build())

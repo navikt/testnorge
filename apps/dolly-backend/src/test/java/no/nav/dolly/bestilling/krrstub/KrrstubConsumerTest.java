@@ -100,7 +100,7 @@ public class KrrstubConsumerTest {
     }
 
     @Test
-    public void feilmeldingVedHttp409() {
+    void feilmeldingVedHttp409() {
 
         stubPostKrrDataMed409();
 
