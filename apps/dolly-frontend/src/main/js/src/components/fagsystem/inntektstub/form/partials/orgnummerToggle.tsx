@@ -8,7 +8,7 @@ import {
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { FormikProps } from 'formik'
-import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
@@ -82,7 +82,7 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 				/>
 			)}
 			{inputType === inputValg.fraEgenListe && (
-				<EgneOrganisasjonerConnector
+				<EgneOrganisasjoner
 					path={path}
 					formikBag={formikBag}
 					filterValidEnhetstyper={true}

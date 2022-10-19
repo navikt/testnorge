@@ -24,7 +24,7 @@ import {
 } from '../initialValues'
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
 import { isDate } from 'date-fns'
-import EgneOrganisasjonerConnector from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjonerConnector'
+import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -135,7 +135,7 @@ export const ArbeidsforholdForm = ({
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
-					<EgneOrganisasjonerConnector
+					<EgneOrganisasjoner
 						path={`${path}.arbeidsgiver.orgnummer`}
 						formikBag={formikBag}
 						handleChange={onChangeLenket('arbeidsgiver.orgnummer')}

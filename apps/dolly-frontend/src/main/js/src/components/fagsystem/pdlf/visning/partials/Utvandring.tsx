@@ -12,7 +12,7 @@ import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import _cloneDeep from 'lodash/cloneDeep'
 import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getSisteDatoInnUtvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
 
 type UtvandringTypes = {

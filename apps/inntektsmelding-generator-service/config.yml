@@ -21,8 +21,6 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnorge-inntekt
-          cluster: dev-fss
         - application: testnav-inntektsmelding-service
           cluster: dev-gcp
   liveness:

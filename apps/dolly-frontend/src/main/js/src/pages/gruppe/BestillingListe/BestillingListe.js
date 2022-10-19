@@ -25,6 +25,8 @@ export default function BestillingListe({
 	navigerBestillingId,
 	visBestilling,
 	sidetall,
+	gruppeInfo,
+	sideStoerrelse,
 }) {
 	if (!bestillingerById) return null
 	const bestillingListe = Object.values(bestillingerById)
@@ -85,6 +87,10 @@ export default function BestillingListe({
 		<ErrorBoundary>
 			<DollyTable
 				pagination
+				gruppeDetaljer={{
+					antallElementer: gruppeInfo.antallBestillinger,
+					pageSize: sideStoerrelse,
+				}}
 				data={statusBestillinger}
 				columns={columns}
 				iconItem={<BestillingIconItem />}

@@ -1,0 +1,27 @@
+spring:
+  cloud:
+    vault:
+      enabled: false
+
+azure:
+  app:
+    client:
+      id: dummy
+      secret: dummy
+
+consumers:
+  tps-forvalter:
+    url: http://localhost:${wiremock.server.port:0}/tpsf
+    cluster: dev-fss
+    namespace: dolly
+    name: tps-forvalteren-proxy
+    threads: 5
+  slack:
+    token: dummy
+    channel: dummy
+    baseUrl: dummy
+  kodeverk:
+    url: http://localhost:${wiremock.server.port:0}/kodeverk
+    cluster: dev-fss
+    namespace: dolly
+    name: testnav-kodeverk-proxy

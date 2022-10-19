@@ -11,7 +11,7 @@ import {
 import _cloneDeep from 'lodash/cloneDeep'
 import { initialInnvandring } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '~/components/bestillingsveileder/utils'
 

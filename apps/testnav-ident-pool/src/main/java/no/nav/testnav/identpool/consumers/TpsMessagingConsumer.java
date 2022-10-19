@@ -43,7 +43,7 @@ public class TpsMessagingConsumer {
 
     public Set<TpsStatusDTO> getIdenterStatuser(Set<String> identer) {
 
-        return new HashSet<>(getIdenterStatus(new ArrayList<>(identer), null, status -> !status.getMiljoer().isEmpty()));
+        return new HashSet<>(getIdenterStatus(new ArrayList<>(identer), Set.of("zz"), status -> !status.getMiljoer().isEmpty()));
     }
 
     public List<TpsStatusDTO> getIdenterProdStatus(Set<String> identer) {

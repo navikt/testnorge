@@ -9,7 +9,7 @@ import {
 	initialNavn,
 	initialPersonstatus,
 } from '~/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarPersondetaljerConnector'
+import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
 import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { SkjermingVisning } from '~/components/fagsystem/skjermingsregister/visning/Visning'

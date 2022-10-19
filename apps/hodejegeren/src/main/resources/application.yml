@@ -1,10 +1,15 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
 application:
   version: application.version.todo
   name: testnorge-hodejegeren
 
 consumers:
-  tps-forvalteren:
-    url: https://tps-forvalteren.dev.adeo.no
+  tpsf-proxy:
+    name: tps-forvalteren-proxy
+    url: https://tps-forvalteren-proxy.dev.intern.nav.no
+    namespace: dolly
+    cluster: dev-fss
 
 management:
   endpoints:

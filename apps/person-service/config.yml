@@ -25,8 +25,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: testnorge-skd
-          cluster: dev-fss
         - application: dolly-backend
           cluster: dev-fss
         - application: dolly-backend-dev

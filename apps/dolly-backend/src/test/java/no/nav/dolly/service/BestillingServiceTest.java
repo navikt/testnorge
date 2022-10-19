@@ -101,7 +101,7 @@ public class BestillingServiceTest {
         Testgruppe gruppe = mock(Testgruppe.class);
         when(testgruppeRepository.findById(any())).thenReturn(Optional.of(gruppe));
 
-        bestillingService.fetchBestillingerByGruppeId(1l);
+        bestillingService.fetchBestillingerByGruppeId(1l, 0, 10);
         verify(testgruppeRepository).findById(1l);
     }
 

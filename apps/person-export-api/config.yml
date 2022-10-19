@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnorge-person-export-api
+  name: testnav-person-export-api
   namespace: dolly
   labels:
     team: dolly
@@ -40,6 +40,19 @@ spec:
     limits:
       cpu: 1200m
       memory: 5000Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+    outbound:
+      external:
+        - host: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: https://testnav-kodeverk-proxy.dev-fss-pub.nais.io
+        - host: slack.com
+  envFrom:
+    - secret: testnav-person-export-api-slack-secret
   ingresses:
-    - "https://testnorge-person-export-api.dev.adeo.no"
-    - "https://testnorge-person-export-api.dev.intern.nav.no"
+    - "https://testnav-person-export-api.dev.intern.nav.no"
