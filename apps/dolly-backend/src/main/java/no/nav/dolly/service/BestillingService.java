@@ -140,7 +140,7 @@ public class BestillingService {
 
     public Page<Bestilling> getBestillingerFromGruppePaginert(Long gruppeId, Integer page, Integer pageSize) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        if (!testgruppe.isPresent()) {
+        if (testgruppe.isEmpty()) {
             return Page.empty();
         }
         return getBestillingerFromGruppePaginert(testgruppe.get(), page, pageSize);
