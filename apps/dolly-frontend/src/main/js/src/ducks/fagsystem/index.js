@@ -48,6 +48,12 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		getPensjonTP: [
+			PensjonApi.getPersonTpOrdninger,
+			(ident) => ({
+				ident,
+			}),
+		],
 		getInntektstub: [
 			InntektstubApi.getInntektsinformasjon,
 			(ident) => ({
@@ -161,6 +167,7 @@ const initialState = {
 	instdata: {},
 	udistub: {},
 	pensjonforvalter: {},
+	tpforvalter: {},
 	brregstub: {},
 	skjermingsregister: {},
 }
@@ -205,6 +212,9 @@ export default handleActions(
 		},
 		[onSuccess(actions.getPensjon)](state, action) {
 			state.pensjonforvalter[action.meta.ident] = action.payload.data
+		},
+		[onSuccess(actions.getPensjonTP)](state, action) {
+			state.tpforvalter[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload?.data?.person
@@ -269,6 +279,7 @@ const deleteIdentState = (state, ident) => {
 	delete state.instdata[ident]
 	delete state.udistub[ident]
 	delete state.pensjonforvalter[ident]
+	delete state.tpforvalter[ident]
 	delete state.brregstub[ident]
 }
 
@@ -342,6 +353,8 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getBrreg(personId))
 			case 'SKJERMINGSREGISTER':
 				return dispatch(actions.getSkjermingsregister(personId))
+			case 'TP_FORVALTER':
+				return dispatch(actions.getPensjonTP(personId, success[system][0]))
 		}
 	})
 }
@@ -357,6 +370,7 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'PDL',
 		'INST2,',
 		'PEN_INNTEKT',
+		'TP_FORVALTER',
 		'AAREG',
 	]
 
@@ -377,6 +391,8 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 				return dispatch(actions.getInst(personId, 'q2'))
 			case 'PEN_INNTEKT':
 				return dispatch(actions.getPensjon(personId, 'q2'))
+			case 'TP_FORVALTER':
+				return dispatch(actions.getPensjonTP(personId))
 			case 'AAREG':
 				return dispatch(actions.getAareg(personId, 'q2'))
 			case 'SKJERMINGSREGISTER':
@@ -592,6 +608,7 @@ export const selectDataForIdent = (state, ident) => {
 		instdata: state.fagsystem.instdata[ident],
 		udistub: state.fagsystem.udistub[ident],
 		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
+		tpforvalter: state.fagsystem.tpforvalter[ident],
 		brregstub: state.fagsystem.brregstub[ident],
 		skjermingsregister: state.fagsystem.skjermingsregister[ident],
 	}
