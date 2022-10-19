@@ -35,6 +35,7 @@ public class RsTestgruppe {
     private LocalDate datoEndret;
 
     private Integer antallIdenter;
+    private Long antallBestillinger;
     private Integer antallIBruk;
 
     private boolean erEierAvGruppe;

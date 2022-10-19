@@ -3,15 +3,7 @@ import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
 import Loading from '~/components/ui/loading/Loading'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
 import { BestillingProgresjon } from '~/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
-import {
-	REGEX_BACKEND_BESTILLINGER,
-	REGEX_BACKEND_GRUPPER,
-	REGEX_BACKEND_ORGANISASJONER,
-	useMatchMutate,
-} from '~/utils/hooks/useMutate'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
-import { Bestillingsstatus, useOrganisasjonBestilling } from '~/utils/hooks/useOrganisasjoner'
-import { isEmpty } from 'lodash'
+import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
 
 type StatusProps = {
 	gruppeId: string
@@ -22,16 +14,11 @@ type StatusProps = {
 }
 const StatusListe = ({
 	bestillingListe,
-	brukerId,
 	cancelBestilling,
-	gruppeId,
 	isCanceling,
 }: StatusProps) => {
-	const mutate = useMatchMutate()
 	const [nyeBestillinger, setNyeBestillinger] = useState([])
-	const [autoRefresh, setAutoRefresh] = useState(true)
-	useBestillingerGruppe(gruppeId)
-	useOrganisasjonBestilling(brukerId, autoRefresh)
+	const [ferdigBestillinger, setFerdigBestillinger] = useState([])
 
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
 		const nyBestillingListe = Object.values(bestillinger).filter(
@@ -42,16 +29,23 @@ const StatusListe = ({
 		setNyeBestillinger(nyBestillingListe)
 	}
 
+	const onFinishBestilling = (bestilling) => {
+		if (!ferdigBestillinger.find((b) => b.id === bestilling.id)) {
+			setFerdigBestillinger(ferdigBestillinger.concat([bestilling]))
+
+			const nyenye = nyeBestillinger.filter((nye) => !ferdigBestillinger.find((b) => b.id === nye.id))
+			setNyeBestillinger(nyenye)
+		}
+	}
+
+	const lukkBestilling = (id) => {
+		setNyeBestillinger(nyeBestillinger.filter((nye) => !id === nye.id))
+		setFerdigBestillinger(ferdigBestillinger.filter((ferdig) => ferdig.id !== id))
+	}
+
 	useEffect(() => {
 		filtrerNyeBestillinger(bestillingListe)
 	}, [bestillingListe])
-
-	useEffect(() => {
-		setAutoRefresh(!isEmpty(nyeBestillinger) && nyeBestillinger.some((best) => !best.ferdig))
-		mutate(REGEX_BACKEND_GRUPPER)
-		mutate(REGEX_BACKEND_BESTILLINGER)
-		mutate(REGEX_BACKEND_ORGANISASJONER)
-	}, [nyeBestillinger])
 
 	if (isCanceling) {
 		return (
@@ -61,18 +55,23 @@ const StatusListe = ({
 		)
 	}
 
-	return nyeBestillinger?.map((bestilling) => (
+	const ikkeFerdig = nyeBestillinger.map((bestilling) => (
 		<div className="bestilling-status" key={bestilling.id}>
-			{bestilling.ferdig ? (
-				<BestillingResultat bestilling={bestilling} setNyeBestillinger={setNyeBestillinger} />
-			) : (
-				<BestillingProgresjon
-					bestillingID={bestilling.id}
-					erOrganisasjon={bestilling.organisasjonNummer}
-					cancelBestilling={cancelBestilling}
-				/>
-			)}
+			<BestillingProgresjon
+				bestillingID={bestilling.id}
+				erOrganisasjon={bestilling.organisasjonNummer}
+				cancelBestilling={cancelBestilling}
+				onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 0) }
+			/>
 		</div>
 	))
+
+	const ferdig = ferdigBestillinger.map((ferdig) => (
+		<div className="bestilling-status" key={`ferdig-bestilling-${ferdig.id}`}>
+			<BestillingResultat bestilling={ferdig} setNyeBestillinger={()=>{}} lukkBestilling={(id) => lukkBestilling(id)} />
+		</div>
+	))
+
+	return ikkeFerdig.concat(...ferdig)
 }
 export default StatusListe
