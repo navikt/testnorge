@@ -29,6 +29,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	}
 
 	const hasInntektstubError = step === 1 && formikBag?.errors?.hasOwnProperty('inntektstub')
+	const disabledVidere = step === 1 && opts.is.leggTil && !harAvhukedeAttributter(formikBag.values)
 
 	return (
 		<div className="step-navknapper-wrapper">
@@ -42,7 +43,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 					{!isLastStep && (
 						<NavButton
 							variant={'primary'}
-							disabled={isSubmitting}
+							disabled={isSubmitting || disabledVidere}
 							onClick={hasInntektstubError ? () => {} : handleSubmit}
 						>
 							Videre
