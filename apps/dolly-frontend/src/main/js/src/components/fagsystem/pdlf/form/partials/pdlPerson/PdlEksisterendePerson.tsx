@@ -57,6 +57,8 @@ export const PdlEksisterendePerson = ({
 		'GJENLEVENDE_PARTNER',
 	]
 
+	const eksisterendePerson = _get(formikBag?.values, eksisterendePersonPath)
+
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
 		const valgteBarn = _get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
@@ -159,6 +161,7 @@ export const PdlEksisterendePerson = ({
 					options={identOptions}
 					size={'xlarge'}
 					disabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
+					placeholder={eksisterendePerson}
 				/>
 			) : (
 				!loadingIdentOptions && (

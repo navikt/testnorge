@@ -9,6 +9,7 @@ import _get from 'lodash/get'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 interface VergemaalForm {
 	formikBag: FormikProps<{}>
@@ -38,8 +39,10 @@ export const VergemaalForm = ({ formikBag, path }: VergemaalForm) => {
 				size="xxlarge"
 				optionHeight={50}
 			/>
-			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+			<DatepickerWrapper>
+				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+			</DatepickerWrapper>
 			<PdlPersonExpander
 				nyPersonPath={`${path}.nyVergeIdent`}
 				eksisterendePersonPath={`${path}.vergeIdent`}

@@ -8,7 +8,7 @@ import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/Rel
 import { Relasjon, VergemaalValues } from '~/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '~/config/kodeverk'
 import _cloneDeep from 'lodash/cloneDeep'
-import { initialVergemaal } from '~/components/fagsystem/pdlf/form/initialValues'
+import { initialPdlPerson, initialVergemaal } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
 import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
 
@@ -33,15 +33,16 @@ export const Vergemaal = ({
 		return null
 	}
 
-	const retatertPersonIdent = data.vergeIdent
-	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
-	const harFullmektig = data.sakType === 'FRE'
-
 	const VergemaalLes = ({ vergemaalData, idx }) => {
 		if (!vergemaalData) {
 			return null
 		}
 
+		const retatertPersonIdent = vergemaalData.vergeIdent
+		const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
+		const harFullmektig = vergemaalData.sakType === 'FRE'
+
+		// console.log('vergemaalData: ', vergemaalData) //TODO - SLETT MEG
 		return (
 			<>
 				<div className="person-visning_redigerbar" key={idx}>
@@ -68,7 +69,7 @@ export const Vergemaal = ({
 						title="Gyldig t.o.m."
 						value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
 					/>
-					{!relasjoner && (
+					{!relasjon && (
 						<TitleValue
 							title={harFullmektig ? 'Fullmektig' : 'Verge'}
 							value={
@@ -89,7 +90,10 @@ export const Vergemaal = ({
 
 	const VergemaalVisning = ({ vergemaalData, idx }) => {
 		const initVergemaal = Object.assign(_cloneDeep(initialVergemaal), data[idx])
-		const initialValues = { vergemaal: initVergemaal }
+		let initialValues = { vergemaal: initVergemaal }
+		// console.log('initialValues 1: ', initialValues) //TODO - SLETT MEG
+		initialValues.vergemaal.nyVergeIdent = initialPdlPerson
+		// console.log('initialValues 2: ', initialValues) //TODO - SLETT MEG
 
 		const redigertVergemaalPdlf = _get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
 			(a: VergemaalValues) => a.id === vergemaalData.id

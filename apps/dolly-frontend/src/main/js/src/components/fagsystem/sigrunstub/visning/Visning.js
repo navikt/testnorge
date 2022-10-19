@@ -20,7 +20,7 @@ const Visning = ({ data, header, expandable }) => {
 					<TitleValue title="Tjeneste" value={inntekt.tjeneste} />
 					<TitleValue title="Type inntekt" value={inntekt.grunnlag} kodeverk={inntekt.tjeneste} />
 					<TitleValue
-						title={inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Beløp'}
+						title={inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi'}
 						value={
 							inntekt.grunnlag === 'skatteoppgjoersdato'
 								? Formatters.formatDate(inntekt.verdi)
