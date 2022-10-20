@@ -6,6 +6,9 @@ metadata:
   labels:
     team: dolly
 spec:
+  image: {{ image }}
+  port: 8080
+  webproxy: true
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -26,6 +29,24 @@ spec:
     limits:
       cpu: 2000m
       memory: 2048Mi
-  image: {{ image }}
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+        - application: testnorge-tp
+          cluster: dev-fss
+        - application: testnorge-aareg
+          cluster: dev-fss
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
+        - application: testnav-hodejegeren-proxy
+          cluster: dev-fss
+        - application: mn-synt-arbeidsforhold-service
+          cluster: dev-fss
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   ingresses:
     - "https://testnorge-hodejegeren.dev.intern.nav.no"

@@ -435,46 +435,6 @@ export const varslingerRequestMock = ['VELKOMMEN_TIL_DOLLY']
 
 export const malerMock = { malbestillinger: ['Cafe, Test', []] }
 
-export const testidentMock = {
-	ident: '12345678912',
-	beskrivelse: 'Litta kommentar også',
-	bestillingId: [1],
-	master: 'PDLF',
-	ibruk: false,
-}
-
-export const nyGruppeMock = {
-	id: 2,
-	navn: 'Testcafe testing',
-	hensikt: 'Saftig testing med testcafe..',
-	opprettetAv: gjeldendeBrukerMock,
-	sistEndretAv: gjeldendeBrukerMock,
-	datoEndret: '1990-01-12',
-	antallIdenter: 0,
-	antallIBruk: 0,
-	erEierAvGruppe: true,
-	favorittIGruppen: false,
-	erLaast: false,
-	identer: [],
-	tags: [],
-}
-
-export const gjeldendeGruppeMock = {
-	id: 1,
-	navn: 'Testytest',
-	hensikt: 'Testing av testytest',
-	opprettetAv: gjeldendeBrukerMock,
-	sistEndretAv: gjeldendeBrukerMock,
-	datoEndret: '1980-01-12',
-	antallIdenter: 1,
-	antallIBruk: 0,
-	erEierAvGruppe: true,
-	favorittIGruppen: false,
-	erLaast: false,
-	identer: [testidentMock],
-	tags: [],
-}
-
 export const backendBestillingerMock = [
 	{
 		id: 1,
@@ -1236,5 +1196,46 @@ export const backendBestillingerMock = [
 		},
 	},
 ]
+
+export const testidentMock = {
+	ident: '12345678912',
+	beskrivelse: 'Litta kommentar også',
+	bestillingId: [1],
+	bestillinger: backendBestillingerMock,
+	master: 'PDLF',
+	ibruk: false,
+}
+
+export const nyGruppeMock = {
+	id: 2,
+	navn: 'Testcafe testing',
+	hensikt: 'Saftig testing med testcafe..',
+	opprettetAv: gjeldendeBrukerMock,
+	sistEndretAv: gjeldendeBrukerMock,
+	datoEndret: '1990-01-12',
+	antallIdenter: 0,
+	antallIBruk: 0,
+	erEierAvGruppe: true,
+	favorittIGruppen: false,
+	erLaast: false,
+	identer: [],
+	tags: [],
+}
+
+export const gjeldendeGruppeMock = {
+	id: 1,
+	navn: 'Testytest',
+	hensikt: 'Testing av testytest',
+	opprettetAv: gjeldendeBrukerMock,
+	sistEndretAv: gjeldendeBrukerMock,
+	datoEndret: '1980-01-12',
+	antallIdenter: 1,
+	antallIBruk: 0,
+	erEierAvGruppe: true,
+	favorittIGruppen: false,
+	erLaast: false,
+	identer: [testidentMock],
+	tags: [],
+}
 
 export const miljoeMock = '["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]'

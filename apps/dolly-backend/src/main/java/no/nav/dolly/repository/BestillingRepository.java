@@ -2,7 +2,10 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.Bruker;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -59,6 +62,9 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByUser(@Param("bruker") Bruker bruker);
+
+    @Query(value = "from Bestilling b where b.gruppe = :gruppe order by b.id desc")
+    Page<Bestilling> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe, Pageable pageable);
 
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestilling();

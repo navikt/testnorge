@@ -50,6 +50,15 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
     @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
             "b.bestKriterier as bestkriterier, b.miljoer as miljoer from Bestilling b " +
             "join BestillingProgress bp on bp.bestilling.id = b.id " +
+            "and b.gruppe = :gruppe " +
+            "and b.opprettetFraId is null " +
+            "and b.bestKriterier is not null and b.bestKriterier <> '{}' " +
+            "and bp.ident is not null and length(bp.ident) = 11")
+    Page<GruppeBestillingIdent> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe, Pageable pageable);
+
+    @Query(value = "select bp.ident as ident, b.id as bestillingid, " +
+            "b.bestKriterier as bestkriterier from Bestilling b " +
+            "join BestillingProgress bp on bp.bestilling.id = b.id " +
             "and bp.ident = :ident " +
             "and b.opprettetFraId is null " +
             "and b.opprettetFraGruppeId is null " +

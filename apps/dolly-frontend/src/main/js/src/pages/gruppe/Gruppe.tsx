@@ -13,7 +13,7 @@ import { resetNavigering, resetPaginering } from '~/ducks/finnPerson'
 import GruppeHeaderConnector from '~/pages/gruppe/GruppeHeader/GruppeHeaderConnector'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useGruppeById } from '~/utils/hooks/useGruppe'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import { useIkkeFerdigBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
 import ManglerTilgang from '~/pages/gruppe/ManglerTilgang/ManglerTilgang'
@@ -37,7 +37,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
 
-	const { bestillingerById, loading: loadingBestillinger } = useBestillingerGruppe(gruppeId)
+	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(gruppeId, visning, sidetall, sideStoerrelse)
 
 	const {
 		gruppe,
@@ -137,7 +137,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
-							{`Bestillinger (${Object.keys(bestillingerById).length})`}
+							{`Bestillinger (${gruppe.antallBestillinger})`}
 						</ToggleGroup.Item>
 					</ToggleGroup>
 				</div>
@@ -164,6 +164,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 					iLaastGruppe={erLaast}
 					brukertype={brukertype}
 					bestillingerById={bestillingerById}
+					gruppeInfo={gruppe}
 				/>
 			)}
 		</div>

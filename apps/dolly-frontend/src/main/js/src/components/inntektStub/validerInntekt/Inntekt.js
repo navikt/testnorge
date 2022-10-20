@@ -10,17 +10,17 @@ import tilleggsinformasjonPaths from '../paths'
 const sjekkFelt = (formik, field, options, values, path) => {
 	const fieldValue = _get(values, path)
 	const fieldPath = tilleggsinformasjonPaths(field)
+	const val = _get(fieldValue, fieldPath)
 	if (
 		!options.includes('<TOM>') &&
-		fieldValue &&
-		!_get(fieldValue, fieldPath) &&
-		_get(fieldValue, fieldPath) !== false
+		((fieldValue && !val && val !== false) || (!optionsUtfylt(options) && !options.includes(val)))
 	) {
 		if (fieldValue['inntektstype'] !== '' && !formik.errors?.hasOwnProperty('inntektstub')) {
 			formik.setFieldError(`inntektstub.${field}`, 'Feltet er påkrevd')
 		}
 		return { feilmelding: 'Feltet er påkrevd' }
 	}
+	return null
 }
 
 const dateFields = [
