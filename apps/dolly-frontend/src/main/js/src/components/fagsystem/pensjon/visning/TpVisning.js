@@ -13,9 +13,14 @@ export const sjekkManglerPensjonData = (tpData) => {
 }
 
 export const TpVisning = ({ data, loading }) => {
-	const [ordninger, setOrdninger] = useState([Options('tpOrdninger')])
+	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 
-	fetchTpOrdninger()
+	useEffect(() => {
+		if (!ordninger.length) {
+			fetchTpOrdninger()
+		}
+	}, [])
+
 	useEffect(() => {
 		setOrdninger(Options('tpOrdninger'))
 	}, [Options('tpOrdninger')])
