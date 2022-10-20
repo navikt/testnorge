@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.aareg.v1;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,9 +22,4 @@ public class AntallTimerForTimeloennet {
     private Double antallTimer;
 
     private YearMonth rapporteringsperiode;
-
-    @JsonIgnore
-    public YearMonth getRapporteringsperiode() {
-        return rapporteringsperiode;
-    }
 }

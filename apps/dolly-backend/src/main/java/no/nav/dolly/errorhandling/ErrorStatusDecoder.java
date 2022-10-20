@@ -25,6 +25,7 @@ public class ErrorStatusDecoder {
 
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
+    private static final String MELDING = "melding";
     private static final String DETAILS = "details";
     private static final String FEIL = "Feil= ";
 
@@ -116,6 +117,12 @@ public class ErrorStatusDecoder {
                 }
                 if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
+                }
+                if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
+                    builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
+                }
+                if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
+                    builder.append(encodeStatus((String) status.get(MELDING)));
                 }
                 if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                     StringBuilder meldinger = new StringBuilder("=");

@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @NoArgsConstructor
@@ -59,4 +62,44 @@ public class Arbeidsforhold {
     private Boolean innrapportertEtterAOrdningen;
 
     private LocalDateTime sistBekreftet;
+
+    public List<Arbeidsavtale> getArbeidsavtaler() {
+
+        if (isNull(arbeidsavtaler)) {
+            arbeidsavtaler = new ArrayList<>();
+        }
+        return arbeidsavtaler;
+    }
+
+    public List<PermisjonPermittering> getPermisjonPermitteringer() {
+
+        if (isNull(permisjonPermitteringer)) {
+            permisjonPermitteringer = new ArrayList<>();
+        }
+        return permisjonPermitteringer;
+    }
+
+    public List<AntallTimerForTimeloennet> getAntallTimerForTimeloennet() {
+
+        if (isNull(antallTimerForTimeloennet)) {
+            antallTimerForTimeloennet = new ArrayList<>();
+        }
+        return antallTimerForTimeloennet;
+    }
+
+    public List<Utenlandsopphold> getUtenlandsopphold() {
+
+        if (isNull(utenlandsopphold)) {
+            utenlandsopphold = new ArrayList<>();
+        }
+        return utenlandsopphold;
+    }
+
+    public List<Varsel> getVarsler() {
+
+        if (isNull(varsler)) {
+            varsler = new ArrayList<>();
+        }
+        return varsler;
+    }
 }
