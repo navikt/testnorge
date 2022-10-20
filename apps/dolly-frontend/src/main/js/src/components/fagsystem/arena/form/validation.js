@@ -1,6 +1,7 @@
 import * as Yup from 'yup'
 import { messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import { isAfter, isBefore } from 'date-fns'
+import _get from 'lodash/get'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
 
@@ -10,6 +11,49 @@ const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 		isAfter(new Date(nyDatoFra), new Date(gjeldendeDatoTil)) ||
 		isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoFra))
 	)
+}
+
+export const getFoedselsdatoer = (values) => {
+	const personFoerLeggTil = values?.personFoerLeggTil
+	const importPersoner = values?.importPersoner
+
+	if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
+		return [values.pdldata.person.foedsel[0].foedselsdato]
+	} else if (personFoerLeggTil?.tpsf?.foedselsdato) {
+		return [personFoerLeggTil.tpsf.foedselsdato]
+	} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
+		const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
+			.map((foedsel) => foedsel.foedselsdato)
+			.sort((a, b) => new Date(b) - new Date(a))
+		return [foedselsdatoer?.[0]]
+	} else if (personFoerLeggTil?.pdl) {
+		const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
+		return [pdlPerson?.foedsel?.[0]?.foedselsdato]
+	} else if (importPersoner) {
+		return importPersoner.map((person) => person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato)
+	}
+	return []
+}
+
+const overlapp25aarsdag = (fradato, tildato, values) => {
+	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
+	// intervall overlapp for foedtfoer og foedtetter
+
+	const foedselsdatoer = getFoedselsdatoer(values)
+
+	if (foedselsdatoer?.length > 0) {
+		for (let fdato of foedselsdatoer) {
+			let tjuefem = new Date(fdato)
+			tjuefem.setFullYear(tjuefem.getFullYear() + 25)
+			if (isBefore(fradato, tjuefem) && !isBefore(tildato, tjuefem)) {
+				return true
+			}
+		}
+	}
+
+	return false
 }
 
 const validTildato = (fradato, tildato) => {
