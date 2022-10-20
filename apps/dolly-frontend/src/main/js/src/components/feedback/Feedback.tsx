@@ -60,12 +60,11 @@ export const Feedback = ({ label, feedbackFor }: FeedbackProps) => {
 								}
 							/>
 							{/* @ts-ignore */}
-							<Checkbox label="Jeg ønsker å være anonym" onChange={toggleAnonym} />
+							<Checkbox label="Jeg ønsker å være anonym" onChange={toggleAnonym}>Jeg ønsker å være anonym</Checkbox>
 						</div>
 					</div>
 					<div className="feedback-form__submit">
 						<Button
-							as={null}
 							disabled={text.length > MAX_LENGTH}
 							autoFocus={true}
 							onClick={(event) => {
