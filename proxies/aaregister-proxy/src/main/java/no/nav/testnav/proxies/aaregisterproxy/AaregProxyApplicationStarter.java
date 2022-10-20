@@ -73,7 +73,7 @@ public class AaregProxyApplicationStarter {
         return spec -> spec
             .path("/" + miljo + "/**")
             .filters(filterSpec -> filterSpec
-                .rewritePath("/" + miljo + "/(?<segment>.*)", "/aareg-core/api/${segment}")
+                .rewritePath("/" + miljo + "/(?<segment>.*)", "/aareg-core/${segment}")
                 .filter(filter)
             ).uri("https://modapp-" + miljo + ".adeo.no");
     }
