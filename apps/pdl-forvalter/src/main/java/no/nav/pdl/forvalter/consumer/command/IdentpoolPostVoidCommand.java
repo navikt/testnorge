@@ -14,6 +14,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
@@ -32,7 +33,7 @@ public class IdentpoolPostVoidCommand implements Callable<Mono<Void>> {
     protected static String getMessage(Throwable error) {
 
         return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString() :
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 error.getMessage();
     }
 
