@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString(StandardCharsets.UTF_8).replace(',', '='))
                     .append(')');
         }
     }

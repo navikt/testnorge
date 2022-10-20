@@ -27,6 +27,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +137,7 @@ public class ArenaForvalterConsumer {
                 .retrieve()
                 .toEntity(ArenaNyeDagpengerResponse.class)
                 .doOnError(error -> error instanceof WebClientResponseException.InternalServerError,
-                        error -> log.error(((WebClientResponseException) error).getResponseBodyAsString()))
+                        error -> log.error(((WebClientResponseException) error).getResponseBodyAsString(StandardCharsets.UTF_8)))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.InternalServerError,
                         throwable -> Mono.empty())
                 .block();
