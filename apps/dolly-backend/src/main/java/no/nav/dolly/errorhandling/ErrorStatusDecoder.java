@@ -85,7 +85,11 @@ public class ErrorStatusDecoder {
                 appendStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else {
-                builder.append(error.getMessage());
+                if (webClientResponseException.getStatusCode().is4xxClientError()) {
+                    builder.append(webClientResponseException.getStatusCode());
+                } else {
+                    builder.append(error.getMessage());
+                }
             }
 
         } else {

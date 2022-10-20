@@ -20,16 +20,12 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.ok;
-import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_PERSON_IDENT;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
@@ -103,10 +99,34 @@ public class KrrstubConsumerTest {
         verify(tokenService).exchange(any(KrrstubProxyProperties.class));
     }
 
+    @Test
+    void feilmeldingVedHttp409() {
+
+        stubPostKrrDataMed409();
+
+        try {
+            ResponseEntity<Object> response = krrStubConsumer.createDigitalKontaktdata(DigitalKontaktdata.builder()
+                    .epost(EPOST)
+                    .mobil(MOBIL)
+                    .reservert(RESERVERT)
+                    .build());
+        } catch (WebClientResponseException e) {
+            assertThat("response status kode må være 409", e.getStatusCode().value() == 409);
+        }
+    }
+
     private void stubPostKrrData() {
 
         stubFor(post(urlPathMatching("(.*)/api/v2/kontaktinformasjon"))
                 .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubPostKrrDataMed409() {
+
+        stubFor(post(urlPathMatching("(.*)/api/v2/kontaktinformasjon"))
+                .willReturn(aResponse()
+                        .withStatus(409)
                         .withHeader("Content-Type", "application/json")));
     }
 
@@ -115,7 +135,7 @@ public class KrrstubConsumerTest {
         stubFor(delete(urlPathMatching("(.*)/api/v2/kontaktinformasjon/" + IDENT))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
-        
+
         stubFor(get(urlPathMatching("(.*)/api/v2/person/kontaktinformasjon"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, WireMock.equalTo(IDENT))
                 .willReturn(ok()
