@@ -3,7 +3,7 @@ name: Proxy aaregister-proxy
 on:
   push:
     paths:
-      - proxies/aareg-proxy/**
+      - proxies/aaregister-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.aaregister-proxy.yml
