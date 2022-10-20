@@ -20,8 +20,12 @@ export const TpVisning = ({ data, loading }) => {
 		setOrdninger(Options('tpOrdninger'))
 	}, [Options('tpOrdninger')])
 
-	if (loading) return <Loading label="Laster TP forvalter-data" />
-	if (!data) return null
+	if (loading) {
+		return <Loading label="Laster TP forvalter-data" />
+	}
+	if (!data) {
+		return null
+	}
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
