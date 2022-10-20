@@ -126,8 +126,7 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 			tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
 			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 		}
-	}
-	if (_isNil(foedtEtter)) {
+	} else if (_isNil(foedtEtter)) {
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 67)
 		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
 	} else {
