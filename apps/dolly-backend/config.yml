@@ -26,6 +26,9 @@ spec:
         - application: devtools
           cluster: dev-gcp
           namespace: aap
+        - application: bot
+          cluster: dev-gcp
+          namespace: aap
         - application: testnav-helsepersonell-service
           cluster: dev-gcp
     outbound:
