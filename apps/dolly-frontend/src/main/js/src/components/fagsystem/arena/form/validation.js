@@ -52,7 +52,10 @@ const getFoedtEtter = (alder) => {
 // Vedtak/støtte må deles opp i vedtak til fylte 25 år og vedtak etter fylte 25 år.
 const overlapp25aarsdag = (fradato, tildato, values) => {
 	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
 	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	foedtEtter = foedtEtter ? new Date(foedtEtter) : null
+
 	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
 	if (!_isNil(alder)) {
 		foedtFoer = getFoedtFoer(alder)
@@ -69,37 +72,38 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 					return true
 				}
 			}
+			return false
+		} else {
+			foedtEtter = getFoedtEtter(60)
+			foedtFoer = getFoedtFoer(30)
 		}
-	} else if (!_isNil(foedtEtter) && _isNil(foedtFoer)) {
+	}
+
+	if (_isNil(foedtFoer)) {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
 		return isAfter(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
-	} else if (!_isNil(foedtFoer) && _isNil(foedtEtter)) {
+	} else if (_isNil(foedtEtter)) {
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
 		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
-	} else if (!_isNil(foedtFoer) && !_isNil(foedtEtter)) {
+	} else {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
-		return overlapperMedliste(fradato, tildato, [
+		return overlapperMedliste(fradato.toISOString(), tildato.toISOString(), [
 			{
-				fraDato: foedtEtter,
-				tilDato: foedtFoer,
-			},
-		])
-	} else {
-		return overlapperMedliste(fradato, tildato, [
-			{
-				fraDato: getFoedtEtter(60 - 25),
-				tilDato: getFoedtFoer(30 - 25),
+				fraDato: foedtEtter.toISOString(),
+				tilDato: foedtFoer.toISOString(),
 			},
 		])
 	}
-	return false
 }
 
 // Vedtak/støtte må opphøre ved fylt 67.
 const erEtter67aarsdag = (fradato, tildato, values) => {
 	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
 	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	foedtEtter = foedtEtter ? new Date(foedtEtter) : null
+
 	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
 	if (!_isNil(alder)) {
 		foedtFoer = getFoedtFoer(alder)
@@ -108,7 +112,6 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 
 	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
 		const foedselsdatoer = getFoedselsdatoer(values)
-
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
 				let sisteDag = new Date(fdato)
@@ -117,20 +120,21 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 					return true
 				}
 			}
+			return false
+		} else {
+			let tidligsteDato = Date.now()
+			tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
+			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 		}
-	} else if (!_isNil(foedtFoer) && _isNil(foedtEtter)) {
+	}
+	if (_isNil(foedtEtter)) {
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 67)
 		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
-	} else if (!_isNil(foedtEtter)) {
+	} else {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 67)
 		foedtEtter.setDate(foedtEtter.getDate() + 1)
 		return !isBefore(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
-	} else {
-		let tidligsteDato = Date.now()
-		tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
-		return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 	}
-	return false
 }
 
 const validTildato = (fradato, tildato) => {
