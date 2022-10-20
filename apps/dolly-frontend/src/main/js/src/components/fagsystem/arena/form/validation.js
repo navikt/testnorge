@@ -2,6 +2,7 @@ import * as Yup from 'yup'
 import { messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import { isAfter, isBefore } from 'date-fns'
 import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
 
@@ -35,24 +36,90 @@ export const getFoedselsdatoer = (values) => {
 	return []
 }
 
-const overlapp25aarsdag = (fradato, tildato, values) => {
-	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
-	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+const getFoedtFoer = (values) => {
+	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
-	// intervall overlapp for foedtfoer og foedtetter
+	if (!_isNil(alder)) {
+		foedtFoer = Date.now()
+		foedtFoer.setFullYear(foedtFoer.getFullYear() - alder)
+		foedtFoer.setMonth(foedtFoer.getMonth() - 3)
+	}
+	return foedtFoer
+}
 
-	const foedselsdatoer = getFoedselsdatoer(values)
+const getFoedtEtter = (values) => {
+	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
+	if (!_isNil(alder)) {
+		foedtEtter = Date.now()
+		foedtEtter.setFullYear(foedtEtter.getFullYear() - alder - 1)
+	}
+	return foedtEtter
+}
 
-	if (foedselsdatoer?.length > 0) {
-		for (let fdato of foedselsdatoer) {
-			let tjuefem = new Date(fdato)
-			tjuefem.setFullYear(tjuefem.getFullYear() + 25)
-			if (isBefore(fradato, tjuefem) && !isBefore(tildato, tjuefem)) {
-				return true
+// Vedtak/støtte må deles opp i vedtak til fylte 25 år og vedtak etter fylte 25 år.
+const overlapp25aarsdag = (fradato, tildato, values) => {
+	const foedtFoer = getFoedtFoer(values)
+	const foedtEtter = getFoedtEtter(values)
+
+	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
+		const foedselsdatoer = getFoedselsdatoer(values)
+		if (foedselsdatoer?.length > 0) {
+			for (let fdato of foedselsdatoer) {
+				let tjuefem = new Date(fdato)
+				tjuefem.setFullYear(tjuefem.getFullYear() + 25)
+				if (isBefore(fradato, tjuefem) && !isBefore(tildato, tjuefem)) {
+					return true
+				}
 			}
 		}
+	} else if (!_isNil(foedtEtter) && _isNil(foedtFoer)) {
+		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
+		return isAfter(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
+	} else if (!_isNil(foedtFoer) && _isNil(foedtEtter)) {
+		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
+		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
+	} else if (!_isNil(foedtFoer) && !_isNil(foedtEtter)) {
+		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
+		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
+		return overlapperMedliste(fradato, tildato, [
+			{
+				fraDato: foedtEtter,
+				tilDato: foedtFoer,
+			},
+		])
+	} else {
+		// hvis ingen alder satt
 	}
+	return false
+}
 
+// Vedtak/støtte må opphøre ved fylt 67.
+const erEtter67aarsdag = (fradato, tildato, values) => {
+	const foedtFoer = getFoedtFoer(values)
+	const foedtEtter = getFoedtEtter(values)
+	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
+		const foedselsdatoer = getFoedselsdatoer(values)
+
+		if (foedselsdatoer?.length > 0) {
+			for (let fdato of foedselsdatoer) {
+				let sisteDag = new Date(fdato)
+				sisteDag.setFullYear(sisteDag.getFullYear() + 67)
+				if (!isBefore(fradato, sisteDag) || isAfter(tildato, sisteDag)) {
+					return true
+				}
+			}
+		}
+	} else if (!_isNil(foedtFoer) && _isNil(foedtEtter)) {
+		foedtFoer.setFullYear(foedtFoer.getFullYear() + 67)
+		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
+	} else if (!_isNil(foedtEtter)) {
+		foedtEtter.setFullYear(foedtEtter.getFullYear() + 67)
+		foedtEtter.setDate(foedtEtter.getDate() + 1)
+		return !isBefore(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
+	} else {
+		// hvis ingen alder satt -->
+	}
 	return false
 }
 
