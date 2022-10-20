@@ -111,7 +111,7 @@ public class KrrstubConsumerTest {
                     .reservert(RESERVERT)
                     .build());
         } catch (WebClientResponseException e) {
-            assertThat("response status kode mår være 409", e.getStatusCode().value() == 409);
+            assertThat("response status kode må være 409", e.getStatusCode().value() == 409);
         }
     }
 
