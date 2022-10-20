@@ -19,4 +19,9 @@ export default {
 		const endpoint = `${getPensjonUrl()}/tp/ordning`
 		return Request.get(endpoint, headers)
 	},
+
+	getPersonTpOrdninger(ident, miljoe) {
+		const endpoint = `${getPensjonUrl()}/tp/forhold?fnr=${ident}&miljo=${miljoe}`
+		return Request.get(endpoint, headers)
+	},
 }
