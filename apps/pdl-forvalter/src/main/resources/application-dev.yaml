@@ -32,3 +32,7 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-pdl-forvalter-dev
+server:
+  servlet:
+    encoding:
+      charset: UTF-8
