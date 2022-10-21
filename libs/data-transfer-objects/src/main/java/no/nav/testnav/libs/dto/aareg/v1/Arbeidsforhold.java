@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +18,6 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 @Builder
 @Schema(description = "Informasjon om arbeidsforhold")
-@SuppressWarnings({"pmd:TooManyFields", "fb-contrib:CC_CYCLOMATIC_COMPLEXITY"})
 public class Arbeidsforhold {
 
     @Schema(description = "Arbeidsforhold-id i AAREG", example = "123456")
@@ -62,6 +62,9 @@ public class Arbeidsforhold {
     private Boolean innrapportertEtterAOrdningen;
 
     private LocalDateTime sistBekreftet;
+
+    @Schema(description = "Angir periode oppdateringen gjelder fra")
+    private YearMonth navArbeidsforholdPeriode;
 
     public List<Arbeidsavtale> getArbeidsavtaler() {
 

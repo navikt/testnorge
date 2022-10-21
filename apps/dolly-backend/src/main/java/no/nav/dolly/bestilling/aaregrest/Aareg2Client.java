@@ -22,11 +22,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
+import java.time.YearMonth;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aaregrest.util.AaaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
@@ -87,7 +89,6 @@ public class Aareg2Client implements ClientRegister {
     private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
                                       boolean isOpprettEndre, List<String> miljoer) {
 
-//        try {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getHovedperson());
@@ -158,6 +159,8 @@ public class Aareg2Client implements ClientRegister {
                         arbeidsforhold.setArbeidsforholdId(isNotBlank(arbeidsforhold.getArbeidsforholdId()) ?
                                 arbeidsforhold.getArbeidsforholdId() : ekisterende.getArbeidsforholdId());
                         arbeidsforhold.setNavArbeidsforholdId(ekisterende.getNavArbeidsforholdId());
+                        arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
+                                arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
                     }
                 });
         return arbeidsforhold;

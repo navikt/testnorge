@@ -142,6 +142,7 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
                         return arbeidsavtaler;
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)

@@ -36,7 +36,7 @@ public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRes
         return webClient.put()
                 .uri(uriBuilder -> uriBuilder.path(AAREGDATA_URL)
                         .build(miljoe, arbeidsforhold.getNavArbeidsforholdId()))
-                .header(NAV_ARBEIDSFORHOLD_PERIODE, "")
+                .header(NAV_ARBEIDSFORHOLD_PERIODE, arbeidsforhold.getNavArbeidsforholdPeriode().toString())
                 .header(HEADER_NAV_ARBEIDSFORHOLD, CallIdUtil.generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
