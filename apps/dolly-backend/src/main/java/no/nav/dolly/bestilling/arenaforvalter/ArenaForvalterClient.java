@@ -43,7 +43,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         if (e instanceof HttpClientErrorException) {
             status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString(StandardCharsets.UTF_8).replace(',', '='))
+                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
                     .append(')');
         }
     }
