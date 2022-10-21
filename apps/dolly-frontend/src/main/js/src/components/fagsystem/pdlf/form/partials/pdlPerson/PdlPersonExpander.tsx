@@ -17,6 +17,7 @@ interface PdlPersonValues {
 export const PdlPersonExpander = ({
 	nyPersonPath,
 	eksisterendePersonPath,
+	eksisterendeNyPerson = null,
 	label,
 	formikBag,
 	nyIdentValg = null,
@@ -49,6 +50,7 @@ export const PdlPersonExpander = ({
 					label={label}
 					formikBag={formikBag}
 					nyIdentValg={nyIdentValg}
+					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
 		</div>

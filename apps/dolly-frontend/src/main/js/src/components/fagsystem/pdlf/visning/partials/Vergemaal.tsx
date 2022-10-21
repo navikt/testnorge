@@ -33,16 +33,19 @@ export const Vergemaal = ({
 		return null
 	}
 
-	const VergemaalLes = ({ vergemaalData, idx }) => {
+	const VergemaalLes = ({ vergemaalData, redigertRelatertePersoner = null, idx }) => {
 		if (!vergemaalData) {
 			return null
 		}
 
 		const retatertPersonIdent = vergemaalData.vergeIdent
 		const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
+		const relasjonRedigert = redigertRelatertePersoner?.find(
+			(item) => item.relatertPerson?.ident === retatertPersonIdent
+		)
+
 		const harFullmektig = vergemaalData.sakType === 'FRE'
 
-		// console.log('vergemaalData: ', vergemaalData) //TODO - SLETT MEG
 		return (
 			<>
 				<div className="person-visning_redigerbar" key={idx}>
@@ -69,7 +72,7 @@ export const Vergemaal = ({
 						title="Gyldig t.o.m."
 						value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
 					/>
-					{!relasjon && (
+					{!relasjon && !relasjonRedigert && (
 						<TitleValue
 							title={harFullmektig ? 'Fullmektig' : 'Verge'}
 							value={
@@ -78,9 +81,9 @@ export const Vergemaal = ({
 						/>
 					)}
 				</div>
-				{relasjon && (
+				{(relasjonRedigert || relasjon) && (
 					<RelatertPerson
-						data={relasjon.relatertPerson}
+						data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}
 						tittel={harFullmektig ? 'Fullmektig' : 'Verge'}
 					/>
 				)}
@@ -91,30 +94,51 @@ export const Vergemaal = ({
 	const VergemaalVisning = ({ vergemaalData, idx }) => {
 		const initVergemaal = Object.assign(_cloneDeep(initialVergemaal), data[idx])
 		let initialValues = { vergemaal: initVergemaal }
-		// console.log('initialValues 1: ', initialValues) //TODO - SLETT MEG
 		initialValues.vergemaal.nyVergeIdent = initialPdlPerson
-		// console.log('initialValues 2: ', initialValues) //TODO - SLETT MEG
 
 		const redigertVergemaalPdlf = _get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
 			(a: VergemaalValues) => a.id === vergemaalData.id
 		)
+		const redigertRelatertePersoner = _get(tmpPersoner, `${ident}.relasjoner`)
+
 		const slettetVergemaalPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertVergemaalPdlf
 		if (slettetVergemaalPdlf) {
 			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 		}
 
 		const vergemaalValues = redigertVergemaalPdlf ? redigertVergemaalPdlf : vergemaalData
-		const redigertVergemaalValues = redigertVergemaalPdlf
+		let redigertVergemaalValues = redigertVergemaalPdlf
 			? {
 					vergemaal: Object.assign(_cloneDeep(initialVergemaal), redigertVergemaalPdlf),
 			  }
 			: null
+		if (redigertVergemaalValues) {
+			redigertVergemaalValues.vergemaal.nyVergeIdent = initialPdlPerson
+		}
+
+		const eksisterendeNyPerson = redigertRelatertePersoner
+			? {
+					value: redigertRelatertePersoner[0]?.relatertPerson?.ident,
+					label: `${redigertRelatertePersoner[0]?.relatertPerson?.ident} - ${redigertRelatertePersoner?.[0]?.relatertPerson?.navn?.[0]?.fornavn} ${redigertRelatertePersoner?.[0]?.relatertPerson?.navn?.[0]?.etternavn}`,
+			  }
+			: {
+					value: relasjoner?.[0]?.relatertPerson?.ident,
+					label: `${relasjoner?.[0]?.relatertPerson?.ident} - ${relasjoner?.[0]?.relatertPerson?.navn?.[0]?.fornavn} ${relasjoner?.[0]?.relatertPerson?.navn?.[0]?.etternavn}`,
+			  }
+
 		return erPdlVisning ? (
 			<VergemaalLes vergemaalData={vergemaalData} idx={idx} />
 		) : (
 			<VisningRedigerbarConnector
-				dataVisning={<VergemaalLes vergemaalData={vergemaalValues} idx={idx} />}
+				dataVisning={
+					<VergemaalLes
+						vergemaalData={vergemaalValues}
+						redigertRelatertePersoner={redigertRelatertePersoner}
+						idx={idx}
+					/>
+				}
 				initialValues={initialValues}
+				eksisterendeNyPerson={eksisterendeNyPerson}
 				redigertAttributt={redigertVergemaalValues}
 				path="vergemaal"
 				ident={ident}

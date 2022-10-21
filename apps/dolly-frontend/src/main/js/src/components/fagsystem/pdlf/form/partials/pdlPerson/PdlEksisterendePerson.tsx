@@ -30,15 +30,11 @@ export const PdlEksisterendePerson = ({
 	idx,
 	disabled = false,
 	nyIdentValg = null,
+	eksisterendeNyPerson = null,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	// const { gruppeId, antall } = opts
-	const antall = 0
-	// console.log('opts: ', opts) //TODO - SLETT MEG
-
+	const antall = opts?.antall || 1
 	const { gruppeId } = useParams()
-	// console.log('gruppeId: ', gruppeId) //TODO - SLETT MEG
-	//TODO Fortsett her!!
 
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
@@ -56,8 +52,6 @@ export const PdlEksisterendePerson = ({
 		'SKILT_PARTNER',
 		'GJENLEVENDE_PARTNER',
 	]
-
-	const eksisterendePerson = _get(formikBag?.values, eksisterendePersonPath)
 
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
@@ -86,7 +80,6 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const filterOptions = (person: Option) => {
-		// console.log('person: ', person) //TODO - SLETT MEG
 		if (harSivilstand) {
 			return gyldigeSivilstanderForPartner.includes(person.sivilstand)
 		} else if (eksisterendePersonPath?.includes('vergemaal')) {
@@ -122,13 +115,19 @@ export const PdlEksisterendePerson = ({
 
 	const getFilteredOptionList = () => {
 		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
+		let tmpOptions = []
 		// @ts-ignore
 		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
-			setIdentOptions(
-				response?.filter((person) => {
-					return person.value !== eksisterendeIdent && filterOptions(person)
-				})
-			)
+			tmpOptions = response?.filter((person) => {
+				return person.value !== eksisterendeIdent && filterOptions(person)
+			})
+			if (
+				eksisterendeNyPerson &&
+				!tmpOptions.find((person) => person.value === eksisterendeNyPerson.value)
+			) {
+				tmpOptions.push(eksisterendeNyPerson)
+			}
+			setIdentOptions(tmpOptions)
 			setLoadingIdentOptions(false)
 		})
 	}
@@ -150,7 +149,7 @@ export const PdlEksisterendePerson = ({
 		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath), ['syntetisk'])
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
-	// console.log('identOptions: ', identOptions) //TODO - SLETT MEG
+
 	return (
 		<div className={'flexbox--full-width'}>
 			{loadingIdentOptions && <Loading label="Henter valg for eksisterende ident..." />}
@@ -161,7 +160,6 @@ export const PdlEksisterendePerson = ({
 					options={identOptions}
 					size={'xlarge'}
 					disabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
-					placeholder={eksisterendePerson}
 				/>
 			) : (
 				!loadingIdentOptions && (

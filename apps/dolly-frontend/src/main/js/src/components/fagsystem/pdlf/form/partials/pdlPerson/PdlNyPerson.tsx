@@ -23,6 +23,7 @@ export const PdlNyPerson = ({
 	formikBag,
 	erNyIdent = false,
 	gruppeIdenter,
+	eksisterendeNyPerson = null,
 }: PdlNyPersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const isLeggTil = opts?.is?.leggTil
@@ -37,14 +38,13 @@ export const PdlNyPerson = ({
 			? Options('identtype').filter((a) => a.value !== 'NPID')
 			: Options('identtype')
 
-	// console.log('eksisterendePersonPath: ', eksisterendePersonPath) //TODO - SLETT MEG
-	// console.log('gruppeIdenter: ', gruppeIdenter) //TODO - SLETT MEG
 	const eksisterendePerson = _get(formikBag?.values, eksisterendePersonPath)
-	// console.log('eksisterendePerson: ', eksisterendePerson) //TODO - SLETT MEG
+
 	const hasEksisterendePerson =
-		eksisterendePersonPath &&
-		eksisterendePerson !== null &&
-		gruppeIdenter?.includes(eksisterendePerson)
+		(eksisterendePersonPath &&
+			eksisterendePerson !== null &&
+			gruppeIdenter?.includes(eksisterendePerson)) ||
+		_get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>

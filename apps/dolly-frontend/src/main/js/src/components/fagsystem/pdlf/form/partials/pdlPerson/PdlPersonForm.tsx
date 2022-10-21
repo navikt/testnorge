@@ -21,10 +21,8 @@ export const PdlPersonForm = ({
 	label,
 	formikBag,
 	nyIdentValg = null,
+	eksisterendeNyPerson = null,
 }: PdlPersonValues) => {
-	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-	console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
-
 	const { gruppeId } = useParams()
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
@@ -40,6 +38,7 @@ export const PdlPersonForm = ({
 				formikBag={formikBag}
 				erNyIdent={nyIdentValg !== null}
 				gruppeIdenter={gruppeIdenter}
+				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
 			<h4>Velg eksisterende person</h4>
 			<PdlEksisterendePerson
@@ -48,6 +47,7 @@ export const PdlPersonForm = ({
 				label={label}
 				formikBag={formikBag}
 				nyIdentValg={nyIdentValg}
+				eksisterendeNyPerson={eksisterendeNyPerson}
 			/>
 		</>
 	)

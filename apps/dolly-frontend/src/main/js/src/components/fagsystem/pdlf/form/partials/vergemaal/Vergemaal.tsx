@@ -16,7 +16,7 @@ interface VergemaalForm {
 	path?: string
 }
 
-export const VergemaalForm = ({ formikBag, path }: VergemaalForm) => {
+export const VergemaalForm = ({ formikBag, path, eksisterendeNyPerson = null }: VergemaalForm) => {
 	return (
 		<>
 			<FormikSelect
@@ -46,6 +46,7 @@ export const VergemaalForm = ({ formikBag, path }: VergemaalForm) => {
 			<PdlPersonExpander
 				nyPersonPath={`${path}.nyVergeIdent`}
 				eksisterendePersonPath={`${path}.vergeIdent`}
+				eksisterendeNyPerson={eksisterendeNyPerson}
 				label={'VERGE'}
 				formikBag={formikBag}
 				isExpanded={

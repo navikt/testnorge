@@ -96,6 +96,7 @@ export const VisningRedigerbar = ({
 	getPdlForvalter,
 	dataVisning,
 	initialValues,
+	eksisterendeNyPerson = null,
 	redigertAttributt = null,
 	path,
 	ident,
@@ -205,7 +206,13 @@ export const VisningRedigerbar = ({
 					/>
 				)
 			case Attributt.Vergemaal:
-				return <VergemaalForm formikBag={formikBag} path={path} />
+				return (
+					<VergemaalForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
