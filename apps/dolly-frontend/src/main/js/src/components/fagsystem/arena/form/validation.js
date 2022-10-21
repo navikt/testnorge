@@ -17,7 +17,6 @@ const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 export const getFoedselsdatoer = (values) => {
 	const personFoerLeggTil = values?.personFoerLeggTil
 	const importPersoner = values?.importPersoner
-
 	if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
 		return [values.pdldata.person.foedsel[0].foedselsdato]
 	} else if (personFoerLeggTil?.tpsf?.foedselsdato) {
@@ -37,14 +36,14 @@ export const getFoedselsdatoer = (values) => {
 }
 
 const getFoedtFoer = (alder) => {
-	let foedtFoer = Date.now()
+	let foedtFoer = new Date()
 	foedtFoer.setFullYear(foedtFoer.getFullYear() - alder)
 	foedtFoer.setMonth(foedtFoer.getMonth() - 3)
 	return foedtFoer
 }
 
 const getFoedtEtter = (alder) => {
-	let foedtEtter = Date.now()
+	let foedtEtter = new Date()
 	foedtEtter.setFullYear(foedtEtter.getFullYear() - alder - 1)
 	return foedtEtter
 }
@@ -122,7 +121,7 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 			}
 			return false
 		} else {
-			let tidligsteDato = Date.now()
+			let tidligsteDato = new Date()
 			tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
 			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 		}
@@ -257,13 +256,41 @@ export const validation = Yup.object({
 					const fradato = this.options.context.arenaforvalter.aap[0].fraDato
 					return validTildato(fradato, tildato)
 				})
+				.test(
+					'overlapper-ikke-25',
+					'Vedtak kan ikke overlappe dato personen fyller 25',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
+					}
+				)
+				.test(
+					'avslutter-ved-67',
+					'Vedtak må avsluttes senest når personen fyller 67 år',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
+					}
+				)
 				.nullable()
 				.required(messages.required),
 		})
 	),
 	aap115: Yup.array().of(
 		Yup.object({
-			fraDato: requiredDate,
+			fraDato: Yup.string()
+				.test(
+					'avslutter-ved-67',
+					'Person kan ikke ha vedtak etter fylt 67 år',
+					function validDate(fradato) {
+						const values = this.options.context
+						return !erEtter67aarsdag(new Date(fradato), null, values)
+					}
+				)
+				.nullable()
+				.required(messages.required),
 		})
 	),
 	arenaBrukertype: requiredString,
@@ -286,15 +313,33 @@ export const validation = Yup.object({
 			rettighetKode: Yup.string().required(messages.required),
 			fraDato: validFradato('dagpenger'),
 			tilDato: Yup.string()
-				.test('etter-fradato', 'Til-dato må være etter fra-dato.', function validDate(tildato) {
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
 					const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 					return validTildato(fradato, tildato)
 				})
 				.test(
 					'skaper-ikke-overlapp',
-					'Manglende til-dato skaper overlapp med annet vedtak.',
+					'Manglende til-dato skaper overlapp med annet vedtak',
 					function validDate(tildato) {
 						return ingenOverlappFraTildato(tildato, this.options.context)
+					}
+				)
+				.test(
+					'overlapper-ikke-25',
+					'Vedtak kan ikke overlappe dato personen fyller 25',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
+					}
+				)
+				.test(
+					'avslutter-ved-67',
+					'Vedtak må avsluttes senest når personen fyller 67 år',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
 					}
 				)
 				.nullable(),
