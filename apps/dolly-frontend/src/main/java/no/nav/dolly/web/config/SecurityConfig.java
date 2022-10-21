@@ -52,6 +52,7 @@ public class SecurityConfig {
                 .pathMatchers(
                         "/internal/isReady",
                         "/internal/isAlive",
+                        "/internal/metrics",
                         "/oauth2/callback",
                         "/favicon.ico",
                         LOGIN,
