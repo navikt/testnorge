@@ -29,6 +29,7 @@ public class SecurityConfig {
                         "/swagger-ui.html",
                         "/webjars/**",
                         "/v3/api-docs/**",
+                        "/internal/metrics",
                         "/internal/isReady",
                         "/internal/isAlive",
                         "/h2"
