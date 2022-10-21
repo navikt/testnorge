@@ -26,6 +26,7 @@ type Person = {
 	fornavn: string
 	mellomnavn?: string
 	etternavn: string
+	aktoerId?: string
 }
 
 type ResponsBestilling = {
@@ -38,7 +39,7 @@ type ResponsBestilling = {
 }
 
 const StyledAsyncSelect = styled(AsyncSelect)`
-	width: 78%;
+	width: 80%;
 	margin-top: 2px;
 `
 
@@ -139,7 +140,7 @@ const FinnPersonBestilling = ({
 					: `${person.fornavn} ${person.etternavn}`
 				personer.push({
 					value: person.ident,
-					label: `${person.ident} - ${navn.toUpperCase()}`,
+					label: `${person?.aktoerId || person.ident} - ${navn.toUpperCase()}`,
 				})
 			})
 	}
@@ -168,7 +169,7 @@ const FinnPersonBestilling = ({
 			TpsfApi.soekPersoner(tekst),
 			PdlforvalterApi.soekPersoner(tekst),
 			PersonSearch.searchPdlFragment(tekst),
-			DollyApi.getPersonFraPdl(tekst),
+			DollyApi.getAktoerFraPdl(tekst),
 		])) as any
 
 		const personer: Array<Option> = []
@@ -200,6 +201,7 @@ const FinnPersonBestilling = ({
 			const pdlAktoerer = [
 				{
 					ident: pdlAktoerValues.value?.data?.data?.hentIdenter?.identer?.[0]?.ident,
+					aktoerId: pdlAktoerValues.value?.data?.data?.hentIdenter?.identer?.[1]?.ident,
 					fornavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.fornavn,
 					mellomnavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.mellomnavn,
 					etternavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.etternavn,
@@ -280,7 +282,7 @@ const FinnPersonBestilling = ({
 						label="Person"
 						placeholder={
 							soekType === SoekTypeValg.PERSON
-								? 'Søk etter navn eller ident'
+								? 'Søk etter navn, ident eller aktør-ID'
 								: 'Søk etter bestilling'
 						}
 						noOptionsMessage={() => 'Ingen treff'}

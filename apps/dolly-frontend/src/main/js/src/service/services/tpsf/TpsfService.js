@@ -16,7 +16,9 @@ export default {
 	},
 
 	soekPersoner(fragment) {
-		if (!fragment) return
+		if (!fragment || fragment.length > 11) {
+			return null
+		}
 		const endpoint = `${getTpsfUrl()}/dolly/testdata/soekperson?fragment=${fragment}`
 		return Request.get(endpoint)
 	},
