@@ -67,7 +67,7 @@ public class KrrstubClientTest {
                 .thenReturn(new DigitalKontaktdata());
 
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenReturn(ResponseEntity.ok(""));
-        when(krrstubConsumer.deleteKontaktdata(anyList())).thenReturn(Mono.just(List.of(IDENT)));
+        when(krrstubConsumer.deleteKontaktdataPerson(anyList())).thenReturn(Mono.just(List.of()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
@@ -91,7 +91,7 @@ public class KrrstubClientTest {
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
-        when(krrstubConsumer.deleteKontaktdata(anyList())).thenReturn(Mono.just(List.of(IDENT)));
+        when(krrstubConsumer.deleteKontaktdataPerson(anyList())).thenReturn(Mono.just(List.of()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
@@ -113,7 +113,7 @@ public class KrrstubClientTest {
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(WebClientResponseException.create(HttpStatus.CONFLICT.value(), "Conflict", null, null, null));
         when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenCallRealMethod();
-        when(krrstubConsumer.deleteKontaktdata(anyList())).thenReturn(Mono.just(List.of(IDENT)));
+        when(krrstubConsumer.deleteKontaktdataPerson(anyList())).thenReturn(Mono.just(List.of()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
