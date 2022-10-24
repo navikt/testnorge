@@ -1,5 +1,5 @@
 import { KrrVisning } from '~/components/fagsystem/krrstub/visning/KrrVisning'
-import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/Visning'
+import { PdlfVisning } from '~/components/fagsystem/pdlf/visning/PdlfVisning'
 import { ArenaVisning } from '~/components/fagsystem/arena/visning/ArenaVisning'
 import { AaregVisning } from '~/components/fagsystem/aareg/visning/Visning'
 import { UdiVisning } from '~/components/fagsystem/udistub/visning/UdiVisning'
@@ -8,6 +8,7 @@ import { InntektstubVisning } from '~/components/fagsystem/inntektstub/visning/V
 import { InntektsmeldingVisning } from '~/components/fagsystem/inntektsmelding/visning/Visning'
 import { InstVisning } from '~/components/fagsystem/inst/visning/InstVisning'
 import { PensjonVisning } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+import { TpVisning } from '~/components/fagsystem/pensjon/visning/TpVisning'
 import { BrregVisning } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { TpsfVisning } from '~/components/fagsystem/tpsf/visning/Visning'
 import { DokarkivVisning } from '~/components/fagsystem/dokarkiv/visning'
@@ -26,6 +27,7 @@ export {
 	InstVisning,
 	BrregVisning,
 	PensjonVisning,
+	TpVisning,
 	DokarkivVisning,
 	SykemeldingVisning,
 }

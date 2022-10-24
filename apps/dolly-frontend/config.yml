@@ -6,7 +6,8 @@ metadata:
   labels:
     team: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-body-size: 50m
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   tokenx:
     enabled: true

@@ -5,6 +5,9 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   tokenx:
     enabled: true
@@ -22,7 +25,10 @@ spec:
           namespace: etterlatte
         - application: devtools
           cluster: dev-gcp
-          namespace: aap          
+          namespace: aap
+        - application: bot
+          cluster: dev-gcp
+          namespace: aap
         - application: testnav-helsepersonell-service
           cluster: dev-gcp
     outbound:

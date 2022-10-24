@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.krrstub;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -14,8 +15,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -45,7 +48,7 @@ public class KrrstubClientTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private ErrorStatusDecoder errorStatusDecoder;
+    private ErrorStatusDecoder errorStatusDecoder = new ErrorStatusDecoder(new ObjectMapper());
 
     @InjectMocks
     private KrrstubClient krrstubClient;
@@ -98,5 +101,28 @@ public class KrrstubClientTest {
         verify(krrStubResponseHandler, times(0)).extractResponse(any());
 
         assertThat(progress.getKrrstubStatus(), containsString("Feil:"));
+    }
+
+    @Test
+    void gjenopprett_krrdata_feil_med_status_kode_ved_4xx() {
+
+        BestillingProgress progress = BestillingProgress.builder()
+                .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
+                .build();
+        when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
+                .thenReturn(new DigitalKontaktdata());
+        when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(WebClientResponseException.create(HttpStatus.CONFLICT.value(), "Conflict", null, null, null));
+        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenCallRealMethod();
+        when(krrstubConsumer.deleteKontaktdata(anyList())).thenReturn(Mono.just(List.of(IDENT)));
+
+        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        request.setKrrstub(RsDigitalKontaktdata.builder().build());
+        krrstubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+
+        verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
+        verify(krrStubResponseHandler, times(0)).extractResponse(any());
+
+        assertThat(progress.getKrrstubStatus(), containsString("Feil="));
+        assertThat(progress.getKrrstubStatus(), containsString(HttpStatus.CONFLICT.toString()));
     }
 }

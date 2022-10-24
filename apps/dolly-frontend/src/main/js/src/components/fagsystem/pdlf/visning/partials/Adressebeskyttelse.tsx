@@ -8,7 +8,7 @@ import _cloneDeep from 'lodash/cloneDeep'
 import { initialAdressebeskyttelse } from '~/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
 import { AdressebeskyttelseData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type AdressebeskyttelseTypes = {
 	data: Array<AdressebeskyttelseData>

@@ -12,6 +12,7 @@ import {
 	InstVisning,
 	KrrVisning,
 	PensjonVisning,
+	TpVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
 	TpsfVisning,
@@ -70,9 +71,8 @@ export const PersonVisning = ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
-	const { bestillingerById } = useBestillingerGruppe(gruppeId)
 
-	const bestillinger = ident.bestillinger ? [] : bestillingerById
+	const bestillinger = []
 
 	if (ident.bestillinger) {
 		ident.bestillinger.map((b) => {
@@ -110,6 +110,7 @@ export const PersonVisning = ({
 		aareg,
 		sigrunstub,
 		pensjonforvalter,
+		tpforvalter,
 		inntektstub,
 		brregstub,
 		krrstub,
@@ -256,6 +257,7 @@ export const PersonVisning = ({
 				<AaregVisning liste={aareg} loading={loading.aareg} />
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
+				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

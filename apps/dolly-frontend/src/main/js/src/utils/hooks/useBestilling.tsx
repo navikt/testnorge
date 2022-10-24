@@ -5,6 +5,9 @@ import { System } from '~/ducks/bestillingStatus/bestillingStatusMapper'
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
 
+const getIkkeFerdigBestillingerGruppeUrl = (gruppeId: string | number) =>
+	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}/ikkeferdig`
+
 const getBestillingByIdUrl = (bestillingId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/${bestillingId}`
 
@@ -34,7 +37,33 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 			error: 'GruppeId mangler!',
 		}
 	}
+
 	const { data, error } = useSWR<Bestilling[], Error>(getBestillingerGruppeUrl(gruppeId), fetcher)
+
+	const bestillingerSorted = data
+		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))
+		.reduce((acc: { [key: string]: Bestilling }, curr) => ((acc[curr.id] = curr), acc), {})
+
+	return {
+		bestillinger: data,
+		bestillingerById: bestillingerSorted,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useIkkeFerdigBestillingerGruppe = (gruppeId: string | number, visning, sidetall: number, sideStoerrelse: number) => {
+	if (!gruppeId) {
+		return {
+			loading: false,
+			error: 'GruppeId mangler!',
+		}
+	}
+
+	const url = visning == 'personer'
+		? getIkkeFerdigBestillingerGruppeUrl(gruppeId)
+		: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
+	const { data, error } = useSWR<Bestilling[], Error>(url, fetcher)
 
 	const bestillingerSorted = data
 		?.sort((bestilling, bestilling2) => (bestilling.id < bestilling2.id ? 1 : -1))

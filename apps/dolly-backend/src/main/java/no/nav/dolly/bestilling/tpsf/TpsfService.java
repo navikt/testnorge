@@ -25,6 +25,7 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +72,7 @@ public class TpsfService {
     protected static String getMessage(Throwable error) {
 
         return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString() :
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 error.getMessage();
     }
 

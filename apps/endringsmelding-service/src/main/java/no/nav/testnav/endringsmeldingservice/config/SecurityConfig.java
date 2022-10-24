@@ -29,7 +29,8 @@ public class SecurityConfig {
                         "/webjars/**",
                         "/v3/api-docs/**",
                         "/internal/isReady",
-                        "/internal/isAlive"
+                        "/internal/isAlive",
+                        "/internal/metrics"
                 ).permitAll()
                 .anyExchange().authenticated()
                 .and()

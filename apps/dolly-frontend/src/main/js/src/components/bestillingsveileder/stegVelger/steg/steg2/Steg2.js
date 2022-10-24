@@ -24,7 +24,7 @@ const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn
 
 const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 	if (leggTil) {
-		return 'Du har ikke lagt til flere egenskaper. Dolly vil opprette den samme personen i miljøene du velger i neste steg.'
+		return 'Du har ikke lagt til flere egenskaper. Vennligst gå tilbake og velg nye egenskaper.'
 	} else if (importTestnorge) {
 		return (
 			<span>

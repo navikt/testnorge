@@ -11,6 +11,7 @@ export type Gruppe = {
 	navn: string
 	hensikt: string
 	antallIdenter: number
+	antallBestillinger: number
 	opprettetAv: { brukernavn: string; navIdent: string }
 	datoEndret: Date
 	erEierAvGruppe: boolean

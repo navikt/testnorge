@@ -6,6 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseDTO.HendelseDTO>> {
@@ -16,8 +17,8 @@ public abstract class PdlTestdataCommand implements Callable<Mono<OrdreResponseD
     protected static String getMessage(Throwable error) {
 
         return error instanceof WebClientResponseException webClientResponseException &&
-                StringUtils.isNotBlank(webClientResponseException.getResponseBodyAsString()) ?
-                webClientResponseException.getResponseBodyAsString() :
+                StringUtils.isNotBlank(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8)) ?
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 error.getMessage();
     }
 

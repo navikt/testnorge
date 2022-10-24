@@ -6,8 +6,10 @@ import io.micrometer.core.annotation.Timed;
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsIdenterCommand;
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsServiceRoutineV1Command;
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsStatusPaaIdenterCommand;
+import no.nav.testnav.apps.hodejegeren.consumer.credential.TpsfProxyProperties;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.apache.tomcat.util.buf.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
@@ -30,14 +32,17 @@ import no.nav.testnav.apps.hodejegeren.consumer.dto.ServiceRoutineDTO;
 public class TpsfConsumer {
     private final WebClient webClient;
     private final Executor executor;
+    private final TokenExchange tokenExchange;
+    private final ServerProperties serviceProperties;
 
     public TpsfConsumer(
             Executor executor,
-            @Value("${consumers.tps-forvalteren.url}") String serverUrl,
-            @Value("${testnorges.ida.credential.tpsf.username}") String username,
-            @Value("${testnorges.ida.credential.tpsf.password}") String password
+            TpsfProxyProperties serviceProperties,
+            TokenExchange tokenExchange
     ) {
         this.executor = executor;
+        this.serviceProperties = serviceProperties;
+        this.tokenExchange = tokenExchange;
 
         HttpClient client = HttpClient
                 .create()
@@ -49,8 +54,7 @@ public class TpsfConsumer {
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(serverUrl)
-                .defaultHeaders(headers -> headers.setBasicAuth(username, password))
+                .baseUrl(serviceProperties.getUrl())
                 .clientConnector(new ReactorClientHttpConnector(client))
                 .build();
     }
@@ -61,7 +65,12 @@ public class TpsfConsumer {
             List<String> aarsakskode,
             String transaksjonstype
     ) {
-        return new GetTpsIdenterCommand(webClient, StringUtils.join(aarsakskode, ','), transaksjonstype, avspillergruppeId).call();
+        return tokenExchange.exchange(serviceProperties).flatMap(accessToken -> new GetTpsIdenterCommand(
+                        webClient,
+                        accessToken.getTokenValue(),
+                        StringUtils.join(aarsakskode, ','),
+                        transaksjonstype, avspillergruppeId).call())
+                .block();
     }
 
     public JsonNode getTpsServiceRoutine(
@@ -70,7 +79,9 @@ public class TpsfConsumer {
             String miljoe,
             String fnr
     ) throws IOException {
-        var response = new GetTpsServiceRoutineV1Command(webClient, routineName, aksjonsKode, miljoe, fnr).call();
+        var response = tokenExchange.exchange(serviceProperties)
+                .flatMap(accessToken -> new GetTpsServiceRoutineV1Command(
+                        webClient, accessToken.getTokenValue(), routineName, aksjonsKode, miljoe, fnr).call()).block();
         return new ObjectMapper().readTree(response);
     }
 
@@ -81,7 +92,10 @@ public class TpsfConsumer {
 
     private CompletableFuture<ServiceRoutineDTO> getFuture(String routineName, String aksjonsKode, String miljoe, String fnr) {
         return CompletableFuture.supplyAsync(
-                () -> new GetTpsServiceRoutineV2Command(webClient, routineName, aksjonsKode, miljoe, fnr).call(),
+                () -> tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+                                new GetTpsServiceRoutineV2Command(
+                                        webClient, accessToken.getTokenValue(), routineName, aksjonsKode, miljoe, fnr).call())
+                        .block(),
                 executor
         );
     }
@@ -93,7 +107,10 @@ public class TpsfConsumer {
             List<String> identer
     ) throws IOException {
         var identerSomString = String.join(",", identer);
-        var response = new GetTpsStatusPaaIdenterCommand(webClient, aksjonskode, identer.size(), miljoe, identerSomString).call();
+        var response = tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
+                        new GetTpsStatusPaaIdenterCommand(
+                                webClient, accessToken.getTokenValue(), aksjonskode, identer.size(), miljoe, identerSomString).call())
+                .block();
         return new ObjectMapper().readTree(response).findValue("response");
     }
 }

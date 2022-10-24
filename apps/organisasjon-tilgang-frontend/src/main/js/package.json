@@ -1,12 +1,12 @@
 {
   "name": "endringsmelding-frontend",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "private": true,
   "homepage": "/",
   "dependencies": {
     "@navikt/dolly-komponenter": "^1.2.33",
     "@navikt/dolly-lib": "^1.2.11",
-    "@navikt/ds-icons": "^0.8.20",
+    "@navikt/ds-icons": "^1.3.24",
     "@navikt/fnrvalidator": "^1.3.0",
     "classnames": "^2.3.1",
     "date-fns": "^2.29.1",
@@ -17,12 +17,12 @@
     "react-day-picker": "^8.1.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "^5.0.1",
     "react-select": "^5.4.0",
     "stream": "^0.0.2",
     "styled-components": "^5.3.5"
   },
   "devDependencies": {
+    "react-scripts": "^5.0.1",
     "@types/react": "^18.0.17",
     "@types/react-datepicker": "^4.4.2",
     "@types/react-dom": "^18.0.6",

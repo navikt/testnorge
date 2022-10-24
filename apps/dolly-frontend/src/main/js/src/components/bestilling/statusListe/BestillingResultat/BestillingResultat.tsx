@@ -15,9 +15,10 @@ import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
 type ResultatProps = {
 	bestilling: Bestillingsstatus
 	setNyeBestillinger: Function
+	lukkBestilling: Function
 }
 
-export default function BestillingResultat({ bestilling, setNyeBestillinger }: ResultatProps) {
+export default function BestillingResultat({ bestilling, setNyeBestillinger, lukkBestilling }: ResultatProps) {
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
@@ -32,11 +33,12 @@ export default function BestillingResultat({ bestilling, setNyeBestillinger }: R
 				<div className="status-header_button-wrap">
 					<Button
 						kind="remove-circle"
-						onClick={() =>
+						onClick={() => {
 							setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
 								nyeBestillinger.filter((best) => best.id !== bestilling.id)
 							)
-						}
+							lukkBestilling && lukkBestilling(bestilling.id)
+						}}
 					/>
 				</div>
 			</div>
