@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.krrstub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataCommand;
+import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataPersonCommand;
 import no.nav.dolly.bestilling.krrstub.command.GetKontaktdataCommand;
 import no.nav.dolly.config.credentials.KrrstubProxyProperties;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
@@ -29,9 +30,7 @@ import java.util.UUID;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -95,6 +94,17 @@ public class KrrstubConsumer {
                             new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue());
                             return format("Slettet ident med id=%d", resp.getId());
                         })
+                ).collectList();
+    }
+
+    public Mono<List<String>> deleteKontaktdataPerson(List<String> identer) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token ->
+                    Flux.fromStream(identer.stream())
+                            .map(ident -> new DeleteKontaktadataPersonCommand(webClient, ident, token.getTokenValue()).call())
+                            .flatMap(Flux::from)
+                            .map(httpStatus -> "ident slettet")
                 ).collectList();
     }
 
