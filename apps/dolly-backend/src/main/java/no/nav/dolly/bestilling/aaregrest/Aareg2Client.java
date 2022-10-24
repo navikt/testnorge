@@ -19,7 +19,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.time.YearMonth;
@@ -51,8 +50,6 @@ public class Aareg2Client implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        StringBuilder result = new StringBuilder();
-
         if (!bestilling.getAareg().isEmpty()) {
 
             if (!dollyPerson.isOpprettetIPDL()) {
@@ -68,16 +65,13 @@ public class Aareg2Client implements ClientRegister {
                     .map(RsAareg::getAmelding)
                     .anyMatch(amelding -> !amelding.isEmpty())) {
 
-                miljoer.forEach(env ->
-                        ameldingService.sendAmelding(bestilling, dollyPerson, progress, result, env));
+                progress.setAaregStatus(ameldingService.sendAmelding(bestilling, dollyPerson, progress.getBestilling().getId(), miljoer));
 
             } else {
 
-                result.append(sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, miljoer));
+                progress.setAaregStatus(sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, miljoer));
             }
         }
-
-        progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
     @Override
@@ -106,33 +100,20 @@ public class Aareg2Client implements ClientRegister {
     private Flux<String> doInsertOrUpdate(ArbeidsforholdRespons response, List<Arbeidsforhold> request,
                                           String miljoe, AccessToken token) {
 
-
         var arbforholdId = new AtomicInteger(0);
 
-        if (isNull(response.getError()) || response.getError() instanceof WebClientResponseException.NotFound) {
-
-            return Flux.fromIterable(request)
-                    .flatMap(entry -> {
-                        if (isBlank(entry.getArbeidsforholdId())) {
-                            entry.setArbeidsforholdId(Integer.toString(arbforholdId.incrementAndGet()));
-                        }
-                        return aaregConsumer.opprettArbeidsforhold(entry, miljoe, token)
-                                .map(reply -> decodeStatus(miljoe, reply));
-                    });
-        } else {
-
-            var eksistens = doEksistenssjekk(response, request);
-            return Flux.concat(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
-                    .flatMap(entry -> {
-                        if (isBlank(entry.getArbeidsforholdId())) {
-                            entry.setArbeidsforholdId(Integer.toString(arbforholdId.incrementAndGet()));
-                        }
-                        return aaregConsumer.opprettArbeidsforhold(entry, miljoe, token);
-                    }),
-                    Flux.fromIterable(eksistens.getEksisterendeArbeidsforhold())
-                            .flatMap(entry -> aaregConsumer.endreArbeidsforhold(entry, miljoe, token)))
-                    .map(reply -> decodeStatus(miljoe, reply));
-        }
+        var eksistens = doEksistenssjekk(response, request);
+        return Flux.concat(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
+                                .flatMap(entry -> {
+                                    if (isBlank(entry.getArbeidsforholdId())) {
+                                        entry.setArbeidsforholdId(Integer.toString(arbforholdId.incrementAndGet()));
+                                    }
+                                    return aaregConsumer.opprettArbeidsforhold(entry, miljoe, token);
+                                }),
+                        Flux.fromIterable(eksistens.getEksisterendeArbeidsforhold())
+                                .flatMap(eksisterende -> appendArbeidsforholdId(response, eksisterende)
+                                        .flatMap(arbeidsforhold -> aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe, token))))
+                .map(reply -> decodeStatus(miljoe, reply));
     }
 
     private ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response, List<Arbeidsforhold> request) {
@@ -140,18 +121,16 @@ public class Aareg2Client implements ClientRegister {
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
                         .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
-                        .map(arbeidsforhold -> appendArbeidsforholdId(response, arbeidsforhold))
+                                .noneMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
                         .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .anyMatch(response1 -> !isEqualArbeidsforhold(response1, arbeidsforhold)))
-                        .map(arbeidsforhold -> appendArbeidsforholdId(response, arbeidsforhold))
+                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
                         .toList())
                 .build();
     }
 
-    private Arbeidsforhold appendArbeidsforholdId(ArbeidsforholdRespons response, Arbeidsforhold arbeidsforhold) {
+    private Flux<Arbeidsforhold> appendArbeidsforholdId(ArbeidsforholdRespons response, Arbeidsforhold arbeidsforhold) {
 
         response.getEksisterendeArbeidsforhold()
                 .forEach(ekisterende -> {
@@ -163,7 +142,8 @@ public class Aareg2Client implements ClientRegister {
                                 arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
                     }
                 });
-        return arbeidsforhold;
+
+        return Flux.just(arbeidsforhold);
     }
 
     private String decodeStatus(String miljoe, ArbeidsforholdRespons reply) {
@@ -171,11 +151,11 @@ public class Aareg2Client implements ClientRegister {
         StringBuilder builder = new StringBuilder();
         builder.append(miljoe)
                 .append(": arbforhold=")
-                .append(reply.getArbeidsforhold().getArbeidsforholdId())
+                .append(reply.getArbeidsforholdId())
                 .append('$');
 
         if (isNull(reply.getError())) {
-            builder.append("OK;");
+            builder.append("OK");
 
         } else if (reply.getError() instanceof RuntimeException runtimeException) {
             builder.append(errorStatusDecoder.decodeRuntimeException(runtimeException));
@@ -185,7 +165,6 @@ public class Aareg2Client implements ClientRegister {
 
         } else {
             builder.append(reply.getError().getMessage());
-            builder.append(';');
             log.error(reply.getError().getMessage(), reply.getError());
         }
         return builder.toString();

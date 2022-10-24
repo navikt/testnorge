@@ -81,12 +81,12 @@ public class ErrorStatusDecoder {
 
         if (error instanceof WebClientResponseException webClientResponseException) {
 
-            if (!webClientResponseException.getResponseBodyAsString().isEmpty()) {
-
+            if ( webClientResponseException.getStatusCode().is4xxClientError()) {
                 appendStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else {
-                builder.append(error.getMessage());
+                builder.append("Teknisk feil. Se logg!");
+                log.error("Teknisk feil {} mottatt fra system", error.getMessage(), error);
             }
 
         } else {

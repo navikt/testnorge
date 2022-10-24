@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aareg.domain.AmeldingTransaksjon;
-import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
@@ -22,7 +21,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.bestilling.aareg.util.AaregUtil.appendResult;
@@ -40,28 +44,37 @@ public class AmeldingService {
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
 
-    public void sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress
-        progress, StringBuilder result, String env) {
+    public String sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
+                               Long bestillingId, List<String> miljoer) {
+
+        var result = new StringBuilder();
+
+        miljoer.forEach(miljoe -> sendAmelding(bestilling, dollyPerson, bestillingId, result, miljoe));
+        return result.length() > 1 ? result.substring(1) : null;
+    }
+
+    public void sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, Long bestillingId,
+                              StringBuilder result, String env) {
         try {
             Map<String, AMeldingDTO> dtoMaanedMap = new HashMap<>();
 
             var orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
-                .map(RsAmeldingRequest::getArbeidsforhold)
-                .flatMap(Collection::stream)
-                .map(RsArbeidsforholdAareg::getArbeidsgiver)
-                .map(RsArbeidsforholdAareg.RsArbeidsgiver::getOrgnummer)
-                .collect(Collectors.toSet());
+                    .map(RsAmeldingRequest::getArbeidsforhold)
+                    .flatMap(Collection::stream)
+                    .map(RsArbeidsforholdAareg::getArbeidsgiver)
+                    .map(RsArbeidsforholdAareg.RsArbeidsgiver::getOrgnummer)
+                    .collect(Collectors.toSet());
             var organisasjoner = organisasjonServiceConsumer.getOrganisasjoner(orgnumre, env);
             bestilling.getAareg().get(0).getAmelding().forEach(amelding -> {
 
                 var opplysningspliktig = new HashMap<>();
                 orgnumre.forEach(orgnummer -> opplysningspliktig.put(orgnummer,
-                    organisasjoner.stream()
-                        .filter(org -> orgnummer.equals(org.getOrgnummer()))
-                        .map(OrganisasjonDTO::getJuridiskEnhet)
-                        .filter(Objects::nonNull)
-                        .findFirst()
-                        .orElseThrow(() -> new NotFoundException(String.format("Juridisk enhet for organisasjon: %s ikke funnet i miljø: %s", orgnummer, env)))));
+                        organisasjoner.stream()
+                                .filter(org -> orgnummer.equals(org.getOrgnummer()))
+                                .map(OrganisasjonDTO::getJuridiskEnhet)
+                                .filter(Objects::nonNull)
+                                .findFirst()
+                                .orElseThrow(() -> new NotFoundException(String.format("Juridisk enhet for organisasjon: %s ikke funnet i miljø: %s", orgnummer, env)))));
                 MappingContext context = new MappingContext.Factory().getContext();
 
                 context.setProperty("personIdent", dollyPerson.getHovedperson());
@@ -72,20 +85,20 @@ public class AmeldingService {
             });
 
             Optional
-                .ofNullable(sendAmeldinger(dtoMaanedMap.values().stream().toList(), env))
-                .orElse(Map.of())
-                .forEach((key, value) -> {
-                    if (value.getStatusCode().is2xxSuccessful()) {
-                        saveTransaksjonId(value, key, dollyPerson.getHovedperson(), progress.getBestilling().getId(), env);
-                    }
-                    appendResult(
-                        Map.entry(key,
-                            value.getStatusCode().is2xxSuccessful()
-                                ? "OK"
-                                : value.getStatusCode().getReasonPhrase()),
-                        "1",
-                        result);
-                });
+                    .ofNullable(sendAmeldinger(dtoMaanedMap.values().stream().toList(), env))
+                    .orElse(Map.of())
+                    .forEach((key, value) -> {
+                        if (value.getStatusCode().is2xxSuccessful()) {
+                            saveTransaksjonId(value, key, dollyPerson.getHovedperson(), bestillingId, env);
+                        }
+                        appendResult(
+                                Map.entry(key,
+                                        value.getStatusCode().is2xxSuccessful()
+                                                ? "OK"
+                                                : value.getStatusCode().getReasonPhrase()),
+                                "1",
+                                result);
+                    });
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
             appendResult(Map.entry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
@@ -97,27 +110,27 @@ public class AmeldingService {
     }
 
     private void saveTransaksjonId(
-        ResponseEntity<Void> response,
-        String maaned,
-        String ident,
-        Long bestillingId,
-        String miljoe
+            ResponseEntity<Void> response,
+            String maaned,
+            String ident,
+            Long bestillingId,
+            String miljoe
     ) {
         transaksjonMappingService.save(
-            TransaksjonMapping
-                .builder()
-                .ident(ident)
-                .bestillingId(bestillingId)
-                .transaksjonId(toJson(
-                    AmeldingTransaksjon
+                TransaksjonMapping
                         .builder()
-                        .id(response.getHeaders().getFirst("id"))
-                        .maaned(maaned)
-                        .build()))
-                .datoEndret(LocalDateTime.now())
-                .miljoe(miljoe)
-                .system(AAREG.name())
-                .build()
+                        .ident(ident)
+                        .bestillingId(bestillingId)
+                        .transaksjonId(toJson(
+                                AmeldingTransaksjon
+                                        .builder()
+                                        .id(response.getHeaders().getFirst("id"))
+                                        .maaned(maaned)
+                                        .build()))
+                        .datoEndret(LocalDateTime.now())
+                        .miljoe(miljoe)
+                        .system(AAREG.name())
+                        .build()
         );
     }
 

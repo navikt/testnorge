@@ -17,5 +17,6 @@ public class ArbeidsforholdRespons {
     private String miljo;
     private List<Arbeidsforhold> eksisterendeArbeidsforhold;
     private Arbeidsforhold arbeidsforhold;
+    private String arbeidsforholdId;
     private Throwable error;
 }

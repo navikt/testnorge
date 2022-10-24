@@ -80,6 +80,8 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
 
                         arbeidsforhold.getPermisjonPermitteringer().addAll(mapperFacade.mapAsList(rsArbeidsforhold.getPermisjon(), PermisjonPermittering.class));
                         arbeidsforhold.getPermisjonPermitteringer().addAll(mapperFacade.mapAsList(rsArbeidsforhold.getPermittering(), PermisjonPermittering.class));
+
+                        arbeidsforhold.setNavArbeidsforholdPeriode(rsArbeidsforhold.getNavArbeidsforholdPeriode());
                     }
 
                     private Ansettelsesperiode getAnsettelsesperiode(RsPeriodeAareg ansettelsesperiode) {
@@ -142,7 +144,6 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
                         return arbeidsavtaler;
                     }
                 })
-                .byDefault()
                 .register();
 
         factory.classMap(RsArbeidsavtale.class, Arbeidsavtale.class)
