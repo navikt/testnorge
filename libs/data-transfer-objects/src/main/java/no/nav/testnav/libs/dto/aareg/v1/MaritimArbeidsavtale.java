@@ -18,7 +18,7 @@ public class MaritimArbeidsavtale extends Arbeidsavtale {
 
     public static final String TYPE = "Maritim";
 
-    @Schema(description = "Fartsomr&aring;de (kodeverk: Fartsomraader)", example = "utenriks")
+    @Schema(description = "Fartsområde (kodeverk: Fartsomraader)", example = "utenriks")
     private String fartsomraade;
 
     @Schema(description = "Skipsregister (kodeverk: Skipsregistre)", example = "nis")

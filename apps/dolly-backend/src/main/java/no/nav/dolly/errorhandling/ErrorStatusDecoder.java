@@ -82,7 +82,9 @@ public class ErrorStatusDecoder {
         if (error instanceof WebClientResponseException webClientResponseException) {
 
             if ( webClientResponseException.getStatusCode().is4xxClientError()) {
-                appendStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
+                appendStatusMessage(webClientResponseException.getResponseBodyAsString().isEmpty() ?
+                        webClientResponseException.getStatusCode().toString() :
+                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else {
                 builder.append("Teknisk feil. Se logg!");

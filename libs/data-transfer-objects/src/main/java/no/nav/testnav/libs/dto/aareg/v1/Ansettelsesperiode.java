@@ -16,10 +16,10 @@ public class Ansettelsesperiode {
     @Schema(description = "Ansettelsesperiode")
     private Periode periode;
 
-    @Schema(description = "&Aring;rsak for avsluttet ansettelsesperiode (kodeverk: Slutt%C3%A5rsakAareg)", example = "arbeidstakerHarSagtOppSelv")
+    @Schema(description = "Årsak for avsluttet ansettelsesperiode (kodeverk: SluttÅrsakAareg)", example = "arbeidstakerHarSagtOppSelv")
     private String sluttaarsak;
 
-    @Schema(description = "Varslingskode (kodeverk: Varslingskode_5fAa-registeret) - benyttes hvis ansettelsesperiode er lukket maskinelt", example = "ERKONK")
+    @Schema(description = "Varslingskode (kodeverk: Varslingskode_Aa-registeret) - benyttes hvis ansettelsesperiode er lukket maskinelt", example = "ERKONK")
     private String varslingskode;
 
     @Schema(description = "Bruksperiode for ansettelsesperiode")

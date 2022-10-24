@@ -16,6 +16,6 @@ public class Varsel {
     @Schema(description = "Entitet for varsel")
     private Varselentitet entitet;
 
-    @Schema(description = "Varslingskode (kodeverk: Varslingskode_5fAa-registeret)")
+    @Schema(description = "Varslingskode (kodeverk: Varslingskode_Aa-registeret)")
     private String varslingskode;
 }

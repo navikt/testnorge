@@ -12,10 +12,10 @@ import java.time.YearMonth;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Schema(description = "Informasjon om antall timer med timel&oslash;nn")
+@Schema(description = "Informasjon om antall timer med timelønn")
 public class AntallTimerForTimeloennet {
 
-    @Schema(description = "Periode for antall timer med timel&oslash;nn")
+    @Schema(description = "Periode for antall timer med timelønn")
     private Periode periode;
 
     @Schema(description = "Antall timer", example = "37.5")

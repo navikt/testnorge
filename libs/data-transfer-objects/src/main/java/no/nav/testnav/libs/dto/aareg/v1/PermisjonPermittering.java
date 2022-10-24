@@ -25,6 +25,6 @@ public class PermisjonPermittering {
     @Schema(description = "Permisjon-/permitteringstype (kodeverk: PermisjonsOgPermitteringsBeskrivelse)", example = "permisjonMedForeldrepenger")
     private String type;
 
-    @Schema(description = "Varslingskode (kodeverk: Varslingskode_5fAa-registeret) - benyttes hvis permisjon/permittering er lukket maskinelt")
+    @Schema(description = "Varslingskode (kodeverk: Varslingskode_Aa-registeret) - benyttes hvis permisjon/permittering er lukket maskinelt")
     private String varslingskode;
 }

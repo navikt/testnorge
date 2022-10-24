@@ -49,7 +49,7 @@ public abstract class Arbeidsavtale implements Arbeidsavtaletype {
     @Schema(description = "Beregnet antall timer per uke", example = "37.5")
     private Double beregnetAntallTimerPrUke;
 
-    @Schema(description = "Dato for siste l&oslash;nnsendring, format (ISO-8601): yyyy-MM-dd", example = "2014-07-15")
+    @Schema(description = "Dato for siste lønnsendring, format (ISO-8601): yyyy-MM-dd", example = "2014-07-15")
     private LocalDate sistLoennsendring;
 
     @Schema(description = "Dato for siste stillingsendring, format (ISO-8601): yyyy-MM-dd", example = "2015-12-15")

@@ -17,7 +17,7 @@ import lombok.EqualsAndHashCode;
         @JsonSubTypes.Type(value = Person.class, name = "Person")
 })
 @Schema(description = "Informasjon om opplysningspliktig eller arbeidsgiver (organisasjon eller person)", subTypes = {Organisasjon.class, Person.class})
-@SuppressWarnings("squid:S1610")
+
 public abstract class OpplysningspliktigArbeidsgiver {
 
     @Schema(description = "Type: Organisasjon eller Person", allowableValues = "Organisasjon,Person")

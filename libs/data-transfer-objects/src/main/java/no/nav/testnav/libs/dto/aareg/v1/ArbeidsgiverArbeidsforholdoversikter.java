@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @Schema(description = "" +
         "Resultatobjekt for finn-arbeidsforholdoversikter-per-arbeidsgiver\n" +
-        "Arbeidsforholdoversikter er filtrert grunnet tilgangskontroll hvis st&oslash;rrelse p&aring; liste er mindre enn (total) antall (forutsatt at antall- og/eller startrad-filter ikke er angitt)"
+        "Arbeidsforholdoversikter er filtrert grunnet tilgangskontroll hvis størrelse på liste er mindre enn (total) antall (forutsatt at antall- og/eller startrad-filter ikke er angitt)"
 )
 public class ArbeidsgiverArbeidsforholdoversikter {
 

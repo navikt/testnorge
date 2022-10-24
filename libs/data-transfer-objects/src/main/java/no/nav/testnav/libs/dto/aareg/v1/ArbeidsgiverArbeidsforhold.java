@@ -14,8 +14,8 @@ import java.util.List;
 @Builder
 @Schema(description = "" +
         "Resultatobjekt for finn-arbeidsforhold-per-arbeidsgiver\n" +
-        "En tom liste og antall > 0 betyr at s&oslash;ket gir for mange treff\n" +
-        "Arbeidsforhold er filtrert grunnet tilgangskontroll hvis st&oslash;rrelse p&aring; liste er mindre enn (total) antall"
+        "En tom liste og antall > 0 betyr at søket gir for mange treff\n" +
+        "Arbeidsforhold er filtrert grunnet tilgangskontroll hvis størrelse på liste er mindre enn (total) antall"
 )
 public class ArbeidsgiverArbeidsforhold {
 
