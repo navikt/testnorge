@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.krrstub;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
+import com.github.tomakehurst.wiremock.stubbing.StubMapping;
 import no.nav.dolly.config.credentials.KrrstubProxyProperties;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -86,6 +87,20 @@ public class KrrstubConsumerTest {
     }
 
     @Test
+    public void deleteDigitalKontaktdataPerson_Ok() {
+        var deleteStub = stubDeleteKrrData();
+
+        var response = krrStubConsumer.deleteKontaktdataPerson(List.of(IDENT)).block();
+
+        var deleteEvents = WireMock.getAllServeEvents().stream()
+                .filter(e -> e.getStubMapping().getId().equals(deleteStub.getId()))
+                .toList();
+
+        MatcherAssert.assertThat("delete event list er størrelsen av 1", deleteEvents.size(), is(equalTo(1)));
+        MatcherAssert.assertThat("response list er størrelsen av 1", response.size(), is(equalTo(1)));
+    }
+
+    @Test
     public void createDigitalKontaktdata_GenerateTokenFailed_ThrowsDollyFunctionalException() {
 
         when(tokenService.exchange(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
@@ -130,9 +145,13 @@ public class KrrstubConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubDeleteKrrData() {
+    private StubMapping stubDeleteKrrData() {
 
         stubFor(delete(urlPathMatching("(.*)/api/v2/kontaktinformasjon/" + IDENT))
+                .willReturn(ok()
+                        .withHeader("Content-Type", "application/json")));
+
+        var deletStub = stubFor(delete(urlPathMatching("(.*)/api/v2/person/kontaktinformasjon"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")));
 
@@ -141,5 +160,7 @@ public class KrrstubConsumerTest {
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"id\":1}")));
+
+        return deletStub;
     }
 }

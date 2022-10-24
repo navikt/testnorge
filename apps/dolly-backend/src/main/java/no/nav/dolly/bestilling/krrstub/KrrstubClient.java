@@ -53,7 +53,7 @@ public class KrrstubClient implements ClientRegister {
                 kobleMaalformTilSpraak(bestilling, digitalKontaktdata);
 
                 if (!isOpprettEndre) {
-                    krrstubConsumer.deleteKontaktdata(List.of(dollyPerson.getHovedperson())).block();
+                    krrstubConsumer.deleteKontaktdataPerson(List.of(dollyPerson.getHovedperson())).block();
                 }
 
                 ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
@@ -89,7 +89,7 @@ public class KrrstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-            krrstubConsumer.deleteKontaktdata(identer)
+            krrstubConsumer.deleteKontaktdataPerson(identer)
                     .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
     }
 }
