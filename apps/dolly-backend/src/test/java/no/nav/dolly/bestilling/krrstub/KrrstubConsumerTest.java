@@ -87,7 +87,7 @@ public class KrrstubConsumerTest {
     }
 
     @Test
-    public void deleteDigitalKontaktdataPerson_Ok() {
+    void deleteDigitalKontaktdataPerson_Ok() {
         var deleteStub = stubDeleteKrrData();
 
         var response = krrStubConsumer.deleteKontaktdataPerson(List.of(IDENT)).block();
