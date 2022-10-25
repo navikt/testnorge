@@ -69,7 +69,7 @@ public class Aareg2Client implements ClientRegister {
 
             } else {
 
-                progress.setAaregStatus(sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, miljoer));
+                progress.setAaregStatus(sendArbeidsforhold(bestilling, dollyPerson, miljoer));
             }
         }
     }
@@ -80,8 +80,7 @@ public class Aareg2Client implements ClientRegister {
         // Sletting av arbeidsforhold er pt ikke støttet
     }
 
-    private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                      boolean isOpprettEndre, List<String> miljoer) {
+    private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {
 
 
         MappingContext context = new MappingContext.Factory().getContext();
@@ -100,7 +99,8 @@ public class Aareg2Client implements ClientRegister {
     private Flux<String> doInsertOrUpdate(ArbeidsforholdRespons response, List<Arbeidsforhold> request,
                                           String miljoe, AccessToken token) {
 
-        var arbforholdId = new AtomicInteger(0);
+        var arbforholdId = new AtomicInteger(isNull(response.getEksisterendeArbeidsforhold()) ? 0 :
+                response.getEksisterendeArbeidsforhold().size());
 
         var eksistens = doEksistenssjekk(response, request);
         return Flux.concat(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
@@ -133,11 +133,11 @@ public class Aareg2Client implements ClientRegister {
     private Flux<Arbeidsforhold> appendArbeidsforholdId(ArbeidsforholdRespons response, Arbeidsforhold arbeidsforhold) {
 
         response.getEksisterendeArbeidsforhold()
-                .forEach(ekisterende -> {
-                    if (isEqualArbeidsforhold(ekisterende, arbeidsforhold)) {
+                .forEach(eksisterende -> {
+                    if (isEqualArbeidsforhold(eksisterende, arbeidsforhold)) {
                         arbeidsforhold.setArbeidsforholdId(isNotBlank(arbeidsforhold.getArbeidsforholdId()) ?
-                                arbeidsforhold.getArbeidsforholdId() : ekisterende.getArbeidsforholdId());
-                        arbeidsforhold.setNavArbeidsforholdId(ekisterende.getNavArbeidsforholdId());
+                                arbeidsforhold.getArbeidsforholdId() : eksisterende.getArbeidsforholdId());
+                        arbeidsforhold.setNavArbeidsforholdId(eksisterende.getNavArbeidsforholdId());
                         arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                                 arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
                     }

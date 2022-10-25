@@ -23,6 +23,8 @@ public class ErrorStatusDecoder {
     private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
             "Forsøk gjenopprett for å fikse dette!";
 
+    private static final String TEKNISK_FEIL = "Teknisk feil {} mottatt fra system";
+    private static final String TEKNISK_FEIL_SE_LOGG = "Teknisk feil. Se logg! ";
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
     private static final String MELDING = "melding";
@@ -66,10 +68,10 @@ public class ErrorStatusDecoder {
 
     public String decodeException(Exception e) {
 
-        log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
+        log.error(TEKNISK_FEIL, e.getMessage(), e);
         return new StringBuilder()
                 .append(FEIL)
-                .append("Teknisk feil. Se logg! ")
+                .append(TEKNISK_FEIL_SE_LOGG)
                 .append(encodeStatus(e.getMessage()))
                 .toString();
     }
@@ -87,14 +89,14 @@ public class ErrorStatusDecoder {
                         webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else {
-                builder.append("Teknisk feil. Se logg!");
-                log.error("Teknisk feil {} mottatt fra system", error.getMessage(), error);
+                builder.append(TEKNISK_FEIL_SE_LOGG);
+                log.error(TEKNISK_FEIL, error.getMessage(), error);
             }
 
         } else {
-            builder.append("Teknisk feil. Se logg! ");
+            builder.append(TEKNISK_FEIL_SE_LOGG);
             builder.append(encodeStatus(error.getMessage()));
-            log.error("Teknisk feil {} mottatt fra system", error.getMessage(), error);
+            log.error(TEKNISK_FEIL, error.getMessage(), error);
         }
 
         return builder.toString();

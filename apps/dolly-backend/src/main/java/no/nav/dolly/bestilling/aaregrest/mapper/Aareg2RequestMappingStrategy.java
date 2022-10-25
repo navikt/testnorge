@@ -52,6 +52,20 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
         return nonNull(value) ? value.doubleValue() : null;
     }
 
+    private static OpplysningspliktigArbeidsgiver getArbeidsgiver(RsAktoer arbeidsgiver) {
+
+        if (arbeidsgiver instanceof RsOrganisasjon organisasjon) {
+            return Organisasjon.builder()
+                    .organisasjonsnummer(organisasjon.getOrgnummer())
+                    .build();
+        } else if (arbeidsgiver instanceof RsAktoerPerson aktoerPerson) {
+            return Person.builder()
+                    .offentligIdent(aktoerPerson.getIdent())
+                    .build();
+        }
+        return null;
+    }
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(RsAareg.class, Arbeidsforhold.class)
@@ -61,7 +75,7 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
                                         Arbeidsforhold arbeidsforhold, MappingContext context) {
 
                         arbeidsforhold.setArbeidstaker(Person.builder()
-                                        .offentligIdent((String) context.getProperty(Aareg2Client.IDENT))
+                                .offentligIdent((String) context.getProperty(Aareg2Client.IDENT))
                                 .build());
 
                         arbeidsforhold.setArbeidsforholdId(rsArbeidsforhold.getArbeidsforholdId());
@@ -91,20 +105,6 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
                                         .periode(mapperFacade.map(ansettelsesperiode, Periode.class))
                                         .build() :
                                 null;
-                    }
-
-                    private OpplysningspliktigArbeidsgiver getArbeidsgiver(RsAktoer arbeidsgiver) {
-
-                        if (arbeidsgiver instanceof RsOrganisasjon organisasjon) {
-                            return Organisasjon.builder()
-                                    .organisasjonsnummer(organisasjon.getOrgnummer())
-                                    .build();
-                        } else if (arbeidsgiver instanceof RsAktoerPerson aktoerPerson) {
-                            return Person.builder()
-                                    .offentligIdent(aktoerPerson.getIdent())
-                                    .build();
-                        }
-                        return null;
                     }
 
                     private List<Arbeidsavtale> getArbeidsavtale(RsAareg kilde) {
