@@ -122,9 +122,6 @@ public class ErrorStatusDecoder {
                 if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
                 }
-                if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
-                    builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
-                }
                 if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
                     builder.append(encodeStatus((String) status.get(MELDING)));
                 }
