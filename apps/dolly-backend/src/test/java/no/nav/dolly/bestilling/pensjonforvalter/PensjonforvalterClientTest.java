@@ -224,10 +224,12 @@ public class PensjonforvalterClientTest {
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        Person person = new Person();
-        DollyPerson dollyPerson = new DollyPerson();
-        dollyPerson.setHovedperson("000");
-        dollyPerson.setPersondetaljer(List.of(person));
+        var person = new Person();
+        var dollyPerson = DollyPerson.builder()
+                .hovedperson("000")
+                .persondetaljer(List.of(person))
+                .opprettetIPDL(true)
+                .build();
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -276,10 +278,12 @@ public class PensjonforvalterClientTest {
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        Person person = new Person();
-        DollyPerson dollyPerson = new DollyPerson();
-        dollyPerson.setHovedperson("000");
-        dollyPerson.setPersondetaljer(List.of(person));
+        var person = new Person();
+        var dollyPerson = DollyPerson.builder()
+                .hovedperson("000")
+                .persondetaljer(List.of(person))
+                .opprettetIPDL(true)
+                .build();
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -332,10 +336,12 @@ public class PensjonforvalterClientTest {
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        Person person = new Person();
-        DollyPerson dollyPerson = new DollyPerson();
-        dollyPerson.setHovedperson("000");
-        dollyPerson.setPersondetaljer(List.of(person));
+        var person = new Person();
+        var dollyPerson = DollyPerson.builder()
+                .hovedperson("000")
+                .persondetaljer(List.of(person))
+                .opprettetIPDL(true)
+                .build();
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -398,7 +404,7 @@ public class PensjonforvalterClientTest {
             var statusResponse = new PensjonforvalterResponse.Response();
             statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusPhrase, httpStatusCode));
 
-            Arrays.stream(miljoe).forEach( m -> status.add(new PensjonforvalterResponse.ResponseEnvironment(m, statusResponse)) );
+            Arrays.stream(miljoe).forEach(m -> status.add(new PensjonforvalterResponse.ResponseEnvironment(m, statusResponse)));
 
             response.setStatus(status);
 
