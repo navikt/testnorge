@@ -11,9 +11,11 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -114,10 +116,14 @@ public class IdentService {
         return identRepository.getBestillingerByIdent(ident);
     }
 
-    public Page<Testident> getTestidenterFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
-
+    public Page<Testident> getTestidenterFromGruppePaginert(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
+        if (StringUtils.isBlank(sortColumn)) {
+            sortColumn = "id";
+        }
+        var retning = "asc".equals(sortRetning) ? Sort.Direction.ASC : Sort.Direction.DESC;
+        var page = PageRequest.of(pageNo, pageSize, Sort.by(new Sort.Order(retning, sortColumn, Sort.NullHandling.NULLS_LAST)));
         return identRepository
-                .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, PageRequest.of(pageNo, pageSize));
+                .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, page);
     }
 
     public Optional<Integer> getPaginertIdentIndex(String ident, Long gruppeId) {

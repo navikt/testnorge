@@ -64,10 +64,10 @@ public class TestgruppeService {
         );
     }
 
-    public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize) {
+    public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
 
         Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
-        var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize);
+        var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
         testgruppe.setTestidenter(testidentPage.toList());
 
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
