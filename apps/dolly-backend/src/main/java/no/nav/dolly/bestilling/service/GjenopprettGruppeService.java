@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
-import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -122,8 +121,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                 .forEach(coBestilling -> clientRegisters.stream()
                                         .filter(register ->
                                                 !(register instanceof PdlForvalterClient ||
-                                                        register instanceof PdlDataClient ||
-                                                        register instanceof PensjonforvalterClient))
+                                                        register instanceof PdlDataClient ))
                                         .forEach(register ->
                                                 register.gjenopprett(getDollyBestillingRequest(
                                                         Bestilling.builder()

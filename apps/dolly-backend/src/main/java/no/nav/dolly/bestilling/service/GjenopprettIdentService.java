@@ -7,7 +7,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
-import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -130,8 +129,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                 .forEach(coBestilling -> clientRegisters.stream()
                                         .filter(register ->
                                                 !(register instanceof PdlForvalterClient ||
-                                                        register instanceof PdlDataConsumer ||
-                                                        register instanceof PensjonforvalterClient))
+                                                        register instanceof PdlDataConsumer))
                                         .forEach(register ->
                                                 register.gjenopprett(getDollyBestillingRequest(
                                                         Bestilling.builder()
