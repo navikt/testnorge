@@ -22,10 +22,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.joining;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Service
@@ -82,13 +84,20 @@ public class PensjonforvalterClient implements ClientRegister {
         StringBuilder status = new StringBuilder();
 
         opprettPerson(dollyPerson, tilgjengeligeMiljoer, status);
-        if (!bestilteMiljoer.isEmpty()) {
+        if (!bestilteMiljoer.isEmpty() && nonNull(bestilling.getPensjonforvalter())) {
 
-            if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getInntekt())) {
+            if (!dollyPerson.isOpprettetIPDL()) {
+                progress.setPensjonforvalterStatus(bestilling.getEnvironments().stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("POPP/TP"))))
+                        .collect(Collectors.joining(",")));
+                return;
+            }
+
+            if (nonNull(bestilling.getPensjonforvalter().getInntekt())) {
                 lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
             }
 
-            if (nonNull(bestilling.getPensjonforvalter()) && nonNull(bestilling.getPensjonforvalter().getTp())) {
+            if (nonNull(bestilling.getPensjonforvalter().getTp())) {
                 lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
             }
 

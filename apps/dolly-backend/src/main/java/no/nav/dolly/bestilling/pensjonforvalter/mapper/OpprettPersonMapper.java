@@ -6,6 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.util.DatoFraIdentUtil;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -26,6 +27,11 @@ public class OpprettPersonMapper implements MappingStrategy {
         return nonNull(dateTime) ? dateTime.format(DATE_FMT) : null;
     }
 
+    private static String getFoedselsdato(LocalDateTime dateTime, String ident) {
+
+        return convertDate(nonNull(dateTime) ? dateTime : DatoFraIdentUtil.getDato(ident).atStartOfDay());
+    }
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Person.class, OpprettPersonRequest.class)
@@ -34,7 +40,7 @@ public class OpprettPersonMapper implements MappingStrategy {
                     public void mapAtoB(Person person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
 
                         opprettPersonRequest.setFnr(person.getIdent());
-                        opprettPersonRequest.setFodselsDato(convertDate(person.getFoedselsdato()));
+                        opprettPersonRequest.setFodselsDato(getFoedselsdato(person.getFoedselsdato(), person.getIdent()));
                         opprettPersonRequest.setDodsDato(convertDate(person.getDoedsdato()));
 
                         if (person.getInnvandretUtvandret().isEmpty() ||

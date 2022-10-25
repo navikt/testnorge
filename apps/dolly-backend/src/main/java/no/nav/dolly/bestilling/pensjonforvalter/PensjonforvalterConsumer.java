@@ -82,15 +82,9 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
     public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
 
-        var response = new LagreInntektCommand(webClient, serviceProperties.getAccessToken(tokenService), lagreInntektRequest)
-                .call()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new LagreInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest).call())
                 .block();
-
-        if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å lagre inntekt for %s i pensjon-testdata-facade", lagreInntektRequest.getFnr()));
-        }
-
-        return response.getBody();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
