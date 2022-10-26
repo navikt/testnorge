@@ -65,6 +65,5 @@ public class LagreInntektCommand implements Callable<Mono<PensjonforvalterRespon
                                                 .build())
                                         .toList())
                                 .build()));
-
     }
 }

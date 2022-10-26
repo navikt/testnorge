@@ -83,15 +83,15 @@ public class PensjonforvalterClient implements ClientRegister {
 
         StringBuilder status = new StringBuilder();
 
+        if (!dollyPerson.isOpprettetIPDL()) {
+            progress.setPensjonforvalterStatus(bestilling.getEnvironments().stream()
+                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("PESYS"))))
+                    .collect(Collectors.joining(",")));
+            return;
+        }
+
         opprettPerson(dollyPerson, tilgjengeligeMiljoer, status);
         if (!bestilteMiljoer.isEmpty() && nonNull(bestilling.getPensjonforvalter())) {
-
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setPensjonforvalterStatus(bestilling.getEnvironments().stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("POPP/TP"))))
-                        .collect(Collectors.joining(",")));
-                return;
-            }
 
             if (nonNull(bestilling.getPensjonforvalter().getInntekt())) {
                 lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
