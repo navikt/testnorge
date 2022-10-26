@@ -125,7 +125,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         } else {
 
             person.setBostedsadresse(new ArrayList(person.getBostedsadresse().stream()
-                    .filter(adresse -> isNotTrue(adresse.getIsNew()))
+                    .filter(adresse -> isTrue(adresse.getIsNew()))
                     .toList()));
             return;
         }
