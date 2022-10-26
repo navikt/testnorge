@@ -25,7 +25,7 @@ type Arbeidsforhold = {
 	antallTimerForTimeloennet?: Array<unknown>
 	arbeidsavtaler?: Array<unknown>
 	arbeidsgiver?: ArbeidsgiverProps
-	fartoy?: Array<any>
+	fartoy?: any
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string

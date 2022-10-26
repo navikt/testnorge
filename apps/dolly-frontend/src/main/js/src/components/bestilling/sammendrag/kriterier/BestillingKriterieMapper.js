@@ -1131,7 +1131,7 @@ const mapAareg = (bestillingData, data) => {
 			{
 				label: 'Fartsområde',
 				value: arbeidsforhold.fartoy?.[0].fartsomraade,
-				apiKodeverkId: ArbeidKodeverk.Fartsområder,
+				apiKodeverkId: ArbeidKodeverk.Fartsomraader,
 			},
 			obj(
 				'Perioder med antall timer for timelønnet',
