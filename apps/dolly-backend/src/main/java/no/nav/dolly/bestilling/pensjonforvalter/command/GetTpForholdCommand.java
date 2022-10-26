@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -22,7 +21,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GetTpForholdCommand implements Callable<Mono<ResponseEntity<JsonNode>>> {
+public class GetTpForholdCommand implements Callable<Mono<JsonNode>> {
 
     private static final String PENSJON_TP_FORHOLD_URL = "/api/v1/tp/forhold";
 
@@ -36,7 +35,7 @@ public class GetTpForholdCommand implements Callable<Mono<ResponseEntity<JsonNod
     private final String ident;
     private final String miljoe;
 
-    public Mono<ResponseEntity<JsonNode>> call() {
+    public Mono<JsonNode> call() {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -44,12 +43,12 @@ public class GetTpForholdCommand implements Callable<Mono<ResponseEntity<JsonNod
                         .queryParam(FNR_QUERY, ident)
                         .queryParam(MILJO_QUERY, miljoe)
                         .build())
-                .header(AUTHORIZATION, token)
+                .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .retrieve()
-                .toEntity(JsonNode.class)
+                .bodyToMono(JsonNode.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
