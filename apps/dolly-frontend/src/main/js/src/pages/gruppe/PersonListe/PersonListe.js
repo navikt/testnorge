@@ -71,49 +71,6 @@ export default function PersonListe({
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson, bestillingStatuser])
 
-	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
-		return <Loading label="Laster personer" panel />
-	}
-
-	if (isEmpty(identer)) {
-		const infoTekst =
-			brukertype === 'BANKID'
-				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
-				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
-				  'søke opp og importere identer til gruppen.'
-		return <ContentContainer>{infoTekst}</ContentContainer>
-	}
-
-	const getKommentarTekst = (tekst) => {
-		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
-		return (
-			<div style={{ maxWidth: 200 }}>
-				<p>{beskrivelse}</p>
-			</div>
-		)
-	}
-
-	const updatePersonHeader = () => {
-		personListe.map((person) => {
-			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
-			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
-				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
-				: ''
-			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
-
-			if (redigertPerson) {
-				if (!redigertPerson.doedsfall) {
-					person.alder = person.alder.split(' ')[0]
-				}
-				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
-				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
-			}
-		})
-	}
-
-	if (tmpPersoner) updatePersonHeader()
-
 	const columns = [
 		{
 			text: 'Ident',
@@ -195,11 +152,70 @@ export default function PersonListe({
 		},
 	]
 
+	const [tableColumns, setTableColumns] = useState(columns)
+
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
+		return <Loading label="Laster personer" panel />
+	}
+
+	if (isEmpty(identer)) {
+		const infoTekst =
+			brukertype === 'BANKID'
+				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
+				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+				  'søke opp og importere identer til gruppen.'
+		return <ContentContainer>{infoTekst}</ContentContainer>
+	}
+
+	const getKommentarTekst = (tekst) => {
+		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
+		return (
+			<div style={{ maxWidth: 200 }}>
+				<p>{beskrivelse}</p>
+			</div>
+		)
+	}
+
+	const updatePersonHeader = () => {
+		personListe.map((person) => {
+			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+				: ''
+			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+
+			if (redigertPerson) {
+				if (!redigertPerson.doedsfall) {
+					person.alder = person.alder.split(' ')[0]
+				}
+				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
+			}
+		})
+	}
+
+	if (tmpPersoner) updatePersonHeader()
+
+	const onHeaderClick = (value) => {
+		console.log('person list header click', value)
+
+		const clearSorting = tableColumns.map(c => {
+			c.headerCssClass = null
+			return c
+		})
+
+		const newSorting = clearSorting.map(c => {
+			if 
+			return c;
+		})
+	}
+
 	return (
 		<ErrorBoundary>
 			<DollyTable
 				data={personListe}
-				columns={columns}
+				columns={tableColumns}
 				gruppeDetaljer={{
 					antallElementer: gruppeInfo.antallIdenter,
 					pageSize: sideStoerrelse,
@@ -226,6 +242,7 @@ export default function PersonListe({
 						brukertype={brukertype}
 					/>
 				)}
+				onHeaderClick={onHeaderClick}
 			/>
 			{isKommentarModalOpen && selectedIdent && (
 				<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />

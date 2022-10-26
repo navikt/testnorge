@@ -8,12 +8,13 @@ export default function TableColumn({
 	children,
 	centerItem,
 	style,
+	onClick,
 }) {
 	const cssClass = cn('dot-column', `col${width}`, className, { centerItem: centerItem })
 	const render = value ? value : children
 
 	return (
-		<div style={style} className={cssClass}>
+		<div style={style} className={cssClass} onClick={() => onClick && onClick(value)}>
 			{render}
 		</div>
 	)

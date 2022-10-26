@@ -16,12 +16,16 @@ const getColumnValue = (row, column) => {
 }
 
 const getColumnHeader = (cell, data) => {
+	console.log('get ColumnHeader', cell, data)
 	if (cell.headerFormatter) {
 		return cell.headerFormatter(cell.text, data)
 	} else {
 		return cell.text
 	}
 }
+
+const getColumnClass = (cell) => cell.headerCssClass
+
 // Setter rowKey til en verdi dersom datasett har et unikt felt
 // Fallback til row index
 const getRowKey = (row, columns) => {
@@ -47,10 +51,16 @@ export default function Table({
 	hovedperson,
 	visBestilling,
 	onExpand,
+	onHeaderClick,
 }) {
 	const headerClass = cn('dot-header', {
 		'has-icon': Boolean(iconItem),
 	})
+
+	const tableColumnClick = (value) => {
+		console.log('column click', value)
+		onHeaderClick && onHeaderClick(value)
+	}
 
 	return (
 		<div className="dot">
@@ -62,6 +72,8 @@ export default function Table({
 							width={cell.width}
 							value={getColumnHeader(cell, data)}
 							style={cell.style}
+							className={getColumnClass(cell)}
+							onClick={tableColumnClick}
 						/>
 					))}
 					{onExpand && <Column />}
