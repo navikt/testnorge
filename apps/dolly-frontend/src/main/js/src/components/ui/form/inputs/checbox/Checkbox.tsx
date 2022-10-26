@@ -46,7 +46,9 @@ export const DollyCheckbox = ({
 		{isSwitch ? (
 			<StyledSwitch {...props}>{label}</StyledSwitch>
 		) : (
-			<Checkbox {...props}>{label}</Checkbox>
+			<Checkbox id={label} {...props}>
+				{label}
+			</Checkbox>
 		)}
 	</InputWrapper>
 )
