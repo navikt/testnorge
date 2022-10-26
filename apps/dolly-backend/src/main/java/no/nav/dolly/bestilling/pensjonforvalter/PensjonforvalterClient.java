@@ -87,7 +87,8 @@ public class PensjonforvalterClient implements ClientRegister {
         if (!bestilteMiljoer.isEmpty() && nonNull(bestilling.getPensjonforvalter())) {
 
             if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setPensjonforvalterStatus(bestilling.getEnvironments().stream()
+                progress.setPensjonforvalterStatus("$" + PENSJON_FORVALTER + "#" +
+                        bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("POPP/TP"))))
                         .collect(Collectors.joining(",")));
                 return;
