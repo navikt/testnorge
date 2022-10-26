@@ -26,6 +26,7 @@ type Person = {
 	fornavn: string
 	mellomnavn?: string
 	etternavn: string
+	aktoerId?: string
 }
 
 type ResponsBestilling = {
@@ -38,7 +39,7 @@ type ResponsBestilling = {
 }
 
 const StyledAsyncSelect = styled(AsyncSelect)`
-	width: 78%;
+	width: 80%;
 	margin-top: 2px;
 `
 
@@ -57,6 +58,7 @@ const FinnPersonBestilling = ({
 	const [tpsfIdenter, setTpsfIdenter] = useState([])
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
 	const [pdlIdenter, setPdlIdenter] = useState([])
+	const [pdlAktoerer, setPdlAktoerer] = useState([])
 
 	const customAsyncSelectStyles = {
 		control: (provided: any, state: { isFocused: boolean }) => ({
@@ -86,7 +88,10 @@ const FinnPersonBestilling = ({
 			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
 				finnesPdlf = true
 			}
-			if (pdlIdenter.find((element) => element.ident === feilmeldingIdent)) {
+			if (
+				pdlIdenter.find((element) => element.ident === feilmeldingIdent) ||
+				pdlAktoerer.find((element) => element.ident === feilmeldingIdent)
+			) {
 				finnesPdl = true
 			}
 		}
@@ -123,8 +128,7 @@ const FinnPersonBestilling = ({
 		}
 	}, [fragment])
 
-	function mapToPersoner(personList: any, personer: Array<Option>) {
-		const personData = personList?.value?.data
+	function mapToPersoner(personData: any, personer: Array<Option>) {
 		if (!Array.isArray(personData)) {
 			return
 		}
@@ -136,7 +140,7 @@ const FinnPersonBestilling = ({
 					: `${person.fornavn} ${person.etternavn}`
 				personer.push({
 					value: person.ident,
-					label: `${person.ident} - ${navn.toUpperCase()}`,
+					label: `${person?.aktoerId || person.ident} - ${navn.toUpperCase()}`,
 				})
 			})
 	}
@@ -161,33 +165,52 @@ const FinnPersonBestilling = ({
 			return []
 		}
 
-		const [tpsfValues, pdlfValues, pdlValues] = (await Promise.allSettled([
+		const [tpsfValues, pdlfValues, pdlValues, pdlAktoerValues] = (await Promise.allSettled([
 			TpsfApi.soekPersoner(tekst),
 			PdlforvalterApi.soekPersoner(tekst),
 			PersonSearch.searchPdlFragment(tekst),
+			DollyApi.getAktoerFraPdl(tekst),
 		])) as any
 
 		const personer: Array<Option> = []
 
 		if (tpsfValues?.status === 'fulfilled') {
-			mapToPersoner(tpsfValues, personer)
-			setTpsfIdenter(tpsfValues?.value?.data)
+			const tpsfPersoner = tpsfValues.value?.data
+			mapToPersoner(tpsfPersoner, personer)
+			setTpsfIdenter(tpsfPersoner)
 		} else {
 			setError(tpsfValues?.reason?.message)
 		}
 
 		if (pdlfValues?.status === 'fulfilled') {
-			mapToPersoner(pdlfValues, personer)
-			setPdlfIdenter(pdlfValues?.value?.data)
+			const pdlfPersoner = pdlfValues.value?.data
+			mapToPersoner(pdlfPersoner, personer)
+			setPdlfIdenter(pdlfPersoner)
 		} else {
 			setError(pdlfValues?.reason?.message)
 		}
 
 		if (pdlValues?.status === 'fulfilled') {
-			mapToPersoner(pdlValues, personer)
-			setPdlIdenter(pdlValues?.value?.data)
+			const pdlPersoner = pdlValues.value?.data
+			mapToPersoner(pdlPersoner, personer)
+			setPdlIdenter(pdlPersoner)
 		} else {
 			setError(pdlValues?.reason?.message)
+		}
+		if (pdlAktoerValues?.status === 'fulfilled') {
+			const pdlAktoerer = [
+				{
+					ident: pdlAktoerValues.value?.data?.data?.hentIdenter?.identer?.[0]?.ident,
+					aktoerId: pdlAktoerValues.value?.data?.data?.hentIdenter?.identer?.[1]?.ident,
+					fornavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.fornavn,
+					mellomnavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.mellomnavn,
+					etternavn: pdlAktoerValues.value?.data?.data?.hentPerson?.navn?.[0]?.etternavn,
+				},
+			]
+			mapToPersoner(pdlAktoerer, personer)
+			setPdlAktoerer(pdlAktoerer)
+		} else {
+			setError(pdlAktoerValues?.reason?.message)
 		}
 
 		return personer
@@ -259,7 +282,7 @@ const FinnPersonBestilling = ({
 						label="Person"
 						placeholder={
 							soekType === SoekTypeValg.PERSON
-								? 'Søk etter navn eller ident'
+								? 'Søk etter navn, ident eller aktør-ID'
 								: 'Søk etter bestilling'
 						}
 						noOptionsMessage={() => 'Ingen treff'}
