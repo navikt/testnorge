@@ -9,7 +9,8 @@ on:
 jobs:
   scan:
     name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+#    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master #TODO: Endre tilbake til denne
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@bugfix/helsepersonell
     with:
       working-directory: 'apps/helsepersonell-service/'
     secrets:
