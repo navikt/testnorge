@@ -11,8 +11,8 @@ export default {
 		return Request.get(endpoint)
 	},
 	soekPersoner(fragment: string) {
-		if (!fragment) {
-			return
+		if (!fragment || fragment.length > 11) {
+			return null
 		}
 		const endpoint = `${getPdlUrl()}/identiteter?fragment=${fragment}`
 		return Request.get(endpoint)

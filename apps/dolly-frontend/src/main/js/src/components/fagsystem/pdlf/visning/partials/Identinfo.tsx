@@ -16,13 +16,22 @@ export const IdentInfo = ({ pdlResponse }: Data) => {
 		return null
 	}
 
+	const formatTitle = (title) => {
+		if (title.includes('FOLKEREGISTERIDENT')) {
+			return 'Folkeregisterident'
+		}
+		if (title.includes('AKTORID')) {
+			return 'Aktør-ID'
+		} else return title
+	}
+
 	return (
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="Identinformasjon" iconKind="personinformasjon" />
 				{pdlResponse.identer.map((ident: Ident, index: number) => (
 					<div key={index}>
-						<h4 style={{ marginTop: '0px' }}>{ident.gruppe}</h4>
+						<h4 style={{ marginTop: '0px' }}>{formatTitle(ident.gruppe)}</h4>
 						<div className="person-visning_content">
 							<TitleValue
 								title={ident.gruppe.includes('AKTORID') ? 'ID' : 'ident'}

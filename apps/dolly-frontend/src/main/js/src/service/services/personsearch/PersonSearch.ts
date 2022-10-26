@@ -10,8 +10,11 @@ type PdlPerson = {
 
 const PDL_SEARCH_URL = `/testnav-person-search-service/api/v1`
 
-const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
-	Api.fetch(
+const search = (searchRequest: Search): Promise<SearchResponsePdl> => {
+	if (!searchRequest) {
+		return null
+	}
+	return Api.fetch(
 		`${PDL_SEARCH_URL}/pdlPerson`,
 		{ method: 'POST', headers: { 'Content-Type': 'application/json' } },
 		searchRequest
@@ -24,9 +27,13 @@ const search = (searchRequest: Search): Promise<SearchResponsePdl> =>
 			}
 		})
 	)
+}
 
-const searchPdlFragment = (fragment: string) =>
-	Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
+const searchPdlFragment = (fragment: string) => {
+	if (!fragment || fragment.length > 11) {
+		return null
+	}
+	return Api.fetch(`${PDL_SEARCH_URL}/identer?fragment=${fragment}`, {
 		method: 'GET',
 		headers: { 'Content-Type': 'application/json' },
 	}).then((response) =>
@@ -39,6 +46,7 @@ const searchPdlFragment = (fragment: string) =>
 			  }))
 			: null
 	)
+}
 
 const searchPdlPerson = async (
 	searchRequest: Search,

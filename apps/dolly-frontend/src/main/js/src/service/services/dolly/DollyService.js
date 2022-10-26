@@ -141,6 +141,13 @@ export default {
 	getPersonFraPdl(ident, pdlMiljoe) {
 		return Request.get(Endpoints.personoppslag(ident, pdlMiljoe))
 	},
+
+	getAktoerFraPdl(aktoerId, pdlMiljoe) {
+		if (aktoerId.length !== 13) {
+			return null
+		}
+		return Request.get(Endpoints.personoppslag(aktoerId, pdlMiljoe))
+	},
 	getPersonerFraPdl(identer) {
 		return Request.get(Endpoints.personoppslagMange(identer))
 	},
