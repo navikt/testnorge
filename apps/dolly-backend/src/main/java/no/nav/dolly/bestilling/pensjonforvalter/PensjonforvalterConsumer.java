@@ -17,7 +17,6 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -31,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -60,23 +57,17 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
     public Set<String> getMiljoer() {
 
-            return tokenService.exchange(serviceProperties)
-                    .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
-                    .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
+                .block();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
     public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
 
-        var response = new OpprettPersonCommand(webClient, serviceProperties.getAccessToken(tokenService), opprettPersonRequest)
-                .call()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call())
                 .block();
-
-        if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException("Klarte ikke å opprette person i pensjon-testdata-facade");
-        }
-
-        return response.getBody();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
@@ -90,33 +81,17 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
     public JsonNode getInntekter(String ident, String miljoe) {
 
-        var response = new GetInntekterCommand(webClient, serviceProperties.getAccessToken(tokenService), ident, miljoe)
-                .call()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new GetInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .block();
-
-        if (nonNull(response) && !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å hente inntekt for %s i %s fra pensjon-testdata-facade", ident, miljoe));
-        }
-
-        return response.getBody();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
     public PensjonforvalterResponse lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest) {
 
-        var response = new LagreTpForholdCommand(webClient, serviceProperties.getAccessToken(tokenService), lagreTpForholdRequest)
-                .call()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call())
                 .block();
-
-        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å lagre TP forhold for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
-        }
-
-        if (isNull(response.getBody().getStatus()) || response.getBody().getStatus().isEmpty()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å få TP forhold respons for %s i PESYS (pensjon)", lagreTpForholdRequest.getFnr()));
-        }
-
-        return response.getBody();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
@@ -134,36 +109,20 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
     public JsonNode getTpForhold(String ident, String miljoe) {
 
-        var response = new GetTpForholdCommand(webClient, serviceProperties.getAccessToken(tokenService), ident, miljoe)
-                .call()
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new GetTpForholdCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .block();
-
-        if (isNull(response) || !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å hente TP forhold for %s i %s fra TP (pensjon)", ident, miljoe));
-        }
-
-        return response.getBody();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
     public PensjonforvalterResponse lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest) {
-        var response = new LagreTpYtelseCommand(webClient, serviceProperties.getAccessToken(tokenService), lagreTpYtelseRequest)
-                .call()
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call())
                 .block();
-
-        if (isNull(response) || isNull(response.getBody()) || !response.hasBody()) {
-            throw new DollyFunctionalException(String.format("Feilet å lagre TP-ytelse for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
-        }
-
-        if (isNull(response.getBody().getStatus()) || response.getBody().getStatus().isEmpty()) {
-            throw new DollyFunctionalException(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", lagreTpYtelseRequest.getFnr()));
-        }
-
-        return response.getBody();
     }
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
-
 }
