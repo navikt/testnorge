@@ -42,7 +42,7 @@ export type HentPerson = {
 	adressebeskyttelse: Array<AdressebeskyttelseData>
 	fullmakt: [FullmaktData]
 	telefonnummer: Array<TelefonData>
-	vergemaalEllerFremtidsfullmakt: Array<VergemaalValues>
+	vergemaalEllerFremtidsfullmakt: Array<VergemaalData>
 	tilrettelagtKommunikasjon: Array<TilrettelagtKommunikasjonData>
 	sikkerhetstiltak: [SikkerhetstiltakData]
 	sivilstand: Array<Sivilstand>

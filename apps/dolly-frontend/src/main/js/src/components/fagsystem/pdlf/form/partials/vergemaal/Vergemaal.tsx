@@ -10,10 +10,12 @@ import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdl
 import { FormikProps } from 'formik'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface VergemaalForm {
 	formikBag: FormikProps<{}>
 	path?: string
+	eksisterendeNyPerson?: Option
 }
 
 export const VergemaalForm = ({ formikBag, path, eksisterendeNyPerson = null }: VergemaalForm) => {

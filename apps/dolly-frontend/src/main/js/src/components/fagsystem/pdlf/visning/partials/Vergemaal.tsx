@@ -14,11 +14,9 @@ import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visn
 
 type VergemaalTypes = {
 	data: Array<VergemaalValues>
-	relasjoner: Array<Relasjon>
-}
-
-type VergemaalVisningTypes = {
-	data: VergemaalValues
+	tmpPersoner?: Array<VergemaalValues>
+	ident?: string
+	erPdlVisning?: boolean
 	relasjoner: Array<Relasjon>
 }
 

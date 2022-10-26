@@ -17,6 +17,7 @@ import { RedigerUtvandringForm } from '~/components/fagsystem/pdlf/form/partials
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
+import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import {
 	AdressebeskyttelseForm,
 	getIdenttype,
@@ -33,16 +34,17 @@ import {
 	vergemaal,
 } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '~/utils/YupValidations'
-import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import {
 	RedigerLoading,
 	Modus,
 } from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 type VisningTypes = {
 	getPdlForvalter: Function
 	dataVisning: any
 	initialValues: any
+	eksisterendeNyPerson?: Option
 	redigertAttributt?: any
 	path: string
 	ident: string

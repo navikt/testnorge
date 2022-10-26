@@ -6,6 +6,7 @@ import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
 import { useParams } from 'react-router-dom'
 import { DollyApi } from '~/service/Api'
 import { useAsync } from 'react-use'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface PdlPersonValues {
 	nyPersonPath: string
@@ -13,6 +14,7 @@ interface PdlPersonValues {
 	label: string
 	formikBag: FormikProps<{}>
 	nyIdentValg?: NyIdent
+	eksisterendeNyPerson?: Option
 }
 
 export const PdlPersonForm = ({
@@ -27,6 +29,7 @@ export const PdlPersonForm = ({
 	const gruppe = useAsync(async () => {
 		return await DollyApi.getGruppeById(gruppeId)
 	}, [])
+	//@ts-ignore
 	const gruppeIdenter = gruppe?.value?.data?.identer?.map((person) => person.ident)
 
 	return (

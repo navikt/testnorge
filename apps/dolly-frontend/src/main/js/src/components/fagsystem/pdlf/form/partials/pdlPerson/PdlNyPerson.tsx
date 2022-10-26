@@ -9,12 +9,15 @@ import _get from 'lodash/get'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { FormikProps } from 'formik'
 import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface PdlNyPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath?: string
 	formikBag?: FormikProps<{}>
 	erNyIdent?: boolean
+	gruppeIdenter?: Array<string>
+	eksisterendeNyPerson?: Option
 }
 
 export const PdlNyPerson = ({
@@ -41,10 +44,9 @@ export const PdlNyPerson = ({
 	const eksisterendePerson = _get(formikBag?.values, eksisterendePersonPath)
 
 	const hasEksisterendePerson =
-		(eksisterendePersonPath &&
-			eksisterendePerson !== null &&
-			gruppeIdenter?.includes(eksisterendePerson)) ||
-		_get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value
+		eksisterendePerson &&
+		(gruppeIdenter?.includes(eksisterendePerson) ||
+			_get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
@@ -103,7 +105,7 @@ export const PdlNyPerson = ({
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
 				disabled={hasEksisterendePerson}
-				checkboxMargin={erNyIdent}
+				checkboxMargin={true}
 			/>
 		</div>
 	)

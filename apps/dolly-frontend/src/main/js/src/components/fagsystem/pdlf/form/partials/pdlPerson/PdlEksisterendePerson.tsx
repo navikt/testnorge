@@ -20,6 +20,7 @@ interface PdlEksisterendePersonValues {
 	idx?: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
+	eksisterendeNyPerson?: Option
 }
 
 export const PdlEksisterendePerson = ({
