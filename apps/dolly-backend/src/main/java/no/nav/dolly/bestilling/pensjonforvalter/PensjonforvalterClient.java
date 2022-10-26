@@ -81,36 +81,36 @@ public class PensjonforvalterClient implements ClientRegister {
         Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
-        StringBuilder status = new StringBuilder();
+        StringBuilder status = new StringBuilder()
+            .append('$').append(PENSJON_FORVALTER).append('#');
 
         if (!dollyPerson.isOpprettetIPDL()) {
-            progress.setPensjonforvalterStatus(bestilling.getEnvironments().stream()
+            status.append(bestilling.getEnvironments().stream()
                     .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("PESYS"))))
                     .collect(Collectors.joining(",")));
-            return;
-        }
 
-        opprettPerson(dollyPerson, tilgjengeligeMiljoer, status);
-        if (!bestilteMiljoer.isEmpty() && nonNull(bestilling.getPensjonforvalter())) {
+        } else {
+            opprettPerson(dollyPerson, tilgjengeligeMiljoer, status);
+            if (!bestilteMiljoer.isEmpty() && nonNull(bestilling.getPensjonforvalter())) {
 
-            if (nonNull(bestilling.getPensjonforvalter().getInntekt())) {
-                lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
+                if (nonNull(bestilling.getPensjonforvalter().getInntekt())) {
+                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
+                }
+
+                if (nonNull(bestilling.getPensjonforvalter().getTp())) {
+                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
+                }
+
+            } else if (nonNull(bestilling.getPensjonforvalter())) {
+                status.append('$')
+                        .append(PENSJON_FORVALTER)
+                        .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
+                        .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
+                        .append("] ikke er valgt");
             }
-
-            if (nonNull(bestilling.getPensjonforvalter().getTp())) {
-                lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, status);
-            }
-
-        } else if (nonNull(bestilling.getPensjonforvalter())) {
-            status.append('$')
-                    .append(PENSJON_FORVALTER)
-                    .append("#Feil= Bestilling ble ikke sendt til Pensjonsforvalter (PEN) da tilgjengelig(e) miljø(er) [")
-                    .append(tilgjengeligeMiljoer.stream().collect(joining(",")))
-                    .append("] ikke er valgt");
         }
-        if (status.length() > 1) {
-            progress.setPensjonforvalterStatus(status.substring(1));
-        }
+
+        progress.setPensjonforvalterStatus(status.substring(1));
     }
 
     @Override
@@ -122,8 +122,6 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private void opprettPerson(DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
-
-        status.append('$').append(PENSJON_FORVALTER).append('#');
 
         try {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
