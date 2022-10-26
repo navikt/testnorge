@@ -15,6 +15,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import static no.nav.registre.testnorge.helsepersonellservice.util.ExhangeStrategyUtil.biggerMemorySizeExchangeStrategy;
+
 @Slf4j
 @Component
 public class SamhandlerregisteretConsumer {
@@ -32,9 +34,7 @@ public class SamhandlerregisteretConsumer {
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
-                .codecs(configurer -> configurer
-                        .defaultCodecs()
-                        .maxInMemorySize(16 * 1024 * 1024))
+                .exchangeStrategies(biggerMemorySizeExchangeStrategy())
                 .baseUrl(serverProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
