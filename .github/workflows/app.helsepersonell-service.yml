@@ -17,7 +17,8 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+    #    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master #TODO: Endre tilbake til denne
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@bugfix/helsepersonell
     with:
       working-directory: 'apps/helsepersonell-service/'
       app-name: 'helsepersonell-service'
@@ -25,7 +26,8 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    #    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master #TODO: Endre tilbake til denne
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@bugfix/helsepersonell
     needs: build
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-helsepersonell-service')}}
     with:

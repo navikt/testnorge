@@ -6,7 +6,7 @@ spring:
     version: application.version.todo
     name: testnav-helsepersonell-service
   codec:
-    max-in-memory-size: 500KB
+    max-in-memory-size: 10MB
   security:
     oauth2:
       resourceserver:
