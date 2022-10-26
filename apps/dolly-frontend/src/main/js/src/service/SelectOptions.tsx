@@ -459,6 +459,41 @@ const selectOptions: SelectOptions = {
 	],
 
 	tpOrdninger: [],
+
+	// PDL vergemaal:
+	pdlVergemaalType: [
+		{ value: 'ensligMindreaarigAsylsoeker', label: 'Enslig mindreårig asylsøker' },
+		{
+			value: 'ensligMindreaarigFlyktning',
+			label: 'Enslig mindreårig flyktning (EMF) inklusive midlertidige saker for denne gruppen',
+		},
+		{ value: 'voksen', label: 'Voksen' },
+		{ value: 'midlertidigForVoksen', label: 'Voksen midlertidig' },
+		{ value: 'mindreaarig', label: 'Mindreårig (unntatt EMF)' },
+		{ value: 'midlertidigForMindreaarig', label: 'Mindreårig midlertidig (unntatt EMF)' },
+		{ value: 'forvaltningUtenforVergemaal', label: 'Forvaltning utenfor vergemål' },
+		{ value: 'stadfestetFremtidsfullmakt', label: 'Fremtidsfullmakt' },
+	],
+
+	pdlVergemaalOmfang: [
+		{
+			value: 'utlendingssakerPersonligeOgOekonomiskeInteresser',
+			label:
+				'Ivareta personens interesser innenfor det personlige og økonomiske området herunder utlendingssaken (kun for EMA)',
+		},
+		{
+			value: 'personligeOgOekonomiskeInteresser',
+			label: 'Ivareta personens interesser innenfor det personlige og økonomiske området',
+		},
+		{
+			value: 'oekonomiskeInteresser',
+			label: 'Ivareta personens interesser innenfor det økonomiske området',
+		},
+		{
+			value: 'personligeInteresser',
+			label: 'Ivareta personens interesser innenfor det personlige område',
+		},
+	],
 }
 
 export const SelectOptionsManager = (attributeId: keyof SelectOptions) => selectOptions[attributeId]
