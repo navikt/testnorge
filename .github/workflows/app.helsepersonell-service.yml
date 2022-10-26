@@ -9,8 +9,7 @@ on:
 jobs:
   scan:
     name: Scan
-#    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master #TODO: Endre tilbake til denne
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@bugfix/helsepersonell
+    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
     with:
       working-directory: 'apps/helsepersonell-service/'
     secrets:
@@ -18,8 +17,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   build:
     name: Build
-    #    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master #TODO: Endre tilbake til denne
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@bugfix/helsepersonell
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
     with:
       working-directory: 'apps/helsepersonell-service/'
       app-name: 'helsepersonell-service'
@@ -27,8 +25,7 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy-dev:
     name: Deploy
-    #    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master #TODO: Endre tilbake til denne
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@bugfix/helsepersonell
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-helsepersonell-service')}}
     with:
