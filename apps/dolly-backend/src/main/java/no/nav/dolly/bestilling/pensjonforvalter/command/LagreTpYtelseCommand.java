@@ -55,7 +55,7 @@ public class LagreTpYtelseCommand implements Callable<Mono<PensjonforvalterRespo
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .reasonPhrase(error.getMessage())
+                                                                .reasonPhrase(WebClientFilter.getMessage(error))
                                                                 .status(500)
                                                                 .build())
                                                         .timestamp(LocalDateTime.now())

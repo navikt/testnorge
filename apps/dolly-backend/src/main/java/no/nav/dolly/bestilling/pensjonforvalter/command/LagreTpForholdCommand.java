@@ -56,7 +56,7 @@ public class LagreTpForholdCommand implements Callable<Mono<PensjonforvalterResp
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .reasonPhrase(error.getMessage())
+                                                                .reasonPhrase(WebClientFilter.getMessage(error))
                                                                 .status(500)
                                                                 .build())
                                                         .timestamp(LocalDateTime.now())
