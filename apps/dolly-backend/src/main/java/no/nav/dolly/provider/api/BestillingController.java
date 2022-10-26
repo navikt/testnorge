@@ -2,6 +2,7 @@ package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.MalbestillingNavn;
@@ -38,6 +39,7 @@ import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+@Slf4j
 @Transactional
 @RestController
 @RequiredArgsConstructor
@@ -78,11 +80,16 @@ public class BestillingController {
     public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
                                                     @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "2000") Integer pageSize) {
-        var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
-        if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
-            return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
+        try {
+            var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
+            if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
+                return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
+            }
+            return mapperFacade.mapAsList(emptyList(), RsBestillingStatus.class);
+        } catch (Exception e) {
+            log.error(e.getMessage(), e);
         }
-        return mapperFacade.mapAsList(emptyList(), RsBestillingStatus.class);
+        return emptyList();
     }
 
     @GetMapping("/gruppe/{gruppeId}/ikkeferdig")
