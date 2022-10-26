@@ -32,7 +32,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: 1.17
+          java-version: 17
       - name: Build
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
