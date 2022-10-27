@@ -52,7 +52,12 @@ export const useBestillingerGruppe = (gruppeId: string | number) => {
 	}
 }
 
-export const useIkkeFerdigBestillingerGruppe = (gruppeId: string | number, visning, sidetall: number, sideStoerrelse: number) => {
+export const useIkkeFerdigBestillingerGruppe = (
+	gruppeId: string | number,
+	visning,
+	sidetall: number,
+	sideStoerrelse: number
+) => {
 	if (!gruppeId) {
 		return {
 			loading: false,
@@ -60,9 +65,10 @@ export const useIkkeFerdigBestillingerGruppe = (gruppeId: string | number, visni
 		}
 	}
 
-	const url = visning == 'personer'
-		? getIkkeFerdigBestillingerGruppeUrl(gruppeId)
-		: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
+	const url =
+		visning == 'personer'
+			? getIkkeFerdigBestillingerGruppeUrl(gruppeId)
+			: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
 	const { data, error } = useSWR<Bestilling[], Error>(url, fetcher)
 
 	const bestillingerSorted = data

@@ -16,6 +16,7 @@ import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
+import { setSortKolonne, setSortRetning } from '~/ducks/finnPerson'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -71,6 +72,15 @@ export default function PersonListe({
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson, bestillingStatuser])
 
+	const getKommentarTekst = (tekst) => {
+		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
+		return (
+			<div style={{ maxWidth: 200 }}>
+				<p>{beskrivelse}</p>
+			</div>
+		)
+	}
+
 	const columns = [
 		{
 			text: 'Ident',
@@ -110,14 +120,15 @@ export default function PersonListe({
 		},
 		{
 			text: 'Kilde',
-			width: '20',
+			width: '15',
 			dataField: 'kilde',
 		},
 		{
 			text: 'Brukt',
-			width: '10',
+			width: '15',
 			style: { paddingLeft: '3px' },
 			dataField: 'ibruk',
+			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
@@ -167,15 +178,6 @@ export default function PersonListe({
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
-	const getKommentarTekst = (tekst) => {
-		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
-		return (
-			<div style={{ maxWidth: 200 }}>
-				<p>{beskrivelse}</p>
-			</div>
-		)
-	}
-
 	const updatePersonHeader = () => {
 		personListe.map((person) => {
 			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
@@ -200,15 +202,39 @@ export default function PersonListe({
 	const onHeaderClick = (value) => {
 		console.log('person list header click', value)
 
-		const clearSorting = tableColumns.map(c => {
-			c.headerCssClass = null
-			return c
+		const sort_asc = 'header-sort-asc'
+		const sort_desc = 'header-sort-desc'
+		const sort_default = 'header-sort-sortable'
+
+		const activeColumn = tableColumns.filter(
+			(column) => column.headerCssClass !== undefined && column.text === value
+		)
+
+		if (!activeColumn || !activeColumn.length) {
+			return
+		}
+
+		const newSorting = tableColumns.map((column) => {
+			console.log('header click, sorting columsn', column, value)
+			if (column.headerCssClass !== undefined) {
+				if (column.text === value) {
+					if (column.headerCssClass && column.headerCssClass.includes(sort_asc)) {
+						column.headerCssClass = sort_desc
+						setSortKolonne(value)
+						setSortRetning('desc')
+					} else {
+						column.headerCssClass = sort_asc
+						setSortKolonne(value)
+						setSortRetning('asc')
+					}
+				} else {
+					column.headerCssClass = sort_default
+				}
+			}
+			return column
 		})
 
-		const newSorting = clearSorting.map(c => {
-			if 
-			return c;
-		})
+		setTableColumns(newSorting)
 	}
 
 	return (

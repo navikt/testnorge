@@ -16,7 +16,6 @@ const getColumnValue = (row, column) => {
 }
 
 const getColumnHeader = (cell, data) => {
-	console.log('get ColumnHeader', cell, data)
 	if (cell.headerFormatter) {
 		return cell.headerFormatter(cell.text, data)
 	} else {
@@ -58,7 +57,6 @@ export default function Table({
 	})
 
 	const tableColumnClick = (value) => {
-		console.log('column click', value)
 		onHeaderClick && onHeaderClick(value)
 	}
 

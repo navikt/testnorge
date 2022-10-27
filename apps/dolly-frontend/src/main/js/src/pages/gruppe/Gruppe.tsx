@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useState} from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -33,13 +33,25 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ visning, setVisning, sidetall, sideStoerrelse, sortKolonne, sortRetning }: GruppeProps) => {
+export default ({
+	visning,
+	setVisning,
+	sidetall,
+	sideStoerrelse,
+	sortKolonne,
+	sortRetning,
+}: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
 	} = useCurrentBruker()
 
-	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(gruppeId, visning, sidetall, sideStoerrelse)
+	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
+		gruppeId,
+		visning,
+		sidetall,
+		sideStoerrelse
+	)
 
 	const {
 		gruppe,
