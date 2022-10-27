@@ -36,8 +36,8 @@ public class AaregProxyApplicationStarter {
     public StsOidcTokenService stsPreprodOidcTokenService(
         @Value("${sts.preprod.token.provider.url}") String url,
         @Value("${sts.preprod.token.provider.username}") String username,
-        @Value("${sts.preprod.token.provider.password}") String password
-    ) {
+        @Value("${sts.preprod.token.provider.password}") String password) {
+
         return new StsOidcTokenService(url, username, password);
     }
 
@@ -45,15 +45,15 @@ public class AaregProxyApplicationStarter {
     public StsOidcTokenService stsTestOidcTokenService(
         @Value("${sts.test.token.provider.url}") String url,
         @Value("${sts.test.token.provider.username}") String username,
-        @Value("${sts.test.token.provider.password}") String password
-    ) {
+        @Value("${sts.test.token.provider.password}") String password) {
+
         return new StsOidcTokenService(url, username, password);
     }
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder, StsOidcTokenService stsTestOidcTokenService, StsOidcTokenService stsPreprodOidcTokenService) {
-        RouteLocatorBuilder.Builder routes = builder.routes();
 
+        var routes = builder.routes();
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
         Stream.of("q1", "q2", "q4", "q5")
@@ -70,6 +70,7 @@ public class AaregProxyApplicationStarter {
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
+
         return spec -> spec
             .path("/" + miljo + "/**")
             .filters(filterSpec -> filterSpec
