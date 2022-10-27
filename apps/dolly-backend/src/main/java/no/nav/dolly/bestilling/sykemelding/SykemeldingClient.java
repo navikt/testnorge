@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -70,8 +71,15 @@ public class SykemeldingClient implements ClientRegister {
 
                     } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
                         RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        saveTransaksjonId(detaljertSykemelding.getMottaker().getOrgNr(), null,
-                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
+                        Optional<RsDetaljertSykemelding.Organisasjon> mottaker = Optional.ofNullable(detaljertSykemelding.getMottaker());
+                        saveTransaksjonId(mottaker
+                                        .orElse(RsDetaljertSykemelding.Organisasjon
+                                                .builder()
+                                                .orgNr("NA")
+                                                .build())
+                                        .getOrgNr(), null,
+                                progress.getBestilling().getId(),
+                                dollyPerson.getHovedperson());
                     }
                 }
                 progress.setSykemeldingStatus("OK");

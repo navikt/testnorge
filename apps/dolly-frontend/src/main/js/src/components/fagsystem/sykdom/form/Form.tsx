@@ -5,7 +5,6 @@ import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import { Sykemelding } from './partials/Sykemelding'
 import { validation } from './validation'
 import { FormikProps } from 'formik'
-import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
 import { Alert } from '@navikt/ds-react'
 
 interface SykdomFormProps {
@@ -24,9 +23,6 @@ export const SykdomForm = ({ formikBag }: SykdomFormProps) => (
 			startOpen={erForsteEllerTest(formikBag.values, [sykdomAttributt])}
 			informasjonstekst="Om du velger å generere en sykemelding automatisk, vil du få en syntetisk sykemelding hvor alle verdier blir satt for deg."
 		>
-			{!formikBag.values.hasOwnProperty('aareg') && (
-				<AlertAaregRequired meldingSkjema="Sykemeldingen" />
-			)}
 			{formikBag.values.sykemelding != null &&
 				formikBag.values.sykemelding.hasOwnProperty('syntSykemelding') && (
 					<Alert variant={'info'} style={{ marginBottom: '20px' }}>

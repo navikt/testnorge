@@ -11,9 +11,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.registre.testnorge.helsepersonellservice.util.ExhangeStrategyUtil.biggerMemorySizeExchangeStrategy;
 
 @Component
 public class DollyBackendConsumer {
@@ -34,12 +34,13 @@ public class DollyBackendConsumer {
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
+                .exchangeStrategies(biggerMemorySizeExchangeStrategy())
                 .baseUrl(serverProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    public List<String> getHelsepersonell(){
+    public List<String> getHelsepersonell() {
         return getGruppeIdenter(helsepersonellGruppeId);
     }
 
