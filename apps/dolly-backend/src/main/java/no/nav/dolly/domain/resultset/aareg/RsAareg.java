@@ -29,7 +29,7 @@ public class RsAareg {
 
     private String arbeidsforholdId;
 
-    private RsPeriodeAareg ansettelsesPeriode;
+    private RsAnsettelsesPeriode ansettelsesPeriode;
 
     private List<RsAntallTimerIPerioden> antallTimerForTimeloennet;
 

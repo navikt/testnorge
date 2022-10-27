@@ -7,9 +7,9 @@ import no.nav.dolly.bestilling.aaregrest.Aareg2Client;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoer;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
+import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
-import no.nav.dolly.domain.resultset.aareg.RsPeriodeAareg;
 import no.nav.dolly.domain.resultset.aareg.RsPermisjon;
 import no.nav.dolly.domain.resultset.aareg.RsPermittering;
 import no.nav.dolly.domain.resultset.aareg.RsUtenlandsopphold;
@@ -98,11 +98,12 @@ public class Aareg2RequestMappingStrategy implements MappingStrategy {
                         arbeidsforhold.setNavArbeidsforholdPeriode(rsArbeidsforhold.getNavArbeidsforholdPeriode());
                     }
 
-                    private Ansettelsesperiode getAnsettelsesperiode(RsPeriodeAareg ansettelsesperiode) {
+                    private Ansettelsesperiode getAnsettelsesperiode(RsAnsettelsesPeriode ansettelsesperiode) {
 
                         return nonNull(ansettelsesperiode) ?
                                 Ansettelsesperiode.builder()
                                         .periode(mapperFacade.map(ansettelsesperiode, Periode.class))
+                                        .sluttaarsak(ansettelsesperiode.getSluttaarsak())
                                         .build() :
                                 null;
                     }

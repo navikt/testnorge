@@ -5,6 +5,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aaregrest.Aareg2Client;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
+import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
 import no.nav.dolly.domain.resultset.aareg.RsAntallTimerIPerioden;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsavtale;
 import no.nav.dolly.domain.resultset.aareg.RsFartoy;
@@ -38,7 +39,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)
-class AaregRequestMappingStrategyTest {
+class Aareg2RequestMappingStrategyTest {
 
     private static final LocalDateTime FOM_DATO = LocalDateTime.of(1990, 1, 1, 0, 0);
     private static final LocalDateTime TOM_DATO = LocalDateTime.of(2010, 1, 1, 0, 0);
@@ -99,9 +100,10 @@ class AaregRequestMappingStrategyTest {
     void mapAnsettelsePeriode() {
 
         var kilde = RsAareg.builder()
-                .ansettelsesPeriode(RsPeriodeAareg.builder()
+                .ansettelsesPeriode(RsAnsettelsesPeriode.builder()
                         .fom(FOM_DATO)
                         .tom(TOM_DATO)
+                        .sluttaarsak("Skoft")
                         .build())
                 .build();
 
@@ -109,6 +111,7 @@ class AaregRequestMappingStrategyTest {
 
         assertThat(destinasjon.getAnsettelsesperiode().getPeriode().getFom(), is(equalTo(FOM_DATO.toLocalDate())));
         assertThat(destinasjon.getAnsettelsesperiode().getPeriode().getTom(), is(equalTo(TOM_DATO.toLocalDate())));
+        assertThat(destinasjon.getAnsettelsesperiode().getSluttaarsak(), is(equalTo("Skoft")));
     }
 
     @Test
