@@ -31,7 +31,7 @@ public final class BestillingPensjonforvalterStatusMapper {
         Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents = new HashMap();
 
         progressList.forEach(progress -> {
-            if (isNotBlank(progress.getPensjonforvalterStatus())) {
+            if (isNotBlank(progress.getPensjonforvalterStatus()) && progress.getPensjonforvalterStatus().split("#").length > 1) {
                 List.of(progress.getPensjonforvalterStatus()
                         .split("\\$")).forEach(meldingMiljoStatus -> {
                     String melding = meldingMiljoStatus.split("\\#")[0];
@@ -56,7 +56,7 @@ public final class BestillingPensjonforvalterStatusMapper {
     }
 
     private static void insertArtifact(Map<String, Map<String, Map<String, List<String>>>> msgStatusIdents,
-            String melding, String status, String miljoe, String ident) {
+                                       String melding, String status, String miljoe, String ident) {
 
         if (msgStatusIdents.containsKey(melding)) {
             if (msgStatusIdents.get(melding).containsKey(status)) {
@@ -87,15 +87,15 @@ public final class BestillingPensjonforvalterStatusMapper {
                     .navn(type.getBeskrivelse())
                     .statuser(
                             meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
-                                    RsStatusRapport.Status.builder()
-                                            .melding(entry.getKey().replaceAll("=", ":").replaceAll("&", ","))
-                                            .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
-                                                    RsStatusRapport.Detaljert.builder()
-                                                            .miljo(miljeStatus.getKey())
-                                                            .identer(miljeStatus.getValue())
-                                                            .build())
-                                                    .collect(Collectors.toList()))
-                                            .build())
+                                            RsStatusRapport.Status.builder()
+                                                    .melding(entry.getKey().replaceAll("=", ":").replaceAll("&", ","))
+                                                    .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
+                                                                    RsStatusRapport.Detaljert.builder()
+                                                                            .miljo(miljeStatus.getKey())
+                                                                            .identer(miljeStatus.getValue())
+                                                                            .build())
+                                                            .collect(Collectors.toList()))
+                                                    .build())
                                     .collect(Collectors.toList()))
                     .build());
         } else {
