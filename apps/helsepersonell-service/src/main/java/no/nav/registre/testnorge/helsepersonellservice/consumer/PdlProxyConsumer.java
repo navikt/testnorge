@@ -9,7 +9,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.BufferedReader;
@@ -20,15 +19,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static no.nav.registre.testnorge.helsepersonellservice.util.ExhangeStrategyUtil.biggerMemorySizeExchangeStrategy;
 
 @Slf4j
 @Component
 public class PdlProxyConsumer {
+    private static final String BOLK_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
-
-    private static final String BOLK_PERSON_QUERY = "pdlperson/pdlbolkquery.graphql";
 
     public PdlProxyConsumer(
             PdlProxyProperties pdlProxyProperties,
@@ -38,11 +37,7 @@ public class PdlProxyConsumer {
         this.serviceProperties = pdlProxyProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
-                .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(configurer -> configurer
-                                .defaultCodecs()
-                                .maxInMemorySize(16 * 1024 * 1024))
-                        .build())
+                .exchangeStrategies(biggerMemorySizeExchangeStrategy())
                 .baseUrl(pdlProxyProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();

@@ -77,13 +77,11 @@ export const DetaljertSykemelding = ({ formikBag }: SykemeldingForm) => {
 					name="sykemelding.detaljertSykemelding.umiddelbarBistand"
 					checkboxMargin
 					label="Trenger umiddelbar bistand"
-					size="small"
 				/>
 				<FormikCheckbox
 					name="sykemelding.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen"
 					label="Manglende tilrettelegging på arbeidsplassen"
 					checkboxMargin
-					size="small"
 				/>
 			</div>
 			<Kategori title="Diagnose" vis="sykemelding">
