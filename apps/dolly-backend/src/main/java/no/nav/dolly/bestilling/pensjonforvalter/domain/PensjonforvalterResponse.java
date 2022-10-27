@@ -2,15 +2,13 @@ package no.nav.dolly.bestilling.pensjonforvalter.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -18,8 +16,11 @@ public class PensjonforvalterResponse {
 
     private List<ResponseEnvironment> status;
 
-    @Getter
-    @Setter
+    public List<ResponseEnvironment> getStatus() {
+        return status;
+    }
+
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -29,8 +30,7 @@ public class PensjonforvalterResponse {
         private Response response;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -42,8 +42,7 @@ public class PensjonforvalterResponse {
         private LocalDateTime timestamp;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

@@ -13,7 +13,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -42,47 +41,46 @@ public class PensjonforvalterClient implements ClientRegister {
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
-    private final ErrorStatusDecoder errorStatusDecoder;
 
     private static boolean isResponse2xx(PensjonforvalterResponse.Response status) {
         return status.getHttpStatus().getStatus() >= 200 && status.getHttpStatus().getStatus() < 300;
     }
 
     public static void mergePensjonforvalterResponses(PensjonforvalterResponse response, PensjonforvalterResponse responseTil) {
-        if (response.getStatus() != null) {
-            response.getStatus().forEach(status -> {
-                var miljo = status.getMiljo();
-                var miljoResponse = status.getResponse();
 
-                if (responseTil.getStatus() == null) {
-                    responseTil.setStatus(new ArrayList<>());
+        response.getStatus().forEach(status -> {
+
+            var miljo = status.getMiljo();
+            var miljoResponse = status.getResponse();
+
+            if (responseTil.getStatus() == null) {
+                responseTil.setStatus(new ArrayList<>());
+            }
+
+            var mergingTilMiljo = responseTil.getStatus().stream()
+                    .filter(s -> s.getMiljo().equalsIgnoreCase(miljo))
+                    .findFirst();
+
+            if (mergingTilMiljo.isPresent()) {
+                if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
+                    mergingTilMiljo.get().setResponse(miljoResponse);
                 }
-
-                var mergingTilMiljo = responseTil.getStatus().stream()
-                        .filter(s -> s.getMiljo().equalsIgnoreCase(miljo))
-                        .findFirst();
-
-                if (mergingTilMiljo.isPresent()) {
-                    if (isResponse2xx(mergingTilMiljo.get().getResponse())) {
-                        mergingTilMiljo.get().setResponse(miljoResponse);
-                    }
-                } else {
-                    // det var ingen miljø response tidligere
-                    responseTil.getStatus().add(status);
-                }
-            });
-        }
+            } else {
+                // det var ingen miljø response tidligere
+                responseTil.getStatus().add(status);
+            }
+        });
     }
 
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        Set<String> bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
-        Set<String> tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
+        var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
+        var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
-        StringBuilder status = new StringBuilder()
-            .append('$').append(PENSJON_FORVALTER).append('#');
+        var status = new StringBuilder()
+                .append('$').append(PENSJON_FORVALTER).append('#');
 
         if (!dollyPerson.isOpprettetIPDL()) {
             status.append(bestilling.getEnvironments().stream()
@@ -123,77 +121,57 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private void opprettPerson(DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
 
-        try {
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-            dollyPerson.getPersondetaljer().forEach(person -> {
-                var opprettPersonRequest =
-                        mapperFacade.map(person, OpprettPersonRequest.class);
-                opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
-                log.info("Persondata til pensjon: " + opprettPersonRequest.toString());
-                var response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
-                if (dollyPerson.getHovedperson().equals(person.getIdent())) {
-                    decodeStatus(response, status);
-                }
-            });
-        } catch (RuntimeException e) {
-
-            status.append("ALLE:")
-                    .append(errorStatusDecoder.decodeRuntimeException(e));
-        }
+        dollyPersonCache.fetchIfEmpty(dollyPerson);
+        dollyPerson.getPersondetaljer().forEach(person -> {
+            var opprettPersonRequest =
+                    mapperFacade.map(person, OpprettPersonRequest.class);
+            opprettPersonRequest.setMiljoer(new ArrayList<>(miljoer));
+            log.info("Persondata til pensjon: " + opprettPersonRequest.toString());
+            var response = pensjonforvalterConsumer.opprettPerson(opprettPersonRequest);
+            if (dollyPerson.getHovedperson().equals(person.getIdent())) {
+                decodeStatus(response, person.getIdent(), status);
+            }
+        });
     }
 
     private void lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
 
         status.append('$').append(POPP_INNTEKTSREGISTER).append('#');
 
-        try {
-            LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
-            lagreInntektRequest.setFnr(dollyPerson.getHovedperson());
-            lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
+        LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
+        lagreInntektRequest.setFnr(dollyPerson.getHovedperson());
+        lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
 
-            decodeStatus(pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest), status);
-
-        } catch (RuntimeException e) {
-
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
-        }
+        decodeStatus(pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest), dollyPerson.getHovedperson(), status);
     }
 
     private void lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, StringBuilder status) {
-        List<String> exceptions = new ArrayList<>();
+
         status.append('$').append(TP_FORHOLD).append('#');
-        PensjonforvalterResponse response = new PensjonforvalterResponse();
+        var response = new PensjonforvalterResponse();
 
         pensjonData.getTp()
-                .stream()
                 .forEach(tp -> {
-                    try {
-                        LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
-                        lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-                        lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
+                    LagreTpForholdRequest lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                    lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                    lagreTpForholdRequest.setMiljoer(new ArrayList<>(miljoer));
 
-                        var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
-                        mergePensjonforvalterResponses(forholdResponse, response);
+                    var forholdResponse = pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest);
+                    mergePensjonforvalterResponses(forholdResponse, response);
 
-                        if (!tp.getYtelser().isEmpty()) {
-                            var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
-                            mergePensjonforvalterResponses(ytelseResponse, response);
-                        }
-                    } catch (RuntimeException e) {
-                        exceptions.add(errorStatusDecoder.decodeRuntimeException(e));
+                    if (!tp.getYtelser().isEmpty()) {
+                        var ytelseResponse = lagreTpYtelse(dollyPerson.getHovedperson(), tp.getOrdning(), tp.getYtelser(), miljoer);
+                        mergePensjonforvalterResponses(ytelseResponse, response);
                     }
                 });
 
-        if (exceptions.isEmpty()) {
-            decodeStatus(response, status);
-        } else {
-            status.append(exceptions.get(0));
-        }
 
+        decodeStatus(response, dollyPerson.getHovedperson(), status);
     }
 
     private PensjonforvalterResponse lagreTpYtelse(String person, String ordning, List<PensjonData.TpYtelse> ytelser, Set<String> miljoer) {
-        PensjonforvalterResponse response = new PensjonforvalterResponse();
+
+        var response = new PensjonforvalterResponse();
 
         ytelser.stream().forEach(ytelse -> {
             LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
@@ -209,8 +187,9 @@ public class PensjonforvalterClient implements ClientRegister {
         return response;
     }
 
-    private void decodeStatus(PensjonforvalterResponse response, StringBuilder pensjonStatus) {
+    private void decodeStatus(PensjonforvalterResponse response, String ident, StringBuilder pensjonStatus) {
 
+        log.info("Mottatt status på {} fra Pensjon-Testdata-Facade: {}", ident, response);
         response.getStatus().forEach(status ->
                 pensjonStatus.append(status.getMiljo()).append(':')
                         .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
