@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -17,6 +20,10 @@ public class PensjonforvalterResponse {
     private List<ResponseEnvironment> status;
 
     public List<ResponseEnvironment> getStatus() {
+
+        if (isNull(status)) {
+            status = new ArrayList<>();
+        }
         return status;
     }
 
