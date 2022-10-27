@@ -6,7 +6,6 @@ import {
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
-	VergemaalValues,
 } from '~/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
