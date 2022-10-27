@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
@@ -61,19 +62,22 @@ public class OrdreService {
                 .master(testident.getMaster())
                 .build();
 
+        var dollyPerson = DollyPerson.builder()
+                .hovedperson(ident)
+                .master(progress.getMaster())
+                .opprettetIPDL(true)
+                .build();
+
         List.of(CompletableFuture.supplyAsync(
-                                () -> pdlDataConsumer.sendOrdre(ident, testident.isTpsf(), false), dollyForkJoinPool),
+                                () -> sendPdlData(testident, progress), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
-                                () -> sendTpsMessaging(ident, progress), dollyForkJoinPool),
+                                () -> sendTpsMessaging(dollyPerson, progress), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
-                                () -> sendPensjonPersoninfo(ident, progress), dollyForkJoinPool)
+                                () -> sendPensjonPersoninfo(dollyPerson, progress), dollyForkJoinPool)
                         )
                 .forEach(future -> {
                     try {
-                        var resultat = future.get(1, TimeUnit.MINUTES);
-                        if (!resultat.contains("$")) {
-                            progress.setPdlDataStatus(resultat);
-                        }
+                        future.get(1, TimeUnit.MINUTES);
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         log.error("Future task exception {}", e.getMessage(), e);
                         Thread.interrupted();
@@ -90,25 +94,26 @@ public class OrdreService {
                 .build();
     }
 
-    private String sendTpsMessaging(String ident, BestillingProgress progress) {
+    private String sendPdlData(Testident testident, BestillingProgress progress) {
+
+        progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(testident.getIdent(), testident.isTpsf(), false));
+
+        return progress.getTpsMessagingStatus();
+    }
+
+    private String sendTpsMessaging(DollyPerson dollyPerson, BestillingProgress progress) {
 
         tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(),
-                DollyPerson.builder()
-                        .hovedperson(ident)
-                        .master(progress.getMaster())
-                        .build(),
+                dollyPerson,
                 progress, false);
 
         return progress.getTpsMessagingStatus();
     }
 
-    private String sendPensjonPersoninfo(String ident, BestillingProgress progress) {
+    private String sendPensjonPersoninfo(DollyPerson dollyPerson, BestillingProgress progress) {
 
         pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(),
-                DollyPerson.builder()
-                        .hovedperson(ident)
-                        .master(progress.getMaster())
-                        .build(),
+                dollyPerson,
                 progress, false);
 
         return progress.getPensjonforvalterStatus();
