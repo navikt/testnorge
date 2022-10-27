@@ -108,9 +108,11 @@ public class TestgruppeController {
     @Operation(description = "Hent paginert testgruppe")
     public RsTestgruppeMedBestillingId getPaginertTestgruppe(@PathVariable("gruppeId") Long gruppeId,
                                                              @PathVariable("pageNo") Integer pageNo,
-                                                             @RequestParam Integer pageSize) {
+                                                             @RequestParam Integer pageSize,
+                                                             @RequestParam(required = false) String sortKolonne,
+                                                             @RequestParam(required = false) String sortRetning) {
 
-        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, pageNo, pageSize);
+        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, pageNo, pageSize, sortKolonne, sortRetning);
     }
 
     @Cacheable(CACHE_GRUPPE)
@@ -118,7 +120,7 @@ public class TestgruppeController {
     @Operation(description = "Hent testgruppe")
     public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
 
-        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 20000);
+        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 20000, null, null);
     }
 
     @Cacheable(CACHE_GRUPPE)
