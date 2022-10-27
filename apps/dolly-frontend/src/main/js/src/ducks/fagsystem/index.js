@@ -435,22 +435,16 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	if (
 		!identer ||
 		(_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
-	)
+	) {
 		return null
+	}
 
-	// Sortert etter bestillingsId
-	const identListe = Object.values(identer)
-		.sort((first, second) =>
-			first.bestillingId && second.bestillingId
-				? _last(second?.bestillingId) - _last(first?.bestillingId)
-				: _last(second?.ident) - _last(first?.ident)
-		)
-		.filter(
-			(gruppeIdent) =>
-				Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident) ||
-				Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident) ||
-				Object.keys(fagsystem.pdl).includes(gruppeIdent.ident)
-		)
+	const identListe = Object.values(identer).filter(
+		(gruppeIdent) =>
+			Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident) ||
+			Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident) ||
+			Object.keys(fagsystem.pdl).includes(gruppeIdent.ident)
+	)
 
 	return identListe.map((ident) => {
 		if (ident.master === 'TPSF') {

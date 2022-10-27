@@ -16,7 +16,8 @@ import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
-import { setSortKolonne, setSortRetning } from '~/ducks/finnPerson'
+import { setSorting } from '~/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -41,10 +42,12 @@ export default function PersonListe({
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
 	tmpPersoner,
+	sorting,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const dispatch = useDispatch()
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -81,7 +84,7 @@ export default function PersonListe({
 		)
 	}
 
-	const columns = [
+	const columnsDefault = [
 		{
 			text: 'Ident',
 			width: '20',
@@ -122,12 +125,15 @@ export default function PersonListe({
 			text: 'Kilde',
 			width: '15',
 			dataField: 'kilde',
+			sortField: 'master',
+			headerCssClass: 'header-sort-sortable',
 		},
 		{
 			text: 'Brukt',
 			width: '15',
 			style: { paddingLeft: '3px' },
 			dataField: 'ibruk',
+			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
@@ -163,7 +169,13 @@ export default function PersonListe({
 		},
 	]
 
-	const [tableColumns, setTableColumns] = useState(columns)
+	const columns = columnsDefault.map((column) => {
+		const sortKolonne = sorting?.kolonne
+		if (column.sortField && column.sortField === sortKolonne) {
+			column.headerCssClass = sorting.retning === 'asc' ? 'header-sort-asc' : 'header-sort-desc'
+		}
+		return column
+	})
 
 	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
 		return <Loading label="Laster personer" panel />
@@ -200,13 +212,7 @@ export default function PersonListe({
 	if (tmpPersoner) updatePersonHeader()
 
 	const onHeaderClick = (value) => {
-		console.log('person list header click', value)
-
-		const sort_asc = 'header-sort-asc'
-		const sort_desc = 'header-sort-desc'
-		const sort_default = 'header-sort-sortable'
-
-		const activeColumn = tableColumns.filter(
+		const activeColumn = columns.filter(
 			(column) => column.headerCssClass !== undefined && column.text === value
 		)
 
@@ -214,18 +220,19 @@ export default function PersonListe({
 			return
 		}
 
-		const newSorting = tableColumns.map((column) => {
-			console.log('header click, sorting columsn', column, value)
+		const sort_asc = 'header-sort-asc'
+		const sort_desc = 'header-sort-desc'
+		const sort_default = 'header-sort-sortable'
+
+		columns.map((column) => {
 			if (column.headerCssClass !== undefined) {
 				if (column.text === value) {
 					if (column.headerCssClass && column.headerCssClass.includes(sort_asc)) {
 						column.headerCssClass = sort_desc
-						setSortKolonne(value)
-						setSortRetning('desc')
+						dispatch(setSorting({ kolonne: column.sortField, retning: 'desc' }))
 					} else {
 						column.headerCssClass = sort_asc
-						setSortKolonne(value)
-						setSortRetning('asc')
+						dispatch(setSorting({ kolonne: column.sortField, retning: 'asc' }))
 					}
 				} else {
 					column.headerCssClass = sort_default
@@ -233,15 +240,13 @@ export default function PersonListe({
 			}
 			return column
 		})
-
-		setTableColumns(newSorting)
 	}
 
 	return (
 		<ErrorBoundary>
 			<DollyTable
 				data={personListe}
-				columns={tableColumns}
+				columns={columns}
 				gruppeDetaljer={{
 					antallElementer: gruppeInfo.antallIdenter,
 					pageSize: sideStoerrelse,

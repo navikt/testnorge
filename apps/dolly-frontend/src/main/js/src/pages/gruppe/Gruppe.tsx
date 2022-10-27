@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React from 'react'
 import useBoolean from '~/utils/hooks/useBoolean'
 import Loading from '~/components/ui/loading/Loading'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -24,8 +24,7 @@ export type GruppeProps = {
 	setVisning: Function
 	sidetall: number
 	sideStoerrelse: number
-	sortKolonne: string
-	sortRetning: string
+	sorting: object
 }
 
 export enum VisningType {
@@ -33,14 +32,7 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({
-	visning,
-	setVisning,
-	sidetall,
-	sideStoerrelse,
-	sortKolonne,
-	sortRetning,
-}: GruppeProps) => {
+export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting }: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -57,7 +49,8 @@ export default ({
 		gruppe,
 		identer,
 		loading: loadingGruppe,
-	} = useGruppeById(gruppeId, sidetall, sideStoerrelse, false, sortKolonne, sortRetning)
+		// @ts-ignore
+	} = useGruppeById(gruppeId, sidetall, sideStoerrelse, false, sorting?.kolonne, sorting?.retning)
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 
