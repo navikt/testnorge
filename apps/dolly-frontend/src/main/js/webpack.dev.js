@@ -131,7 +131,7 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-aaregister-proxy/api': {
+				'/testnav-aaregister-proxy/': {
 					target: env.backend,
 					changeOrigin: true,
 					secure: false,
