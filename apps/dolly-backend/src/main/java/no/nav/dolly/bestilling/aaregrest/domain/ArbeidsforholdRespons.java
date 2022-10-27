@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -19,4 +22,12 @@ public class ArbeidsforholdRespons {
     private Arbeidsforhold arbeidsforhold;
     private String arbeidsforholdId;
     private Throwable error;
+
+    public List<Arbeidsforhold> getEksisterendeArbeidsforhold() {
+
+        if (isNull(eksisterendeArbeidsforhold)) {
+            eksisterendeArbeidsforhold = new ArrayList<>();
+        }
+        return eksisterendeArbeidsforhold;
+    }
 }
