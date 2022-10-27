@@ -4,7 +4,9 @@ import Formatters from '~/utils/DataFormatter'
 
 export const Annet = ({ data }) => {
 	const { flyktning, soeknadOmBeskyttelseUnderBehandling } = data
-	if (!flyktning && !soeknadOmBeskyttelseUnderBehandling) return null
+	if (!flyktning && !soeknadOmBeskyttelseUnderBehandling) {
+		return null
+	}
 
 	return (
 		<div>

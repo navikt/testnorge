@@ -16,7 +16,9 @@ type Opphold = {
 }
 
 export const Oppholdsstatus = (opphold: Opphold) => {
-	if (!opphold || !opphold.oppholdsstatus) return null
+	if (!opphold || !opphold.oppholdsstatus) {
+		return null
+	}
 
 	const oppholdsstatus = opphold.oppholdsstatus
 

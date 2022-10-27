@@ -35,9 +35,15 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
+		loading: loadingBruker,
 	} = useCurrentBruker()
 
-	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(gruppeId, visning, sidetall, sideStoerrelse)
+	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
+		gruppeId,
+		visning,
+		sidetall,
+		sideStoerrelse
+	)
 
 	const {
 		gruppe,
@@ -52,7 +58,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 
 	const bankIdBruker = brukertype === 'BANKID'
 
-	if (loadingGruppe || loadingBestillinger) {
+	if (loadingBruker || loadingGruppe || loadingBestillinger) {
 		return <Loading label="Laster personer" panel />
 	}
 

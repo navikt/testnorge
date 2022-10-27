@@ -4,7 +4,9 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const Aliaser = ({ aliaser }) => {
-	if (!aliaser || aliaser.length === 0) return null
+	if (!aliaser || aliaser.length === 0) {
+		return null
+	}
 
 	return (
 		<div>

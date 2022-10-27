@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.KontoregisterProxyProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
+import no.nav.dolly.web.credentials.SkjermingsregisterProxyProperties;
+import no.nav.dolly.web.credentials.TestnavAaregisterProxyProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
@@ -26,7 +28,6 @@ import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
-import no.nav.dolly.web.credentials.SkjermingsregisterProxyProperties;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
@@ -71,6 +72,7 @@ public class DollyFrontendApplicationStarter {
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
+    private final TestnavAaregisterProxyProperties testnavAaregisterProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavTestnorgeAaregProxyProperties testnavTestnorgeAaregProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
@@ -110,6 +112,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavInntektstubProxyProperties))
                 .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
                 .route(createRoute(testnavBrregstubProxyProperties))
+                .route(createRoute(testnavAaregisterProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavInstServiceProperties))
                 .route(createRoute(testnavTestnorgeAaregProxyProperties))

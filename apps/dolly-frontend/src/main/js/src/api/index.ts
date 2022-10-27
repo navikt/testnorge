@@ -1,15 +1,16 @@
 import { NotFoundError } from '~/error'
 import { Argument } from 'classnames'
 import originalFetch from 'isomorphic-fetch'
+import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 import { runningTestcafe } from '~/service/services/Request'
 
 const fetchRetry = fetch_retry(originalFetch)
 
-export const fetcher = (...args: Argument[]) =>
-	originalFetch(...args).then((res: Response) => {
-		if (!res.ok && !runningTestcafe()) {
+export const fetcher = (url, headers: Record<string, string>) =>
+	axios.get(url, { headers: headers }).then((res) => {
+		if (!res.statusText.includes('OK') && !runningTestcafe()) {
 			if (res.status === 401 || res.status === 403) {
 				console.error('Auth feilet, logger ut bruker')
 				logoutBruker()
@@ -19,7 +20,7 @@ export const fetcher = (...args: Argument[]) =>
 			}
 			throw new Error('An error occurred while fetching the data.')
 		}
-		return res.json()
+		return res.data
 	})
 
 export const imageFetcher = (...args: Argument[]) =>

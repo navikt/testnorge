@@ -12,10 +12,10 @@ import {
 	InstVisning,
 	KrrVisning,
 	PensjonVisning,
-	TpVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
 	TpsfVisning,
+	TpVisning,
 	UdiVisning,
 } from '~/components/fagsystem'
 import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
@@ -28,7 +28,6 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
@@ -42,6 +41,7 @@ import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
+
 	.navds-alert__wrapper {
 		max-width: 100rem;
 	}
@@ -254,7 +254,7 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning liste={aareg} loading={loading.aareg} />
+				<AaregVisning ident={ident.ident} liste={aareg} loading={loading.aareg} />
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
 				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />

@@ -131,6 +131,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-aaregister-proxy/api': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false,
+				},
 				'/testnav-pensjon-testdata-facade-proxy/api': {
 					target: env.backend,
 					changeOrigin: true,

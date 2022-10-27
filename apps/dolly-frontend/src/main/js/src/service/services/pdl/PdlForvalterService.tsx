@@ -3,7 +3,7 @@ import Request from '~/service/services/Request'
 const getPdlUrl = () => '/testnav-pdl-forvalter/api/v1'
 
 export default {
-	getPersoner(identListe: [string]) {
+	getPersoner(identListe: string[]) {
 		if (!identListe) {
 			return
 		}

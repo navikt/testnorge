@@ -15,8 +15,12 @@ export const sjekkManglerBrregData = (brregData) => {
 }
 
 export const BrregVisning = ({ data, loading }) => {
-	if (loading) return <Loading label="Laster brreg-data" />
-	if (data === undefined) return null
+	if (loading) {
+		return <Loading label="Laster brreg-data" />
+	}
+	if (data === undefined) {
+		return null
+	}
 
 	const manglerFagsystemdata = sjekkManglerBrregData(data)
 

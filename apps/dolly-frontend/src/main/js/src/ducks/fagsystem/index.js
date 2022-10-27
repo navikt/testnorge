@@ -503,7 +503,9 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 	const pdlEtternavn = pdlIdent?.navn?.[0]?.etternavn || ''
 
 	const pdlAlder = (foedselsdato) => {
-		if (!foedselsdato) return null
+		if (!foedselsdato) {
+			return null
+		}
 		const diff = new Date(Date.now() - new Date(foedselsdato).getTime())
 		return Math.abs(diff.getUTCFullYear() - 1970)
 	}

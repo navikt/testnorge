@@ -15,7 +15,9 @@ import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Tele
 import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/form'
 
 export const TpsfVisning = ({ data }) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	return (
 		<div>
