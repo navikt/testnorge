@@ -53,10 +53,6 @@ public class PensjonforvalterClient implements ClientRegister {
             var miljo = status.getMiljo();
             var miljoResponse = status.getResponse();
 
-            if (responseTil.getStatus() == null) {
-                responseTil.setStatus(new ArrayList<>());
-            }
-
             var mergingTilMiljo = responseTil.getStatus().stream()
                     .filter(s -> s.getMiljo().equalsIgnoreCase(miljo))
                     .findFirst();
