@@ -38,6 +38,7 @@ import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/Gjenoppre
 import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -55,6 +56,11 @@ const getIdenttype = (ident) => {
 	} else {
 		return 'FNR'
 	}
+}
+
+const getFirstAaregEnvironment = (bestilling) => {
+	const aaregStatus = bestilling?.status?.filter((status) => status.id === 'AAREG')?.[0]
+	return aaregStatus?.statuser?.[0]?.detaljert?.[0]?.miljo || 'q2'
 }
 
 export const PersonVisning = ({
@@ -79,19 +85,23 @@ export const PersonVisning = ({
 			bestillinger[b.id] = b
 		})
 	}
+	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
+	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
 
 	useEffect(() => {
 		fetchDataFraFagsystemer(bestillinger)
 	}, [])
+
+	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
+		ident.ident,
+		getFirstAaregEnvironment(bestilling)
+	)
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
-
-	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
-	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -107,7 +117,6 @@ export const PersonVisning = ({
 	}
 
 	const {
-		aareg,
 		sigrunstub,
 		pensjonforvalter,
 		tpforvalter,
@@ -121,7 +130,7 @@ export const PersonVisning = ({
 
 	const manglerFagsystemdata = () => {
 		if (
-			[aareg, sigrunstub, inntektstub, krrstub, instdata].some(
+			[sigrunstub, inntektstub, krrstub, instdata].some(
 				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
 			)
 		) {
@@ -254,7 +263,7 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning ident={ident.ident} liste={aareg} loading={loading.aareg} />
+				<AaregVisning ident={ident.ident} liste={arbeidsforhold} loading={loadingAareg} />
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
 				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />

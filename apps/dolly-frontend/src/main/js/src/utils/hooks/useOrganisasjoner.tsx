@@ -14,7 +14,7 @@ const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
 
 const getArbeidsforholdUrl = (miljoe: string) =>
-	`/testnav-aaregister-proxy/${miljoe}/api/v1/aareg/arbeidsforhold`
+	`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
 
 export type Bestillingsstatus = {
 	id: number
@@ -112,7 +112,7 @@ export const useArbeidsforhold = (ident: string, miljoe: string) => {
 	}
 
 	const { data, error } = useSWR<Arbeidsforhold[], Error>(
-		[getArbeidsforholdUrl(miljoe), { ident: ident }],
+		[getArbeidsforholdUrl(miljoe), { 'Nav-Personident': ident }],
 		fetcher
 	)
 

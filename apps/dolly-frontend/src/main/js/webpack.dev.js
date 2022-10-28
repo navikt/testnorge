@@ -111,11 +111,6 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
-				'/testnav-testnorge-aareg-proxy/api': {
-					target: env.backend,
-					changeOrigin: true,
-					secure: false,
-				},
 				'/testnav-krrstub-proxy/api': {
 					target: env.backend,
 					changeOrigin: true,

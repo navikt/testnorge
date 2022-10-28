@@ -1,6 +1,5 @@
 import React from 'react'
 import Loading from '~/components/ui/loading/Loading'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
 import { ArbeidsforholdMiljoeVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/ArbeidsforholdMiljoeVisning'
@@ -12,6 +11,8 @@ type PersonMiljoeinfoProps = {
 export const ArbeidsforholdMiljoeInfo = ({ ident }: PersonMiljoeinfoProps) => {
 	const { loading: loading, dollyEnvironments } = useDollyEnvironments()
 
+	const unsupportedEnvironments = ['t0', 't13', 'qx']
+
 	if (!ident) {
 		return null
 	}
@@ -20,11 +21,12 @@ export const ArbeidsforholdMiljoeInfo = ({ ident }: PersonMiljoeinfoProps) => {
 		return <Loading label="Laster miljøer" fullpage />
 	}
 
-	const environmentArray = dollyEnvironments?.Q?.concat(dollyEnvironments?.T)
+	const environmentArray = dollyEnvironments?.Q?.concat(dollyEnvironments?.T)?.filter(
+		(miljoe) => !unsupportedEnvironments.includes(miljoe.id)
+	)
 
 	return (
 		<div>
-			<SubOverskrift label="Arbeidsforhold i miljøer" iconKind="visTpsData" />
 			<div className="flexbox--flex-wrap">
 				{/* @ts-ignore */}
 				{environmentArray?.map((miljoe, idx) => {

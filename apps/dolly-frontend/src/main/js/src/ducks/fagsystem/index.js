@@ -72,12 +72,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		getAareg: [
-			DollyApi.getArbeidsforhold,
-			(ident) => ({
-				ident,
-			}),
-		],
 		getInst: [
 			InstApi.getPerson,
 			(ident) => ({
@@ -161,7 +155,6 @@ const initialState = {
 	inntektstub: {},
 	krrstub: {},
 	arenaforvalteren: {},
-	aareg: {},
 	pdl: {},
 	pdlforvalter: {},
 	instdata: {},
@@ -206,9 +199,6 @@ export default handleActions(
 		},
 		[onSuccess(actions.getArena)](state, action) {
 			state.arenaforvalteren[action.meta.ident] = action.payload.data
-		},
-		[onSuccess(actions.getAareg)](state, action) {
-			state.aareg[action.meta.ident] = action.payload.data
 		},
 		[onSuccess(actions.getPensjon)](state, action) {
 			state.pensjonforvalter[action.meta.ident] = action.payload.data
@@ -273,7 +263,6 @@ const deleteIdentState = (state, ident) => {
 	delete state.inntektstub[ident]
 	delete state.krrstub[ident]
 	delete state.arenaforvalteren[ident]
-	delete state.aareg[ident]
 	delete state.pdl[ident]
 	delete state.pdlforvalter[ident]
 	delete state.instdata[ident]
@@ -343,8 +332,6 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getArena(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
-			case 'AAREG':
-				return dispatch(actions.getAareg(personId, success[system][0]))
 			case 'INST2':
 				return dispatch(actions.getInst(personId, success[system][0]))
 			case 'PEN_INNTEKT':
@@ -371,7 +358,6 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 		'INST2,',
 		'PEN_INNTEKT',
 		'TP_FORVALTER',
-		'AAREG',
 	]
 
 	systemer.forEach((system) => {
@@ -393,8 +379,6 @@ export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
 				return dispatch(actions.getPensjon(personId, 'q2'))
 			case 'TP_FORVALTER':
 				return dispatch(actions.getPensjonTP(personId))
-			case 'AAREG':
-				return dispatch(actions.getAareg(personId, 'q2'))
 			case 'SKJERMINGSREGISTER':
 				return dispatch(actions.getSkjermingsregister(personId))
 		}
@@ -604,7 +588,6 @@ export const selectDataForIdent = (state, ident) => {
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
 		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
-		aareg: state.fagsystem.aareg[ident],
 		pdl: state.fagsystem.pdl[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		instdata: state.fagsystem.instdata[ident],

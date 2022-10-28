@@ -50,7 +50,6 @@ spec:
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-aaregister-proxy.dev-fss-pub.nais.io
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
-        - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
