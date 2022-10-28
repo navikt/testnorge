@@ -224,7 +224,7 @@ export default function PersonListe({
 		const sort_desc = 'header-sort-desc'
 		const sort_default = 'header-sort-sortable'
 
-		columns.map((column) => {
+		columns.forEach((column) => {
 			if (column.headerCssClass !== undefined) {
 				if (column.text === value) {
 					if (column.headerCssClass && column.headerCssClass.includes(sort_asc)) {

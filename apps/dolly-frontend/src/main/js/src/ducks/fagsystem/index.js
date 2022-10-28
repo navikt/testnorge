@@ -1,6 +1,5 @@
 import { createActions } from 'redux-actions'
 import _get from 'lodash/get'
-import _last from 'lodash/last'
 import _isEmpty from 'lodash/isEmpty'
 import {
 	ArenaApi,
