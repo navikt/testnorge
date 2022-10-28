@@ -53,6 +53,7 @@ import java.util.Set;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.config.CachingConfig.CACHE_HELSEPERSONELL;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
 @RestController
@@ -145,6 +146,7 @@ public class OppslagController {
         return udiStubConsumer.getUdiPerson(ident);
     }
 
+    @Cacheable(CACHE_HELSEPERSONELL)
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
     public HelsepersonellListeDTO getHelsepersonell() {

@@ -6,7 +6,7 @@ spring:
     version: application.version.todo
     name: testnav-helsepersonell-service
   codec:
-    max-in-memory-size: 500KB
+    max-in-memory-size: 10MB
   security:
     oauth2:
       resourceserver:
@@ -19,7 +19,7 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-helsepersonell-service
 
-samhandlerregisteret.api.threads: 5
+samhandlerregisteret.api.threads: 10
 hodejegeren.api.threads: 2
 
 dolly.helsepersonell.gruppeId: 5614
@@ -30,7 +30,7 @@ consumers:
   testnav-samhandlerregisteret-proxy:
     cluster: dev-fss
     namespace: dolly
-    threads: 5
+    threads: 10
     name: testnav-samhandlerregisteret-proxy
     url: https://testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
   dolly-backend:

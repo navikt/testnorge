@@ -95,8 +95,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             completableFuture
                     .forEach(GjenopprettUtil::executeCompleteableFuture);
+            transactionHelperService.oppdaterBestillingFerdig(bestilling);
 
-            oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
             log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
         }
