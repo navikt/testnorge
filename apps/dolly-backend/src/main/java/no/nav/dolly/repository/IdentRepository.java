@@ -67,6 +67,7 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
     List<GruppeBestillingIdent> getBestillingerByIdent(@Param(value = "ident") String ident);
 
     @Query("select ti from Testident ti " +
+            "join ti.bestillingProgress bp " +
             "where ti.testgruppe.id = :gruppeId ")
     Page<Testident> getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
