@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.aaregrest.util.AaaregUtility.appendPermisjonPermitteringId;
 import static no.nav.dolly.bestilling.aaregrest.util.AaaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
@@ -90,6 +91,7 @@ public class Aareg2Client implements ClientRegister {
         return StringUtils.join(
                 aaregConsumer.getAccessToken()
                         .flatMapMany(token -> Flux.fromIterable(miljoer)
+                                .parallel()
                                 .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), miljoe, token)
                                         .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token))))
                         .collectList()
@@ -99,8 +101,7 @@ public class Aareg2Client implements ClientRegister {
     private Flux<String> doInsertOrUpdate(ArbeidsforholdRespons response, List<Arbeidsforhold> request,
                                           String miljoe, AccessToken token) {
 
-        var arbforholdId = new AtomicInteger(isNull(response.getEksisterendeArbeidsforhold()) ? 0 :
-                response.getEksisterendeArbeidsforhold().size());
+        var arbforholdId = new AtomicInteger(response.getEksisterendeArbeidsforhold().size());
 
         var eksistens = doEksistenssjekk(response, request);
         return Flux.concat(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
@@ -108,6 +109,7 @@ public class Aareg2Client implements ClientRegister {
                                     if (isBlank(entry.getArbeidsforholdId())) {
                                         entry.setArbeidsforholdId(Integer.toString(arbforholdId.incrementAndGet()));
                                     }
+                                    appendPermisjonPermitteringId(entry, null);
                                     return aaregConsumer.opprettArbeidsforhold(entry, miljoe, token);
                                 }),
                         Flux.fromIterable(eksistens.getEksisterendeArbeidsforhold())
@@ -140,6 +142,7 @@ public class Aareg2Client implements ClientRegister {
                         arbeidsforhold.setNavArbeidsforholdId(eksisterende.getNavArbeidsforholdId());
                         arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                                 arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
+                        appendPermisjonPermitteringId(arbeidsforhold, eksisterende);
                     }
                 });
 
@@ -170,4 +173,3 @@ public class Aareg2Client implements ClientRegister {
         return builder.toString();
     }
 }
-

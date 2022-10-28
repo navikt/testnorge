@@ -18,11 +18,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DATA;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -98,9 +98,9 @@ public final class BestillingPdlDataStatusMapper {
                                 .id(hendelse.getId())
                                 .error(hendelse.getError())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     private static List<RsStatusRapport> formatStatus(Map<String, List<String>> meldingIdents, SystemTyper type) {
@@ -110,10 +110,10 @@ public final class BestillingPdlDataStatusMapper {
                 .navn(type.getBeskrivelse())
                 .statuser(meldingIdents.entrySet().stream()
                         .map(entry -> RsStatusRapport.Status.builder()
-                                .melding(entry.getKey().replace(';', ',').replace('=', ':'))
+                                .melding(decodeMsg(entry.getKey()))
                                 .identer(entry.getValue())
                                 .build())
-                        .collect(Collectors.toList()))
+                        .toList())
                 .build());
     }
 

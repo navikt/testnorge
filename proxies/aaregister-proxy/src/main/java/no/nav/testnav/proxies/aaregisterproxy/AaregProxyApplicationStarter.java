@@ -62,7 +62,7 @@ public class AaregProxyApplicationStarter {
 
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
-        Stream.of("t0", "t1", "t2", "t3", "t4", "t5")
+        Stream.of("t0", "t1", "t3", "t4", "t5")
             .forEach(env -> routes
                 .route(createRoute(env, testFilter)));
 

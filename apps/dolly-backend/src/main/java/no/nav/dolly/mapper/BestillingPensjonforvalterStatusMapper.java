@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
@@ -20,6 +19,7 @@ import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
 import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -88,15 +88,15 @@ public final class BestillingPensjonforvalterStatusMapper {
                     .statuser(
                             meldStatusMiljoeIdents.get(clientid).entrySet().stream().map(entry ->
                                             RsStatusRapport.Status.builder()
-                                                    .melding(entry.getKey().replaceAll("=", ":").replaceAll("&", ","))
+                                                    .melding(decodeMsg(entry.getKey()))
                                                     .detaljert(entry.getValue().entrySet().stream().map(miljeStatus ->
                                                                     RsStatusRapport.Detaljert.builder()
                                                                             .miljo(miljeStatus.getKey())
                                                                             .identer(miljeStatus.getValue())
                                                                             .build())
-                                                            .collect(Collectors.toList()))
+                                                            .toList())
                                                     .build())
-                                    .collect(Collectors.toList()))
+                                    .toList())
                     .build());
         } else {
             return Collections.emptyList();

@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTK;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -37,10 +37,10 @@ public final class BestillingInntektstubStatusMapper {
                 singletonList(RsStatusRapport.builder().id(INNTK).navn(INNTK.getBeskrivelse())
                         .statuser(statusMap.entrySet().stream()
                                 .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey())
+                                        .melding(decodeMsg(entry.getKey()))
                                         .identer(entry.getValue())
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build());
     }
 }

@@ -16,6 +16,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -40,7 +41,7 @@ public final class BestillingAaregStatusMapper {
                 singletonList(RsStatusRapport.builder().id(AAREG).navn(AAREG.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->
                                 RsStatusRapport.Status.builder()
-                                        .melding(status.getKey())
+                                        .melding(decodeMsg(status.getKey()))
                                         .detaljert(status.getValue().entrySet().stream().map(miljo ->
                                                 RsStatusRapport.Detaljert.builder()
                                                         .miljo(miljo.getKey())
@@ -48,7 +49,7 @@ public final class BestillingAaregStatusMapper {
                                                         .build())
                                                 .collect(Collectors.toList()))
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build());
     }
 }
