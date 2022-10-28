@@ -1212,7 +1212,7 @@ const mapSigrunStub = (bestillingData, data) => {
 					numberHeader: `Inntekt ${i + 1}`,
 				},
 				obj('År', inntekt.inntektsaar),
-				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Beløp', inntekt.verdi),
+				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi', inntekt.verdi),
 				obj('Tjeneste', Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
 				{
 					label: 'Grunnlag (Fastlands-Norge)',

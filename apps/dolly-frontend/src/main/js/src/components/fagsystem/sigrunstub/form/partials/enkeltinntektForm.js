@@ -24,7 +24,7 @@ export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, for
 						{typeInntekt === 'skatteoppgjoersdato' ? (
 							<FormikDatepicker name={`${path}.verdi`} label="Oppgjørsdato" fastfield={false} />
 						) : (
-							<FormikTextInput name={`${path}.verdi`} label="Beløp" type="number" />
+							<FormikTextInput name={`${path}.verdi`} label="Verdi" type="number" />
 						)}
 					</React.Fragment>
 				)

@@ -33,8 +33,8 @@ SigrunstubForm.validation = {
 								is: 'skatteoppgjoersdato',
 								then: requiredDate.nullable(),
 								otherwise: Yup.number()
-									.min(0, 'Tast inn et gyldig beløp')
-									.typeError('Tast inn et gyldig beløp'),
+									.min(0, 'Tast inn en gyldig verdi')
+									.typeError('Tast inn en gyldig verdi'),
 							}),
 						})
 					)
@@ -56,8 +56,8 @@ SigrunstubForm.validation = {
 					Yup.object({
 						tekniskNavn: Yup.string().required('Velg en type inntekt'),
 						verdi: Yup.number()
-							.min(0, 'Tast inn et gyldig beløp')
-							.typeError('Tast inn et gyldig beløp'),
+							.min(0, 'Tast inn en gyldig verdi')
+							.typeError('Tast inn en gyldig verdi'),
 					})
 				),
 				tjeneste: Yup.string().required('Velg en type tjeneste'),
