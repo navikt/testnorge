@@ -19,6 +19,7 @@ const mapStateToProps = (state) => ({
 	hovedperson: state.finnPerson.hovedperson,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
 	tmpPersoner: state.redigertePersoner,
+	sorting: state.finnPerson.sorting,
 })
 
 const mapDispatchToProps = { fetchTpsfPersoner, fetchPdlPersoner }

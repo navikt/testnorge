@@ -188,11 +188,9 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 		.expect(ReactSelector('AppError').exists)
 		.eql(false, 'ErrorBoundary utløst, en komponent kaster Error under visning av ident')
 
-	await testController.click(
-		ReactSelector('TpVisning')
-			.findReact('h4')
-			.withText('ORDNING')
-	).wait(1500)
+	await testController
+		.click(ReactSelector('TpVisning').findReact('h4').withText('ORDNING'))
+		.wait(1500)
 
 	await testController
 		.expect(ReactSelector('AppError').exists)

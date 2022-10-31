@@ -16,6 +16,8 @@ import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
 import _get from 'lodash/get'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
+import { setSorting } from '~/ducks/finnPerson'
+import { useDispatch } from 'react-redux'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -40,10 +42,12 @@ export default function PersonListe({
 	fetchTpsfPersoner,
 	fetchPdlPersoner,
 	tmpPersoner,
+	sorting,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
+	const dispatch = useDispatch()
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -71,19 +75,6 @@ export default function PersonListe({
 		fetchPdlPersoner(identListe, fagsystem)
 	}, [identListe, visPerson, bestillingStatuser])
 
-	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
-		return <Loading label="Laster personer" panel />
-	}
-
-	if (isEmpty(identer)) {
-		const infoTekst =
-			brukertype === 'BANKID'
-				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
-				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
-				  'søke opp og importere identer til gruppen.'
-		return <ContentContainer>{infoTekst}</ContentContainer>
-	}
-
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
 		return (
@@ -93,28 +84,7 @@ export default function PersonListe({
 		)
 	}
 
-	const updatePersonHeader = () => {
-		personListe.map((person) => {
-			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
-			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
-			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
-				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
-				: ''
-			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
-
-			if (redigertPerson) {
-				if (!redigertPerson.doedsfall) {
-					person.alder = person.alder.split(' ')[0]
-				}
-				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
-				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
-			}
-		})
-	}
-
-	if (tmpPersoner) updatePersonHeader()
-
-	const columns = [
+	const columnsDefault = [
 		{
 			text: 'Ident',
 			width: '20',
@@ -153,14 +123,18 @@ export default function PersonListe({
 		},
 		{
 			text: 'Kilde',
-			width: '20',
+			width: '15',
 			dataField: 'kilde',
+			sortField: 'master',
+			headerCssClass: 'header-sort-sortable',
 		},
 		{
 			text: 'Brukt',
-			width: '10',
+			width: '15',
 			style: { paddingLeft: '3px' },
 			dataField: 'ibruk',
+			sortField: 'iBruk',
+			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
 		},
 		{
@@ -195,6 +169,79 @@ export default function PersonListe({
 		},
 	]
 
+	const columns = columnsDefault.map((column) => {
+		const sortKolonne = sorting?.kolonne
+		if (column.sortField && column.sortField === sortKolonne) {
+			column.headerCssClass = sorting.retning === 'asc' ? 'header-sort-asc' : 'header-sort-desc'
+		}
+		return column
+	})
+
+	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
+		return <Loading label="Laster personer" panel />
+	}
+
+	if (isEmpty(identer)) {
+		const infoTekst =
+			brukertype === 'BANKID'
+				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
+				: 'Trykk på "Opprett personer"-knappen for å starte en bestilling eller "Importer personer"-knappen å kunne ' +
+				  'søke opp og importere identer til gruppen.'
+		return <ContentContainer>{infoTekst}</ContentContainer>
+	}
+
+	const updatePersonHeader = () => {
+		personListe.map((person) => {
+			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
+			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
+				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`
+				: ''
+			const etternavn = redigertPerson?.navn?.[0]?.etternavn || ''
+
+			if (redigertPerson) {
+				if (!redigertPerson.doedsfall) {
+					person.alder = person.alder.split(' ')[0]
+				}
+				person.kjonn = redigertPerson.kjoenn?.[0]?.kjoenn
+				person.navn = `${fornavn} ${mellomnavn} ${etternavn}`
+			}
+		})
+	}
+
+	if (tmpPersoner) updatePersonHeader()
+
+	const onHeaderClick = (value) => {
+		const activeColumn = columns.filter(
+			(column) => column.headerCssClass !== undefined && column.text === value
+		)
+
+		if (!activeColumn || !activeColumn.length) {
+			return
+		}
+
+		const sort_asc = 'header-sort-asc'
+		const sort_desc = 'header-sort-desc'
+		const sort_default = 'header-sort-sortable'
+
+		columns.forEach((column) => {
+			if (column.headerCssClass !== undefined) {
+				if (column.text === value) {
+					if (column.headerCssClass && column.headerCssClass.includes(sort_asc)) {
+						column.headerCssClass = sort_desc
+						dispatch(setSorting({ kolonne: column.sortField, retning: 'desc' }))
+					} else {
+						column.headerCssClass = sort_asc
+						dispatch(setSorting({ kolonne: column.sortField, retning: 'asc' }))
+					}
+				} else {
+					column.headerCssClass = sort_default
+				}
+			}
+			return column
+		})
+	}
+
 	return (
 		<ErrorBoundary>
 			<DollyTable
@@ -226,6 +273,7 @@ export default function PersonListe({
 						brukertype={brukertype}
 					/>
 				)}
+				onHeaderClick={onHeaderClick}
 			/>
 			{isKommentarModalOpen && selectedIdent && (
 				<KommentarModal closeModal={closeKommentarModal} ident={selectedIdent} />

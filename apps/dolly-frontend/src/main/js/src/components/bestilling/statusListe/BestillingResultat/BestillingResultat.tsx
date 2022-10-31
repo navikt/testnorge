@@ -18,7 +18,11 @@ type ResultatProps = {
 	lukkBestilling: Function
 }
 
-export default function BestillingResultat({ bestilling, setNyeBestillinger, lukkBestilling }: ResultatProps) {
+export default function BestillingResultat({
+	bestilling,
+	setNyeBestillinger,
+	lukkBestilling,
+}: ResultatProps) {
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
