@@ -89,6 +89,8 @@ public class InntektstubConsumer {
     @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
     public ResponseEntity<List<Inntektsinformasjon>> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
+        log.info("Sender inntektstub: {}", inntektsinformasjon);
+
         return
                 webClient.post()
                         .uri(uriBuilder -> uriBuilder
