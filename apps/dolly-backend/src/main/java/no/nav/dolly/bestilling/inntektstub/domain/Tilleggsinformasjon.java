@@ -1,13 +1,13 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
 
 @Getter
 @Setter
@@ -24,7 +24,7 @@ public class Tilleggsinformasjon {
     private NorskKontinentalsokkel inntektPaaNorskKontinentalsokkel;
     private Inntjeningsforhold inntjeningsforhold;
     private Livrente livrente;
-    private LottOgPartInnenFiske lottOgPart;
+    private LottOgPartInnenFiske lottOgPartInnenFiske;
     private Nettoloennsordning nettoloenn;
     private AldersUfoereEtterlatteAvtalefestetOgKrigspensjon pensjon;
     private ReiseKostOgLosji reiseKostOgLosji;

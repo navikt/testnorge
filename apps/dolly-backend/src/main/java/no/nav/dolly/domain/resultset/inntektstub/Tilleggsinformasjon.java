@@ -28,7 +28,7 @@ public class Tilleggsinformasjon {
     private NorskKontinentalsokkel inntektPaaNorskKontinentalsokkel;
     private Inntjeningsforhold inntjeningsforhold;
     private Livrente livrente;
-    private LottOgPartInnenFiske lottOgPart;
+    private LottOgPartInnenFiske lottOgPartInnenFiske;
     private Nettoloennsordning nettoloenn;
     private AldersUfoereEtterlatteAvtalefestetOgKrigspensjon pensjon;
     private ReiseKostOgLosji reiseKostOgLosji;
@@ -45,7 +45,7 @@ public class Tilleggsinformasjon {
                         getInntektPaaNorskKontinentalsokkel(),
                         getInntjeningsforhold(),
                         getLivrente(),
-                        getLottOgPart(),
+                        getLottOgPartInnenFiske(),
                         getNettoloenn(),
                         getPensjon(),
                         getReiseKostOgLosji(),
