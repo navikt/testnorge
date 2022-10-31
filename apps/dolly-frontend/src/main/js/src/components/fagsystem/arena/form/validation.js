@@ -63,6 +63,7 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 
 	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
 		const foedselsdatoer = getFoedselsdatoer(values)
+		const foedselsaar = _get(values, 'pdldata.person.foedsel[0].foedselsaar')
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
 				let tjuefem = new Date(fdato)
@@ -72,6 +73,9 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 				}
 			}
 			return false
+		} else if (!_isNil(foedselsaar)) {
+			foedtEtter = new Date(foedselsaar, 0, 1)
+			foedtFoer = new Date(foedselsaar, 11, 31)
 		} else {
 			foedtEtter = getFoedtEtter(60)
 			foedtFoer = getFoedtFoer(30)
@@ -111,6 +115,7 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 
 	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
 		const foedselsdatoer = getFoedselsdatoer(values)
+		const foedselsaar = _get(values, 'pdldata.person.foedsel[0].foedselsaar')
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
 				let sisteDag = new Date(fdato)
@@ -120,6 +125,9 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 				}
 			}
 			return false
+		} else if (!_isNil(foedselsaar)) {
+			let tidligsteDato = new Date(foedselsaar + 67, 0, 1)
+			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 		} else {
 			let tidligsteDato = new Date()
 			tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
