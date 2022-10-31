@@ -24,7 +24,7 @@ public class Tilleggsinformasjon {
     private NorskKontinentalsokkel inntektPaaNorskKontinentalsokkel;
     private Inntjeningsforhold inntjeningsforhold;
     private Livrente livrente;
-    private LottOgPartInnenFiske lottOgPartInnenFiske;
+    private LottOgPartInnenFiske lottOgPart;
     private Nettoloennsordning nettoloenn;
     private AldersUfoereEtterlatteAvtalefestetOgKrigspensjon pensjon;
     private ReiseKostOgLosji reiseKostOgLosji;
