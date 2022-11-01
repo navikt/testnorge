@@ -18,9 +18,10 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 	const brukertype = currentBruker?.brukertype
 	const bestilteMiljoer = () => {
 		const miljoer: Set<string> = new Set()
-		bestillingerById && Object.values(bestillingerById).forEach((bestillingstatus) =>
-			bestillingstatus.environments?.forEach((miljo: string) => miljoer.add(miljo))
-		)
+		bestillingerById &&
+			Object.values(bestillingerById).forEach((bestillingstatus) =>
+				bestillingstatus.environments?.forEach((miljo: string) => miljoer.add(miljo))
+			)
 		return [...miljoer]
 	}
 

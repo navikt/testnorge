@@ -103,8 +103,12 @@ export const nyPerson = Yup.object({
 	alder: Yup.number()
 		.transform((i, j) => (j === '' ? null : i))
 		.nullable(),
-	foedtEtter: testDatoFom(Yup.date().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
-	foedtFoer: testDatoTom(Yup.date().nullable(), 'foedtEtter', 'Dato må være etter født etter-dato'),
+	foedtEtter: testDatoFom(Yup.mixed().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
+	foedtFoer: testDatoTom(
+		Yup.mixed().nullable(),
+		'foedtEtter',
+		'Dato må være etter født etter-dato'
+	),
 	syntetisk: Yup.boolean(),
 	nyttNavn: Yup.object({
 		hasMellomnavn: Yup.boolean(),

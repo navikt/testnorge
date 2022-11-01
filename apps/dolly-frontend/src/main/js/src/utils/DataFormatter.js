@@ -185,7 +185,9 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	optionsGruppe.includes('partner') && (copyOptionsGruppe = optionsGruppe.replace('partner_', ''))
 	optionsGruppe.includes('barn') && (copyOptionsGruppe = optionsGruppe.replace('barn_', ''))
 
-	const obj = Options(copyOptionsGruppe).filter((options) => options.value === value.toUpperCase())
+	const obj = Options(copyOptionsGruppe).filter(
+		(options) => options.value.toUpperCase() === value.toUpperCase()
+	)
 
 	if (_get(obj, 'label') || _get(obj, '[0].label')) {
 		return obj.label || obj[0].label

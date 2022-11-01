@@ -26,11 +26,13 @@ export const Visning = ({ data }: VisningData) => {
 						kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
 						value={data.embete}
 					/>
-					<TitleValue title="Sakstype" kodeverk={VergemaalKodeverk.Sakstype} value={data.type} />
+					<TitleValue
+						title="Sakstype"
+						value={Formatters.showLabel('pdlVergemaalType', data.type)}
+					/>
 					<TitleValue
 						title="Mandattype"
-						kodeverk={VergemaalKodeverk.Mandattype}
-						value={data.vergeEllerFullmektig?.omfang}
+						value={Formatters.showLabel('pdlVergemaalOmfang', data.vergeEllerFullmektig?.omfang)}
 					/>
 					<TitleValue
 						title="Gyldig f.o.m."

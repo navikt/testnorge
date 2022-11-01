@@ -24,6 +24,7 @@ export type GruppeProps = {
 	setVisning: Function
 	sidetall: number
 	sideStoerrelse: number
+	sorting: object
 }
 
 export enum VisningType {
@@ -31,7 +32,7 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) => {
+export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting }: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -49,7 +50,8 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse }: GruppeProps) 
 		gruppe,
 		identer,
 		loading: loadingGruppe,
-	} = useGruppeById(gruppeId, sidetall, sideStoerrelse)
+		// @ts-ignore
+	} = useGruppeById(gruppeId, sidetall, sideStoerrelse, false, sorting?.kolonne, sorting?.retning)
 
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 

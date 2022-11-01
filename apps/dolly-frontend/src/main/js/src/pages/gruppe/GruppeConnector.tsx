@@ -11,6 +11,7 @@ const mapStateToProps = (
 			visning: string
 			sidetall: number
 			sideStoerrelse: number
+			sorting: string
 		}
 	},
 	ownProps: FormikProps<any>
@@ -19,6 +20,7 @@ const mapStateToProps = (
 	visning: state.finnPerson.visning,
 	sidetall: state.finnPerson.sidetall,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
+	sorting: state.finnPerson.sorting,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

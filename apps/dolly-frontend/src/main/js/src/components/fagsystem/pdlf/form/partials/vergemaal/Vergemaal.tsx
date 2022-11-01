@@ -9,12 +9,63 @@ import _get from 'lodash/get'
 import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
 import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Option } from '~/service/SelectOptionsOppslag'
 
-interface VergemaalForm {
+interface VergemaalFormTypes {
 	formikBag: FormikProps<{}>
+	path?: string
+	eksisterendeNyPerson?: Option
 }
 
-export const Vergemaal = ({ formikBag }: VergemaalForm) => {
+export const VergemaalForm = ({
+	formikBag,
+	path,
+	eksisterendeNyPerson = null,
+}: VergemaalFormTypes) => {
+	return (
+		<>
+			<FormikSelect
+				name={`${path}.vergemaalEmbete`}
+				label="Fylkesmannsembete"
+				kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
+				size="large"
+			/>
+			<FormikSelect
+				name={`${path}.sakType`}
+				label="Sakstype"
+				kodeverk={VergemaalKodeverk.Sakstype}
+				size="xlarge"
+				optionHeight={50}
+			/>
+			<FormikSelect
+				name={`${path}.mandatType`}
+				label="Mandattype"
+				kodeverk={VergemaalKodeverk.Mandattype}
+				size="xxlarge"
+				optionHeight={50}
+			/>
+			<DatepickerWrapper>
+				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
+				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
+			</DatepickerWrapper>
+			<PdlPersonExpander
+				nyPersonPath={`${path}.nyVergeIdent`}
+				eksisterendePersonPath={`${path}.vergeIdent`}
+				eksisterendeNyPerson={eksisterendeNyPerson}
+				label={'VERGE'}
+				formikBag={formikBag}
+				isExpanded={
+					!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
+					_get(formikBag.values, `${path}.vergeIdent`) !== null
+				}
+			/>
+			<AvansertForm path={path} kanVelgeMaster={false} />
+		</>
+	)
+}
+
+export const Vergemaal = ({ formikBag }: VergemaalFormTypes) => {
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -23,45 +74,7 @@ export const Vergemaal = ({ formikBag }: VergemaalForm) => {
 				newEntry={initialVergemaal}
 				canBeEmpty={false}
 			>
-				{(path: string, _idx: number) => {
-					return (
-						<>
-							<FormikSelect
-								name={`${path}.vergemaalEmbete`}
-								label="Fylkesmannsembete"
-								kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
-								size="xlarge"
-							/>
-							<FormikSelect
-								name={`${path}.sakType`}
-								label="Sakstype"
-								kodeverk={VergemaalKodeverk.Sakstype}
-								size="xlarge"
-								optionHeight={50}
-							/>
-							<FormikSelect
-								name={`${path}.mandatType`}
-								label="Mandattype"
-								kodeverk={VergemaalKodeverk.Mandattype}
-								size="xxlarge"
-								optionHeight={50}
-							/>
-							<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig f.o.m." />
-							<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig t.o.m." />
-							<PdlPersonExpander
-								nyPersonPath={`${path}.nyVergeIdent`}
-								eksisterendePersonPath={`${path}.vergeIdent`}
-								label={'VERGE'}
-								formikBag={formikBag}
-								isExpanded={
-									!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
-									_get(formikBag.values, `${path}.vergeIdent`) !== null
-								}
-							/>
-							<AvansertForm path={path} kanVelgeMaster={false} />
-						</>
-					)
-				}}
+				{(path: string, _idx: number) => <VergemaalForm formikBag={formikBag} path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

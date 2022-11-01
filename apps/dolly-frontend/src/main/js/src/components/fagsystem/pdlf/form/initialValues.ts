@@ -11,7 +11,7 @@ export const initialPdlPerson = {
 	kjoenn: null as string,
 	foedtEtter: null as string,
 	foedtFoer: null as string,
-	alder: '',
+	alder: null as number,
 	syntetisk: true,
 	nyttNavn: {
 		hasMellomnavn: false,

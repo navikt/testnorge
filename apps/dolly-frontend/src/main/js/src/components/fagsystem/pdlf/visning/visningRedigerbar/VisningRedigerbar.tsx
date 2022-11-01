@@ -17,30 +17,34 @@ import { RedigerUtvandringForm } from '~/components/fagsystem/pdlf/form/partials
 import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
 import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
+import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
 import { doedsfall } from '~/components/fagsystem/pdlf/form/validation/validation'
 import {
-	bostedsadresse,
-	oppholdsadresse,
-	kontaktadresse,
-	adressebeskyttelse,
 	innflytting,
-	utflytting,
 	statsborgerskap,
+	utflytting,
+	adressebeskyttelse,
+	bostedsadresse,
+	kontaktadresse,
+	oppholdsadresse,
+	vergemaal,
 } from '~/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '~/utils/YupValidations'
 import {
 	RedigerLoading,
 	Modus,
 } from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 type VisningTypes = {
 	getPdlForvalter: Function
 	dataVisning: any
 	initialValues: any
+	eksisterendeNyPerson?: Option
 	redigertAttributt?: any
 	path: string
 	ident: string
@@ -55,6 +59,7 @@ enum Attributt {
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
+	Vergemaal = 'vergemaal',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
@@ -93,6 +98,7 @@ export const VisningRedigerbar = ({
 	getPdlForvalter,
 	dataVisning,
 	initialValues,
+	eksisterendeNyPerson = null,
 	redigertAttributt = null,
 	path,
 	ident,
@@ -201,6 +207,14 @@ export const VisningRedigerbar = ({
 						personFoerLeggTil={personFoerLeggTil}
 					/>
 				)
+			case Attributt.Vergemaal:
+				return (
+					<VergemaalForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
@@ -224,6 +238,7 @@ export const VisningRedigerbar = ({
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 			innflytting: ifPresent('innflytting', innflytting),
 			utflytting: ifPresent('utflytting', utflytting),
+			vergemaal: ifPresent('vergemaal', vergemaal),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
@@ -234,6 +249,7 @@ export const VisningRedigerbar = ({
 			['statsborgerskap', 'statsborgerskap'],
 			['innflytting', 'innflytting'],
 			['utflytting', 'utflytting'],
+			['vergemaal', 'vergemaal'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
@@ -272,13 +288,15 @@ export const VisningRedigerbar = ({
 									<h4>Er du sikker på at du vil slette denne opplysningen fra personen?</h4>
 								</div>
 								<div className="slettModal-actions">
-									<NavButton onClick={closeModal}>Nei</NavButton>
+									<NavButton onClick={closeModal} variant="secondary">
+										Nei
+									</NavButton>
 									<NavButton
 										onClick={() => {
 											closeModal()
 											return handleDelete()
 										}}
-										variant={'primary'}
+										variant="primary"
 									>
 										Ja, jeg er sikker
 									</NavButton>
@@ -306,15 +324,14 @@ export const VisningRedigerbar = ({
 									<div className="flexbox--flex-wrap">{getForm(formikBag)}</div>
 									<Knappegruppe>
 										<NavButton
-											type="reset"
+											variant="secondary"
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
-											style={{ top: '1.75px' }}
 										>
 											Avbryt
 										</NavButton>
 										<NavButton
-											variant={'primary'}
+											variant="primary"
 											onClick={() => formikBag.handleSubmit()}
 											disabled={!formikBag.isValid || formikBag.isSubmitting}
 										>

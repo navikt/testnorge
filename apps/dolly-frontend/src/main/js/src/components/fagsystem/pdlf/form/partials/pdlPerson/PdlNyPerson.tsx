@@ -8,12 +8,16 @@ import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { FormikProps } from 'formik'
+import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Option } from '~/service/SelectOptionsOppslag'
 
 interface PdlNyPersonValues {
 	nyPersonPath: string
 	eksisterendePersonPath?: string
 	formikBag?: FormikProps<{}>
 	erNyIdent?: boolean
+	gruppeIdenter?: Array<string>
+	eksisterendeNyPerson?: Option
 }
 
 export const PdlNyPerson = ({
@@ -21,6 +25,8 @@ export const PdlNyPerson = ({
 	eksisterendePersonPath,
 	formikBag,
 	erNyIdent = false,
+	gruppeIdenter,
+	eksisterendeNyPerson = null,
 }: PdlNyPersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
 	const isLeggTil = opts?.is?.leggTil
@@ -35,8 +41,12 @@ export const PdlNyPerson = ({
 			? Options('identtype').filter((a) => a.value !== 'NPID')
 			: Options('identtype')
 
+	const eksisterendePerson = _get(formikBag?.values, eksisterendePersonPath)
+
 	const hasEksisterendePerson =
-		eksisterendePersonPath && _get(formikBag?.values, eksisterendePersonPath) !== null
+		eksisterendePerson &&
+		(gruppeIdenter?.includes(eksisterendePerson) ||
+			_get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
@@ -58,20 +68,22 @@ export const PdlNyPerson = ({
 				label="Alder"
 				disabled={disableAlder || hasEksisterendePerson}
 			/>
-			<FormikDatepicker
-				name={`${nyPersonPath}.foedtEtter`}
-				label="Født etter"
-				disabled={disableFoedtDato || hasEksisterendePerson}
-				maxDate={new Date()}
-				fastfield={false}
-			/>
-			<FormikDatepicker
-				name={`${nyPersonPath}.foedtFoer`}
-				label="Født før"
-				disabled={disableFoedtDato || hasEksisterendePerson}
-				maxDate={new Date()}
-				fastfield={false}
-			/>
+			<DatepickerWrapper>
+				<FormikDatepicker
+					name={`${nyPersonPath}.foedtEtter`}
+					label="Født etter"
+					disabled={disableFoedtDato || hasEksisterendePerson}
+					maxDate={new Date()}
+					fastfield={false}
+				/>
+				<FormikDatepicker
+					name={`${nyPersonPath}.foedtFoer`}
+					label="Født før"
+					disabled={disableFoedtDato || hasEksisterendePerson}
+					maxDate={new Date()}
+					fastfield={false}
+				/>
+			</DatepickerWrapper>
 			{!erNyIdent && (
 				<FormikSelect
 					name={`${nyPersonPath}.statsborgerskapLandkode`}
@@ -93,7 +105,7 @@ export const PdlNyPerson = ({
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
 				disabled={hasEksisterendePerson}
-				checkboxMargin={erNyIdent}
+				checkboxMargin={true}
 			/>
 		</div>
 	)
