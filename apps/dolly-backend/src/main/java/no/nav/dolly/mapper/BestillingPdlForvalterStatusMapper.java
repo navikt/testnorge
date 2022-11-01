@@ -109,7 +109,7 @@ public final class BestillingPdlForvalterStatusMapper {
                     if (status.getMelding().equals(nyStatus.getMelding())) {
                         status.setIdenter(Stream.concat(status.getIdenter().stream(), nyStatus.getIdenter().stream())
                                 .distinct()
-                                .collect(Collectors.toList()));
+                                .toList());
                         statusFound = true;
                     }
                 }
@@ -129,12 +129,12 @@ public final class BestillingPdlForvalterStatusMapper {
     private static List<RsStatusRapport> extractStatus(Map<String, Map<String, List<String>>> msgStatusIdents, String clientid, SystemTyper type) {
         return msgStatusIdents.entrySet().stream().filter(entry -> clientid.equals(entry.getKey()))
                 .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
-                        .statuser(entry.getValue().entrySet().stream()
+                        .statuser(new ArrayList<>(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
                                         .melding(decodeMsg(entry1.getKey()))
                                         .identer(entry1.getValue())
                                         .build())
-                                .toList())
+                                .toList()))
                         .build())
                 .toList();
     }

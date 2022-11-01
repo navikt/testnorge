@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
-import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdEksistens;
 import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -29,6 +28,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aaregrest.util.AaaregUtility.appendPermisjonPermitteringId;
+import static no.nav.dolly.bestilling.aaregrest.util.AaaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aaregrest.util.AaaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
@@ -83,7 +83,6 @@ public class Aareg2Client implements ClientRegister {
 
     private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {
 
-
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getHovedperson());
         var arbeidsforholdRequest = mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context);
@@ -116,20 +115,6 @@ public class Aareg2Client implements ClientRegister {
                                 .flatMap(eksisterende -> appendArbeidsforholdId(response, eksisterende)
                                         .flatMap(arbeidsforhold -> aaregConsumer.endreArbeidsforhold(arbeidsforhold, miljoe, token))))
                 .map(reply -> decodeStatus(miljoe, reply));
-    }
-
-    private ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response, List<Arbeidsforhold> request) {
-
-        return ArbeidsforholdEksistens.builder()
-                .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .noneMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
-                        .toList())
-                .eksisterendeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
-                        .toList())
-                .build();
     }
 
     private Flux<Arbeidsforhold> appendArbeidsforholdId(ArbeidsforholdRespons response, Arbeidsforhold arbeidsforhold) {

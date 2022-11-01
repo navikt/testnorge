@@ -1,23 +1,51 @@
 package no.nav.dolly.bestilling.aaregrest.util;
 
 import lombok.experimental.UtilityClass;
+import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdEksistens;
+import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdRespons;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 
+import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class AaaregUtility {
 
-    public static boolean isEqualArbeidsforhold(Arbeidsforhold arbeidforhold1, Arbeidsforhold arbeidsforhold2) {
+    public static boolean isEqualArbeidsforhold(Arbeidsforhold response, Arbeidsforhold request) {
 
-        return isArbeidstagerAlike(arbeidforhold1, arbeidsforhold2) &&
-                (isArbeidsgiverOrganisasjonAlike(arbeidforhold1, arbeidsforhold2) ||
-                        isArbeidsgiverPersonAlike(arbeidforhold1, arbeidsforhold2));
+        return (isArbeidsgiverOrganisasjonAlike(response, request) ||
+                        isArbeidsgiverPersonAlike(response, request)) &&
+                (response.getArbeidsforholdId().equals(request.getArbeidsforholdId()) ||
+                isAnsettelsesperiodeAlike(response, request));
+    }
+
+    private static boolean isAnsettelsesperiodeAlike(Arbeidsforhold response, Arbeidsforhold request) {
+
+        return response.getAnsettelsesperiode().getPeriode().getFom().equals(request.getAnsettelsesperiode().getPeriode().getFom()) ||
+                (isNotBlank(request.getAnsettelsesperiode().getSluttaarsak()) ||
+                        isBlank(response.getAnsettelsesperiode().getSluttaarsak()));
+    }
+
+    public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
+                                                           List<Arbeidsforhold> request) {
+
+        return ArbeidsforholdEksistens.builder()
+                .nyeArbeidsforhold(request.stream()
+                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                                .noneMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)
+                                ))
+                        .toList())
+                .eksisterendeArbeidsforhold(request.stream()
+                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
+                        .toList())
+                .build();
     }
 
     public static void appendPermisjonPermitteringId(Arbeidsforhold arbeidsforhold, Arbeidsforhold eksisterende) {
@@ -40,11 +68,6 @@ public class AaaregUtility {
                                     .findFirst().get().getPermisjonPermitteringId() :
                             Integer.toString(permisjonPermitteringId.incrementAndGet())));
         }
-    }
-
-    private static boolean isArbeidstagerAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
-
-        return arbeidsforhold1.getArbeidstaker().getOffentligIdent().equals(arbeidsforhold2.getArbeidstaker().getOffentligIdent());
     }
 
     private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {

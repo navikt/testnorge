@@ -108,12 +108,12 @@ public final class BestillingPdlDataStatusMapper {
         return List.of(RsStatusRapport.builder()
                 .id(type)
                 .navn(type.getBeskrivelse())
-                .statuser(meldingIdents.entrySet().stream()
+                .statuser(new ArrayList<>(meldingIdents.entrySet().stream()
                         .map(entry -> RsStatusRapport.Status.builder()
                                 .melding(decodeMsg(entry.getKey()))
                                 .identer(entry.getValue())
                                 .build())
-                        .toList())
+                        .toList()))
                 .build());
     }
 
