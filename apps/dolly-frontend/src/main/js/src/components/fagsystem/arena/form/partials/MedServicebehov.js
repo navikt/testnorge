@@ -19,23 +19,18 @@ const feilmeldingFiks =
 	'Vennligst endre vedtaksperioden eller sett en spesifikk alder/fødsel på person for å unngå denne feilen.'
 
 const getFeilmelding = (formikBag) => {
+	let melding = ''
 	let har25Feil = false
 	let har67Feil = false
 	for (let path of errorPaths) {
 		const feil = _get(formikBag.errors, path)
-		if (feil && feil.includes('25')) {
+		if (feil && !har25Feil && feil.includes('25')) {
 			har25Feil = true
-		} else if (feil && feil.includes('67')) {
+			melding += feilmelding25
+		} else if (feil && !har67Feil && feil.includes('67')) {
 			har67Feil = true
+			melding += feilmelding67
 		}
-	}
-
-	let melding = ''
-	if (har25Feil) {
-		melding += feilmelding25
-	}
-	if (har67Feil) {
-		melding += feilmelding67
 	}
 	return melding ? melding + feilmeldingFiks : null
 }
