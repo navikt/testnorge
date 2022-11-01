@@ -124,7 +124,7 @@ public class IdentService {
         var page = PageRequest.of(pageNo, pageSize,
                 Sort.by(
                         new Sort.Order(retning, sortColumn, Sort.NullHandling.NULLS_LAST),
-                        new Sort.Order(Sort.Direction.DESC, "bp.bestilling.id", Sort.NullHandling.NULLS_LAST)
+                        new Sort.Order(Sort.Direction.DESC, "id", Sort.NullHandling.NULLS_LAST)
                 )
         );
         return identRepository
