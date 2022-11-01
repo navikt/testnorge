@@ -7,13 +7,13 @@ import _get from 'lodash/get'
 import { Alert } from '@navikt/ds-react'
 
 const errorPaths = [
-	`arenaforvalter.dagpenger[0].tilDato`,
-	`arenaforvalter.aap[0].tilDato`,
 	`arenaforvalter.aap115[0].fraDato`,
+	`arenaforvalter.aap[0].tilDato`,
+	`arenaforvalter.dagpenger[0].tilDato`,
 ]
 
 const feilmelding25 = 'Vedtak kan ikke overlappe med 25-årsdagen til person.'
-const feilmelding67 = 'Vedtak må opphøre ved fylt 67.'
+const feilmelding67 = 'Vedtak må opphøre når personen fyller 67 år.'
 const feilmeldingFiks =
 	' Vennligst endre vedtaksperioden eller sett spesifikk alder/fødsel på personen for å unngå denne feilen.'
 
