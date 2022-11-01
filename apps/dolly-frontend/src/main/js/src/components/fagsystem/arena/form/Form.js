@@ -13,6 +13,37 @@ import { Alert } from '@navikt/ds-react'
 
 export const arenaPath = 'arenaforvalter'
 
+const errorPaths = [
+	`${arenaPath}.dagpenger[0].tilDato`,
+	`${arenaPath}.aap[0].tilDato`,
+	`${arenaPath}.aap115[0].fraDato`,
+]
+
+const getFeilmelding = (formikBag) => {
+	let har25Feil = false
+	let har67Feil = false
+	for (let path of errorPaths) {
+		const feil = _get(formikBag.errors, path)
+		if (feil && feil.includes('25')) {
+			har25Feil = true
+		} else if (feil && feil.includes('67')) {
+			har67Feil = true
+		}
+	}
+
+	if (har25Feil) {
+		if (har67Feil) {
+			return 'Feilmelidng for begge'
+		} else {
+			return 'Feilemlding for 25'
+		}
+	} else if (har67Feil) {
+		return 'Feilmelding for 67'
+	}
+	// hva med begge feil?
+	return null
+}
+
 export const ArenaForm = ({ formikBag }) => {
 	const servicebehovAktiv =
 		_get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
@@ -26,6 +57,8 @@ export const ArenaForm = ({ formikBag }) => {
 		servicebehovAktiv &&
 			formikBag.setFieldValue(`${arenaPath}.automatiskInnsendingAvMeldekort`, null)
 	}, [])
+
+	const feilmelding = getFeilmelding(formikBag)
 
 	return (
 		<Vis attributt={arenaPath}>
