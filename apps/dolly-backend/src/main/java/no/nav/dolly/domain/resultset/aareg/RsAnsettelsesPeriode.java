@@ -27,7 +27,8 @@ public class RsAnsettelsesPeriode {
             type = "LocalDateTime")
     private LocalDateTime tom;
 
-    @Schema(description = "Sluttårsak",
+    @Schema(description = "Årsak for avsluttet ansettelsesperiode (kodeverk: SluttÅrsakAareg)",
+            example = "arbeidstakerHarSagtOppSelv",
             type = "String")
     private String sluttaarsak;
 }

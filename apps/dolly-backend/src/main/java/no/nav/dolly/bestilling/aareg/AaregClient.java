@@ -15,21 +15,17 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.EnvironmentsCrossConnect;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtil.appendResult;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 
 @Slf4j
 @Order(6)
@@ -45,28 +41,28 @@ public class AaregClient implements ClientRegister {
     @Override
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        StringBuilder result = new StringBuilder();
-
-        if (!bestilling.getAareg().isEmpty()) {
-
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setAaregStatus(bestilling.getEnvironments().stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
-                        .collect(Collectors.joining(",")));
-                return;
-            }
-
-            var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
-            miljoer.forEach(env -> {
-                if (!bestilling.getAareg().get(0).getAmelding().isEmpty()) {
-                    ameldingService.sendAmelding(bestilling, dollyPerson, progress, result, env);
-                } else {
-                    sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, result, env);
-                }
-            });
-        }
-
-        progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
+//        StringBuilder result = new StringBuilder();
+//
+//        if (!bestilling.getAareg().isEmpty()) {
+//
+//            if (!dollyPerson.isOpprettetIPDL()) {
+//                progress.setAaregStatus(bestilling.getEnvironments().stream()
+//                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
+//                        .collect(Collectors.joining(",")));
+//                return;
+//            }
+//
+//            var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
+//            miljoer.forEach(env -> {
+//                if (!bestilling.getAareg().get(0).getAmelding().isEmpty()) {
+//                    ameldingService.sendAmelding(bestilling, dollyPerson, progress.getBestilling().getId(), result, env);
+//                } else {
+//                    sendArbeidsforhold(bestilling, dollyPerson, isOpprettEndre, result, env);
+//                }
+//            });
+//        }
+//
+//        progress.setAaregStatus(result.length() > 1 ? result.substring(1) : null);
     }
 
     @Override
@@ -126,5 +122,4 @@ public class AaregClient implements ClientRegister {
             appendResult(Map.entry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
         }
     }
-
 }

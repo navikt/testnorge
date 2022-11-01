@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.aareg.RsPersonAareg;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 
 import java.util.Comparator;
 import java.util.List;
@@ -122,13 +123,13 @@ public class AaregUtil {
     }
 
     public static StringBuilder appendResult(Map.Entry<String, String> entry, String
-        arbeidsforholdId, StringBuilder builder) {
+            arbeidsforholdId, StringBuilder builder) {
         return builder.append(',')
-            .append(entry.getKey())
-            .append(": arbforhold=")
-            .append(arbeidsforholdId)
-            .append('$')
-            .append(entry.getValue().replaceAll(",", "&").replaceAll(":", "="));
+                .append(entry.getKey())
+                .append(": arbforhold=")
+                .append(arbeidsforholdId)
+                .append('$')
+                .append(ErrorStatusDecoder.encodeStatus(entry.getValue()));
     }
 
 }

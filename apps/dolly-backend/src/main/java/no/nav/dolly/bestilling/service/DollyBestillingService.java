@@ -71,6 +71,7 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
+            log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
             var testident = identService.getTestIdent(bestilling.getIdent());
@@ -132,6 +133,7 @@ public class DollyBestillingService {
         } finally {
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
+            log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
         }
     }
 

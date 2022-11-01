@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -45,9 +44,9 @@ public final class BestillingInstdataStatusMapper {
                                                         .miljo(envIdent.getKey())
                                                         .identer(new ArrayList<>(envIdent.getValue()))
                                                         .build())
-                                                .collect(Collectors.toList()))
+                                                .toList())
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build());
     }
 }

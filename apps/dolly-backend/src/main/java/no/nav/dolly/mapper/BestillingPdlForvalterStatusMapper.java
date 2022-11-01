@@ -24,6 +24,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DODSBO;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FALSKID;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_UTENLANDSID;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -90,7 +91,7 @@ public final class BestillingPdlForvalterStatusMapper {
             if (OKEY.equals(status.getMelding())) {
                 status.setIdenter(status.getIdenter().stream()
                         .filter(ident -> !identerMedFeil.contains(ident))
-                        .collect(Collectors.toList()));
+                        .toList());
 
                 if (status.getIdenter().isEmpty()) {
                     it.remove();
@@ -108,7 +109,7 @@ public final class BestillingPdlForvalterStatusMapper {
                     if (status.getMelding().equals(nyStatus.getMelding())) {
                         status.setIdenter(Stream.concat(status.getIdenter().stream(), nyStatus.getIdenter().stream())
                                 .distinct()
-                                .collect(Collectors.toList()));
+                                .toList());
                         statusFound = true;
                     }
                 }
@@ -128,13 +129,13 @@ public final class BestillingPdlForvalterStatusMapper {
     private static List<RsStatusRapport> extractStatus(Map<String, Map<String, List<String>>> msgStatusIdents, String clientid, SystemTyper type) {
         return msgStatusIdents.entrySet().stream().filter(entry -> clientid.equals(entry.getKey()))
                 .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
-                        .statuser(entry.getValue().entrySet().stream()
+                        .statuser(new ArrayList<>(entry.getValue().entrySet().stream()
                                 .map(entry1 -> RsStatusRapport.Status.builder()
-                                        .melding(entry1.getKey().replace(';', ',').replace('=', ':'))
+                                        .melding(decodeMsg(entry1.getKey()))
                                         .identer(entry1.getValue())
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList()))
                         .build())
-                .collect(Collectors.toList());
+                .toList();
     }
 }
