@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Kategori } from '~/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
 import { Alert } from '@navikt/ds-react'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,
@@ -15,7 +16,7 @@ const errorPaths = [
 const feilmelding25 = 'Vedtak kan ikke overlappe med 25-årsdagen til person.'
 const feilmelding67 = 'Vedtak må opphøre når personen fyller 67 år.'
 const feilmeldingFiks =
-	' Vennligst endre vedtaksperioden eller sett spesifikk alder/fødsel på personen for å unngå denne feilen.'
+	' Vennligst endre vedtaksperioden eller sett spesifikk alder/fødsel på person for å unngå denne feilen.'
 
 const getFeilmelding = (formikBag) => {
 	let har25Feil = false
@@ -43,12 +44,13 @@ const getFeilmelding = (formikBag) => {
 }
 
 export const MedServicebehov = ({ formikBag, path }) => {
+	const opts = useContext(BestillingsveilederContext)
 	const { arenaforvalter } = formikBag.values
 	const feilmelding = getFeilmelding(formikBag)
 
 	return (
 		<React.Fragment>
-			{feilmelding && (
+			{!opts.is.leggTil && !opts.is.importTestnorge && feilmelding && (
 				<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
 					{feilmelding}
 				</Alert>
