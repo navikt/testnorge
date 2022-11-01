@@ -183,23 +183,6 @@ For personer som ikke eksisterer i Dolly må disse først hentes inn ved å oppr
 
 ---
 
-## Importere grupper fra gammel Z-bruker
-
-Dersom du tidligere har brukt Dolly med en Z-bruker, vil du se at gruppe-oversikten er tom første gang du logger deg på med personlig brukerkonto.
-
-Ikke bekymre deg - personene dine er ikke slettet! Men fordi de er koblet til Z-brukeren din må du importere dem til din personlige brukerkonto for å få tilgang til dem.
-
-Import fra Z-bruker kan du gjøre direkte fra gruppe-oversikten, eller fra Min side.
-
-![Import fra min side](assets/minside.png)
-
-For at overgangen skal gå så smertefritt som mulig, vil følgende regler gjelde ved import av Z-bruker:
-* Du kan importere så mange Z-brukere du ønsker. Har du flere Z-brukere vil altså alle dataene fra disse kunne samles på din personlige brukerkonto.
-* Hver Z-bruker kan kun importeres av én personlig brukerkonto. Her er det førstemann til mølla-prinsippet som gjelder, dvs. at når du importerer en Z-bruker vil ingen andre kunne importere den samme.
-
-Det vil fortsatt være mulig å sette andre brukeres grupper som “favoritter”, slik at du har enkel tilgang til dem fra gruppe-oversikten.
-
-
 ## Feil ved innlogging
 
 ![Tvungen utlogging](assets/logged_out_error.png)
