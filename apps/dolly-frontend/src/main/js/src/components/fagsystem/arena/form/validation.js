@@ -337,7 +337,7 @@ export const validation = Yup.object({
 					'Vedtak kan ikke overlappe dato person fyller 25',
 					function validDate(tildato) {
 						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
 					}
 				)
@@ -346,7 +346,7 @@ export const validation = Yup.object({
 					'Person kan ikke ha vedtak etter fylte 67 år',
 					function validDate(tildato) {
 						const values = this.options.context
-						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
 					}
 				)
