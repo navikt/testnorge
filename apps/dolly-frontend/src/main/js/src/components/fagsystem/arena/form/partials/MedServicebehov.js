@@ -13,10 +13,10 @@ const errorPaths = [
 	`arenaforvalter.dagpenger[0].tilDato`,
 ]
 
-const feilmelding25 = 'Vedtak kan ikke overlappe med 25-årsdagen til person.'
-const feilmelding67 = 'Vedtak må opphøre når personen fyller 67 år.'
+const feilmelding25 = 'Vedtak kan ikke overlappe med 25-årsdagen til person. '
+const feilmelding67 = 'Vedtak må opphøre når personen fyller 67 år. '
 const feilmeldingFiks =
-	' Vennligst endre vedtaksperioden eller sett spesifikk alder/fødsel på person for å unngå denne feilen.'
+	'Vennligst endre vedtaksperioden eller sett en spesifikk alder/fødsel på person for å unngå denne feilen.'
 
 const getFeilmelding = (formikBag) => {
 	let har25Feil = false
@@ -30,17 +30,14 @@ const getFeilmelding = (formikBag) => {
 		}
 	}
 
-	let melding = null
+	let melding = ''
 	if (har25Feil) {
-		melding = feilmelding25
-		if (har67Feil) {
-			melding += ' ' + feilmelding67
-		}
-		melding += feilmeldingFiks
-	} else if (har67Feil) {
-		melding = feilmelding67 + feilmeldingFiks
+		melding += feilmelding25
 	}
-	return melding
+	if (har67Feil) {
+		melding += feilmelding67
+	}
+	return melding ? melding + feilmeldingFiks : null
 }
 
 export const MedServicebehov = ({ formikBag, path }) => {
