@@ -5,7 +5,9 @@ import _drop from 'lodash/drop'
 import './historikk.less'
 
 export const Historikk = ({ component, data, propName = 'data', ...restProps }) => {
-	if (!_isArray(data)) return null
+	if (!_isArray(data)) {
+		return null
+	}
 
 	const Main = component
 

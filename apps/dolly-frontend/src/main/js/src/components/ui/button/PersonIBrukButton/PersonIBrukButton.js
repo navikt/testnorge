@@ -1,5 +1,16 @@
 import React, { useState } from 'react'
 import { DollyCheckbox } from '../../form/inputs/checbox/Checkbox'
+import styled from 'styled-components'
+
+const StyledSwitch = styled(DollyCheckbox)`
+	.navds-switch__input:checked ~ .navds-switch__track {
+		background-color: #0067c5;
+	}
+
+	.navds-switch__input:checked ~ .navds-switch__track > .navds-switch__thumb {
+		color: #0067c5;
+	}
+`
 
 export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
 	const [brukt, setBrukt] = useState(ident.ibruk)
@@ -8,8 +19,9 @@ export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
 		setBrukt(erIBruk)
 		updateIdentIbruk(ident.ident, erIBruk)
 	}
+
 	return (
-		<DollyCheckbox
+		<StyledSwitch
 			title={brukt ? 'Marker som ikke i bruk' : 'Marker som i bruk'}
 			checked={brukt}
 			onChange={handleOnChange}

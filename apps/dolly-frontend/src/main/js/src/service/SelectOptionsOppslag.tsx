@@ -113,7 +113,9 @@ export const SelectOptionsOppslag = {
 		const maxAntall = 40
 
 		const getRelatertePersoner = (person: HentPerson) => {
-			if (!person) return null
+			if (!person) {
+				return null
+			}
 			const relasjoner = [] as Array<string>
 			person.forelderBarnRelasjon?.forEach((relasjon) =>
 				relasjoner.push(relasjon.relatertPersonsIdent)

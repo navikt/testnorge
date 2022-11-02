@@ -30,47 +30,49 @@ export default function BestillingResultat({
 	const mutate = useMatchMutate()
 
 	return (
-		<div className="bestilling-resultat">
-			<div className="status-header">
-				<p>Bestilling #{bestilling.id}</p>
-				<h3>Bestillingsstatus</h3>
-				<div className="status-header_button-wrap">
-					<Button
-						kind="remove-circle"
-						onClick={() => {
-							setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
-								nyeBestillinger.filter((best) => best.id !== bestilling.id)
-							)
-							lukkBestilling && lukkBestilling(bestilling.id)
+		<div className="bestilling-status" key={`ferdig-bestilling-${bestilling.id}`}>
+			<div className="bestilling-resultat">
+				<div className="status-header">
+					<p>Bestilling #{bestilling.id}</p>
+					<h3>Bestillingsstatus</h3>
+					<div className="status-header_button-wrap">
+						<Button
+							kind="remove-circle"
+							onClick={() => {
+								setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
+									nyeBestillinger.filter((best) => best.id !== bestilling.id)
+								)
+								lukkBestilling && lukkBestilling(bestilling.id)
+							}}
+						/>
+					</div>
+				</div>
+				<hr />
+				{/*// @ts-ignore*/}
+				<FagsystemStatus bestilling={bestilling} />
+				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
+				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
+				<Feedback
+					label="Hvordan var din opplevelse med bruk av Dolly?"
+					feedbackFor="Bruk av Dolly etter bestilling"
+				/>
+				<div className="flexbox--all-center">
+					<BestillingSammendragModal bestilling={bestilling} />
+					<Button onClick={openGjenopprettModal} kind="synchronize">
+						GJENOPPRETT
+					</Button>
+				</div>
+				{isGjenopprettModalOpen && (
+					<GjenopprettConnector
+						bestilling={bestilling}
+						brukerId={brukerId}
+						closeModal={() => {
+							closeGjenoprettModal()
+							mutate(REGEX_BACKEND_GRUPPER)
 						}}
 					/>
-				</div>
+				)}
 			</div>
-			<hr />
-			{/*// @ts-ignore*/}
-			<FagsystemStatus bestilling={bestilling} />
-			{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
-			{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
-			<Feedback
-				label="Hvordan var din opplevelse med bruk av Dolly?"
-				feedbackFor="Bruk av Dolly etter bestilling"
-			/>
-			<div className="flexbox--all-center">
-				<BestillingSammendragModal bestilling={bestilling} />
-				<Button onClick={openGjenopprettModal} kind="synchronize">
-					GJENOPPRETT
-				</Button>
-			</div>
-			{isGjenopprettModalOpen && (
-				<GjenopprettConnector
-					bestilling={bestilling}
-					brukerId={brukerId}
-					closeModal={() => {
-						closeGjenoprettModal()
-						mutate(REGEX_BACKEND_GRUPPER)
-					}}
-				/>
-			)}
 		</div>
 	)
 }

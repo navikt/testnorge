@@ -54,24 +54,22 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 	}
 
 	const ikkeFerdig = nyeBestillinger.map((bestilling) => (
-		<div className="bestilling-status" key={bestilling.id}>
-			<BestillingProgresjon
-				bestillingID={bestilling.id}
-				erOrganisasjon={bestilling.organisasjonNummer}
-				cancelBestilling={cancelBestilling}
-				onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 0)}
-			/>
-		</div>
+		<BestillingProgresjon
+			key={bestilling.id}
+			bestillingID={bestilling.id}
+			erOrganisasjon={bestilling.organisasjonNummer}
+			cancelBestilling={cancelBestilling}
+			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 0)}
+		/>
 	))
 
 	const ferdig = ferdigBestillinger.map((ferdig) => (
-		<div className="bestilling-status" key={`ferdig-bestilling-${ferdig.id}`}>
-			<BestillingResultat
-				bestilling={ferdig}
-				setNyeBestillinger={() => {}}
-				lukkBestilling={(id) => lukkBestilling(id)}
-			/>
-		</div>
+		<BestillingResultat
+			key={ferdig.id}
+			bestilling={ferdig}
+			setNyeBestillinger={() => {}}
+			lukkBestilling={(id) => lukkBestilling(id)}
+		/>
 	))
 
 	return ikkeFerdig.concat(...ferdig)
