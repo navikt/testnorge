@@ -90,13 +90,6 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 						gjøre det lettere å ta i bruk Dolly, gi deg bedre oversikt over dataene dine, og lettere
 						kunne hjelpe deg dersom det skulle oppstå en feil.
 					</p>
-
-					<h2>Hvor er personene dine?</h2>
-					<p>
-						Ikke bekymre deg - personene dine er ikke slettet! Men fordi de er koblet til Z-brukeren
-						din må du importere dem til din personlige brukerkonto for å få tilgang til dem. Dette
-						kan du gjøre første gang i gruppe-oversikten, eller når som helst på Min side.
-					</p>
 				</>
 			)
 		case 'PDL_SOM_MASTER':
