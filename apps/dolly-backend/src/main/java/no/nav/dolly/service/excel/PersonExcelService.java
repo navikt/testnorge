@@ -360,7 +360,7 @@ public class PersonExcelService {
                         getIdenterForRelasjon(personer, VERGE),
                         getIdenterForRelasjon(personer, FULLMEKTIG))
                 .flatMap(Collection::stream)
-                .filter(ident -> !hovedpersoner.stream().anyMatch(person -> person.getIdent().equals(ident)))
+                .filter(ident -> hovedpersoner.stream().anyMatch(person -> person.getIdent().equals(ident)))
                 .map(ident -> hovedpersoner.stream().filter(persone -> persone.getIdent().equals(ident)).findFirst().get())
                 .distinct()
                 .toList()));
