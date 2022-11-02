@@ -27,7 +27,7 @@ public class BankkontoToPersonHelper {
         }
 
         var personData = workbook.getSheet(PERSON_FANE);
-        var startColumn = personData.getRow(0).getPhysicalNumberOfCells() + 4;
+        var startColumn = personData.getRow(0).getPhysicalNumberOfCells() + 2;
         var relativeEndColumn = bankData.getRow(0).getPhysicalNumberOfCells();
 
         appendHeader(personData, startColumn, relativeEndColumn);

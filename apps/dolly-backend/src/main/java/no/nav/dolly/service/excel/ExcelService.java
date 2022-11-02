@@ -3,7 +3,6 @@ package no.nav.dolly.service.excel;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -64,7 +63,6 @@ public class ExcelService {
 
         var testidenter = testgruppe
                 .getTestidenter().stream()
-                .map(Testident::getIdent)
                 .toList();
 
         var workbook = new XSSFWorkbook();
