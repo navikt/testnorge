@@ -8,7 +8,6 @@ import Panel from '~/components/ui/panel/Panel'
 import { runningTestcafe } from '~/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { PoppMiljoeinfo } from '~/components/fagsystem/pensjon/visning/PoppMiljoeinfo'
-import Icon from '~/components/ui/icon/Icon'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return !pensjonData?.inntekter || pensjonData?.inntekter?.length === 0
@@ -74,7 +73,7 @@ export const PensjonvisningMiljo = ({ data, miljoe }) => {
 		!pensjonMiljoeInfo?.inntekter ||
 		pensjonMiljoeInfo?.inntekter?.length < 1 ? (
 		<Alert variant="info" size="small" inline>
-			Fant ingen data i dette miljøet
+			Fant ingen pensjon-data i dette miljøet
 		</Alert>
 	) : (
 		<div className="boks">

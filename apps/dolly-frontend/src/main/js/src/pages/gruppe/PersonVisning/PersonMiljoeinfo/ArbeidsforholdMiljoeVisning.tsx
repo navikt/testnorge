@@ -2,6 +2,7 @@ import React from 'react'
 import Loading from '~/components/ui/loading/Loading'
 import { AaregVisning } from '~/components/fagsystem'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
+import { Alert } from '@navikt/ds-react'
 
 type PersonMiljoeinfoProps = {
 	ident: string
@@ -19,7 +20,11 @@ export const ArbeidsforholdMiljoeVisning = ({ ident, miljoe }: PersonMiljoeinfoP
 		return <Loading label="Laster miljøer" fullpage />
 	}
 
-	return (
+	return !arbeidsforhold || arbeidsforhold?.length < 1 ? (
+		<Alert variant="info" size="small" inline>
+			Fant ingen arbeidsforhold-data i dette miljøet
+		</Alert>
+	) : (
 		<div className="boks">
 			<AaregVisning liste={arbeidsforhold} />
 		</div>

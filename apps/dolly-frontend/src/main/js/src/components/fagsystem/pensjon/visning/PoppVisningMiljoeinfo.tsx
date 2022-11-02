@@ -28,7 +28,7 @@ export const PoppVisningMiljoeinfo = ({ miljoer, ident, bestilteMiljoer }) => {
 					<DollyTooltip
 						overlay={<PensjonvisningMiljo data={getMiljoeinfo?.value} miljoe={miljoe} />}
 						align={{
-							offset: ['0', '-10'],
+							offset: [0, -10],
 						}}
 						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 						key={idx}

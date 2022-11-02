@@ -279,12 +279,16 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning ident={ident.ident} liste={arbeidsforhold} loading={loadingAareg} />
+				<AaregVisning
+					ident={ident.ident}
+					liste={arbeidsforhold}
+					loading={loadingAareg}
+					bestilteMiljoer={bestilteMiljoer}
+				/>
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning
 					data={pensjonforvalter}
 					loading={loading.pensjonforvalter}
-					bestillingIdListe={bestillingIdListe}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
 				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />

@@ -21,7 +21,7 @@ export const PoppMiljoeinfo = ({ ident, bestilteMiljoer }) => {
 	}, [])
 
 	return (
-		<div className="flexbox--flex-wrap">
+		<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
 			{miljoer && !miljoer?.loading ? (
 				<Miljoeinfo>
 					<PoppVisningMiljoeinfo
