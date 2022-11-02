@@ -29,7 +29,7 @@ export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArb
 				<FormikSelect
 					name={`${path}.fartsomraade`}
 					label="Fartsområde"
-					kodeverk={ArbeidKodeverk.Fartsomraader}
+					kodeverk={ArbeidKodeverk.Fartsområder}
 					onChange={onChangeLenket('fartoy[0].fartsomraade')}
 					isClearable={false}
 				/>

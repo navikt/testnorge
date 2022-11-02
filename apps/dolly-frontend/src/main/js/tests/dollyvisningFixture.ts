@@ -26,6 +26,7 @@ import {
 	udistubMock,
 } from './util/TestcafeMocks'
 import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from './util/TestcafePdlMocks'
+import { scrollThroughPage } from './util/TestcafeUtils'
 
 const miljoer = new RegExp(/\/miljoer/)
 const current = new RegExp(/current/)
@@ -181,8 +182,7 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 		.click(ReactSelector('TableRow').withKey('12345678912'))
 		.wait(1500)
 
-	// Kan brukes under debugging for å se at alle feltene dukker opp, kun visuelt
-	// await scrollThroughPage(testController, 90)
+	await scrollThroughPage(testController, 90)
 
 	await testController
 		.expect(ReactSelector('AppError').exists)

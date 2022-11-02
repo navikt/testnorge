@@ -22,14 +22,14 @@ import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfal
 import { Nasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/Nasjonalitet'
 import { Persondetaljer } from '~/components/fagsystem/pdlf/visning/partials/Persondetaljer'
 import {
+	TpsfIdenthistorikk,
 	MidlertidigAdresse,
+	TpsfPersoninfo,
 	Postadresse,
 	Relasjoner,
-	TpsfBoadresse,
-	TpsfIdenthistorikk,
-	TpsfNasjonalitet,
-	TpsfPersoninfo,
 	TpsfVergemaal,
+	TpsfNasjonalitet,
+	TpsfBoadresse,
 } from '~/components/fagsystem/tpsf/visning/partials'
 import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
@@ -44,12 +44,8 @@ export const PdlfVisning = ({
 	environments,
 	master,
 }) => {
-	if (loading) {
-		return <Loading label="Laster PDL-data" />
-	}
-	if (!data && !tpsfData) {
-		return null
-	}
+	if (loading) return <Loading label="Laster PDL-data" />
+	if (!data && !tpsfData) return null
 
 	const ident = data ? data.person?.ident : tpsfData?.ident
 	const tpsMessaging = TpsMessagingData(ident, environments)

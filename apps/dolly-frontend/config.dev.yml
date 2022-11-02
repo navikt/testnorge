@@ -49,6 +49,7 @@ spec:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
@@ -80,7 +81,7 @@ spec:
     limits:
       cpu: 1500m
       memory: 2048Mi
-  image: {{image}}
+  image: {{ image }}
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev

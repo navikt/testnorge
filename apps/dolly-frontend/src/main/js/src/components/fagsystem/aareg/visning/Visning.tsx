@@ -13,10 +13,8 @@ import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
-import { ArbeidsforholdMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/ArbeidsforholdMiljoeInfo'
 
 type AaregVisningProps = {
-	ident?: string
 	liste?: Array<Arbeidsforhold>
 	loading?: boolean
 }
@@ -27,7 +25,7 @@ type Arbeidsforhold = {
 	antallTimerForTimeloennet?: Array<unknown>
 	arbeidsavtaler?: Array<unknown>
 	arbeidsgiver?: ArbeidsgiverProps
-	fartoy?: any
+	fartoy?: Array<any>
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string
@@ -50,11 +48,13 @@ type Periode = {
 
 const getHeader = (data: Arbeidsforhold) => {
 	return `Arbeidsforhold (${data.arbeidsgiver.type}: ${
-		data.arbeidsgiver.organisasjonsnummer || data.arbeidsgiver.offentligIdent
+		data.arbeidsgiver.organisasjonsnummer
+			? data.arbeidsgiver.organisasjonsnummer
+			: data.arbeidsgiver.offentligIdent
 	})`
 }
 
-export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
+export const AaregVisning = ({ liste, loading }: AaregVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
@@ -72,7 +72,7 @@ export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
+				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
 					Kunne ikke hente arbeidsforhold-data på person
 				</Alert>
 			) : (
@@ -124,8 +124,6 @@ export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
 								<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
 
 								<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
-
-								<ArbeidsforholdMiljoeInfo ident={ident} />
 							</React.Fragment>
 						)}
 					</DollyFieldArray>

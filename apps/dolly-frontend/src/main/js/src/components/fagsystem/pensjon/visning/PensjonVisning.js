@@ -13,12 +13,8 @@ export const sjekkManglerPensjonData = (pensjonData) => {
 }
 
 export const PensjonVisning = ({ data, loading }) => {
-	if (loading) {
-		return <Loading label="Laster pensjonforvalter-data" />
-	}
-	if (!data) {
-		return null
-	}
+	if (loading) return <Loading label="Laster pensjonforvalter-data" />
+	if (!data) return null
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 

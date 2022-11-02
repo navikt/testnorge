@@ -40,9 +40,7 @@ export const TelefonnummerLes = ({ telefonnummerData, idx }: TelefonnummerTypes)
 }
 
 export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }: DataListe) => {
-	if (!data || data.length === 0) {
-		return null
-	}
+	if (!data || data.length === 0) return null
 	const initialValues = { telefonnummer: data }
 
 	const redigertTelefonnummerPdlf = _get(tmpPersoner, `${ident}.person.telefonnummer`)

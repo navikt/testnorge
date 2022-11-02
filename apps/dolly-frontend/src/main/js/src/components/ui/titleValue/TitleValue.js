@@ -31,9 +31,7 @@ const P_TitleValue = ({
 }
 
 export const TitleValue = ({ kodeverk = null, visKopier = false, ...restProps }) => {
-	if (!restProps.value && !restProps.children) {
-		return null
-	}
+	if (!restProps.value && !restProps.children) return null
 
 	if (kodeverk) {
 		const { value, children, ...rest } = restProps
