@@ -45,7 +45,7 @@ export enum ArbeidKodeverk {
 	AnsettelsesformAareg = 'AnsettelsesformAareg',
 	Skipsregistre = 'Skipsregistre',
 	Skipstyper = 'Skipstyper',
-	Fartsområder = 'Fartsområder',
+	Fartsomraader = 'Fartsområder',
 	Valutaer = 'Valutaer',
 }
 

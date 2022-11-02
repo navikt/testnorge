@@ -88,7 +88,9 @@ export const Visning = ({ data, relasjoner }) => {
 }
 
 export const KontaktinformasjonForDoedsbo = ({ data, relasjoner }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const kontaktpersonRelasjoner = relasjoner?.filter(
 		(relasjon) => relasjon.relasjonType === 'KONTAKT_FOR_DOEDSBO'

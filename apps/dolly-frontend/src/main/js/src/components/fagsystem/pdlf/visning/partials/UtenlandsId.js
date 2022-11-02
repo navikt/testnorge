@@ -7,7 +7,9 @@ import Formatters from '~/utils/DataFormatter'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const UtenlandsId = ({ data }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<div>

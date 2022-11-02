@@ -28,7 +28,9 @@ export default function BestillingListe({
 	gruppeInfo,
 	sideStoerrelse,
 }) {
-	if (!bestillingerById) return null
+	if (!bestillingerById) {
+		return null
+	}
 	const bestillingListe = Object.values(bestillingerById)
 
 	if (bestillingListe.length === 0) {

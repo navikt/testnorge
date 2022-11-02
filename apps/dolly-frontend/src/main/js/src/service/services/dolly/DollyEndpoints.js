@@ -193,10 +193,6 @@ export default class DollyEndpoints {
 		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
 	}
 
-	static getArbeidsforhold(ident, miljoe) {
-		return `${uri}/aareg/arbeidsforhold?ident=${ident}&miljoe=${miljoe}`
-	}
-
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}
