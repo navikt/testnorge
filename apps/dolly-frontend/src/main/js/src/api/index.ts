@@ -9,19 +9,24 @@ import { runningTestcafe } from '~/service/services/Request'
 const fetchRetry = fetch_retry(originalFetch)
 
 export const fetcher = (url, headers: Record<string, string>) =>
-	axios.get(url).then((res) => {
-		if (!res.statusText.includes('OK') && !runningTestcafe()) {
-			if (res.status === 401 || res.status === 403) {
+	axios
+		.get(url, { headers: headers })
+		.then((res) => {
+			return res.data
+		})
+		.catch((reason) => {
+			if (runningTestcafe()) {
+				return null
+			}
+			if (reason.status === 401 || reason.status === 403) {
 				console.error('Auth feilet, logger ut bruker')
 				logoutBruker()
 			}
-			if (res.status === 404) {
+			if (reason.status === 404) {
 				throw new NotFoundError()
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
-		}
-		return res.data
-	})
+		})
 
 export const imageFetcher = (...args: Argument[]) =>
 	originalFetch(...args).then((res: Response) =>
