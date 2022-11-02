@@ -1,7 +1,7 @@
-package no.nav.dolly.bestilling.aaregrest.command;
+package no.nav.dolly.bestilling.aareg.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdRespons;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;

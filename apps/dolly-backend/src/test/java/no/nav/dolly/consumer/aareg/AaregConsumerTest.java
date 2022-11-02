@@ -3,18 +3,16 @@ package no.nav.dolly.consumer.aareg;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
-import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
-import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
-import no.nav.dolly.config.credentials.TestnorgeAaregProxyProperties;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
+import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
+import no.nav.testnav.libs.dto.aareg.v1.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,22 +23,19 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static com.github.tomakehurst.wiremock.client.WireMock.created;
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.matching;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.put;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -48,103 +43,115 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class AaregConsumerTest {
+class AaregConsumerTest {
 
-    private final String ident = "01010101010";
+    private static final String IDENT = "01010101010";
+    private static final String ORGNUMMER = "202020202";
 
-    private final String miljoe = "t0";
+    private static final String MILJOE = "t0";
 
     @MockBean
-    private JwtDecoder jwtDecoder;
+    private AccessToken accessToken;
 
     @Autowired
     private AaregConsumer aaregConsumer;
 
     @MockBean
-    private TokenExchange tokenService;
+    private JwtDecoder jwtDecoder;
 
     @MockBean
-    private ErrorStatusDecoder errorStatusDecoder;
+    private TokenExchange tokenService;
 
-    private AaregOpprettRequest opprettRequest;
+    private Arbeidsforhold opprettRequest;
 
-    private AaregResponse opprettResponse;
-
-    private AaregResponse slettResponse;
+    private ArbeidsforholdRespons arbeidsforholdRespons;
 
     private static String asJsonString(final Object object) throws JsonProcessingException {
         return new ObjectMapper().writeValueAsString(object);
     }
 
     @BeforeEach
-    public void setUp() {
-        when(tokenService.exchange(ArgumentMatchers.any(TestnorgeAaregProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+    void setUp() {
+        when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
 
-        opprettRequest = AaregOpprettRequest.builder()
-                .arbeidsforhold(Arbeidsforhold.builder()
+        opprettRequest = Arbeidsforhold.builder()
+                .arbeidstaker(Person.builder()
+                        .offentligIdent(IDENT)
                         .build())
-                .environments(Collections.singletonList(miljoe))
-                .build();
-        Map<String, String> status = new HashMap<>();
-        status.put(miljoe, "OK");
-        opprettResponse = AaregResponse.builder()
-                .statusPerMiljoe(status)
+                .arbeidsgiver(Organisasjon.builder()
+                        .organisasjonsnummer(ORGNUMMER)
+                        .build())
+                .arbeidsavtaler(singletonList(OrdinaerArbeidsavtale.builder()
+                        .yrke("121232")
+                        .arbeidstidsordning("nada")
+                        .build()))
+                .arbeidsforholdId("1")
                 .build();
 
-        slettResponse = AaregResponse.builder()
-                .statusPerMiljoe(status)
+        arbeidsforholdRespons = ArbeidsforholdRespons.builder()
+                .miljo(MILJOE)
+                .arbeidsforholdId("1")
                 .build();
     }
 
     @Test
-    public void opprettArbeidsforhold() throws JsonProcessingException {
-        stubOpprettArbeidsforhold(opprettResponse);
+    void opprettArbeidsforhold() throws JsonProcessingException {
 
-        AaregResponse response = aaregConsumer.opprettArbeidsforhold(opprettRequest);
+        stubOpprettArbeidsforhold(arbeidsforholdRespons);
 
-        assertThat(response.getStatusPerMiljoe().get(miljoe), equalTo("OK"));
+        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
+                .collectList()
+                .block();
+
+        assertThat(response.get(0).getArbeidsforholdId(), is(equalTo("1")));
+        assertThat(response.get(0).getMiljo(), is(equalTo(MILJOE)));
     }
 
     @Test
-    public void hentArbeidsforhold() {
-        stubHentArbeidsforhold();
+    void oppdaterArbeidsforhold() throws JsonProcessingException {
 
-        List<ArbeidsforholdResponse> arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(ident, miljoe);
+        stubOppdaterArbeidsforhold(arbeidsforholdRespons);
 
-        assertThat(arbeidsforholdResponses.get(0), notNullValue());
+        var response = aaregConsumer.opprettArbeidsforhold(opprettRequest, MILJOE, accessToken)
+                .collectList()
+                .block();
+
+        assertThat(response.get(0).getArbeidsforholdId(), is(equalTo("1")));
+        assertThat(response.get(0).getMiljo(), is(equalTo(MILJOE)));
     }
 
     @Test
-    public void slettArbeidsforhold() throws JsonProcessingException {
-        stubSlettIdentFraAlleMiljoer(slettResponse);
+    void hentArbeidsforhold() throws JsonProcessingException {
 
-        var response = aaregConsumer.slettArbeidsforholdFraAlleMiljoer(List.of(ident)).block();
+        stubHentArbeidsforhold(arbeidsforholdRespons);
 
-        assertThat(response.get(0).getStatusPerMiljoe().get(miljoe), equalTo("OK"));
+        var arbeidsforholdResponses = aaregConsumer.hentArbeidsforhold(IDENT, MILJOE, accessToken)
+                .block();
+
+        assertThat(arbeidsforholdResponses.getEksisterendeArbeidsforhold(), is(emptyList()));
     }
 
-    private void stubOpprettArbeidsforhold(AaregResponse response) throws JsonProcessingException {
+    private void stubOpprettArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
 
-        stubFor(post(urlPathMatching("(.*)/aareg/api/v1/arbeidsforhold"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
                 .willReturn(created()
                         .withBody(asJsonString(response))
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubHentArbeidsforhold() {
+    private void stubOppdaterArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
 
-        stubFor(get(urlPathMatching("(.*)/aareg/api/v1/arbeidsforhold"))
-                .withQueryParam("ident", matching(ident))
-                .withQueryParam("miljoe", matching(miljoe))
-                .willReturn(ok()
-                        .withBody("[{}]")
+        stubFor(put(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
+                .willReturn(created()
+                        .withBody(asJsonString(response))
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubSlettIdentFraAlleMiljoer(AaregResponse response) throws JsonProcessingException {
+    private void stubHentArbeidsforhold(ArbeidsforholdRespons response) throws JsonProcessingException {
 
-        stubFor(delete(urlPathMatching("(.*)/aareg/api/v1/arbeidsforhold"))
-                .withQueryParam("ident", matching(ident))
+        stubFor(get(urlPathMatching("(.*)/api/v1/arbeidsforhold"))
+                .withQueryParam("ident", matching(IDENT))
+                .withQueryParam("miljoe", matching(MILJOE))
                 .willReturn(ok()
                         .withBody(asJsonString(response))
                         .withHeader("Content-Type", "application/json")));

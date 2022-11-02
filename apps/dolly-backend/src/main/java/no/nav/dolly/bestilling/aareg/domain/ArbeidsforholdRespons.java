@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.aaregrest.domain;
+package no.nav.dolly.bestilling.aareg.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

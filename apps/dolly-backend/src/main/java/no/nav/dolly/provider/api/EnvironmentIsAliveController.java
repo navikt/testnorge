@@ -3,7 +3,6 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.ArbeidsforholdServiceConsumer;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingConsumer;
 import no.nav.dolly.bestilling.aareg.amelding.OrganisasjonServiceConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
@@ -49,7 +48,6 @@ public class EnvironmentIsAliveController {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final AaregConsumer aaregConsumer;
     private final AmeldingConsumer ameldingConsumer;
-    private final ArbeidsforholdServiceConsumer arbeidsforholdServiceConsumer;
     private final BrregstubConsumer brregstubConsumer;
     private final DokarkivConsumer dokarkivConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
@@ -81,7 +79,6 @@ public class EnvironmentIsAliveController {
                         arenaForvalterConsumer.checkAlive().entrySet(),
                         aaregConsumer.checkAlive().entrySet(),
                         ameldingConsumer.checkAlive().entrySet(),
-                        arbeidsforholdServiceConsumer.checkAlive().entrySet(),
                         brregstubConsumer.checkAlive().entrySet(),
                         dokarkivConsumer.checkAlive().entrySet(),
                         fasteDatasettConsumer.checkAlive().entrySet(),
