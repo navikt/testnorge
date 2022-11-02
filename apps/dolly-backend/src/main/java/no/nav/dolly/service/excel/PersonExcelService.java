@@ -349,21 +349,23 @@ public class PersonExcelService {
     private List<Object[]> getPersondataRowContents(List<Testident> hovedpersoner) {
 
         var start = System.currentTimeMillis();
-        var personer = new ArrayList<>(getPersoner(hovedpersoner));
+        var personer = new ArrayList<>(getPersoner(hovedpersoner.stream().map(testident -> testident.getIdent()).toList(), hovedpersoner));
 
         log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         start = System.currentTimeMillis();
         personer.addAll(getPersoner(Stream.of(
-                        getIdenterForRelasjon(personer, PARTNER),
-                        getIdenterForRelasjon(personer, BARN),
-                        getIdenterForRelasjon(personer, FORELDRE),
-                        getIdenterForRelasjon(personer, VERGE),
-                        getIdenterForRelasjon(personer, FULLMEKTIG))
-                .flatMap(Collection::stream)
-                .filter(ident -> hovedpersoner.stream().anyMatch(person -> person.getIdent().equals(ident)))
-                .map(ident -> hovedpersoner.stream().filter(persone -> persone.getIdent().equals(ident)).findFirst().get())
-                .distinct()
-                .toList()));
+                                        getIdenterForRelasjon(personer, PARTNER),
+                                        getIdenterForRelasjon(personer, BARN),
+                                        getIdenterForRelasjon(personer, FORELDRE),
+                                        getIdenterForRelasjon(personer, VERGE),
+                                        getIdenterForRelasjon(personer, FULLMEKTIG)
+                        )
+                        .flatMap(Collection::stream)
+                        // .filter(ident -> !hovedpersoner.contains(ident))
+                        .filter(ident -> !hovedpersoner.stream().anyMatch(person -> person.getIdent().equals(ident)))
+                        .distinct()
+                        .toList(), hovedpersoner)
+        );
         log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
     }
@@ -378,7 +380,7 @@ public class PersonExcelService {
     }
 
     @SneakyThrows
-    private List<Object[]> getPersoner(List<Testident> identer) {
+    private List<Object[]> getPersoner(List<String> identer, List<Testident> testidenter) {
 
         return identer.isEmpty() ?
                 Collections.emptyList() :
@@ -387,20 +389,14 @@ public class PersonExcelService {
                                 kodeverkConsumer.getKodeverkByName(KOMMUNENR),
                                 kodeverkConsumer.getKodeverkByName(POSTNUMMER))
                         .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                                .flatMap(index -> pdlPersonConsumer
-                                        .getPdlPersoner(
-                                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size()))
-                                                        .stream()
-                                                        .map(ident -> ident.getIdent())
-                                                        .toList()
-                                        )
+                                .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())))
                                 )
                                 .filter(personbolk -> nonNull(personbolk.getData()))
                                 .map(PdlPersonBolk::getData)
                                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                                 .flatMap(Flux::fromIterable)
                                 .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                .map(person -> prepDataRow(person, kodeverk, identer)))
+                                .map(person -> prepDataRow(person, kodeverk, testidenter)))
                         .collectList()
                         .block();
     }
