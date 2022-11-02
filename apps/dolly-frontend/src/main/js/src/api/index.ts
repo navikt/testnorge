@@ -18,7 +18,7 @@ export const fetcher = (url, headers: Record<string, string>) =>
 			if (res.status === 404) {
 				throw new NotFoundError()
 			}
-			throw new Error('An error occurred while fetching the data.')
+			throw new Error(`Henting av data fra ${url} feilet.`)
 		}
 		return res.data
 	})
