@@ -16,7 +16,9 @@ export default class SimplePagination extends Component {
 	}
 
 	render() {
-		if (!this.props.items) return null
+		if (!this.props.items) {
+			return null
+		}
 
 		const pageCount = this._calculatePageCount()
 		const itemsToRender = this._calculateItemsToRender()

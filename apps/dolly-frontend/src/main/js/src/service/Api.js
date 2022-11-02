@@ -5,7 +5,6 @@ import KrrService from './services/krr/KrrService'
 import ArenaService from './services/arena/ArenaService'
 import InstService from './services/inst/InstService'
 import PensjonService from './services/pensjon/PensjonService'
-import AaregService from './services/aareg/AaregService'
 import InntektstubService from './services/inntektstub/InntektstubService'
 import Norg2Service from './services/norg2/Norg2Service'
 import BrregstubService from './services/brregstub/BrregstubService'
@@ -28,7 +27,6 @@ export const KrrApi = KrrService
 export const ArenaApi = ArenaService
 export const InstApi = InstService
 export const PensjonApi = PensjonService
-export const AaregApi = AaregService
 export const InntektstubApi = InntektstubService
 export const Norg2Api = Norg2Service
 export const BrregstubApi = BrregstubService
@@ -50,7 +48,6 @@ export default {
 	ArenaApi: ArenaService,
 	InstApi: InstService,
 	PensjonApi: PensjonService,
-	AaregApi: AaregService,
 	InntektstubApi: InntektstubService,
 	Norg2Api: Norg2Service,
 	BrregstubApi: BrregstubService,

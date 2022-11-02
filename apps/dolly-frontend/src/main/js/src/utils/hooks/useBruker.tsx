@@ -44,7 +44,7 @@ export const useCurrentBruker = () => {
 	}
 
 	return {
-		currentBruker: data,
+		currentBruker: data || ({} as BrukerType),
 		loading: !error && !data,
 		error: error,
 	}
