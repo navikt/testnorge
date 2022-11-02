@@ -43,7 +43,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class AaregConsumerTest {
+class AaregConsumerTest {
 
     private static final String IDENT = "01010101010";
     private static final String ORGNUMMER = "202020202";
@@ -71,7 +71,7 @@ public class AaregConsumerTest {
     }
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
 
         opprettRequest = Arbeidsforhold.builder()
@@ -95,7 +95,7 @@ public class AaregConsumerTest {
     }
 
     @Test
-    public void opprettArbeidsforhold() throws JsonProcessingException {
+    void opprettArbeidsforhold() throws JsonProcessingException {
 
         stubOpprettArbeidsforhold(arbeidsforholdRespons);
 
@@ -108,7 +108,7 @@ public class AaregConsumerTest {
     }
 
     @Test
-    public void oppdaterArbeidsforhold() throws JsonProcessingException {
+    void oppdaterArbeidsforhold() throws JsonProcessingException {
 
         stubOppdaterArbeidsforhold(arbeidsforholdRespons);
 
@@ -121,7 +121,7 @@ public class AaregConsumerTest {
     }
 
     @Test
-    public void hentArbeidsforhold() throws JsonProcessingException {
+    void hentArbeidsforhold() throws JsonProcessingException {
 
         stubHentArbeidsforhold(arbeidsforholdRespons);
 
