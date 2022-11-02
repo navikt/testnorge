@@ -1,13 +1,15 @@
-package no.nav.dolly.bestilling.aaregrest.util;
+package no.nav.dolly.bestilling.aareg.util;
 
 import lombok.experimental.UtilityClass;
-import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdEksistens;
-import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdRespons;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdEksistens;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
@@ -82,5 +84,15 @@ public class AaaregUtility {
         return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
                 arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
                 organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
+    }
+
+    public static StringBuilder appendResult(Map.Entry<String, String> entry, String
+            arbeidsforholdId, StringBuilder builder) {
+        return builder.append(',')
+                .append(entry.getKey())
+                .append(": arbforhold=")
+                .append(arbeidsforholdId)
+                .append('$')
+                .append(ErrorStatusDecoder.encodeStatus(entry.getValue()));
     }
 }
