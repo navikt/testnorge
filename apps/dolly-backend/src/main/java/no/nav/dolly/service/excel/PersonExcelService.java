@@ -346,10 +346,16 @@ public class PersonExcelService {
         return Mono.empty();
     }
 
+    private List<String> identList(List<Testident> hovedpersoner) {
+        return hovedpersoner.stream()
+                .map(Testident::getIdent)
+                .toList();
+    }
+
     private List<Object[]> getPersondataRowContents(List<Testident> hovedpersoner) {
 
         var start = System.currentTimeMillis();
-        var personer = new ArrayList<>(getPersoner(hovedpersoner.stream().map(Testident::getIdent).toList(), hovedpersoner));
+        var personer = new ArrayList<>(getPersoner(identList(hovedpersoner), hovedpersoner));
 
         log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         start = System.currentTimeMillis();
