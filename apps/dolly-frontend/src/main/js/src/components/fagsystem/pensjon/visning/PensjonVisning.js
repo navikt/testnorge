@@ -20,7 +20,7 @@ const getTittel = (data) => {
 	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
 }
 
-const PensjonInntekt = ({ data, loading }) => {
+const PensjonInntekt = ({ data }) => {
 	if (!data) return null
 
 	return (
@@ -77,7 +77,7 @@ export const PensjonvisningMiljo = ({ data, miljoe }) => {
 		</Alert>
 	) : (
 		<div className="boks">
-			<h3>{getTittel(pensjonMiljoeInfo)}</h3>
+			<SubOverskrift label="Pensjonsgivende inntekt (POPP)" iconKind="pensjon" />
 			<PensjonInntekt data={pensjonMiljoeInfo} />
 		</div>
 	)

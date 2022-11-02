@@ -291,7 +291,12 @@ export const PersonVisning = ({
 					loading={loading.pensjonforvalter}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
-				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />
+				<TpVisning
+					ident={ident.ident}
+					data={tpforvalter}
+					loading={loading.tpforvalter}
+					bestilteMiljoer={bestilteMiljoer}
+				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
