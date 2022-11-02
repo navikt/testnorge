@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -33,6 +34,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class AaregClientTest {
 
@@ -89,7 +91,6 @@ public class AaregClientTest {
         aaregClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT)
                         .opprettetIPDL(true).build(), new BestillingProgress(), false);
-
         verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
     }
 

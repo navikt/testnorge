@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -41,14 +40,14 @@ public final class BestillingDokarkivStatusMapper {
         return statusEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(DOKARKIV).navn(DOKARKIV.getBeskrivelse())
                         .statuser(statusEnvIdents.entrySet().stream().map(status -> RsStatusRapport.Status.builder()
-                                        .melding(status.getKey())
+                                        .melding(decodeMsg(status.getKey()))
                                         .detaljert(status.getValue().entrySet().stream().map(envIdent -> RsStatusRapport.Detaljert.builder()
                                                         .miljo(envIdent.getKey())
                                                         .identer(new ArrayList<>(envIdent.getValue()))
                                                         .build())
-                                                .collect(Collectors.toList()))
+                                                .toList())
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build());
     }
 }

@@ -23,8 +23,11 @@ public class ErrorStatusDecoder {
     private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
             "Forsøk gjenopprett for å fikse dette!";
 
+    private static final String TEKNISK_FEIL = "Teknisk feil {} mottatt fra system";
+    private static final String TEKNISK_FEIL_SE_LOGG = "Teknisk feil. Se logg! ";
     private static final String ERROR = "error";
     private static final String MESSAGE = "message";
+    private static final String MELDING = "melding";
     private static final String DETAILS = "details";
     private static final String FEIL = "Feil= ";
 
@@ -65,10 +68,10 @@ public class ErrorStatusDecoder {
 
     public String decodeException(Exception e) {
 
-        log.error("Teknisk feil {} mottatt fra system", e.getMessage(), e);
+        log.error(TEKNISK_FEIL, e.getMessage(), e);
         return new StringBuilder()
                 .append(FEIL)
-                .append("Teknisk feil. Se logg! ")
+                .append(TEKNISK_FEIL_SE_LOGG)
                 .append(encodeStatus(e.getMessage()))
                 .toString();
     }
@@ -80,22 +83,20 @@ public class ErrorStatusDecoder {
 
         if (error instanceof WebClientResponseException webClientResponseException) {
 
-            if (!webClientResponseException.getResponseBodyAsString().isEmpty()) {
-
-                appendStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
+            if ( webClientResponseException.getStatusCode().is4xxClientError()) {
+                appendStatusMessage(webClientResponseException.getResponseBodyAsString().isEmpty() ?
+                        webClientResponseException.getStatusCode().toString() :
+                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
 
             } else {
-                if (webClientResponseException.getStatusCode().is4xxClientError()) {
-                    builder.append(webClientResponseException.getStatusCode());
-                } else {
-                    builder.append(error.getMessage());
-                }
+                builder.append(TEKNISK_FEIL_SE_LOGG);
+                log.error(TEKNISK_FEIL, error.getMessage(), error);
             }
 
         } else {
-            builder.append("Teknisk feil. Se logg! ");
+            builder.append(TEKNISK_FEIL_SE_LOGG);
             builder.append(encodeStatus(error.getMessage()));
-            log.error("Teknisk feil {} mottatt fra system", error.getMessage(), error);
+            log.error(TEKNISK_FEIL, error.getMessage(), error);
         }
 
         return builder.toString();
@@ -120,6 +121,9 @@ public class ErrorStatusDecoder {
                 }
                 if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
+                }
+                if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
+                    builder.append(encodeStatus((String) status.get(MELDING)));
                 }
                 if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                     StringBuilder meldinger = new StringBuilder("=");

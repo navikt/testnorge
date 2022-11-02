@@ -12,11 +12,7 @@ type StatusProps = {
 	isCanceling: boolean
 	cancelBestilling: Function
 }
-const StatusListe = ({
-	bestillingListe,
-	cancelBestilling,
-	isCanceling,
-}: StatusProps) => {
+const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusProps) => {
 	const [nyeBestillinger, setNyeBestillinger] = useState([])
 	const [ferdigBestillinger, setFerdigBestillinger] = useState([])
 
@@ -33,7 +29,9 @@ const StatusListe = ({
 		if (!ferdigBestillinger.find((b) => b.id === bestilling.id)) {
 			setFerdigBestillinger(ferdigBestillinger.concat([bestilling]))
 
-			const nyenye = nyeBestillinger.filter((nye) => !ferdigBestillinger.find((b) => b.id === nye.id))
+			const nyenye = nyeBestillinger.filter(
+				(nye) => !ferdigBestillinger.find((b) => b.id === nye.id)
+			)
 			setNyeBestillinger(nyenye)
 		}
 	}
@@ -56,20 +54,22 @@ const StatusListe = ({
 	}
 
 	const ikkeFerdig = nyeBestillinger.map((bestilling) => (
-		<div className="bestilling-status" key={bestilling.id}>
-			<BestillingProgresjon
-				bestillingID={bestilling.id}
-				erOrganisasjon={bestilling.organisasjonNummer}
-				cancelBestilling={cancelBestilling}
-				onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 0) }
-			/>
-		</div>
+		<BestillingProgresjon
+			key={bestilling.id}
+			bestillingID={bestilling.id}
+			erOrganisasjon={bestilling.organisasjonNummer}
+			cancelBestilling={cancelBestilling}
+			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 0)}
+		/>
 	))
 
 	const ferdig = ferdigBestillinger.map((ferdig) => (
-		<div className="bestilling-status" key={`ferdig-bestilling-${ferdig.id}`}>
-			<BestillingResultat bestilling={ferdig} setNyeBestillinger={()=>{}} lukkBestilling={(id) => lukkBestilling(id)} />
-		</div>
+		<BestillingResultat
+			key={ferdig.id}
+			bestilling={ferdig}
+			setNyeBestillinger={() => {}}
+			lukkBestilling={(id) => lukkBestilling(id)}
+		/>
 	))
 
 	return ikkeFerdig.concat(...ferdig)

@@ -2,7 +2,9 @@ import React, { Fragment } from 'react'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 
 export const Arbeidsgiver = ({ data }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	return (
 		<React.Fragment>

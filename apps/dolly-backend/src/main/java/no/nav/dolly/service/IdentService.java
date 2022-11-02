@@ -121,7 +121,12 @@ public class IdentService {
             sortColumn = "id";
         }
         var retning = "asc".equals(sortRetning) ? Sort.Direction.ASC : Sort.Direction.DESC;
-        var page = PageRequest.of(pageNo, pageSize, Sort.by(new Sort.Order(retning, sortColumn, Sort.NullHandling.NULLS_LAST)));
+        var page = PageRequest.of(pageNo, pageSize,
+                Sort.by(
+                        new Sort.Order(retning, sortColumn, Sort.NullHandling.NULLS_LAST),
+                        new Sort.Order(Sort.Direction.DESC, "id", Sort.NullHandling.NULLS_LAST)
+                )
+        );
         return identRepository
                 .getTestidentByTestgruppeIdOrderByBestillingProgressIdDesc(gruppeId, page);
     }

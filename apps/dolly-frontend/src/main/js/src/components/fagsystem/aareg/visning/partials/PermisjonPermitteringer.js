@@ -6,7 +6,9 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const PermisjonPermitteringer = ({ data }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
 
 	const permisjon = []
 	const permittering = []

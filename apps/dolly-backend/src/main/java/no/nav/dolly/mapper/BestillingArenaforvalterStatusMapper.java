@@ -8,7 +8,6 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -39,13 +38,14 @@ public final class BestillingArenaforvalterStatusMapper {
         return statusEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(ARENA).navn(ARENA.getBeskrivelse())
                         .statuser(statusEnvIdents.entrySet().stream().map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(entry.getKey())
+                                        .melding(decodeMsg(entry.getKey()))
                                         .detaljert(entry.getValue().entrySet().stream().map(entry1 -> RsStatusRapport.Detaljert.builder()
                                                 .miljo(entry1.getKey())
                                                 .identer(entry1.getValue())
-                                                .build()).collect(Collectors.toList()))
+                                                .build())
+                                                .toList())
                                         .build())
-                                .collect(Collectors.toList()))
+                                .toList())
                         .build());
     }
 }

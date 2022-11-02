@@ -100,8 +100,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
             var completeableFuture = supplyAsync(completeable, dollyForkJoinPool);
 
             executeCompleteableFuture(completeableFuture);
+            transactionHelperService.oppdaterBestillingFerdig(bestilling);
 
-            oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
             log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
         }

@@ -47,6 +47,6 @@ public class PdlDataOrdreCommand implements Callable<Mono<String>> {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty());
+                        throwable -> Mono.just("Ident ikke funnet"));
     }
 }

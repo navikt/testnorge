@@ -10,6 +10,7 @@ import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
 import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
+import { useParams } from 'react-router-dom'
 
 interface PdlEksisterendePersonValues {
 	nyPersonPath?: string
@@ -19,6 +20,7 @@ interface PdlEksisterendePersonValues {
 	idx?: number
 	disabled?: boolean
 	nyIdentValg?: NyIdent
+	eksisterendeNyPerson?: Option
 }
 
 export const PdlEksisterendePerson = ({
@@ -29,9 +31,12 @@ export const PdlEksisterendePerson = ({
 	idx,
 	disabled = false,
 	nyIdentValg = null,
+	eksisterendeNyPerson = null,
 }: PdlEksisterendePersonValues) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { gruppeId, antall } = opts
+	const antall = opts?.antall || 1
+	const { gruppeId } = useParams()
+
 	const isTestnorgeIdent = identFraTestnorge(opts)
 
 	const [identOptions, setIdentOptions] = useState<Array<Option>>([])
@@ -110,14 +115,20 @@ export const PdlEksisterendePerson = ({
 	}
 
 	const getFilteredOptionList = () => {
-		const eksisterendeIdent = opts.personFoerLeggTil?.pdlforvalter?.person?.ident
+		const eksisterendeIdent = opts?.personFoerLeggTil?.pdlforvalter?.person?.ident
+		let tmpOptions = []
 		// @ts-ignore
 		SelectOptionsOppslag.hentGruppeIdentOptions(gruppeId).then((response: [Option]) => {
-			setIdentOptions(
-				response?.filter((person) => {
-					return person.value !== eksisterendeIdent && filterOptions(person)
-				})
-			)
+			tmpOptions = response?.filter((person) => {
+				return person.value !== eksisterendeIdent && filterOptions(person)
+			})
+			if (
+				eksisterendeNyPerson &&
+				!tmpOptions.find((person) => person.value === eksisterendeNyPerson.value)
+			) {
+				tmpOptions.push(eksisterendeNyPerson)
+			}
+			setIdentOptions(tmpOptions)
 			setLoadingIdentOptions(false)
 		})
 	}
@@ -153,8 +164,8 @@ export const PdlEksisterendePerson = ({
 				/>
 			) : (
 				!loadingIdentOptions && (
-					<Alert variant={'info'} style={{ marginBottom: '15px' }}>
-						Det finnes ingen eksisterende personer i denne gruppen.
+					<Alert variant="info" size="small" style={{ marginBottom: '15px' }}>
+						Det finnes ingen eksisterende gyldige personer i denne gruppen.
 					</Alert>
 				)
 			)}

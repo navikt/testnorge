@@ -3,10 +3,18 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import _isEmpty from 'lodash/isEmpty'
 
 export const Arbeidsavtaler = ({ data }) => {
-	if (!data || data.length === 0) return null
+	if (!data || data.length === 0) {
+		return null
+	}
+
 	const detaljer = data[0]
+
+	if (_isEmpty(detaljer)) {
+		return null
+	}
 
 	return (
 		<React.Fragment>

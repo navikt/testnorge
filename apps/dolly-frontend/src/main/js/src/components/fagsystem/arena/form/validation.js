@@ -1,6 +1,8 @@
 import * as Yup from 'yup'
 import { messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import { isAfter, isBefore } from 'date-fns'
+import _get from 'lodash/get'
+import _isNil from 'lodash/isNil'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
 
@@ -10,6 +12,135 @@ const datoIkkeMellom = (nyDatoFra, gjeldendeDatoFra, gjeldendeDatoTil) => {
 		isAfter(new Date(nyDatoFra), new Date(gjeldendeDatoTil)) ||
 		isBefore(new Date(nyDatoFra), new Date(gjeldendeDatoFra))
 	)
+}
+
+export const getFoedselsdatoer = (values) => {
+	const personFoerLeggTil = values?.personFoerLeggTil
+	const importPersoner = values?.importPersoner
+	if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
+		return [values.pdldata.person.foedsel[0].foedselsdato]
+	} else if (personFoerLeggTil?.tpsf?.foedselsdato) {
+		return [personFoerLeggTil.tpsf.foedselsdato]
+	} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
+		const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
+			.map((foedsel) => foedsel.foedselsdato)
+			.sort((a, b) => new Date(b) - new Date(a))
+		return [foedselsdatoer?.[0]]
+	} else if (personFoerLeggTil?.pdl) {
+		const pdlPerson = personFoerLeggTil.pdl.hentPerson || personFoerLeggTil.pdl.person
+		return [pdlPerson?.foedsel?.[0]?.foedselsdato]
+	} else if (importPersoner) {
+		return importPersoner.map((person) => person?.data?.hentPerson?.foedsel?.[0]?.foedselsdato)
+	}
+	return []
+}
+
+const getFoedtFoer = (alder) => {
+	let foedtFoer = new Date()
+	foedtFoer.setFullYear(foedtFoer.getFullYear() - alder)
+	foedtFoer.setMonth(foedtFoer.getMonth() - 3)
+	return foedtFoer
+}
+
+const getFoedtEtter = (alder) => {
+	let foedtEtter = new Date()
+	foedtEtter.setFullYear(foedtEtter.getFullYear() - alder - 1)
+	return foedtEtter
+}
+
+// Vedtak/støtte må deles opp i vedtak til fylte 25 år og vedtak etter fylte 25 år.
+const overlapp25aarsdag = (fradato, tildato, values) => {
+	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
+	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	foedtEtter = foedtEtter ? new Date(foedtEtter) : null
+
+	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
+	if (!_isNil(alder)) {
+		foedtFoer = getFoedtFoer(alder)
+		foedtEtter = getFoedtEtter(alder)
+	}
+
+	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
+		const foedselsdatoer = getFoedselsdatoer(values)
+		const foedselsaar = _get(values, 'pdldata.person.foedsel[0].foedselsaar')
+		if (foedselsdatoer?.length > 0) {
+			for (let fdato of foedselsdatoer) {
+				let tjuefem = new Date(fdato)
+				tjuefem.setFullYear(tjuefem.getFullYear() + 25)
+				if (isBefore(fradato, tjuefem) && !isBefore(tildato, tjuefem)) {
+					return true
+				}
+			}
+			return false
+		} else if (!_isNil(foedselsaar)) {
+			foedtEtter = new Date(foedselsaar, 0, 1)
+			foedtFoer = new Date(foedselsaar, 11, 31)
+		} else {
+			foedtEtter = getFoedtEtter(60)
+			foedtFoer = getFoedtFoer(30)
+		}
+	}
+
+	if (_isNil(foedtFoer)) {
+		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
+		return isAfter(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
+	} else if (_isNil(foedtEtter)) {
+		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
+		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
+	} else {
+		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
+		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
+		return overlapperMedliste(fradato.toISOString(), tildato.toISOString(), [
+			{
+				fraDato: foedtEtter.toISOString(),
+				tilDato: foedtFoer.toISOString(),
+			},
+		])
+	}
+}
+
+// Vedtak/støtte må opphøre ved fylt 67.
+const erEtter67aarsdag = (fradato, tildato, values) => {
+	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
+	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	foedtEtter = foedtEtter ? new Date(foedtEtter) : null
+
+	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
+	if (!_isNil(alder)) {
+		foedtFoer = getFoedtFoer(alder)
+		foedtEtter = getFoedtEtter(alder)
+	}
+
+	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
+		const foedselsdatoer = getFoedselsdatoer(values)
+		const foedselsaar = _get(values, 'pdldata.person.foedsel[0].foedselsaar')
+		if (foedselsdatoer?.length > 0) {
+			for (let fdato of foedselsdatoer) {
+				let sisteDag = new Date(fdato)
+				sisteDag.setFullYear(sisteDag.getFullYear() + 67)
+				if (!isBefore(fradato, sisteDag) || isAfter(tildato, sisteDag)) {
+					return true
+				}
+			}
+			return false
+		} else if (!_isNil(foedselsaar)) {
+			let tidligsteDato = new Date(foedselsaar + 67, 0, 1)
+			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
+		} else {
+			let tidligsteDato = new Date()
+			tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
+			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
+		}
+	} else if (_isNil(foedtEtter)) {
+		foedtFoer.setFullYear(foedtFoer.getFullYear() + 67)
+		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
+	} else {
+		foedtEtter.setFullYear(foedtEtter.getFullYear() + 67)
+		foedtEtter.setDate(foedtEtter.getDate() + 1)
+		return !isBefore(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
+	}
 }
 
 const validTildato = (fradato, tildato) => {
@@ -133,13 +264,41 @@ export const validation = Yup.object({
 					const fradato = this.options.context.arenaforvalter.aap[0].fraDato
 					return validTildato(fradato, tildato)
 				})
+				.test(
+					'overlapper-ikke-25',
+					'Vedtak kan ikke overlappe dato person fyller 25',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
+					}
+				)
+				.test(
+					'avslutter-ved-67',
+					'Person kan ikke ha vedtak etter fylte 67 år',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.aap[0].fraDato
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
+					}
+				)
 				.nullable()
 				.required(messages.required),
 		})
 	),
 	aap115: Yup.array().of(
 		Yup.object({
-			fraDato: requiredDate,
+			fraDato: Yup.string()
+				.test(
+					'avslutter-ved-67',
+					'Person kan ikke ha vedtak etter fylte 67 år',
+					function validDate(fradato) {
+						const values = this.options.context
+						return !erEtter67aarsdag(new Date(fradato), null, values)
+					}
+				)
+				.nullable()
+				.required(messages.required),
 		})
 	),
 	arenaBrukertype: requiredString,
@@ -162,15 +321,33 @@ export const validation = Yup.object({
 			rettighetKode: Yup.string().required(messages.required),
 			fraDato: validFradato('dagpenger'),
 			tilDato: Yup.string()
-				.test('etter-fradato', 'Til-dato må være etter fra-dato.', function validDate(tildato) {
+				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
 					const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 					return validTildato(fradato, tildato)
 				})
 				.test(
 					'skaper-ikke-overlapp',
-					'Manglende til-dato skaper overlapp med annet vedtak.',
+					'Manglende til-dato skaper overlapp med annet vedtak',
 					function validDate(tildato) {
 						return ingenOverlappFraTildato(tildato, this.options.context)
+					}
+				)
+				.test(
+					'overlapper-ikke-25',
+					'Vedtak kan ikke overlappe dato person fyller 25',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
+						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
+					}
+				)
+				.test(
+					'avslutter-ved-67',
+					'Person kan ikke ha vedtak etter fylte 67 år',
+					function validDate(tildato) {
+						const values = this.options.context
+						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
+						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
 					}
 				)
 				.nullable(),

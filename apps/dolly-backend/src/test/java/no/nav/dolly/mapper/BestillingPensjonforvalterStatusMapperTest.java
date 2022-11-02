@@ -1,19 +1,20 @@
 package no.nav.dolly.mapper;
 
+import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsStatusRapport;
+import no.nav.dolly.domain.resultset.SystemTyper;
+import org.junit.jupiter.api.Test;
+
 import static java.util.Collections.singletonList;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.*;
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
+import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP_FORHOLD;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.hasSize;
-
-import org.junit.jupiter.api.Test;
-
-import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
 
 class BestillingPensjonforvalterStatusMapperTest {
 
@@ -103,7 +104,7 @@ class BestillingPensjonforvalterStatusMapperTest {
 
         RsStatusRapport statusRapport = BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap(singletonList(progress)).get(0);
 
-        assertThat(statusRapport.getStatuser().get(0).getMelding(), is(equalTo("Feil: PreparedStatementCallback; bad SQL grammar [INSERT INTO PEN.T_PERSON (FNR_FK")));
+        assertThat(statusRapport.getStatuser().get(0).getMelding(), is(equalTo("Feil: PreparedStatementCallback, bad SQL grammar [INSERT INTO PEN.T_PERSON (FNR_FK")));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(0).getMiljo(), is(equalTo("t4")));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(0).getIdenter(), contains(IDENT));
         assertThat(statusRapport.getStatuser().get(0).getDetaljert().get(1).getMiljo(), is(equalTo("q2")));

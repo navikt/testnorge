@@ -186,7 +186,9 @@ const Icon = ({
 	style = undefined,
 	className = undefined,
 }) => {
-	if (!icons?.[kind]) return null
+	if (!icons?.[kind]) {
+		return null
+	}
 
 	const cssClass = cn('svg-icon', `svg-icon-${kind}`, className)
 	const styleObj = Object.assign({ width: px(size), height: px(size) }, style)

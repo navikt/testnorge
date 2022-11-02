@@ -7,7 +7,9 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Adressevalg } from '~/components/fagsystem/tpsf/visning/partials/Adressevalg'
 
 export const Partner = ({ data }) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
 	const SivilstandVisning = ({ forhold, idx }) => {
 		return (

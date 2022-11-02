@@ -15,21 +15,21 @@ import { SivilstandVisning } from '~/components/fagsystem/pdlf/visning/partials/
 import { ForelderBarnRelasjonVisning } from '~/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
 import { DoedfoedtBarnVisning } from '~/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
-import { VergemaalVisning } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
+import { Vergemaal } from '~/components/fagsystem/pdlf/visning/partials/Vergemaal'
 import { IdenthistorikkVisning } from '~/components/fagsystem/pdlf/visning/partials/Identhistorikk'
 import { DeltBosted } from '~/components/fagsystem/pdlf/visning/partials/DeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
 import { Nasjonalitet } from '~/components/fagsystem/pdlf/visning/partials/Nasjonalitet'
 import { Persondetaljer } from '~/components/fagsystem/pdlf/visning/partials/Persondetaljer'
 import {
-	TpsfIdenthistorikk,
 	MidlertidigAdresse,
-	TpsfPersoninfo,
 	Postadresse,
 	Relasjoner,
-	TpsfVergemaal,
-	TpsfNasjonalitet,
 	TpsfBoadresse,
+	TpsfIdenthistorikk,
+	TpsfNasjonalitet,
+	TpsfPersoninfo,
+	TpsfVergemaal,
 } from '~/components/fagsystem/tpsf/visning/partials'
 import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
@@ -44,8 +44,12 @@ export const PdlfVisning = ({
 	environments,
 	master,
 }) => {
-	if (loading) return <Loading label="Laster PDL-data" />
-	if (!data && !tpsfData) return null
+	if (loading) {
+		return <Loading label="Laster PDL-data" />
+	}
+	if (!data && !tpsfData) {
+		return null
+	}
 
 	const ident = data ? data.person?.ident : tpsfData?.ident
 	const tpsMessaging = TpsMessagingData(ident, environments)
@@ -71,7 +75,12 @@ export const PdlfVisning = ({
 							tmpPersoner={tmpPdlforvalter}
 							ident={ident}
 						/>
-						<VergemaalVisning data={data?.person?.vergemaal} relasjoner={data?.relasjoner} />
+						<Vergemaal
+							data={data?.person?.vergemaal}
+							tmpPersoner={tmpPdlforvalter}
+							ident={ident}
+							relasjoner={data?.relasjoner}
+						/>
 						<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
 						<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 						<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />

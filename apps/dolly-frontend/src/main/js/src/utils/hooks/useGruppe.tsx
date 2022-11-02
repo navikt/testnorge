@@ -2,8 +2,17 @@ import useSWR from 'swr'
 import { fetcher } from '~/api'
 
 const getGruppeUrl = `/dolly-backend/api/v1/gruppe`
-const getPaginertGruppeUrl = (gruppeId: string, pageNo: number, pageSize: number) =>
-	`${getGruppeUrl}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}`
+const getPaginertGruppeUrl = (
+	gruppeId: string,
+	pageNo: number,
+	pageSize: number,
+	sortKolonne?: string,
+	sortRetning?: string
+) => {
+	const sorting =
+		sortKolonne && sortRetning ? `&sortRetning=${sortRetning}&sortKolonne=${sortKolonne}` : ''
+	return `${getGruppeUrl}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}${sorting}`
+}
 
 export type Gruppe = {
 	erLaast: boolean
@@ -19,7 +28,14 @@ export type Gruppe = {
 	tags: string[]
 }
 
-export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoRefresh = false) => {
+export const useGruppeById = (
+	gruppeId: string,
+	pageNo = 0,
+	pageSize = 10,
+	autoRefresh = false,
+	sortKolonne = null,
+	sortRetning = null
+) => {
 	if (!gruppeId) {
 		return {
 			loading: false,
@@ -27,7 +43,7 @@ export const useGruppeById = (gruppeId: string, pageNo = 0, pageSize = 10, autoR
 		}
 	}
 	const { data, error } = useSWR<Gruppe, Error>(
-		getPaginertGruppeUrl(gruppeId, pageNo, pageSize),
+		getPaginertGruppeUrl(gruppeId, pageNo, pageSize, sortKolonne, sortRetning),
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 2000 : null,

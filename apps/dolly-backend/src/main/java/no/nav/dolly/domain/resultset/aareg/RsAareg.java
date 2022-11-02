@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,7 +29,7 @@ public class RsAareg {
 
     private String arbeidsforholdId;
 
-    private RsPeriodeAareg ansettelsesPeriode;
+    private RsAnsettelsesPeriode ansettelsesPeriode;
 
     private List<RsAntallTimerIPerioden> antallTimerForTimeloennet;
 
@@ -43,6 +44,9 @@ public class RsAareg {
     private List<RsUtenlandsopphold> utenlandsopphold;
 
     private RsAktoer arbeidsgiver;
+
+    @Schema(description = "Angir periode oppdateringen gjelder fra")
+    private YearMonth navArbeidsforholdPeriode;
 
     private List<RsAmeldingRequest> amelding;
 

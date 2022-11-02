@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -39,16 +38,16 @@ public final class BestillingAaregStatusMapper {
         return errorEnvIdents.isEmpty() ? emptyList() :
                 singletonList(RsStatusRapport.builder().id(AAREG).navn(AAREG.getBeskrivelse())
                         .statuser(errorEnvIdents.entrySet().stream().map(status ->
-                                RsStatusRapport.Status.builder()
-                                        .melding(status.getKey())
-                                        .detaljert(status.getValue().entrySet().stream().map(miljo ->
-                                                RsStatusRapport.Detaljert.builder()
-                                                        .miljo(miljo.getKey())
-                                                        .identer(new ArrayList<>(miljo.getValue()))
-                                                        .build())
-                                                .collect(Collectors.toList()))
-                                        .build())
-                                .collect(Collectors.toList()))
+                                        RsStatusRapport.Status.builder()
+                                                .melding(status.getKey().replace(";", ","))
+                                                .detaljert(status.getValue().entrySet().stream().map(miljo ->
+                                                                RsStatusRapport.Detaljert.builder()
+                                                                        .miljo(miljo.getKey())
+                                                                        .identer(new ArrayList<>(miljo.getValue()))
+                                                                        .build())
+                                                        .toList())
+                                                .build())
+                                .toList())
                         .build());
     }
 }

@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPS_MESSAGING;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -80,7 +81,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     .navn(TPS_MESSAGING.getBeskrivelse())
                     .statuser(statusMap.entrySet().stream()
                             .map(status -> RsStatusRapport.Status.builder()
-                                    .melding(status.getKey())
+                                    .melding(decodeMsg(status.getKey()))
                                     .detaljert(status.getValue().entrySet().stream()
                                             .map(miljoIdenter -> RsStatusRapport.Detaljert.builder()
                                                     .miljo(miljoIdenter.getKey())

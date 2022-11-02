@@ -1131,7 +1131,7 @@ const mapAareg = (bestillingData, data) => {
 			{
 				label: 'Fartsområde',
 				value: arbeidsforhold.fartoy?.[0].fartsomraade,
-				apiKodeverkId: ArbeidKodeverk.Fartsområder,
+				apiKodeverkId: ArbeidKodeverk.Fartsomraader,
 			},
 			obj(
 				'Perioder med antall timer for timelønnet',
@@ -1212,7 +1212,7 @@ const mapSigrunStub = (bestillingData, data) => {
 					numberHeader: `Inntekt ${i + 1}`,
 				},
 				obj('År', inntekt.inntektsaar),
-				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Beløp', inntekt.verdi),
+				obj(inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi', inntekt.verdi),
 				obj('Tjeneste', Formatters.uppercaseAndUnderscoreToCapitalized(inntekt.tjeneste)),
 				{
 					label: 'Grunnlag (Fastlands-Norge)',
