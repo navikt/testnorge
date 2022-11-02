@@ -349,7 +349,7 @@ public class PersonExcelService {
     private List<Object[]> getPersondataRowContents(List<Testident> hovedpersoner) {
 
         var start = System.currentTimeMillis();
-        var personer = new ArrayList<>(getPersoner(hovedpersoner.stream().map(testident -> testident.getIdent()).toList(), hovedpersoner));
+        var personer = new ArrayList<>(getPersoner(hovedpersoner.stream().map(Testident::getIdent).toList(), hovedpersoner));
 
         log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         start = System.currentTimeMillis();
@@ -361,7 +361,7 @@ public class PersonExcelService {
                                         getIdenterForRelasjon(personer, FULLMEKTIG)
                         )
                         .flatMap(Collection::stream)
-                        .filter(ident -> !hovedpersoner.stream().anyMatch(person -> person.getIdent().equals(ident)))
+                        .filter(ident -> hovedpersoner.stream().noneMatch(person -> person.getIdent().equals(ident)))
                         .distinct()
                         .toList(), hovedpersoner)
         );
@@ -447,7 +447,7 @@ public class PersonExcelService {
             return "";
         }
 
-        return testident.get().getIBruk() ? "Ja" : "Nei";
+        return Boolean.TRUE.equals(testident.get().getIBruk()) ? "Ja" : "Nei";
     }
 
     private static String getBeskrivelse(PdlPersonBolk.PersonBolk person, List<Testident> identer) {
