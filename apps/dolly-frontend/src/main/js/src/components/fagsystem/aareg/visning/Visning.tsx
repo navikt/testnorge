@@ -68,12 +68,16 @@ export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
 
 	const manglerFagsystemdata = sortedData?.length < 1
 
+	if (ident && manglerFagsystemdata) {
+		return null
+	}
+
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
-					Kunne ikke hente arbeidsforhold-data på person
+					Fant ikke arbeidsforhold-data på person i dette miljøet
 				</Alert>
 			) : (
 				<ErrorBoundary>
