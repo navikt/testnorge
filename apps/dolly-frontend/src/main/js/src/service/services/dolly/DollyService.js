@@ -152,6 +152,10 @@ export default {
 		return Request.get(Endpoints.personoppslagMange(identer))
 	},
 
+	getArbeidsforhold(ident, miljoe) {
+		return Request.get(Endpoints.getArbeidsforhold(ident, miljoe))
+	},
+
 	getPersonnavn() {
 		return Request.get(Endpoints.getPersonnavn())
 	},

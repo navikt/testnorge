@@ -31,9 +31,7 @@ const Statsborgerskap = ({ statsborgerskap, sprak }) => {
 }
 
 const InnvandretUtvandret = ({ data }) => {
-	if (!data || data?.length < 1) {
-		return null
-	}
+	if (!data || data?.length < 1) return null
 	return (
 		<ErrorBoundary>
 			<DollyFieldArray data={data} header={'Innvandret/utvandret'} nested>

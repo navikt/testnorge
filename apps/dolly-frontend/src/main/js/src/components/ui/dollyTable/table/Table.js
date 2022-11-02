@@ -33,9 +33,7 @@ const getRowKey = (row, columns) => {
 }
 
 const getIconType = (iconItem, row) => {
-	if (!iconItem) {
-		return null
-	}
+	if (!iconItem) return null
 	if (row.erLaast) {
 		iconItem = <LaastGruppeIconItem />
 	}
@@ -80,9 +78,7 @@ export default function Table({
 				</div>
 			)}
 			{data.map((row, rowIdx) => {
-				if (!row) {
-					return null
-				}
+				if (!row) return null
 				const navLink = onRowClick ? onRowClick(row) : null
 				const expandComponent = onExpand ? onExpand(row) : null
 				const iconType = getIconType(iconItem, row)

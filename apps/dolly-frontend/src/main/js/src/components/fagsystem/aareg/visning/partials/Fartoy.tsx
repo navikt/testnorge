@@ -3,15 +3,13 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
 type FartoyProps = {
-	data: {
-		skipsregister: string
-		skipstype: string
-		fartsomraade: string
-	}
+	skipsregister: string
+	skipstype: string
+	fartsomraade: string
 }
 
 export const Fartoy = ({ data }: FartoyProps) => {
-	if (!data) {
+	if (!data || data.length === 0) {
 		return null
 	}
 
@@ -32,7 +30,7 @@ export const Fartoy = ({ data }: FartoyProps) => {
 				<TitleValue
 					title="Fartsområde"
 					value={data.fartsomraade}
-					kodeverk={ArbeidKodeverk.Fartsomraader}
+					kodeverk={ArbeidKodeverk.Fartsområder}
 				/>
 			</div>
 		</>

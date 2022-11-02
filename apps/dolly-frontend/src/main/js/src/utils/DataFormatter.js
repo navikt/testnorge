@@ -81,9 +81,7 @@ Formatters.kjonnToString = (kjonn = '', barn = false) => {
 }
 
 Formatters.adressetypeToString = (adressetype) => {
-	if (!adressetype) {
-		return null
-	}
+	if (!adressetype) return null
 	switch (adressetype) {
 		case 'MATR':
 			return 'Matrikkeladresse'
@@ -101,9 +99,7 @@ Formatters.adressetypeToString = (adressetype) => {
 }
 
 Formatters.arrayToString = (array, separator = ',') => {
-	if (!array) {
-		return null
-	}
+	if (!array) return null
 
 	return array.reduce((accumulator, nextString, idx) => {
 		return `${accumulator}${accumulator ? separator : ''}${idx === 0 ? '' : ' '}${
@@ -113,17 +109,13 @@ Formatters.arrayToString = (array, separator = ',') => {
 }
 
 Formatters.omraaderArrayToString = (array) => {
-	if (!array) {
-		return null
-	}
+	if (!array) return null
 
 	return Formatters.arrayToString(array).replace('*', '* (Alle)')
 }
 
 Formatters.uppercaseAndUnderscoreToCapitalized = (value) => {
-	if (!value) {
-		return null
-	}
+	if (!value) return null
 	const clean = _startCase(value)
 	return _capitalize(clean)
 }
@@ -137,9 +129,7 @@ Formatters.allCapsToCapitalized = (value) => {
 }
 
 Formatters.codeToNorskLabel = (value) => {
-	if (!value) {
-		return null
-	}
+	if (!value) return null
 	return Formatters.uppercaseAndUnderscoreToCapitalized(value)
 		.replace('oe', 'ø')
 		.replace('Oe', 'Ø')
@@ -162,9 +152,7 @@ Formatters.oversettBoolean = (value) => {
 }
 
 Formatters.gtTypeLabel = (gtType) => {
-	if (!gtType) {
-		return null
-	}
+	if (!gtType) return null
 
 	switch (gtType) {
 		case 'KNR':

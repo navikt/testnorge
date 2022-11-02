@@ -97,9 +97,7 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 
 					return order.map((type) => {
 						const category = filteredEnvironments[type]
-						if (!category) {
-							return null
-						}
+						if (!category) return null
 
 						return (
 							<fieldset key={type} name={`Liste over ${type}-miljøer`}>

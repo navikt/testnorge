@@ -72,9 +72,7 @@ const _renderBestillingsDetaljer = (data) => {
 }
 
 const _renderStaticValue = (attributt, key) => {
-	if (!attributt.value) {
-		return null
-	}
+	if (!attributt.value) return null
 	return (
 		<TitleValue
 			key={key}
@@ -89,9 +87,7 @@ const _renderStaticValue = (attributt, key) => {
 const RenderExpandablePanel = ({ attributt, key }) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
-	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) {
-		return null
-	}
+	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) return null
 
 	return (
 		<div className="flexbox--full-width" key={key}>

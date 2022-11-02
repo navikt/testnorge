@@ -36,9 +36,7 @@ export const FieldArrayRemoveButton = ({ onClick }) => (
 )
 
 const DeleteButton = ({ onClick }) => {
-	if (!onClick) {
-		return null
-	}
+	if (!onClick) return null
 	return <Button kind="trashcan" onClick={onClick} title="Fjern" />
 }
 

@@ -2,7 +2,6 @@ import useSWR from 'swr'
 import { fetcher } from '~/api'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
-import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
@@ -10,11 +9,8 @@ const getOrganisasjonerUrl = (brukerId: string) =>
 const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling/bestillingsstatus?brukerId=${brukerId}`
 
-const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
+const getOrganisasjonBestillingStatusUrl = (bestillingId: number) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
-
-const getArbeidsforholdUrl = (miljoe: string) =>
-	`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
 
 export type Bestillingsstatus = {
 	id: number
@@ -26,7 +22,6 @@ export type Bestillingsstatus = {
 	gruppeId: number
 	ferdig: boolean
 	feil?: string
-	sistOppdatert: Date
 	status: Bestillingsinformasjon[]
 	systeminfo: string
 	stoppet: boolean
@@ -99,26 +94,6 @@ export const useOrganisasjonBestillingStatus = (
 
 	return {
 		bestillingStatus: data,
-		loading: !error && !data,
-		error: error,
-	}
-}
-
-export const useArbeidsforhold = (ident: string, miljoe: string) => {
-	if (!ident || !miljoe) {
-		return {
-			loading: false,
-			error: 'Ident eller miljø mangler!',
-		}
-	}
-
-	const { data, error } = useSWR<Arbeidsforhold[], Error>(
-		[getArbeidsforholdUrl(miljoe), { 'Nav-Personident': ident }],
-		fetcher
-	)
-
-	return {
-		arbeidsforhold: data,
 		loading: !error && !data,
 		error: error,
 	}

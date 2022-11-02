@@ -10,19 +10,13 @@ import './Header.less'
 import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 import { getDefaultImage } from '~/pages/minSide/Profil'
-import Loading from '~/components/ui/loading/Loading'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 	const {
 		currentBruker: { brukertype },
-		loading,
 	} = useCurrentBruker()
-
-	if (loading) {
-		return <Loading label="Laster bruker" panel />
-	}
 
 	const bankidBruker = brukertype === 'BANKID'
 	return (

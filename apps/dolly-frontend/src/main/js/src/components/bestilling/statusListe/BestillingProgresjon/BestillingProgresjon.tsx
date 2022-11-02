@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import Loading from '~/components/ui/loading/Loading'
 import { Line } from 'rc-progress'
 import NavButton from '~/components/ui/button/NavButton/NavButton'
@@ -127,13 +127,13 @@ export const BestillingProgresjon = ({
 
 	const { percentFinished, tittel, description } = calculateStatus()
 
-	if (percentFinished === 100) {
+	if (percentFinished >= 100) {
 		onFinishBestilling(bestilling)
 		return null
 	}
 
 	return (
-		<div className="bestilling-status" key={bestilling.id}>
+		<Fragment>
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}
@@ -157,6 +157,6 @@ export const BestillingProgresjon = ({
 					</NavButton>
 				</div>
 			)}
-		</div>
+		</Fragment>
 	)
 }

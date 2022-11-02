@@ -7,9 +7,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
 export const FalskIdentitet = ({ data }) => {
-	if (!data) {
-		return null
-	}
+	if (!data) return null
 	const erListe = Array.isArray(data)
 
 	const FalskIdentVisning = ({ enhet, id }) => {

@@ -21,9 +21,7 @@ export const Barn = ({ data, type }) => {
 		}
 	}, [])
 
-	if (!data) {
-		return null
-	}
+	if (!data) return null
 
 	const erDoedfoedt = data.identtype === 'FDAT'
 

@@ -6,9 +6,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const Utenlandsopphold = ({ data }) => {
-	if (!data) {
-		return null
-	}
+	if (!data) return null
 
 	return (
 		<React.Fragment>

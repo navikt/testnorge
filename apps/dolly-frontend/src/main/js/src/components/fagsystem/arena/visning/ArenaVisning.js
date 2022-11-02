@@ -10,9 +10,7 @@ import { DollyApi } from '~/service/Api'
 import { Alert } from '@navikt/ds-react'
 
 const Visning = ({ data }) => {
-	if (!data) {
-		return null
-	}
+	if (!data) return null
 	return (
 		<>
 			<TitleValue title="Brukertype" value={data.brukertype} />
@@ -93,12 +91,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 			mountedRef.current = false
 		}
 	}, [])
-	if (loading || tagsloading) {
-		return <Loading label="Laster arena-data" />
-	}
-	if (!data && !harArenasyntTag) {
-		return null
-	}
+	if (loading || tagsloading) return <Loading label="Laster arena-data" />
+	if (!data && !harArenasyntTag) return null
 
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
@@ -187,9 +181,7 @@ function fyllVisningData(bestilling, visningData) {
 }
 
 function servicebehovKodeTilBeskrivelse(value) {
-	if (!value) {
-		return null
-	}
+	if (!value) return null
 	switch (value) {
 		case 'IKVAL':
 			return 'IKVAL - Standardinnsats'

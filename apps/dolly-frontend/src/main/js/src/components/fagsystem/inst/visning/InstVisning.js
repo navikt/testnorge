@@ -19,12 +19,8 @@ const getSortedData = (data) => {
 }
 
 export const InstVisning = ({ data, loading }) => {
-	if (loading) {
-		return <Loading label="Laster inst data" />
-	}
-	if (!data) {
-		return null
-	}
+	if (loading) return <Loading label="Laster inst data" />
+	if (!data) return null
 
 	const sortedData = getSortedData(data)
 	const manglerFagsystemdata = sortedData?.length < 1
