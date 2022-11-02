@@ -28,7 +28,6 @@ import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisnin
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { getBestillingsListe } from '~/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
@@ -92,6 +91,22 @@ export const PersonVisning = ({
 
 	const bestillingListe = getBestillingsListe(bestillinger, bestillingIdListe)
 	const bestilling = bestillinger?.[bestillingIdListe?.[0]]
+
+	const bestilteMiljoer = useAsync(async () => {
+		const miljoer = []
+		await Promise.allSettled(
+			bestillingIdListe.map((bestillingId) => {
+				DollyApi.getBestilling(bestillingId).then((response) => {
+					response?.data?.environments?.forEach((miljo) => {
+						if (!miljoer.includes(miljo)) {
+							miljoer.push(miljo)
+						}
+					})
+				})
+			})
+		)
+		return miljoer
+	}, [])
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -256,7 +271,12 @@ export const PersonVisning = ({
 				)}
 				<AaregVisning liste={aareg} loading={loading.aareg} />
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
-				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
+				<PensjonVisning
+					data={pensjonforvalter}
+					loading={loading.pensjonforvalter}
+					bestillingIdListe={bestillingIdListe}
+					bestilteMiljoer={bestilteMiljoer}
+				/>
 				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
