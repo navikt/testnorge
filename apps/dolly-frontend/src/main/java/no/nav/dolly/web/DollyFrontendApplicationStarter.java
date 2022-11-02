@@ -23,7 +23,6 @@ import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
 import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
 import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
 import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavTestnorgeAaregProxyProperties;
 import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
@@ -74,7 +73,6 @@ public class DollyFrontendApplicationStarter {
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavAaregisterProxyProperties testnavAaregisterProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
-    private final TestnavTestnorgeAaregProxyProperties testnavTestnorgeAaregProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
     private final TestnavInstServiceProperties testnavInstServiceProperties;
     private final TestnavSigrunstubProxyProperties testnavSigrunstubProxyProperties;
@@ -115,7 +113,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavAaregisterProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavInstServiceProperties))
-                .route(createRoute(testnavTestnorgeAaregProxyProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
