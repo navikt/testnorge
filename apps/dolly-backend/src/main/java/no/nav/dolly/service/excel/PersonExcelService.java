@@ -361,7 +361,6 @@ public class PersonExcelService {
                                         getIdenterForRelasjon(personer, FULLMEKTIG)
                         )
                         .flatMap(Collection::stream)
-                        // .filter(ident -> !hovedpersoner.contains(ident))
                         .filter(ident -> !hovedpersoner.stream().anyMatch(person -> person.getIdent().equals(ident)))
                         .distinct()
                         .toList(), hovedpersoner)
