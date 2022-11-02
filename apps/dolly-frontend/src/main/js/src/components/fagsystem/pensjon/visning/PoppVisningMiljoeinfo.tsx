@@ -2,7 +2,6 @@ import React from 'react'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
 import { DollyApi } from '~/service/Api'
 import { useAsync } from 'react-use'
-import Loading from '~/components/ui/loading/Loading'
 import { PensjonvisningMiljo } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 
 export const PoppVisningMiljoeinfo = ({ miljoer, ident, bestilteMiljoer }) => {

@@ -19,5 +19,9 @@ export const ArbeidsforholdMiljoeVisning = ({ ident, miljoe }: PersonMiljoeinfoP
 		return <Loading label="Laster miljøer" fullpage />
 	}
 
-	return <AaregVisning liste={arbeidsforhold} />
+	return (
+		<div className="boks">
+			<AaregVisning liste={arbeidsforhold} />
+		</div>
+	)
 }
