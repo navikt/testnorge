@@ -9,7 +9,7 @@ import { runningTestcafe } from '~/service/services/Request'
 const fetchRetry = fetch_retry(originalFetch)
 
 export const fetcher = (url, headers: Record<string, string>) =>
-	axios.get(url, { headers: headers }).then((res) => {
+	axios.get(url).then((res) => {
 		if (!res.statusText.includes('OK') && !runningTestcafe()) {
 			if (res.status === 401 || res.status === 403) {
 				console.error('Auth feilet, logger ut bruker')
