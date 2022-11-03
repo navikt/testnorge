@@ -234,7 +234,7 @@ public class DollyBestillingService {
         if (StringUtils.isNotBlank(bestilling.getPdlImport())) {
             return "testnorge import";
         }
-        if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
+        if (StringUtils.isNotBlank(bestilling.getGjenopprettetFraIdent())) {
             return "opprett fra identer";
         }
         if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
