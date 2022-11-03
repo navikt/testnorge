@@ -49,9 +49,27 @@ SigrunstubForm.validation = {
 								values.sigrunstub[index].grunnlag.length > 0 ||
 								values.sigrunstub[index].svalbardGrunnlag.length > 0
 							)
-						} else return true
+						} else {
+							return true
+						}
 					}),
-				inntektsaar: Yup.number().integer('Ugyldig årstall').required('Tast inn et gyldig år'),
+				inntektsaar: Yup.number()
+					.integer('Ugyldig årstall')
+					.test('eneste-aarstall', 'Max en inntekt per år', function checkAarstall(val) {
+						const values = this.options.context
+						const nyeAarstall = values?.sigrunstub?.map((inntekt) => inntekt.inntektsaar)
+						const index = nyeAarstall?.findIndex((aarstall) => aarstall === val)
+						nyeAarstall.splice(index, 1)
+
+						const dataFoer = values?.personFoerLeggTil?.sigrunstub
+						const tidligereAarstall = dataFoer?.map((inntekt) => {
+							const grunnlag = inntekt.grunnlag?.map((g) => g.inntektsaar)
+							const svalbard = inntekt.svalbardGrunnlag?.map((g) => g.inntektsaar)
+							return grunnlag ? grunnlag.concat(svalbard ? svalbard : []) : svalbard
+						})?.[0]
+						return !nyeAarstall?.includes(val) && !tidligereAarstall?.includes(val + '')
+					})
+					.required('Tast inn et gyldig år'),
 				svalbardGrunnlag: Yup.array().of(
 					Yup.object({
 						tekniskNavn: Yup.string().required('Velg en type inntekt'),
