@@ -225,13 +225,6 @@ public class DollyBestillingService {
     }
 
     public static String getBestillingType(Bestilling bestilling) {
-        /*
-        opprettet_fra_id = gjenopprett fra bestilling
-        OPPRETT_FRA_IDENTER = gjenopprett fra person list (gjenopprett person)
-        PDL_IMPORT = importer personer fra testnorge
-        opprett_fra_gruppe = gjenopprett fra gruppe
-        opprett_fra_identer = bestilling fra eksisterende identer
-         */
         if (bestilling.getOpprettetFraId() != null) {
             return "gjenopprett fra bestilling " + bestilling.getOpprettetFraId();
         }
