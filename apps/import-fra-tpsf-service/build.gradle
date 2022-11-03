@@ -57,7 +57,9 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation ('org.springframework.boot:spring-boot-starter-security') {
+        exclude group: 'com.ibm.mq', module: 'mq-jms-spring-boot-starter'
+    }
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'io.netty:netty-transport-native-epoll' // See above exclusion.
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
@@ -68,7 +70,6 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'com.ibm.mq:mq-jms-spring-boot-starter:2.5.7'
     implementation 'javax.xml.bind:jaxb-api'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'

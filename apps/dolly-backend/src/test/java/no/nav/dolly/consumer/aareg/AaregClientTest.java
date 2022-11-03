@@ -1,29 +1,30 @@
 package no.nav.dolly.consumer.aareg;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aareg.AaregClient;
 import no.nav.dolly.bestilling.aareg.AaregConsumer;
-import no.nav.dolly.bestilling.aareg.domain.AaregOpprettRequest;
-import no.nav.dolly.bestilling.aareg.domain.AaregResponse;
-import no.nav.dolly.bestilling.aareg.domain.Aktoer;
-import no.nav.dolly.bestilling.aareg.domain.Arbeidsforhold;
-import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdResponse;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
+import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import org.junit.jupiter.api.Disabled;
+import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
+import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
+import no.nav.testnav.libs.dto.aareg.v1.Person;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -34,9 +35,8 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
-public class AaregClientTest {
+class AaregClientTest {
 
     private static final String IDENT = "111111111111";
     private static final String ENV = "u2";
@@ -48,109 +48,133 @@ public class AaregClientTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private AccessToken accessToken;
+
     @InjectMocks
     private AaregClient aaregClient;
 
+    @BeforeEach
+    void setup() {
+
+        when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+    }
+
     @Test
-    public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
-        Map<String, String> status = new HashMap<>();
-        status.put(ENV, "OK");
-        AaregResponse aaregResponse = AaregResponse.builder()
-                .statusPerMiljoe(status)
-                .build();
+    void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any())).thenReturn(singletonList(new Arbeidsforhold()));
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(emptyList());
-        when(aaregConsumer.opprettArbeidsforhold(any(AaregOpprettRequest.class))).thenReturn(aaregResponse);
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
+        when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+                .thenReturn(Flux.just(new ArbeidsforholdRespons()));
 
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
-        request.setEnvironments(singletonList("u2"));
+        request.setEnvironments(singletonList(ENV));
         aaregClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT)
                         .opprettetIPDL(true).build(), new BestillingProgress(), false);
 
-        verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
+        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken));
     }
 
     @Test
-    public void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
-        Map<String, String> status = new HashMap<>();
-        status.put(ENV, "OK");
-        AaregResponse aaregResponse = AaregResponse.builder()
-                .statusPerMiljoe(status)
-                .build();
+    void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
 
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any())).thenReturn(singletonList(new Arbeidsforhold()));
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(emptyList());
-        when(aaregConsumer.opprettArbeidsforhold(any(AaregOpprettRequest.class))).thenReturn(aaregResponse);
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
+        when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+                .thenReturn(Flux.just(new ArbeidsforholdRespons()));
 
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
-        request.setEnvironments(singletonList("u2"));
+        request.setEnvironments(singletonList(ENV));
         aaregClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT)
                         .opprettetIPDL(true).build(), new BestillingProgress(), false);
-        verify(aaregConsumer).opprettArbeidsforhold(any(AaregOpprettRequest.class));
+        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken));
     }
 
     @Test
-    public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_returnsOK() {
+    void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(singletonList(buildArbeidsforhold(false)));
-
-        BestillingProgress progress = new BestillingProgress();
-
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
+                .arbeidsforholdId("1")
                 .build()));
-        request.setEnvironments(singletonList("u2"));
+        request.setEnvironments(singletonList(ENV));
+
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(
+                buildArbeidsforhold(false)));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any(MappingContext.class)))
+                .thenReturn(buildArbeidsforhold(false)
+                        .getEksisterendeArbeidsforhold());
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+                .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
+                        .miljo(ENV)
+                        .arbeidsforholdId("1")
+                        .build()));
+
+        var progress = new BestillingProgress();
+
         aaregClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT)
                         .opprettetIPDL(true).build(), progress, false);
 
-        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=0$OK")));
+        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
 
     @Test
-    public void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnes_sjekkReturStatus() {
+    void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerOrganisasjon_returnsOK() {
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV)).thenReturn(singletonList(buildArbeidsforhold(false)));
-
-        BestillingProgress progress = new BestillingProgress();
-
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
-                .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
+                .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
+                .arbeidsforholdId("1")
                 .build()));
-        request.setEnvironments(singletonList("u2"));
+        request.setEnvironments(singletonList(ENV));
+
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+                .thenReturn(Mono.just(buildArbeidsforhold(true)));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any(MappingContext.class)))
+                .thenReturn(buildArbeidsforhold(true)
+                        .getEksisterendeArbeidsforhold());
+        when(aaregConsumer.endreArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
+                .thenReturn(Flux.just(ArbeidsforholdRespons.builder()
+                        .miljo(ENV)
+                        .arbeidsforholdId("1")
+                        .build()));
+
+        var progress = new BestillingProgress();
+
         aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                 .opprettetIPDL(true).build(), progress, false);
 
-        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=0$OK")));
+        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
 
-    private ArbeidsforholdResponse buildArbeidsforhold(boolean isOrgnummer) {
+    private ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
-        return ArbeidsforholdResponse.builder()
-                .arbeidstaker(ArbeidsforholdResponse.Arbeidstaker.builder()
-                        .offentligIdent(IDENT)
-                        .build())
-                .arbeidsgiver(isOrgnummer ?
-                        ArbeidsforholdResponse.Arbeidsgiver.builder()
-                                .type(Aktoer.ORGANISASJON)
-                                .organisasjonsnummer(ORGNUMMER)
-                                .build() :
-                        ArbeidsforholdResponse.Arbeidsgiver.builder()
-                                .type(Aktoer.PERSON)
-                                .offentligIdent(IDENT)
-                                .build())
-                .arbeidsavtaler(singletonList(ArbeidsforholdResponse.Arbeidsavtale.builder()
-                        .yrke("121232")
-                        .arbeidstidsordning("nada")
-                        .build()))
-                .arbeidsforholdId("1")
+        return ArbeidsforholdRespons.builder()
+                .eksisterendeArbeidsforhold(singletonList(
+                        Arbeidsforhold.builder()
+                                .arbeidstaker(Person.builder()
+                                        .offentligIdent(IDENT)
+                                        .build())
+                                .arbeidsgiver(isOrgnummer ?
+                                        Organisasjon.builder()
+                                                .organisasjonsnummer(ORGNUMMER)
+                                                .build() :
+                                        Person.builder()
+                                                .offentligIdent(IDENT)
+                                                .build())
+                                .arbeidsavtaler(singletonList(OrdinaerArbeidsavtale.builder()
+                                        .yrke("121232")
+                                        .arbeidstidsordning("nada")
+                                        .build()))
+                                .arbeidsforholdId("1")
+                                .build()))
                 .build();
     }
 }

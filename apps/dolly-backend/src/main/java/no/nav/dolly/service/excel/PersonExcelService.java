@@ -7,6 +7,7 @@ import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -53,8 +54,8 @@ public class PersonExcelService {
 
     private static final Object[] HEADER = {"Ident", "Identtype", "Fornavn", "Etternavn", "Alder", "Kjønn", "Foedselsdato",
             "Dødsdato", "Personstatus", "Statsborgerskap", "Adressebeskyttelse", "Bostedsadresse", "Kontaktadresse",
-            "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak"};
-    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14};
+            "Oppholdsadresse", "Sivilstand", "Partner", "Barn", "Foreldre", "Verge", "Fullmektig", "Sikkerhetstiltak", "Brukt", "Beskrivelse"};
+    private static final Integer[] COL_WIDTHS = {14, 10, 20, 20, 6, 8, 12, 12, 18, 20, 20, 25, 25, 25, 25, 14, 14, 14, 14, 14, 14, 14, 20};
     private static final DateTimeFormatter NORSK_DATO = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String DUAL_FMT = "%s %s";
     private static final String ADR_UTLAND_FMT = "%s (%s)";
@@ -324,7 +325,7 @@ public class PersonExcelService {
     }
 
     public Mono<Void> preparePersonSheet(XSSFWorkbook workbook,
-                                         List<String> identer) {
+                                         List<Testident> identer) {
 
         var sheet = workbook.createSheet(PERSON_FANE);
         var rows = getPersondataRowContents(identer);
@@ -345,23 +346,31 @@ public class PersonExcelService {
         return Mono.empty();
     }
 
-    private List<Object[]> getPersondataRowContents(List<String> hovedpersoner) {
+    private List<String> identList(List<Testident> hovedpersoner) {
+        return hovedpersoner.stream()
+                .map(Testident::getIdent)
+                .toList();
+    }
+
+    private List<Object[]> getPersondataRowContents(List<Testident> hovedpersoner) {
 
         var start = System.currentTimeMillis();
-        var personer = new ArrayList<>(getPersoner(hovedpersoner));
+        var personer = new ArrayList<>(getPersoner(identList(hovedpersoner), hovedpersoner));
 
         log.info("Excel: hentet alle hovedpersoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         start = System.currentTimeMillis();
         personer.addAll(getPersoner(Stream.of(
-                        getIdenterForRelasjon(personer, PARTNER),
-                        getIdenterForRelasjon(personer, BARN),
-                        getIdenterForRelasjon(personer, FORELDRE),
-                        getIdenterForRelasjon(personer, VERGE),
-                        getIdenterForRelasjon(personer, FULLMEKTIG))
-                .flatMap(Collection::stream)
-                .filter(ident -> !hovedpersoner.contains(ident))
-                .distinct()
-                .toList()));
+                                        getIdenterForRelasjon(personer, PARTNER),
+                                        getIdenterForRelasjon(personer, BARN),
+                                        getIdenterForRelasjon(personer, FORELDRE),
+                                        getIdenterForRelasjon(personer, VERGE),
+                                        getIdenterForRelasjon(personer, FULLMEKTIG)
+                        )
+                        .flatMap(Collection::stream)
+                        .filter(ident -> hovedpersoner.stream().noneMatch(person -> person.getIdent().equals(ident)))
+                        .distinct()
+                        .toList(), hovedpersoner)
+        );
         log.info("Excel: hentet alle relasjoner, medgått tid er {} sekunder", (System.currentTimeMillis() - start) / 1000);
         return personer;
     }
@@ -376,7 +385,7 @@ public class PersonExcelService {
     }
 
     @SneakyThrows
-    private List<Object[]> getPersoner(List<String> identer) {
+    private List<Object[]> getPersoner(List<String> identer, List<Testident> testidenter) {
 
         return identer.isEmpty() ?
                 Collections.emptyList() :
@@ -385,19 +394,19 @@ public class PersonExcelService {
                                 kodeverkConsumer.getKodeverkByName(KOMMUNENR),
                                 kodeverkConsumer.getKodeverkByName(POSTNUMMER))
                         .flatMapMany(kodeverk -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                                .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE,
-                                        Math.min((index + 1) * BLOCK_SIZE, identer.size()))))
+                                .flatMap(index -> pdlPersonConsumer.getPdlPersoner(identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())))
+                                )
                                 .filter(personbolk -> nonNull(personbolk.getData()))
                                 .map(PdlPersonBolk::getData)
                                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                                 .flatMap(Flux::fromIterable)
                                 .filter(personBolk -> nonNull(personBolk.getPerson()))
-                                .map(person -> prepDataRow(person, kodeverk)))
+                                .map(person -> prepDataRow(person, kodeverk, testidenter)))
                         .collectList()
                         .block();
     }
 
-    private Object[] prepDataRow(PdlPersonBolk.PersonBolk person, Tuple3 kodeverk) {
+    private Object[] prepDataRow(PdlPersonBolk.PersonBolk person, Tuple3 kodeverk, List<Testident> identer) {
         return new Object[]{
                 person.getIdent(),
                 IdentTypeUtil.getIdentType(person.getIdent()).name(),
@@ -429,7 +438,33 @@ public class PersonExcelService {
                 getForeldre(person.getPerson().getForelderBarnRelasjon()),
                 getVerge(person.getPerson().getVergemaalEllerFremtidsfullmakt()),
                 getFullmektig(person.getPerson().getFullmakt()),
-                getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak())
+                getSikkerhetstiltak(person.getPerson().getSikkerhetstiltak()),
+                getIBruk(person, identer),
+                getBeskrivelse(person, identer)
         };
+    }
+
+    private static String getIBruk(PdlPersonBolk.PersonBolk person, List<Testident> identer) {
+        var testident = identer.stream()
+                .filter(ident -> ident.getIdent().equals(person.getIdent()))
+                .findAny();
+
+        if (testident.isEmpty() || (testident.get().getIBruk() == null)) {
+            return "";
+        }
+
+        return Boolean.TRUE.equals(testident.get().getIBruk()) ? "Ja" : "Nei";
+    }
+
+    private static String getBeskrivelse(PdlPersonBolk.PersonBolk person, List<Testident> identer) {
+        var testident = identer.stream()
+                .filter(ident -> ident.getIdent().equals(person.getIdent()))
+                .findAny();
+
+        if (testident.isPresent()) {
+            return StringUtils.trimToEmpty(testident.get().getBeskrivelse());
+        } else {
+            return "";
+        }
     }
 }

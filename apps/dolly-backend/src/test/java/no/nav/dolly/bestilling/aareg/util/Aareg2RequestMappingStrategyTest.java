@@ -1,8 +1,9 @@
-package no.nav.dolly.bestilling.aaregrest.mapper;
+package no.nav.dolly.bestilling.aareg.util;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.aaregrest.Aareg2Client;
+import no.nav.dolly.bestilling.aareg.AaregClient;
+import no.nav.dolly.bestilling.aareg.mapper.AaregRequestMappingStrategy;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
@@ -48,7 +49,7 @@ class Aareg2RequestMappingStrategyTest {
 
     @BeforeEach
     public void setup() {
-        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new Aareg2RequestMappingStrategy());
+        mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new AaregRequestMappingStrategy());
     }
 
     @Test
@@ -89,7 +90,7 @@ class Aareg2RequestMappingStrategyTest {
                 .build();
 
         MappingContext context = new MappingContext.Factory().getContext();
-        context.setProperty(Aareg2Client.IDENT, "12345678901");
+        context.setProperty(AaregClient.IDENT, "12345678901");
 
         var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class, context);
 

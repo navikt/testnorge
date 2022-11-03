@@ -109,11 +109,6 @@ consumers:
     namespace: dolly
     url: https://testnav-brregstub-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-testnorge-aareg-proxy:
-    name: testnav-testnorge-aareg-proxy
-    namespace: dolly
-    url: https://testnav-testnorge-aareg-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-testnav-aaregister-proxy:
     name: testnav-aaregister-proxy
     namespace: dolly

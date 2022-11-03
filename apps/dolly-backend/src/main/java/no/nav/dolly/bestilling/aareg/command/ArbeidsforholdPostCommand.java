@@ -1,7 +1,7 @@
-package no.nav.dolly.bestilling.aaregrest.command;
+package no.nav.dolly.bestilling.aareg.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.aaregrest.domain.ArbeidsforholdRespons;
+import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
@@ -15,17 +15,13 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_ARBEIDSFORHOLD;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
-public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRespons>> {
+public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRespons>> {
 
-    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidsforhold/{navArbeidsforholdId}";
-    private static final String NAV_ARBEIDSFORHOLD_PERIODE = "Nav-Arbeidsforhold-Periode";
-
+    private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidsforhold";
     private final WebClient webClient;
     private final String miljoe;
     private final Arbeidsforhold arbeidsforhold;
@@ -33,12 +29,11 @@ public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRes
 
     @Override
     public Flux<ArbeidsforholdRespons> call() {
-        return webClient.put()
+
+        return webClient.post()
                 .uri(uriBuilder -> uriBuilder.path(AAREGDATA_URL)
-                        .build(miljoe, arbeidsforhold.getNavArbeidsforholdId()))
-                .header(NAV_ARBEIDSFORHOLD_PERIODE, arbeidsforhold.getNavArbeidsforholdPeriode().toString())
+                        .build(miljoe))
                 .header(HEADER_NAV_ARBEIDSFORHOLD, CallIdUtil.generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .body(BodyInserters.fromValue(arbeidsforhold))
@@ -50,6 +45,7 @@ public class ArbeidsforholdPutCommand implements Callable<Flux<ArbeidsforholdRes
                         .miljo(miljoe)
                         .build())
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
+                        .arbeidsforhold(arbeidsforhold)
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)
                         .error(error)
