@@ -225,6 +225,7 @@ public class DollyBestillingService {
     }
 
     public static String getBestillingType(Bestilling bestilling) {
+
         if (bestilling.getOpprettetFraId() != null) {
             return "gjenopprett fra bestilling " + bestilling.getOpprettetFraId();
         }
