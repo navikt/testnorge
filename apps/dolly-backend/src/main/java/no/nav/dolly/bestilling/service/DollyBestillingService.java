@@ -233,13 +233,13 @@ public class DollyBestillingService {
             return "gjenopprett fra gruppe " + bestilling.getOpprettetFraGruppeId();
         }
         if (StringUtils.isNotBlank(bestilling.getPdlImport())) {
-            return "testnorge import";
+            return "testnorge import (" + bestilling.getPdlImport() + ") ";
         }
         if (StringUtils.isNotBlank(bestilling.getGjenopprettetFraIdent())) {
-            return "opprett fra identer";
+            return "opprett fra ident " + bestilling.getGjenopprettetFraIdent();
         }
         if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
-            return "opprett fra eksisterende identer";
+            return "opprett fra eksisterende identer (" + bestilling.getOpprettFraIdenter() + ") ";
         }
 
         return "ny bestilling";
