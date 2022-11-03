@@ -101,7 +101,7 @@ public class InntektsmeldingClient implements ClientRegister {
             status.append(isNotBlank(status) ? ',' : "")
                     .append(inntektsmeldingRequest.getMiljoe())
                     .append(':')
-                    .append(errorStatusDecoder.decodeRuntimeException(re));
+                    .append(errorStatusDecoder.decodeThrowable(re));
 
             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {}",
                     inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), re);

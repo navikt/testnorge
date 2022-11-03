@@ -138,7 +138,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     progress.setPdlImportStatus(errorStatusDecoder.decodeException(e));
 
                 } catch (RuntimeException e) {
-                    progress.setPdlImportStatus(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setPdlImportStatus(errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
                     transactionHelperService.persist(progress);

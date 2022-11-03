@@ -78,8 +78,8 @@ public class OrganisasjonClient {
             } catch (RuntimeException e) {
 
                 log.error("Feilet med å opprette organisasjon(er)", e);
-                organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeRuntimeException(e));
-                organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeRuntimeException(e));
+                organisasjonBestillingService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(e));
+                organisasjonProgressService.setBestillingFeil(bestilling.getId(), errorStatusDecoder.decodeThrowable(e));
             }
         });
     }

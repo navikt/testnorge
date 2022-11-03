@@ -44,7 +44,7 @@ public class UdiStubClient implements ClientRegister {
                 status.append("OK");
 
             } catch (RuntimeException e) {
-                status.append(errorStatusDecoder.decodeRuntimeException(e));
+                status.append(errorStatusDecoder.decodeThrowable(e));
             }
             progress.setUdistubStatus(status.toString());
         }

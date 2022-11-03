@@ -61,7 +61,7 @@ public class KrrstubClient implements ClientRegister {
 
             } catch (RuntimeException e) {
 
-                progress.setKrrstubStatus(errorStatusDecoder.decodeRuntimeException(e));
+                progress.setKrrstubStatus(errorStatusDecoder.decodeThrowable(e));
                 log.error("Kall til KrrStub feilet: {}", e.getMessage(), e);
             }
         }

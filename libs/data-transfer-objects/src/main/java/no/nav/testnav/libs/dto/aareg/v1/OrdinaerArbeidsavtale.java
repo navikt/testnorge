@@ -11,7 +11,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-@Schema(description = "Arbeidsavtale/ansettelsesdetaljer for ordin&aelig;re arbeidsforhold")
+@Schema(description = "Arbeidsavtale/ansettelsesdetaljer for ordinære arbeidsforhold")
 public class OrdinaerArbeidsavtale extends Arbeidsavtale {
 
     public static final String TYPE = "Ordinaer";

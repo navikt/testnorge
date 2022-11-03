@@ -90,7 +90,7 @@ public class KrrstubClientTest {
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(HttpClientErrorException.class);
-        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
+        when(errorStatusDecoder.decodeThrowable(any(RuntimeException.class))).thenReturn("Feil:");
         when(krrstubConsumer.deleteKontaktdataPerson(anyList())).thenReturn(Mono.just(List.of()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -112,7 +112,7 @@ public class KrrstubClientTest {
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
         when(krrstubConsumer.createDigitalKontaktdata(any(DigitalKontaktdata.class))).thenThrow(WebClientResponseException.create(HttpStatus.CONFLICT.value(), "Conflict", null, null, null));
-        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenCallRealMethod();
+        when(errorStatusDecoder.decodeThrowable(any(RuntimeException.class))).thenCallRealMethod();
         when(krrstubConsumer.deleteKontaktdataPerson(anyList())).thenReturn(Mono.just(List.of()));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();

@@ -151,7 +151,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                         progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getMessage());
                     }
                 } catch (RuntimeException e) {
-                    progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setFeil("NA:" + errorStatusDecoder.decodeThrowable(e));
                 } finally {
                     transactionHelperService.persist(progress);
                 }

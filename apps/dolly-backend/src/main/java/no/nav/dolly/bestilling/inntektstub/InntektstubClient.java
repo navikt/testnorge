@@ -58,7 +58,7 @@ public class InntektstubClient implements ClientRegister {
                 }
 
             } catch (RuntimeException e) {
-                progress.setInntektstubStatus(errorStatusDecoder.decodeRuntimeException(e));
+                progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
     }
@@ -104,7 +104,7 @@ public class InntektstubClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            progress.setInntektstubStatus(errorStatusDecoder.decodeRuntimeException(e));
+            progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
 
             log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
         }

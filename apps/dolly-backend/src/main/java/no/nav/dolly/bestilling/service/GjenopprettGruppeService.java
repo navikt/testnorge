@@ -139,7 +139,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     progress.setFeil(errorStatusDecoder.decodeException(e));
 
                 } catch (RuntimeException e) {
-                    progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setFeil(errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
                     transactionHelperService.persist(progress);

@@ -34,10 +34,10 @@ public class AaregConsumer {
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.webClient = WebClient
-            .builder()
-            .exchangeStrategies(getJacksonStrategy(objectMapper))
-            .baseUrl(serverProperties.getUrl())
-            .build();
+                .builder()
+                .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .baseUrl(serverProperties.getUrl())
+                .build();
     }
 
     public Mono<AccessToken> getAccessToken() {
@@ -48,18 +48,21 @@ public class AaregConsumer {
     @Timed(name = "providers", tags = {"operation", "aareg_opprettArbeidforhold"})
     public Flux<ArbeidsforholdRespons> opprettArbeidsforhold(Arbeidsforhold request, String miljoe, AccessToken token) {
 
+        log.info("AAREG: Oppretting av arbeidsforhold, miljø {} request {}", miljoe, request);
         return new ArbeidsforholdPostCommand(webClient, miljoe, request, token.getTokenValue()).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "aareg_endreArbeidforhold"})
     public Flux<ArbeidsforholdRespons> endreArbeidsforhold(Arbeidsforhold request, String miljoe, AccessToken token) {
 
-        return  new ArbeidsforholdPutCommand(webClient, miljoe, request, token.getTokenValue()).call();
+        log.info("AAREG: Oppdatering av arbeidsforhold, miljø {} request {}", miljoe, request);
+        return new ArbeidsforholdPutCommand(webClient, miljoe, request, token.getTokenValue()).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "aareg_getArbeidforhold"})
     public Mono<ArbeidsforholdRespons> hentArbeidsforhold(String ident, String miljoe, AccessToken token) {
 
+        log.info("AAREG: Henting av arbeidsforhold, miljø {} ident {}", miljoe, ident);
         return new ArbeidsforholdGetCommand(webClient, miljoe, ident, token.getTokenValue()).call();
     }
 
