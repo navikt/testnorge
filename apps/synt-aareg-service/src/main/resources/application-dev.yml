@@ -1,0 +1,11 @@
+azure:
+  app:
+    client:
+      id: ${client_id}
+      secret: ${client_secret}
+
+consumers:
+  testnorge-hodejegeren:
+    url: https://testnav-hodejegeren-proxy.dev.intern.nav.no
+  kodeverk:
+    url: https://testnav-kodeverk-proxy.dev.intern.nav.no

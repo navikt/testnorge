@@ -8,6 +8,7 @@ rootProject.name = 'synt-aareg-service'
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/security-core'
+includeBuild '../../libs/domain'
 
 gradleEnterprise {
     buildScan {
