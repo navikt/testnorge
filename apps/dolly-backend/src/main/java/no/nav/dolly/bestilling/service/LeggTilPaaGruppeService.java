@@ -142,7 +142,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 } catch (JsonProcessingException e) {
                     progress.setFeil(errorStatusDecoder.decodeException(e));
                 } catch (RuntimeException e) {
-                    progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setFeil("NA:" + errorStatusDecoder.decodeThrowable(e));
                 } finally {
                     transactionHelperService.persist(progress);
                 }

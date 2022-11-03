@@ -131,7 +131,7 @@ public class PdlForvalterClientTest {
                 .kontaktinformasjonForDoedsbo(PdlKontaktinformasjonForDoedsbo.builder().build()).build());
         when(pdlForvalterConsumer.postKontaktinformasjonForDoedsbo(any(PdlKontaktinformasjonForDoedsbo.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(INTERNAL_SERVER_ERROR, FEIL_KONTAKT_DOEDSBO));
-        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_KONTAKT_DOEDSBO);
+        when(errorStatusDecoder.decodeThrowable(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_KONTAKT_DOEDSBO);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
@@ -182,7 +182,7 @@ public class PdlForvalterClientTest {
                 .utenlandskIdentifikasjonsnummer(singletonList(PdlUtenlandskIdentifikasjonsnummer.builder().build())).build());
         when(pdlForvalterConsumer.postUtenlandskIdentifikasjonsnummer(any(PdlUtenlandskIdentifikasjonsnummer.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.ALREADY_REPORTED, FEIL_UTENLANDS_IDENT));
-        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_UTENLANDS_IDENT);
+        when(errorStatusDecoder.decodeThrowable(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_UTENLANDS_IDENT);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
@@ -233,7 +233,7 @@ public class PdlForvalterClientTest {
                 .falskIdentitet(PdlFalskIdentitet.builder().build()).build());
         when(pdlForvalterConsumer.postFalskIdentitet(any(PdlFalskIdentitet.class), eq(IDENT)))
                 .thenThrow(new HttpClientErrorException(HttpStatus.NOT_ACCEPTABLE, FEIL_FALSK_IDENTITET));
-        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_FALSK_IDENTITET);
+        when(errorStatusDecoder.decodeThrowable(any(RuntimeException.class))).thenReturn("Feil: " + FEIL_FALSK_IDENTITET);
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());

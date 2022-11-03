@@ -156,7 +156,7 @@ public class PdlForvalterClient implements ClientRegister {
         } catch (RuntimeException e) {
 
             status.append('&')
-                    .append(errorStatusDecoder.decodeRuntimeException(e));
+                    .append(errorStatusDecoder.decodeThrowable(e));
             log.error(e.getMessage(), e);
 
         } catch (Exception e) {
@@ -471,7 +471,7 @@ public class PdlForvalterClient implements ClientRegister {
     private void appendErrorStatus(RuntimeException exception, StringBuilder builder) {
 
         builder.append('&')
-                .append(errorStatusDecoder.decodeRuntimeException(exception));
+                .append(errorStatusDecoder.decodeThrowable(exception));
         log.error(exception.getMessage(), exception);
     }
 

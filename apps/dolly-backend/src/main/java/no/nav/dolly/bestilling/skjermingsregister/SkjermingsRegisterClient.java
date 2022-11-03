@@ -72,7 +72,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
             skjermingsRegisterConsumer.oppdaterPerson(skjerming);
 
         } catch (RuntimeException e) {
-            status.append(errorStatusDecoder.decodeRuntimeException(e));
+            status.append(errorStatusDecoder.decodeThrowable(e));
             log.error("Feilet å skjerme person: {}", dollyPerson.getHovedperson(), e);
         }
     }

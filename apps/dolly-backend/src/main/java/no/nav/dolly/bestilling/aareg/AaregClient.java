@@ -136,25 +136,12 @@ public class AaregClient implements ClientRegister {
 
     private String decodeStatus(String miljoe, ArbeidsforholdRespons reply) {
 
-        StringBuilder builder = new StringBuilder();
-        builder.append(miljoe)
+        return new StringBuilder()
+                .append(miljoe)
                 .append(": arbforhold=")
                 .append(reply.getArbeidsforholdId())
-                .append('$');
-
-        if (isNull(reply.getError())) {
-            builder.append("OK");
-
-        } else if (reply.getError() instanceof RuntimeException runtimeException) {
-            builder.append(errorStatusDecoder.decodeRuntimeException(runtimeException));
-
-        } else if (reply.getError() instanceof Exception exception) {
-            builder.append(errorStatusDecoder.decodeException(exception));
-
-        } else {
-            builder.append(reply.getError().getMessage());
-            log.error(reply.getError().getMessage(), reply.getError());
-        }
-        return builder.toString();
+                .append('$')
+                .append(isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError()))
+                .toString();
     }
 }

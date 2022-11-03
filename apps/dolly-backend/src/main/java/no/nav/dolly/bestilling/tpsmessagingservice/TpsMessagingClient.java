@@ -112,7 +112,7 @@ public class TpsMessagingClient implements ClientRegister {
                     });
 
         } catch (RuntimeException e) {
-            progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+            progress.setFeil(errorStatusDecoder.decodeThrowable(e));
             log.error("Kall til TPS messaging service feilet: {}", e.getMessage());
         }
         progress.setTpsMessagingStatus(status.toString());

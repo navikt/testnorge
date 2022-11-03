@@ -103,7 +103,7 @@ public class UdiStubConsumer {
         } catch (RuntimeException e) {
 
             throw new DollyFunctionalException(format("Feilet å opprette UDI-person: %s",
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
+                    errorStatusDecoder.decodeThrowable(e)), e);
         }
     }
 
@@ -125,7 +125,7 @@ public class UdiStubConsumer {
         } catch (RuntimeException e) {
 
             throw new DollyFunctionalException(format("Feilet å oppdatere UDI-person: %s",
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
+                    errorStatusDecoder.decodeThrowable(e)), e);
         }
     }
 

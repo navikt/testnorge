@@ -382,7 +382,7 @@ public class PdlForvalterConsumer {
         } catch (RuntimeException e) {
 
             throw new DollyFunctionalException(format(SEND_ERROR, beskrivelse,
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
+                    errorStatusDecoder.decodeThrowable(e)), e);
         }
     }
 
@@ -408,7 +408,7 @@ public class PdlForvalterConsumer {
 
         } catch (RuntimeException e) {
             throw new DollyFunctionalException(format(SEND_ERROR, beskrivelse,
-                    errorStatusDecoder.decodeRuntimeException(e)), e);
+                    errorStatusDecoder.decodeThrowable(e)), e);
         }
     }
 

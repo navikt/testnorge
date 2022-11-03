@@ -104,7 +104,7 @@ public class DollyBestillingService {
                 } catch (WebClientResponseException e) {
 
                     dollyPerson = DollyPerson.builder().hovedperson(bestilling.getIdent()).master(PDLF).build();
-                    progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setPdlDataStatus(errorStatusDecoder.decodeThrowable(e));
                 }
 
             } else {

@@ -101,7 +101,7 @@ public class AmeldingService {
                     });
         } catch (RuntimeException e) {
             log.error("Innsending til A-melding service feilet: ", e);
-            appendResult(Map.entry(env, errorStatusDecoder.decodeRuntimeException(e)), "1", result);
+            appendResult(Map.entry(env, errorStatusDecoder.decodeThrowable(e)), "1", result);
         }
     }
 

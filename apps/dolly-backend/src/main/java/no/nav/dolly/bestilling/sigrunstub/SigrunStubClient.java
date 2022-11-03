@@ -41,7 +41,7 @@ public class SigrunStubClient implements ClientRegister {
                                 sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag)));
 
             } catch (RuntimeException e) {
-                progress.setSigrunstubStatus(errorStatusDecoder.decodeRuntimeException(e));
+                progress.setSigrunstubStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
     }

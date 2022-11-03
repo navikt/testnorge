@@ -76,7 +76,7 @@ public class ErrorStatusDecoder {
                 .toString();
     }
 
-    public String decodeRuntimeException(RuntimeException error) {
+    public String decodeThrowable(Throwable error) {
 
         StringBuilder builder = new StringBuilder()
                 .append(FEIL);
@@ -90,6 +90,7 @@ public class ErrorStatusDecoder {
 
             } else {
                 builder.append(TEKNISK_FEIL_SE_LOGG);
+                builder.append(encodeStatus(error.getMessage()));
                 log.error(TEKNISK_FEIL, error.getMessage(), error);
             }
 

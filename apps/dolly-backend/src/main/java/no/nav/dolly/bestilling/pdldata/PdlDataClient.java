@@ -45,7 +45,7 @@ public class PdlDataClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
+            progress.setPdlDataStatus(errorStatusDecoder.decodeThrowable(e));
         }
     }
 

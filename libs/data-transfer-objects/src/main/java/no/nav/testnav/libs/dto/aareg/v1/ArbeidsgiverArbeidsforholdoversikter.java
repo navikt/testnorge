@@ -21,7 +21,7 @@ public class ArbeidsgiverArbeidsforholdoversikter {
     @Schema(description = "Liste av arbeidsforholdoversikter")
     private List<Arbeidsforholdoversikt> arbeidsforholdoversikter;
 
-    @Schema(description = "Nummer for f&oslash;rste rad i resultatsett (ikke angitt hvis antall er 0)")
+    @Schema(description = "Nummer for første rad i resultatsett (ikke angitt hvis antall er 0)")
     private Integer startrad;
 
     @Schema(description = "Antall arbeidsforholdoversikter i resultatsett - der det er siste resultatsett hvis antall er mindre enn forespurt antall")
