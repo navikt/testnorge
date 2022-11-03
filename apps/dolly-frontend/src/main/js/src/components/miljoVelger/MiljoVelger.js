@@ -56,18 +56,16 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 		return <Loading label={'Laster miljøer...'} />
 	}
 
-	const filterEnvironments = (miljoer, erOrg, erBankIdBruker) => {
+	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) return bankIdMiljoer
-		if (!erOrg) return miljoer
 		const filtrerteMiljoer = { ...miljoer }
 		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter((env) => !env.id.includes('qx'))
+		filtrerteMiljoer.T = filtrerteMiljoer.T.filter((env) => !env.id.includes('t13'))
 		return filtrerteMiljoer
 	}
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
-	const erOrganisasjon = bestillingsdata?.hasOwnProperty('organisasjon')
-	const filteredEnvironments = filterEnvironments(dollyEnvironments, erOrganisasjon, bankIdBruker)
-
+	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
 	const order = ['T', 'Q']
 
 	return (
