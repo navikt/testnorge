@@ -26,6 +26,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -71,7 +72,7 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
+            log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
             var testident = identService.getTestIdent(bestilling.getIdent());
@@ -221,5 +222,32 @@ public class DollyBestillingService {
     public static List<String> getEnvironments(String miljoer){
 
         return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
+    }
+
+    public static String getBestillingType(Bestilling bestilling) {
+        /*
+        opprettet_fra_id = gjenopprett fra bestilling
+        OPPRETT_FRA_IDENTER = gjenopprett fra person list (gjenopprett person)
+        PDL_IMPORT = importer personer fra testnorge
+        opprett_fra_gruppe = gjenopprett fra gruppe
+        opprett_fra_identer = bestilling fra eksisterende identer
+         */
+        if (bestilling.getOpprettetFraId() != null) {
+            return "gjenopprett fra bestilling " + bestilling.getOpprettetFraId();
+        }
+        if (bestilling.getOpprettetFraGruppeId() != null) {
+            return "gjenopprett fra gruppe " + bestilling.getOpprettetFraGruppeId();
+        }
+        if (StringUtils.isNotBlank(bestilling.getPdlImport())) {
+            return "testnorge import";
+        }
+        if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
+            return "opprett fra identer";
+        }
+        if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
+            return "opprett fra eksisterende identer";
+        }
+
+        return "ny bestilling";
     }
 }

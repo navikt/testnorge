@@ -75,7 +75,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
     @Async
     public void executeAsync(Bestilling bestilling) {
 
-        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
+        log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
