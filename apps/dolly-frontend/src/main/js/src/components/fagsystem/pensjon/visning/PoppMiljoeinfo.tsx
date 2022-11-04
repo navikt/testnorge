@@ -5,6 +5,11 @@ import { DollyApi } from '~/service/Api'
 import Loading from '~/components/ui/loading/Loading'
 import styled from 'styled-components'
 
+type PoppMiljoeinfoTypes = {
+	ident: string
+	bestilteMiljoer: Array<string>
+}
+
 const Miljoeinfo = styled.div`
 	margin-bottom: 10px;
 	display: flex;
@@ -15,7 +20,7 @@ const Miljoeinfo = styled.div`
 	}
 `
 
-export const PoppMiljoeinfo = ({ ident, bestilteMiljoer }) => {
+export const PoppMiljoeinfo = ({ ident, bestilteMiljoer }: PoppMiljoeinfoTypes) => {
 	const miljoer = useAsync(async () => {
 		return DollyApi.getPoppMiljoer()
 	}, [])
@@ -25,6 +30,7 @@ export const PoppMiljoeinfo = ({ ident, bestilteMiljoer }) => {
 			{miljoer && !miljoer?.loading ? (
 				<Miljoeinfo>
 					<PoppVisningMiljoeinfo
+						//@ts-ignore
 						miljoer={miljoer?.value?.data}
 						ident={ident}
 						bestilteMiljoer={bestilteMiljoer}

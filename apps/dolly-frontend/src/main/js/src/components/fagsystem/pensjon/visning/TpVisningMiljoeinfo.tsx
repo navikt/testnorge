@@ -4,12 +4,24 @@ import { DollyApi } from '~/service/Api'
 import { useAsync } from 'react-use'
 import { TpvisningMiljo } from '~/components/fagsystem/pensjon/visning/TpVisning'
 
-export const TpVisningMiljoeinfo = ({ miljoer, ident, bestilteMiljoer, ordninger }) => {
+type TpVisningMiljoeinfoTypes = {
+	miljoer: Array<string>
+	ident: string
+	bestilteMiljoer: { value: Array<string> }
+	ordninger: Array<{ value: string; label: string }>
+}
+
+export const TpVisningMiljoeinfo = ({
+	miljoer,
+	ident,
+	bestilteMiljoer,
+	ordninger,
+}: TpVisningMiljoeinfoTypes) => {
 	const getMiljoeinfo = useAsync(async () => {
 		const tmpMiljoeinfo = []
 		await Promise.allSettled(
 			miljoer?.map((miljoe) => {
-				DollyApi.getTpOrdning(ident, miljoe).then((response) => {
+				DollyApi.getTpOrdning(ident, miljoe).then((response: { data: any }) => {
 					tmpMiljoeinfo.push({
 						ordninger: response?.data,
 						miljo: miljoe,

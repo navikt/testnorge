@@ -4,12 +4,22 @@ import { DollyApi } from '~/service/Api'
 import { useAsync } from 'react-use'
 import { PensjonvisningMiljo } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 
-export const PoppVisningMiljoeinfo = ({ miljoer, ident, bestilteMiljoer }) => {
+type PoppVisningMiljoeinfoTypes = {
+	miljoer: Array<string>
+	ident: string
+	bestilteMiljoer: { value: Array<string> }
+}
+
+export const PoppVisningMiljoeinfo = ({
+	miljoer,
+	ident,
+	bestilteMiljoer,
+}: PoppVisningMiljoeinfoTypes) => {
 	const getMiljoeinfo = useAsync(async () => {
 		const tmpMiljoeinfo = []
 		await Promise.allSettled(
 			miljoer?.map((miljoe) => {
-				DollyApi.getPoppInntekter(ident, miljoe).then((response) => {
+				DollyApi.getPoppInntekter(ident, miljoe).then((response: { data: any }) => {
 					tmpMiljoeinfo.push(response?.data)
 				})
 			})

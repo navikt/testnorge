@@ -5,6 +5,12 @@ import Loading from '~/components/ui/loading/Loading'
 import styled from 'styled-components'
 import { TpVisningMiljoeinfo } from '~/components/fagsystem/pensjon/visning/TpVisningMiljoeinfo'
 
+type TpMiljoeinfoTypes = {
+	ident: string
+	bestilteMiljoer: Array<string>
+	ordninger: Array<{ value: string; label: string }>
+}
+
 const Miljoeinfo = styled.div`
 	margin-bottom: 10px;
 	display: flex;
@@ -15,7 +21,7 @@ const Miljoeinfo = styled.div`
 	}
 `
 
-export const TpMiljoeinfo = ({ ident, bestilteMiljoer, ordninger }) => {
+export const TpMiljoeinfo = ({ ident, bestilteMiljoer, ordninger }: TpMiljoeinfoTypes) => {
 	const miljoer = useAsync(async () => {
 		return DollyApi.getTpMiljoer()
 	}, [])
@@ -25,6 +31,7 @@ export const TpMiljoeinfo = ({ ident, bestilteMiljoer, ordninger }) => {
 			{miljoer && !miljoer?.loading ? (
 				<Miljoeinfo>
 					<TpVisningMiljoeinfo
+						//@ts-ignore
 						miljoer={miljoer?.value?.data}
 						ident={ident}
 						bestilteMiljoer={bestilteMiljoer}
