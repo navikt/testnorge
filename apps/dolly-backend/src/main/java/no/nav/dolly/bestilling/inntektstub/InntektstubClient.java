@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.inntektstub;
 
-import io.swagger.util.Json;
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
