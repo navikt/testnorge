@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.pdl.forvalter.consumer.PdlTestdataConsumer;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.Ordre;
+import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact;
@@ -41,7 +42,7 @@ public class DeployService {
                 .toList();
     }
 
-    public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(List<Ordre> ordres) {
+    public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {
         return pdlTestdataConsumer.send(ordres);
     }
 }

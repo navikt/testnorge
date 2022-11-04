@@ -10,7 +10,7 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettArtifactCommandPdl;
 import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
-import no.nav.pdl.forvalter.dto.Ordre;
+import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -25,7 +25,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
@@ -55,14 +54,23 @@ public class PdlTestdataConsumer {
         this.objectMapper = objectMapper;
     }
 
-    public Flux<OrdreResponseDTO.PdlStatusDTO> send(List<Ordre> orders) {
+    public Flux<OrdreResponseDTO.PdlStatusDTO> send(OrdreRequest orders) {
+
         return tokenExchange
                 .exchange(properties)
-                .flatMapMany(accessToken -> Flux.concat(orders
-                        .stream()
-                        .map(order -> order.apply(accessToken))
-                        .collect(Collectors.toList())
-                ));
+                .flatMapMany(accessToken -> Flux.concat(
+                        Flux.fromIterable(orders.getSletting())
+                                .flatMap(order -> order.apply(accessToken))
+                                .collectList(),
+                        Flux.fromIterable(orders.getOppretting())
+                                .flatMap(order -> order.apply(accessToken))
+                                .collectList(),
+                        Flux.fromIterable(orders.getOpplysninger())
+                                .parallel()
+                                .flatMap(opplysning -> Flux.fromIterable(opplysning)
+                                        .flatMap(entry -> entry.apply(accessToken))
+                                        .collectList())))
+                .flatMap(Flux::fromIterable);
     }
 
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
