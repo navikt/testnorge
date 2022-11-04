@@ -51,5 +51,4 @@ public class PdlAktoer {
     public List<Feilmelding> getErrors() {
         return errors == null ? Collections.emptyList() : errors;
     }
-
 }
