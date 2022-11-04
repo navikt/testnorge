@@ -92,9 +92,22 @@ export const PersonVisning = ({
 		fetchDataFraFagsystemer(bestillinger)
 	}, [])
 
+	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
+
+	const harAaregBestilling = () => {
+		let aareg = false
+		bestillingerFagsystemer?.forEach((i) => {
+			if (i.aareg) {
+				aareg = true
+			}
+		})
+		return aareg
+	}
+
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		getFirstAaregEnvironment(bestilling)
+		getFirstAaregEnvironment(bestilling),
+		harAaregBestilling()
 	)
 
 	const getGruppeIdenter = () => {

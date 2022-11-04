@@ -19,7 +19,7 @@ type AaregVisningProps = {
 	ident?: string
 	liste?: Array<Arbeidsforhold>
 	loading?: boolean
-	bestilteMiljoer: {
+	bestilteMiljoer?: {
 		value: Array<string>
 	}
 }
@@ -71,16 +71,12 @@ export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVi
 
 	const manglerFagsystemdata = sortedData?.length < 1
 
-	if (ident && manglerFagsystemdata) {
-		return null
-	}
-
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
-					Fant ikke arbeidsforhold-data på person i dette miljøet
+					Kunne ikke hente arbeidsforhold-data på person
 				</Alert>
 			) : (
 				<ErrorBoundary>

@@ -104,11 +104,17 @@ export const useOrganisasjonBestillingStatus = (
 	}
 }
 
-export const useArbeidsforhold = (ident: string, miljoe: string) => {
+export const useArbeidsforhold = (ident: string, miljoe: string, harAaregBestilling: boolean) => {
 	if (!ident || !miljoe) {
 		return {
 			loading: false,
 			error: 'Ident eller miljø mangler!',
+		}
+	}
+
+	if (!harAaregBestilling) {
+		return {
+			loading: false,
 		}
 	}
 
