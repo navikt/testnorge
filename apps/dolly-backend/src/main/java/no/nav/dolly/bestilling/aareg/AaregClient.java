@@ -62,6 +62,10 @@ public class AaregClient implements ClientRegister {
 
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
 
+            if (!miljoer.contains("q2")) {
+                miljoer.add("q2");
+            }
+
             if (bestilling.getAareg().stream()
                     .map(RsAareg::getAmelding)
                     .anyMatch(amelding -> !amelding.isEmpty())) {
