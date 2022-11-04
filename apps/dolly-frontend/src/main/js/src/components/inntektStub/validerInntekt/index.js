@@ -2,27 +2,29 @@ import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import Inntekt from './Inntekt'
 import { Formik } from 'formik'
-import { useBoolean } from 'react-use'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import _ from 'lodash'
 
+const tilleggsinformasjonAttributter = {
+	BilOgBaat: 'bilOgBaat',
+	DagmammaIEgenBolig: 'dagmammaIEgenBolig',
+	NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel',
+	Livrente: 'livrente',
+	LottOgPartInnenFiske: 'lottOgPart',
+	Nettoloennsordning: 'nettoloenn',
+	UtenlandskArtist: 'utenlandskArtist',
+}
+
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
-	const [reset, setReset] = useBoolean(false)
 	const [inntektValues] = useState(_get(formikBag.values, inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
 		_get(formikBag.values, `${inntektPath}.inntektstype`)
 	)
-
-	const tilleggsinformasjonAttributter = {
-		BilOgBaat: 'bilOgBaat',
-		DagmammaIEgenBolig: 'dagmammaIEgenBolig',
-		NorskKontinentalsokkel: 'inntektPaaNorskKontinentalsokkel',
-		Livrente: 'livrente',
-		LottOgPartInnenFiske: 'lottOgPart',
-		Nettoloennsordning: 'nettoloenn',
-		UtenlandskArtist: 'utenlandskArtist',
-	}
+	const currentTilleggsinformasjonstype = _get(
+		formikBag.values,
+		`${inntektPath}.tilleggsinformasjonstype`
+	)
 
 	useEffect(() => {
 		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
@@ -35,12 +37,26 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 			Object.keys(fields).length < 1
 		) {
 			InntektstubService.validate(_.omitBy(inntektValues, (value) => value === '' || !value)).then(
-				(response) => {
-					setFields(response)
-				}
+				(response) => setFields(response)
 			)
 		}
 	}, [inntektValues, fields])
+
+	useEffect(() => {
+		Object.entries(fields).forEach((entry) => {
+			removeEmptyFieldsFromFormik(entry)
+		})
+	}, [fields])
+
+	useEffect(() => {
+		if (!currentTilleggsinformasjonstype) {
+			formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, undefined)
+			return
+		}
+		formikBag.setFieldValue(`${inntektPath}.tilleggsinformasjon`, {
+			[`${tilleggsinformasjonAttributter[currentTilleggsinformasjonstype]}`]: {},
+		})
+	}, [currentTilleggsinformasjonstype])
 
 	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
@@ -57,30 +73,38 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		}
 	}
 
-	useEffect(() => {
-		Object.entries(fields).forEach((entry) => {
-			const name = entry[0]
-			const valueArray = entry[1]
-			if (
-				valueArray.length === 1 &&
-				valueArray[0] === '<TOM>' &&
-				_get(formikBag.values, `${inntektPath}.${name}`)
-			) {
-				formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
+	const removeEmptyFieldsFromFormik = (entry) => {
+		const name = entry[0]
+		const valueArray = entry[1]
+		if (
+			valueArray.length === 1 &&
+			valueArray[0] === '<TOM>' &&
+			_get(formikBag.values, `${inntektPath}.${name}`)
+		) {
+			formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
+		}
+	}
+
+	const clearEmptyValuesAndFields = (values) => {
+		for (const [key, value] of Object.entries(fields)) {
+			if (values[key] === undefined && value.length !== 1) {
+				values[key] = null
 			}
-		})
-	}, [fields])
+		}
+
+		for (const [key, value] of Object.entries(values)) {
+			if (value === '' || value === '<TOM>') {
+				values[key] = undefined
+			}
+		}
+	}
 
 	return (
 		<Formik
 			initialValues={inntektValues.inntektstype !== '' ? inntektValues : {}}
-			onSubmit={(values, { resetForm }) => {
+			onSubmit={(values) => {
 				if (currentInntektstype && values.inntektstype !== currentInntektstype) {
-					resetForm({ values: { inntektstype: values.inntektstype } })
 					values = { inntektstype: values.inntektstype }
-					setReset(true)
-				} else {
-					setReset(false)
 				}
 				const emptyableFields = Object.entries(fields).filter(
 					(field) => field?.[1]?.[0] === '<TOM>' && field?.[1]?.length > 2
@@ -93,17 +117,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 				InntektstubService.validate(_.omitBy(values, (value) => value === '' || !value)).then(
 					(response) => setFields(response)
 				)
-				for (const [key, value] of Object.entries(fields)) {
-					if (values[key] === undefined && value.length !== 1) {
-						values[key] = null
-					}
-				}
-
-				for (const [key, value] of Object.entries(values)) {
-					if (value === '' || value === '<TOM>') {
-						values[key] = undefined
-					}
-				}
+				clearEmptyValuesAndFields(values)
 				setFormikBag(values)
 			}}
 			component={({ handleSubmit }) => (
@@ -113,8 +127,6 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 						onValidate={handleSubmit}
 						formikBag={formikBag}
 						path={inntektPath}
-						resetForm={reset}
-						tilleggsinformasjonAttributter={tilleggsinformasjonAttributter}
 					/>
 				</div>
 			)}

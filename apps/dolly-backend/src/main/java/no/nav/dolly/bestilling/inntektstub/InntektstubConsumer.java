@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.inntektstub.command.InbtektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
@@ -88,6 +89,8 @@ public class InntektstubConsumer {
 
     @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
     public ResponseEntity<List<Inntektsinformasjon>> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
+
+        log.info("Sender inntektstub: {}", Json.pretty(inntektsinformasjon));
 
         return
                 webClient.post()
