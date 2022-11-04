@@ -177,7 +177,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 		nyPeriode.splice(selectedIndex, 1)
 		formikBag.setFieldValue(paths.periode, nyPeriode)
 
-		if (periode.length === 1) {
+		if (periode?.length === 1) {
 			setSelectedIndex(0)
 		} else if (selectedIndex > 0) {
 			setSelectedIndex(selectedIndex - 1)
@@ -257,7 +257,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 							</Hjelpetekst>
 						</div>
 					</div>
-					{periode.length > 0 && (
+					{periode?.length > 0 && (
 						<>
 							<KjedeContainer>
 								<DollyKjede
@@ -277,7 +277,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 								</Hjelpetekst>
 							</KjedeContainer>
 							{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
-								periode.length > 1 && (
+								periode?.length > 1 && (
 									<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
 										Fjern måned
 									</Slettknapp>

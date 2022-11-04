@@ -107,7 +107,11 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 										<DollyCheckbox
 											key={env.id}
 											id={env.id}
-											disabled={env.disabled || (disableAllEnvironments && values.length < 1)}
+											disabled={
+												env.disabled ||
+												(disableAllEnvironments && values.length < 1) ||
+												alleredeValgtMiljoe.some((miljoe) => miljoe === env.id)
+											}
 											label={env?.id?.toUpperCase()}
 											checked={values.includes(env.id)}
 											onClick={onClick}

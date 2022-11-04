@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _set from 'lodash/set'
@@ -25,6 +25,9 @@ import {
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import Loading from '~/components/ui/loading/Loading'
+import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -35,6 +38,19 @@ export const ArbeidsforholdForm = ({
 	arbeidsgiverType,
 	warningMessage,
 }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil } = opts
+	const eksisterendeIdent =
+		personFoerLeggTil?.pdl?.ident || personFoerLeggTil?.pdlforvalter?.person?.ident
+
+	const { loading, arbeidsforhold } = useArbeidsforhold(eksisterendeIdent, 'q2')
+	useEffect(() => {
+		if (arbeidsforhold) {
+			//TODO: Mappe arbeidsforholdet til form
+		}
+	}, [arbeidsforhold])
+
+	const gjeldendeArbeidsgiver = _get(formikBag.values, `${path}.arbeidsgiver`)
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
 			? _get(formikBag.values, 'aareg[0].arbeidsforholdstype')
@@ -75,11 +91,13 @@ export const ArbeidsforholdForm = ({
 					formikBag.setFieldValue(path, {
 						...initialForenkletOppgjoersordningOrg,
 						arbeidsforholdstype: event.value,
+						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					formikBag.setFieldValue(path, {
 						...initialForenkletOppgjoersordningPers,
 						arbeidsforholdstype: event.value,
+						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
 				}
 			}
@@ -92,11 +110,13 @@ export const ArbeidsforholdForm = ({
 					formikBag.setFieldValue(path, {
 						...initialArbeidsforholdOrg,
 						arbeidsforholdstype: event.value,
+						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
 				} else if (arbeidsgiverType === ArbeidsgiverTyper.privat) {
 					formikBag.setFieldValue(path, {
 						...initialArbeidsforholdPers,
 						arbeidsforholdstype: event.value,
+						arbeidsgiver: gjeldendeArbeidsgiver,
 					})
 				}
 			} else {
@@ -120,20 +140,14 @@ export const ArbeidsforholdForm = ({
 			}
 		}
 	}
+
+	if (loading) {
+		return <Loading label={'Henter eksisterende arbeidsforhold..'} />
+	}
+
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
-				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
-					<FormikSelect
-						name={`${path}.arbeidsforholdstype`}
-						label="Type arbeidsforhold"
-						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-						size="large-plus"
-						isClearable={false}
-						onChange={handleArbeidsforholdstypeChange}
-						feil={feilmelding()}
-					/>
-				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
 					<EgneOrganisasjoner
 						path={`${path}.arbeidsgiver.orgnummer`}
@@ -154,6 +168,17 @@ export const ArbeidsforholdForm = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
+					/>
+				)}
+				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
+					<FormikSelect
+						name={`${path}.arbeidsforholdstype`}
+						label="Type arbeidsforhold"
+						kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+						size="large-plus"
+						isClearable={false}
+						onChange={handleArbeidsforholdstypeChange}
+						feil={feilmelding()}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (

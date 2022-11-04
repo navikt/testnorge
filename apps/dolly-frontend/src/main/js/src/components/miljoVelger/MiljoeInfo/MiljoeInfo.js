@@ -5,8 +5,10 @@ import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 import { Alert } from '@navikt/ds-react'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
+	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, aareg } =
+		bestillingsdata
 	if (
+		!aareg &&
 		!instdata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
@@ -67,6 +69,9 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				)}
 
 				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
+				{aareg && (
+					<li>Arbeidsforhold på felles organisasjoner: Alle arbeidsforhold blir sendt til Q2</li>
+				)}
 			</ul>
 		</Alert>
 	)

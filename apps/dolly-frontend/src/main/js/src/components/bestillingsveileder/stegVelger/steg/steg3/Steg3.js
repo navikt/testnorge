@@ -17,6 +17,14 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
+	const erQ2MiljoeAvhengig =
+		formikBag.values.hasOwnProperty('aareg') ||
+		_get(formikBag.values, 'pdldata.person.fullmakt') ||
+		_get(formikBag.values, 'pdldata.person.falskIdentitet') ||
+		_get(formikBag.values, 'pdldata.person.falskIdentitet') ||
+		_get(formikBag.values, 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
+		_get(formikBag.values, 'pdldata.person.kontaktinformasjonForDoedsbo')
+
 	const bankIdBruker = brukertype === 'BANKID'
 
 	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
@@ -30,9 +38,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker) {
-			return ['q1']
+			return erQ2MiljoeAvhengig ? ['q1', 'q2'] : ['q1']
 		}
-		return []
+		return erQ2MiljoeAvhengig ? ['q2'] : []
 	}
 
 	useEffect(() => {
@@ -45,6 +53,8 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 			formikBag.setFieldValue('environments', ['q1'])
 		} else if (!formikBag.values?.environments) {
 			formikBag.setFieldValue('environments', [])
+		} else if (erQ2MiljoeAvhengig) {
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
