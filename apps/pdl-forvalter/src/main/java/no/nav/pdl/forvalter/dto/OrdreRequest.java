@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OrdreRequest {
 
-    private List<Ordre> sletting;
-    private List<Ordre> oppretting;
+    private List<List<Ordre>> sletting;
+    private List<List<Ordre>> oppretting;
     private List<List<Ordre>> opplysninger;
 }

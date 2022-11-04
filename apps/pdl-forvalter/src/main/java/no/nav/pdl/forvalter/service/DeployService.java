@@ -36,6 +36,7 @@ public class DeployService {
                         .collectList()
                         .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
                                 .builder()
+                                .ident(ident)
                                 .infoElement(type)
                                 .hendelser(hendelser)
                                 .build()))

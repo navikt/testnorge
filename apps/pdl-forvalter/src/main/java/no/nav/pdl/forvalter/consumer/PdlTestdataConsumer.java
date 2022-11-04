@@ -60,17 +60,23 @@ public class PdlTestdataConsumer {
                 .exchange(properties)
                 .flatMapMany(accessToken -> Flux.concat(
                         Flux.fromIterable(orders.getSletting())
-                                .flatMap(order -> order.apply(accessToken))
-                                .collectList(),
+                                .parallel()
+                                .flatMap(order -> Flux.fromIterable(order)
+                                        .flatMap(entry -> entry.apply(accessToken))
+                                        .collectList()),
                         Flux.fromIterable(orders.getOppretting())
-                                .flatMap(order -> order.apply(accessToken))
-                                .collectList(),
+                                .parallel()
+                                .flatMap(order -> Flux.fromIterable(order)
+                                        .flatMap(entry -> entry.apply(accessToken))
+                                        .collectList()),
                         Flux.fromIterable(orders.getOpplysninger())
                                 .parallel()
-                                .flatMap(opplysning -> Flux.fromIterable(opplysning)
-                                        .flatMap(entry -> entry.apply(accessToken))
-                                        .collectList())))
-                .flatMap(Flux::fromIterable);
+                                .flatMap(opplysning -> Flux.concat(opplysning
+                                                .stream()
+                                                .map(entry -> entry.apply(accessToken))
+                                                .toList())
+                                                .collectList()))
+                .flatMap(Flux::fromIterable));
     }
 
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {
