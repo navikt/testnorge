@@ -40,7 +40,7 @@ import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
 
 @ExtendWith(MockitoExtension.class)
-class Aareg2RequestMappingStrategyTest {
+class AaregRequestMappingStrategyTest {
 
     private static final LocalDateTime FOM_DATO = LocalDateTime.of(1990, 1, 1, 0, 0);
     private static final LocalDateTime TOM_DATO = LocalDateTime.of(2010, 1, 1, 0, 0);

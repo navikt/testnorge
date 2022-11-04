@@ -49,7 +49,7 @@ const getDisabledNasjonalitetField = (opts: any) => {
 	const antallUtflyttet = utflytting ? utflytting.length : 0
 
 	if (antallInnflyttet === 0) {
-		return antallUtflyttet > 0 ? utvandret : innvandret
+		return antallUtflyttet > 0 ? utvandret : ''
 	} else if (antallUtflyttet === 0) {
 		return innvandret
 	} else {

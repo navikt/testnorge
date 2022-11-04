@@ -53,6 +53,7 @@ public class ArbeidsforholdGetCommand implements Callable<Mono<ArbeidsforholdRes
                         .eksisterendeArbeidsforhold(Arrays.asList(arbeidsforhold1))
                         .miljo(miljoe)
                         .build())
+                .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
                         .miljo(miljoe)
                         .error(error)

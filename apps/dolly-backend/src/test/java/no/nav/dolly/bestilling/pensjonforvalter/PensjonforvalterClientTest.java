@@ -53,7 +53,7 @@ public class PensjonforvalterClientTest {
 
     @BeforeEach
     public void setup() {
-        when(errorStatusDecoder.decodeRuntimeException(any())).thenReturn("Teknisk feil. Se logg!");
+        when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
         when(mapperFacade.map(any(Person.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
     }
 

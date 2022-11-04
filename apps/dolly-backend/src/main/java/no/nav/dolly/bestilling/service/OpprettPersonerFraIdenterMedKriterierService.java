@@ -76,7 +76,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     @Async
     public void executeAsync(Bestilling bestilling) {
 
-        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
+        log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
@@ -151,7 +151,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                         progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getMessage());
                     }
                 } catch (RuntimeException e) {
-                    progress.setFeil("NA:" + errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setFeil("NA:" + errorStatusDecoder.decodeThrowable(e));
                 } finally {
                     transactionHelperService.persist(progress);
                 }

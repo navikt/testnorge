@@ -26,6 +26,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -71,7 +72,7 @@ public class DollyBestillingService {
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
         try {
-            log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
+            log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
             var testident = identService.getTestIdent(bestilling.getIdent());
@@ -104,7 +105,7 @@ public class DollyBestillingService {
                 } catch (WebClientResponseException e) {
 
                     dollyPerson = DollyPerson.builder().hovedperson(bestilling.getIdent()).master(PDLF).build();
-                    progress.setPdlDataStatus(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setPdlDataStatus(errorStatusDecoder.decodeThrowable(e));
                 }
 
             } else {
@@ -221,5 +222,26 @@ public class DollyBestillingService {
     public static List<String> getEnvironments(String miljoer){
 
         return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
+    }
+
+    public static String getBestillingType(Bestilling bestilling) {
+
+        if (bestilling.getOpprettetFraId() != null) {
+            return "gjenopprett fra bestilling " + bestilling.getOpprettetFraId();
+        }
+        if (bestilling.getOpprettetFraGruppeId() != null) {
+            return "gjenopprett fra gruppe " + bestilling.getOpprettetFraGruppeId();
+        }
+        if (StringUtils.isNotBlank(bestilling.getPdlImport())) {
+            return "testnorge import (" + bestilling.getPdlImport() + ") ";
+        }
+        if (StringUtils.isNotBlank(bestilling.getGjenopprettetFraIdent())) {
+            return "opprett fra ident " + bestilling.getGjenopprettetFraIdent();
+        }
+        if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
+            return "opprett fra eksisterende identer (" + bestilling.getOpprettFraIdenter() + ") ";
+        }
+
+        return "ny bestilling";
     }
 }

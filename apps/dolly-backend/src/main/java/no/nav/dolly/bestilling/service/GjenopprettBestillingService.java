@@ -67,8 +67,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
     @Async
     public void executeAsync(Bestilling bestilling) {
-
-        log.info("Bestilling med id=#{} er startet ...", bestilling.getId());
+        log.info("Bestilling med id=#{} og type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
@@ -134,7 +133,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                     progress.setFeil(errorStatusDecoder.decodeException(e));
 
                 } catch (RuntimeException e) {
-                    progress.setFeil(errorStatusDecoder.decodeRuntimeException(e));
+                    progress.setFeil(errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
                     transactionHelperService.persist(progress);

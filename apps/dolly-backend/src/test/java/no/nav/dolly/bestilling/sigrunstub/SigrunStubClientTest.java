@@ -65,7 +65,7 @@ public class SigrunStubClientTest {
         BestillingProgress progress = new BestillingProgress();
         when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenThrow(HttpClientErrorException.class);
-        when(errorStatusDecoder.decodeRuntimeException(any(RuntimeException.class))).thenReturn("Feil:");
+        when(errorStatusDecoder.decodeThrowable(any(RuntimeException.class))).thenReturn("Feil:");
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));

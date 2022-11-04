@@ -68,7 +68,7 @@ export const SearchOptions: React.FC<SearchOptionsProps> = (props: SearchOptions
 				numSelected={getCount(AlderPaths, props.formikBag)}
 				disabled={disabled}
 			>
-				<Alder />
+				<Alder formikBag={props.formikBag} />
 			</OptionsPanel>
 			<OptionsPanel
 				heading={'Adresser'}

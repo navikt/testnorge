@@ -62,7 +62,7 @@ public class InstdataClient implements ClientRegister {
                         status.append(',')
                                 .append(environment)
                                 .append(':')
-                                .append(errorStatusDecoder.decodeRuntimeException(e));
+                                .append(errorStatusDecoder.decodeThrowable(e));
 
                         log.error("Feilet å legge til opphold for person: {} til INST miljø: {}", dollyPerson.getHovedperson(), environment, e);
                     }

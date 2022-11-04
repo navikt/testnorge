@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.inntektstub;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -35,6 +36,8 @@ public class InntektstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
+            log.info("Mottok inntektstub med info: {}", Json.pretty(bestilling.getInntektstub().getInntektsinformasjon()));
+
             bestilling.getInntektstub().getInntektsinformasjon()
                     .forEach(inntekter ->
                             inntekter.getInntektsliste()
@@ -58,7 +61,7 @@ public class InntektstubClient implements ClientRegister {
                 }
 
             } catch (RuntimeException e) {
-                progress.setInntektstubStatus(errorStatusDecoder.decodeRuntimeException(e));
+                progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
     }
@@ -104,7 +107,7 @@ public class InntektstubClient implements ClientRegister {
 
         } catch (RuntimeException e) {
 
-            progress.setInntektstubStatus(errorStatusDecoder.decodeRuntimeException(e));
+            progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
 
             log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
         }
