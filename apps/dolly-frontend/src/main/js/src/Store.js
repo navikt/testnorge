@@ -14,7 +14,6 @@ import redigertePersonerReducer from './ducks/redigertePersoner'
 import commonReducer from '~/ducks/common'
 import { createReduxHistoryContext, LOCATION_CHANGE } from 'redux-first-history'
 import { createBrowserHistory } from 'history'
-import fasteDataReducer from './ducks/fastedata'
 import { configureStore } from '@reduxjs/toolkit'
 
 const locationMiddleware = (reduxStore) => (next) => (action) => {
@@ -53,7 +52,6 @@ const rootReducer = () =>
 		varslinger: varslingerReducer,
 		finnPerson: finnPersonReducer,
 		redigertePersoner: redigertePersonerReducer,
-		fasteData: fasteDataReducer,
 	})
 
 export const store = configureStore({

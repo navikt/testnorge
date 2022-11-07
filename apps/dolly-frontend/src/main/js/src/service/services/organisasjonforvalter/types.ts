@@ -14,6 +14,7 @@ export type Organisasjon = {
 	adresser?: Adresse[]
 	underenheter?: Organisasjon[]
 	juridiskEnhet?: string
+	opprinnelse?: string
 }
 
 export type Adresse = {
@@ -25,4 +26,29 @@ export type Adresse = {
 	kommunenr?: string
 	landkode?: string
 	vegadresseId?: string
+}
+
+export type OrganisasjonFasteData = {
+	orgnummer: string
+	enhetstype: string
+	navn: string
+	redigertNavn?: string
+	epost?: string
+	internetAdresse?: string
+	naeringskode?: string
+	overenhet?: string
+	forretningsAdresse?: AdresseFasteData
+	postadresse?: AdresseFasteData
+	opprinnelse?: string
+	tags: string[]
+}
+
+export type AdresseFasteData = {
+	adresselinje1?: string
+	adresselinje2?: string
+	adresselinje3?: string
+	postnr?: string
+	kommunenr?: string
+	landkode?: string
+	poststed?: string
 }

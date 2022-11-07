@@ -1,59 +1,40 @@
 import * as React from 'react'
-import { useEffect } from 'react'
-import { Organisasjon } from '~/service/services/organisasjonFasteDataService/OrganisasjonFasteDataService'
 import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import Loading from '~/components/ui/loading/Loading'
+import { useDollyFasteDataOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 
 type OrganisasjonLoaderProps = {
 	kanHaArbeidsforhold?: boolean
 	valueNavn?: boolean
 	label?: string
-	organisasjoner: Organisasjon[]
-	hentOrganisasjoner: Function
 	path: string
-	handleChange?: Function
-	afterChange?: Function
+	handleChange?: (val) => void
+	afterChange?: (val) => void
 	value: any
 	feil?: any
 	useFormikSelect?: boolean
-	isLoading: boolean
 }
 
 export const OrganisasjonLoader = ({
 	kanHaArbeidsforhold,
 	valueNavn = false,
 	label,
-	organisasjoner,
-	hentOrganisasjoner,
 	path,
 	handleChange,
 	afterChange,
 	useFormikSelect,
 	feil,
 	value,
-	isLoading,
 }: OrganisasjonLoaderProps) => {
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
-	useEffect(() => {
-		if (!organisasjoner) {
-			hentOrganisasjoner('DOLLY', kanHaArbeidsforhold)
-		}
-	}, [])
+	const { organisasjoner } = useDollyFasteDataOrganisasjoner(kanHaArbeidsforhold)
 
-	if (isLoading) {
-		return <Loading label="Laster organisasjoner" />
-	}
-	if (!organisasjoner) {
-		return null
-	}
-
-	const formatLabel = (org: Organisasjon) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`
-	const organisasjonerSorted = [...organisasjoner]
+	const formatLabel = (org) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`
+	const organisasjonerSorted = organisasjoner
 		.filter((virksomhet) =>
 			kanHaArbeidsforhold ? validEnhetstyper.includes(virksomhet.enhetstype) : true
 		)
-		.sort(function (a: Organisasjon, b: Organisasjon) {
+		.sort(function (a, b) {
 			if (a.opprinnelse < b.opprinnelse) {
 				return 1
 			}
@@ -62,7 +43,7 @@ export const OrganisasjonLoader = ({
 			}
 			return 0
 		})
-		.map((response: Organisasjon) => ({
+		.map((response) => ({
 			value: valueNavn ? response.navn : response.orgnummer,
 			label: formatLabel(response),
 			orgnr: response.orgnummer,
@@ -71,6 +52,7 @@ export const OrganisasjonLoader = ({
 			forretningsAdresse: response.forretningsAdresse,
 			postadresse: response.postadresse,
 		}))
+
 	return useFormikSelect ? (
 		<FormikSelect
 			name={path}

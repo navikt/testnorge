@@ -6,16 +6,15 @@ import {
 	inputValg,
 	OrganisasjonToogleGruppe,
 } from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { AlertStripeAdvarsel } from 'nav-frontend-alertstriper'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import { OrganisasjonLoader } from '~/components/organisasjonSelect/OrganisasjonLoader'
 
 interface OrgnrToggleProps {
 	path: string
-	formikBag: FormikProps<{}>
-	setEnhetsinfo: (org: any, path: string) => {}
-	warningMessage?: AlertStripeAdvarsel
+	formikBag: FormikProps<any>
+	setEnhetsinfo: (org: any, path: string) => Record<string, unknown>
+	warningMessage?: any
 }
 
 export const OrgnrToggle = ({
@@ -33,7 +32,7 @@ export const OrgnrToggle = ({
 	}
 
 	const clearEnhetsinfo = () => {
-		const oldValues = _get(formikBag.values, path)
+		const oldValues = _get(formikBag.values, path) || {}
 		if (oldValues.hasOwnProperty('foretaksNavn')) {
 			delete oldValues['foretaksNavn']
 		}
@@ -55,7 +54,7 @@ export const OrgnrToggle = ({
 		<div className="toggle--wrapper">
 			<OrganisasjonToogleGruppe inputType={inputType} handleToggleChange={handleToggleChange} />
 			{inputType === inputValg.fraFellesListe && (
-				<OrganisasjonLoaderConnector
+				<OrganisasjonLoader
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
 					value={_get(formikBag.values, `${path}.orgNr`)}
