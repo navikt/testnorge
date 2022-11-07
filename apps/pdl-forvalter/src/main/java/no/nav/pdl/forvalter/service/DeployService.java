@@ -24,12 +24,12 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public List<Ordre> createOrder(PdlArtifact type, String ident, DbVersjonDTO artifact) {
+    public List<Ordre> createOrdre(PdlArtifact type, String ident, DbVersjonDTO artifact) {
 
-        return createOrder(type, ident, List.of(artifact), true);
+        return createOrdre(type, ident, List.of(artifact), true);
     }
 
-    public List<Ordre> createOrder(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter, boolean flere) {
+    public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter, boolean flere) {
 
         return flere && artifacter.size() > 1 || !flere && artifacter.size() < 2 ?
 

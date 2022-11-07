@@ -119,6 +119,17 @@ public class PdlOrdreService {
                 .collect(Collectors.toSet());
     }
 
+    private static List<OrdreResponseDTO.PdlStatusDTO> getPersonHendelser(String ident, List<OrdreResponseDTO.PdlStatusDTO> hendelser) {
+
+        return hendelser.stream()
+                .filter(hendelse -> ident.equals(hendelse.getIdent()))
+                .map(hendelse -> OrdreResponseDTO.PdlStatusDTO.builder()
+                        .infoElement(hendelse.getInfoElement())
+                        .hendelser(hendelse.getHendelser())
+                        .build())
+                .toList();
+    }
+
     public OrdreResponseDTO send(String ident, Boolean isTpsMaster, Boolean ekskluderEksterenePersoner) {
 
         var timestamp = System.currentTimeMillis();
@@ -170,17 +181,6 @@ public class PdlOrdreService {
         return respons;
     }
 
-    private List<OrdreResponseDTO.PdlStatusDTO> getPersonHendelser(String ident, List<OrdreResponseDTO.PdlStatusDTO> hendelser) {
-
-        return hendelser.stream()
-                .filter(hendelse -> ident.equals(hendelse.getIdent()))
-                .map(hendelse -> OrdreResponseDTO.PdlStatusDTO.builder()
-                        .infoElement(hendelse.getInfoElement())
-                        .hendelser(hendelse.getHendelser())
-                        .build())
-                .toList();
-    }
-
     private void checkAlias(String ident) {
 
         var alias = aliasRepository.findByTidligereIdent(ident);
@@ -196,11 +196,11 @@ public class PdlOrdreService {
                 OrdreRequest.builder()
                         .sletting(opprettinger.stream()
                                 .filter(OpprettRequest::isSkalSlettes)
-                                .map(oppretting -> deployService.createOrder(PDL_SLETTING, oppretting.getPerson().getIdent(), new PdlDelete()))
+                                .map(oppretting -> deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), new PdlDelete()))
                                 .toList())
                         .oppretting(opprettinger.stream()
                                 .map(oppretting ->
-                                        deployService.createOrder(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
+                                        deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
                                                 OpprettIdent.builder()
                                                         .historiskeIdenter(oppretting.getPerson().getAlias().stream().map(DbAlias::getTidligereIdent).toList())
                                                         .opphoert(!oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().isEmpty() &&
@@ -218,32 +218,32 @@ public class PdlOrdreService {
 
     private List<Ordre> getOrderer(OpprettRequest oppretting, boolean flere) {
         return Stream.of(
-                        deployService.createOrder(PDL_NAVN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavn(), flere),
-                        deployService.createOrder(PDL_KJOENN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKjoenn(), flere),
-                        deployService.createOrder(PDL_FOEDSEL, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getFoedsel(), flere),
-                        deployService.createOrder(PDL_FOLKEREGISTER_PERSONSTATUS, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFolkeregisterPersonstatus(), FolkeregisterPersonstatus.class), flere),
-                        deployService.createOrder(PDL_STATSBORGERSKAP, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getStatsborgerskap(), flere),
-                        deployService.createOrder(PDL_KONTAKTADRESSE, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getKontaktadresse(), PdlKontaktadresse.class), flere),
-                        deployService.createOrder(PDL_BOSTEDADRESSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getBostedsadresse(), flere),
-                        deployService.createOrder(PDL_OPPHOLDSADRESSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getOppholdsadresse(), flere),
-                        deployService.createOrder(PDL_INNFLYTTING, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getInnflytting(), PdlInnflytting.class), flere),
-                        deployService.createOrder(PDL_UTFLYTTING, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getUtflytting(), flere),
-                        deployService.createOrder(PDL_DELTBOSTED, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDeltBosted(), flere),
-                        deployService.createOrder(PDL_FORELDREANSVAR, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getForeldreansvar(), PdlForeldreansvar.class), flere),
-                        deployService.createOrder(PDL_FORELDRE_BARN_RELASJON, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForelderBarnRelasjon(), flere),
-                        deployService.createOrder(PDL_SIVILSTAND, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getSivilstand(), PdlSivilstand.class), flere),
-                        deployService.createOrder(PDL_VERGEMAAL, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getVergemaal(), PdlVergemaal.class), flere),
-                        deployService.createOrder(PDL_FULLMAKT, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getFullmakt(), flere),
-                        deployService.createOrder(PDL_TELEFONUMMER, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getTelefonnummer(), flere),
-                        deployService.createOrder(PDL_OPPHOLD, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getOpphold(), flere),
-                        deployService.createOrder(PDL_DOEDSFALL, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedsfall(), flere),
-                        deployService.createOrder(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKontaktinformasjonForDoedsbo(), flere),
-                        deployService.createOrder(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getUtenlandskIdentifikasjonsnummer(), flere),
-                        deployService.createOrder(PDL_FALSK_IDENTITET, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFalskIdentitet(), PdlFalskIdentitet.class), flere),
-                        deployService.createOrder(PDL_TILRETTELAGT_KOMMUNIKASJON, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class), flere),
-                        deployService.createOrder(PDL_ADRESSEBESKYTTELSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getAdressebeskyttelse(), flere),
-                        deployService.createOrder(PDL_DOEDFOEDT_BARN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedfoedtBarn(), flere),
-                        deployService.createOrder(PDL_SIKKERHETSTILTAK_URL, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getSikkerhetstiltak(), flere))
+                        deployService.createOrdre(PDL_NAVN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavn(), flere),
+                        deployService.createOrdre(PDL_KJOENN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKjoenn(), flere),
+                        deployService.createOrdre(PDL_FOEDSEL, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getFoedsel(), flere),
+                        deployService.createOrdre(PDL_FOLKEREGISTER_PERSONSTATUS, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFolkeregisterPersonstatus(), FolkeregisterPersonstatus.class), flere),
+                        deployService.createOrdre(PDL_STATSBORGERSKAP, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getStatsborgerskap(), flere),
+                        deployService.createOrdre(PDL_KONTAKTADRESSE, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getKontaktadresse(), PdlKontaktadresse.class), flere),
+                        deployService.createOrdre(PDL_BOSTEDADRESSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getBostedsadresse(), flere),
+                        deployService.createOrdre(PDL_OPPHOLDSADRESSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getOppholdsadresse(), flere),
+                        deployService.createOrdre(PDL_INNFLYTTING, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getInnflytting(), PdlInnflytting.class), flere),
+                        deployService.createOrdre(PDL_UTFLYTTING, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getUtflytting(), flere),
+                        deployService.createOrdre(PDL_DELTBOSTED, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDeltBosted(), flere),
+                        deployService.createOrdre(PDL_FORELDREANSVAR, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getForeldreansvar(), PdlForeldreansvar.class), flere),
+                        deployService.createOrdre(PDL_FORELDRE_BARN_RELASJON, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getForelderBarnRelasjon(), flere),
+                        deployService.createOrdre(PDL_SIVILSTAND, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getSivilstand(), PdlSivilstand.class), flere),
+                        deployService.createOrdre(PDL_VERGEMAAL, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getVergemaal(), PdlVergemaal.class), flere),
+                        deployService.createOrdre(PDL_FULLMAKT, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getFullmakt(), flere),
+                        deployService.createOrdre(PDL_TELEFONUMMER, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getTelefonnummer(), flere),
+                        deployService.createOrdre(PDL_OPPHOLD, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getOpphold(), flere),
+                        deployService.createOrdre(PDL_DOEDSFALL, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedsfall(), flere),
+                        deployService.createOrdre(PDL_KONTAKTINFORMASJON_FOR_DODESDBO, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKontaktinformasjonForDoedsbo(), flere),
+                        deployService.createOrdre(PDL_UTENLANDS_IDENTIFIKASJON_NUMMER, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getUtenlandskIdentifikasjonsnummer(), flere),
+                        deployService.createOrdre(PDL_FALSK_IDENTITET, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFalskIdentitet(), PdlFalskIdentitet.class), flere),
+                        deployService.createOrdre(PDL_TILRETTELAGT_KOMMUNIKASJON, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getTilrettelagtKommunikasjon(), PdlTilrettelagtKommunikasjon.class), flere),
+                        deployService.createOrdre(PDL_ADRESSEBESKYTTELSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getAdressebeskyttelse(), flere),
+                        deployService.createOrdre(PDL_DOEDFOEDT_BARN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getDoedfoedtBarn(), flere),
+                        deployService.createOrdre(PDL_SIKKERHETSTILTAK_URL, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getSikkerhetstiltak(), flere))
                 .flatMap(Collection::stream)
                 .toList();
     }
