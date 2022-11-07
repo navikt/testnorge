@@ -4,7 +4,7 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Alert } from '@navikt/ds-react'
+import { Alert, Tabs } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 
@@ -51,13 +51,33 @@ export const TpVisning = ({ data, loading }) => {
 					Kunne ikke hente tjenestepensjon-data på person
 				</Alert>
 			) : (
-				<DollyFieldArray data={data} nested>
-					{(ordning, idx) => (
-						<div className="person-visning_content" key={idx}>
-							<TitleValue size="large" title="Ordning" value={ordningNavn(ordning.ordning)} />
-						</div>
-					)}
-				</DollyFieldArray>
+				<Tabs size="small" defaultValue="q1">
+					<Tabs.List>
+						{/*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*/}
+						<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />
+						<Tabs.Tab value="q2" label="Q2" />
+						<Tabs.Tab value="q3" label="Q3" />
+					</Tabs.List>
+					<Tabs.Panel value="q1" style={{ marginTop: '10px' }}>
+						<DollyFieldArray data={data} nested>
+							{(ordning, idx) => (
+								<div className="person-visning_content" key={idx}>
+									<TitleValue size="large" title="Ordning" value={ordningNavn(ordning.ordning)} />
+								</div>
+							)}
+						</DollyFieldArray>
+					</Tabs.Panel>
+					<Tabs.Panel value="q2" style={{ marginTop: '10px', marginBottom: '15px' }}>
+						<Alert variant="info" size="small" inline>
+							Fant ingen pensjon-data i dette miljøet
+						</Alert>
+					</Tabs.Panel>
+					<Tabs.Panel value="q3" style={{ marginTop: '10px', marginBottom: '15px' }}>
+						<Alert variant="info" size="small" inline>
+							Fant ingen pensjon-data i dette miljøet
+						</Alert>
+					</Tabs.Panel>
+				</Tabs>
 			)}
 		</ErrorBoundary>
 	)
