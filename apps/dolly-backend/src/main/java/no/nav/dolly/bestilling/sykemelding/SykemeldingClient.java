@@ -154,7 +154,7 @@ public class SykemeldingClient implements ClientRegister {
         return null;
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return Stream.of(
                         sykemeldingConsumer.checkStatus(),
                         syntSykemeldingConsumer.checkStatus()

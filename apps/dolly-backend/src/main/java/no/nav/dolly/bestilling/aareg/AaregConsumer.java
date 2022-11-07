@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -71,20 +72,17 @@ public class AaregConsumer {
     }
 
     public Map<String, Object> checkStatus() {
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+        var statusWebClient = WebClient.builder().build();
+        var checkMap = new HashMap<String, Object>();
+
+        var statusMap = CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
+                statusWebClient);
         statusMap.put("team", "Dolly");
 
-//        var pensjonStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://pensjon-testdata-facade.dev.intern.nav.no/isAlive",
-//                "https://pensjon-testdata-facade.dev.intern.nav.no/isReady",
-//                WebClient.builder().build());
-//        pensjonStatus.put("team", "Pensjon");
+        checkMap.put("AAREG", statusMap);
 
-        return Map.of(
-                "AAREG", statusMap
-        );
+        return checkMap;
     }
 }

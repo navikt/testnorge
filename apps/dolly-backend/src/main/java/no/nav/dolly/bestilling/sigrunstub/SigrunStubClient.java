@@ -12,6 +12,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Log4j2
 @Service
@@ -53,7 +54,7 @@ public class SigrunStubClient implements ClientRegister {
                 .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return sigrunStubConsumer.checkStatus();
     }
 }

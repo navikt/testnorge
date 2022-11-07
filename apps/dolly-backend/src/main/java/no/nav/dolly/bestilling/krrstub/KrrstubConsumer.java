@@ -113,7 +113,7 @@ public class KrrstubConsumer {
     }
 
     public Map<String, Object> checkStatus() {
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+        var statusMap = CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
@@ -126,13 +126,6 @@ public class KrrstubConsumer {
                 WebClient.builder().build());
         digdirKrrStubStatus.put("team", "team-rocket");
         digdirKrrStubStatus.put("alive-url", "https://digdir-krr-stub.dev.intern.nav.no/internal/health/liveness");
-
-//        var dokarkivProxyStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive",
-//                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isReady",
-//                WebClient.builder().build());
-//        dokarkivProxyStatus.put("team", "Dolly");
-//        dokarkivProxyStatus.put("alive-url", "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive");
 
         return Map.of(
                 "krrstub-proxy", statusMap,

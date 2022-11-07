@@ -322,7 +322,7 @@ public class TpsMessagingClient implements ClientRegister {
         }
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return tpsMessagingConsumer.checkStatus();
     }
 }

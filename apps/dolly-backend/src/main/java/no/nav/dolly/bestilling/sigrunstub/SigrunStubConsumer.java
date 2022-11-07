@@ -110,17 +110,10 @@ public class SigrunStubConsumer {
 
         var sigrunStubStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive",
-                "https://sigrun-skd-stub.dev.adeo.no/internal/isReady",
+                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive", // samme url brukes for begge
                 WebClient.builder().build());
         sigrunStubStatus.put("team", "team-inntekt");
         sigrunStubStatus.put("alive-url", "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive");
-
-//        var dokarkivProxyStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive",
-//                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isReady",
-//                WebClient.builder().build());
-//        dokarkivProxyStatus.put("team", "Dolly");
-//        dokarkivProxyStatus.put("alive-url", "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive");
 
         return Map.of(
                 "SigrunStub-proxy", statusMap,

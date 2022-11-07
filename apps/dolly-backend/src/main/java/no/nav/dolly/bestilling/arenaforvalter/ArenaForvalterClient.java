@@ -21,6 +21,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -205,7 +206,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 .collect(Collectors.toList()));
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return arenaForvalterConsumer.checkStatus();
     }
 }

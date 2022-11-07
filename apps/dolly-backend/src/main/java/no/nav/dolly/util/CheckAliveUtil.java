@@ -40,18 +40,10 @@ public final class CheckAliveUtil {
     }
 
     public static Map<String, Object> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        try {
-            var map = new HashMap<String, Object>();
-            map.put("alive", checkIsAlive(webClient, aliveUrl));
-            map.put("ready", checkIsAlive(webClient, readyUrl));
-            return map;
-        } catch (SecurityException | WebClientResponseException ex) {
-            log.error("feilet mot URL: {}", aliveUrl, ex);
-            return Map.of(
-                "alive", "fail",
-                "ready", "fail"
-            );
-        }
+        var map = new HashMap<String, Object>();
+        map.put("alive", checkIsAlive(webClient, aliveUrl));
+        map.put("ready", checkIsAlive(webClient, readyUrl));
+        return map;
     }
 
     private String checkIsAlive(WebClient webClient, String accessToken, ServerProperties serverProperties) {
@@ -86,25 +78,8 @@ public final class CheckAliveUtil {
             String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), url);
             log.error(feilmelding, ex);
             return feilmelding;
-        }
-        return null;
-    }
-
-    private String checkIsReady(WebClient webClient, String url) {
-        try {
-            ResponseEntity<Void> response = webClient.get().uri(uriBuilder -> uriBuilder
-                            .path(url)
-                            .pathSegment("internal", "isReady")
-                            .build())
-                    .retrieve().toBodilessEntity()
-                    .block();
-            if (nonNull(response) && response.getStatusCode().is2xxSuccessful()) {
-                return response.getStatusCode().name();
-            }
-        } catch (WebClientResponseException ex) {
-            String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), url);
-            log.error(feilmelding, ex);
-            return feilmelding;
+        } catch (Exception e) {
+            return e.getMessage();
         }
         return null;
     }

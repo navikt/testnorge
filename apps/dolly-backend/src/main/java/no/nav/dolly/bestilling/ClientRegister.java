@@ -5,6 +5,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ClientRegister {
 
@@ -12,5 +13,5 @@ public interface ClientRegister {
 
     void release(List<String> identer);
 
-    Object status();
+    Map<String, Object> status();
 }

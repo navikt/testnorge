@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -93,7 +94,7 @@ public class KrrstubClient implements ClientRegister {
                     .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return krrstubConsumer.checkStatus();
     }
 }

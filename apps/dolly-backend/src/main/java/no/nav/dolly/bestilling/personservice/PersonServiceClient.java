@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 
@@ -65,7 +66,7 @@ public class PersonServiceClient implements ClientRegister {
         // Ikke relevant
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return personServiceConsumer.checkStatus();
     }
 }

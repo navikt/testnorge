@@ -12,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -55,7 +56,7 @@ public class PdlDataClient implements ClientRegister {
         // Sletting gjøres nå i PersonService
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return pdlDataConsumer.checkStatus();
     }
 }

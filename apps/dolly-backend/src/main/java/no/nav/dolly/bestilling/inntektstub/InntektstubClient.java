@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -110,7 +111,7 @@ public class InntektstubClient implements ClientRegister {
         }
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return inntektstubConsumer.checkStatus();
     }
 }

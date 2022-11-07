@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoFom;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoTom;
@@ -89,7 +90,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 SkjermingsDataRequest.class);
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return skjermingsRegisterConsumer.checkStatus();
     }
 }

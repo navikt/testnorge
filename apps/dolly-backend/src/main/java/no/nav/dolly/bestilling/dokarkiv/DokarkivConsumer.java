@@ -85,14 +85,14 @@ public class DokarkivConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    public Object checkStatus() {
+    public Map<String, Object> checkStatus() {
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
         statusMap.put("team", "Dolly");
 
-        var miljoerStatuser = Stream.of("q1", "q2", "q4", "q5", "qx", "t0", "t1", "t2", "t3", "t4", "t5", "t13")
+        Map<String, Object> miljoerStatuser = Stream.of("q1", "q2", "q4", "q5", "qx", "t0", "t1", "t2", "t3", "t4", "t5", "t13")
                 .map(miljo -> {
                     var url = "https://dokarkiv-" + miljo + ".dev.adeo.no";
                     var miljoStatus = CheckAliveUtil.checkConsumerStatus(
@@ -105,7 +105,7 @@ public class DokarkivConsumer {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         miljoerStatuser.put("Dokarkiv-proxy", statusMap);
-        return miljoerStatuser;
 
+        return miljoerStatuser;
     }
 }

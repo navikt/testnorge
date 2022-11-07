@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -69,7 +70,7 @@ public class KontoregisterClient implements ClientRegister {
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return kontoregisterConsumer.checkStatus();
     }
 }

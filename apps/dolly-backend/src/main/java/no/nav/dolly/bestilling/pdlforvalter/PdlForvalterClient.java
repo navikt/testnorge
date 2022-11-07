@@ -495,7 +495,7 @@ public class PdlForvalterClient implements ClientRegister {
         builder.append("&OK");
     }
 
-    public Object status() {
+    public Map<String, Object> status() {
         return Stream.of(
                         pdlForvalterConsumer.checkStatus(),
                         pdlDataConsumer.checkStatus()

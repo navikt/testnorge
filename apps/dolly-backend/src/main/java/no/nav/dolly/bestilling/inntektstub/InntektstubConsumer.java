@@ -22,6 +22,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -126,21 +127,25 @@ public class InntektstubConsumer {
     }
 
     public Map<String, Object> checkStatus() {
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+        var statusWebClient = WebClient.builder().build();
+        var checkMap = new HashMap<String, Object>();
+
+        var statusMap = CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
+                statusWebClient);
         statusMap.put("team", "Dolly");
 
-        var inntektStubStatusMap =  CheckAliveUtil.checkConsumerStatus(
+        checkMap.put("InntektStub-proxy", statusMap);
+
+        var inntektStubStatusMap = CheckAliveUtil.checkConsumerStatus(
                 "https://inntektstub.dev.adeo.no/internal/isAlive",
                 "https://inntektstub.dev.adeo.no/internal/isReady",
-                WebClient.builder().build());
+                statusWebClient);
         inntektStubStatusMap.put("team", "team-inntekt");
 
-        return Map.of(
-                "InntektStub-proxy", statusMap,
-                "InntektStub", inntektStubStatusMap
-        );
+        checkMap.put("InntektStub", inntektStubStatusMap);
+
+        return checkMap;
     }
 }
