@@ -15,6 +15,8 @@ import reactor.core.publisher.Flux;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,28 +24,37 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public List<Ordre> createOrder(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
-        return artifacter
-                .stream()
-                .sorted(Comparator.comparing(DbVersjonDTO::getId))
-                .map(element -> ArtifactValue.builder()
-                        .artifact(type)
-                        .ident(ident)
-                        .body(element)
-                        .build())
-                .map(value -> (Ordre) accessToken ->
-                        pdlTestdataConsumer.send(value, accessToken)
-                        .collectList()
-                        .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
-                                .builder()
+    public List<Ordre> createOrder(PdlArtifact type, String ident, DbVersjonDTO artifact) {
+
+        return createOrder(type, ident, List.of(artifact), true);
+    }
+
+    public List<Ordre> createOrder(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter, boolean flere) {
+
+        return flere && artifacter.size() > 1 || !flere && artifacter.size() < 2 ?
+
+                artifacter.stream()
+                        .sorted(Comparator.comparing(DbVersjonDTO::getId))
+                        .map(element -> ArtifactValue.builder()
+                                .artifact(type)
                                 .ident(ident)
-                                .infoElement(type)
-                                .hendelser(hendelser)
-                                .build()))
-                .toList();
+                                .body(element)
+                                .build())
+                        .map(value -> (Ordre) accessToken ->
+                                pdlTestdataConsumer.send(value, accessToken)
+                                        .collectList()
+                                        .map(hendelser -> OrdreResponseDTO.PdlStatusDTO
+                                                .builder()
+                                                .ident(ident)
+                                                .infoElement(type)
+                                                .hendelser(hendelser)
+                                                .build()))
+                        .toList() :
+                emptyList();
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {
+
         return pdlTestdataConsumer.send(ordres);
     }
 }
