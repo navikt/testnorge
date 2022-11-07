@@ -19,6 +19,9 @@ type AaregVisningProps = {
 	ident?: string
 	liste?: Array<Arbeidsforhold>
 	loading?: boolean
+	bestilteMiljoer?: {
+		value: Array<string>
+	}
 }
 
 type Arbeidsforhold = {
@@ -54,7 +57,7 @@ const getHeader = (data: Arbeidsforhold) => {
 	})`
 }
 
-export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
+export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
@@ -68,16 +71,12 @@ export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
 
 	const manglerFagsystemdata = sortedData?.length < 1
 
-	if (ident && manglerFagsystemdata) {
-		return null
-	}
-
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
-					Fant ikke arbeidsforhold-data på person i dette miljøet
+					Kunne ikke hente arbeidsforhold-data på person
 				</Alert>
 			) : (
 				<ErrorBoundary>
@@ -128,11 +127,10 @@ export const AaregVisning = ({ ident, liste, loading }: AaregVisningProps) => {
 								<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
 
 								<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
-
-								<ArbeidsforholdMiljoeInfo ident={ident} />
 							</React.Fragment>
 						)}
 					</DollyFieldArray>
+					<ArbeidsforholdMiljoeInfo ident={ident} bestilteMiljoer={bestilteMiljoer} />
 				</ErrorBoundary>
 			)}
 		</div>

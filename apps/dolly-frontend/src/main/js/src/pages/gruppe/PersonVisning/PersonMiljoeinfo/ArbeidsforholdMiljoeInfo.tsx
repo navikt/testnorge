@@ -6,9 +6,12 @@ import { ArbeidsforholdMiljoeVisning } from '~/pages/gruppe/PersonVisning/Person
 
 type PersonMiljoeinfoProps = {
 	ident: string
+	bestilteMiljoer: {
+		value: Array<string>
+	}
 }
 
-export const ArbeidsforholdMiljoeInfo = ({ ident }: PersonMiljoeinfoProps) => {
+export const ArbeidsforholdMiljoeInfo = ({ ident, bestilteMiljoer }: PersonMiljoeinfoProps) => {
 	const { loading: loading, dollyEnvironments } = useDollyEnvironments()
 
 	const unsupportedEnvironments = ['t0', 't13', 'qx']
@@ -24,35 +27,35 @@ export const ArbeidsforholdMiljoeInfo = ({ ident }: PersonMiljoeinfoProps) => {
 	const environmentArray = dollyEnvironments?.Q?.concat(dollyEnvironments?.T)?.filter(
 		(miljoe) => !unsupportedEnvironments.includes(miljoe.id)
 	)
-
 	return (
-		<div>
-			<div className="flexbox--flex-wrap">
-				{/* @ts-ignore */}
-				{environmentArray?.map((miljoe, idx) => {
-					return (
-						<DollyTooltip
-							overlay={<ArbeidsforholdMiljoeVisning ident={ident} miljoe={miljoe.id} />}
-							align={{
-								offset: [0, -10],
-							}}
-							arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
-							key={idx}
-							overlayStyle={{ opacity: 1 }}
-						>
-							<div className="miljoe-knapp">{miljoe?.id?.toUpperCase()}</div>
-						</DollyTooltip>
-					)
-				})}
-				{dollyEnvironments && (
-					<p>
-						<i>
-							Hold pekeren over et miljø for å se arbeidsforholdene som finnes på denne personen i
-							det aktuelle miljøet.
-						</i>
-					</p>
-				)}
-			</div>
+		<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
+			{/* @ts-ignore */}
+			{environmentArray?.map((miljoe, idx) => {
+				const miljoeClassName = bestilteMiljoer?.value?.includes(miljoe.id)
+					? 'miljoe-knapp'
+					: 'miljoe-knapp miljoe-knapp-grey'
+				return (
+					<DollyTooltip
+						overlay={<ArbeidsforholdMiljoeVisning ident={ident} miljoe={miljoe.id} />}
+						align={{
+							offset: [0, -10],
+						}}
+						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+						key={idx}
+						overlayStyle={{ opacity: 1 }}
+					>
+						<div className={miljoeClassName}>{miljoe?.id?.toUpperCase()}</div>
+					</DollyTooltip>
+				)
+			})}
+			{dollyEnvironments && (
+				<p>
+					<i>
+						Hold pekeren over et miljø for å se arbeidsforholdene som finnes på denne personen i det
+						aktuelle miljøet.
+					</i>
+				</p>
+			)}
 		</div>
 	)
 }
