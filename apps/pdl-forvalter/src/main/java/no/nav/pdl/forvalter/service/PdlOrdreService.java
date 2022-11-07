@@ -42,6 +42,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.OPPHOERT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_ADRESSEBESKYTTELSE;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_BOSTEDADRESSE;
@@ -121,13 +123,15 @@ public class PdlOrdreService {
 
     private static List<OrdreResponseDTO.PdlStatusDTO> getPersonHendelser(String ident, List<OrdreResponseDTO.PdlStatusDTO> hendelser) {
 
-        return hendelser.stream()
+        return nonNull(hendelser) ?
+                hendelser.stream()
                 .filter(hendelse -> ident.equals(hendelse.getIdent()))
                 .map(hendelse -> OrdreResponseDTO.PdlStatusDTO.builder()
                         .infoElement(hendelse.getInfoElement())
                         .hendelser(hendelse.getHendelser())
                         .build())
-                .toList();
+                .toList() :
+                emptyList();
     }
 
     public OrdreResponseDTO send(String ident, Boolean isTpsMaster, Boolean ekskluderEksterenePersoner) {

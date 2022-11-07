@@ -26,7 +26,7 @@ public class DeployService {
 
     public List<Ordre> createOrdre(PdlArtifact type, String ident, DbVersjonDTO artifact) {
 
-        return createOrdre(type, ident, List.of(artifact), true);
+        return createOrdre(type, ident, List.of(artifact), false);
     }
 
     public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter, boolean flere) {
