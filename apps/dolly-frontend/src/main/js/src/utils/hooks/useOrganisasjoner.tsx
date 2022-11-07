@@ -1,8 +1,9 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher, multiFetcher } from '~/api'
 import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
@@ -13,8 +14,12 @@ const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
 
-const getArbeidsforholdUrl = (miljoe: string) =>
-	`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
+const getArbeidsforholdUrl = (miljoer: string[]) => {
+	return miljoer.map(
+		(miljoe) =>
+			`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
+	)
+}
 
 export type Bestillingsstatus = {
 	id: number
@@ -59,7 +64,10 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 4000 : 0 }
+		{
+			refreshInterval: autoRefresh ? 4000 : 0,
+			dedupingInterval: autoRefresh ? 4000 : 0,
+		}
 	)
 
 	const bestillingerSorted = data
@@ -94,7 +102,10 @@ export const useOrganisasjonBestillingStatus = (
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingStatusUrl(bestillingId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 3000 : 0 }
+		{
+			refreshInterval: autoRefresh ? 4000 : 0,
+			dedupingInterval: autoRefresh ? 4000 : 0,
+		}
 	)
 
 	return {
@@ -104,11 +115,17 @@ export const useOrganisasjonBestillingStatus = (
 	}
 }
 
-export const useArbeidsforhold = (ident: string, miljoe: string, harAaregBestilling: boolean) => {
-	if (!ident || !miljoe) {
+export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
+	const { dollyEnvironmentList } = useDollyEnvironments()
+	const unsupportedEnvironments = ['t0', 't13', 'qx']
+	const filteredEnvironments = dollyEnvironmentList
+		?.map((miljoe) => miljoe.id)
+		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))
+
+	if (!ident) {
 		return {
 			loading: false,
-			error: 'Ident eller miljø mangler!',
+			error: 'Ident mangler!',
 		}
 	}
 
@@ -118,13 +135,16 @@ export const useArbeidsforhold = (ident: string, miljoe: string, harAaregBestill
 		}
 	}
 
+	const miljoer = miljoe ? [miljoe] : filteredEnvironments
+
 	const { data, error } = useSWR<Arbeidsforhold[], Error>(
-		[getArbeidsforholdUrl(miljoe), { 'Nav-Personident': ident }],
-		fetcher
+		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
+		multiFetcher,
+		{ dedupingInterval: 50000 }
 	)
 
 	return {
-		arbeidsforhold: data,
+		arbeidsforhold: data?.[0],
 		loading: !error && !data,
 		error: error,
 	}

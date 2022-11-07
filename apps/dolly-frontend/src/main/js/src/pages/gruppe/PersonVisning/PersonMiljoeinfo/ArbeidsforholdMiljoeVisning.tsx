@@ -10,7 +10,7 @@ type PersonMiljoeinfoProps = {
 }
 
 export const ArbeidsforholdMiljoeVisning = ({ ident, miljoe }: PersonMiljoeinfoProps) => {
-	const { loading, arbeidsforhold, error } = useArbeidsforhold(ident, miljoe, true)
+	const { loading, arbeidsforhold, error } = useArbeidsforhold(ident, true, miljoe)
 
 	if (error || !arbeidsforhold) {
 		return null

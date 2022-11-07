@@ -10,8 +10,10 @@ export const useDollyEnvironments = () => {
 		fallbackData: prefetchedMiljoer,
 	})
 
+	const environmentsSortedByType = _getEnvironmentsSortedByType(data)
 	return {
-		dollyEnvironments: _getEnvironmentsSortedByType(data),
+		dollyEnvironments: environmentsSortedByType,
+		dollyEnvironmentList: environmentsSortedByType.Q?.concat(environmentsSortedByType?.T),
 		loading: !error && !data,
 		error: error,
 	}

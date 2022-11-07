@@ -47,6 +47,7 @@ export const useGruppeById = (
 		fetcher,
 		{
 			refreshInterval: autoRefresh ? 2000 : null,
+			dedupingInterval: autoRefresh ? 2000 : null,
 		}
 	)
 
