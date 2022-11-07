@@ -52,10 +52,20 @@ consumers:
     url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren
   testnorge-tp:
     url: http://localhost:${wiremock.server.port:0}/testnorge-tp
-  testnorge-aareg:
-    url: http://localhost:${wiremock.server.port:0}/testnorge-aareg/api
   krr-stub:
     url: http://localhost:${wiremock.server.port:0}/krr-stub/api
+  synthdata-aareg:
+    url: http://localhost:${wiremock.server.port:0}/synt-aareg
+  kodeverk:
+    url: http://localhost:${wiremock.server.port:0}/kodeverk
+  testnav-aaregister-proxy:
+    url: http://localhost:${wiremock.server.port:0}/aareg
+    name: testnav-aaregister-proxy
+    cluster: dummy
+    namespace: dolly
+
+aareg:
+  pageSize: 2
 
 tps.statisk.avspillergruppeId: 1
 

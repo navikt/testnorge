@@ -20,11 +20,12 @@ public class RsAaregSyntetiseringsRequest {
 
     private Arbeidsavtale getArbeidsavtale(){
         var arbeidsforholdType = arbeidsforhold.getArbeidsforholdstype();
-        Arbeidsavtale avtale = switch (arbeidsforholdType){
-            case "ordinaertArbeidsforhold" -> OrdinaerArbeidsavtale.builder().build();
-            case "maritimtArbeidsforhold" -> MaritimArbeidsavtale.builder().build();
-            case "frilanserOppdragstakerHonorarPersonerMm'" -> FrilanserArbeidsavtale.builder().build();
-            case "forenkletOppgjoersordning" -> ForenkletOppgjoersordningArbeidsavtale.builder().build();
+        Arbeidsavtale avtale;
+        switch (arbeidsforholdType){
+            case "maritimtArbeidsforhold" -> avtale = new MaritimArbeidsavtale();
+            case "frilanserOppdragstakerHonorarPersonerMm'" -> avtale = new FrilanserArbeidsavtale();
+            case "forenkletOppgjoersordning" ->  avtale = new ForenkletOppgjoersordningArbeidsavtale();
+            default -> avtale = new OrdinaerArbeidsavtale();
         };
 
         avtale.setArbeidstidsordning(arbeidsforhold.getArbeidsavtale().getArbeidstidsordning());
@@ -38,6 +39,7 @@ public class RsAaregSyntetiseringsRequest {
     }
 
     public Arbeidsforhold mapToArbeidsforhold(){
+        //todo map permisjon og utenlandsopphold
         return Arbeidsforhold.builder()
                 .arbeidsforholdId(arbeidsforhold.getArbeidsforholdID())
                 .arbeidsgiver(Organisasjon.builder()

@@ -58,14 +58,21 @@ consumers:
     url: https://testnorge-hodejegeren.dev.intern.nav.no
   testnorge-tp:
     url: https://testnorge-tp.dev.intern.nav.no
-  testnorge-aareg:
-    url: https://testnorge-aareg.dev.intern.nav.no/api
   krr-stub:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
     url: https://nais-synthdata-aareg.dev.intern.nav.no
   kodeverk:
     url: https://kodeverk.dev.adeo.no
+  testnav-aaregister-proxy:
+    url: https://testnav-aaregister-proxy.dev.intern.nav.no
+    name: testnav-aaregister-proxy
+    cluster: dev-fss
+    namespace: dolly
+
+aareg:
+  pageSize: 50
+
 management:
   endpoints:
     enabled-by-default: true
