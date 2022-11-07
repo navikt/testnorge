@@ -69,9 +69,7 @@ export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 export const PensjonvisningMiljo = ({ data, miljoe }) => {
 	const pensjonMiljoeInfo = data.find((m) => m.miljo == miljoe.toString())
 
-	return !pensjonMiljoeInfo ||
-		!pensjonMiljoeInfo?.inntekter ||
-		pensjonMiljoeInfo?.inntekter?.length < 1 ? (
+	return pensjonMiljoeInfo?.inntekter?.length < 1 ? (
 		<Alert variant="info" size="small" inline>
 			Fant ingen pensjon-data i dette miljøet
 		</Alert>
