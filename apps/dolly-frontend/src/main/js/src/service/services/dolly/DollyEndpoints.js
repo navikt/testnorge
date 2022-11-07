@@ -17,6 +17,8 @@ const dokarkivBase = `${uri}/dokarkiv`
 const skjermingBase = `${uri}/skjerming`
 const inntektsmeldingBase = `${uri}/inntektsmelding`
 const organisasjonBase = `${uri}/organisasjon`
+const poppBase = `${uri}/popp`
+const tpBase = `${uri}/tp`
 
 export default class DollyEndpoints {
 	static gruppe() {
@@ -210,5 +212,21 @@ export default class DollyEndpoints {
 
 	static malBestillingOrganisasjon(malId) {
 		return `${organisasjonBase}/bestilling/malbestilling/${malId}`
+	}
+
+	static getPoppMiljoer() {
+		return `${poppBase}/miljoe`
+	}
+
+	static getPoppInntekter(ident, miljoe) {
+		return `${poppBase}/inntekt/${ident}/${miljoe}`
+	}
+
+	static getTpMiljoer() {
+		return `${tpBase}/miljoe`
+	}
+
+	static getTpOrdning(ident, miljoe) {
+		return `${tpBase}/forhold/${ident}/${miljoe}`
 	}
 }

@@ -61,7 +61,7 @@ export const BestillingProgresjon = ({
 	}
 
 	const ferdigstillBestilling = () => {
-		onFinishBestilling(bestilling)
+		onFinishBestilling(bestilling || bestillingStatus)
 		mutate(REGEX_BACKEND_GRUPPER)
 		mutate(REGEX_BACKEND_BESTILLINGER)
 		mutate(REGEX_BACKEND_ORGANISASJONER)
@@ -76,7 +76,7 @@ export const BestillingProgresjon = ({
 		const antallLevert = erOrganisasjon ? bestillingStatus?.antallLevert : bestilling?.antallLevert
 
 		let percent = (100 / total) * antallLevert
-		let text = `Opprettet ${antallLevert} av ${total}`
+		let text = `Opprettet ${antallLevert || 0} av ${total}`
 
 		// Indikerer progress hvis ingenting har skjedd enda
 		if (percent === 0) {
@@ -128,12 +128,12 @@ export const BestillingProgresjon = ({
 	const { percentFinished, tittel, description } = calculateStatus()
 
 	if (percentFinished === 100) {
-		onFinishBestilling(bestilling)
+		onFinishBestilling(bestilling || bestillingStatus)
 		return null
 	}
 
 	return (
-		<div className="bestilling-status" key={bestilling.id}>
+		<div className="bestilling-status">
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}

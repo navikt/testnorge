@@ -102,6 +102,10 @@ export default {
 		return Request.get(Endpoints.bestillingerFragment(fragment))
 	},
 
+	getBestilling(bestillingId) {
+		return Request.get(Endpoints.bestillingStatus(bestillingId))
+	},
+
 	gjenopprettBestilling(bestillingId, envs) {
 		return Request.post(Endpoints.gjenopprettBestilling(bestillingId, envs))
 	},
@@ -254,5 +258,22 @@ export default {
 				console.error(error)
 				throw error
 			})
+	},
+
+	// Pensjon-oppslag
+	getPoppMiljoer() {
+		return Request.get(Endpoints.getPoppMiljoer())
+	},
+
+	getPoppInntekter(ident, miljoe) {
+		return Request.get(Endpoints.getPoppInntekter(ident, miljoe))
+	},
+
+	getTpMiljoer() {
+		return Request.get(Endpoints.getTpMiljoer())
+	},
+
+	getTpOrdning(ident, miljoe) {
+		return Request.get(Endpoints.getTpOrdning(ident, miljoe))
 	},
 }

@@ -7,12 +7,32 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert, Tabs } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { TpMiljoeinfo } from '~/components/fagsystem/pensjon/visning/TpMiljoeinfo'
 
 export const sjekkManglerPensjonData = (tpData) => {
 	return !tpData || !tpData.length
 }
 
-export const TpVisning = ({ data, loading }) => {
+const TpOrdning = ({ data, ordninger }) => {
+	if (!data) return null
+
+	const ordningNavn = (nr) => {
+		const ordning = ordninger.find((o) => o.value === nr)
+		return ordning ? ordning.label : nr
+	}
+
+	return (
+		<DollyFieldArray data={data} nested>
+			{(ordning, idx) => (
+				<div className="person-visning_content" key={idx}>
+					<TitleValue size="large" title="Ordning" value={ordningNavn(ordning.ordning)} />
+				</div>
+			)}
+		</DollyFieldArray>
+	)
+}
+
+export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 
 	useEffect(() => {
@@ -34,11 +54,6 @@ export const TpVisning = ({ data, loading }) => {
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
-	const ordningNavn = (nr) => {
-		const ordning = ordninger.find((o) => o.value === nr)
-		return ordning ? ordning.label : nr
-	}
-
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -51,34 +66,47 @@ export const TpVisning = ({ data, loading }) => {
 					Kunne ikke hente tjenestepensjon-data på person
 				</Alert>
 			) : (
-				<Tabs size="small" defaultValue="q1">
-					<Tabs.List>
-						{/*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*/}
-						<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />
-						<Tabs.Tab value="q2" label="Q2" />
-						<Tabs.Tab value="q3" label="Q3" />
-					</Tabs.List>
-					<Tabs.Panel value="q1" style={{ marginTop: '10px' }}>
-						<DollyFieldArray data={data} nested>
-							{(ordning, idx) => (
-								<div className="person-visning_content" key={idx}>
-									<TitleValue size="large" title="Ordning" value={ordningNavn(ordning.ordning)} />
-								</div>
-							)}
-						</DollyFieldArray>
-					</Tabs.Panel>
-					<Tabs.Panel value="q2" style={{ marginTop: '10px', marginBottom: '15px' }}>
-						<Alert variant="info" size="small" inline>
-							Fant ingen pensjon-data i dette miljøet
-						</Alert>
-					</Tabs.Panel>
-					<Tabs.Panel value="q3" style={{ marginTop: '10px', marginBottom: '15px' }}>
-						<Alert variant="info" size="small" inline>
-							Fant ingen pensjon-data i dette miljøet
-						</Alert>
-					</Tabs.Panel>
-				</Tabs>
+				<>
+					<TpOrdning data={data} ordninger={ordninger} />
+					{/*<Tabs size="small" defaultValue="q1">*/}
+					{/*	<Tabs.List>*/}
+					{/*		/!*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*!/*/}
+					{/*		<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />*/}
+					{/*		<Tabs.Tab value="q2" label="Q2" />*/}
+					{/*		<Tabs.Tab value="q3" label="Q3" />*/}
+					{/*	</Tabs.List>*/}
+					{/*	<Tabs.Panel value="q1" style={{ marginTop: '10px' }}>*/}
+					{/*		<TpOrdning data={data} ordninger={ordninger} />*/}
+					{/*	</Tabs.Panel>*/}
+					{/*	<Tabs.Panel value="q2" style={{ marginTop: '10px', marginBottom: '15px' }}>*/}
+					{/*		<Alert variant="info" size="small" inline>*/}
+					{/*			Fant ingen pensjon-data i dette miljøet*/}
+					{/*		</Alert>*/}
+					{/*	</Tabs.Panel>*/}
+					{/*	<Tabs.Panel value="q3" style={{ marginTop: '10px', marginBottom: '15px' }}>*/}
+					{/*		<Alert variant="info" size="small" inline>*/}
+					{/*			Fant ingen pensjon-data i dette miljøet*/}
+					{/*		</Alert>*/}
+					{/*	</Tabs.Panel>*/}
+					{/*</Tabs>*/}
+				</>
 			)}
+			<TpMiljoeinfo ident={ident} bestilteMiljoer={bestilteMiljoer} ordninger={ordninger} />
 		</ErrorBoundary>
+	)
+}
+
+export const TpvisningMiljo = ({ data, miljoe, ordninger }) => {
+	const tpMiljoeInfo = data.find((m) => m.miljo == miljoe.toString())
+
+	return !tpMiljoeInfo || !tpMiljoeInfo?.ordninger || tpMiljoeInfo?.ordninger?.length < 1 ? (
+		<Alert variant="info" size="small" inline>
+			Fant ingen tjenestepensjon-data i dette miljøet
+		</Alert>
+	) : (
+		<div className="boks">
+			<SubOverskrift label="Tjenestepensjon (TP)" iconKind="pensjon" />
+			<TpOrdning data={tpMiljoeInfo?.ordninger} ordninger={ordninger} />
+		</div>
 	)
 }
