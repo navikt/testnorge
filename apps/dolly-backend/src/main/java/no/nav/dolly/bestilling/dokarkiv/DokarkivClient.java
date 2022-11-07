@@ -130,4 +130,8 @@ public class DokarkivClient implements ClientRegister {
         }
         return null;
     }
+
+    public Object status() {
+        return dokarkivConsumer.checkStatus();
+    }
 }

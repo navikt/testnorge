@@ -64,4 +64,8 @@ public class PersonServiceClient implements ClientRegister {
     public void release(List<String> identer) {
         // Ikke relevant
     }
+
+    public Object status() {
+        return personServiceConsumer.checkStatus();
+    }
 }

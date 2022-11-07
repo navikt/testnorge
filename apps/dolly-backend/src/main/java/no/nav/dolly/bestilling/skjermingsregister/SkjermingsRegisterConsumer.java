@@ -94,4 +94,25 @@ public class SkjermingsRegisterConsumer {
 
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+
+        var registerStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://skjermede-personer.dev.adeo.no/internal/isAlive",
+                "https://skjermede-personer.dev.adeo.no/internal/isReady",
+                WebClient.builder().build());
+        registerStatus.put("team", "NOM");
+        registerStatus.put("alive-url", "https://skjermede-personer.dev.adeo.no/internal/isAlive");
+
+        return Map.of(
+                "Skjermede-proxy", statusMap,
+                "Skjermede", registerStatus
+        );
+    }
 }

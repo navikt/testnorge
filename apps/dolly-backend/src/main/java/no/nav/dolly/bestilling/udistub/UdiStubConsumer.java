@@ -143,4 +143,32 @@ public class UdiStubConsumer {
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+
+        var udiStubStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://udi-stub.dev.intern.nav.no/internal/isAlive",
+                "https://udi-stub.dev.intern.nav.no/internal/isReady",
+                WebClient.builder().build());
+        udiStubStatus.put("team", "Dolly");
+        udiStubStatus.put("alive-url", "https://udi-stub.dev.intern.nav.no/internal/isAlive");
+
+//        var dokarkivProxyStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive",
+//                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isReady",
+//                WebClient.builder().build());
+//        dokarkivProxyStatus.put("team", "Dolly");
+//        dokarkivProxyStatus.put("alive-url", "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive");
+
+        return Map.of(
+                "UdiStub-proxy", statusMap,
+                "UdiStub", udiStubStatus
+        );
+    }
 }

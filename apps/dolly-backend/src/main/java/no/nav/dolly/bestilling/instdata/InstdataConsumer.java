@@ -148,4 +148,33 @@ public class InstdataConsumer {
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+
+        var instProxyStatusMap =  CheckAliveUtil.checkConsumerStatus(
+                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive",
+                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isReady",
+                WebClient.builder().build());
+        instProxyStatusMap.put("team", "Dolly");
+        instProxyStatusMap.put("alive-url", "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive");
+
+        var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
+                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
+                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
+                WebClient.builder().build());
+        instDataStatusMap.put("team", "team-rocket");
+        instDataStatusMap.put("alive-url", "https://inst-testdata.dev.adeo.no/internal/health/liveness");
+
+        return Map.of(
+                "InstDataConsumer", statusMap,
+                "Inst-proxy", instProxyStatusMap,
+                "Inst-data", instDataStatusMap
+        );
+    }
 }

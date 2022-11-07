@@ -36,6 +36,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -429,5 +430,23 @@ public class PdlForvalterConsumer {
                         .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                 .filter(WebClientFilter::is5xxException)))
                 .block();
+    }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+
+//        var pensjonStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://pensjon-testdata-facade.dev.intern.nav.no/isAlive",
+//                "https://pensjon-testdata-facade.dev.intern.nav.no/isReady",
+//                WebClient.builder().build());
+//        pensjonStatus.put("team", "Pensjon");
+
+        return Map.of(
+                "pdlforvalter", statusMap
+        );
     }
 }

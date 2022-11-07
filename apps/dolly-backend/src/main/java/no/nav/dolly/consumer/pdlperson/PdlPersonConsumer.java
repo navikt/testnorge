@@ -10,6 +10,7 @@ import no.nav.dolly.consumer.pdlperson.command.PdlPersonGetCommand;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.apache.http.Consts;
@@ -99,5 +100,61 @@ public class PdlPersonConsumer {
 
     public enum PDL_MILJOER {
         Q1, Q2
+    }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+
+        var pdlTestdataStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://pdl-testdata.dev.intern.nav.no/internal/health/liveness",
+                "https://pdl-testdata.dev.intern.nav.no/internal/health/readiness",
+                WebClient.builder().build());
+        pdlTestdataStatus.put("team", "pdl");
+        pdlTestdataStatus.put("alive-url", "https://pdl-testdata.dev.intern.nav.no/internal/health/liveness");
+
+        var pdlApiStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://pdl-api.dev.intern.nav.no/internal/health/liveness",
+                "https://pdl-api.dev.intern.nav.no/internal/health/readiness",
+                WebClient.builder().build());
+        pdlApiStatus.put("team", "pdl");
+        pdlApiStatus.put("alive-url", "https://pdl-api.dev.intern.nav.no/internal/health/liveness");
+
+        var pdlApiQ1Status = CheckAliveUtil.checkConsumerStatus(
+                "https://pdl-api-q1.dev.intern.nav.no/internal/health/liveness",
+                "https://pdl-api-q1.dev.intern.nav.no/internal/health/readiness",
+                WebClient.builder().build());
+        pdlApiQ1Status.put("team", "pdl");
+        pdlApiQ1Status.put("alive-url", "https://pdl-api-q1.dev.intern.nav.no/internal/health/liveness");
+
+        var pdlIdenthendelseStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/liveness",
+                "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/readiness",
+                WebClient.builder().build());
+        pdlIdenthendelseStatus.put("team", "pdl");
+        pdlIdenthendelseStatus.put("alive-url", "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/liveness");
+
+        var pdlAktorStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://pdl-aktor.dev.intern.nav.no/internal/health/liveness",
+                "https://pdl-aktor.dev.intern.nav.no/internal/health/readiness",
+                WebClient.builder().build());
+        pdlAktorStatus.put("team", "pdl");
+        pdlAktorStatus.put("alive-url", "https://pdl-aktor.dev.intern.nav.no/internal/health/liveness");
+
+        // https://pdl-es-q.adeo.no
+
+
+        return Map.of(
+                "pdl-proxy", statusMap,
+                "pdl-testdata", pdlTestdataStatus,
+                "pdl-api", pdlApiStatus,
+                "pdl-api-q1", pdlApiQ1Status,
+                "pdl-identhendelse", pdlIdenthendelseStatus,
+                "pdl-aktor", pdlAktorStatus
+        );
     }
 }

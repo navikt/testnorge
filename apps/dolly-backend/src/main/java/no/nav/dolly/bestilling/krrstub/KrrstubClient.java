@@ -92,4 +92,8 @@ public class KrrstubClient implements ClientRegister {
             krrstubConsumer.deleteKontaktdataPerson(identer)
                     .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
     }
+
+    public Object status() {
+        return krrstubConsumer.checkStatus();
+    }
 }

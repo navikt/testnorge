@@ -151,4 +151,22 @@ public class TpsMessagingConsumer {
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new HentPersonCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+
+//        var inntektStubStatusMap =  CheckAliveUtil.checkConsumerStatus(
+//                "https://inntektstub.dev.adeo.no/internal/isAlive",
+//                "https://inntektstub.dev.adeo.no/internal/isReady",
+//                WebClient.builder().build());
+//        inntektStubStatusMap.put("team", "team-inntekt");
+
+        return Map.of(
+                "tps-messaging", statusMap
+        );
+    }
 }

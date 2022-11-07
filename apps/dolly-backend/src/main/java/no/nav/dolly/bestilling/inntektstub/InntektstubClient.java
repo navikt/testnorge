@@ -109,4 +109,8 @@ public class InntektstubClient implements ClientRegister {
             log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
         }
     }
+
+    public Object status() {
+        return inntektstubConsumer.checkStatus();
+    }
 }

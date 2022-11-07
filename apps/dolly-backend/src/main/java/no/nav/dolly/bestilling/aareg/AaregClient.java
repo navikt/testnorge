@@ -144,4 +144,8 @@ public class AaregClient implements ClientRegister {
                 .append(isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError()))
                 .toString();
     }
+
+    public Object status() {
+        return aaregConsumer.checkStatus();
+    }
 }

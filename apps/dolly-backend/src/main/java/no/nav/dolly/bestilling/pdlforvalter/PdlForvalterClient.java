@@ -51,6 +51,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -490,5 +493,14 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
+    }
+
+    public Object status() {
+        return Stream.of(
+                        pdlForvalterConsumer.checkStatus(),
+                        pdlDataConsumer.checkStatus()
+                )
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

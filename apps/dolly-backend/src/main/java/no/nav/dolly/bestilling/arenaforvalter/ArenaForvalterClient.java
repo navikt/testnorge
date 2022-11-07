@@ -204,4 +204,8 @@ public class ArenaForvalterClient implements ClientRegister {
                         (!isNull(arenaNyBruker.getKvalifiseringsgruppe()) || !isNull(arenaNyBruker.getUtenServicebehov())))
                 .collect(Collectors.toList()));
     }
+
+    public Object status() {
+        return arenaForvalterConsumer.checkStatus();
+    }
 }

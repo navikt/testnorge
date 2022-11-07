@@ -116,4 +116,8 @@ public class TagsHendelseslagerClient implements ClientRegister {
                         .distinct()
                         .toList());
     }
+
+    public Object status() {
+        return pdlPersonConsumer.checkStatus();
+    }
 }

@@ -65,4 +65,8 @@ public class UdiStubClient implements ClientRegister {
             udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
         }
     }
+
+    public Object status() {
+        return udiStubConsumer.checkStatus();
+    }
 }

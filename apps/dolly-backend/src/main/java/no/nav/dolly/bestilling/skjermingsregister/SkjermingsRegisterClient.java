@@ -88,4 +88,8 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .build(),
                 SkjermingsDataRequest.class);
     }
+
+    public Object status() {
+        return skjermingsRegisterConsumer.checkStatus();
+    }
 }

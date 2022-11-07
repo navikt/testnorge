@@ -58,4 +58,8 @@ public class BrregstubClient implements ClientRegister {
             var status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
             return isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError());
     }
+
+    public Object status() {
+        return brregstubConsumer.checkStatus();
+    }
 }

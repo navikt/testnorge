@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -192,5 +194,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                 "Feil= " + encodeStatus(status.getResponse().getMessage()))
                         .append(',')
         );
+    }
+
+    public Object status() {
+        return pensjonforvalterConsumer.checkStatus();
     }
 }

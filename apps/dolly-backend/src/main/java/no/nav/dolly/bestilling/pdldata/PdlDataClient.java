@@ -54,4 +54,8 @@ public class PdlDataClient implements ClientRegister {
 
         // Sletting gjøres nå i PersonService
     }
+
+    public Object status() {
+        return pdlDataConsumer.checkStatus();
+    }
 }

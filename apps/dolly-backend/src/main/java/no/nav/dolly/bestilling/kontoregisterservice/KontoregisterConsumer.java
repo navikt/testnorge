@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.kontoregisterservice.command.SendSlettKontoregist
 import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.dolly.metrics.Timed;
+import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
@@ -25,6 +26,7 @@ import reactor.core.publisher.Mono;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -170,5 +172,24 @@ public class KontoregisterConsumer {
             }
             return Character.forDigit(11 - remainder, 10);
         }
+    }
+
+    public Map<String, Object> checkStatus() {
+        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        consumerStatus.put("team", "Dolly");
+
+        var endServiceStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
+                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
+                WebClient.builder().build());
+        endServiceStatus.put("team", "okonomi");
+
+        return Map.of(
+                "kontoregister", consumerStatus,
+                "sokos-kontoregister-person", endServiceStatus
+        );
     }
 }

@@ -117,4 +117,8 @@ public class InntektsmeldingClient implements ClientRegister {
         }
         return null;
     }
+
+    public Object status() {
+        return inntektsmeldingConsumer.checkStatus();
+    }
 }

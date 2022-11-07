@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
@@ -139,5 +140,9 @@ public class InstdataClient implements ClientRegister {
         }
 
         return status.toString();
+    }
+
+    public Object status() {
+        return instdataConsumer.checkStatus();
     }
 }

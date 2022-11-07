@@ -42,4 +42,31 @@ public class PersonServiceConsumer {
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", "Dolly");
+        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+
+        var registerStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://testnav-person-service.dev.intern.nav.no/internal/isAlive",
+                "https://testnav-person-service.dev.intern.nav.no/internal/isReady",
+                WebClient.builder().build());
+        registerStatus.put("team", "Dolly");
+        registerStatus.put("alive-url", "https://testnav-person-service.dev.intern.nav.no/internal/isAlive");
+
+//        var registerStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://testnav-person-service.dev.intern.nav.no/internal/isAlive",
+//                "https://testnav-person-service.dev.intern.nav.no/internal/isReady",
+//                WebClient.builder().build());
+//        registerStatus.put("team", "Dolly");
+
+        return Map.of(
+                "PersonService-proxy", statusMap,
+                "PersonService", registerStatus
+        );
+    }
 }

@@ -52,4 +52,8 @@ public class SigrunStubClient implements ClientRegister {
         sigrunStubConsumer.deleteSkattegrunnlag(identer)
                 .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
     }
+
+    public Object status() {
+        return sigrunStubConsumer.checkStatus();
+    }
 }
