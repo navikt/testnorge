@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { fetcher } from '~/api'
-import { Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
@@ -12,6 +12,11 @@ const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
+
+const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
+	`/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=DOLLY${
+		kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
+	}`
 
 const getArbeidsforholdUrl = (miljoe: string) =>
 	`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
@@ -41,6 +46,20 @@ export const useOrganisasjoner = (brukerId: string) => {
 	}
 
 	const { data, error } = useSWR<Organisasjon[], Error>(getOrganisasjonerUrl(brukerId), fetcher)
+
+	return {
+		organisasjoner: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) => {
+	const { data, error } = useSWR<OrganisasjonFasteData[], Error>(
+		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
+		fetcher,
+		{ fallbackData: [] }
+	)
 
 	return {
 		organisasjoner: data,

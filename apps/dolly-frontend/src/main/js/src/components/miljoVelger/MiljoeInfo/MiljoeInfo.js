@@ -3,8 +3,12 @@ import _get from 'lodash/get'
 import { ArenaApi, InstApi, PensjonApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 import { Alert } from '@navikt/ds-react'
+import { useDollyFasteDataOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+
+const aaregFastOrg = (orgnummer) => {}
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
+	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, aareg } =
 		bestillingsdata
 	if (

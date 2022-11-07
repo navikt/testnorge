@@ -1,11 +1,11 @@
 import * as React from 'react'
-import OrganisasjonLoaderConnector from '~/components/organisasjonSelect/OrganisasjonLoaderConnector'
+import { OrganisasjonLoader } from '~/components/organisasjonSelect/OrganisasjonLoader'
 
 export type OrganisasjonSelectProps = {
 	path: string
 	label?: string
 	isClearable?: boolean
-	afterChange?: Function
+	afterChange?: (value) => void
 	valueNavn?: boolean
 	kanHaArbeidsforhold?: boolean
 	value?: any
@@ -21,7 +21,7 @@ export const OrganisasjonSelect = ({
 	value,
 	feil,
 }: OrganisasjonSelectProps) => (
-	<OrganisasjonLoaderConnector
+	<OrganisasjonLoader
 		kanHaArbeidsforhold={kanHaArbeidsforhold}
 		label={label}
 		valueNavn={valueNavn}

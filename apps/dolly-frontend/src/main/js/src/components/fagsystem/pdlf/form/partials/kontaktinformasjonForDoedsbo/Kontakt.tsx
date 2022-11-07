@@ -19,7 +19,7 @@ import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson
 import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 
 interface KontaktValues {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<any>
 	path: string
 }
 

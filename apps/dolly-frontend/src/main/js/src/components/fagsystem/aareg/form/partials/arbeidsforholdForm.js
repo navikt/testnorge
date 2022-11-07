@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _set from 'lodash/set'
@@ -25,8 +25,6 @@ import {
 import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import Loading from '~/components/ui/loading/Loading'
-import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 
 export const ArbeidsforholdForm = ({
@@ -42,13 +40,6 @@ export const ArbeidsforholdForm = ({
 	const { personFoerLeggTil } = opts
 	const eksisterendeIdent =
 		personFoerLeggTil?.pdl?.ident || personFoerLeggTil?.pdlforvalter?.person?.ident
-
-	const { loading, arbeidsforhold } = useArbeidsforhold(eksisterendeIdent, 'q2')
-	useEffect(() => {
-		if (arbeidsforhold) {
-			//TODO: Mappe arbeidsforholdet til form
-		}
-	}, [arbeidsforhold])
 
 	const gjeldendeArbeidsgiver = _get(formikBag.values, `${path}.arbeidsgiver`)
 	const arbeidsforholdstype =
@@ -139,10 +130,6 @@ export const ArbeidsforholdForm = ({
 				feilmelding: _get(formikBag.errors, `${path}.arbeidsforholdstype`),
 			}
 		}
-	}
-
-	if (loading) {
-		return <Loading label={'Henter eksisterende arbeidsforhold..'} />
 	}
 
 	return (
