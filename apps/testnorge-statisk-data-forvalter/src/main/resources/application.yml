@@ -62,7 +62,10 @@ consumers:
     url: https://testnorge-aareg.dev.intern.nav.no/api
   krr-stub:
     url: https://krr-stub-%s.dev.intern.nav.no/api
-
+  synthdata-aareg:
+    url: https://nais-synthdata-aareg.dev.intern.nav.no
+  kodeverk:
+    url: https://kodeverk.dev.adeo.no
 management:
   endpoints:
     enabled-by-default: true

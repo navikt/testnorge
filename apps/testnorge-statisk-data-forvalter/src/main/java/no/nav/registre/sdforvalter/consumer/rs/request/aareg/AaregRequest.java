@@ -7,6 +7,7 @@ import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.List;
+//todo sjekke om denne fremdeles er i bruk
 
 @Getter
 @Setter

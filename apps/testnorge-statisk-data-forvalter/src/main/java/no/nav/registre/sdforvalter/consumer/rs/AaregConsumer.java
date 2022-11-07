@@ -1,54 +1,46 @@
 package no.nav.registre.sdforvalter.consumer.rs;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.RequestEntity;
+import no.nav.registre.sdforvalter.config.credentials.AaregProperties;
+import no.nav.registre.sdforvalter.consumer.rs.command.PostArbeidsforholdCommand;
+import no.nav.registre.sdforvalter.consumer.rs.domain.ArbeidsforholdRespons;
+import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriTemplate;
-
-import java.util.List;
-
-import no.nav.registre.sdforvalter.consumer.rs.request.aareg.AaregRequest;
-import no.nav.registre.sdforvalter.consumer.rs.request.aareg.Arbeidsforhold;
-import no.nav.registre.sdforvalter.consumer.rs.response.AaregResponse;
-import no.nav.registre.sdforvalter.domain.AaregListe;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
 @Component
 public class AaregConsumer {
-
-    private static final ParameterizedTypeReference<List<AaregResponse>> RESPONSE_TYPE = new ParameterizedTypeReference<>() {
-    };
-
-    private final RestTemplate restTemplate;
-    private final UriTemplate sendArbeidsforholdTilAaregUrl;
+    private final WebClient webClient;
+    private final TokenExchange tokenExchange;
+    private final AaregProperties properties;
 
     public AaregConsumer(
-            RestTemplate restTemplate,
-            @Value("${consumers.testnorge-aareg.url}") String aaregServerUrl
+            AaregProperties serverProperties,
+            TokenExchange tokenExchange,
+            ExchangeFilterFunction metricsWebClientFilterFunction
     ) {
-        this.restTemplate = restTemplate;
-        this.sendArbeidsforholdTilAaregUrl = new UriTemplate(aaregServerUrl + "/v1/syntetisering/sendTilAareg?fyllUtArbeidsforhold=true");
+        this.properties = serverProperties;
+        this.tokenExchange = tokenExchange;
+        this.webClient = WebClient.builder()
+                .exchangeStrategies(ExchangeStrategies.builder()
+                        .codecs(configurer -> configurer
+                                .defaultCodecs()
+                                .maxInMemorySize(16 * 1024 * 1024))
+                        .build())
+                .baseUrl(serverProperties.getUrl())
+                .filter(metricsWebClientFilterFunction)
+                .build();
     }
 
-    public void sendArbeidsforhold(AaregListe liste, String environment) {
-        List<AaregRequest> requestList = liste.getListe()
-                .stream()
-                // TODO filter arbeidsforhold som allerede eksisterer.
-                // .filter(item -> getArbeidsforhold(item.getFnr(), environment).isEmpty())
-                .map(item -> new AaregRequest(new Arbeidsforhold(item), environment))
-                .toList();
-
-        try {
-            restTemplate.exchange(
-                    RequestEntity.post(sendArbeidsforholdTilAaregUrl.expand()).body(requestList),
-                    RESPONSE_TYPE
-            ).getBody();
-        } catch (Exception e) {
-            log.error("Feil ved innsending av arbeidsforhold", e);
-            throw e;
-        }
+    public ArbeidsforholdRespons opprettArbeidsforhold(Arbeidsforhold arbeidsforhold, String miljoe) {
+        return tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new PostArbeidsforholdCommand(
+                        webClient, miljoe, arbeidsforhold, accessToken.getTokenValue()).call())
+                .block();
     }
+
 }
