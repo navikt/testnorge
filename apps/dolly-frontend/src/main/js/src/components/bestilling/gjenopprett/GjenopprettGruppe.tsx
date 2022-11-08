@@ -1,11 +1,13 @@
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import React from 'react'
+import { useDispatch } from 'react-redux'
 import { GjenopprettModal } from '~/components/bestilling/gjenopprett/GjenopprettModal'
 import { DollyApi } from '~/service/Api'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import { Gruppe } from '~/utils/hooks/useGruppe'
+import { setUpdateNow } from '~/ducks/finnPerson'
 
 type GjenopprettGruppeProps = {
 	onClose: any
@@ -13,6 +15,7 @@ type GjenopprettGruppeProps = {
 }
 
 export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) => {
+	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
 	const { bestillingerById } = useBestillingerGruppe(gruppe.id)
 	const brukertype = currentBruker?.brukertype
@@ -53,6 +56,7 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
+		dispatch(setUpdateNow())
 		onClose()
 	}
 
