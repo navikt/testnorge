@@ -26,6 +26,7 @@ import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/ar
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -40,6 +41,8 @@ export const ArbeidsforholdForm = ({
 	const { personFoerLeggTil } = opts
 	const eksisterendeIdent =
 		personFoerLeggTil?.pdl?.ident || personFoerLeggTil?.pdlforvalter?.person?.ident
+
+	const { arbeidsforhold, loading } = useArbeidsforhold(eksisterendeIdent)
 
 	const gjeldendeArbeidsgiver = _get(formikBag.values, `${path}.arbeidsgiver`)
 	const arbeidsforholdstype =
