@@ -10,14 +10,16 @@ import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiserin
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsOrganisasjon;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsSyntPerson;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsSyntetiskArbeidsforhold;
+import no.nav.registre.sdforvalter.domain.Aareg;
 import no.nav.registre.sdforvalter.domain.AaregListe;
+import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -35,9 +37,9 @@ public class AaregService {
     public List<ArbeidsforholdRespons> sendArbeidsforhold(
             AaregListe liste, String environment
     ) {
-        List<RsAaregSyntetiseringsRequest> requestList = liste.getListe()
-                .stream()
-                // TODO filter arbeidsforhold som allerede eksisterer.
+        var nyeArbeidsforhold = liste.getListe().stream()
+                .filter(item -> arbeidsforholdEksistererIkkeAllerede(
+                        aaregConsumer.hentArbeidsforhold(item.getFnr(), environment), item))
                 .map(item -> {
                     var arbeidsgiver = RsOrganisasjon.builder()
                             .orgnummer(String.valueOf(item.getOrgId()))
@@ -52,10 +54,23 @@ public class AaregService {
                                     .arbeidstaker(arbeidstaker)
                                     .build(),
                             null,
-                            Collections.singletonList(environment));
+                            environment);
                 })
                 .toList();
-        return sendArbeidsforholdTilAareg(requestList, true);
+        return sendArbeidsforholdTilAareg(nyeArbeidsforhold, true);
+    }
+
+    private Boolean arbeidsforholdEksistererIkkeAllerede(
+            ArbeidsforholdRespons response,
+            Aareg request
+    ) {
+        return response.getEksisterendeArbeidsforhold().stream()
+                .noneMatch(res -> isArbeidsgiverOrganisasjonAlike(res, String.valueOf(request.getOrgId())));
+    }
+
+    private boolean isArbeidsgiverOrganisasjonAlike(Arbeidsforhold arbeidsforhold, String orgnr) {
+        return arbeidsforhold.getArbeidsgiver() instanceof Organisasjon organisasjon &&
+                organisasjon.getOrganisasjonsnummer().equals(orgnr);
     }
 
 
@@ -98,11 +113,8 @@ public class AaregService {
 
         for (var forholdet : arbeidsforhold) {
             var opprettRequest = forholdet.getArbeidsforhold().toArbeidsforhold();
-            var miljoeListe = forholdet.getEnvironments();
-            for (var miljoe : miljoeListe) {
-                var aaregResponse = aaregConsumer.opprettArbeidsforhold(opprettRequest, miljoe);
-                aaregResponses.add(aaregResponse);
-            }
+            var aaregResponse = aaregConsumer.opprettArbeidsforhold(opprettRequest, forholdet.getEnvironment());
+            aaregResponses.add(aaregResponse);
         }
 
         return aaregResponses;

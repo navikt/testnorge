@@ -18,6 +18,6 @@ public class RsAaregSyntetiseringsRequest {
 
     private RsSyntetiskArbeidsforhold arbeidsforhold;
     private String arkivreferanse;
-    private List<String> environments;
+    private String environment;
 
 }

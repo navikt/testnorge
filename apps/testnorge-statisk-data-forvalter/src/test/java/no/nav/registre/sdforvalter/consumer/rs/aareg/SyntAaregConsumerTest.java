@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.consumer.rs;
+package no.nav.registre.sdforvalter.consumer.rs.aareg;
 
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
