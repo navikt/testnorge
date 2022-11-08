@@ -92,6 +92,7 @@ public class ErrorStatusDecoder {
 
         if (error instanceof WebClientResponseException webClientResponseException) {
 
+            log.info("WebClientResponseException body: {}", webClientResponseException.getResponseBodyAsString());
             if (webClientResponseException.getStatusCode().is4xxClientError()) {
                 appendStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) ?
                         webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
