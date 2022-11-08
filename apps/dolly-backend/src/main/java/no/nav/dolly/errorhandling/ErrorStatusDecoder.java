@@ -38,6 +38,15 @@ public class ErrorStatusDecoder {
         return String.format(VARSEL, system);
     }
 
+    public static String encodeStatus(String toBeEncoded) {
+        return Objects.nonNull(toBeEncoded) ?
+                toBeEncoded.replaceAll("\\[\\s", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(',', ';')
+                        .replace(':', '=') : "";
+    }
+
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
         StringBuilder builder = new StringBuilder()
@@ -83,10 +92,12 @@ public class ErrorStatusDecoder {
 
         if (error instanceof WebClientResponseException webClientResponseException) {
 
-            if ( webClientResponseException.getStatusCode().is4xxClientError()) {
-                appendStatusMessage(webClientResponseException.getResponseBodyAsString().isEmpty() ?
-                        webClientResponseException.getStatusCode().toString() :
-                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
+            if (webClientResponseException.getStatusCode().is4xxClientError()) {
+
+                builder.append(getStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) &&
+                        !getStatusMessage(webClientResponseException.getResponseBodyAsString()).equals("null") ?
+                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                        webClientResponseException.getStatusCode().toString()));
 
             } else {
                 builder.append(TEKNISK_FEIL_SE_LOGG);
@@ -103,17 +114,9 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    public static String encodeStatus(String toBeEncoded) {
-        return Objects.nonNull(toBeEncoded) ?
-                toBeEncoded.replaceAll("\\[\\s", "")
-                        .replace("[", "")
-                        .replace("]", "")
-                        .replace(',', ';')
-                        .replace(':', '=') : "";
-    }
+    private String getStatusMessage(String responseBody) {
 
-    private void appendStatusMessage(String responseBody, StringBuilder builder) {
-
+        var builder = new StringBuilder();
         if (responseBody.contains("{")) {
             try {
                 Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
@@ -142,5 +145,7 @@ public class ErrorStatusDecoder {
         } else {
             builder.append(encodeStatus(responseBody));
         }
+
+        return builder.toString();
     }
 }

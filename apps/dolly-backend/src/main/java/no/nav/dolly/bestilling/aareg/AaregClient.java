@@ -102,8 +102,8 @@ public class AaregClient implements ClientRegister {
 
         var arbforholdId = new AtomicInteger(response.getEksisterendeArbeidsforhold().size());
 
-        var eksistens = doEksistenssjekk(response, request);
-        return Flux.concat(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
+        var eksistens = doEksistenssjekk(response,  mapperFacade.mapAsList(request, Arbeidsforhold.class));
+        return Flux.merge(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
                                 .flatMap(entry -> {
                                     if (isBlank(entry.getArbeidsforholdId())) {
                                         entry.setArbeidsforholdId(Integer.toString(arbforholdId.incrementAndGet()));
@@ -128,6 +128,7 @@ public class AaregClient implements ClientRegister {
                         arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                                 arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
                         appendPermisjonPermitteringId(arbeidsforhold, eksisterende);
+                        log.info("Miljoe {} navArbeidsforholdId {} ", response.getMiljo(), arbeidsforhold.getNavArbeidsforholdId());
                     }
                 });
 
@@ -136,6 +137,7 @@ public class AaregClient implements ClientRegister {
 
     private String decodeStatus(String miljoe, ArbeidsforholdRespons reply) {
 
+        log.info("AAREG respons fra miljø {} : {} ", miljoe, reply);
         return new StringBuilder()
                 .append(miljoe)
                 .append(": arbforhold=")
