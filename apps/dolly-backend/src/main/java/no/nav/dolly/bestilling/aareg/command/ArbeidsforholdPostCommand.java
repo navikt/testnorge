@@ -46,7 +46,6 @@ public class ArbeidsforholdPostCommand implements Callable<Flux<ArbeidsforholdRe
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Flux.just(ArbeidsforholdRespons.builder()
-                        .arbeidsforhold(arbeidsforhold)
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)
                         .error(error)
