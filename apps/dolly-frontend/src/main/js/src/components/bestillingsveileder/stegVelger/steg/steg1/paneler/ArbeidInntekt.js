@@ -2,7 +2,6 @@ import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
-import { actions as fasteDataActions } from '~/ducks/fastedata'
 import { harValgtAttributt } from '~/components/ui/form/formUtils'
 import { aaregAttributt } from '~/components/fagsystem/aareg/form/Form'
 import { sigrunAttributt } from '~/components/fagsystem/sigrunstub/form/Form'
@@ -54,10 +53,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 	aareg: {
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
-		add: () => {
-			dispatch(fasteDataActions.getFastedataOrganisasjoner())
-			return set('aareg', [initialValues])
-		},
+		add: () => set('aareg', [initialValues]),
 		remove() {
 			del('aareg')
 		},
@@ -79,9 +75,8 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 	inntektsmelding: {
 		label: 'Har inntektsmelding',
 		checked: has('inntektsmelding'),
-		add: () => {
-			dispatch(fasteDataActions.getFastedataOrganisasjoner())
-			return set('inntektsmelding', {
+		add: () =>
+			set('inntektsmelding', {
 				inntekter: [
 					{
 						aarsakTilInnsending: 'NY',
@@ -110,16 +105,14 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 				joarkMetadata: {
 					tema: '',
 				},
-			})
-		},
+			}),
 		remove: () => del('inntektsmelding'),
 	},
 	inntektstub: {
 		label: 'Har inntekt',
 		checked: has('inntektstub'),
-		add: () => {
-			dispatch(fasteDataActions.getFastedataOrganisasjoner())
-			return set('inntektstub', {
+		add: () =>
+			set('inntektstub', {
 				inntektsinformasjon: [
 					{
 						sisteAarMaaned: '',
@@ -141,8 +134,7 @@ ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
 						arbeidsforholdsliste: [],
 					},
 				],
-			})
-		},
+			}),
 		remove() {
 			del('inntektstub')
 		},

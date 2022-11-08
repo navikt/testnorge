@@ -58,11 +58,6 @@ const getIdenttype = (ident) => {
 	}
 }
 
-const getFirstAaregEnvironment = (bestilling) => {
-	const aaregStatus = bestilling?.status?.filter((status) => status.id === 'AAREG')?.[0]
-	return aaregStatus?.statuser?.[0]?.detaljert?.[0]?.miljo || 'q2'
-}
-
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
@@ -106,7 +101,6 @@ export const PersonVisning = ({
 
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		getFirstAaregEnvironment(bestilling),
 		harAaregBestilling()
 	)
 
