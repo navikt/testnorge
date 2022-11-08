@@ -15,6 +15,7 @@ export const {
 	resetPaginering,
 	resetFeilmelding,
 	setSorting,
+	setUpdateNow,
 } = createActions({
 	navigerTilPerson: DollyApi.navigerTilPerson,
 	navigerTilBestilling: DollyApi.navigerTilBestilling,
@@ -25,6 +26,7 @@ export const {
 	resetNavigering() {},
 	resetPaginering() {},
 	resetFeilmelding() {},
+	setUpdateNow() {},
 })
 
 const initialState = {
@@ -37,6 +39,7 @@ const initialState = {
 	sidetall: 0,
 	sideStoerrelse: 10,
 	sorting: null,
+	update: null,
 }
 
 export default handleActions(
@@ -91,6 +94,9 @@ export default handleActions(
 		},
 		[setSorting](state, action) {
 			state.sorting = action.payload
+		},
+		[setUpdateNow](state) {
+			state.update = new Date()
 		},
 	},
 	initialState
