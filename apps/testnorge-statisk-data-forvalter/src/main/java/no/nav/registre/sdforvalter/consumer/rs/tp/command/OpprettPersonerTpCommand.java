@@ -2,10 +2,10 @@ package no.nav.registre.sdforvalter.consumer.rs.tp.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.sdforvalter.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -22,13 +22,6 @@ public class OpprettPersonerTpCommand implements Callable<Mono<List<String>>> {
     private final List<String> fnrs;
     private final String miljoe;
 
-    protected static String getMessage(Throwable error) {
-
-        return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString() :
-                error.getMessage();
-    }
-
     @Override
     public Mono<List<String>> call() {
         return webClient.post()
@@ -39,9 +32,7 @@ public class OpprettPersonerTpCommand implements Callable<Mono<List<String>>> {
                 .body(BodyInserters.fromValue(fnrs))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
-                .onErrorResume(throwable -> {
-                    log.error(getMessage(throwable));
-                    return Mono.empty();
-                });
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(throwable -> Mono.empty());
     }
 }

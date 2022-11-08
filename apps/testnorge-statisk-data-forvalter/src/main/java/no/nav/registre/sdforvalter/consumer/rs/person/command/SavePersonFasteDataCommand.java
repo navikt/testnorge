@@ -2,7 +2,8 @@ package no.nav.registre.sdforvalter.consumer.rs.person.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+
+import no.nav.registre.sdforvalter.util.WebClientFilter;
 import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
 import org.springframework.http.HttpHeaders;
@@ -33,6 +34,7 @@ public class SavePersonFasteDataCommand implements Callable<Mono<Void>> {
                 .body(BodyInserters.fromPublisher(Mono.just(dto), PersonDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

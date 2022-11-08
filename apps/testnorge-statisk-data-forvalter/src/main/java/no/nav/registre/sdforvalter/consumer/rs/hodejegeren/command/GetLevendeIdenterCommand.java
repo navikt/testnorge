@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.consumer.rs.hodejegeren.command;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.registre.sdforvalter.util.WebClientFilter;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -26,6 +27,7 @@ public class GetLevendeIdenterCommand implements Callable<List<String>> {
                 )
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .block();
     }
 }

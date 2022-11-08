@@ -2,7 +2,7 @@ package no.nav.registre.sdforvalter.consumer.rs.organisasjon.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
+import no.nav.registre.sdforvalter.util.WebClientFilter;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.OrganisasjonDTO;
 import org.springframework.http.HttpHeaders;
@@ -31,6 +31,7 @@ public class SaveOrganisasjonFasteDataCommand implements Runnable {
                 .body(BodyInserters.fromPublisher(Mono.just(dto), OrganisasjonDTO.class))
                 .retrieve()
                 .bodyToMono(Void.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .block();

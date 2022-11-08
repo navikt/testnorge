@@ -3,6 +3,7 @@ package no.nav.registre.sdforvalter.consumer.rs.aareg.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
 import no.nav.registre.sdforvalter.util.CallIdUtil;
+import no.nav.registre.sdforvalter.util.WebClientFilter;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -37,6 +38,7 @@ public class PostArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRe
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
                         .miljo(miljoe)
                         .build())
+                .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(ArbeidsforholdRespons.builder()
                         .arbeidsforhold(arbeidsforhold)
                         .arbeidsforholdId(arbeidsforhold.getArbeidsforholdId())
