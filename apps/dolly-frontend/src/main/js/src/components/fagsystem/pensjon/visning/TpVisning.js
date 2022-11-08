@@ -8,9 +8,14 @@ import { Alert, Tabs } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { TpMiljoeinfo } from '~/components/fagsystem/pensjon/visning/TpMiljoeinfo'
+import { useAsync } from 'react-use'
+import { DollyApi } from '~/service/Api'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerPensjonData = (tpData) => {
-	return !tpData || !tpData.length
+	console.log('tpData: ', tpData) //TODO - SLETT MEG
+	// return !tpData?.value || !tpData?.value?.length
+	return !tpData?.value
 }
 
 const TpOrdning = ({ data, ordninger }) => {
@@ -34,7 +39,7 @@ const TpOrdning = ({ data, ordninger }) => {
 
 export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	useEffect(() => {
 		if (!ordninger.length) {
 			fetchTpOrdninger()
@@ -52,8 +57,13 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 		return null
 	}
 
-	const manglerFagsystemdata = sjekkManglerPensjonData(data)
+	// const tpMiljoer = useAsync(async () => {
+	// 	return DollyApi.getTpMiljoer()
+	// }, [])
 
+	const manglerFagsystemdata = sjekkManglerPensjonData(data)
+	// console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -67,7 +77,15 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 				</Alert>
 			) : (
 				<>
-					<TpOrdning data={data} ordninger={ordninger} />
+					<MiljoTabs
+						// miljoListe={tpMiljoer}
+						miljoListe={['q1', 'q2', 'q4']}
+						bestilteMiljoer={bestilteMiljoer}
+						forsteMiljo="q1"
+						data={data}
+					>
+						<TpOrdning data={data} ordninger={ordninger} />
+					</MiljoTabs>
 					{/*<Tabs size="small" defaultValue="q1">*/}
 					{/*	<Tabs.List>*/}
 					{/*		/!*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*!/*/}
@@ -97,7 +115,7 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 }
 
 export const TpvisningMiljo = ({ data, miljoe, ordninger }) => {
-	const tpMiljoeInfo = data.find((m) => m.miljo == miljoe.toString())
+	const tpMiljoeInfo = data.find((m) => m.miljo === miljoe.toString())
 
 	return !tpMiljoeInfo || !tpMiljoeInfo?.ordninger || tpMiljoeInfo?.ordninger?.length < 1 ? (
 		<Alert variant="info" size="small" inline>

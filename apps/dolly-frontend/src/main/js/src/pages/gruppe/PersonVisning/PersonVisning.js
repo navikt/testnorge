@@ -110,6 +110,29 @@ export const PersonVisning = ({
 		harAaregBestilling()
 	)
 
+	const getTpMiljoeinfo = useAsync(async () => {
+		const tmpMiljoeinfo = []
+		// await Promise.allSettled(
+		await DollyApi.getTpMiljoer().then((miljoer) => {
+			// console.log('miljoer: ', miljoer) //TODO - SLETT MEG
+			miljoer?.data?.map((miljoe) => {
+				DollyApi.getTpOrdning(ident.ident, miljoe).then((response) => {
+					// console.log('response: ', response) //TODO - SLETT MEG
+					tmpMiljoeinfo.push({
+						ordninger: response?.data,
+						miljo: miljoe,
+					})
+				})
+			})
+		})
+		// )
+		// return tmpMiljoeinfo.sort((a, b) => a.miljo - b.miljo)
+		console.log('tmpMiljoeinfo: ', tmpMiljoeinfo) //TODO - SLETT MEG
+		return tmpMiljoeinfo.sort((a, b) => a.miljo.localeCompare(b.miljo))
+	}, [])
+
+	// console.log('getTpMiljoeinfo: ', getTpMiljoeinfo) //TODO - SLETT MEG
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -306,7 +329,8 @@ export const PersonVisning = ({
 				/>
 				<TpVisning
 					ident={ident.ident}
-					data={tpforvalter}
+					// data={tpforvalter}
+					data={getTpMiljoeinfo}
 					loading={loading.tpforvalter}
 					bestilteMiljoer={bestilteMiljoer}
 				/>

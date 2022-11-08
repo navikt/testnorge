@@ -1,15 +1,34 @@
 import React from 'react'
 import { Alert, Tabs } from '@navikt/ds-react'
+import styled from 'styled-components'
+
+const StyledTab = styled(Tabs.Tab)`
+	color: #06893a;
+	font-weight: bold;
+	&&& {
+		.navds-tabs__tab[aria-selected='true'] {
+			color: #06893a;
+			font-weight: bold;
+		}
+	}
+`
 
 export const MiljoTabs = ({ miljoListe, bestilteMiljoer, forsteMiljo, data, children }) => {
+	// console.log('miljoListe: ', miljoListe) //TODO - SLETT MEG
+	// console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
+	// console.log('forsteMiljo: ', forsteMiljo) //TODO - SLETT MEG
+	console.log('data: ', data) //TODO - SLETT MEG
 	return (
-		<Tabs size="small" defaultValue="q1">
+		<Tabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
 				{/*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*/}
-				<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />
-				<Tabs.Tab value="q2" label="Q2" />
-				{miljoListe.forEach((miljo) => {
-					return <Tabs.Tab value={miljo} label={miljo.toUpperCase()} />
+				{/*<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />*/}
+				{/*<Tabs.Tab value="q2" label="Q2" />*/}
+				{miljoListe.map((miljo) => {
+					if (bestilteMiljoer?.value?.includes(miljo)) {
+						return <StyledTab key={miljo} value={miljo} label={miljo.toUpperCase()} />
+					}
+					return <Tabs.Tab key={miljo} value={miljo} label={miljo.toUpperCase()} />
 				})}
 			</Tabs.List>
 			<Tabs.Panel value="q1" style={{ marginTop: '10px' }}>
