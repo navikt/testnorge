@@ -27,7 +27,7 @@ export const OrganisasjonLoader = ({
 }: OrganisasjonLoaderProps) => {
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
-	const { organisasjoner } = useDollyFasteDataOrganisasjoner(kanHaArbeidsforhold)
+	const { loading, organisasjoner } = useDollyFasteDataOrganisasjoner(kanHaArbeidsforhold)
 
 	const formatLabel = (org) => `${org.orgnummer} (${org.enhetstype}) - ${org.navn}`
 	const organisasjonerSorted = organisasjoner
@@ -58,6 +58,7 @@ export const OrganisasjonLoader = ({
 			name={path}
 			label={label || 'Organisasjonsnummer'}
 			type="text"
+			isLoading={loading}
 			options={organisasjonerSorted}
 			size="xlarge"
 			afterChange={afterChange}
@@ -70,6 +71,7 @@ export const OrganisasjonLoader = ({
 			label="Organisasjonsnummer"
 			options={organisasjonerSorted}
 			size="xlarge"
+			isLoading={loading}
 			onChange={handleChange}
 			value={value}
 			feil={feil}
