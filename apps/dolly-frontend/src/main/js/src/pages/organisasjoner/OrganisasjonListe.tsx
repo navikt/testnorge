@@ -90,7 +90,7 @@ export default function OrganisasjonListe({
 		organisasjonsnummer: string
 	) =>
 		bestillingListe
-			.filter((org) => org.organisasjonNummer === organisasjonsnummer)
+			.filter((org) => org?.organisasjonNummer === organisasjonsnummer)
 			.map((org) => org.id)
 			.sort(function (a: number, b: number) {
 				return b - a

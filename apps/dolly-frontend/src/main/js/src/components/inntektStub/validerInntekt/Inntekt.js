@@ -11,6 +11,7 @@ const sjekkFelt = (formik, field, options, values, path) => {
 	const fieldValue = _get(values, path)
 	const fieldPath = tilleggsinformasjonPaths(field)
 	const val = _get(fieldValue, fieldPath)
+
 	if (
 		!options.includes('<TOM>') &&
 		((fieldValue && !val && val !== false) || (!optionsUtfylt(options) && !options.includes(val)))
@@ -52,18 +53,10 @@ function optionsUtfylt(options) {
 	)
 }
 
-const fieldResolver = (
-	field,
-	handleChange,
-	formik,
-	path,
-	index,
-	resetForm,
-	tilleggsinformasjonAttributter,
-	options = []
-) => {
+const fieldResolver = (field, handleChange, formik, path, index, options = []) => {
 	const fieldName = tilleggsinformasjonPaths(field)
 	const values = formik.values
+
 	if (dateFields.includes(field)) {
 		return (
 			<FormikDatepicker
@@ -121,40 +114,20 @@ const fieldResolver = (
 	)
 }
 
-const Inntekt = ({
-	fields = {},
-	onValidate,
-	formikBag,
-	path,
-	resetForm,
-	tilleggsinformasjonAttributter,
-}) => {
+const Inntekt = ({ fields = {}, onValidate, formikBag, path }) => {
 	return (
 		<div className="flexbox--flex-wrap">
-			{fieldResolver(
-				'inntektstype',
-				onValidate,
-				formikBag,
-				path,
-				`${path}.inntektstype`,
-				resetForm,
-				tilleggsinformasjonAttributter,
-				['LOENNSINNTEKT', 'YTELSE_FRA_OFFENTLIGE', 'PENSJON_ELLER_TRYGD', 'NAERINGSINNTEKT']
-			)}
+			{fieldResolver('inntektstype', onValidate, formikBag, path, `${path}.inntektstype`, [
+				'LOENNSINNTEKT',
+				'YTELSE_FRA_OFFENTLIGE',
+				'PENSJON_ELLER_TRYGD',
+				'NAERINGSINNTEKT',
+			])}
 
 			{Object.keys(fields)
 				.filter((field) => !(fields[field].length === 1 && fields[field][0] === '<TOM>'))
 				.map((field) =>
-					fieldResolver(
-						field,
-						onValidate,
-						formikBag,
-						path,
-						`${path}.${field}`,
-						resetForm,
-						tilleggsinformasjonAttributter,
-						fields[field]
-					)
+					fieldResolver(field, onValidate, formikBag, path, `${path}.${field}`, fields[field])
 				)}
 		</div>
 	)

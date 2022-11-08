@@ -202,8 +202,8 @@ export const oppholdsadresse = Yup.object({
 
 export const kontaktadresse = Yup.object({
 	adressetype: Yup.string().nullable(),
-	gyldigFraOgMed: testDatoFom(Yup.string().nullable(), 'gyldigTilOgMed'),
-	gyldigTilOgMed: testDatoTom(Yup.string().nullable(), 'gyldigFraOgMed'),
+	gyldigFraOgMed: gyldigDatoFom,
+	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
 		then: vegadresse,

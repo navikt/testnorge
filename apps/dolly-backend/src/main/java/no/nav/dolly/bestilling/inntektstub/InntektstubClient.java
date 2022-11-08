@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.inntektstub;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -34,6 +35,8 @@ public class InntektstubClient implements ClientRegister {
     public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
+
+            log.info("Mottok inntektstub med info: {}", Json.pretty(bestilling.getInntektstub().getInntektsinformasjon()));
 
             bestilling.getInntektstub().getInntektsinformasjon()
                     .forEach(inntekter ->

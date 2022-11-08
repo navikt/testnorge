@@ -7,12 +7,35 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
 import { runningTestcafe } from '~/service/services/Request'
 import { Alert } from '@navikt/ds-react'
+import { PoppMiljoeinfo } from '~/components/fagsystem/pensjon/visning/PoppMiljoeinfo'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return !pensjonData?.inntekter || pensjonData?.inntekter?.length === 0
 }
 
-export const PensjonVisning = ({ data, loading }) => {
+const getTittel = (data) => {
+	const inntektsaar = data?.inntekter?.map((inntekt) => inntekt.inntektAar)
+	const foerste = Math.min(...inntektsaar)
+	const siste = Math.max(...inntektsaar)
+	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
+}
+
+const PensjonInntekt = ({ data }) => {
+	if (!data) return null
+
+	return (
+		<DollyFieldArray data={data.inntekter} nested>
+			{(inntekt, idx) => (
+				<div className="person-visning_content" key={idx}>
+					<TitleValue title="Inntektsår" value={inntekt?.inntektAar} />
+					<TitleValue title="Beløp" value={inntekt?.belop} />
+				</div>
+			)}
+		</DollyFieldArray>
+	)
+}
+
+export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
 	}
@@ -21,10 +44,6 @@ export const PensjonVisning = ({ data, loading }) => {
 	}
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
-
-	const inntektsaar = data?.inntekter?.map((inntekt) => inntekt.inntektAar)
-	const foerste = Math.min(...inntektsaar)
-	const siste = Math.max(...inntektsaar)
 
 	return (
 		<ErrorBoundary>
@@ -35,23 +54,29 @@ export const PensjonVisning = ({ data, loading }) => {
 			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente arbeidsforhold-data på person
+					Kunne ikke hente pensjon-data på person
 				</Alert>
 			) : (
-				<Panel
-					startOpen={runningTestcafe()}
-					heading={`Pensjonsgivende inntekter (${foerste} - ${siste})`}
-				>
-					<DollyFieldArray data={data.inntekter} nested>
-						{(inntekt, idx) => (
-							<div className="person-visning_content" key={idx}>
-								<TitleValue title="Inntektsår" value={inntekt.inntektAar} />
-								<TitleValue title="Beløp" value={inntekt.belop} />
-							</div>
-						)}
-					</DollyFieldArray>
+				<Panel startOpen={runningTestcafe()} heading={getTittel(data)}>
+					<PensjonInntekt data={data} />
 				</Panel>
 			)}
+			<PoppMiljoeinfo ident={data?.fnr} bestilteMiljoer={bestilteMiljoer} />
 		</ErrorBoundary>
+	)
+}
+
+export const PensjonvisningMiljo = ({ data, miljoe }) => {
+	const pensjonMiljoeInfo = data.find((m) => m.miljo == miljoe.toString())
+
+	return pensjonMiljoeInfo?.inntekter?.length < 1 ? (
+		<Alert variant="info" size="small" inline>
+			Fant ingen pensjon-data i dette miljøet
+		</Alert>
+	) : (
+		<div className="boks">
+			<SubOverskrift label="Pensjonsgivende inntekt (POPP)" iconKind="pensjon" />
+			<PensjonInntekt data={pensjonMiljoeInfo} />
+		</div>
 	)
 }

@@ -58,11 +58,6 @@ const getIdenttype = (ident) => {
 	}
 }
 
-const getFirstAaregEnvironment = (bestilling) => {
-	const aaregStatus = bestilling?.status?.filter((status) => status.id === 'AAREG')?.[0]
-	return aaregStatus?.statuser?.[0]?.detaljert?.[0]?.miljo || 'q2'
-}
-
 export const PersonVisning = ({
 	fetchDataFraFagsystemer,
 	data,
@@ -92,9 +87,21 @@ export const PersonVisning = ({
 		fetchDataFraFagsystemer(bestillinger)
 	}, [])
 
+	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
+
+	const harAaregBestilling = () => {
+		let aareg = false
+		bestillingerFagsystemer?.forEach((i) => {
+			if (i.aareg) {
+				aareg = true
+			}
+		})
+		return aareg
+	}
+
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		getFirstAaregEnvironment(bestilling)
+		harAaregBestilling()
 	)
 
 	const getGruppeIdenter = () => {
@@ -102,6 +109,22 @@ export const PersonVisning = ({
 	}
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
+
+	const bestilteMiljoer = useAsync(async () => {
+		const miljoer = []
+		await Promise.allSettled(
+			bestillingIdListe.map((bestillingId) => {
+				DollyApi.getBestilling(bestillingId).then((response) => {
+					response?.data?.environments?.forEach((miljo) => {
+						if (!miljoer.includes(miljo)) {
+							miljoer.push(miljo)
+						}
+					})
+				})
+			})
+		)
+		return miljoer
+	}, [])
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -263,10 +286,24 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
-				<AaregVisning ident={ident.ident} liste={arbeidsforhold} loading={loadingAareg} />
+				<AaregVisning
+					ident={ident.ident}
+					liste={arbeidsforhold}
+					loading={loadingAareg}
+					bestilteMiljoer={bestilteMiljoer}
+				/>
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
-				<PensjonVisning data={pensjonforvalter} loading={loading.pensjonforvalter} />
-				<TpVisning data={tpforvalter} loading={loading.tpforvalter} />
+				<PensjonVisning
+					data={pensjonforvalter}
+					loading={loading.pensjonforvalter}
+					bestilteMiljoer={bestilteMiljoer}
+				/>
+				<TpVisning
+					ident={ident.ident}
+					data={tpforvalter}
+					loading={loading.tpforvalter}
+					bestilteMiljoer={bestilteMiljoer}
+				/>
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

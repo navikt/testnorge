@@ -19,14 +19,14 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 	const filtrerNyeBestillinger = (bestillinger: Bestillingsstatus[]) => {
 		const nyBestillingListe = Object.values(bestillinger).filter(
 			(bestilling) =>
-				!bestilling.ferdig ||
-				(bestilling.ferdig && nyeBestillinger.some((best) => best.id === bestilling.id))
+				!bestilling?.ferdig ||
+				(bestilling?.ferdig && nyeBestillinger.some((best) => best?.id === bestilling?.id))
 		)
 		setNyeBestillinger(nyBestillingListe)
 	}
 
 	const onFinishBestilling = (bestilling) => {
-		if (!ferdigBestillinger.find((b) => b.id === bestilling.id)) {
+		if (!ferdigBestillinger.find((b) => b.id === bestilling.id) && bestilling?.ferdig) {
 			setFerdigBestillinger(ferdigBestillinger.concat([bestilling]))
 
 			const nyenye = nyeBestillinger.filter(
@@ -55,11 +55,11 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 
 	const ikkeFerdig = nyeBestillinger.map((bestilling) => (
 		<BestillingProgresjon
-			key={bestilling.id}
+			key={bestilling.sistOppdatert}
 			bestillingID={bestilling.id}
 			erOrganisasjon={bestilling.organisasjonNummer}
 			cancelBestilling={cancelBestilling}
-			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 0)}
+			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 200)}
 		/>
 	))
 
