@@ -38,6 +38,15 @@ public class ErrorStatusDecoder {
         return String.format(VARSEL, system);
     }
 
+    public static String encodeStatus(String toBeEncoded) {
+        return Objects.nonNull(toBeEncoded) ?
+                toBeEncoded.replaceAll("\\[\\s", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replace(',', ';')
+                        .replace(':', '=') : "";
+    }
+
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
         StringBuilder builder = new StringBuilder()
@@ -83,10 +92,10 @@ public class ErrorStatusDecoder {
 
         if (error instanceof WebClientResponseException webClientResponseException) {
 
-            if ( webClientResponseException.getStatusCode().is4xxClientError()) {
-                appendStatusMessage(webClientResponseException.getResponseBodyAsString().isEmpty() ?
-                        webClientResponseException.getStatusCode().toString() :
-                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8), builder);
+            if (webClientResponseException.getStatusCode().is4xxClientError()) {
+                appendStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) ?
+                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                        webClientResponseException.getStatusCode().toString(), builder);
 
             } else {
                 builder.append(TEKNISK_FEIL_SE_LOGG);
@@ -101,15 +110,6 @@ public class ErrorStatusDecoder {
         }
 
         return builder.toString();
-    }
-
-    public static String encodeStatus(String toBeEncoded) {
-        return Objects.nonNull(toBeEncoded) ?
-                toBeEncoded.replaceAll("\\[\\s", "")
-                        .replace("[", "")
-                        .replace("]", "")
-                        .replace(',', ';')
-                        .replace(':', '=') : "";
     }
 
     private void appendStatusMessage(String responseBody, StringBuilder builder) {
