@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "webpack serve --env backend=http://localhost:8020 --config webpack.dev.js --open-app-name 'Google Chrome' ",
-    "start-testcafe": "webpack serve --env backend=http://localhost:8020 --config webpack.dev.js --no-open",
+    "start": "webpack serve --allowed-hosts all --env backend=http://localhost:8020 --config webpack.dev.js --open-app-name 'Google Chrome' ",
+    "start-testcafe": "webpack serve --allowed-hosts all --env backend=http://localhost:8020 --config webpack.dev.js --no-open",
     "build": "webpack --config webpack.prod.js",
     "analysis": "webpack --config webpack.analysis.js",
     "test": "jest --watch",

@@ -12,7 +12,8 @@ const mapStateToProps = (
 			sidetall: number
 			sideStoerrelse: number
 			sorting: string
-		}
+			update: string
+		},
 	},
 	ownProps: FormikProps<any>
 ) => ({
@@ -21,6 +22,7 @@ const mapStateToProps = (
 	sidetall: state.finnPerson.sidetall,
 	sideStoerrelse: state.finnPerson.sideStoerrelse,
 	sorting: state.finnPerson.sorting,
+	update: state.finnPerson.update,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

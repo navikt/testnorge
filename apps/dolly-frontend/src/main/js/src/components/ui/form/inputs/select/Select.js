@@ -28,6 +28,7 @@ export const Select = ({
 	options = [],
 	isMulti = false,
 	styles,
+	...rest
 }) => {
 	let _value = isMulti
 		? options.filter((o) => value?.some((el) => el === o.value))
@@ -57,14 +58,15 @@ export const Select = ({
 			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
 			menuPortalTarget={document.getElementById('react-select-root')}
 			optionHeight={optionHeight}
+			{...rest}
 		/>
 	)
 }
 
-export const SelectMedKodeverk = ({ kodeverk, ...rest }) => (
+export const SelectMedKodeverk = ({ kodeverk, isLoading, ...rest }) => (
 	<KodeverkConnector navn={kodeverk}>
 		{(kodeverkVerdier) => (
-			<Select {...rest} isLoading={!kodeverkVerdier} options={kodeverkVerdier} />
+			<Select {...rest} isLoading={!kodeverkVerdier || isLoading} options={kodeverkVerdier} />
 		)}
 	</KodeverkConnector>
 )
