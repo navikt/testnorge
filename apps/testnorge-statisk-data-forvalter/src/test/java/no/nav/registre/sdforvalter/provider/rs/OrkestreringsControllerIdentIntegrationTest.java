@@ -23,7 +23,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import no.nav.registre.sdforvalter.consumer.rs.response.SkdResponse;
+import no.nav.registre.sdforvalter.consumer.rs.skd.response.SkdResponse;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;

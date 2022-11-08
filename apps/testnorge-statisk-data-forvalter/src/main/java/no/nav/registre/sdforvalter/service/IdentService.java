@@ -2,11 +2,11 @@ package no.nav.registre.sdforvalter.service;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.GenererNavnConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.HodejegerenConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.SkdConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.TpConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.navn.GenererNavnConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.HodejegerenConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.person.PersonConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.skd.SkdConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.tp.TpConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import org.springframework.beans.factory.annotation.Value;

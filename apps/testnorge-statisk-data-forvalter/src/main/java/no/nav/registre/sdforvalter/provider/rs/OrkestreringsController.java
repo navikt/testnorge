@@ -3,7 +3,7 @@ package no.nav.registre.sdforvalter.provider.rs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.person.PersonConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.provider.rs.dto.Orgnummer;
 import no.nav.registre.sdforvalter.service.EnvironmentInitializationService;
