@@ -13,7 +13,7 @@ import { DollyApi } from '~/service/Api'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerPensjonData = (tpData) => {
-	console.log('tpData: ', tpData) //TODO - SLETT MEG
+	// console.log('tpData: ', tpData) //TODO - SLETT MEG
 	// return !tpData?.value || !tpData?.value?.length
 	return !tpData?.value
 }

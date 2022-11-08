@@ -39,6 +39,8 @@ import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiV
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
+import { useTpEnvironments } from '~/utils/hooks/useEnvironments'
+import { useTpData } from '~/utils/hooks/useFagsystemer'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -103,6 +105,9 @@ export const PersonVisning = ({
 		ident.ident,
 		harAaregBestilling()
 	)
+	const { loading: loadingTpData, tpData } = useTpData(ident.ident)
+	console.log('tpData: ', tpData) //TODO - SLETT MEG
+	console.log('loadingTpData: ', loadingTpData) //TODO - SLETT MEG
 
 	const getTpMiljoeinfo = useAsync(async () => {
 		const tmpMiljoeinfo = []
@@ -121,7 +126,7 @@ export const PersonVisning = ({
 		})
 		// )
 		// return tmpMiljoeinfo.sort((a, b) => a.miljo - b.miljo)
-		console.log('tmpMiljoeinfo: ', tmpMiljoeinfo) //TODO - SLETT MEG
+		// console.log('tmpMiljoeinfo: ', tmpMiljoeinfo) //TODO - SLETT MEG
 		return tmpMiljoeinfo.sort((a, b) => a.miljo.localeCompare(b.miljo))
 	}, [])
 
@@ -324,7 +329,7 @@ export const PersonVisning = ({
 				<TpVisning
 					ident={ident.ident}
 					// data={tpforvalter}
-					data={getTpMiljoeinfo}
+					data={tpData}
 					loading={loading.tpforvalter}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
