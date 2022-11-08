@@ -4,13 +4,16 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.ResponseHandler;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -67,6 +71,21 @@ public class KrrstubClient implements ClientRegister {
         }
     }
 
+    @Override
+    public void release(List<String> identer) {
+
+            krrstubConsumer.deleteKontaktdataPerson(identer)
+                    .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getKrrstub()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> StringUtils.isNotBlank(entry.getKrrstubStatus()));
+    }
+
     private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
 
         String maalform = null;
@@ -84,12 +103,5 @@ public class KrrstubClient implements ClientRegister {
             digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
             digitalKontaktdata.setRegistrert(true);
         }
-    }
-
-    @Override
-    public void release(List<String> identer) {
-
-            krrstubConsumer.deleteKontaktdataPerson(identer)
-                    .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
     }
 }

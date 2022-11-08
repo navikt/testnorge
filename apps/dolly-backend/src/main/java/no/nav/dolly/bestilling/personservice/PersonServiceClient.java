@@ -3,7 +3,9 @@ package no.nav.dolly.bestilling.personservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.core.annotation.Order;
@@ -63,5 +65,11 @@ public class PersonServiceClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
         // Ikke relevant
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return true;
     }
 }

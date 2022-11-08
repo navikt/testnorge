@@ -7,7 +7,9 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -81,6 +83,14 @@ public class AaregClient implements ClientRegister {
         // Sletting av arbeidsforhold er pt ikke støttet
     }
 
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getAareg()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getAaregStatus()));
+    }
+
     private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {
 
         MappingContext context = new MappingContext.Factory().getContext();
@@ -128,7 +138,6 @@ public class AaregClient implements ClientRegister {
                         arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                                 arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
                         appendPermisjonPermitteringId(arbeidsforhold, eksisterende);
-                        log.info("Miljoe {} navArbeidsforholdId {} ", response.getMiljo(), arbeidsforhold.getNavArbeidsforholdId());
                     }
                 });
 

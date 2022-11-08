@@ -6,7 +6,9 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -74,6 +76,12 @@ public class TagsHendelseslagerClient implements ClientRegister {
         getPdlIdenter(identer)
                 .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
                 .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return true;
     }
 
     private Flux<List<String>> getPdlIdenter(List<String> identer) {

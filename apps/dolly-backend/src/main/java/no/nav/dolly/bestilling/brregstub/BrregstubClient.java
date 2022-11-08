@@ -6,7 +6,9 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.mapper.RolleUtskriftMapper;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.service.DollyPersonCache;
@@ -14,9 +16,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -51,6 +55,14 @@ public class BrregstubClient implements ClientRegister {
 
         brregstubConsumer.deleteRolleoversikt(identer)
                 .subscribe(resp -> log.info("Sletting utført i Brregstub"));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getBrregstub()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getBrregstubStatus()));
     }
 
     private String postRolleutskrift(RolleoversiktTo rolleoversiktTo) {
