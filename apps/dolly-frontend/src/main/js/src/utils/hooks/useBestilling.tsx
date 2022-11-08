@@ -56,7 +56,8 @@ export const useIkkeFerdigBestillingerGruppe = (
 	gruppeId: string | number,
 	visning,
 	sidetall: number,
-	sideStoerrelse: number
+	sideStoerrelse: number,
+	update: string,
 ) => {
 	if (!gruppeId) {
 		return {
@@ -65,9 +66,11 @@ export const useIkkeFerdigBestillingerGruppe = (
 		}
 	}
 
+	const updateParam = update ? `?update=${update}` : ''
+
 	const url =
 		visning == 'personer'
-			? getIkkeFerdigBestillingerGruppeUrl(gruppeId)
+			? getIkkeFerdigBestillingerGruppeUrl(gruppeId) + updateParam
 			: getBestillingerGruppeUrl(gruppeId) + `?page=${sidetall}&pageSize=${sideStoerrelse}`
 	const { data, error } = useSWR<Bestilling[], Error>(url, fetcher)
 

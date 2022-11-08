@@ -25,6 +25,7 @@ export type GruppeProps = {
 	sidetall: number
 	sideStoerrelse: number
 	sorting: object
+	update: string
 }
 
 export enum VisningType {
@@ -32,7 +33,7 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting }: GruppeProps) => {
+export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -43,7 +44,8 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting }: Grup
 		gruppeId,
 		visning,
 		sidetall,
-		sideStoerrelse
+		sideStoerrelse,
+		update,
 	)
 
 	const {
