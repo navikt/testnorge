@@ -3,8 +3,6 @@ package no.nav.registre.sdforvalter.consumer.rs.aareg;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.read.ListAppender;
-import no.nav.registre.sdforvalter.config.credentials.SyntAaregProperties;
-import no.nav.registre.sdforvalter.consumer.rs.aareg.SyntAaregConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.command.PostSyntAaregCommand;
 import okhttp3.mockwebserver.Dispatcher;
 import okhttp3.mockwebserver.MockResponse;
@@ -13,7 +11,6 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.jupiter.api.Disabled;
 import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ActiveProfiles;
@@ -37,7 +34,6 @@ import static org.hamcrest.Matchers.hasItems;
 
 @TestPropertySource(locations = "classpath:application-test.yml")
 @ActiveProfiles("test")
-@Disabled
 public class SyntAaregConsumerTest {
 
     private final String fnr1 = "01010101010";
@@ -56,7 +52,7 @@ public class SyntAaregConsumerTest {
         Dispatcher dispatcher = getDispatcher();
         mockWebServer.setDispatcher(dispatcher);
         syntAaregConsumer = new SyntAaregConsumer(2,
-                new SyntAaregProperties(),
+                mockWebServer.url("/synt-aareg").toString(),
                 metricsWebClientFilterFunction);
     }
 

@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs.aareg;
 
 import io.micrometer.core.annotation.Timed;
-import no.nav.registre.sdforvalter.config.credentials.SyntAaregProperties;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.command.PostSyntAaregCommand;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +21,7 @@ public class SyntAaregConsumer {
 
     public SyntAaregConsumer(
             @Value("${aareg.pageSize}") int pageSize,
-            SyntAaregProperties serverProperties,
+            @Value("${consumers.synthdata-aareg.url}") String syntUrl,
             ExchangeFilterFunction metricsWebClientFilterFunction
     ) {
         this.pageSize = pageSize;
@@ -32,7 +31,7 @@ public class SyntAaregConsumer {
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .baseUrl(serverProperties.getUrl())
+                .baseUrl(syntUrl)
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }

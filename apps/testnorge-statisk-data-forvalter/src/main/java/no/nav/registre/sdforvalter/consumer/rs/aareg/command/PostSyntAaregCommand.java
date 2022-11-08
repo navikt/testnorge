@@ -34,7 +34,10 @@ public class PostSyntAaregCommand implements Callable<List<RsAaregSyntetiserings
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(Collections.emptyList()))
+                .onErrorResume(error -> {
+                    log.error("Feil under syntetisering");
+                    return Mono.just(Collections.emptyList());
+                })
                 .block();
     }
 }
