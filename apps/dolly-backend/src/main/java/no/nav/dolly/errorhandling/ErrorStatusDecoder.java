@@ -92,11 +92,12 @@ public class ErrorStatusDecoder {
 
         if (error instanceof WebClientResponseException webClientResponseException) {
 
-            log.info("WebClientResponseException body: {}", webClientResponseException.getResponseBodyAsString());
             if (webClientResponseException.getStatusCode().is4xxClientError()) {
-                appendStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) ?
+
+                builder.append(getStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) &&
+                        !getStatusMessage(webClientResponseException.getResponseBodyAsString()).equals("null") ?
                         webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                        webClientResponseException.getStatusCode().toString(), builder);
+                        webClientResponseException.getStatusCode().toString()));
 
             } else {
                 builder.append(TEKNISK_FEIL_SE_LOGG);
@@ -113,8 +114,9 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    private void appendStatusMessage(String responseBody, StringBuilder builder) {
+    private String getStatusMessage(String responseBody) {
 
+        var builder = new StringBuilder();
         if (responseBody.contains("{")) {
             try {
                 Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
@@ -143,5 +145,7 @@ public class ErrorStatusDecoder {
         } else {
             builder.append(encodeStatus(responseBody));
         }
+
+        return builder.toString();
     }
 }

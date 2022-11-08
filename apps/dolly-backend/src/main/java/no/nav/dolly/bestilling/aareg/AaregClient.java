@@ -102,7 +102,7 @@ public class AaregClient implements ClientRegister {
 
         var arbforholdId = new AtomicInteger(response.getEksisterendeArbeidsforhold().size());
 
-        var eksistens = doEksistenssjekk(response, request);
+        var eksistens = doEksistenssjekk(response,  mapperFacade.mapAsList(request, Arbeidsforhold.class));
         return Flux.merge(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
                                 .flatMap(entry -> {
                                     if (isBlank(entry.getArbeidsforholdId())) {
