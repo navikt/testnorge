@@ -97,7 +97,7 @@ public class AaregService {
         }
 
         for (var forholdet : arbeidsforhold) {
-            var opprettRequest = forholdet.mapToArbeidsforhold();
+            var opprettRequest = forholdet.getArbeidsforhold().toArbeidsforhold();
             var miljoeListe = forholdet.getEnvironments();
             for (var miljoe : miljoeListe) {
                 var aaregResponse = aaregConsumer.opprettArbeidsforhold(opprettRequest, miljoe);
