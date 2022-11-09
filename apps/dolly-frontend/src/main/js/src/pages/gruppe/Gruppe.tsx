@@ -40,6 +40,14 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		loading: loadingBruker,
 	} = useCurrentBruker()
 
+	const { bestillingerById: ikkeFerdigBestillinger } = useIkkeFerdigBestillingerGruppe(
+		gruppeId,
+		'personer',
+		sidetall,
+		sideStoerrelse,
+		update,
+	)
+
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
 		gruppeId,
 		visning,
@@ -84,9 +92,9 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppe={gruppe} />
 
-			{bestillingerById && (
+			{ikkeFerdigBestillinger && (
 				// @ts-ignore
-				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestillingerById} />
+				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
 			)}
 
 			<div className="gruppe-toolbar">
