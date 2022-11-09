@@ -5,15 +5,18 @@ import Icon from '~/components/ui/icon/Icon'
 
 import './StatusPage.less'
 import Request from "~/service/services/Request";
+import api from '@/api'
 
 export default () => {
     const [statuses, setStatuses] = useState({})
 
     useEffect(() => {
-        const endpoint = 'http://localhost:8080/v1/status'
-        fetch(endpoint)
-            .then((response) => response.json())
-            .then((json) => {
+        //const endpoint = 'http://localhost:8080/v1/status'
+        const endpoint = 'https://dolly-backend-dev.dev.intern.nav.no/v1/status'
+        //api.fetchJson(endpoint, { method: 'GET' })
+         fetch(endpoint)
+             .then((response) => response.json())
+             .then((json) => {
                 console.log(json)
                 setStatuses(json)
             })
@@ -65,7 +68,7 @@ export default () => {
         const services = statuses[consumer]
         const serviceNames = Object.keys(services).map((name) => {
             return <div className="consumer-service">
-                <div className="consumer-service-name"><h5>{name}</h5> ({services[name].team})</div>
+                <div className="consumer-service-name"><h5>{name}</h5> <span>({services[name].team})</span></div>
                 <div className="consumer-service-status">
                     <Icon kind={iconType(serviceStatus(services[name]))} />
                 </div>
