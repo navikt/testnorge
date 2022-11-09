@@ -150,29 +150,31 @@ public class InstdataConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        final String TEAM_ROCKET = "Team Rocket";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
-        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+        statusMap.put("team", TEAM_DOLLY);
 
+        // "Inst-proxy" ikke direkte tilgang
         var instProxyStatusMap =  CheckAliveUtil.checkConsumerStatus(
                 "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive",
                 "https://testnav-inst-proxy.dev.intern.nav.no/internal/isReady",
                 WebClient.builder().build());
-        instProxyStatusMap.put("team", "Dolly");
-        instProxyStatusMap.put("alive-url", "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive");
+        instProxyStatusMap.put("team", TEAM_DOLLY);
 
+        // Inst-data ikke direktre tilgang
         var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
                 "https://inst-testdata.dev.adeo.no/internal/health/liveness",
                 "https://inst-testdata.dev.adeo.no/internal/health/readiness",
                 WebClient.builder().build());
-        instDataStatusMap.put("team", "team-rocket");
-        instDataStatusMap.put("alive-url", "https://inst-testdata.dev.adeo.no/internal/health/liveness");
+        instDataStatusMap.put("team", "TEAM_ROCKET");
 
         return Map.of(
-                "InstDataConsumer", statusMap,
+                "Inst-service", statusMap,
                 "Inst-proxy", instProxyStatusMap,
                 "Inst-data", instDataStatusMap
         );

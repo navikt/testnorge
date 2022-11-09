@@ -72,6 +72,8 @@ public class AaregConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
         var statusWebClient = WebClient.builder().build();
         var checkMap = new HashMap<String, Object>();
 
@@ -79,7 +81,7 @@ public class AaregConsumer {
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 statusWebClient);
-        statusMap.put("team", "Dolly");
+        statusMap.put("team", TEAM_DOLLY);
 
         checkMap.put("AAREG", statusMap);
 

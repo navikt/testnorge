@@ -163,6 +163,7 @@ public class ArenaForvalterConsumer {
                 WebClient.builder().build());
         statusMap.put("team", "Dolly");
 
+        // "Arena" ikke direkte tilgang
         var arenaStatusMap =  CheckAliveUtil.checkConsumerStatus(
                 "https://arena-forvalteren.dev.adeo.no/internal/isAlive",
                 "https://arena-forvalteren.dev.adeo.no/internal/isReady",

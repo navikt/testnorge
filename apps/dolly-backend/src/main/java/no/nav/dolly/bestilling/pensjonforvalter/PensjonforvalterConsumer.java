@@ -127,19 +127,23 @@ public class PensjonforvalterConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        final String TEAM_PENSJON_TESTDATA = "Team Pentek/pensjontestdata";
+
         var statusWebClient = WebClient.builder().build();
 
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 statusWebClient);
-        statusMap.put("team", "Dolly");
+        statusMap.put("team", TEAM_DOLLY);
 
+        // "pensjon-testdata" ikke direkte tilgang
         var pensjonStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://pensjon-testdata-facade.dev.intern.nav.no/isAlive",
                 "https://pensjon-testdata-facade.dev.intern.nav.no/isReady",
                 statusWebClient);
-        pensjonStatus.put("team", "Pensjon");
+        pensjonStatus.put("team", TEAM_PENSJON_TESTDATA);
 
         return Map.of(
                 "pensjonforvalter", statusMap,

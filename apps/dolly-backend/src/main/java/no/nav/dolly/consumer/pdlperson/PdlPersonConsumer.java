@@ -110,6 +110,7 @@ public class PdlPersonConsumer {
         statusMap.put("team", "Dolly");
         statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
 
+        // "pdl-testdata" ikke direkte tilgang
         var pdlTestdataStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://pdl-testdata.dev.intern.nav.no/internal/health/liveness",
                 "https://pdl-testdata.dev.intern.nav.no/internal/health/readiness",
@@ -117,6 +118,7 @@ public class PdlPersonConsumer {
         pdlTestdataStatus.put("team", "pdl");
         pdlTestdataStatus.put("alive-url", "https://pdl-testdata.dev.intern.nav.no/internal/health/liveness");
 
+        // ikke direkte tilgang
         var pdlApiStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://pdl-api.dev.intern.nav.no/internal/health/liveness",
                 "https://pdl-api.dev.intern.nav.no/internal/health/readiness",
@@ -124,6 +126,7 @@ public class PdlPersonConsumer {
         pdlApiStatus.put("team", "pdl");
         pdlApiStatus.put("alive-url", "https://pdl-api.dev.intern.nav.no/internal/health/liveness");
 
+        // ikke direkte tilgang
         var pdlApiQ1Status = CheckAliveUtil.checkConsumerStatus(
                 "https://pdl-api-q1.dev.intern.nav.no/internal/health/liveness",
                 "https://pdl-api-q1.dev.intern.nav.no/internal/health/readiness",
@@ -131,6 +134,7 @@ public class PdlPersonConsumer {
         pdlApiQ1Status.put("team", "pdl");
         pdlApiQ1Status.put("alive-url", "https://pdl-api-q1.dev.intern.nav.no/internal/health/liveness");
 
+        // ikke direkte tilgang
         var pdlIdenthendelseStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/liveness",
                 "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/readiness",
@@ -138,6 +142,7 @@ public class PdlPersonConsumer {
         pdlIdenthendelseStatus.put("team", "pdl");
         pdlIdenthendelseStatus.put("alive-url", "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/liveness");
 
+        // ikke direkte tilgang
         var pdlAktorStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://pdl-aktor.dev.intern.nav.no/internal/health/liveness",
                 "https://pdl-aktor.dev.intern.nav.no/internal/health/readiness",

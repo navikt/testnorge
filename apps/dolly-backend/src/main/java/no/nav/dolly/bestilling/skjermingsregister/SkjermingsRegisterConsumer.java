@@ -103,6 +103,7 @@ public class SkjermingsRegisterConsumer {
         statusMap.put("team", "Dolly");
         statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
 
+        // Skjermede ikke direkte tilgang
         var registerStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://skjermede-personer.dev.adeo.no/internal/isAlive",
                 "https://skjermede-personer.dev.adeo.no/internal/isReady",

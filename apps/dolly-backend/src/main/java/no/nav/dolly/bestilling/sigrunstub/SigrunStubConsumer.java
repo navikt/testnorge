@@ -108,6 +108,7 @@ public class SigrunStubConsumer {
         statusMap.put("team", "Dolly");
         statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
 
+        // "SigrunStub" ikke direkte tilgang
         var sigrunStubStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive",
                 "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive", // samme url brukes for begge

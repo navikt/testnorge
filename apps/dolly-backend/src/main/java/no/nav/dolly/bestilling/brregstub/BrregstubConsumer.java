@@ -117,6 +117,7 @@ public class BrregstubConsumer {
         statusMap.put("team", "Dolly");
         statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
 
+        // "BrregStub" ikke direkte tilgang
         var registerStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://brreg-stub.dev.adeo.no/isAlive",
                 "https://brreg-stub.dev.adeo.no/isReady",
