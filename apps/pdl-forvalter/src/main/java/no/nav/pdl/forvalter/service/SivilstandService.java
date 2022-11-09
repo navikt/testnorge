@@ -83,7 +83,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
         if (isNull(sivilstand.getType())) {
 
-                sivilstand.setType(UGIFT);
+            sivilstand.setType(UGIFT);
         }
 
         if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
@@ -177,8 +177,8 @@ public class SivilstandService implements Validation<SivilstandDTO> {
 
         return person.getSivilstand().stream().noneMatch(sivilstand -> isNull(sivilstand.getSivilstandsdato())) ?
                 person.getSivilstand().stream()
-                .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
-                .toList() :
+                        .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
+                        .toList() :
                 person.getSivilstand();
     }
 }
