@@ -12,6 +12,8 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
+
 
 @Component
 public class SyntAaregConsumer {
@@ -61,7 +63,7 @@ public class SyntAaregConsumer {
             List<String> fnrs
     ) {
         List<RsAaregSyntetiseringsRequest> response = new PostSyntAaregCommand(fnrs, webClient).call();
-        if (!response.isEmpty()) {
+        if (nonNull(response) && !response.isEmpty()) {
             syntetiserteMeldinger.addAll(response);
         }
     }

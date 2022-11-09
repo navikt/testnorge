@@ -54,6 +54,7 @@ class OrkestreringsControllerAaregIntegrationTest {
     private static final String MILJOE = "test";
 
     private final String tokenResponse = "{\"access_token\": \"dummy\"}";
+    private final KodeverkResponse kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
     private static String syntString;
     private TypeReference<List<RsAaregSyntetiseringsRequest>> SYNT_RESPONSE = new TypeReference<>() {
     };
@@ -69,7 +70,6 @@ class OrkestreringsControllerAaregIntegrationTest {
         aaregRepository.save(aaregModel);
 
         var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
-        var kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -177,9 +177,65 @@ class OrkestreringsControllerAaregIntegrationTest {
 
     }
 
+    @Test
+    void shouldNotOppretteAaregIfSyntError() throws Exception {
+        final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
+        aaregRepository.save(aaregModel);
 
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .stubPost();
 
-    //todo: test hvis arbeidsforhold allerede eksisterer og test hvis synt returnerer feil
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/aareg/test/api/v1/arbeidstaker/arbeidsforhold")
+                .withResponseBody(Collections.emptyList())
+                .stubGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/synt-aareg/api/v1/generate_aareg")
+                .withRequestBody(Collections.singletonList(FNR))
+                .withResponseBody("error")
+                .stubPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/kodeverk/api/v1/kodeverk/Yrker/koder")
+                .withResponseBody(kodeverkResponse)
+                .stubGet();
+
+        mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .verifyPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/aareg/test/api/v1/arbeidstaker/arbeidsforhold")
+                .withResponseBody(Collections.emptyList())
+                .verifyGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/synt-aareg/api/v1/generate_aareg")
+                .withRequestBody(Collections.singletonList(FNR))
+                .withResponseBody("error")
+                .verifyPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/kodeverk/api/v1/kodeverk/Yrker/koder")
+                .withResponseBody(kodeverkResponse)
+                .verifyGet();
+    }
 
     private AaregModel createAaregModel(String fnr, String orgId) {
         AaregModel model = new AaregModel();

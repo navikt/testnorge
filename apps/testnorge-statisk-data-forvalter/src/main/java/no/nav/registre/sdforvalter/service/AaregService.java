@@ -22,6 +22,7 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -43,24 +44,33 @@ public class AaregService {
         var nyeArbeidsforhold = liste.getListe().stream()
                 .filter(item -> arbeidsforholdEksistererIkkeAllerede(
                         aaregConsumer.hentArbeidsforhold(item.getFnr(), environment), item))
-                .map(item -> {
-                    var arbeidsgiver = RsOrganisasjon.builder()
-                            .orgnummer(String.valueOf(item.getOrgId()))
-                            .build();
-                    var arbeidstaker = RsSyntPerson.builder()
-                            .ident(item.getFnr())
-                            .identtype("FNR")
-                            .build();
-                    return new RsAaregSyntetiseringsRequest(
-                            RsSyntetiskArbeidsforhold.builder()
-                                    .arbeidsgiver(arbeidsgiver)
-                                    .arbeidstaker(arbeidstaker)
-                                    .build(),
-                            null,
-                            environment);
-                })
-                .toList();
-        //Todo info om hvor mange allerede har eksisterende og hvor mange har igjen
+                .map(item ->
+                        new RsAaregSyntetiseringsRequest(
+                                RsSyntetiskArbeidsforhold.builder()
+                                        .arbeidsgiver(RsOrganisasjon.builder()
+                                                .orgnummer(String.valueOf(item.getOrgId()))
+                                                .build())
+                                        .arbeidstaker(RsSyntPerson.builder()
+                                                .ident(item.getFnr())
+                                                .identtype("FNR")
+                                                .build())
+                                        .build(),
+                                null,
+                                environment)
+                )
+                .collect(Collectors.toList());
+
+        var total = liste.getListe().size();
+        var antallNye = nyeArbeidsforhold.size();
+
+        if (total != antallNye) {
+            log.info("Fant eksisterende arbeidsforhold for {} av {} identer. Fortsetter opprettelse av nye arbeidsforhold for de gjenværenede {} identene.",
+                    total - antallNye,
+                    total,
+                    antallNye
+            );
+        }
+
         return sendArbeidsforholdTilAareg(nyeArbeidsforhold, true);
     }
 
@@ -127,7 +137,7 @@ public class AaregService {
 
     private void sjekkArbeidsforholdEtterArbeidsavtale(List<RsAaregSyntetiseringsRequest> arbeidsforhold, List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold) {
         for (var arbeidsforholdsResponse : arbeidsforhold) {
-            if (isNull(arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale())) {
+            if (isNull(arbeidsforholdsResponse.getArbeidsforhold()) || isNull(arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale())) {
                 log.warn("Arbeidsavtale er null for arbeidstaker med id {}. Hopper over opprettelse.", arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent());
                 ugyldigeArbeidsforhold.add(arbeidsforholdsResponse);
             }
@@ -137,6 +147,9 @@ public class AaregService {
     private void validerArbeidsforholdMotAaregSpecs(List<RsAaregSyntetiseringsRequest> arbeidsforholdRequests) {
         var yrkeskoder = kodeverkConsumer.getYrkeskoder();
         for (var request : arbeidsforholdRequests) {
+            if (isNull(request.getArbeidsforhold()) || isNull(request.getArbeidsforhold().getArbeidsavtale())) {
+                continue;
+            }
             var arbeidsavtale = request.getArbeidsforhold().getArbeidsavtale();
             if (nonNull(arbeidsavtale.getSisteLoennsendringsdato())) {
                 arbeidsavtale.setSisteLoennsendringsdato(null);
