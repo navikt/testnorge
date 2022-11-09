@@ -171,7 +171,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
                         tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
                         tidligsteSivilstandDato.get().minusMonths(3) :
-                        myndighetsdato);
+                        FoedselsdatoUtility.getFoedselsdato(person));
             }
         });
 
