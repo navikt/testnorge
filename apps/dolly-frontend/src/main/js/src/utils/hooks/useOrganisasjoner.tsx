@@ -123,22 +123,38 @@ export const useOrganisasjonBestillingStatus = (
 	}
 }
 
-export const useArbeidsforhold = (ident: string, miljoe: string) => {
-	if (!ident || !miljoe) {
+export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
+	const { dollyEnvironmentList } = useDollyEnvironments()
+	const unsupportedEnvironments = ['t0', 't13', 'qx']
+	const filteredEnvironments = dollyEnvironmentList
+		?.map((miljoe) => miljoe.id)
+		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))
+
+	if (!ident) {
 		return {
 			loading: false,
-			error: 'Ident eller miljø mangler!',
+			error: 'Ident mangler!',
 		}
 	}
 
+	if (!harAaregBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const miljoer = miljoe ? [miljoe] : filteredEnvironments
+
 	const { data, error } = useSWR<Arbeidsforhold[], Error>(
-		[getArbeidsforholdUrl(miljoe), { 'Nav-Personident': ident }],
-		fetcher
+		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
+		multiFetcher,
+		{ dedupingInterval: 30000 }
 	)
 
 	return {
-		arbeidsforhold: data,
+		arbeidsforhold: data?.[0],
 		loading: !error && !data,
 		error: error,
 	}
 }
+
