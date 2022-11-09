@@ -56,7 +56,7 @@ public class StatusController {
     public Object clientsStatus() {
         var filterClients = Arrays.asList("PdlDataClient");
 
-        return clientRegisters.stream()
+        return clientRegisters.parallelStream()
                 .filter(client -> !filterClients.contains(client.getClass().getSimpleName()))
                 .map(client -> Arrays.asList(getClientNavn(client.getClass().getSimpleName()), client.status()))
                 .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
