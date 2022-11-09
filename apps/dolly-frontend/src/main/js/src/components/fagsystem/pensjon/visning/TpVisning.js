@@ -15,7 +15,9 @@ import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 export const sjekkManglerPensjonData = (tpData) => {
 	// console.log('tpData: ', tpData) //TODO - SLETT MEG
 	// return !tpData?.value || !tpData?.value?.length
-	return !tpData?.value
+	// return !tpData?.value
+	return tpData?.length < 1
+	//TODO sjekk om alle ordninger er tomme
 }
 
 const TpOrdning = ({ data, ordninger }) => {
@@ -63,7 +65,7 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 	// console.log('data: ', data) //TODO - SLETT MEG
-	// console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
+	console.log('bestilteMiljoer TP: ', bestilteMiljoer) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<SubOverskrift

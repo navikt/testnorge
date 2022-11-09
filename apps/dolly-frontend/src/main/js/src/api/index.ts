@@ -22,11 +22,21 @@ export const multiFetcherAny = (urlListe, headers) => {
 	)
 }
 
-export const multiFetcherAll = (miljoUrlListe, headers = null) => {
+export const multiFetcherAll = (urlListe, headers = null) => {
+	return Promise.all(
+		urlListe.map((url) =>
+			fetcher(url, headers).then((result) => {
+				return [result]
+			})
+		)
+	)
+}
+
+export const multiFetcherFagsystemer = (miljoUrlListe, headers = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
-				return { miljo: obj.miljo, ordninger: { ...result } }
+				return { miljo: obj.miljo, data: { ...result } }
 			})
 		)
 	)

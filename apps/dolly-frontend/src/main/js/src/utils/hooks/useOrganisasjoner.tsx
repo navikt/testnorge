@@ -123,6 +123,7 @@ export const useOrganisasjonBestillingStatus = (
 	}
 }
 
+// TODO: Hvorfor er harAaregbestilling fjernet??
 export const useArbeidsforhold = (ident: string, miljoe: string) => {
 	if (!ident || !miljoe) {
 		return {

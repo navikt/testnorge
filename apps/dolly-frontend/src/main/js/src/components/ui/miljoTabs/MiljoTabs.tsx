@@ -15,7 +15,7 @@ const StyledTab = styled(Tabs.Tab)`
 
 export const MiljoTabs = ({ miljoListe, bestilteMiljoer, forsteMiljo, data, children }) => {
 	// console.log('miljoListe: ', miljoListe) //TODO - SLETT MEG
-	// console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
+	console.log('bestilteMiljoer miljotabs: ', bestilteMiljoer) //TODO - SLETT MEG
 	// console.log('forsteMiljo: ', forsteMiljo) //TODO - SLETT MEG
 	console.log('data: ', data) //TODO - SLETT MEG
 	return (
@@ -25,7 +25,7 @@ export const MiljoTabs = ({ miljoListe, bestilteMiljoer, forsteMiljo, data, chil
 				{/*<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />*/}
 				{/*<Tabs.Tab value="q2" label="Q2" />*/}
 				{miljoListe.map((miljo) => {
-					if (bestilteMiljoer?.value?.includes(miljo)) {
+					if (bestilteMiljoer?.includes(miljo)) {
 						return <StyledTab key={miljo} value={miljo} label={miljo.toUpperCase()} />
 					}
 					return <Tabs.Tab key={miljo} value={miljo} label={miljo.toUpperCase()} />

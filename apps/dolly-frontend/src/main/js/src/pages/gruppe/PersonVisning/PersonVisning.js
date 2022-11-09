@@ -41,6 +41,7 @@ import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { useTpEnvironments } from '~/utils/hooks/useEnvironments'
 import { useTpData } from '~/utils/hooks/useFagsystemer'
+import { useBestillingById, useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -109,50 +110,13 @@ export const PersonVisning = ({
 	console.log('tpData: ', tpData) //TODO - SLETT MEG
 	console.log('loadingTpData: ', loadingTpData) //TODO - SLETT MEG
 
-	const getTpMiljoeinfo = useAsync(async () => {
-		const tmpMiljoeinfo = []
-		// await Promise.allSettled(
-		await DollyApi.getTpMiljoer().then((miljoer) => {
-			// console.log('miljoer: ', miljoer) //TODO - SLETT MEG
-			miljoer?.data?.map((miljoe) => {
-				DollyApi.getTpOrdning(ident.ident, miljoe).then((response) => {
-					// console.log('response: ', response) //TODO - SLETT MEG
-					tmpMiljoeinfo.push({
-						ordninger: response?.data,
-						miljo: miljoe,
-					})
-				})
-			})
-		})
-		// )
-		// return tmpMiljoeinfo.sort((a, b) => a.miljo - b.miljo)
-		// console.log('tmpMiljoeinfo: ', tmpMiljoeinfo) //TODO - SLETT MEG
-		return tmpMiljoeinfo.sort((a, b) => a.miljo.localeCompare(b.miljo))
-	}, [])
-
-	// console.log('getTpMiljoeinfo: ', getTpMiljoeinfo) //TODO - SLETT MEG
-
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const bestilteMiljoer = useAsync(async () => {
-		const miljoer = []
-		await Promise.allSettled(
-			bestillingIdListe.map((bestillingId) => {
-				DollyApi.getBestilling(bestillingId).then((response) => {
-					response?.data?.environments?.forEach((miljo) => {
-						if (!miljoer.includes(miljo)) {
-							miljoer.push(miljo)
-						}
-					})
-				})
-			})
-		)
-		return miljoer
-	}, [])
+	const { loading: loadingBestilteMiljoer, bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe)
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()

@@ -1,6 +1,7 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher, multiFetcherAll } from '~/api'
 import { System } from '~/ducks/bestillingStatus/bestillingStatusMapper'
+import bestilling from '~/ducks/bestilling'
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
@@ -10,6 +11,9 @@ const getIkkeFerdigBestillingerGruppeUrl = (gruppeId: string | number) =>
 
 const getBestillingByIdUrl = (bestillingId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/${bestillingId}`
+
+const getMultipleBestillingByIdUrl = (bestillingIdListe: Array<string>) =>
+	bestillingIdListe?.map((id) => `/dolly-backend/api/v1/bestilling/${id}`)
 
 export type Bestilling = {
 	id: number
@@ -57,7 +61,7 @@ export const useIkkeFerdigBestillingerGruppe = (
 	visning,
 	sidetall: number,
 	sideStoerrelse: number,
-	update: string,
+	update: string
 ) => {
 	if (!gruppeId) {
 		return {
@@ -94,7 +98,7 @@ export const useBestillingById = (
 	if (!bestillingId) {
 		return {
 			loading: false,
-			error: 'bestillingId mangler!',
+			error: 'BestillingId mangler!',
 		}
 	}
 	if (erOrganisasjon) {
@@ -110,6 +114,35 @@ export const useBestillingById = (
 
 	return {
 		bestilling: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useBestilteMiljoer = (bestillingIdListe: Array<string>) => {
+	if (!bestillingIdListe || bestillingIdListe?.length < 1) {
+		return {
+			loading: false,
+			error: 'Bestilling-id mangler!',
+		}
+	}
+
+	const { data, error } = useSWR<Array<Bestilling>, Error>(
+		[getMultipleBestillingByIdUrl(bestillingIdListe)],
+		multiFetcherAll
+	)
+
+	const miljoer = []
+	data?.map((bestilling) => {
+		bestilling?.[0]?.environments?.forEach((miljo) => {
+			if (!miljoer.includes(miljo)) {
+				miljoer.push(miljo)
+			}
+		})
+	})
+
+	return {
+		bestilteMiljoer: miljoer.length > 0 && miljoer,
 		loading: !error && !data,
 		error: error,
 	}
