@@ -25,6 +25,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.Collection;
 import java.util.List;
@@ -73,7 +74,7 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var startTime = System.currentTimeMillis();
 
@@ -122,6 +123,7 @@ public class TpsMessagingClient implements ClientRegister {
         progress.setTpsMessagingStatus(status.toString());
 
         log.info("TpsMessaging for ident {} tok {} ms", dollyPerson.getHovedperson(), System.currentTimeMillis() - startTime);
+        return Flux.just();
     }
 
     @Override

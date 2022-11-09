@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class UdiStubClient implements ClientRegister {
     private final UdiStubConsumer udiStubConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
@@ -52,6 +53,7 @@ public class UdiStubClient implements ClientRegister {
             }
             progress.setUdistubStatus(status.toString());
         }
+        return Flux.just();
     }
 
     @Override

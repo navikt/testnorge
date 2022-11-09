@@ -21,6 +21,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -47,7 +48,7 @@ public class DokarkivClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getDokarkiv())) {
 
@@ -57,7 +58,7 @@ public class DokarkivClient implements ClientRegister {
                 progress.setDokarkivStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
@@ -100,6 +101,7 @@ public class DokarkivClient implements ClientRegister {
 
             progress.setDokarkivStatus(substring(status.toString(), 1));
         }
+        return Flux.just();
     }
 
     @Override

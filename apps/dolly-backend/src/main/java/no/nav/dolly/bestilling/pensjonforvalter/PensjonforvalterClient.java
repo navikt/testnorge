@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -73,7 +74,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
         var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
@@ -109,6 +110,7 @@ public class PensjonforvalterClient implements ClientRegister {
         }
 
         progress.setPensjonforvalterStatus(status.substring(1));
+        return Flux.just();
     }
 
     @Override

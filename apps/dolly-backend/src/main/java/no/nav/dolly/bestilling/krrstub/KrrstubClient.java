@@ -16,6 +16,7 @@ import no.nav.dolly.util.ResponseHandler;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -42,7 +43,7 @@ public class KrrstubClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub()) ||
                 (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) ||
@@ -69,6 +70,7 @@ public class KrrstubClient implements ClientRegister {
                 log.error("Kall til KrrStub feilet: {}", e.getMessage(), e);
             }
         }
+        return Flux.just();
     }
 
     @Override

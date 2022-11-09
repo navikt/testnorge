@@ -51,6 +51,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -81,7 +82,7 @@ public class PdlForvalterClient implements ClientRegister {
     private final PdlDataConsumer pdlDataConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (progress.isTpsf() &&
                 (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getOpprettNyPerson()))) {
@@ -103,6 +104,7 @@ public class PdlForvalterClient implements ClientRegister {
                 progress.setPdlforvalterStatus(encodeStatus(status.substring(1)));
             }
         }
+        return Flux.just();
     }
 
     @Override

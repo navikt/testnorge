@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -61,7 +62,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
@@ -98,6 +99,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 progress.setArenaforvalterStatus(status.substring(1));
             }
         }
+        return Flux.just();
     }
 
     @Override

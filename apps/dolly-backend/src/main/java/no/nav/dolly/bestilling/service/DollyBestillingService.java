@@ -32,6 +32,7 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Optional;
@@ -174,9 +175,11 @@ public class DollyBestillingService {
                                       BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
-        clientRegisters.stream()
-                .forEach(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre));
+        Flux.fromIterable(clientRegisters)
+                .flatMap(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                .collectList()
+                .block();
     }
 
     protected void oppdaterBestillingFerdig(Bestilling bestilling) {

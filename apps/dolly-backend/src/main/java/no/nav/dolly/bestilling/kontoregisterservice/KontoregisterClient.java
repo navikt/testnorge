@@ -9,6 +9,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -25,13 +26,13 @@ public class KontoregisterClient implements ClientRegister {
     private final KontoregisterConsumer kontoregisterConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
 
             if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
-                return;
+                return Flux.just();
             }
             if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
                 progress.setKontoregisterStatus(
@@ -63,6 +64,7 @@ public class KontoregisterClient implements ClientRegister {
                 );
             }
         }
+        return Flux.just();
     }
 
     @Override

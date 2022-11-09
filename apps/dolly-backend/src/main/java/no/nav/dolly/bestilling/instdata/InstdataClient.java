@@ -15,6 +15,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,7 +40,7 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
@@ -82,6 +83,7 @@ public class InstdataClient implements ClientRegister {
 
             progress.setInstdataStatus(status.length() > 1 ? status.substring(1) : null);
         }
+        return Flux.just();
     }
 
     @Override

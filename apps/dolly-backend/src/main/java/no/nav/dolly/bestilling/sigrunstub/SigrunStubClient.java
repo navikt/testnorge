@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class SigrunStubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
@@ -49,6 +50,7 @@ public class SigrunStubClient implements ClientRegister {
                 progress.setSigrunstubStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
+        return Flux.just();
     }
 
     @Override

@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class BrregstubClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBrregstub())) {
 
@@ -48,6 +49,7 @@ public class BrregstubClient implements ClientRegister {
 
             progress.setBrregstubStatus(postRolleutskrift(mergetRolleoversikt));
         }
+        return Flux.just();
     }
 
     @Override

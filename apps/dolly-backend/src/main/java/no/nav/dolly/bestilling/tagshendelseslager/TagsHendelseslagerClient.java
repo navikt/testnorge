@@ -41,7 +41,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
@@ -68,6 +68,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
                     return c;
                 })
                 .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}", dollyPerson.getHovedperson(), response));
+        return Flux.just();
     }
 
     @Override

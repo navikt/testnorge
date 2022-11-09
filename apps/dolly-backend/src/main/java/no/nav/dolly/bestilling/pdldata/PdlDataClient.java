@@ -12,6 +12,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 
@@ -31,7 +32,7 @@ public class PdlDataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         try {
             if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
@@ -51,6 +52,7 @@ public class PdlDataClient implements ClientRegister {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeThrowable(e));
         }
+        return Flux.just();
     }
 
     @Override

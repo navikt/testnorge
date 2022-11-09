@@ -25,6 +25,7 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -53,13 +54,13 @@ public class SykemeldingClient implements ClientRegister {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getSykemelding())) {
 
             if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setSykemeldingStatus(encodeStatus(getVarsel("Sykemelding")));
-                return;
+                return Flux.just();
             }
 
             try {
@@ -92,6 +93,7 @@ public class SykemeldingClient implements ClientRegister {
                 progress.setSykemeldingStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
+        return Flux.just();
     }
 
     @Override

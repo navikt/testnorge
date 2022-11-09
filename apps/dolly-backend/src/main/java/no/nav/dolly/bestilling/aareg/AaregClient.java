@@ -51,7 +51,7 @@ public class AaregClient implements ClientRegister {
     private final AmeldingService ameldingService;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
@@ -59,7 +59,7 @@ public class AaregClient implements ClientRegister {
                 progress.setAaregStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
@@ -75,6 +75,7 @@ public class AaregClient implements ClientRegister {
                 progress.setAaregStatus(sendArbeidsforhold(bestilling, dollyPerson, miljoer));
             }
         }
+        return Flux.just();
     }
 
     @Override

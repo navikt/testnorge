@@ -18,6 +18,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,7 +43,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
@@ -50,7 +51,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             StringBuilder status = new StringBuilder();
@@ -66,6 +67,7 @@ public class InntektsmeldingClient implements ClientRegister {
 
             progress.setInntektsmeldingStatus(status.toString());
         }
+        return Flux.just();
     }
 
     @Override
