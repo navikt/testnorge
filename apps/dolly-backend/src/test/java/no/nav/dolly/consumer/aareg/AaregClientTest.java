@@ -91,6 +91,8 @@ class AaregClientTest {
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
         when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
                 .thenReturn(Flux.just(new ArbeidsforholdRespons()));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
+                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
 
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
@@ -109,6 +111,8 @@ class AaregClientTest {
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
         when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
                 .thenReturn(Flux.just(new ArbeidsforholdRespons()));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
+                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
 
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
@@ -139,6 +143,8 @@ class AaregClientTest {
                         .miljo(ENV)
                         .arbeidsforholdId("1")
                         .build()));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
+                .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
 
         var progress = new BestillingProgress();
 
@@ -169,6 +175,8 @@ class AaregClientTest {
                         .miljo(ENV)
                         .arbeidsforholdId("1")
                         .build()));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
+                .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
 
         var progress = new BestillingProgress();
 
