@@ -83,7 +83,7 @@ public class AaregConsumer {
                 statusWebClient);
         statusMap.put("team", TEAM_DOLLY);
 
-        checkMap.put("AAREG", statusMap);
+        checkMap.put("testnav-aaregister-proxy", statusMap);
 
         return checkMap;
     }

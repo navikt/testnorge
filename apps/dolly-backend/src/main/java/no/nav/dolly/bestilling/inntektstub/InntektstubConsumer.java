@@ -139,7 +139,7 @@ public class InntektstubConsumer {
                 statusWebClient);
         statusMap.put("team", TEAM_DOLLY);
 
-        checkMap.put("InntektStub-proxy", statusMap);
+        checkMap.put("testnav-inntektstub-proxy", statusMap);
 
         // "InntektStub" ikke direktre tilgang
         var inntektStubStatusMap = CheckAliveUtil.checkConsumerStatus(
@@ -148,7 +148,7 @@ public class InntektstubConsumer {
                 statusWebClient);
         inntektStubStatusMap.put("team", TEAM_INNTEKT);
 
-        checkMap.put("InntektStub", inntektStubStatusMap);
+        checkMap.put("inntektstub", inntektStubStatusMap);
 
         return checkMap;
     }

@@ -58,31 +58,23 @@ public class InntektsmeldingConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
-        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+        statusMap.put("team", TEAM_DOLLY);
 
         var inntektsmeldingGeneratorStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isAlive",
                 "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isReady",
                 WebClient.builder().build());
-        inntektsmeldingGeneratorStatus.put("team", "Dolly");
-        inntektsmeldingGeneratorStatus.put("alive-url", "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isAlive");
-
-        var dokarkivProxyStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive",
-                "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isReady",
-                WebClient.builder().build());
-        dokarkivProxyStatus.put("team", "Dolly");
-        dokarkivProxyStatus.put("alive-url", "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io/internal/isAlive");
+        inntektsmeldingGeneratorStatus.put("team", TEAM_DOLLY);
 
         return Map.of(
-                "Inntekstmelding", statusMap,
-                "GeneratorStatus", inntektsmeldingGeneratorStatus,
-                "Dokarkiv-proxy", dokarkivProxyStatus
+                "testnav-inntektsmelding-service", statusMap,
+                "testnav-inntektsmelding-generator-service", inntektsmeldingGeneratorStatus
         );
     }
 }

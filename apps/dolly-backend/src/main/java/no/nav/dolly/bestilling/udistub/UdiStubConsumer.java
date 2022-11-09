@@ -145,24 +145,24 @@ public class UdiStubConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
-        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+        statusMap.put("team", TEAM_DOLLY);
 
         // "UdiStub" ikke direkte tilgang
         var udiStubStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://udi-stub.dev.intern.nav.no/internal/isAlive",
                 "https://udi-stub.dev.intern.nav.no/internal/isReady",
                 WebClient.builder().build());
-        udiStubStatus.put("team", "Dolly");
-        udiStubStatus.put("alive-url", "https://udi-stub.dev.intern.nav.no/internal/isAlive");
+        udiStubStatus.put("team", TEAM_DOLLY);
 
         return Map.of(
-                "UdiStub-proxy", statusMap,
-                "UdiStub", udiStubStatus
+                "testnav-udistub-proxy", statusMap,
+                "testnav-udi-stub", udiStubStatus
         );
     }
 }

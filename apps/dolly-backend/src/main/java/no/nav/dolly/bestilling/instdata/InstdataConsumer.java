@@ -171,12 +171,12 @@ public class InstdataConsumer {
                 "https://inst-testdata.dev.adeo.no/internal/health/liveness",
                 "https://inst-testdata.dev.adeo.no/internal/health/readiness",
                 WebClient.builder().build());
-        instDataStatusMap.put("team", "TEAM_ROCKET");
+        instDataStatusMap.put("team", TEAM_ROCKET);
 
         return Map.of(
-                "Inst-service", statusMap,
-                "Inst-proxy", instProxyStatusMap,
-                "Inst-data", instDataStatusMap
+                "testnav-inst-service", statusMap,
+                "testnav-inst-proxy", instProxyStatusMap,
+                "inst-testdata", instDataStatusMap
         );
     }
 }

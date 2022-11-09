@@ -157,22 +157,25 @@ public class ArenaForvalterConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        final String TEAM_ARENA = "Team Arena";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
+        statusMap.put("team", TEAM_DOLLY);
 
         // "Arena" ikke direkte tilgang
         var arenaStatusMap =  CheckAliveUtil.checkConsumerStatus(
                 "https://arena-forvalteren.dev.adeo.no/internal/isAlive",
                 "https://arena-forvalteren.dev.adeo.no/internal/isReady",
                 WebClient.builder().build());
-        arenaStatusMap.put("team", "teamarenanais");
+        arenaStatusMap.put("team", TEAM_ARENA);
 
         return Map.of(
-                "Arena-forvalter-proxy", statusMap,
-                "Arena", arenaStatusMap
+                "testnav-arena-forvalteren-proxy", statusMap,
+                "arena-forvalteren", arenaStatusMap
         );
     }
 }

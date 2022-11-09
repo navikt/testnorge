@@ -110,24 +110,24 @@ public class BrregstubConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
-        statusMap.put("alive-url", serviceProperties.getUrl() + "/internal/isAlive");
+        statusMap.put("team", TEAM_DOLLY);
 
         // "BrregStub" ikke direkte tilgang
         var registerStatus = CheckAliveUtil.checkConsumerStatus(
                 "https://brreg-stub.dev.adeo.no/isAlive",
                 "https://brreg-stub.dev.adeo.no/isReady",
                 WebClient.builder().build());
-        registerStatus.put("team", "Dolly");
-        registerStatus.put("alive-url", "https://brreg-stub.dev.adeo.no/isAlive");
+        registerStatus.put("team", TEAM_DOLLY);
 
         return Map.of(
-                "BrregStub-proxy", statusMap,
-                "BrregStub", registerStatus
+                "testnav-brregstub-proxy", statusMap,
+                "brreg-stub", registerStatus
         );
     }
 }

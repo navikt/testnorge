@@ -128,7 +128,7 @@ public class PensjonforvalterConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        final String TEAM_PENSJON_TESTDATA = "Team Pentek/pensjontestdata";
+        final String TEAM_PENSJON_TESTDATA = "Team Pentek (pensjontestdata)";
 
         var statusWebClient = WebClient.builder().build();
 

@@ -433,20 +433,16 @@ public class PdlForvalterConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
-
-//        var pensjonStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://pensjon-testdata-facade.dev.intern.nav.no/isAlive",
-//                "https://pensjon-testdata-facade.dev.intern.nav.no/isReady",
-//                WebClient.builder().build());
-//        pensjonStatus.put("team", "Pensjon");
+        statusMap.put("team", TEAM_DOLLY);
 
         return Map.of(
-                "pdlforvalter", statusMap
+                "testnav-pdl-proxy", statusMap
         );
     }
 }

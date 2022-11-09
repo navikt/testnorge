@@ -109,7 +109,7 @@ public class DokarkivConsumer {
                 .flatMap(map -> map.entrySet().stream())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
-        miljoerStatuser.put("Dokarkiv-proxy", statusMap);
+        miljoerStatuser.put("testnav-dokarkiv-proxy", statusMap);
 
         return miljoerStatuser;
     }

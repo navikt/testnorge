@@ -153,20 +153,16 @@ public class TpsMessagingConsumer {
     }
 
     public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", "Dolly");
-
-//        var inntektStubStatusMap =  CheckAliveUtil.checkConsumerStatus(
-//                "https://inntektstub.dev.adeo.no/internal/isAlive",
-//                "https://inntektstub.dev.adeo.no/internal/isReady",
-//                WebClient.builder().build());
-//        inntektStubStatusMap.put("team", "team-inntekt");
+        statusMap.put("team", TEAM_DOLLY);
 
         return Map.of(
-                "tps-messaging", statusMap
+                "testnav-tps-messaging-service", statusMap
         );
     }
 }
