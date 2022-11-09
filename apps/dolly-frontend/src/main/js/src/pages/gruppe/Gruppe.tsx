@@ -188,3 +188,4 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		</div>
 	)
 }
+
