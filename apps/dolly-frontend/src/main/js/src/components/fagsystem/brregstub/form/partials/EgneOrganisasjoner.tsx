@@ -1,17 +1,16 @@
 import React from 'react'
 import Loading from '~/components/ui/loading/Loading'
 import _get from 'lodash/get'
-import { FormikProps } from 'formik'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+import { useFormikContext } from 'formik'
 
 interface OrgProps {
 	path: string
 	label?: string
-	formikBag: FormikProps<{}>
 	handleChange: (event: React.ChangeEvent<any>) => void
 	warningMessage?: string
 	filterValidEnhetstyper?: boolean
@@ -88,7 +87,6 @@ const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
 export const EgneOrganisasjoner = ({
 	path,
 	label,
-	formikBag,
 	handleChange,
 	warningMessage,
 	filterValidEnhetstyper,
@@ -96,6 +94,7 @@ export const EgneOrganisasjoner = ({
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
+	const formikBag = useFormikContext()
 
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
