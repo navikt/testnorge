@@ -71,7 +71,7 @@ public class AaregService {
             );
         }
 
-        return sendArbeidsforholdTilAareg(nyeArbeidsforhold, true);
+        return sendArbeidsforholdTilAareg(nyeArbeidsforhold);
     }
 
     private Boolean arbeidsforholdEksistererIkkeAllerede(
@@ -89,11 +89,23 @@ public class AaregService {
 
 
     private List<ArbeidsforholdRespons> sendArbeidsforholdTilAareg(
-            List<RsAaregSyntetiseringsRequest> arbeidsforhold,
-            boolean fyllUtArbeidsforhold
+            List<RsAaregSyntetiseringsRequest> arbeidsforhold
     ) {
         List<ArbeidsforholdRespons> aaregResponses = new ArrayList<>(arbeidsforhold.size());
-        if (fyllUtArbeidsforhold && !arbeidsforhold.isEmpty()) {
+        fyllInnArbeidsforholdMedSyntetiskeData(arbeidsforhold);
+
+        for (var forholdet : arbeidsforhold) {
+            var opprettRequest = forholdet.getArbeidsforhold().toArbeidsforhold();
+            var aaregResponse = aaregConsumer.opprettArbeidsforhold(opprettRequest, forholdet.getEnvironment());
+            aaregResponses.add(aaregResponse);
+        }
+
+        return aaregResponses;
+    }
+
+
+    private void fyllInnArbeidsforholdMedSyntetiskeData (List<RsAaregSyntetiseringsRequest> arbeidsforhold){
+        if (!arbeidsforhold.isEmpty()) {
             List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
             var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(identer);
@@ -125,14 +137,6 @@ public class AaregService {
                 arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
             }
         }
-
-        for (var forholdet : arbeidsforhold) {
-            var opprettRequest = forholdet.getArbeidsforhold().toArbeidsforhold();
-            var aaregResponse = aaregConsumer.opprettArbeidsforhold(opprettRequest, forholdet.getEnvironment());
-            aaregResponses.add(aaregResponse);
-        }
-
-        return aaregResponses;
     }
 
     private void sjekkArbeidsforholdEtterArbeidsavtale(List<RsAaregSyntetiseringsRequest> arbeidsforhold, List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold) {

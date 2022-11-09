@@ -49,7 +49,6 @@ public class EnvironmentInitializationService {
     public void initializeAareg(String environment, String gruppe) {
         log.info("Start init av Aareg...");
         aaregService.sendArbeidsforhold(aaregAdapter.fetchBy(gruppe), environment);
-        // todo : log feil
         log.info("Init av Aareg eer ferdig.");
     }
 
