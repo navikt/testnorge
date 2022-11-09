@@ -31,7 +31,6 @@ import no.nav.registre.sdforvalter.domain.AaregListe;
 @TestPropertySource(
         locations = "classpath:application-test.yml"
 )
-@Disabled
 class StaticDataControllerV1AaregIntegrationTest {
     @Autowired
     private MockMvc mvc;

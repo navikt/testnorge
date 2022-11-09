@@ -20,7 +20,7 @@ public class GetArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdRes
 
     private static final String AAREGDATA_URL = "/{miljoe}/api/v1/arbeidstaker/arbeidsforhold";
     private static final String ARBEIDSFORHOLD_TYPE = "arbeidsforholdtype";
-    private static final String ARBEIDSFORHOLD_AVAIL =
+    public static final String ARBEIDSFORHOLD_AVAIL =
             "forenkletOppgjoersordning, " +
             "frilanserOppdragstakerHonorarPersonerMm, " +
             "maritimtArbeidsforhold, " +
