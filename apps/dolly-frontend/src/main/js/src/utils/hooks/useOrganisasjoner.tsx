@@ -139,9 +139,9 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 	}
 
 	if (!harAaregBestilling) {
-		return {
-			loading: false,
-		}
+		// return {
+		// 	loading: false,
+		// }
 	}
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
