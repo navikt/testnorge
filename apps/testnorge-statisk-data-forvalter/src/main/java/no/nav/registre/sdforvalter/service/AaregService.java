@@ -23,6 +23,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+
 
 @Service
 @Slf4j
@@ -83,7 +86,6 @@ public class AaregService {
             List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
             var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(identer);
-
             for (int i = 0; i < arbeidsforhold.size() && i < syntetiserteArbeidsforhold.size(); i++) {
                 var syntetisertArbeidsforhold = syntetiserteArbeidsforhold.get(i).getArbeidsforhold();
                 var originaltArbeidsforhold = arbeidsforhold.get(i).getArbeidsforhold();
@@ -96,7 +98,7 @@ public class AaregService {
                     String pdName = pd.getName();
                     Object originalPropertyValue = original.getPropertyValue(pdName);
                     Object syntPropertyValue = synt.getPropertyValue(pdName);
-                    if (originalPropertyValue == null && syntPropertyValue != null && !"class".equals(pdName)) {
+                    if (originalPropertyValue == null && syntPropertyValue != null && !"class" .equals(pdName)) {
                         original.setPropertyValue(pd.getName(), syntPropertyValue);
                     }
                 }
@@ -108,7 +110,9 @@ public class AaregService {
 
             sjekkArbeidsforholdEtterArbeidsavtale(arbeidsforhold, ugyldigeArbeidsforhold);
 
-            arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
+            if (!ugyldigeArbeidsforhold.isEmpty()) {
+                arbeidsforhold.removeAll(ugyldigeArbeidsforhold);
+            }
         }
 
         for (var forholdet : arbeidsforhold) {
@@ -122,7 +126,7 @@ public class AaregService {
 
     private void sjekkArbeidsforholdEtterArbeidsavtale(List<RsAaregSyntetiseringsRequest> arbeidsforhold, List<RsAaregSyntetiseringsRequest> ugyldigeArbeidsforhold) {
         for (var arbeidsforholdsResponse : arbeidsforhold) {
-            if (arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale() == null) {
+            if (isNull(arbeidsforholdsResponse.getArbeidsforhold().getArbeidsavtale())) {
                 log.warn("Arbeidsavtale er null for arbeidstaker med id {}. Hopper over opprettelse.", arbeidsforholdsResponse.getArbeidsforhold().getArbeidstaker().getIdent());
                 ugyldigeArbeidsforhold.add(arbeidsforholdsResponse);
             }
@@ -132,22 +136,22 @@ public class AaregService {
     private void validerArbeidsforholdMotAaregSpecs(List<RsAaregSyntetiseringsRequest> arbeidsforholdRequests) {
         var yrkeskoder = kodeverkConsumer.getYrkeskoder();
         for (var request : arbeidsforholdRequests) {
-            var arbeidsforhold = request.getArbeidsforhold();
-            if (arbeidsforhold.getArbeidsavtale().getSisteLoennsendringsdato() != null) {
-                arbeidsforhold.getArbeidsavtale().setSisteLoennsendringsdato(null);
+            var arbeidsavtale = request.getArbeidsforhold().getArbeidsavtale();
+            if (nonNull(arbeidsavtale.getSisteLoennsendringsdato())) {
+                arbeidsavtale.setSisteLoennsendringsdato(null);
             }
 
-            if (Math.abs(arbeidsforhold.getArbeidsavtale().getAvtaltArbeidstimerPerUke() - 0.0) < 0.001) {
-                if (Math.abs(arbeidsforhold.getArbeidsavtale().getStillingsprosent() - 0.0) < 0.001) {
-                    arbeidsforhold.getArbeidsavtale().setStillingsprosent(100.0);
-                    arbeidsforhold.getArbeidsavtale().setAvtaltArbeidstimerPerUke(40.0);
+            if (Math.abs(arbeidsavtale.getAvtaltArbeidstimerPerUke() - 0.0) < 0.001) {
+                if (Math.abs(arbeidsavtale.getStillingsprosent() - 0.0) < 0.001) {
+                    arbeidsavtale.setStillingsprosent(100.0);
+                    arbeidsavtale.setAvtaltArbeidstimerPerUke(40.0);
                 } else {
-                    arbeidsforhold.getArbeidsavtale().setAvtaltArbeidstimerPerUke((arbeidsforhold.getArbeidsavtale().getStillingsprosent() / 100.0) * 40.0);
+                    arbeidsavtale.setAvtaltArbeidstimerPerUke((arbeidsavtale.getStillingsprosent() / 100.0) * 40.0);
                 }
             }
 
-            if (arbeidsforhold.getArbeidsavtale().getYrke().length() != 7) {
-                arbeidsforhold.getArbeidsavtale().setYrke(yrkeskoder.getKoder().get(rand.nextInt(yrkeskoder.getKoder().size())));
+            if (arbeidsavtale.getYrke().length() != 7) {
+                arbeidsavtale.setYrke(yrkeskoder.getKoder().get(rand.nextInt(yrkeskoder.getKoder().size())));
             }
         }
     }

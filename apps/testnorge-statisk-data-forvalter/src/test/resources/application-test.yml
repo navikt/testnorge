@@ -15,7 +15,7 @@ spring:
     vault:
       token: dummy
 
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port}/token
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
 
 consumers:
   person:
@@ -71,7 +71,6 @@ aareg:
 
 tps.statisk.avspillergruppeId: 1
 
-AAD_ISSUER_URI: dummy
 controller.staticdata.cache.hours: 24
 azure.app.client.id: dummy
 
