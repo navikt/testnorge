@@ -6,19 +6,27 @@ import Icon from '~/components/ui/icon/Icon'
 import './StatusPage.less'
 import Request from "~/service/services/Request";
 import api from '@/api'
+import {useBoolean} from "react-use";
+import Loading from "~/components/ui/loading/Loading";
 
 export default () => {
     const [statuses, setStatuses] = useState({})
+    const [dataLoading, setDataLoading] = useBoolean(true)
 
     useEffect(() => {
         //const endpoint = 'http://localhost:8080/v1/status'
         const endpoint = 'https://dolly-backend-dev.dev.intern.nav.no/v1/status'
         //api.fetchJson(endpoint, { method: 'GET' })
-         fetch(endpoint)
-             .then((response) => response.json())
-             .then((json) => {
+        fetch(endpoint)
+            .then((response) => response.json())
+            .then((json) => {
                 console.log(json)
                 setStatuses(json)
+                setDataLoading(false)
+            })
+            .catch((err) => {
+                console.log(err)
+                setDataLoading(false)
             })
     }, [])
 
@@ -98,6 +106,12 @@ export default () => {
     }
 
     const clients = Object.keys(statuses).map(name => clientStatus(name))
+
+    if (dataLoading) {
+        return <div style={{display: 'flex', width: '100%', height: '100vh', alignItems: 'center', justifyContent: 'center'}}>
+            <Loading label="Sjekke tjenester" />
+        </div>
+    }
 
     return (
         <>
