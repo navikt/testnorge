@@ -19,9 +19,12 @@ const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
 		kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 	}`
 
-const getArbeidsforholdUrl = (miljoe: string) =>
-	`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
-
+const getArbeidsforholdUrl = (miljoer: string[]) => {
+	return miljoer.map(
+		(miljoe) =>
+			`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
+	)
+}
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]
@@ -79,7 +82,10 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 4000 : 0 }
+		{
+			refreshInterval: autoRefresh ? 4000 : 0,
+			dedupingInterval: autoRefresh ? 4000 : 0,
+		}
 	)
 
 	const bestillingerSorted = data
@@ -114,7 +120,10 @@ export const useOrganisasjonBestillingStatus = (
 	const { data, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingStatusUrl(bestillingId),
 		fetcher,
-		{ refreshInterval: autoRefresh ? 3000 : 0 }
+		{
+			refreshInterval: autoRefresh ? 3000 : 0,
+			dedupingInterval: autoRefresh ? 3000 : 0,
+		}
 	)
 
 	return {
@@ -139,9 +148,9 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 	}
 
 	if (!harAaregBestilling) {
-		// return {
-		// 	loading: false,
-		// }
+		return {
+			loading: false,
+		}
 	}
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
