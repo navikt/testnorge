@@ -11,6 +11,7 @@ import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkRespons
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,16 +54,21 @@ class OrkestreringsControllerAaregIntegrationTest {
     private static final String MILJOE = "test";
 
     private final String tokenResponse = "{\"access_token\": \"dummy\"}";
+    private static String syntString;
+    private TypeReference<List<RsAaregSyntetiseringsRequest>> SYNT_RESPONSE = new TypeReference<>() {
+    };
+
+    @BeforeAll
+    public static void setup() {
+        syntString = getResourceFileContent("files/enkel_arbeidsforholdmelding.json");
+    }
 
     @Test
     void shouldInitiateAaregFromDatabase() throws Exception {
         final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
         aaregRepository.save(aaregModel);
 
-        var arbeidsforholdmelding = objectMapper.readValue(
-                getResourceFileContent("files/enkel_arbeidsforholdmelding.json"),
-                new TypeReference<List<RsAaregSyntetiseringsRequest>>() {
-                });
+        var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
         var kodeverkResponse = new KodeverkResponse(Collections.singletonList("yrke"));
 
         JsonWiremockHelper
@@ -132,6 +138,48 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .verifyPost();
 
     }
+
+    @Test
+    void shouldNotOppretteAaregWhenAlreadyExists() throws Exception {
+        final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
+        aaregRepository.save(aaregModel);
+
+        var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
+        var arbeidsforholdResponse = Collections.singletonList(arbeidsforholdmelding.get(0).getArbeidsforhold().toArbeidsforhold());
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .stubPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/aareg/test/api/v1/arbeidstaker/arbeidsforhold")
+                .withResponseBody(arbeidsforholdResponse)
+                .stubGet();
+
+        mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .verifyPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/aareg/test/api/v1/arbeidstaker/arbeidsforhold")
+                .withResponseBody(arbeidsforholdResponse)
+                .verifyGet();
+
+    }
+
+
+
+    //todo: test hvis arbeidsforhold allerede eksisterer og test hvis synt returnerer feil
 
     private AaregModel createAaregModel(String fnr, String orgId) {
         AaregModel model = new AaregModel();

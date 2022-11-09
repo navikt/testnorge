@@ -60,6 +60,7 @@ public class AaregService {
                             environment);
                 })
                 .toList();
+        //Todo info om hvor mange allerede har eksisterende og hvor mange har igjen
         return sendArbeidsforholdTilAareg(nyeArbeidsforhold, true);
     }
 
@@ -82,7 +83,7 @@ public class AaregService {
             boolean fyllUtArbeidsforhold
     ) {
         List<ArbeidsforholdRespons> aaregResponses = new ArrayList<>(arbeidsforhold.size());
-        if (fyllUtArbeidsforhold) {
+        if (fyllUtArbeidsforhold && !arbeidsforhold.isEmpty()) {
             List<String> identer = arbeidsforhold.stream().map(x -> x.getArbeidsforhold().getArbeidstaker().getIdent()).toList();
 
             var syntetiserteArbeidsforhold = aaregSyntetisererenConsumer.getSyntetiserteArbeidsforholdsmeldinger(identer);
