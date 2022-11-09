@@ -1,8 +1,9 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher, multiFetcher } from '~/api'
 import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
@@ -157,4 +158,3 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		error: error,
 	}
 }
-
