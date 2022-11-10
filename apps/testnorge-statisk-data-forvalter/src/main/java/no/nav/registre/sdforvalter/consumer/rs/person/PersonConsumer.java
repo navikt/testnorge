@@ -85,6 +85,7 @@ public class PersonConsumer {
                 personer.add(person != null && person.getFnr() != null ? person : null);
             } catch (Exception e) {
                 log.error("Klarte ikke å hente ut person", e);
+                Thread.currentThread().interrupt();
             }
         }
         return personer;
@@ -108,6 +109,7 @@ public class PersonConsumer {
                 return future.get();
             } catch (InterruptedException | ExecutionException e) {
                 log.error("Noe gikk galt ved henting av resultat fra tråd", e);
+                Thread.currentThread().interrupt();
                 return null;
             }
         }).toList();

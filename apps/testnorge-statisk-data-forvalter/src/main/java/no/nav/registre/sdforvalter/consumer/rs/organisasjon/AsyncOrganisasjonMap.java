@@ -32,6 +32,7 @@ public class AsyncOrganisasjonMap {
                 }
             } catch (Exception e) {
                 log.error("Klarte ikke å hente ut {} fra ereg", orgnummer, e);
+                Thread.currentThread().interrupt();
             }
         });
         return organisasjoner;
