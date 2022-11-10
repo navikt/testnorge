@@ -17,6 +17,8 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -86,7 +88,7 @@ public class PensjonforvalterClientTest {
         var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
         assertThat(resultat.getStatus(), is(empty()));
 
-        response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
+        response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1");
 
         response2 = new PensjonforvalterResponse();
         response2.setStatus(new ArrayList<>());
@@ -97,69 +99,39 @@ public class PensjonforvalterClientTest {
         response1 = new PensjonforvalterResponse();
         response1.setStatus(new ArrayList<>());
 
-        response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T2");
+        response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T2");
 
         resultat = mergePensjonforvalterResponses(List.of(response1, response2));
         assertThat(resultat.getStatus(), hasSize(1));
     }
 
-    // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 200
-    // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 500
-    // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 200
-    // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 500
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_200_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
+    @ParameterizedTest
+    @CsvSource({
+            "T1,200,T1,200,T1,200",
+            "T1,200,T1,500,T1,500",
+            "T1,500,T1,200,T1,500",
+            "T1,500,T1,500,T1,500"})
+        // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 200
+        // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 500
+        // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 200
+        // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 500
+    void testMergePensjonforvalterResponses_withSameEnvironments_200_til_200(String miljo1, int status1, String miljo2, int status2, String resultatMiljo, int resultatStatus) {
+
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(status1, miljo1);
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(status2, miljo2);
 
         var result = mergePensjonforvalterResponses(List.of(response1, response2));
 
         assertThat(result.getStatus(), hasSize(1));
-        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo("T1")));
-        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(200)));
-    }
-
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_200_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-
-        var result = mergePensjonforvalterResponses(List.of(response1, response2));
-
-        assertThat(result.getStatus(), hasSize(1));
-        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo("T1")));
-        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
-    }
-
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_500_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-
-        var result = mergePensjonforvalterResponses(List.of(response1, response2));
-
-        assertThat(result.getStatus(), hasSize(1));
-        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo("T1")));
-        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
-    }
-
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_500_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-
-        var result = mergePensjonforvalterResponses(List.of(response1, response2));
-
-        assertThat(result.getStatus(), hasSize(1));
-        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo("T1")));
-        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
+        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo(resultatMiljo)));
+        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(resultatStatus)));
     }
 
     // none empty new response list to none empty previous list with different env name
     @Test
     public void testMergePensjonforvalterResponses_withDifferentEnvironments() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T2");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T2");
 
         var result = mergePensjonforvalterResponses(List.of(response1, response2));
 
@@ -176,8 +148,8 @@ public class PensjonforvalterClientTest {
     // none empty new reponse list with 2 env (status 500), previous list with 2 env but 1 is same, 1 is different (status 500)
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_200_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T3", "T1");
 
         var result = mergePensjonforvalterResponses(List.of(response1, response2));
 
@@ -189,8 +161,8 @@ public class PensjonforvalterClientTest {
 
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_200_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T3", "T1");
 
         var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
 
@@ -205,8 +177,8 @@ public class PensjonforvalterClientTest {
 
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_500_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T3", "T1");
 
         var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
 
@@ -221,8 +193,8 @@ public class PensjonforvalterClientTest {
 
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_500_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T3", "T1");
 
         var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
 
@@ -421,12 +393,12 @@ public class PensjonforvalterClientTest {
             return tp;
         }
 
-        public static PensjonforvalterResponse getPensjonforvalterResponse(String httpStatusPhrase, int httpStatusCode, String... miljoe) {
+        public static PensjonforvalterResponse getPensjonforvalterResponse(int httpStatusCode, String... miljoe) {
             var response = new PensjonforvalterResponse();
             var status = new ArrayList<ResponseEnvironment>();
 
             var statusResponse = new PensjonforvalterResponse.Response();
-            statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusPhrase, httpStatusCode));
+            statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusCode == 200 ? "OK" : "FEIL", httpStatusCode));
 
             Arrays.stream(miljoe).forEach(m -> status.add(new ResponseEnvironment(m, statusResponse)));
 
