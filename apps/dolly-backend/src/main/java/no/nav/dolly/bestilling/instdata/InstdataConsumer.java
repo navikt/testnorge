@@ -151,7 +151,7 @@ public class InstdataConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        final String TEAM_ROCKET = "Team Rocket";
+        // final String TEAM_ROCKET = "Team Rocket";
 
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
@@ -166,17 +166,17 @@ public class InstdataConsumer {
                 WebClient.builder().build());
         instProxyStatusMap.put("team", TEAM_DOLLY);
 
-        // Inst-data ikke direktre tilgang
-        var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
-                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
-                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
-                WebClient.builder().build());
-        instDataStatusMap.put("team", TEAM_ROCKET);
+//        // Inst-data ikke direktre tilgang
+//        var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
+//                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
+//                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        instDataStatusMap.put("team", TEAM_ROCKET);
 
         return Map.of(
                 "testnav-inst-service", statusMap,
-                "testnav-inst-proxy", instProxyStatusMap,
-                "inst-testdata", instDataStatusMap
+                "testnav-inst-proxy", instProxyStatusMap
+                // "inst-testdata", instDataStatusMap
         );
     }
 }

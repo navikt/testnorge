@@ -97,7 +97,7 @@ public class SkjermingsRegisterConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        final String TEAM_NOM = "Team Org (nom)";
+        //final String TEAM_NOM = "Team Org (nom)";
 
         var statusMap =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
@@ -105,16 +105,16 @@ public class SkjermingsRegisterConsumer {
                 WebClient.builder().build());
         statusMap.put("team", TEAM_DOLLY);
 
-        // Skjermede ikke direkte tilgang
-        var registerStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://skjermede-personer.dev.adeo.no/internal/isAlive",
-                "https://skjermede-personer.dev.adeo.no/internal/isReady",
-                WebClient.builder().build());
-        registerStatus.put("team", TEAM_NOM);
+//        // Skjermede ikke direkte tilgang
+//        var registerStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://skjermede-personer.dev.adeo.no/internal/isAlive",
+//                "https://skjermede-personer.dev.adeo.no/internal/isReady",
+//                WebClient.builder().build());
+//        registerStatus.put("team", TEAM_NOM);
 
         return Map.of(
-                "testnav-skjermingsregister-proxy", statusMap,
-                "skjermede-personer", registerStatus
+                "testnav-skjermingsregister-proxy", statusMap
+                //"skjermede-personer", registerStatus
         );
     }
 }

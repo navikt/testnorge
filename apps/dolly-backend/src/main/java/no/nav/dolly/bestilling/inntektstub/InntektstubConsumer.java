@@ -128,7 +128,7 @@ public class InntektstubConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        final String TEAM_INNTEKT = "Team Inntekt";
+        // final String TEAM_INNTEKT = "Team Inntekt";
 
         var statusWebClient = WebClient.builder().build();
         var checkMap = new HashMap<String, Object>();
@@ -141,14 +141,14 @@ public class InntektstubConsumer {
 
         checkMap.put("testnav-inntektstub-proxy", statusMap);
 
-        // "InntektStub" ikke direktre tilgang
-        var inntektStubStatusMap = CheckAliveUtil.checkConsumerStatus(
-                "https://inntektstub.dev.adeo.no/internal/isAlive",
-                "https://inntektstub.dev.adeo.no/internal/isReady",
-                statusWebClient);
-        inntektStubStatusMap.put("team", TEAM_INNTEKT);
-
-        checkMap.put("inntektstub", inntektStubStatusMap);
+//        // "InntektStub" ikke direktre tilgang
+//        var inntektStubStatusMap = CheckAliveUtil.checkConsumerStatus(
+//                "https://inntektstub.dev.adeo.no/internal/isAlive",
+//                "https://inntektstub.dev.adeo.no/internal/isReady",
+//                statusWebClient);
+//        inntektStubStatusMap.put("team", TEAM_INNTEKT);
+//
+//        checkMap.put("inntektstub", inntektStubStatusMap);
 
         return checkMap;
     }

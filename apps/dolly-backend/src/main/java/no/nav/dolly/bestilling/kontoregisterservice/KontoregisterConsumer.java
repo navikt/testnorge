@@ -176,7 +176,7 @@ public class KontoregisterConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        final String TEAM_OKONOMI = "Team utbetale og informere (okonomi)";
+        //final String TEAM_OKONOMI = "Team utbetale og informere (okonomi)";
 
         var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
@@ -184,15 +184,15 @@ public class KontoregisterConsumer {
                 WebClient.builder().build());
         consumerStatus.put("team", TEAM_DOLLY);
 
-        var endServiceStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
-                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
-                WebClient.builder().build());
-        endServiceStatus.put("team", TEAM_OKONOMI);
+//        var endServiceStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
+//                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
+//                WebClient.builder().build());
+//        endServiceStatus.put("team", TEAM_OKONOMI);
 
         return Map.of(
-                "testnav-kontoregister-person-proxy", consumerStatus,
-                "sokos-kontoregister-person", endServiceStatus
+                "testnav-kontoregister-person-proxy", consumerStatus
+                //"sokos-kontoregister-person", endServiceStatus
         );
     }
 }

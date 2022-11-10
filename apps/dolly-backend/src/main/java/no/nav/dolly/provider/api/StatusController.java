@@ -51,7 +51,7 @@ public class StatusController {
         return classNavn;
     }
 
-    @GetMapping("")
+    @GetMapping()
     @Operation(description = "Hent status for Dolly forbrukere")
     public Object clientsStatus() {
         var filterClients = Arrays.asList("PdlDataClient", "TagsHendelseslagerClient");
