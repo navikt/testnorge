@@ -59,9 +59,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
                 type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : Master.FREG);
 
-                if (!handle(type, person)) {
-                    iterator.remove();
-                }
+                handle(type, person);
             }
         }
 
@@ -81,16 +79,11 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         }
     }
 
-    private boolean handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
+    private void handle(SivilstandDTO sivilstand, PersonDTO hovedperson) {
 
         if (isNull(sivilstand.getType())) {
 
-            if (FoedselsdatoUtility.isMyndig(hovedperson)) {
-                sivilstand.setType(UGIFT);
-
-            } else {
-                return false;
-            }
+            sivilstand.setType(UGIFT);
         }
 
         if (sivilstand.isGift() || sivilstand.isSeparert() || sivilstand.getType() == SAMBOER) {
@@ -147,8 +140,6 @@ public class SivilstandService implements Validation<SivilstandDTO> {
         } else {
             sivilstand.setRelatertVedSivilstand(null);
         }
-
-        return true;
     }
 
     private void createRelatertSivilstand(SivilstandDTO sivilstand, String hovedperson) {
@@ -180,14 +171,14 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                 stand.setSivilstandsdato(tidligsteSivilstandDato.isPresent() &&
                         tidligsteSivilstandDato.get().isBefore(myndighetsdato) ?
                         tidligsteSivilstandDato.get().minusMonths(3) :
-                        myndighetsdato);
+                        FoedselsdatoUtility.getFoedselsdato(person));
             }
         });
 
         return person.getSivilstand().stream().noneMatch(sivilstand -> isNull(sivilstand.getSivilstandsdato())) ?
                 person.getSivilstand().stream()
-                .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
-                .toList() :
+                        .sorted(Comparator.comparing(SivilstandDTO::getSivilstandsdato).reversed())
+                        .toList() :
                 person.getSivilstand();
     }
 }
