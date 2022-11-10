@@ -7,16 +7,7 @@ parent: Applikasjoner
 # testnorge-statisk-data-forvalter
 
 Statisk data forvalter er en applikasjon som har som ansvar å forvalte faste test-data i NAV. 
-Denne applikasjonen belager seg på flere andre applikasjoner for å kunne legge inn data. 
-
-## Avhengigheter
-
-De følgende applikasjonene må være kjørende for å kunne legge inn all data i et miljø. 
-
-- [TP](https://github.com/navikt/testnorge/tree/master/apps/testnorge-tp) for å legge inn i TP databasen, skal ikke være
-  nødvendig, men denne gjør det raskere enn selve TP applikasjonen som lytter på distribusjonsmeldinger fra TPS
-- [SKD adapter](https://github.com/navikt/testnorge/tree/master/apps/skd-service) for oppretting av testpersoner i TPS
-- [AAreg](https://github.com/navikt/testnorge/tree/master/apps/testnorge-aareg) for arbeidsforhold
+Denne applikasjonen belager seg på flere andre applikasjoner for å kunne legge inn data.
  
 ## Statiske data
 
