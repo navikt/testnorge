@@ -45,13 +45,13 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dummy
     namespace: dolly
-  testnav-skd-service:
-    url: http://localhost:${wiremock.server.port:0}/skd
-    name: testnav-skd-service
-    cluster: dummy
-    namespace: dolly
+  tps-forvalteren-proxy:
+    url: http://localhost:${wiremock.server.port:0}/tpsf
+    cluster: dev-fss
+    namespace: dummy
+    name: tps-forvalteren-proxy
   testnorge-hodejegeren:
-    url: http://localhost:${wiremock.server.port:0}/testnorge-hodejegeren
+    url: http://localhost:${wiremock.server.port:0}/hodejegeren
   testnorge-tp:
     url: http://localhost:${wiremock.server.port:0}/testnorge-tp
   krr-stub:

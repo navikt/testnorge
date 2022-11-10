@@ -19,9 +19,9 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.stereotype.Service;
 
 import java.beans.PropertyDescriptor;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -35,7 +35,7 @@ public class AaregService {
     private final SyntAaregConsumer aaregSyntetisererenConsumer;
     private final AaregConsumer aaregConsumer;
     private final KodeverkConsumer kodeverkConsumer;
-    private final Random rand = new Random();
+    private final SecureRandom rand = new SecureRandom();
 
 
     public List<ArbeidsforholdRespons> sendArbeidsforhold(

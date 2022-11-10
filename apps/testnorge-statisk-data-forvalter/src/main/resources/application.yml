@@ -49,11 +49,11 @@ consumers:
     name: testnav-person-faste-data-service
     cluster: dev-gcp
     namespace: dolly
-  testnav-skd-service:
-    url: https://testnav-skd-service.dev.intern.nav.no
-    name: testnav-skd-service
-    cluster: dev-gcp
+  tps-forvalteren-proxy:
+    url: https://tps-forvalteren-proxy.dev.intern.nav.no
+    cluster: dev-fss
     namespace: dolly
+    name: tps-forvalteren-proxy
   testnorge-hodejegeren:
     url: https://testnorge-hodejegeren.dev.intern.nav.no
   testnorge-tp:

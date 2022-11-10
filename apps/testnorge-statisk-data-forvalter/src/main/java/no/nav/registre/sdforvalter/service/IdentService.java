@@ -5,50 +5,53 @@ import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.consumer.rs.navn.GenererNavnConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.HodejegerenConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.person.PersonConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.skd.SkdConsumer;
 import no.nav.registre.sdforvalter.consumer.rs.tp.TpConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.tpsf.TpsfConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Service
 @Slf4j
 public class IdentService {
     private final TpsIdenterAdapter tpsIdenterAdapter;
     private final HodejegerenConsumer hodejegerenConsumer;
-    private final SkdConsumer skdConsumer;
     private final TpConsumer tpConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final PersonConsumer personConsumer;
+    private final TpsfConsumer tpsfConsumer;
     private final Long staticDataPlaygroup;
 
     public IdentService(
             TpsIdenterAdapter tpsIdenterAdapter,
             HodejegerenConsumer hodejegerenConsumer,
-            SkdConsumer skdConsumer,
             GenererNavnConsumer genererNavnConsumer,
             PersonConsumer personConsumer,
-            TpConsumer tpConsumer, @Value("${tps.statisk.avspillergruppeId}") Long staticDataPlaygroup
+            TpConsumer tpConsumer,
+            TpsfConsumer tpsfConsumer,
+            @Value("${tps.statisk.avspillergruppeId}") Long staticDataPlaygroup
     ) {
         this.tpsIdenterAdapter = tpsIdenterAdapter;
         this.hodejegerenConsumer = hodejegerenConsumer;
-        this.skdConsumer = skdConsumer;
         this.tpConsumer = tpConsumer;
         this.genererNavnConsumer = genererNavnConsumer;
         this.personConsumer = personConsumer;
+        this.tpsfConsumer = tpsfConsumer;
         this.staticDataPlaygroup = staticDataPlaygroup;
     }
 
     public void send(String environment, String gruppe) {
         TpsIdentListe liste = tpsIdenterAdapter.fetchBy(gruppe);
         var exisistingFnrs = hodejegerenConsumer.getPlaygroupFnrs(staticDataPlaygroup);
-        var identer = new TpsIdentListe(liste
-                .stream()
+        var identer = new TpsIdentListe(liste.stream()
                 .filter(item -> !exisistingFnrs.contains(item.getFnr()))
                 .toList()
         );
-        skdConsumer.send(staticDataPlaygroup, environment);
+        sendTilTps(staticDataPlaygroup, environment);
 
         //Person får ikke aktør-id automatisk ved opprettelse i TPS lenger. Må opprettes i PDL også for å få aktør-id
         opprettPersonerIPdl(identer);
@@ -60,6 +63,18 @@ public class IdentService {
         */
         var livingFnrs = hodejegerenConsumer.getLivingFnrs(staticDataPlaygroup, environment);
         tpConsumer.send(livingFnrs, environment);
+    }
+
+    private void sendTilTps(Long playgroup, String environment) {
+        tpsfConsumer.sendTilTps(playgroup, environment).subscribe(response -> {
+            if (isNull(response) || response.getAntallFeilet() != 0) {
+                log.warn("Fikk ikke opprettet alle identene i TPS, burde bli manuelt sjekket for overlapp. " +
+                        "Kan også være mulig at man prøver å initialisere et miljø som er allerede initialisert");
+            }
+            if (nonNull(response)) {
+                response.getFailedStatus().forEach(s -> log.error("Status på feilende melding: {}", s));
+            }
+        });
     }
 
     public void opprettPersonerIPdl(TpsIdentListe tpsIdentListe) {
