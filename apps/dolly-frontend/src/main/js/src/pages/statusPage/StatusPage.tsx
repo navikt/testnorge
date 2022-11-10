@@ -59,7 +59,6 @@ export default () => {
     }
 
     const iconType = (status) => {
-        console.log('status', status)
         if (status === 'OK') {
             return 'feedback-check-circle'
         }
@@ -116,6 +115,9 @@ export default () => {
     return (
         <>
             <BlankHeader />
+            <div style={{textAlign: 'center'}}>
+                <h2>Status for Dolly brukt tjenesert</h2>
+            </div>
             <div className="consumers-container">
                 {clients}
             </div>
