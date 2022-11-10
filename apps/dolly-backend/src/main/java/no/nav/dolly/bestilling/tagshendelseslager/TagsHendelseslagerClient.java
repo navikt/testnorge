@@ -119,6 +119,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     }
 
     public Map<String, Object> status() {
-        return pdlPersonConsumer.checkStatus();
+        //return pdlPersonConsumer.checkStatus();
+        return Map.of();
     }
 }

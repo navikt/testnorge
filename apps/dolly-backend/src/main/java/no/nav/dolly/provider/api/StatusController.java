@@ -54,7 +54,7 @@ public class StatusController {
     @GetMapping("")
     @Operation(description = "Hent status for Dolly forbrukere")
     public Object clientsStatus() {
-        var filterClients = Arrays.asList("PdlDataClient");
+        var filterClients = Arrays.asList("PdlDataClient", "TagsHendelseslagerClient");
 
         return clientRegisters.parallelStream()
                 .filter(client -> !filterClients.contains(client.getClass().getSimpleName()))
