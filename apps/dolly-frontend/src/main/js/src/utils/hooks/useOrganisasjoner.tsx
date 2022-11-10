@@ -137,6 +137,8 @@ export const useArbeidsforhold = (ident: string, miljoe: string) => {
 		fetcher
 	)
 
+	console.log('data aareg: ', data) //TODO - SLETT MEG
+
 	return {
 		arbeidsforhold: data,
 		loading: !error && !data,

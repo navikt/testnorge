@@ -7,21 +7,15 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert, Tabs } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { TpMiljoeinfo } from '~/components/fagsystem/pensjon/visning/TpMiljoeinfo'
-import { useAsync } from 'react-use'
-import { DollyApi } from '~/service/Api'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerPensjonData = (tpData) => {
 	// console.log('tpData: ', tpData) //TODO - SLETT MEG
-	// return !tpData?.value || !tpData?.value?.length
-	// return !tpData?.value
 	return tpData?.length < 1
 	//TODO sjekk om alle ordninger er tomme
 }
 
 const TpOrdning = ({ data, ordninger }) => {
-	console.log('data TpOrdning: ', data) //TODO - SLETT MEG
 	if (!data) return null
 
 	const ordningNavn = (nr) => {
@@ -40,9 +34,10 @@ const TpOrdning = ({ data, ordninger }) => {
 	)
 }
 
-export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
+export const TpVisning = ({ data, loading, bestilteMiljoer }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
 	useEffect(() => {
 		if (!ordninger.length) {
 			fetchTpOrdninger()
@@ -60,13 +55,7 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 		return null
 	}
 
-	// const tpMiljoer = useAsync(async () => {
-	// 	return DollyApi.getTpMiljoer()
-	// }, [])
-
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
-	// console.log('data: ', data) //TODO - SLETT MEG
-	// console.log('bestilteMiljoer TP: ', bestilteMiljoer) //TODO - SLETT MEG
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
@@ -83,32 +72,11 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 				</Alert>
 			) : (
 				<>
-					<MiljoTabs
-						bestilteMiljoer={bestilteMiljoer}
-						forsteMiljo={forsteMiljo} // TODO fix
-						data={data}
-					>
-						{/*<TpOrdning data={data} ordninger={ordninger} />*/}
+					<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
 						<TpOrdning ordninger={ordninger} />
 					</MiljoTabs>
 				</>
 			)}
-			{/*<TpMiljoeinfo ident={ident} bestilteMiljoer={bestilteMiljoer} ordninger={ordninger} />*/}
 		</ErrorBoundary>
-	)
-}
-
-export const TpvisningMiljo = ({ data, miljoe, ordninger }) => {
-	const tpMiljoeInfo = data.find((m) => m.miljo === miljoe.toString())
-
-	return !tpMiljoeInfo || !tpMiljoeInfo?.ordninger || tpMiljoeInfo?.ordninger?.length < 1 ? (
-		<Alert variant="info" size="small" inline>
-			Fant ingen tjenestepensjon-data i dette miljøet
-		</Alert>
-	) : (
-		<div className="boks">
-			<SubOverskrift label="Tjenestepensjon (TP)" iconKind="pensjon" />
-			<TpOrdning data={tpMiljoeInfo?.ordninger} ordninger={ordninger} />
-		</div>
 	)
 }

@@ -142,7 +142,7 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>) => {
 	})
 
 	return {
-		bestilteMiljoer: miljoer.length > 0 && miljoer,
+		bestilteMiljoer: miljoer,
 		loading: !error && !data,
 		error: error,
 	}

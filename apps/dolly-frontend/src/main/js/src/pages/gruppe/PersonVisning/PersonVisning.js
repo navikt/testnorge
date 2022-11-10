@@ -91,6 +91,7 @@ export const PersonVisning = ({
 	}, [])
 
 	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
+	console.log('ident: ', ident) //TODO - SLETT MEG
 
 	const harAaregBestilling = () => {
 		let aareg = false
@@ -106,6 +107,7 @@ export const PersonVisning = ({
 		ident.ident,
 		harAaregBestilling()
 	)
+	console.log('arbeidsforhold: ', arbeidsforhold) //TODO - SLETT MEG
 	const { loading: loadingTpData, tpData } = useTpData(ident.ident)
 	// console.log('tpData: ', tpData) //TODO - SLETT MEG
 	// console.log('loadingTpData: ', loadingTpData) //TODO - SLETT MEG
@@ -290,13 +292,7 @@ export const PersonVisning = ({
 					loading={loading.pensjonforvalter}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
-				<TpVisning
-					ident={ident.ident}
-					// data={tpforvalter}
-					data={tpData}
-					loading={loading.tpforvalter}
-					bestilteMiljoer={bestilteMiljoer}
-				/>
+				<TpVisning data={tpData} loading={loading.tpforvalter} bestilteMiljoer={bestilteMiljoer} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

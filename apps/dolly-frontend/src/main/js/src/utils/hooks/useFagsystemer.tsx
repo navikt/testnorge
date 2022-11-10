@@ -22,6 +22,7 @@ export const useTpData = (ident) => {
 	// 		loading: false,
 	// 	}
 	// }
+	console.log('data Tp: ', data) //TODO - SLETT MEG
 
 	return {
 		// tpData: data,
