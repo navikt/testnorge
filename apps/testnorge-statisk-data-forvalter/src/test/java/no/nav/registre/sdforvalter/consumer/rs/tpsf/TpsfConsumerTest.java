@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs.tpsf;
 
 import no.nav.registre.sdforvalter.config.credentials.TpsfProxyProperties;
-import no.nav.registre.sdforvalter.consumer.rs.tpsf.request.SendToTpsRequest;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
@@ -22,6 +21,7 @@ import java.util.List;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalToJson;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -40,8 +40,6 @@ public class TpsfConsumerTest {
 
     @Autowired
     private TpsfConsumer tpsfConsumer;
-
-    private SendToTpsRequest sendToTpsRequest;
 
     private final long avspillergruppeId = 10L;
     private final String environment = "t9";
@@ -62,7 +60,6 @@ public class TpsfConsumerTest {
         ids = new ArrayList<>();
         ids.add(123L);
         ids.add(321L);
-        sendToTpsRequest = new SendToTpsRequest(environment, ids);
 
         expectedAntallSendte = 1;
         expectedAntallFeilet = 0;
@@ -71,8 +68,9 @@ public class TpsfConsumerTest {
         expectedStatus = "ok";
 
         stubTpsfConsumerSendSkdMelding();
+        stubTpsfGetMeldingsIder();
 
-        var response = tpsfConsumer.sendSkdmeldingerToTps(avspillergruppeId, sendToTpsRequest).block();
+        var response = tpsfConsumer.sendTilTps(avspillergruppeId, environment).block();
 
         assertThat(response).isNotNull();
         assertThat(expectedAntallSendte).isEqualTo(response.getAntallSendte());
@@ -96,6 +94,13 @@ public class TpsfConsumerTest {
                                 + "\", \"statusFraFeilendeMeldinger\": [{\"foedselsnummer\": \"" + expectedFoedselnummer
                                 + "\", \"sekvensnummer\": " + expectedSekvensnummer
                                 + ", \"status\": \"" + expectedStatus + "\"}]}")));
+    }
+
+    private void stubTpsfGetMeldingsIder() {
+        stubFor(get(urlPathEqualTo("/tpsf/api/v1/endringsmelding/skd/meldinger/" + avspillergruppeId))
+                .willReturn(ok()
+                        .withHeader("content-type", "application/json")
+                        .withBody("[" + ids.get(0) + ", " + ids.get(1) + "]")));
     }
 
 }

@@ -35,13 +35,13 @@ public class TpsfConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<SkdMeldingerTilTpsRespons> sendSkdmeldingerToTps(
+    private Mono<SkdMeldingerTilTpsRespons> sendSkdmeldingerToTps(
             Long gruppeId,
             SendToTpsRequest sendToTpsRequest) {
 
         log.info("Sender skd-meldinger med avspillergruppe {} til tps", gruppeId);
         return tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
-                        new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient, accessToken.getTokenValue()).call());
+                new PostSendSkdMeldingerTpsCommand(gruppeId, sendToTpsRequest, webClient, accessToken.getTokenValue()).call());
     }
 
     private Mono<List<Long>> getMeldingIdsFromAvspillergruppe(Long gruppeId) {
@@ -49,7 +49,7 @@ public class TpsfConsumer {
                 .flatMap(accessToken -> new GetMeldingsIdsCommand(gruppeId, webClient, accessToken.getTokenValue()).call());
     }
 
-    public Mono<SkdMeldingerTilTpsRespons> sendTilTps(Long gruppeId, String miljoe){
+    public Mono<SkdMeldingerTilTpsRespons> sendTilTps(Long gruppeId, String miljoe) {
         return getMeldingIdsFromAvspillergruppe(gruppeId)
                 .flatMap(meldingIds -> sendSkdmeldingerToTps(gruppeId, new SendToTpsRequest(miljoe, meldingIds)));
     }
