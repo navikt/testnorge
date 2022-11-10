@@ -13,9 +13,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP_FORHOLD;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
 import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
 import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
@@ -24,6 +21,10 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class BestillingPensjonforvalterStatusMapper {
+
+    private static final String PENSJON_FORVALTER = "PensjonForvalter";
+    private static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
+    private static final String TP_FORHOLD = "TpForhold";
 
     public static List<RsStatusRapport> buildPensjonforvalterStatusMap(List<BestillingProgress> progressList) {
 

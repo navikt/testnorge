@@ -21,6 +21,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
+import java.util.Set;
+
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -42,6 +44,9 @@ class PensjonforvalterConsumerTest {
 
     @MockBean
     private TokenExchange tokenService;
+
+    @MockBean
+    private AccessToken accessToken;
 
     @Autowired
     private PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -170,10 +175,13 @@ class PensjonforvalterConsumerTest {
     }
 
     @Test
-    void testOppretPerson_ok() {
+    void testOpprettPerson_ok() {
         stubPostOppretPerson(false);
 
-        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest());
+        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -184,7 +192,10 @@ class PensjonforvalterConsumerTest {
     void testOppretPerson_error() {
         stubPostOppretPerson(true);
 
-        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest());
+        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -195,7 +206,10 @@ class PensjonforvalterConsumerTest {
     void testLagreInntekt_ok() {
         stubPostLagreInntekt(false);
 
-        var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest());
+        var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest(), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -206,7 +220,10 @@ class PensjonforvalterConsumerTest {
     void testLagreInntekt_error() {
         stubPostLagreInntekt(true);
 
-        var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest());
+        var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest(), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -231,7 +248,10 @@ class PensjonforvalterConsumerTest {
     void testLagreTpForhold_ok() {
         stubPostLagreTpForhold(false);
 
-        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest());
+        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -242,7 +262,10 @@ class PensjonforvalterConsumerTest {
     void testLagreTpForhold_error() {
         stubPostLagreTpForhold(true);
 
-        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest());
+        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -267,7 +290,10 @@ class PensjonforvalterConsumerTest {
     void testLagreTpYtelse_ok() {
         stubPostLagreTpYtelse(false);
 
-        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest());
+        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
@@ -278,7 +304,10 @@ class PensjonforvalterConsumerTest {
     void testLagreTpYtelse_error() {
         stubPostLagreTpYtelse(true);
 
-        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest());
+        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken)
+                        .collectList()
+                                .block()
+                                        .get(0);
 
         assertThat("There is status for 1 environment", response.getStatus().size() == 1);
         assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));

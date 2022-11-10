@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 
@@ -14,12 +14,12 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class OpprettPersonRequest {
 
-    private List<String> miljoer;
+    private Set<String> miljoer;
 
-    public List<String> getMiljoer() {
+    public Set<String> getMiljoer() {
 
         if (isNull(miljoer)) {
-            miljoer = new ArrayList<>();
+            miljoer = new HashSet<>();
         }
         return miljoer;
     }
