@@ -133,7 +133,6 @@ export const useOrganisasjonBestillingStatus = (
 	}
 }
 
-// TODO: Hvorfor er harAaregbestilling fjernet??
 export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
 	const { dollyEnvironmentList } = useDollyEnvironments()
 	const unsupportedEnvironments = ['t0', 't13', 'qx']

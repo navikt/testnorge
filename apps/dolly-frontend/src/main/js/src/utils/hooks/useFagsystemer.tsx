@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAll, multiFetcherFagsystemer } from '~/api'
+import { multiFetcherFagsystemer } from '~/api'
 import { useTpEnvironments } from '~/utils/hooks/useEnvironments'
 
 const tpUrl = (ident, miljoer) =>
@@ -8,24 +8,21 @@ const tpUrl = (ident, miljoer) =>
 		miljo: miljo,
 	}))
 
-export const useTpData = (ident) => {
+export const useTpData = (ident, harTpBestilling) => {
 	const { tpEnvironments } = useTpEnvironments()
+
+	if (!harTpBestilling) {
+		return {
+			loading: false,
+		}
+	}
 
 	const { data, error } = useSWR<any, Error>(
 		[tpUrl(ident, tpEnvironments)],
 		multiFetcherFagsystemer
 	)
 
-	// Lag noe sånt:
-	// if (!harTpBestilling) {
-	// 	return {
-	// 		loading: false,
-	// 	}
-	// }
-	console.log('data Tp: ', data) //TODO - SLETT MEG
-
 	return {
-		// tpData: data,
 		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,
 		error: error,

@@ -19,9 +19,7 @@ type AaregVisningProps = {
 	ident?: string
 	liste?: Array<Arbeidsforhold>
 	loading?: boolean
-	bestilteMiljoer?: {
-		value: Array<string>
-	}
+	bestilteMiljoer?: Array<string>
 }
 
 type Arbeidsforhold = {
@@ -58,6 +56,7 @@ const getHeader = (data: Arbeidsforhold) => {
 }
 
 export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVisningProps) => {
+	console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}

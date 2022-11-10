@@ -26,7 +26,6 @@ export const multiFetcherAll = (urlListe, headers = null) => {
 	return Promise.all(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
-				console.log('result: ', result) //TODO - SLETT MEG
 				return [result]
 			})
 		)
@@ -47,8 +46,6 @@ export const fetcher = (url, headers: Record<string, string>) =>
 	axios
 		.get(url, { headers: headers })
 		.then((res) => {
-			console.log('url: ', url) //TODO - SLETT MEG
-			console.log('res: ', res) //TODO - SLETT MEG
 			return res.data
 		})
 		.catch((reason) => {

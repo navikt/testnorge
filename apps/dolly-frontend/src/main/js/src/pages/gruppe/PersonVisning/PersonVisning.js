@@ -39,9 +39,8 @@ import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiV
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { useTpEnvironments } from '~/utils/hooks/useEnvironments'
 import { useTpData } from '~/utils/hooks/useFagsystemer'
-import { useBestillingById, useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -107,10 +106,19 @@ export const PersonVisning = ({
 		ident.ident,
 		harAaregBestilling()
 	)
-	console.log('arbeidsforhold: ', arbeidsforhold) //TODO - SLETT MEG
-	const { loading: loadingTpData, tpData } = useTpData(ident.ident)
-	// console.log('tpData: ', tpData) //TODO - SLETT MEG
-	// console.log('loadingTpData: ', loadingTpData) //TODO - SLETT MEG
+
+	console.log('bestillingerFagsystemer: ', bestillingerFagsystemer) //TODO - SLETT MEG
+	const harTpBestilling = () => {
+		let tp = false
+		bestillingerFagsystemer?.forEach((i) => {
+			if (i.pensjonforvalter?.tp) {
+				tp = true
+			}
+		})
+		return tp
+	}
+
+	const { loading: loadingTpData, tpData } = useTpData(ident.ident, harTpBestilling())
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -118,7 +126,7 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const { loading: loadingBestilteMiljoer, bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe)
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe)
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -136,7 +144,6 @@ export const PersonVisning = ({
 	const {
 		sigrunstub,
 		pensjonforvalter,
-		tpforvalter,
 		inntektstub,
 		brregstub,
 		krrstub,
@@ -292,7 +299,7 @@ export const PersonVisning = ({
 					loading={loading.pensjonforvalter}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
-				<TpVisning data={tpData} loading={loading.tpforvalter} bestilteMiljoer={bestilteMiljoer} />
+				<TpVisning data={tpData} loading={loadingTpData} bestilteMiljoer={bestilteMiljoer} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
