@@ -18,20 +18,9 @@ import {
 } from '~/utils/hooks/useMaler'
 import { runningTestcafe } from '~/service/services/Request'
 
-const extractFeilmelding = (stackTrace: string) => {
-	if (stackTrace?.includes('miljoer')) {
-		return 'miljoe_error'
-	} else if (stackTrace?.includes('current')) {
-		return 'azure_error'
-	} else {
-		return 'unknown_error'
-	}
-}
-
 const logout = (stackTrace: string) => {
-	const feilmelding = extractFeilmelding(stackTrace)
 	if (!runningTestcafe()) {
-		logoutBruker(feilmelding)
+		logoutBruker(stackTrace)
 	}
 }
 

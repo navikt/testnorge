@@ -50,11 +50,11 @@ export const initialForenkletOppgjoersordningPers = {
 }
 
 export const initialArbeidsforholdOrg = {
+	arbeidsforholdstype: '',
 	arbeidsgiver: {
 		aktoertype: 'ORG',
 		orgnummer: '',
 	},
-	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date().setHours(0, 0, 0, 0), 20),
 		tom: null,

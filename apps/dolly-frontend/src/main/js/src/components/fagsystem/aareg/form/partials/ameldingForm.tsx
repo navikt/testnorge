@@ -20,14 +20,13 @@ import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
-import { FormikProps } from 'formik'
-import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
-import { Alert } from '@navikt/ds-react'
+import { useFormikContext } from 'formik'
+import { Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { ReactComponent } from 'testcafe-react-selectors'
 
 interface AmeldingFormProps {
-	formikBag: FormikProps<{ aareg: AaregListe }>
-	warningMessage?: Alert
+	warningMessage?: ReactComponent<any>
 }
 
 const KjedeContainer = styled.div`
@@ -45,7 +44,8 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): JSX.Element => {
+export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element => {
+	const formikBag = useFormikContext()
 	const paths = {
 		arbeidsforholdstype: 'aareg[0].arbeidsforholdstype',
 		periode: 'aareg[0].genererPeriode.periode',
@@ -300,7 +300,6 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 										key={idx}
 										ameldingIndex={selectedIndex}
 										arbeidsforholdIndex={idx}
-										formikBag={formikBag}
 										arbeidsgiverType={'EGEN'}
 										erLenket={erLenket}
 										warningMessage={warningMessage}

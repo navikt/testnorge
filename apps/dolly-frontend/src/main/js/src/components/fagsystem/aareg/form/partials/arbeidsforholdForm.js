@@ -28,6 +28,7 @@ import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partia
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _isEmpty from 'lodash/isEmpty'
 import { useFormikContext } from 'formik'
+import { isEqual } from 'lodash'
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -43,7 +44,14 @@ export const ArbeidsforholdForm = ({
 		}
 		return bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
-			?.map((bestilling) => bestilling.data.aareg?.[0])
+			?.flatMap((bestilling) => bestilling.data.aareg)
+	}
+
+	const harGjortFormEndringer = (formValues) => {
+		if (formValues.length > 1) {
+			return true
+		}
+		return !isEqual(values.aareg, [initialArbeidsforholdOrg])
 	}
 
 	const { touched, values, errors, setFieldValue } = useFormikContext()
@@ -51,10 +59,19 @@ export const ArbeidsforholdForm = ({
 	const tidligereAaregBestillinger = hentAaregBestillinger(tidligereBestillinger)
 
 	useEffect(() => {
-		if (_isEmpty(tidligereAaregBestillinger)) {
-			return null
+		if (_isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
+			return
 		}
-		setFieldValue('aareg', tidligereAaregBestillinger)
+		setFieldValue(
+			'aareg',
+			tidligereAaregBestillinger.map((aaregBestilling) => {
+				aaregBestilling.ansettelsesPeriode = {
+					tom: null,
+					...aaregBestilling.ansettelsesPeriode,
+				}
+				return aaregBestilling
+			})
+		)
 	}, [])
 
 	const gjeldendeArbeidsgiver = _get(values, `${path}.arbeidsgiver`)
@@ -148,6 +165,23 @@ export const ArbeidsforholdForm = ({
 		}
 	}
 
+	const checkAktiveArbeidsforhold = (aaregValues) => {
+		const aktiveArbeidsforhold = aaregValues.map((arbeidsforhold) => {
+			const orgnummer = arbeidsforhold?.arbeidsgiver?.orgnummer
+			if (!arbeidsforhold?.ansettelsesPeriode?.sluttaarsak) {
+				return orgnummer
+			}
+		})
+		const duplikateAktiveArbeidsforhold = aktiveArbeidsforhold
+			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
+			.filter((arbeidsforhold) => !_isEmpty(arbeidsforhold))
+		return _isEmpty(duplikateAktiveArbeidsforhold)
+			? null
+			: {
+					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${duplikateAktiveArbeidsforhold.toString()}`,
+			  }
+	}
+
 	return (
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
@@ -163,6 +197,7 @@ export const ArbeidsforholdForm = ({
 					<OrganisasjonMedArbeidsforholdSelect
 						path={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
+						feil={checkAktiveArbeidsforhold(values.aareg)}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.fritekst && (
@@ -170,6 +205,7 @@ export const ArbeidsforholdForm = ({
 						name={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						size="xlarge"
+						feil={checkAktiveArbeidsforhold(values.aareg)}
 					/>
 				)}
 				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
@@ -186,15 +222,6 @@ export const ArbeidsforholdForm = ({
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
 					<ArbeidsgiverIdent path={`${path}.arbeidsgiver.ident`} />
 				)}
-				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-					<FormikTextInput
-						key={`${path}.arbeidsforholdID`}
-						name={`${path}.arbeidsforholdID`}
-						label="Arbeidsforhold-ID"
-						type="text"
-						onBlur={onChangeLenket('arbeidsforholdID')}
-					/>
-				)}
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
@@ -207,16 +234,16 @@ export const ArbeidsforholdForm = ({
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
 					fastfield={false}
 				/>
-				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-					<FormikSelect
-						name={`${path}.ansettelsesPeriode.sluttaarsak`}
-						label="Sluttårsak"
-						kodeverk={ArbeidKodeverk.SluttaarsakAareg}
-						size="xlarge"
-						onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-						disabled={_get(values, `${path}.ansettelsesPeriode.tom`) === null}
-					/>
-				)}
+				{/*{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (*/}
+				<FormikSelect
+					name={`${path}.ansettelsesPeriode.sluttaarsak`}
+					label="Sluttårsak"
+					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
+					size="xlarge"
+					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
+					disabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
+				/>
+				{/*)}*/}
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormikSelect
 						name={`${path}.arbeidsavtale.yrke`}

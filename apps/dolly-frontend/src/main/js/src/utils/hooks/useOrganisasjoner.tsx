@@ -4,6 +4,7 @@ import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisa
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import _isArray from 'lodash/isArray'
 
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
@@ -25,6 +26,7 @@ const getArbeidsforholdUrl = (miljoer: string[]) => {
 			`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
 	)
 }
+
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]
@@ -157,12 +159,15 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, error } = useSWR<Arbeidsforhold[], Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		multiFetcher,
+		miljoer.length > 1 ? multiFetcher : fetcher,
 		{ dedupingInterval: 30000 }
 	)
 
+	const arbeidsforhold = miljoer.length > 1 ? data?.[0] : data
+	const arbeidsforholdListe = _isArray(arbeidsforhold) ? arbeidsforhold : [arbeidsforhold]
+
 	return {
-		arbeidsforhold: data?.[0],
+		arbeidsforhold: arbeidsforholdListe?.[0] ? arbeidsforholdListe : null,
 		loading: !error && !data,
 		error: error,
 	}

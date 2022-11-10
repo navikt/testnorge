@@ -12,7 +12,7 @@ type PersonMiljoeinfoProps = {
 }
 
 export const ArbeidsforholdMiljoeInfo = ({ ident, bestilteMiljoer }: PersonMiljoeinfoProps) => {
-	const { loading: loading, dollyEnvironments } = useDollyEnvironments()
+	const { loading, dollyEnvironmentList } = useDollyEnvironments()
 
 	const unsupportedEnvironments = ['t0', 't13', 'qx']
 
@@ -24,7 +24,7 @@ export const ArbeidsforholdMiljoeInfo = ({ ident, bestilteMiljoer }: PersonMiljo
 		return <Loading label="Laster miljøer" fullpage />
 	}
 
-	const environmentArray = dollyEnvironments?.Q?.concat(dollyEnvironments?.T)?.filter(
+	const environmentArray = dollyEnvironmentList?.filter(
 		(miljoe) => !unsupportedEnvironments.includes(miljoe.id)
 	)
 	return (
@@ -48,7 +48,7 @@ export const ArbeidsforholdMiljoeInfo = ({ ident, bestilteMiljoer }: PersonMiljo
 					</DollyTooltip>
 				)
 			})}
-			{dollyEnvironments && (
+			{dollyEnvironmentList && (
 				<p>
 					<i>
 						Hold pekeren over et miljø for å se arbeidsforholdene som finnes på denne personen i det

@@ -1,5 +1,4 @@
 import React from 'react'
-import Loading from '~/components/ui/loading/Loading'
 import _get from 'lodash/get'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
@@ -118,7 +117,6 @@ export const EgneOrganisasjoner = ({
 
 	return (
 		<>
-			{loading && <Loading label="Laster organisasjoner" />}
 			{error && (
 				<Alert variant={'warning'}>
 					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
@@ -136,13 +134,14 @@ export const EgneOrganisasjoner = ({
 						<a href="/organisasjoner">her</a>.
 					</Alert>
 				))}
-			{harEgneOrganisasjoner && !error && (
+			{!error && (
 				<EgneOrgSelect
 					name={path}
 					label={label ? label : 'Organisasjonsnummer'}
 					options={
 						filterValidEnhetstyper ? getFilteredOptions(egneOrganisasjoner) : egneOrganisasjoner
 					}
+					isLoading={loading}
 					size="xlarge"
 					onChange={handleChange}
 					value={_get(formikBag.values, path)}

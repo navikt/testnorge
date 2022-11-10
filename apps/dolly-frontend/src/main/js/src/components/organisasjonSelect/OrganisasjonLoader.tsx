@@ -12,6 +12,7 @@ type OrganisasjonLoaderProps = {
 	value: any
 	feil?: any
 	useFormikSelect?: boolean
+	disabledOrgnummer?: string[]
 }
 
 export const OrganisasjonLoader = ({
@@ -62,6 +63,7 @@ export const OrganisasjonLoader = ({
 			options={organisasjonerSorted}
 			size="xlarge"
 			afterChange={afterChange}
+			feil={feil}
 			optionHeight={50}
 			isClearable={false}
 		/>

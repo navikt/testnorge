@@ -12,12 +12,8 @@ import {
 	initialArbeidsforholdPers,
 	initialValues,
 } from '../initialValues'
-import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-import { FormikProps } from 'formik'
-
-interface ArbeidsforholdToggleProps {
-	formikBag: FormikProps<{ aareg: AaregListe }>
-}
+import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { useFormikContext } from 'formik'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -39,7 +35,8 @@ const fellesOrg = [
 	'947064649',
 ]
 
-export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): ReactElement => {
+export const ArbeidsforholdToggle = (): ReactElement => {
+	const formikBag = useFormikContext()
 	const getArbeidsgiverType =
 		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
 			? ArbeidsgiverTyper.egen
@@ -107,7 +104,7 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 				<>
 					{
 						// @ts-ignore
-						<AmeldingForm formikBag={formikBag} warningMessage={warningMessage} />
+						<AmeldingForm warningMessage={warningMessage} />
 					}
 				</>
 			) : (
@@ -132,7 +129,6 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 								path={path}
 								key={idx}
 								arbeidsforholdIndex={idx}
-								formikBag={formikBag}
 								erLenket={null}
 								arbeidsgiverType={typeArbeidsgiver}
 								ameldingIndex={undefined}
