@@ -41,6 +41,7 @@ import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { useTpData } from '~/utils/hooks/useFagsystemer'
 import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import { sjekkManglerTpData } from '~/components/fagsystem/pensjon/visning/TpVisning'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -90,7 +91,6 @@ export const PersonVisning = ({
 	}, [])
 
 	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
-	console.log('ident: ', ident) //TODO - SLETT MEG
 
 	const harAaregBestilling = () => {
 		let aareg = false
@@ -107,7 +107,6 @@ export const PersonVisning = ({
 		harAaregBestilling()
 	)
 
-	console.log('bestillingerFagsystemer: ', bestillingerFagsystemer) //TODO - SLETT MEG
 	const harTpBestilling = () => {
 		let tp = false
 		bestillingerFagsystemer?.forEach((i) => {
@@ -162,6 +161,10 @@ export const PersonVisning = ({
 		}
 
 		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
+			return true
+		}
+
+		if (tpData && sjekkManglerTpData(tpData)) {
 			return true
 		}
 

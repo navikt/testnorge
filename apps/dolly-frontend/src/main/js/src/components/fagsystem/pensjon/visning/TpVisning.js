@@ -4,15 +4,13 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Alert, Tabs } from '@navikt/ds-react'
+import { Alert } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
-export const sjekkManglerPensjonData = (tpData) => {
-	// console.log('tpData: ', tpData) //TODO - SLETT MEG
-	return tpData?.length < 1
-	//TODO sjekk om alle ordninger er tomme
+export const sjekkManglerTpData = (tpData) => {
+	return tpData?.length < 1 || tpData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
 const TpOrdning = ({ data, ordninger }) => {
@@ -36,8 +34,7 @@ const TpOrdning = ({ data, ordninger }) => {
 
 export const TpVisning = ({ data, loading, bestilteMiljoer }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
-	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
+
 	useEffect(() => {
 		if (!ordninger.length) {
 			fetchTpOrdninger()
@@ -49,13 +46,13 @@ export const TpVisning = ({ data, loading, bestilteMiljoer }) => {
 	}, [Options('tpOrdninger')])
 
 	if (loading) {
-		return <Loading label="Laster TP forvalter-data" />
+		return <Loading label="Laster tjenestepensjon-data" />
 	}
 	if (!data) {
 		return null
 	}
 
-	const manglerFagsystemdata = sjekkManglerPensjonData(data)
+	const manglerFagsystemdata = sjekkManglerTpData(data)
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 

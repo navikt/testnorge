@@ -1,7 +1,6 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '~/api'
 import { System } from '~/ducks/bestillingStatus/bestillingStatusMapper'
-import bestilling from '~/ducks/bestilling'
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`

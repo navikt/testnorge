@@ -56,7 +56,6 @@ const getHeader = (data: Arbeidsforhold) => {
 }
 
 export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVisningProps) => {
-	console.log('bestilteMiljoer: ', bestilteMiljoer) //TODO - SLETT MEG
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}

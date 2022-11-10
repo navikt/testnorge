@@ -161,8 +161,6 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		{ dedupingInterval: 30000 }
 	)
 
-	console.log('data aareg: ', data) //TODO - SLETT MEG
-
 	return {
 		arbeidsforhold: data?.[0],
 		loading: !error && !data,
