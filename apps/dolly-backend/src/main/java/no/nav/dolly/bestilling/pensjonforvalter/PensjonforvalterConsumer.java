@@ -29,6 +29,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -128,26 +129,29 @@ public class PensjonforvalterConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        final String TEAM_PENSJON_TESTDATA = "Team Pentek (pensjontestdata)";
 
         var statusWebClient = WebClient.builder().build();
 
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 statusWebClient);
-        statusMap.put("team", TEAM_DOLLY);
+        consumerStatus.put("team", TEAM_DOLLY);
 
-        // "pensjon-testdata" ikke direkte tilgang
-        var pensjonStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://pensjon-testdata-facade.dev.intern.nav.no/isAlive",
-                "https://pensjon-testdata-facade.dev.intern.nav.no/isReady",
-                statusWebClient);
-        pensjonStatus.put("team", TEAM_PENSJON_TESTDATA);
+        var statusMap = new ConcurrentHashMap<String, Object>();
+        statusMap.put("pensjonforvalter", consumerStatus);
 
-        return Map.of(
-                "pensjonforvalter", statusMap,
-                "pensjon-testdata", pensjonStatus
-        );
+        try {
+            Map response = statusWebClient.get()
+                    .uri(serviceProperties.getUrl() + "/internal/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            statusMap.putAll(response);
+        } catch (Exception e) {
+            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
+        }
+
+        return statusMap;
     }
 }
