@@ -4,7 +4,7 @@ import { useTpEnvironments } from '~/utils/hooks/useEnvironments'
 
 const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/dolly-backend/api/v1/tp/forhold/${ident}/${miljo}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -18,7 +18,10 @@ export const useTpData = (ident, harTpBestilling) => {
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		[tpUrl(ident, tpEnvironments)],
+		[
+			tpUrl(ident, tpEnvironments),
+			{ 'Nav-Call-Id': 'Dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
+		],
 		multiFetcherFagsystemer
 	)
 
