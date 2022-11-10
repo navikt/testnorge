@@ -30,6 +30,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
