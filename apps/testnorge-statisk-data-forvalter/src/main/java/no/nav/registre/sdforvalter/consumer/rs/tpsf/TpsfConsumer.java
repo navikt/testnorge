@@ -35,7 +35,7 @@ public class TpsfConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    private Mono<SkdMeldingerTilTpsRespons> sendSkdmeldingerToTps(
+    public Mono<SkdMeldingerTilTpsRespons> sendSkdmeldingerToTps(
             Long gruppeId,
             SendToTpsRequest sendToTpsRequest) {
 
