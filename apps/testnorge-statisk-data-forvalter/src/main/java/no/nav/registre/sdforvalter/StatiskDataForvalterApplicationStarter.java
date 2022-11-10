@@ -8,13 +8,13 @@ import no.nav.registre.sdforvalter.util.VaultUtil;
 
 @Slf4j
 @SpringBootApplication
-public class ApplicationStarter {
+public class StatiskDataForvalterApplicationStarter {
 
     public static void main(String[] args) {
         if ("prod".equals(System.getProperty("spring.profiles.active"))) {
             VaultUtil.initCloudVaultToken();
         }
 
-        SpringApplication.run(ApplicationStarter.class, args);
+        SpringApplication.run(StatiskDataForvalterApplicationStarter.class, args);
     }
 }

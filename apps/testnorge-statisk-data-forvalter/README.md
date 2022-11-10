@@ -48,7 +48,7 @@ sterkt anbefalt å følge. Disse applikasjonen er ansvarlige for å opprette man
 
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør ApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og kjør StatiskDataForvalterApplicationStarter med følgende argumenter:
 ```
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=local
