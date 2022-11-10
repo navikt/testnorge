@@ -2,43 +2,60 @@ import React from 'react'
 import { Alert, Tabs } from '@navikt/ds-react'
 import styled from 'styled-components'
 
-const StyledTab = styled(Tabs.Tab)`
+const StyledTabs = styled(Tabs)`
+	margin-top: -10px;
+	margin-bottom: 20px;
+`
+
+const StyledPanel = styled(Tabs.Panel)`
+	margin-top: 10px;
+`
+
+const BestiltMiljoTab = styled(Tabs.Tab)`
 	color: #06893a;
-	font-weight: bold;
 	&&& {
-		.navds-tabs__tab[aria-selected='true'] {
+		.navds-tabs__tab-inner {
 			color: #06893a;
-			font-weight: bold;
 		}
 	}
 `
 
-export const MiljoTabs = ({ miljoListe, bestilteMiljoer, forsteMiljo, data, children }) => {
-	// console.log('miljoListe: ', miljoListe) //TODO - SLETT MEG
-	console.log('bestilteMiljoer miljotabs: ', bestilteMiljoer) //TODO - SLETT MEG
-	// console.log('forsteMiljo: ', forsteMiljo) //TODO - SLETT MEG
-	console.log('data: ', data) //TODO - SLETT MEG
+export const MiljoTabs = ({ bestilteMiljoer, forsteMiljo, data, children }) => {
 	return (
-		<Tabs size="small" defaultValue={forsteMiljo}>
+		<StyledTabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
-				{/*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*/}
-				{/*<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />*/}
-				{/*<Tabs.Tab value="q2" label="Q2" />*/}
-				{miljoListe.map((miljo) => {
-					if (bestilteMiljoer?.includes(miljo)) {
-						return <StyledTab key={miljo} value={miljo} label={miljo.toUpperCase()} />
+				{data.map((miljoData) => {
+					if (bestilteMiljoer?.includes(miljoData.miljo)) {
+						return (
+							<BestiltMiljoTab
+								key={miljoData.miljo}
+								value={miljoData.miljo}
+								label={miljoData.miljo.toUpperCase()}
+							/>
+						)
 					}
-					return <Tabs.Tab key={miljo} value={miljo} label={miljo.toUpperCase()} />
+					return (
+						<Tabs.Tab
+							key={miljoData.miljo}
+							value={miljoData.miljo}
+							label={miljoData.miljo.toUpperCase()}
+						/>
+					)
 				})}
 			</Tabs.List>
-			<Tabs.Panel value="q1" style={{ marginTop: '10px' }}>
-				{children}
-			</Tabs.Panel>
-			<Tabs.Panel value="q2" style={{ marginTop: '10px', marginBottom: '15px' }}>
-				<Alert variant="info" size="small" inline>
-					Fant ingen pensjon-data i dette miljøet
-				</Alert>
-			</Tabs.Panel>
-		</Tabs>
+			{data.map((miljoData) => {
+				return (
+					<StyledPanel key={miljoData.miljo} value={miljoData.miljo}>
+						{miljoData?.data?.length > 0 ? (
+							React.cloneElement(children, { data: miljoData.data })
+						) : (
+							<Alert variant="info" size="small" inline>
+								Fant ingen data i dette miljøet
+							</Alert>
+						)}
+					</StyledPanel>
+				)
+			})}
+		</StyledTabs>
 	)
 }

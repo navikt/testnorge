@@ -21,6 +21,7 @@ export const sjekkManglerPensjonData = (tpData) => {
 }
 
 const TpOrdning = ({ data, ordninger }) => {
+	console.log('data TpOrdning: ', data) //TODO - SLETT MEG
 	if (!data) return null
 
 	const ordningNavn = (nr) => {
@@ -65,7 +66,10 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 	// console.log('data: ', data) //TODO - SLETT MEG
-	console.log('bestilteMiljoer TP: ', bestilteMiljoer) //TODO - SLETT MEG
+	// console.log('bestilteMiljoer TP: ', bestilteMiljoer) //TODO - SLETT MEG
+
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -80,38 +84,16 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 			) : (
 				<>
 					<MiljoTabs
-						// miljoListe={tpMiljoer}
-						miljoListe={['q1', 'q2', 'q4']}
 						bestilteMiljoer={bestilteMiljoer}
-						forsteMiljo="q1"
+						forsteMiljo={forsteMiljo} // TODO fix
 						data={data}
 					>
-						<TpOrdning data={data} ordninger={ordninger} />
+						{/*<TpOrdning data={data} ordninger={ordninger} />*/}
+						<TpOrdning ordninger={ordninger} />
 					</MiljoTabs>
-					{/*<Tabs size="small" defaultValue="q1">*/}
-					{/*	<Tabs.List>*/}
-					{/*		/!*<Tabs.Tab value="q1" label="Q1" icon={<Icon kind={'feedback-check-circle'} />} />*!/*/}
-					{/*		<Tabs.Tab value="q1" label="Q1" style={{ color: '#06893a', fontWeight: 'bold' }} />*/}
-					{/*		<Tabs.Tab value="q2" label="Q2" />*/}
-					{/*		<Tabs.Tab value="q3" label="Q3" />*/}
-					{/*	</Tabs.List>*/}
-					{/*	<Tabs.Panel value="q1" style={{ marginTop: '10px' }}>*/}
-					{/*		<TpOrdning data={data} ordninger={ordninger} />*/}
-					{/*	</Tabs.Panel>*/}
-					{/*	<Tabs.Panel value="q2" style={{ marginTop: '10px', marginBottom: '15px' }}>*/}
-					{/*		<Alert variant="info" size="small" inline>*/}
-					{/*			Fant ingen pensjon-data i dette miljøet*/}
-					{/*		</Alert>*/}
-					{/*	</Tabs.Panel>*/}
-					{/*	<Tabs.Panel value="q3" style={{ marginTop: '10px', marginBottom: '15px' }}>*/}
-					{/*		<Alert variant="info" size="small" inline>*/}
-					{/*			Fant ingen pensjon-data i dette miljøet*/}
-					{/*		</Alert>*/}
-					{/*	</Tabs.Panel>*/}
-					{/*</Tabs>*/}
 				</>
 			)}
-			<TpMiljoeinfo ident={ident} bestilteMiljoer={bestilteMiljoer} ordninger={ordninger} />
+			{/*<TpMiljoeinfo ident={ident} bestilteMiljoer={bestilteMiljoer} ordninger={ordninger} />*/}
 		</ErrorBoundary>
 	)
 }

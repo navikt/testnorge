@@ -107,8 +107,8 @@ export const PersonVisning = ({
 		harAaregBestilling()
 	)
 	const { loading: loadingTpData, tpData } = useTpData(ident.ident)
-	console.log('tpData: ', tpData) //TODO - SLETT MEG
-	console.log('loadingTpData: ', loadingTpData) //TODO - SLETT MEG
+	// console.log('tpData: ', tpData) //TODO - SLETT MEG
+	// console.log('loadingTpData: ', loadingTpData) //TODO - SLETT MEG
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
