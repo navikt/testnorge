@@ -3,10 +3,10 @@ import useSWRImmutable from 'swr/immutable'
 import useSWR from 'swr'
 
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
-const getTpMiljoerUrl = '/dolly-backend/api/v1/tp/miljoe'
+const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
 
 const prefetchedMiljoer = ['t0', 't1', 't3', 't4', 't5', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
-const prefetchedTpMiljoer = ['q1', 'q2', 'q4']
+const prefetchedPensjonMiljoer = ['q1', 'q2']
 
 export const useDollyEnvironments = () => {
 	const { data, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
@@ -22,13 +22,13 @@ export const useDollyEnvironments = () => {
 	}
 }
 
-export const useTpEnvironments = () => {
-	const { data, error } = useSWR<string[], Error>(getTpMiljoerUrl, fetcher, {
-		fallbackData: prefetchedTpMiljoer,
+export const usePensjonEnvironments = () => {
+	const { data, error } = useSWR<string[], Error>(getPensjonMiljoerUrl, fetcher, {
+		fallbackData: prefetchedPensjonMiljoer,
 	})
 
 	return {
-		tpEnvironments: data,
+		pensjonEnvironments: data,
 		loading: !error && !data,
 		error: error,
 	}

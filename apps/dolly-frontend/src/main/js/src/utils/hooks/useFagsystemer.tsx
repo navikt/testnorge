@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { multiFetcherFagsystemer } from '~/api'
-import { useTpEnvironments } from '~/utils/hooks/useEnvironments'
+import { usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
 
 const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -9,7 +9,7 @@ const tpUrl = (ident, miljoer) =>
 	}))
 
 export const useTpData = (ident, harTpBestilling) => {
-	const { tpEnvironments } = useTpEnvironments()
+	const { pensjonEnvironments } = usePensjonEnvironments()
 
 	if (!harTpBestilling) {
 		return {
@@ -19,7 +19,7 @@ export const useTpData = (ident, harTpBestilling) => {
 
 	const { data, error } = useSWR<any, Error>(
 		[
-			tpUrl(ident, tpEnvironments),
+			tpUrl(ident, pensjonEnvironments),
 			{ 'Nav-Call-Id': 'Dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
 		multiFetcherFagsystemer
