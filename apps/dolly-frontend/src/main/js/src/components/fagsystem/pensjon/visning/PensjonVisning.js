@@ -10,7 +10,7 @@ import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
-	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData.data?.length < 1)
+	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
 }
 
 const getTittel = (data) => {

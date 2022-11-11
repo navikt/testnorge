@@ -42,6 +42,11 @@ import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 import { sjekkManglerTpData } from '~/components/fagsystem/pensjon/visning/TpVisning'
+import {
+	harAaregBestilling,
+	harPoppBestilling,
+	harTpBestilling,
+} from '~/utils/SjekkBestillingFagsystem'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -92,45 +97,20 @@ export const PersonVisning = ({
 
 	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
 
-	//TODO: flytt disse ut i egen fil
-	const harAaregBestilling = () => {
-		let aareg = false
-		bestillingerFagsystemer?.forEach((i) => {
-			if (i.aareg) {
-				aareg = true
-			}
-		})
-		return aareg
-	}
-
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		harAaregBestilling()
+		harAaregBestilling(bestillingerFagsystemer)
 	)
 
-	const harTpBestilling = () => {
-		let tp = false
-		bestillingerFagsystemer?.forEach((i) => {
-			if (i.pensjonforvalter?.tp) {
-				tp = true
-			}
-		})
-		return tp
-	}
+	const { loading: loadingTpData, tpData } = useTpData(
+		ident.ident,
+		harTpBestilling(bestillingerFagsystemer)
+	)
 
-	const { loading: loadingTpData, tpData } = useTpData(ident.ident, harTpBestilling())
-
-	const harPoppBestilling = () => {
-		let popp = false
-		bestillingerFagsystemer?.forEach((i) => {
-			if (i.pensjonforvalter?.inntekt) {
-				popp = true
-			}
-		})
-		return popp
-	}
-
-	const { loading: loadingPoppData, poppData } = usePoppData(ident.ident, harPoppBestilling())
+	const { loading: loadingPoppData, poppData } = usePoppData(
+		ident.ident,
+		harPoppBestilling(bestillingerFagsystemer)
+	)
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])

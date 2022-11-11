@@ -25,29 +25,29 @@ export const MiljoTabs = ({ bestilteMiljoer, forsteMiljo, data, children }) => {
 		<StyledTabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
 				{data.map((miljoData) => {
-					if (bestilteMiljoer?.includes(miljoData.miljo)) {
+					if (bestilteMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<BestiltMiljoTab
-								key={miljoData.miljo}
-								value={miljoData.miljo}
-								label={miljoData.miljo.toUpperCase()}
+								key={miljoData?.miljo}
+								value={miljoData?.miljo}
+								label={miljoData?.miljo?.toUpperCase()}
 							/>
 						)
 					}
 					return (
 						<Tabs.Tab
-							key={miljoData.miljo}
-							value={miljoData.miljo}
-							label={miljoData.miljo.toUpperCase()}
+							key={miljoData?.miljo}
+							value={miljoData?.miljo}
+							label={miljoData?.miljo?.toUpperCase()}
 						/>
 					)
 				})}
 			</Tabs.List>
 			{data.map((miljoData) => {
 				return (
-					<StyledPanel key={miljoData.miljo} value={miljoData.miljo}>
+					<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
 						{miljoData?.data?.length > 0 ? (
-							React.cloneElement(children, { data: miljoData.data })
+							React.cloneElement(children, { data: miljoData?.data })
 						) : (
 							<Alert variant="info" size="small" inline>
 								Fant ingen data i dette miljøet

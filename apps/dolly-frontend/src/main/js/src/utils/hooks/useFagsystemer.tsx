@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { multiFetcherFagsystemer, multiFetcherPopp } from '~/api'
+import { multiFetcherFagsystemer } from '~/api'
 import { usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
 
 const poppUrl = (ident, miljoer) =>
@@ -27,8 +27,9 @@ export const usePoppData = (ident, harPoppBestilling) => {
 		[
 			poppUrl(ident, pensjonEnvironments),
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
+			'inntekter',
 		],
-		multiFetcherPopp
+		multiFetcherFagsystemer
 	)
 
 	return {
