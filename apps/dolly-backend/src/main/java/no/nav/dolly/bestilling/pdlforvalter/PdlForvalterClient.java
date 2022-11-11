@@ -31,8 +31,10 @@ import no.nav.dolly.bestilling.pdlforvalter.domain.PdlUtflyttingHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlVergemaalHistorikk;
 import no.nav.dolly.bestilling.pdlforvalter.domain.Pdldata;
 import no.nav.dolly.bestilling.pdlforvalter.domain.SivilstandWrapper;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.IdentType;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdlforvalter.PdlOpplysning.Master;
 import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdentifikasjonsnummer;
@@ -51,6 +53,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
@@ -84,7 +87,7 @@ public class PdlForvalterClient implements ClientRegister {
     private final PdlDataConsumer pdlDataConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (progress.isTpsf() &&
                 (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getOpprettNyPerson()))) {
@@ -106,12 +109,19 @@ public class PdlForvalterClient implements ClientRegister {
                 progress.setPdlforvalterStatus(encodeStatus(status.substring(1)));
             }
         }
+        return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
 
         // Sletting blir nå utført fra PersonService
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return true;
     }
 
     private PersonDTO getPdldataHovedIdent(String ident) {

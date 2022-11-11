@@ -47,6 +47,10 @@ public class PensjonforvalterResponse {
         private String message;
         private String path;
         private LocalDateTime timestamp;
+
+        public boolean isResponse2xx() {
+            return httpStatus.getStatus()>= 200 && httpStatus.getStatus() < 300;
+        }
     }
 
     @Data

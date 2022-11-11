@@ -8,20 +8,24 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -40,7 +44,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
@@ -48,7 +52,7 @@ public class InntektsmeldingClient implements ClientRegister {
                 progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             StringBuilder status = new StringBuilder();
@@ -64,12 +68,21 @@ public class InntektsmeldingClient implements ClientRegister {
 
             progress.setInntektsmeldingStatus(status.toString());
         }
+        return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
 
         // Inntektsmelding mangler pt. sletting
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getInntektsmelding()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getInntektsmeldingStatus()));
     }
 
     private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid, StringBuilder status) {

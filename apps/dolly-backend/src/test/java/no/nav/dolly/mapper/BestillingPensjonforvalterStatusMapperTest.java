@@ -6,9 +6,6 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import org.junit.jupiter.api.Test;
 
 import static java.util.Collections.singletonList;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.PENSJON_FORVALTER;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.POPP_INNTEKTSREGISTER;
-import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.TP_FORHOLD;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -18,6 +15,9 @@ import static org.hamcrest.Matchers.hasSize;
 
 class BestillingPensjonforvalterStatusMapperTest {
 
+    private static final String PENSJON_FORVALTER = "PensjonForvalter";
+    private static final String POPP_INNTEKTSREGISTER = "PoppInntekt";
+    private static final String TP_FORHOLD = "TpForhold";
     private static final String IDENT = "12345678901";
 
     private static final String STATUS_MELDING = "PensjonForvalter#q2:Feil= PreparedStatementCallback; bad SQL grammar "

@@ -26,12 +26,12 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Optional;
@@ -68,6 +68,38 @@ public class DollyBestillingService {
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
+    protected static Boolean isSyntetisk(String ident) {
+
+        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
+    }
+
+    public static List<String> getEnvironments(String miljoer) {
+
+        return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
+    }
+
+    public static String getBestillingType(Bestilling bestilling) {
+
+        if (nonNull(bestilling.getOpprettetFraId())) {
+            return "gjenopprett bestilling " + bestilling.getOpprettetFraId();
+
+        } else if (nonNull(bestilling.getOpprettetFraGruppeId())) {
+            return "gjenopprett gruppe " + bestilling.getOpprettetFraGruppeId();
+
+        } else if (isNotBlank(bestilling.getPdlImport())) {
+            return "testnorge import (" + bestilling.getPdlImport() + ") ";
+
+        } else if (isNotBlank(bestilling.getGjenopprettetFraIdent())) {
+            return "gjenopprett ident " + bestilling.getGjenopprettetFraIdent();
+
+        } else if (isNotBlank(bestilling.getOpprettFraIdenter())) {
+            return "opprett fra eksisterende identer (" + bestilling.getOpprettFraIdenter() + ") ";
+
+        } else {
+            return "opprett fra kriterier";
+        }
+    }
+
     @Async
     public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
 
@@ -85,8 +117,8 @@ public class DollyBestillingService {
                 var oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), originator.getTpsfBestilling());
 
                 dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
-                        .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                        .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())),
+                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
+                                .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())),
                         progress.getBestilling().getGruppe().getTags());
 
             } else if (originator.isPdlf()) {
@@ -138,11 +170,6 @@ public class DollyBestillingService {
         }
     }
 
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
-
     protected void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
@@ -174,9 +201,11 @@ public class DollyBestillingService {
                                       BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
-        clientRegisters.stream()
-                .forEach(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre));
+        Flux.fromIterable(clientRegisters)
+                .flatMap(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                .collectList()
+                .block();
     }
 
     protected void oppdaterBestillingFerdig(Bestilling bestilling) {
@@ -217,31 +246,5 @@ public class DollyBestillingService {
         }
 
         return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
-    }
-
-    public static List<String> getEnvironments(String miljoer){
-
-        return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
-    }
-
-    public static String getBestillingType(Bestilling bestilling) {
-
-        if (bestilling.getOpprettetFraId() != null) {
-            return "gjenopprett fra bestilling " + bestilling.getOpprettetFraId();
-        }
-        if (bestilling.getOpprettetFraGruppeId() != null) {
-            return "gjenopprett fra gruppe " + bestilling.getOpprettetFraGruppeId();
-        }
-        if (StringUtils.isNotBlank(bestilling.getPdlImport())) {
-            return "testnorge import (" + bestilling.getPdlImport() + ") ";
-        }
-        if (StringUtils.isNotBlank(bestilling.getGjenopprettetFraIdent())) {
-            return "opprett fra ident " + bestilling.getGjenopprettetFraIdent();
-        }
-        if (StringUtils.isNotBlank(bestilling.getOpprettFraIdenter())) {
-            return "opprett fra eksisterende identer (" + bestilling.getOpprettFraIdenter() + ") ";
-        }
-
-        return "ny bestilling";
     }
 }

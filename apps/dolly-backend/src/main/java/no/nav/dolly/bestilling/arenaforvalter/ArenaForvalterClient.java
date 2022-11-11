@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
@@ -17,8 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +30,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -50,7 +53,7 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -60,7 +63,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
@@ -97,6 +100,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 progress.setArenaforvalterStatus(status.substring(1));
             }
         }
+        return Flux.just();
     }
 
     @Override
@@ -104,6 +108,14 @@ public class ArenaForvalterClient implements ClientRegister {
 
         arenaForvalterConsumer.deleteIdenter(identer)
                 .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getArenaforvalter()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getArenaforvalterStatus()));
     }
 
     private void sendArenadagpenger(ArenaDagpenger arenaNyeDagpenger, StringBuilder status) {

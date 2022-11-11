@@ -9,8 +9,10 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -19,6 +21,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,6 +34,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.apache.commons.lang3.StringUtils.substring;
 
 @Slf4j
@@ -45,7 +49,7 @@ public class DokarkivClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getDokarkiv())) {
 
@@ -55,7 +59,7 @@ public class DokarkivClient implements ClientRegister {
                 progress.setDokarkivStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
@@ -98,12 +102,21 @@ public class DokarkivClient implements ClientRegister {
 
             progress.setDokarkivStatus(substring(status.toString(), 1));
         }
+        return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
 
         // Sletting er ikke støttet
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getDokarkiv()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getDokarkivStatus()));
     }
 
     private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {

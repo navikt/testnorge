@@ -13,14 +13,19 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,7 +35,14 @@ import java.util.Set;
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.mergePensjonforvalterResponses;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +56,8 @@ public class PensjonforvalterClientTest {
     private DollyPersonCache dollyPersonCache;
     @Mock
     private MapperFacade mapperFacade;
+    @Mock
+    private AccessToken accessToken;
 
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
@@ -55,6 +69,9 @@ public class PensjonforvalterClientTest {
     public void setup() {
         when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
         when(mapperFacade.map(any(Person.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
+        when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), eq(accessToken)))
+                .thenReturn(Flux.just(new PensjonforvalterResponse()));
     }
 
     // empty new response list to empty previous list
@@ -68,89 +85,61 @@ public class PensjonforvalterClientTest {
         var response2 = new PensjonforvalterResponse();
         response2.setStatus(new ArrayList<>());
 
-        mergePensjonforvalterResponses(response1, response2);
-        assertThat("list for response2 should be empty", response2.getStatus().isEmpty());
+        var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
+        assertThat(resultat.getStatus(), is(empty()));
 
-        response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
+        response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1");
 
         response2 = new PensjonforvalterResponse();
         response2.setStatus(new ArrayList<>());
 
-        mergePensjonforvalterResponses(response1, response2);
-        assertThat("size for response2 should be 1", response2.getStatus().size() == 1);
+        resultat = mergePensjonforvalterResponses(List.of(response1, response2));
+        assertThat(resultat.getStatus(), hasSize(1));
 
         response1 = new PensjonforvalterResponse();
         response1.setStatus(new ArrayList<>());
 
-        response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T2");
+        response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T2");
 
-        mergePensjonforvalterResponses(response1, response2);
-        assertThat("size for response2 should be 1", response2.getStatus().size() == 1);
+        resultat = mergePensjonforvalterResponses(List.of(response1, response2));
+        assertThat(resultat.getStatus(), hasSize(1));
     }
 
-    // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 200
-    // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 500
-    // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 200
-    // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 500
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_200_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
+    @ParameterizedTest
+    @CsvSource({
+            "T1,200,T1,200,T1,200",
+            "T1,200,T1,500,T1,500",
+            "T1,500,T1,200,T1,500",
+            "T1,500,T1,500,T1,500"})
+        // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 200
+        // none empty new response list (with status 200) to none empty previous list with same env name and previous status of 500
+        // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 200
+        // none empty new response list (with status 500) to none empty previous list with same env name and previous status of 500
+    void testMergePensjonforvalterResponses_withSameEnvironments_200_til_200(String miljo1, int status1, String miljo2, int status2, String resultatMiljo, int resultatStatus) {
 
-        mergePensjonforvalterResponses(response1, response2);
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(status1, miljo1);
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(status2, miljo2);
 
-        assertThat("size for response2 should be 1", response2.getStatus().size() == 1);
-        assertThat("env name should be T1", response2.getStatus().get(0).getMiljo().equals("T1"));
-        assertThat("status could should be 200", response2.getStatus().get(0).getResponse().getHttpStatus().getStatus().intValue() == 200);
-    }
+        var result = mergePensjonforvalterResponses(List.of(response1, response2));
 
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_200_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-
-        mergePensjonforvalterResponses(response1, response2);
-
-        assertThat("size for response2 should be 1", response2.getStatus().size() == 1);
-        assertThat("env name should be T1", response2.getStatus().get(0).getMiljo().equals("T1"));
-        assertThat("status could should be 500", response2.getStatus().get(0).getResponse().getHttpStatus().getStatus().intValue() == 500);
-    }
-
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_500_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-
-        mergePensjonforvalterResponses(response1, response2);
-
-        assertThat("size for response2 should be 1", response2.getStatus().size() == 1);
-        assertThat("env name should be T1", response2.getStatus().get(0).getMiljo().equals("T1"));
-        assertThat("status could should be 500", response2.getStatus().get(0).getResponse().getHttpStatus().getStatus().intValue() == 500);
-    }
-
-    @Test
-    public void testMergePensjonforvalterResponses_withSameEnvironments_500_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1");
-
-        mergePensjonforvalterResponses(response1, response2);
-
-        assertThat("size for response2 should be 1", response2.getStatus().size() == 1);
-        assertThat("env name should be T1", response2.getStatus().get(0).getMiljo().equals("T1"));
-        assertThat("status could should be 500", response2.getStatus().get(0).getResponse().getHttpStatus().getStatus().intValue() == 500);
+        assertThat(result.getStatus(), hasSize(1));
+        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo(resultatMiljo)));
+        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(resultatStatus)));
     }
 
     // none empty new response list to none empty previous list with different env name
     @Test
     public void testMergePensjonforvalterResponses_withDifferentEnvironments() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T2");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T2");
 
-        mergePensjonforvalterResponses(response1, response2);
+        var result = mergePensjonforvalterResponses(List.of(response1, response2));
 
-        assertThat("size for response2 should be 2", response2.getStatus().size() == 2);
-        assertThat("first env name should be T2", response2.getStatus().get(0).getMiljo().equals("T2"));
-        assertThat("second env name should be T1", response2.getStatus().get(1).getMiljo().equals("T1"));
+        assertThat(result.getStatus(), hasSize(2));
+        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo("T1")));
+        assertThat(result.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(200)));
+        assertThat(result.getStatus().get(1).getMiljo(), is(equalTo("T2")));
+        assertThat(result.getStatus().get(1).getResponse().getHttpStatus().getStatus(), is(equalTo(200)));
     }
 
     // none empty new reponse list with 2 env (status 200), previous list with 2 env but 1 is same, 1 is different (status 200)
@@ -159,60 +148,63 @@ public class PensjonforvalterClientTest {
     // none empty new reponse list with 2 env (status 500), previous list with 2 env but 1 is same, 1 is different (status 500)
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_200_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T3", "T1");
 
-        mergePensjonforvalterResponses(response1, response2);
+        var result = mergePensjonforvalterResponses(List.of(response1, response2));
 
-        assertThat("size for response2 should be 3", response2.getStatus().size() == 3);
-        assertThat("first env name should be T3", response2.getStatus().get(0).getMiljo().equals("T3"));
-        assertThat("second env name should be T1", response2.getStatus().get(1).getMiljo().equals("T1"));
-        assertThat("third env name should be T2", response2.getStatus().get(2).getMiljo().equals("T2"));
+        assertThat(result.getStatus(), hasSize(3));
+        assertThat(result.getStatus().get(0).getMiljo(), is(equalTo("T1")));
+        assertThat(result.getStatus().get(1).getMiljo(), is(equalTo("T2")));
+        assertThat(result.getStatus().get(2).getMiljo(), is(equalTo("T3")));
     }
 
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_200_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T3", "T1");
 
-        mergePensjonforvalterResponses(response1, response2);
+        var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
 
-        assertThat("size for response2 should be 3", response2.getStatus().size() == 3);
-        assertThat("first env name should be T3", response2.getStatus().get(0).getMiljo().equals("T3"));
-        assertThat("second env name should be T1", response2.getStatus().get(1).getMiljo().equals("T1"));
-        assertThat("second env http status should be 500", response2.getStatus().get(1).getResponse().getHttpStatus().getStatus().intValue() == 500);
-        assertThat("third env name should be T2", response2.getStatus().get(2).getMiljo().equals("T2"));
+        assertThat(resultat.getStatus(), hasSize(3));
+        assertThat(resultat.getStatus().get(0).getMiljo(), is(equalTo("T1")));
+        assertThat(resultat.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
+        assertThat(resultat.getStatus().get(1).getMiljo(), is(equalTo("T2")));
+        assertThat(resultat.getStatus().get(1).getResponse().getHttpStatus().getStatus(), is(equalTo(200)));
+        assertThat(resultat.getStatus().get(2).getMiljo(), is(equalTo("T3")));
+        assertThat(resultat.getStatus().get(2).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
     }
 
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_500_til_200() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 200, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(200, "T3", "T1");
 
-        mergePensjonforvalterResponses(response1, response2);
+        var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
 
-        assertThat("size for response2 should be 3", response2.getStatus().size() == 3);
-        assertThat("first env name should be T3", response2.getStatus().get(0).getMiljo().equals("T3"));
-        assertThat("second env name should be T1", response2.getStatus().get(1).getMiljo().equals("T1"));
-        assertThat("second env http status should be 500", response2.getStatus().get(1).getResponse().getHttpStatus().getStatus().intValue() == 500);
-        assertThat("third env name should be T2", response2.getStatus().get(2).getMiljo().equals("T2"));
-        assertThat("third env http status should be 500", response2.getStatus().get(2).getResponse().getHttpStatus().getStatus().intValue() == 500);
+        assertThat(resultat.getStatus(), hasSize(3));
+        assertThat(resultat.getStatus().get(0).getMiljo(), is(equalTo("T1")));
+        assertThat(resultat.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
+        assertThat(resultat.getStatus().get(1).getMiljo(), is(equalTo("T2")));
+        assertThat(resultat.getStatus().get(1).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
+        assertThat(resultat.getStatus().get(2).getMiljo(), is(equalTo("T3")));
+        assertThat(resultat.getStatus().get(2).getResponse().getHttpStatus().getStatus(), is(equalTo(200)));
     }
 
     @Test
     public void testMergePensjonforvalterResponses_withMixedEnvironments_500_til_500() {
-        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T1", "T2");
-        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse("ok", 500, "T3", "T1");
+        var response1 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T1", "T2");
+        var response2 = PensjonforvalterClientTestUtil.getPensjonforvalterResponse(500, "T3", "T1");
 
-        mergePensjonforvalterResponses(response1, response2);
+        var resultat = mergePensjonforvalterResponses(List.of(response1, response2));
 
-        assertThat("size for response2 should be 3", response2.getStatus().size() == 3);
-        assertThat("first env name should be T3", response2.getStatus().get(0).getMiljo().equals("T3"));
-        assertThat("first env http status should be 500", response2.getStatus().get(0).getResponse().getHttpStatus().getStatus().intValue() == 500);
-        assertThat("second env name should be T1", response2.getStatus().get(1).getMiljo().equals("T1"));
-        assertThat("second env http status should be 500", response2.getStatus().get(1).getResponse().getHttpStatus().getStatus().intValue() == 500);
-        assertThat("third env name should be T2", response2.getStatus().get(2).getMiljo().equals("T2"));
-        assertThat("third env http status should be 500", response2.getStatus().get(2).getResponse().getHttpStatus().getStatus().intValue() == 500);
+        assertThat(resultat.getStatus(), hasSize(3));
+        assertThat(resultat.getStatus().get(0).getMiljo(), is(equalTo("T1")));
+        assertThat(resultat.getStatus().get(0).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
+        assertThat(resultat.getStatus().get(1).getMiljo(), is(equalTo("T2")));
+        assertThat(resultat.getStatus().get(1).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
+        assertThat(resultat.getStatus().get(2).getMiljo(), is(equalTo("T3")));
+        assertThat(resultat.getStatus().get(2).getResponse().getHttpStatus().getStatus(), is(equalTo(500)));
     }
 
     @Test
@@ -249,24 +241,25 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class)))
-                .thenReturn(lagreTpForholdResponse);
+        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+                .thenReturn(Flux.just(lagreTpForholdResponse));
 
         PensjonforvalterResponse lagreTpYtelseResponse = new PensjonforvalterResponse();
         lagreTpYtelseResponse.setStatus(List.of(
                 new ResponseEnvironment("TEST1", test1EnvResponse),
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class)))
-                .thenReturn(lagreTpYtelseResponse);
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+                .thenReturn(Flux.just(lagreTpYtelseResponse));
 
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
 
-        assertThat("progress not null", progress != null);
-        assertThat("TpForhold are Ok for both environment", progress.getPensjonforvalterStatus().contains("TpForhold#TEST1:OK,TEST2:OK"));
+        assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
+        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
+        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST2:OK"));
     }
 
     @Test
@@ -303,8 +296,8 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class)))
-                .thenReturn(lagreTpForholdResponse);
+        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+                .thenReturn(Flux.just(lagreTpForholdResponse));
 
         var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
         test2EnvYtelseResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 500));
@@ -315,16 +308,17 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST1", test1EnvResponse),
                 new ResponseEnvironment("TEST2", test2EnvYtelseResponse)
         ));
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class)))
-                .thenReturn(lagreTpYtelseResponse);
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+                .thenReturn(Flux.just(lagreTpYtelseResponse));
 
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
 
-        assertThat("progress not null", progress != null);
-        assertThat("TpForhold have Feil for TEST2 environment", progress.getPensjonforvalterStatus().contains("TpForhold#TEST1:OK,TEST2:Feil= ytelse2 feil on TEST2"));
+        assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
+        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
+        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST2:Feil= ytelse2 feil on TEST2"));
     }
 
     @Test
@@ -362,8 +356,8 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class)))
-                .thenReturn(lagreTpForholdResponse);
+        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+                .thenReturn(Flux.just(lagreTpForholdResponse));
 
         var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
         test2EnvYtelseResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("Internal Server Error", 500));
@@ -375,7 +369,7 @@ public class PensjonforvalterClientTest {
                         new ResponseEnvironment("TEST2", test2EnvYtelseResponse)))
                 .build();
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class))).thenReturn(lagreTpYtelseResponse);
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken))).thenReturn(Flux.just(lagreTpYtelseResponse));
 
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
@@ -399,12 +393,12 @@ public class PensjonforvalterClientTest {
             return tp;
         }
 
-        public static PensjonforvalterResponse getPensjonforvalterResponse(String httpStatusPhrase, int httpStatusCode, String... miljoe) {
+        public static PensjonforvalterResponse getPensjonforvalterResponse(int httpStatusCode, String... miljoe) {
             var response = new PensjonforvalterResponse();
             var status = new ArrayList<ResponseEnvironment>();
 
             var statusResponse = new PensjonforvalterResponse.Response();
-            statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusPhrase, httpStatusCode));
+            statusResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus(httpStatusCode == 200 ? "OK" : "FEIL", httpStatusCode));
 
             Arrays.stream(miljoe).forEach(m -> status.add(new ResponseEnvironment(m, statusResponse)));
 
