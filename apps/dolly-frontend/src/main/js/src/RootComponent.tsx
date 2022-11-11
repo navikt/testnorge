@@ -4,11 +4,11 @@ import { Route, Routes } from 'react-router-dom'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import BrukerPage from '~/pages/brukerPage'
 import LoginPage from '~/pages/loginPage'
+import StatusPage from '~/pages/statusPage'
 import { history, store } from '~/Store'
 import { HistoryRouter as Router } from 'redux-first-history/rr6'
 import { SWRConfig } from 'swr'
 import { App } from '~/app/App'
-import StatusPage from "~/pages/statusPage";
 
 export const RootComponent = () => (
 	<Provider store={store}>
