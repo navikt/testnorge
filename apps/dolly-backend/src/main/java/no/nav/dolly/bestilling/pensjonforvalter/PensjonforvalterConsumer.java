@@ -138,8 +138,8 @@ public class PensjonforvalterConsumer {
                 statusWebClient);
         consumerStatus.put("team", TEAM_DOLLY);
 
-        var statusMap = new ConcurrentHashMap<String, Object>();
-        statusMap.put("pensjonforvalter", consumerStatus);
+        var status = new ConcurrentHashMap<String, Object>();
+        status.put("pensjonforvalter", consumerStatus);
 
         try {
             Map response = statusWebClient.get()
@@ -147,11 +147,11 @@ public class PensjonforvalterConsumer {
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
-            statusMap.putAll(response);
+            status.putAll(response);
         } catch (Exception e) {
             log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
         }
 
-        return statusMap;
+        return status;
     }
 }
