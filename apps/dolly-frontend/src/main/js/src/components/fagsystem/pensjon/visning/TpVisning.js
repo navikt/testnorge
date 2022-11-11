@@ -7,10 +7,10 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { TpMiljoeinfo } from '~/components/fagsystem/pensjon/visning/TpMiljoeinfo'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
-export const sjekkManglerPensjonData = (tpData) => {
-	return !tpData || !tpData.length
+export const sjekkManglerTpData = (tpData) => {
+	return tpData?.length < 1 || tpData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
 const TpOrdning = ({ data, ordninger }) => {
@@ -32,7 +32,7 @@ const TpOrdning = ({ data, ordninger }) => {
 	)
 }
 
-export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
+export const TpVisning = ({ data, loading, bestilteMiljoer }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 
 	useEffect(() => {
@@ -46,13 +46,15 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 	}, [Options('tpOrdninger')])
 
 	if (loading) {
-		return <Loading label="Laster TP forvalter-data" />
+		return <Loading label="Laster tjenestepensjon-data" />
 	}
 	if (!data) {
 		return null
 	}
 
-	const manglerFagsystemdata = sjekkManglerPensjonData(data)
+	const manglerFagsystemdata = sjekkManglerTpData(data)
+
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	return (
 		<ErrorBoundary>
@@ -66,24 +68,12 @@ export const TpVisning = ({ ident, data, loading, bestilteMiljoer }) => {
 					Kunne ikke hente tjenestepensjon-data på person
 				</Alert>
 			) : (
-				<TpOrdning data={data} ordninger={ordninger} />
+				<>
+					<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
+						<TpOrdning ordninger={ordninger} />
+					</MiljoTabs>
+				</>
 			)}
-			<TpMiljoeinfo ident={ident} bestilteMiljoer={bestilteMiljoer} ordninger={ordninger} />
 		</ErrorBoundary>
-	)
-}
-
-export const TpvisningMiljo = ({ data, miljoe, ordninger }) => {
-	const tpMiljoeInfo = data.find((m) => m.miljo == miljoe.toString())
-
-	return !tpMiljoeInfo || !tpMiljoeInfo?.ordninger || tpMiljoeInfo?.ordninger?.length < 1 ? (
-		<Alert variant="info" size="small" inline>
-			Fant ingen tjenestepensjon-data i dette miljøet
-		</Alert>
-	) : (
-		<div className="boks">
-			<SubOverskrift label="Tjenestepensjon (TP)" iconKind="pensjon" />
-			<TpOrdning data={tpMiljoeInfo?.ordninger} ordninger={ordninger} />
-		</div>
 	)
 }

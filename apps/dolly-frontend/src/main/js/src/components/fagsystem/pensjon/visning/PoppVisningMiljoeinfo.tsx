@@ -7,7 +7,7 @@ import { PensjonvisningMiljo } from '~/components/fagsystem/pensjon/visning/Pens
 type PoppVisningMiljoeinfoTypes = {
 	miljoer: Array<string>
 	ident: string
-	bestilteMiljoer: { value: Array<string> }
+	bestilteMiljoer: Array<string>
 }
 
 export const PoppVisningMiljoeinfo = ({
@@ -30,7 +30,7 @@ export const PoppVisningMiljoeinfo = ({
 	return (
 		<div className="flexbox--flex-wrap">
 			{miljoer.map((miljoe, idx) => {
-				const miljoeClassName = bestilteMiljoer?.value?.includes(miljoe)
+				const miljoeClassName = bestilteMiljoer?.includes(miljoe)
 					? 'miljoe-knapp'
 					: 'miljoe-knapp miljoe-knapp-grey'
 

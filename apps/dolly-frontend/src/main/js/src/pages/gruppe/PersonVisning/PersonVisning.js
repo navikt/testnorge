@@ -39,6 +39,9 @@ import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiV
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
+import { useTpData } from '~/utils/hooks/useFagsystemer'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import { sjekkManglerTpData } from '~/components/fagsystem/pensjon/visning/TpVisning'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -104,27 +107,25 @@ export const PersonVisning = ({
 		harAaregBestilling()
 	)
 
+	const harTpBestilling = () => {
+		let tp = false
+		bestillingerFagsystemer?.forEach((i) => {
+			if (i.pensjonforvalter?.tp) {
+				tp = true
+			}
+		})
+		return tp
+	}
+
+	const { loading: loadingTpData, tpData } = useTpData(ident.ident, harTpBestilling())
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const bestilteMiljoer = useAsync(async () => {
-		const miljoer = []
-		await Promise.allSettled(
-			bestillingIdListe.map((bestillingId) => {
-				DollyApi.getBestilling(bestillingId).then((response) => {
-					response?.data?.environments?.forEach((miljo) => {
-						if (!miljoer.includes(miljo)) {
-							miljoer.push(miljo)
-						}
-					})
-				})
-			})
-		)
-		return miljoer
-	}, [])
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe)
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -142,7 +143,6 @@ export const PersonVisning = ({
 	const {
 		sigrunstub,
 		pensjonforvalter,
-		tpforvalter,
 		inntektstub,
 		brregstub,
 		krrstub,
@@ -161,6 +161,10 @@ export const PersonVisning = ({
 		}
 
 		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
+			return true
+		}
+
+		if (tpData && sjekkManglerTpData(tpData)) {
 			return true
 		}
 
@@ -298,12 +302,7 @@ export const PersonVisning = ({
 					loading={loading.pensjonforvalter}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
-				<TpVisning
-					ident={ident.ident}
-					data={tpforvalter}
-					loading={loading.tpforvalter}
-					bestilteMiljoer={bestilteMiljoer}
-				/>
+				<TpVisning data={tpData} loading={loadingTpData} bestilteMiljoer={bestilteMiljoer} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

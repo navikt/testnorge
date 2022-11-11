@@ -19,9 +19,7 @@ type AaregVisningProps = {
 	ident?: string
 	liste?: Array<Arbeidsforhold>
 	loading?: boolean
-	bestilteMiljoer?: {
-		value: Array<string>
-	}
+	bestilteMiljoer?: Array<string>
 }
 
 type Arbeidsforhold = {
