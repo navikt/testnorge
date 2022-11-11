@@ -27,6 +27,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -151,32 +152,29 @@ public class InstdataConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        // final String TEAM_ROCKET = "Team Rocket";
 
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+        var statusWebClient = WebClient.builder().build();
+
+        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
                 WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
+        consumerStatus.put("team", TEAM_DOLLY);
 
-        // "Inst-proxy" ikke direkte tilgang
-        var instProxyStatusMap =  CheckAliveUtil.checkConsumerStatus(
-                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive",
-                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isReady",
-                WebClient.builder().build());
-        instProxyStatusMap.put("team", TEAM_DOLLY);
+        var status = new ConcurrentHashMap<String, Object>();
+        status.put("testnav-inst-service", consumerStatus);
 
-//        // Inst-data ikke direktre tilgang
-//        var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
-//                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
-//                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        instDataStatusMap.put("team", TEAM_ROCKET);
+        try {
+            Map response = statusWebClient.get()
+                    .uri(serviceProperties.getUrl() + "/internal/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            status.putAll(response);
+        } catch (Exception e) {
+            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
+        }
 
-        return Map.of(
-                "testnav-inst-service", statusMap,
-                "testnav-inst-proxy", instProxyStatusMap
-                // "inst-testdata", instDataStatusMap
-        );
+        return status;
     }
 }
