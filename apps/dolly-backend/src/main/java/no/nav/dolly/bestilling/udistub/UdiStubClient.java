@@ -7,15 +7,21 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
 import no.nav.dolly.bestilling.udistub.util.UdiMergeService;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -27,7 +33,7 @@ public class UdiStubClient implements ClientRegister {
     private final UdiStubConsumer udiStubConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
             StringBuilder status = new StringBuilder();
@@ -48,6 +54,7 @@ public class UdiStubClient implements ClientRegister {
             }
             progress.setUdistubStatus(status.toString());
         }
+        return Flux.just();
     }
 
     @Override
@@ -57,6 +64,14 @@ public class UdiStubClient implements ClientRegister {
                     .subscribe(response -> log.info("Slettet identer fra Udistub"));
     }
 
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getUdistub()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getUdistubStatus()));
+    }
+
     private void sendUdiPerson(UdiPersonWrapper wrapper) {
 
         if (Status.NEW == wrapper.getStatus()) {
@@ -64,5 +79,9 @@ public class UdiStubClient implements ClientRegister {
         } else {
             udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
         }
+    }
+
+    public Map<String, Object> status() {
+        return udiStubConsumer.checkStatus();
     }
 }

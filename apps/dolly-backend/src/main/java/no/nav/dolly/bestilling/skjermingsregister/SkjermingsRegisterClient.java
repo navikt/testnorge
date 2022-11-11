@@ -6,7 +6,9 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.skjermingsregister.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -14,10 +16,13 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
+import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoFom;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoTom;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
@@ -36,7 +41,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
@@ -52,6 +57,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
             progress.setSkjermingsregisterStatus(isNotBlank(status) ? status.toString() : "OK");
         }
+        return Flux.just();
     }
 
     @Override
@@ -59,6 +65,14 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         skjermingsRegisterConsumer.deleteSkjerming(identer)
                 .subscribe(response -> log.info("Slettet identer fra Skjermingsregisteret"));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getSkjerming()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getSkjermingsregisterStatus()));
     }
 
     private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime
@@ -87,5 +101,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .pdlfPerson(pdlfPerson)
                         .build(),
                 SkjermingsDataRequest.class);
+    }
+
+    public Map<String, Object> status() {
+        return skjermingsRegisterConsumer.checkStatus();
     }
 }

@@ -6,20 +6,26 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -35,7 +41,7 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
@@ -78,6 +84,7 @@ public class InstdataClient implements ClientRegister {
 
             progress.setInstdataStatus(status.length() > 1 ? status.substring(1) : null);
         }
+        return Flux.just();
     }
 
     @Override
@@ -91,6 +98,14 @@ public class InstdataClient implements ClientRegister {
                                 .findFirst()
                                 .orElse(Map.entry("miljoe", Collections.emptyList()))
                                 .getValue().size()));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getInstdata()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getInstdataStatus()));
     }
 
     private List<Instdata> filterInstdata(List<Instdata> instdataRequest, String miljoe) {
@@ -139,5 +154,9 @@ public class InstdataClient implements ClientRegister {
         }
 
         return status.toString();
+    }
+
+    public Map<String, Object> status() {
+        return instdataConsumer.checkStatus();
     }
 }

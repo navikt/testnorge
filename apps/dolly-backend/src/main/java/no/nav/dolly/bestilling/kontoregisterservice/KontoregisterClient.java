@@ -3,16 +3,22 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -21,13 +27,13 @@ public class KontoregisterClient implements ClientRegister {
     private final KontoregisterConsumer kontoregisterConsumer;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
 
             if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
-                return;
+                return Flux.just();
             }
             if (nonNull(bestilling.getBankkonto().getNorskBankkonto())) {
                 progress.setKontoregisterStatus(
@@ -59,11 +65,24 @@ public class KontoregisterClient implements ClientRegister {
                 );
             }
         }
+        return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
         kontoregisterConsumer.slettKontoer(identer)
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
+    }
+
+    public Map<String, Object> status() {
+        return kontoregisterConsumer.checkStatus();
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getBankkonto()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getKontoregisterStatus()));
     }
 }

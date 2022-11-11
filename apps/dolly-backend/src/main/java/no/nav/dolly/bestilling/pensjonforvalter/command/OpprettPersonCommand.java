@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -23,7 +24,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class OpprettPersonCommand implements Callable<Mono<PensjonforvalterResponse>> {
+public class OpprettPersonCommand implements Callable<Flux<PensjonforvalterResponse>> {
 
     private static final String PENSJON_OPPRETT_PERSON_URL = "/api/v1/person";
 
@@ -33,7 +34,7 @@ public class OpprettPersonCommand implements Callable<Mono<PensjonforvalterRespo
 
     private final OpprettPersonRequest opprettPersonRequest;
 
-    public Mono<PensjonforvalterResponse> call() {
+    public Flux<PensjonforvalterResponse> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -45,7 +46,7 @@ public class OpprettPersonCommand implements Callable<Mono<PensjonforvalterRespo
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(opprettPersonRequest)
                 .retrieve()
-                .bodyToMono(PensjonforvalterResponse.class)
+                .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
@@ -60,7 +61,7 @@ public class OpprettPersonCommand implements Callable<Mono<PensjonforvalterRespo
                                                                 .status(500)
                                                                 .build())
                                                         .timestamp(LocalDateTime.now())
-                                                        .path("/inntekt")
+                                                        .path(PENSJON_OPPRETT_PERSON_URL)
                                                         .build())
                                                 .build())
                                         .toList())

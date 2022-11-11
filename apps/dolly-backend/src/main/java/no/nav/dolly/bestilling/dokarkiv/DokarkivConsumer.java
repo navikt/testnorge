@@ -18,8 +18,11 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -81,5 +84,36 @@ public class DokarkivConsumer {
 
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        //final String TEAM_DOKARKIV = "Team Dokumentløsninger";
+
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", TEAM_DOLLY);
+
+        Map<String, Object> miljoerStatuser = new HashMap<>();
+
+//        // "Dokarkiv-proxy" ikke direkte tilgang
+//        Map<String, Object> miljoerStatuser = Stream.of("q1", "q2", "q4", "q5", "qx", "t0", "t1", "t2", "t3", "t4", "t5", "t13")
+//                .map(miljo -> {
+//                    var url = "https://dokarkiv-" + miljo + ".dev.adeo.no";
+//                    var miljoStatus = CheckAliveUtil.checkConsumerStatus(
+//                            url + "/actuator/health/liveness",
+//                            url + "/actuator/health/readiness",
+//                            WebClient.builder().build());
+//                    miljoStatus.put("team", TEAM_DOKARKIV);
+//                    return Map.of("dokarkiv-" + miljo, miljoStatus);
+//                })
+//                .flatMap(map -> map.entrySet().stream())
+//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        miljoerStatuser.put("testnav-dokarkiv-proxy", statusMap);
+
+        return miljoerStatuser;
     }
 }

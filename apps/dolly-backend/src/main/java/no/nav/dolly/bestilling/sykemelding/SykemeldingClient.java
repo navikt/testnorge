@@ -10,8 +10,10 @@ import no.nav.dolly.bestilling.sykemelding.domain.BestillingPersonWrapper;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;
@@ -23,16 +25,21 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -50,13 +57,13 @@ public class SykemeldingClient implements ClientRegister {
     private final ObjectMapper objectMapper;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getSykemelding())) {
 
             if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setSykemeldingStatus(encodeStatus(getVarsel("Sykemelding")));
-                return;
+                return Flux.just();
             }
 
             try {
@@ -89,11 +96,21 @@ public class SykemeldingClient implements ClientRegister {
                 progress.setSykemeldingStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
+        return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
 
+        // Sletting er ikke støttet
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getSykemelding()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getSykemeldingStatus()));
     }
 
     private boolean postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
@@ -149,5 +166,14 @@ public class SykemeldingClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for sykemelding");
         }
         return null;
+    }
+
+    public Map<String, Object> status() {
+        return Stream.of(
+                        sykemeldingConsumer.checkStatus(),
+                        syntSykemeldingConsumer.checkStatus()
+                )
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

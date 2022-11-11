@@ -47,7 +47,8 @@ const aareg = new RegExp(/dolly-backend\/api\/v1\/aareg\/arbeidsforhold/)
 const inst = new RegExp(/testnav-inst-service\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
 const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
-const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp/)
+const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
+const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2\/sdp/)
 const udistub = new RegExp(/dolly-backend\/api\/v1\/udistub/)
 const brregstub = new RegExp(/testnav-brregstub/)
@@ -112,6 +113,8 @@ const cookieMock = RequestMock()
 	.respond(instMock, 200)
 	.onRequestTo(pensjon)
 	.respond(pensjonMock, 200)
+	.onRequestTo(pensjonMiljoer)
+	.respond(['q1', 'q2'], 200)
 	.onRequestTo(pensjonTp)
 	.respond(pensjonTpMock, 200)
 	.onRequestTo(sigrunstub)
@@ -189,7 +192,7 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 		.eql(false, 'ErrorBoundary utløst, en komponent kaster Error under visning av ident')
 
 	await testController
-		.click(ReactSelector('TpVisning').findReact('h4').withText('ORDNING'))
+		.click(ReactSelector('TpVisning').findReact('MiljoTabs').withText('ORDNING'))
 		.wait(1500)
 
 	await testController

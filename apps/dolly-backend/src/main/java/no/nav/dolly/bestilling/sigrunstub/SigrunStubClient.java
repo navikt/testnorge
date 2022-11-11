@@ -4,14 +4,21 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
+
+import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Log4j2
 @Service
@@ -24,7 +31,7 @@ public class SigrunStubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
             try {
@@ -44,6 +51,7 @@ public class SigrunStubClient implements ClientRegister {
                 progress.setSigrunstubStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
+        return Flux.just();
     }
 
     @Override
@@ -51,5 +59,18 @@ public class SigrunStubClient implements ClientRegister {
 
         sigrunStubConsumer.deleteSkattegrunnlag(identer)
                 .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
+    }
+
+    @Override
+    public Map<String, Object> status() {
+        return sigrunStubConsumer.checkStatus();
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getSigrunstub()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getSigrunstubStatus()));
     }
 }

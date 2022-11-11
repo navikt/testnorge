@@ -8,14 +8,18 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
 import no.nav.dolly.bestilling.inntektstub.util.CompareUtil;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -32,7 +36,7 @@ public class InntektstubClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
@@ -64,6 +68,7 @@ public class InntektstubClient implements ClientRegister {
                 progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
             }
         }
+        return Flux.just();
     }
 
     @Override
@@ -71,6 +76,14 @@ public class InntektstubClient implements ClientRegister {
 
         inntektstubConsumer.deleteInntekter(identer)
                 .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getInntektstub()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getInntektstubStatus()));
     }
 
     private boolean existInntekter(List<Inntektsinformasjon> inntekterRequest) {
@@ -111,5 +124,9 @@ public class InntektstubClient implements ClientRegister {
 
             log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
         }
+    }
+
+    public Map<String, Object> status() {
+        return inntektstubConsumer.checkStatus();
     }
 }

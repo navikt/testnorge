@@ -6,9 +6,7 @@ import { ArbeidsforholdMiljoeVisning } from '~/pages/gruppe/PersonVisning/Person
 
 type PersonMiljoeinfoProps = {
 	ident: string
-	bestilteMiljoer: {
-		value: Array<string>
-	}
+	bestilteMiljoer: Array<string>
 }
 
 export const ArbeidsforholdMiljoeInfo = ({ ident, bestilteMiljoer }: PersonMiljoeinfoProps) => {
@@ -31,7 +29,7 @@ export const ArbeidsforholdMiljoeInfo = ({ ident, bestilteMiljoer }: PersonMiljo
 		<div className="flexbox--flex-wrap" style={{ marginTop: '15px' }}>
 			{/* @ts-ignore */}
 			{environmentArray?.map((miljoe, idx) => {
-				const miljoeClassName = bestilteMiljoer?.value?.includes(miljoe.id)
+				const miljoeClassName = bestilteMiljoer?.includes(miljoe.id)
 					? 'miljoe-knapp'
 					: 'miljoe-knapp miljoe-knapp-grey'
 				return (

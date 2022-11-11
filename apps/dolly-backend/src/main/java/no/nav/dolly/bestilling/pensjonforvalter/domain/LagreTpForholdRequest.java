@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class LagreTpForholdRequest {
 
-    private List<String> miljoer;
+    private Set<String> miljoer;
 
     private String fnr;
     private String ordning;

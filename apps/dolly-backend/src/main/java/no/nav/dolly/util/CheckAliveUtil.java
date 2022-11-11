@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
@@ -38,6 +39,13 @@ public final class CheckAliveUtil {
         }
     }
 
+    public static Map<String, Object> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
+        var map = new HashMap<String, Object>();
+        map.put("alive", checkIsAlive(webClient, aliveUrl));
+        map.put("ready", checkIsAlive(webClient, readyUrl));
+        return map;
+    }
+
     private String checkIsAlive(WebClient webClient, String accessToken, ServerProperties serverProperties) {
         try {
             ResponseEntity<Void> response = webClient.get().uri(uriBuilder -> uriBuilder
@@ -54,6 +62,24 @@ public final class CheckAliveUtil {
             String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), serverProperties.getUrl());
             log.error(feilmelding, ex);
             return feilmelding;
+        }
+        return null;
+    }
+
+    private String checkIsAlive(WebClient webClient, String url) {
+        try {
+            ResponseEntity<Void> response = webClient.get().uri(url)
+                    .retrieve().toBodilessEntity()
+                    .block();
+            if (nonNull(response) && response.getStatusCode().is2xxSuccessful()) {
+                return response.getStatusCode().name();
+            }
+        } catch (WebClientResponseException ex) {
+            String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), url);
+            log.error(feilmelding, ex);
+            return feilmelding;
+        } catch (Exception e) {
+            return e.getMessage();
         }
         return null;
     }

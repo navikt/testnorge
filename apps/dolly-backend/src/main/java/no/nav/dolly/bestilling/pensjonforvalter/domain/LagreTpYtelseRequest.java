@@ -7,7 +7,7 @@ import lombok.Setter;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class LagreTpYtelseRequest {
 
-    private List<String> miljoer;
+    private Set<String> miljoer;
 
     private String fnr;
 

@@ -20,15 +20,18 @@ import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -62,20 +65,22 @@ public class PensjonforvalterConsumer {
                 .block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
-    public PensjonforvalterResponse opprettPerson(OpprettPersonRequest opprettPersonRequest) {
+    public Mono<AccessToken> getAccessToken() {
 
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call())
-                .block();
+        return tokenService.exchange(serviceProperties);
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
+    public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest, Set<String> miljoer, AccessToken token) {
+
+        opprettPersonRequest.setMiljoer(miljoer);
+        return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
-    public PensjonforvalterResponse lagreInntekt(LagreInntektRequest lagreInntektRequest) {
+    public Flux<PensjonforvalterResponse> lagreInntekt(LagreInntektRequest lagreInntektRequest, AccessToken token) {
 
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new LagreInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest).call())
-                .block();
+        return new LagreInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
@@ -87,11 +92,9 @@ public class PensjonforvalterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
-    public PensjonforvalterResponse lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest) {
+    public Flux<PensjonforvalterResponse> lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest, AccessToken token) {
 
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call())
-                .block();
+        return new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
@@ -115,14 +118,40 @@ public class PensjonforvalterConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
-    public PensjonforvalterResponse lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest) {
+    public Flux<PensjonforvalterResponse> lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
 
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call())
-                .block();
+        return  new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call();
     }
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+    }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
+        var statusWebClient = WebClient.builder().build();
+
+        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                statusWebClient);
+        consumerStatus.put("team", TEAM_DOLLY);
+
+        var statusMap = new ConcurrentHashMap<String, Object>();
+        statusMap.put("pensjonforvalter", consumerStatus);
+
+        try {
+            Map response = statusWebClient.get()
+                    .uri(serviceProperties.getUrl() + "/internal/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            statusMap.putAll(response);
+        } catch (Exception e) {
+            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
+        }
+
+        return statusMap;
     }
 }

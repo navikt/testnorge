@@ -7,7 +7,9 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -22,6 +24,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -49,7 +52,7 @@ public class AaregClient implements ClientRegister {
     private final AmeldingService ameldingService;
 
     @Override
-    public void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
@@ -57,7 +60,7 @@ public class AaregClient implements ClientRegister {
                 progress.setAaregStatus(bestilling.getEnvironments().stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
                         .collect(Collectors.joining(",")));
-                return;
+                return Flux.just();
             }
 
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
@@ -73,12 +76,21 @@ public class AaregClient implements ClientRegister {
                 progress.setAaregStatus(sendArbeidsforhold(bestilling, dollyPerson, miljoer));
             }
         }
+        return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
 
         // Sletting av arbeidsforhold er pt ikke støttet
+    }
+
+    @Override
+    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+
+        return isNull(kriterier.getAareg()) ||
+                bestilling.getProgresser().stream()
+                        .allMatch(entry -> isNotBlank(entry.getAaregStatus()));
     }
 
     private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {
@@ -128,7 +140,6 @@ public class AaregClient implements ClientRegister {
                         arbeidsforhold.setNavArbeidsforholdPeriode(nonNull(arbeidsforhold.getNavArbeidsforholdPeriode()) ?
                                 arbeidsforhold.getNavArbeidsforholdPeriode() : YearMonth.now());
                         appendPermisjonPermitteringId(arbeidsforhold, eksisterende);
-                        log.info("Miljoe {} navArbeidsforholdId {} ", response.getMiljo(), arbeidsforhold.getNavArbeidsforholdId());
                     }
                 });
 
@@ -145,5 +156,9 @@ public class AaregClient implements ClientRegister {
                 .append('$')
                 .append(isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError()))
                 .toString();
+    }
+
+    public Map<String, Object> status() {
+        return aaregConsumer.checkStatus();
     }
 }

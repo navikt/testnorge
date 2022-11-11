@@ -29,7 +29,8 @@ public class ForwardAndRedirectController {
                 .andRoute(RequestPredicates.GET("/dokumentasjon/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/login/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/bruker/**"), indexHandler)
-                .andRoute(RequestPredicates.GET("/team/**"), indexHandler);
+                .andRoute(RequestPredicates.GET("/team/**"), indexHandler)
+                .andRoute(RequestPredicates.GET("/status/**"), indexHandler);
     }
 
 }

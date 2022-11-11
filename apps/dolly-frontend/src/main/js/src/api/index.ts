@@ -9,7 +9,7 @@ import _isEmpty from 'lodash/isEmpty'
 
 const fetchRetry = fetch_retry(originalFetch)
 
-export const multiFetcher = (urlListe, headers) => {
+export const multiFetcherAny = (urlListe, headers) => {
 	return Promise.any(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
@@ -17,6 +17,26 @@ export const multiFetcher = (urlListe, headers) => {
 					throw new Error('Returnerte ingen verdi, prøver neste promise..')
 				}
 				return [result]
+			})
+		)
+	)
+}
+
+export const multiFetcherAll = (urlListe, headers = null) => {
+	return Promise.all(
+		urlListe.map((url) =>
+			fetcher(url, headers).then((result) => {
+				return [result]
+			})
+		)
+	)
+}
+
+export const multiFetcherFagsystemer = (miljoUrlListe, headers = null) => {
+	return Promise.all(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, headers).then((result) => {
+				return { miljo: obj.miljo, data: [...result] }
 			})
 		)
 	)
