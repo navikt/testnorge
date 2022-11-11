@@ -7,14 +7,14 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Panel from '~/components/ui/panel/Panel'
 import { runningTestcafe } from '~/service/services/Request'
 import { Alert } from '@navikt/ds-react'
-import { PoppMiljoeinfo } from '~/components/fagsystem/pensjon/visning/PoppMiljoeinfo'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
-	return !pensjonData?.inntekter || pensjonData?.inntekter?.length === 0
+	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
 const getTittel = (data) => {
-	const inntektsaar = data?.inntekter?.map((inntekt) => inntekt.inntektAar)
+	const inntektsaar = data?.map((inntekt) => inntekt.inntektAar)
 	const foerste = Math.min(...inntektsaar)
 	const siste = Math.max(...inntektsaar)
 	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
@@ -24,14 +24,16 @@ const PensjonInntekt = ({ data }) => {
 	if (!data) return null
 
 	return (
-		<DollyFieldArray data={data.inntekter} nested>
-			{(inntekt, idx) => (
-				<div className="person-visning_content" key={idx}>
-					<TitleValue title="Inntektsår" value={inntekt?.inntektAar} />
-					<TitleValue title="Beløp" value={inntekt?.belop} />
-				</div>
-			)}
-		</DollyFieldArray>
+		<Panel startOpen={runningTestcafe()} heading={getTittel(data)}>
+			<DollyFieldArray data={data} nested>
+				{(inntekt, idx) => (
+					<div className="person-visning_content" key={idx}>
+						<TitleValue title="Inntektsår" value={inntekt?.inntektAar} />
+						<TitleValue title="Beløp" value={inntekt?.belop} />
+					</div>
+				)}
+			</DollyFieldArray>
+		</Panel>
 	)
 }
 
@@ -57,26 +59,10 @@ export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 					Kunne ikke hente pensjon-data på person
 				</Alert>
 			) : (
-				<Panel startOpen={runningTestcafe()} heading={getTittel(data)}>
-					<PensjonInntekt data={data} />
-				</Panel>
+				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={'q1'} data={data}>
+					<PensjonInntekt />
+				</MiljoTabs>
 			)}
-			<PoppMiljoeinfo ident={data?.fnr} bestilteMiljoer={bestilteMiljoer} />
 		</ErrorBoundary>
-	)
-}
-
-export const PensjonvisningMiljo = ({ data, miljoe }) => {
-	const pensjonMiljoeInfo = data.find((m) => m.miljo == miljoe.toString())
-
-	return pensjonMiljoeInfo?.inntekter?.length < 1 ? (
-		<Alert variant="info" size="small" inline>
-			Fant ingen pensjon-data i dette miljøet
-		</Alert>
-	) : (
-		<div className="boks">
-			<SubOverskrift label="Pensjonsgivende inntekt (POPP)" iconKind="pensjon" />
-			<PensjonInntekt data={pensjonMiljoeInfo} />
-		</div>
 	)
 }

@@ -36,7 +36,20 @@ export const multiFetcherFagsystemer = (miljoUrlListe, headers = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
+				// console.log('result: ', result) //TODO - SLETT MEG
 				return { miljo: obj.miljo, data: [...result] }
+			})
+		)
+	)
+}
+
+// TODO: lag én som er generell
+export const multiFetcherPopp = (miljoUrlListe, headers = null) => {
+	return Promise.all(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, headers).then((result) => {
+				// console.log('result: ', result) //TODO - SLETT MEG
+				return { miljo: obj.miljo, data: result?.inntekter }
 			})
 		)
 	)
