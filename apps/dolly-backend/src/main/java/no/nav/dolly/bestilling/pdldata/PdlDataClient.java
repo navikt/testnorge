@@ -64,8 +64,8 @@ public class PdlDataClient implements ClientRegister {
     @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
-        return isNull(kriterier.getAareg()) ||
+        return isNull(kriterier.getPdldata()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getAaregStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getPdlDataStatus()));
     }
 }
