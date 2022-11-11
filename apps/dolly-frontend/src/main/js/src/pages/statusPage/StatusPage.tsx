@@ -14,18 +14,16 @@ export default () => {
     const [dataLoading, setDataLoading] = useBoolean(true)
 
     useEffect(() => {
-        //const endpoint = 'http://localhost:8080/v1/status'
-        const endpoint = 'https://dolly-backend-dev.dev.intern.nav.no/v1/status'
-        //api.fetchJson(endpoint, { method: 'GET' })
+        const endpoint = 'https://dolly-backend.dev.intern.nav.no/v1/status'
+        //const endpoint = '/dolly-backend/v1/status'
+        api.fetchJson(endpoint, { method: 'GET' })
         fetch(endpoint)
             .then((response) => response.json())
             .then((json) => {
-                console.log(json)
                 setStatuses(json)
                 setDataLoading(false)
             })
             .catch((err) => {
-                console.log(err)
                 setDataLoading(false)
             })
     }, [])
