@@ -321,4 +321,8 @@ public class TpsMessagingClient implements ClientRegister {
             return null;
         }
     }
+
+    public Map<String, Object> status() {
+        return tpsMessagingConsumer.checkStatus();
+    }
 }

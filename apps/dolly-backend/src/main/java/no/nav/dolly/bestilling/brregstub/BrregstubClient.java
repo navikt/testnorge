@@ -13,6 +13,7 @@ import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -57,5 +58,9 @@ public class BrregstubClient implements ClientRegister {
 
             var status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
             return isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError());
+    }
+
+    public Map<String, Object> status() {
+        return brregstubConsumer.checkStatus();
     }
 }

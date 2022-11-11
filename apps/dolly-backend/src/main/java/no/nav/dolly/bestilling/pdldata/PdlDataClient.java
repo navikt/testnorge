@@ -11,7 +11,9 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -53,5 +55,10 @@ public class PdlDataClient implements ClientRegister {
     public void release(List<String> identer) {
 
         // Sletting gjøres nå i PersonService
+    }
+
+    public Map<String, Object> status() {
+        //return pdlDataConsumer.checkStatus();
+        return new HashMap<>();
     }
 }

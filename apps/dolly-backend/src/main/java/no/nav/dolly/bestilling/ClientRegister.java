@@ -5,10 +5,13 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ClientRegister {
 
     void gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
 
     void release(List<String> identer);
+
+    Map<String, Object> status();
 }

@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.kontoregisterservice;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
@@ -9,6 +11,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -65,5 +68,9 @@ public class KontoregisterClient implements ClientRegister {
     public void release(List<String> identer) {
         kontoregisterConsumer.slettKontoer(identer)
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
+    }
+
+    public Map<String, Object> status() {
+        return kontoregisterConsumer.checkStatus();
     }
 }

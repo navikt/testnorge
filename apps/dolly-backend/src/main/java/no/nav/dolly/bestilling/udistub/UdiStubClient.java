@@ -14,6 +14,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.nonNull;
 
@@ -64,5 +65,9 @@ public class UdiStubClient implements ClientRegister {
         } else {
             udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
         }
+    }
+
+    public Map<String, Object> status() {
+        return udiStubConsumer.checkStatus();
     }
 }

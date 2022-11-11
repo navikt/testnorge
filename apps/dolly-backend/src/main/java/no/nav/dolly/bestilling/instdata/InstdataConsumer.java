@@ -148,4 +148,35 @@ public class InstdataConsumer {
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        // final String TEAM_ROCKET = "Team Rocket";
+
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", TEAM_DOLLY);
+
+        // "Inst-proxy" ikke direkte tilgang
+        var instProxyStatusMap =  CheckAliveUtil.checkConsumerStatus(
+                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive",
+                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isReady",
+                WebClient.builder().build());
+        instProxyStatusMap.put("team", TEAM_DOLLY);
+
+//        // Inst-data ikke direktre tilgang
+//        var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
+//                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
+//                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        instDataStatusMap.put("team", TEAM_ROCKET);
+
+        return Map.of(
+                "testnav-inst-service", statusMap,
+                "testnav-inst-proxy", instProxyStatusMap
+                // "inst-testdata", instDataStatusMap
+        );
+    }
 }
