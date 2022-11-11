@@ -132,7 +132,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
 
-        if (nonNull(pensjonData.getInntekt())) {
+        if (nonNull(pensjonData) && nonNull(pensjonData.getInntekt())) {
             LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(dollyPerson.getHovedperson());
             lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
@@ -146,7 +146,8 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Mono<PensjonforvalterResponse> lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
 
-        return Flux.merge(
+        return nonNull(pensjonData) ?
+                Flux.merge(
                         Flux.fromIterable(pensjonData.getTp())
                                 .map(tp -> {
                                     var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
@@ -166,7 +167,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                         })))
                 .flatMap(Flux::from)
                 .collectList()
-                .map(PensjonforvalterClient::mergePensjonforvalterResponses);
+                .map(PensjonforvalterClient::mergePensjonforvalterResponses) :
+
+                Mono.empty();
     }
 
     private String decodeStatus(PensjonforvalterResponse response, String ident) {
