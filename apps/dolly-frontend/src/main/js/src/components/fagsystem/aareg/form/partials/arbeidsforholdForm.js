@@ -38,13 +38,19 @@ export const ArbeidsforholdForm = ({
 	arbeidsgiverType,
 	warningMessage,
 }) => {
-	const hentAaregBestillinger = (bestillinger) => {
+	const hentUnikeAaregBestillinger = (bestillinger) => {
 		if (_isEmpty(bestillinger)) {
 			return null
 		}
-		return bestillinger
+		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
 			?.flatMap((bestilling) => bestilling.data.aareg)
+			?.filter((bestilling) => !bestilling?.ansettelsesPeriode?.sluttaarsak)
+
+		return _.uniqWith(
+			aaregBestillinger,
+			(best1, best2) => best1?.arbeidsgiver?.orgnummer === best2?.arbeidsgiver?.orgnummer
+		)
 	}
 
 	const harGjortFormEndringer = (formValues) => {
@@ -56,7 +62,7 @@ export const ArbeidsforholdForm = ({
 
 	const { touched, values, errors, setFieldValue } = useFormikContext()
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
-	const tidligereAaregBestillinger = hentAaregBestillinger(tidligereBestillinger)
+	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
 
 	useEffect(() => {
 		if (_isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
@@ -234,16 +240,23 @@ export const ArbeidsforholdForm = ({
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
 					fastfield={false}
 				/>
-				{/*{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (*/}
-				<FormikSelect
-					name={`${path}.ansettelsesPeriode.sluttaarsak`}
-					label="Sluttårsak"
-					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
-					size="xlarge"
-					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-					disabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
+
+				<FormikDatepicker
+					name={`${path}.navArbeidsforholdPeriode`}
+					label="NAV arbeidsforholdsperiode"
+					onChange={onChangeLenket('navArbeidsforholdPeriode')}
+					fastfield={false}
 				/>
-				{/*)}*/}
+				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
+					<FormikSelect
+						name={`${path}.ansettelsesPeriode.sluttaarsak`}
+						label="Sluttårsak"
+						kodeverk={ArbeidKodeverk.SluttaarsakAareg}
+						size="xlarge"
+						onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
+						disabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
+					/>
+				)}
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormikSelect
 						name={`${path}.arbeidsavtale.yrke`}
