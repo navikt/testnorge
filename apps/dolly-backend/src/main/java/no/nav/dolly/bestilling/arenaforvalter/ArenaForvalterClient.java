@@ -23,6 +23,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -215,5 +216,9 @@ public class ArenaForvalterClient implements ClientRegister {
                 .filter(arenaNyBruker ->
                         (!isNull(arenaNyBruker.getKvalifiseringsgruppe()) || !isNull(arenaNyBruker.getUtenServicebehov())))
                 .collect(Collectors.toList()));
+    }
+
+    public Map<String, Object> status() {
+        return arenaForvalterConsumer.checkStatus();
     }
 }

@@ -22,6 +22,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -129,5 +130,9 @@ public class InntektsmeldingClient implements ClientRegister {
             log.error("Feilet å konvertere domument fra inntektsmelding", e);
         }
         return null;
+    }
+
+    public Map<String, Object> status() {
+        return inntektsmeldingConsumer.checkStatus();
     }
 }

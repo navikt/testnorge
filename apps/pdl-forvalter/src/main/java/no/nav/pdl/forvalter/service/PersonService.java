@@ -224,7 +224,7 @@ public class PersonService {
         if (request.getPerson().getStatsborgerskap().isEmpty()) {
             request.getPerson().getStatsborgerskap().add(new StatsborgerskapDTO());
         }
-        if (request.getPerson().getSivilstand().isEmpty()) {
+        if (request.getPerson().getSivilstand().stream().noneMatch(SivilstandDTO::isUgift)) {
             request.getPerson().getSivilstand().add(new SivilstandDTO());
         }
         if (request.getPerson().getFolkeregisterPersonstatus().isEmpty() &&

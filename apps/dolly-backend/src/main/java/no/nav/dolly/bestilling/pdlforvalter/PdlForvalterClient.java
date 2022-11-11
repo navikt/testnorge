@@ -45,15 +45,20 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.DollyPersonCache;
+import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -500,5 +505,62 @@ public class PdlForvalterClient implements ClientRegister {
 
     private static void appendOkStatus(StringBuilder builder) {
         builder.append("&OK");
+    }
+
+    public Map<String, Object> status() {
+//        final String TEAM_PDL = "Team Persondata";
+//
+//        // "pdl-testdata" ikke direkte tilgang
+//        var pdlTestdataStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://pdl-testdata.dev.intern.nav.no/internal/health/liveness",
+//                "https://pdl-testdata.dev.intern.nav.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        pdlTestdataStatus.put("team", TEAM_PDL);
+//
+//        // ikke direkte tilgang
+//        var pdlApiStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://pdl-api.dev.intern.nav.no/internal/health/liveness",
+//                "https://pdl-api.dev.intern.nav.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        pdlApiStatus.put("team", TEAM_PDL);
+//
+//        // ikke direkte tilgang
+//        var pdlApiQ1Status = CheckAliveUtil.checkConsumerStatus(
+//                "https://pdl-api-q1.dev.intern.nav.no/internal/health/liveness",
+//                "https://pdl-api-q1.dev.intern.nav.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        pdlApiQ1Status.put("team", TEAM_PDL);
+//
+//        // ikke direkte tilgang
+//        var pdlIdenthendelseStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/liveness",
+//                "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        pdlIdenthendelseStatus.put("team", TEAM_PDL);
+//
+//        // ikke direkte tilgang
+//        var pdlAktorStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://pdl-aktor.dev.intern.nav.no/internal/health/liveness",
+//                "https://pdl-aktor.dev.intern.nav.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        pdlAktorStatus.put("team", TEAM_PDL);
+//
+//        // https://pdl-es-q.adeo.no
+//
+//        var pdlStatus = Map.of(
+//                "pdl-testdata", pdlTestdataStatus,
+//                "pdl-api", pdlApiStatus,
+//                "pdl-api-q1", pdlApiQ1Status,
+//                "pdl-identhendelse", pdlIdenthendelseStatus,
+//                "pdl-aktor", pdlAktorStatus
+//        );
+
+        return Stream.of(
+                        pdlForvalterConsumer.checkStatus(),
+                        pdlDataConsumer.checkStatus()
+                        //pdlStatus
+                )
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

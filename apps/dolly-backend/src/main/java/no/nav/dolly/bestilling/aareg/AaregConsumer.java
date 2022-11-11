@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -68,5 +69,22 @@ public class AaregConsumer {
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+    }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
+        var statusWebClient = WebClient.builder().build();
+        var checkMap = new HashMap<String, Object>();
+
+        var statusMap = CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                statusWebClient);
+        statusMap.put("team", TEAM_DOLLY);
+
+        checkMap.put("testnav-aaregister-proxy", statusMap);
+
+        return checkMap;
     }
 }

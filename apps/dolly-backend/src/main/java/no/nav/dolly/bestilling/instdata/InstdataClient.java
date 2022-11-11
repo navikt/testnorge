@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -153,5 +154,9 @@ public class InstdataClient implements ClientRegister {
         }
 
         return status.toString();
+    }
+
+    public Map<String, Object> status() {
+        return instdataConsumer.checkStatus();
     }
 }

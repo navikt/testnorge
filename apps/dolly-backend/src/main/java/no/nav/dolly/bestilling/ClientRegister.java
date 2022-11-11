@@ -8,12 +8,15 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ClientRegister {
 
     Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
 
     void release(List<String> identer);
+
+    Map<String, Object> status();
 
     boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling);
 }

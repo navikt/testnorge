@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -58,6 +59,11 @@ public class SigrunStubClient implements ClientRegister {
 
         sigrunStubConsumer.deleteSkattegrunnlag(identer)
                 .subscribe(response -> log.info("Slettet antall {} identer fra Sigrunstub", response.size()));
+    }
+
+    @Override
+    public Map<String, Object> status() {
+        return sigrunStubConsumer.checkStatus();
     }
 
     @Override

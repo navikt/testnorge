@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -71,5 +72,9 @@ public class BrregstubClient implements ClientRegister {
 
             var status = brregstubConsumer.postRolleoversikt(rolleoversiktTo);
             return isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError());
+    }
+
+    public Map<String, Object> status() {
+        return brregstubConsumer.checkStatus();
     }
 }

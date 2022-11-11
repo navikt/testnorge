@@ -56,4 +56,25 @@ public class InntektsmeldingConsumer {
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", TEAM_DOLLY);
+
+        var inntektsmeldingGeneratorStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isAlive",
+                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isReady",
+                WebClient.builder().build());
+        inntektsmeldingGeneratorStatus.put("team", TEAM_DOLLY);
+
+        return Map.of(
+                "testnav-inntektsmelding-service", statusMap,
+                "testnav-inntektsmelding-generator-service", inntektsmeldingGeneratorStatus
+        );
+    }
 }

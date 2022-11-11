@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -123,6 +124,11 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
+    public Map<String, Object> status() {
+        return pensjonforvalterConsumer.checkStatus();
+    }
+
+    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getPensjonforvalter()) ||
@@ -148,26 +154,26 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return nonNull(pensjonData) ?
                 Flux.merge(
-                        Flux.fromIterable(pensjonData.getTp())
-                                .map(tp -> {
-                                    var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
-                                    lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-                                    lagreTpForholdRequest.setMiljoer(miljoer);
-                                    return pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest, token);
-                                }),
-                        Flux.fromIterable(pensjonData.getTp())
-                                .map(tp -> Flux.fromIterable(tp.getYtelser())
-                                        .flatMap(ytelse -> {
-                                            LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
-                                            lagreTpYtelseRequest.setYtelseType(ytelse.getType());
-                                            lagreTpYtelseRequest.setOrdning(tp.getOrdning());
-                                            lagreTpYtelseRequest.setFnr(dollyPerson.getHovedperson());
-                                            lagreTpYtelseRequest.setMiljoer(miljoer);
-                                            return pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest, token);
-                                        })))
-                .flatMap(Flux::from)
-                .collectList()
-                .map(PensjonforvalterClient::mergePensjonforvalterResponses) :
+                                Flux.fromIterable(pensjonData.getTp())
+                                        .map(tp -> {
+                                            var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                                            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                                            lagreTpForholdRequest.setMiljoer(miljoer);
+                                            return pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest, token);
+                                        }),
+                                Flux.fromIterable(pensjonData.getTp())
+                                        .map(tp -> Flux.fromIterable(tp.getYtelser())
+                                                .flatMap(ytelse -> {
+                                                    LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
+                                                    lagreTpYtelseRequest.setYtelseType(ytelse.getType());
+                                                    lagreTpYtelseRequest.setOrdning(tp.getOrdning());
+                                                    lagreTpYtelseRequest.setFnr(dollyPerson.getHovedperson());
+                                                    lagreTpYtelseRequest.setMiljoer(miljoer);
+                                                    return pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest, token);
+                                                })))
+                        .flatMap(Flux::from)
+                        .collectList()
+                        .map(PensjonforvalterClient::mergePensjonforvalterResponses) :
 
                 Mono.empty();
     }

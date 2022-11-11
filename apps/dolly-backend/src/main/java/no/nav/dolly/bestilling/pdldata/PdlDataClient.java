@@ -14,7 +14,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -59,6 +61,12 @@ public class PdlDataClient implements ClientRegister {
     public void release(List<String> identer) {
 
         // Sletting gjøres nå i PersonService
+    }
+
+    @Override
+    public Map<String, Object> status() {
+        //return pdlDataConsumer.checkStatus();
+        return new HashMap<>();
     }
 
     @Override

@@ -20,6 +20,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoFom;
@@ -100,5 +101,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .pdlfPerson(pdlfPerson)
                         .build(),
                 SkjermingsDataRequest.class);
+    }
+
+    public Map<String, Object> status() {
+        return skjermingsRegisterConsumer.checkStatus();
     }
 }

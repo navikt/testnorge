@@ -31,6 +31,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -124,5 +125,33 @@ public class PensjonforvalterConsumer {
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+    }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
+        var statusWebClient = WebClient.builder().build();
+
+        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                statusWebClient);
+        consumerStatus.put("team", TEAM_DOLLY);
+
+        var statusMap = new ConcurrentHashMap<String, Object>();
+        statusMap.put("pensjonforvalter", consumerStatus);
+
+        try {
+            Map response = statusWebClient.get()
+                    .uri(serviceProperties.getUrl() + "/internal/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            statusMap.putAll(response);
+        } catch (Exception e) {
+            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
+        }
+
+        return statusMap;
     }
 }

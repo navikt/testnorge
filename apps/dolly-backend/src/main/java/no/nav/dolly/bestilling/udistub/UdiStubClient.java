@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -78,5 +79,9 @@ public class UdiStubClient implements ClientRegister {
         } else {
             udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
         }
+    }
+
+    public Map<String, Object> status() {
+        return udiStubConsumer.checkStatus();
     }
 }

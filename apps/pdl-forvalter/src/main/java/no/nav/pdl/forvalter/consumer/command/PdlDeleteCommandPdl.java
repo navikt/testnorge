@@ -33,7 +33,9 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
 
         return webClient
                 .delete()
-                .uri(builder -> builder.path(url).build())
+                .uri(builder -> builder.path(url)
+                        .queryParam("kilde", "Dolly")
+                        .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(TEMA, GEN.name())

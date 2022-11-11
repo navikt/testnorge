@@ -29,7 +29,10 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -163,5 +166,14 @@ public class SykemeldingClient implements ClientRegister {
             log.error("Feilet å konvertere transaksjonsId for sykemelding");
         }
         return null;
+    }
+
+    public Map<String, Object> status() {
+        return Stream.of(
+                        sykemeldingConsumer.checkStatus(),
+                        syntSykemeldingConsumer.checkStatus()
+                )
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 }

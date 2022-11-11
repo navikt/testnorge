@@ -143,4 +143,26 @@ public class UdiStubConsumer {
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", TEAM_DOLLY);
+
+        // "UdiStub" ikke direkte tilgang
+        var udiStubStatus = CheckAliveUtil.checkConsumerStatus(
+                "https://udi-stub.dev.intern.nav.no/internal/isAlive",
+                "https://udi-stub.dev.intern.nav.no/internal/isReady",
+                WebClient.builder().build());
+        udiStubStatus.put("team", TEAM_DOLLY);
+
+        return Map.of(
+                "testnav-udistub-proxy", statusMap,
+                "testnav-udi-stub", udiStubStatus
+        );
+    }
 }

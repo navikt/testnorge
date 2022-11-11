@@ -23,6 +23,7 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -126,5 +127,32 @@ public class InntektstubConsumer {
 
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
+    }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        // final String TEAM_INNTEKT = "Team Inntekt";
+
+        var statusWebClient = WebClient.builder().build();
+        var checkMap = new HashMap<String, Object>();
+
+        var statusMap = CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                statusWebClient);
+        statusMap.put("team", TEAM_DOLLY);
+
+        checkMap.put("testnav-inntektstub-proxy", statusMap);
+
+//        // "InntektStub" ikke direktre tilgang
+//        var inntektStubStatusMap = CheckAliveUtil.checkConsumerStatus(
+//                "https://inntektstub.dev.adeo.no/internal/isAlive",
+//                "https://inntektstub.dev.adeo.no/internal/isReady",
+//                statusWebClient);
+//        inntektStubStatusMap.put("team", TEAM_INNTEKT);
+//
+//        checkMap.put("inntektstub", inntektStubStatusMap);
+
+        return checkMap;
     }
 }

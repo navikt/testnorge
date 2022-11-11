@@ -111,4 +111,26 @@ public class KrrstubConsumer {
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        //final String TEAM_ROCKET = "Team Rocket";
+
+        var statusMap = CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", TEAM_DOLLY);
+
+//        var digdirKrrStubStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://digdir-krr-stub.dev.intern.nav.no/internal/health/liveness",
+//                "https://digdir-krr-stub.dev.intern.nav.no/internal/health/readiness",
+//                WebClient.builder().build());
+//        digdirKrrStubStatus.put("team", TEAM_ROCKET);
+
+        return Map.of(
+                "testnav-krrstub-proxy", statusMap
+                //"digdir-krr-stub", digdirKrrStubStatus
+        );
+    }
 }

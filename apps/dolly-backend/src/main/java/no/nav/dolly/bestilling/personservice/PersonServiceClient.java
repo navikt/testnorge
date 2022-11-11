@@ -14,6 +14,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 
@@ -66,6 +67,11 @@ public class PersonServiceClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
         // Ikke relevant
+    }
+
+    @Override
+    public Map<String, Object> status() {
+        return personServiceConsumer.checkStatus();
     }
 
     @Override

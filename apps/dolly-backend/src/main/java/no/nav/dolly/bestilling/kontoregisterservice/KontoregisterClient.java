@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -71,6 +72,10 @@ public class KontoregisterClient implements ClientRegister {
     public void release(List<String> identer) {
         kontoregisterConsumer.slettKontoer(identer)
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
+    }
+
+    public Map<String, Object> status() {
+        return kontoregisterConsumer.checkStatus();
     }
 
     @Override

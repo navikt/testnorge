@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -123,5 +124,9 @@ public class InntektstubClient implements ClientRegister {
 
             log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
         }
+    }
+
+    public Map<String, Object> status() {
+        return inntektstubConsumer.checkStatus();
     }
 }

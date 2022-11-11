@@ -20,6 +20,7 @@ import reactor.core.publisher.Flux;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
@@ -78,6 +79,11 @@ public class KrrstubClient implements ClientRegister {
 
             krrstubConsumer.deleteKontaktdataPerson(identer)
                     .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
+    }
+
+    @Override
+    public Map<String, Object> status() {
+        return krrstubConsumer.checkStatus();
     }
 
     @Override

@@ -99,4 +99,27 @@ public class SigrunStubConsumer {
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+        //final String TEAM_INNTEKT = "Team Inntekt";
+
+        var statusMap =  CheckAliveUtil.checkConsumerStatus(
+                serviceProperties.getUrl() + "/internal/isAlive",
+                serviceProperties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        statusMap.put("team", TEAM_DOLLY);
+
+//        // "SigrunStub" ikke direkte tilgang
+//        var sigrunStubStatus = CheckAliveUtil.checkConsumerStatus(
+//                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive",
+//                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive", // samme url brukes for begge
+//                WebClient.builder().build());
+//        sigrunStubStatus.put("team", TEAM_INNTEKT);
+
+        return Map.of(
+                "testnav-sigrunstub-proxy", statusMap
+                //"sigrun-skd-stub", sigrunStubStatus
+        );
+    }
 }
