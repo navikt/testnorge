@@ -16,7 +16,6 @@ export default () => {
     useEffect(() => {
         const endpoint = 'https://dolly-backend.dev.intern.nav.no/v1/status'
         //const endpoint = '/dolly-backend/v1/status'
-        api.fetchJson(endpoint, { method: 'GET' })
         fetch(endpoint)
             .then((response) => response.json())
             .then((json) => {
