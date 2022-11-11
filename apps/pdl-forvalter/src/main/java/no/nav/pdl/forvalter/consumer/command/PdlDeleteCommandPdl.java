@@ -22,7 +22,6 @@ import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.TemaGrunnlag.GEN;
 public class PdlDeleteCommandPdl extends PdlTestdataCommand {
 
     private static final String INFO_STATUS = "Finner ikke forespurt ident i pdl-api";
-    private static final String OPPHOER = "opphoerFolkeregisteridentifikator";
 
     private final WebClient webClient;
     private final String url;
@@ -35,7 +34,7 @@ public class PdlDeleteCommandPdl extends PdlTestdataCommand {
         return webClient
                 .delete()
                 .uri(builder -> builder.path(url)
-                        .queryParam(OPPHOER, true)
+                        .queryParam("kilde", "Dolly")
                         .build())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
