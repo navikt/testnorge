@@ -68,11 +68,9 @@ export const TpVisning = ({ data, loading, bestilteMiljoer }) => {
 					Kunne ikke hente tjenestepensjon-data på person
 				</Alert>
 			) : (
-				<>
-					<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
-						<TpOrdning ordninger={ordninger} />
-					</MiljoTabs>
-				</>
+				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
+					<TpOrdning ordninger={ordninger} />
+				</MiljoTabs>
 			)}
 		</ErrorBoundary>
 	)

@@ -39,9 +39,14 @@ import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiV
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { useTpData } from '~/utils/hooks/useFagsystemer'
+import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 import { sjekkManglerTpData } from '~/components/fagsystem/pensjon/visning/TpVisning'
+import {
+	harAaregBestilling,
+	harPoppBestilling,
+	harTpBestilling,
+} from '~/utils/SjekkBestillingFagsystem'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -92,32 +97,20 @@ export const PersonVisning = ({
 
 	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
 
-	const harAaregBestilling = () => {
-		let aareg = false
-		bestillingerFagsystemer?.forEach((i) => {
-			if (i.aareg) {
-				aareg = true
-			}
-		})
-		return aareg
-	}
-
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		harAaregBestilling()
+		harAaregBestilling(bestillingerFagsystemer)
 	)
 
-	const harTpBestilling = () => {
-		let tp = false
-		bestillingerFagsystemer?.forEach((i) => {
-			if (i.pensjonforvalter?.tp) {
-				tp = true
-			}
-		})
-		return tp
-	}
+	const { loading: loadingTpData, tpData } = useTpData(
+		ident.ident,
+		harTpBestilling(bestillingerFagsystemer)
+	)
 
-	const { loading: loadingTpData, tpData } = useTpData(ident.ident, harTpBestilling())
+	const { loading: loadingPoppData, poppData } = usePoppData(
+		ident.ident,
+		harPoppBestilling(bestillingerFagsystemer)
+	)
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -140,16 +133,7 @@ export const PersonVisning = ({
 		return null
 	}
 
-	const {
-		sigrunstub,
-		pensjonforvalter,
-		inntektstub,
-		brregstub,
-		krrstub,
-		instdata,
-		arenaforvalteren,
-		udistub,
-	} = data
+	const { sigrunstub, inntektstub, brregstub, krrstub, instdata, arenaforvalteren, udistub } = data
 
 	const manglerFagsystemdata = () => {
 		if (
@@ -160,7 +144,7 @@ export const PersonVisning = ({
 			return true
 		}
 
-		if (pensjonforvalter && sjekkManglerPensjonData(pensjonforvalter)) {
+		if (poppData && sjekkManglerPensjonData(poppData)) {
 			return true
 		}
 
@@ -298,8 +282,8 @@ export const PersonVisning = ({
 				/>
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning
-					data={pensjonforvalter}
-					loading={loading.pensjonforvalter}
+					data={poppData}
+					loading={loadingPoppData}
 					bestilteMiljoer={bestilteMiljoer}
 				/>
 				<TpVisning data={tpData} loading={loadingTpData} bestilteMiljoer={bestilteMiljoer} />
