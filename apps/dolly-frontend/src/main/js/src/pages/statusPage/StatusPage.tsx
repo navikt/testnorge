@@ -4,8 +4,6 @@ import BlankHeader from '~/components/layout/blankHeader/BlankHeader'
 import Icon from '~/components/ui/icon/Icon'
 
 import './StatusPage.less'
-import Request from "~/service/services/Request";
-import api from '@/api'
 import {useBoolean} from "react-use";
 import Loading from "~/components/ui/loading/Loading";
 
@@ -14,18 +12,14 @@ export default () => {
     const [dataLoading, setDataLoading] = useBoolean(true)
 
     useEffect(() => {
-        //const endpoint = 'http://localhost:8080/v1/status'
-        const endpoint = 'https://dolly-backend-dev.dev.intern.nav.no/v1/status'
-        //api.fetchJson(endpoint, { method: 'GET' })
+        const endpoint = window.location.hostname.includes('frontend') ? 'https://dolly-backend-dev.dev.intern.nav.no/v1/status' : 'https://dolly-backend.dev.intern.nav.no/v1/status'
         fetch(endpoint)
             .then((response) => response.json())
             .then((json) => {
-                console.log(json)
                 setStatuses(json)
                 setDataLoading(false)
             })
             .catch((err) => {
-                console.log(err)
                 setDataLoading(false)
             })
     }, [])
@@ -41,8 +35,9 @@ export default () => {
     }
 
     const aggregateStatus = (services) => {
-        if (!services) return null
-        console.log('services', services)
+        if (!services) {
+            return null
+        }
         const statuses = services.map((service) => serviceStatus(service))
 
         const haveOk = statuses.includes('OK')
@@ -116,7 +111,7 @@ export default () => {
         <>
             <BlankHeader />
             <div style={{textAlign: 'center'}}>
-                <h2>Status for Dolly brukt tjenesert</h2>
+                <h2>Dolly tjenestestatus</h2>
             </div>
             <div className="consumers-container">
                 {clients}
