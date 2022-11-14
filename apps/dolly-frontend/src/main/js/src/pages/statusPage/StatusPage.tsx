@@ -4,8 +4,6 @@ import BlankHeader from '~/components/layout/blankHeader/BlankHeader'
 import Icon from '~/components/ui/icon/Icon'
 
 import './StatusPage.less'
-import Request from "~/service/services/Request";
-import api from '@/api'
 import {useBoolean} from "react-use";
 import Loading from "~/components/ui/loading/Loading";
 
@@ -14,8 +12,7 @@ export default () => {
     const [dataLoading, setDataLoading] = useBoolean(true)
 
     useEffect(() => {
-        const endpoint = 'https://dolly-backend.dev.intern.nav.no/v1/status'
-        //const endpoint = '/dolly-backend/v1/status'
+        const endpoint = window.location.hostname.includes('frontend') ? 'https://dolly-backend-dev.dev.intern.nav.no/v1/status' : 'https://dolly-backend.dev.intern.nav.no/v1/status'
         fetch(endpoint)
             .then((response) => response.json())
             .then((json) => {
@@ -38,8 +35,9 @@ export default () => {
     }
 
     const aggregateStatus = (services) => {
-        if (!services) return null
-        console.log('services', services)
+        if (!services) {
+            return null
+        }
         const statuses = services.map((service) => serviceStatus(service))
 
         const haveOk = statuses.includes('OK')
