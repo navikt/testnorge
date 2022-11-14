@@ -116,10 +116,9 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
-
-	const visningData = mapTilVisingData(arenaBestillinger, harArenasyntTag)
+	const arenaMiljoer = data?.arbeidsokerList?.map((arb) => arb.miljoe)
+	const visningData = mapTilVisingData(data, arenaMiljoer, arenaBestillinger, harArenasyntTag)
 	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
-	const bestilteMiljoer = visningData.filter((d) => d.data?.length > 0).map((d) => d.miljo)
 
 	return (
 		<div>
@@ -127,7 +126,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 				<div>
 					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 					<MiljoTabs
-						bestilteMiljoer={bestilteMiljoer?.length > 0 ? bestilteMiljoer : [SYNT_MILJOE]}
+						bestilteMiljoer={arenaMiljoer?.length > 0 ? arenaMiljoer : [SYNT_MILJOE]}
 						forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 						data={visningData}
 					>
@@ -138,7 +137,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
 					<div className="person-visning">
 						<MiljoTabs
-							bestilteMiljoer={bestilteMiljoer?.length > 0 ? bestilteMiljoer : [SYNT_MILJOE]}
+							bestilteMiljoer={arenaMiljoer?.length > 0 ? arenaMiljoer : [SYNT_MILJOE]}
 							forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 							data={visningData}
 						>
@@ -151,7 +150,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 	)
 }
 
-const mapTilVisingData = (bestillinger, harArenaSyntTag) => {
+const mapTilVisingData = (arenaData, bestilteMiljoer, bestillinger, harArenaSyntTag) => {
 	const miljoeData = []
 
 	const getMiljoe = (bestilling) => {
@@ -163,23 +162,26 @@ const mapTilVisingData = (bestillinger, harArenaSyntTag) => {
 
 	for (const miljoe of ARENA_MILJOE) {
 		const data = []
-		for (const bestilling of bestillinger) {
-			if (getMiljoe(bestilling).includes(miljoe)) {
-				data.push(bestilling)
+		if (bestilteMiljoer?.includes(miljoe)) {
+			for (const bestilling of bestillinger) {
+				if (getMiljoe(bestilling)?.includes(miljoe)) {
+					data.push(bestilling)
+				}
 			}
 		}
 
 		const info =
 			miljoe === SYNT_MILJOE && harArenaSyntTag
 				? 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
-				: 'Fant ingen vellykkede bestillinger for dette miljøet'
+				: null
 
 		let visningData = []
 		if (data.length > 0) {
 			const sortedBestillinger = data.length > 0 ? _orderBy(data, ['id'], ['desc']) : []
 			const sisteArenaBestilling = sortedBestillinger?.[0]
 			let mappedData = { ...initialVisningData }
-			fyllVisningData(sisteArenaBestilling, mappedData)
+			const arena = arenaData?.arbeidsokerList?.filter((arbs) => arbs.miljoe === miljoe)?.[0]
+			fyllVisningData(arena, sisteArenaBestilling, mappedData)
 			visningData.push(mappedData)
 		}
 
@@ -189,7 +191,7 @@ const mapTilVisingData = (bestillinger, harArenaSyntTag) => {
 	return miljoeData
 }
 
-function fyllVisningData(bestilling, visningData) {
+function fyllVisningData(data, bestilling, visningData) {
 	if (!bestilling) {
 		return null
 	}
@@ -202,21 +204,15 @@ function fyllVisningData(bestilling, visningData) {
 		aap,
 		dagpenger,
 	} = bestilling.data.arenaforvalter
-	if (!visningData.brukertype) {
-		visningData.brukertype =
-			arenaBrukertype === 'MED_SERVICEBEHOV' ? 'Med servicebehov' : 'Uten servicebehov'
-	}
-	if (!visningData.servicebehov) {
+	visningData.brukertype =
+		arenaBrukertype === data?.servicebehov ? 'Med servicebehov' : 'Uten servicebehov'
+	if (data?.servicebehov) {
 		visningData.servicebehov = servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
 	}
-	if (!visningData.inaktiveringDato) {
-		visningData.inaktiveringDato = Formatters.formatDate(inaktiveringDato)
-	}
-	if (!visningData.automatiskInnsendingAvMeldekort) {
-		visningData.automatiskInnsendingAvMeldekort = Formatters.oversettBoolean(
-			automatiskInnsendingAvMeldekort
-		)
-	}
+	visningData.inaktiveringDato = Formatters.formatDate(inaktiveringDato)
+	visningData.automatiskInnsendingAvMeldekort = Formatters.oversettBoolean(
+		automatiskInnsendingAvMeldekort
+	)
 
 	if (aap115) visningData.aap115 = visningData.aap115.concat(aap115)
 	if (aap) visningData.aap = visningData.aap.concat(aap)
