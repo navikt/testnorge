@@ -172,7 +172,7 @@ const mapTilVisingData = (bestillinger, harArenaSyntTag) => {
 		const info =
 			miljoe === SYNT_MILJOE && harArenaSyntTag
 				? 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
-				: null
+				: 'Fant ingen vellykkede bestillinger for dette miljøet'
 
 		let visningData = []
 		if (data.length > 0) {
