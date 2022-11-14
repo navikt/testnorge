@@ -52,7 +52,8 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private static String getFeilbeskrivelse(String feil) {
 
-        return !feil.contains("message: 555 User Defined Resource Error") ?
+        log.error("Arena error {}", feil);
+        return !feil.contains("User Defined Resource Error") ?
                 ErrorStatusDecoder.encodeStatus(feil) : "";
     }
 
@@ -69,15 +70,16 @@ public class ArenaForvalterClient implements ClientRegister {
             }
 
             progress.setArenaforvalterStatus(
-                            requireNonNull(arenaForvalterConsumer.getToken()
-                                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                                            .filter(miljo -> bestilling.getEnvironments().contains(miljo))
-                                            .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
-                                                    sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
-                                                    sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
-                                    .collectList()
-                                    .block())
-                                    .stream()
+                    requireNonNull(arenaForvalterConsumer.getToken()
+                            .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                                    .filter(miljo -> bestilling.getEnvironments().contains(miljo))
+                                    .parallel()
+                                    .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
+                                            sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
+                                            sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+                            .collectList()
+                            .block())
+                            .stream()
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining(",")));
         }
@@ -119,18 +121,20 @@ public class ArenaForvalterClient implements ClientRegister {
         }
 
         return arenaForvalterConsumer.postArenadata(filtrerteBrukere, token)
-                .map(respons ->
-                        respons.getArbeidsokerList().stream()
-                                .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
-                                .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
-                                .map(arbeidsoker -> String.format("%s$%s", arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
-                                .collect(Collectors.joining(","))
-                                +
-                                respons.getNyBrukerFeilList().stream()
-                                        .map(brukerfeil ->
-                                                String.format("%s$Feil: %s. Se detaljer i logg. %s", brukerfeil.getMiljoe(),
-                                                        brukerfeil.getNyBrukerFeilstatus(), getFeilbeskrivelse(brukerfeil.getMelding())))
-                                        .collect(Collectors.joining(",")));
+                .map(respons -> {
+                    log.info("Arena respons {}", respons);
+                    return respons.getArbeidsokerList().stream()
+                            .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
+                            .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
+                            .map(arbeidsoker -> String.format("%s$%s", arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
+                            .collect(Collectors.joining(","))
+                            +
+                            respons.getNyBrukerFeilList().stream()
+                                    .map(brukerfeil ->
+                                            String.format("%s$Feil: %s. Se detaljer i logg. %s", brukerfeil.getMiljoe(),
+                                                    brukerfeil.getNyBrukerFeilstatus(), getFeilbeskrivelse(brukerfeil.getMelding())))
+                                    .collect(Collectors.joining(","));
+                });
     }
 
     private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
@@ -142,22 +146,25 @@ public class ArenaForvalterClient implements ClientRegister {
         return Flux.fromIterable(arenadata.getDagpenger())
                 .map(ettSettDagpenger -> mapperFacade.map(arenadata, ArenaDagpenger.class, context))
                 .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
-                .map(response -> response.getNyeDagpFeilList().stream()
-                        .map(brukerfeil -> String.format("%s$Feil: OPPRETT_DAGPENGER %s", brukerfeil.getMiljoe(),
-                                errorStatusDecoder.getStatusMessage(brukerfeil.getMelding())))
-                        .collect(Collectors.joining(",")) +
+                .map(response -> {
+                    log.info("Arena respons {}", response);
+                    return response.getNyeDagpFeilList().stream()
+                            .map(brukerfeil -> String.format("%s$Feil: OPPRETT_DAGPENGER %s", brukerfeil.getMiljoe(),
+                                    errorStatusDecoder.getStatusMessage(brukerfeil.getMelding())))
+                            .collect(Collectors.joining(",")) +
 
-                        response.getNyeDagp().stream()
-                                .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
-                                .filter(Objects::nonNull)
-                                .map(dagp -> new StringBuilder().append(miljoe).append('$')
-                                        .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " + dagp.getBegrunnelse()))
-                                        .toString())
-                                .collect(Collectors.joining(",")) +
+                            response.getNyeDagp().stream()
+                                    .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
+                                    .filter(Objects::nonNull)
+                                    .map(dagp -> new StringBuilder().append(miljoe).append('$')
+                                            .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " + dagp.getBegrunnelse()))
+                                            .toString())
+                                    .collect(Collectors.joining(",")) +
 
-                        response.getNyeDagp().stream()
-                                .filter(oppretting -> response.getNyeDagp().isEmpty() && response.getNyeDagpFeilList().isEmpty())
-                                .map(oppretting -> String.format("%s$OK", miljoe))
-                                .collect(Collectors.joining(",")));
+                            response.getNyeDagp().stream()
+                                    .filter(oppretting -> response.getNyeDagp().isEmpty() && response.getNyeDagpFeilList().isEmpty())
+                                    .map(oppretting -> String.format("%s$OK", miljoe))
+                                    .collect(Collectors.joining(","));
+                });
     }
 }

@@ -1,11 +1,11 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
@@ -18,6 +18,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
+@Slf4j
 @RequiredArgsConstructor
 public class ArenaForvalterDeleteCommand implements Callable<Flux<String>> {
 
@@ -44,8 +45,10 @@ public class ArenaForvalterDeleteCommand implements Callable<Flux<String>> {
                 .retrieve()
                 .bodyToFlux(Void.class)
                 .map(resultat -> environment)
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.BadRequest,
-                        throwable -> Flux.empty())
+                .onErrorResume(throwable -> {
+                    log.error(WebClientFilter.getMessage(throwable));
+                    return Flux.empty();
+                })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

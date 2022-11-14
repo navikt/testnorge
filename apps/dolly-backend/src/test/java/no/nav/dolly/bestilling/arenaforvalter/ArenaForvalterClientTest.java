@@ -11,7 +11,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -51,13 +50,6 @@ class ArenaForvalterClientTest {
 
     @Mock
     private AccessToken accessToken;
-
-    @BeforeEach
-    void setup() {
-
-//        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
-//        when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
-    }
 
     @Test
     void gjenopprett_Ok() {

@@ -117,14 +117,14 @@ public class ArenaForvalterConsumer {
     @Timed(name = "providers", tags = { "operation", "arena_postBruker" })
     public Flux<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
 
-        log.info("Arena opprett bruker {}", arenaNyeBrukere);
+        log.info("Arena opprett {}", arenaNyeBrukere);
         return new ArenaforvalterPostArenadata(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call();
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_postDagpenger" })
     public Flux<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger, AccessToken accessToken) {
 
-        log.info("Arena opprett dagpenger {}", arenaDagpenger);
+        log.info("Arena opprett {}", arenaDagpenger);
         return new ArenaforvalterPostArenadagpenger(webClient, arenaDagpenger, accessToken.getTokenValue()).call();
     }
 
