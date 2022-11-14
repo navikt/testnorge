@@ -113,7 +113,7 @@ export default () => {
         <>
             <BlankHeader />
             <div style={{textAlign: 'center'}}>
-                <h2>Status for Dolly brukt tjenesert</h2>
+                <h2>Dolly tjenestestatus</h2>
             </div>
             <div className="consumers-container">
                 {clients}
