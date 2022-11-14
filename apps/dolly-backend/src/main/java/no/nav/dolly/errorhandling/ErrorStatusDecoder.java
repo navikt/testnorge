@@ -94,10 +94,10 @@ public class ErrorStatusDecoder {
 
             if (webClientResponseException.getStatusCode().is4xxClientError()) {
 
-                builder.append(getStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) &&
+                builder.append(isNotBlank(webClientResponseException.getResponseBodyAsString()) &&
                         !getStatusMessage(webClientResponseException.getResponseBodyAsString()).equals("null") ?
-                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                        webClientResponseException.getStatusCode().toString()));
+                        getStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8)) :
+                        webClientResponseException.getStatusCode().toString());
 
             } else {
                 builder.append(TEKNISK_FEIL_SE_LOGG);
@@ -114,12 +114,12 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    private String getStatusMessage(String responseBody) {
+    public String getStatusMessage(String json) {
 
         var builder = new StringBuilder();
-        if (responseBody.contains("{")) {
+        if (json.contains("{")) {
             try {
-                Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
+                Map<String, Object> status = objectMapper.readValue(json, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
                     builder.append("error=").append(status.get(ERROR)).append("; ");
                 }
@@ -143,7 +143,7 @@ public class ErrorStatusDecoder {
             }
 
         } else {
-            builder.append(encodeStatus(responseBody));
+            builder.append(encodeStatus(json));
         }
 
         return builder.toString();

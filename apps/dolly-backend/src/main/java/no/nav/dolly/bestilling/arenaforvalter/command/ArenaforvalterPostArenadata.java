@@ -1,7 +1,8 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -10,6 +11,7 @@ import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -18,37 +20,38 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
-@Slf4j
 @RequiredArgsConstructor
-public class ArenaForvalterDeleteCommand implements Callable<Flux<String>> {
+public class ArenaforvalterPostArenadata implements Callable<Flux<ArenaNyeBrukereResponse>> {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 
     private final WebClient webClient;
-    private final String ident;
-    private final String environment;
+    private final ArenaNyeBrukere arenaNyeBrukere;
     private final String token;
 
     @Override
-    public Flux<String> call() {
+    public Flux<ArenaNyeBrukereResponse> call() {
 
-        return webClient.delete().uri(
+        return webClient.post().uri(
                         uriBuilder -> uriBuilder
                                 .path(ARENAFORVALTER_BRUKER)
-                                .queryParam("miljoe", environment)
-                                .queryParam("personident", ident)
                                 .build())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(arenaNyeBrukere)
                 .retrieve()
-                .bodyToFlux(Void.class)
-                .map(resultat -> environment)
-                .onErrorResume(throwable -> {
-                    log.error(WebClientFilter.getMessage(throwable));
-                    return Flux.empty();
-                })
+                .bodyToFlux(ArenaNyeBrukereResponse.class)
+                .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(error ->
+                        Flux.just(ArenaNyeBrukereResponse.builder()
+                                .nyBrukerFeilList(List.of(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
+                                        .miljoe(arenaNyeBrukere.getNyeBrukere().get(0).getMiljoe())
+                                        .personident(arenaNyeBrukere.getNyeBrukere().get(0).getPersonident())
+                                        .melding(WebClientFilter.getMessage(error))
+                                        .build()))
+                                .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
