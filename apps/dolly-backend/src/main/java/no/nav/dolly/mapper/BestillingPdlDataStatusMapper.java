@@ -65,7 +65,6 @@ public final class BestillingPdlDataStatusMapper {
                 errors.forEach(error -> {
                             addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
                                     error.getArtifact(), error.getId(), error.getError()), progress.getIdent());
-                            log.error("Bestilling {} feilet mot PDL: {} (progress {})", progress.getBestilling().getId(), error, progress.getId());
                         }
                 );
             }
