@@ -82,15 +82,15 @@ const FinnPersonBestilling = ({
 		let finnesPdl = false
 
 		if (feilmelding) {
-			if (tpsfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+			if (tpsfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
 				finnesTpsf = true
 			}
-			if (pdlfIdenter.find((element) => element.ident === feilmeldingIdent)) {
+			if (pdlfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
 				finnesPdlf = true
 			}
 			if (
-				pdlIdenter.find((element) => element.ident === feilmeldingIdent) ||
-				pdlAktoerer.find((element) => element.ident === feilmeldingIdent)
+				pdlIdenter?.find((element) => element.ident === feilmeldingIdent) ||
+				pdlAktoerer?.find((element) => element.ident === feilmeldingIdent)
 			) {
 				finnesPdl = true
 			}

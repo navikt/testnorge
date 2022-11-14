@@ -31,9 +31,15 @@ type PdlVisningProps = {
 	pdlData: PdlData
 	loading?: boolean
 	environments?: string[]
+	miljoeVisning?: boolean
 }
 
-export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisningProps) => {
+export const PdlVisning = ({
+	pdlData,
+	loading = false,
+	environments,
+	miljoeVisning = false,
+}: PdlVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster PDL-data" />
 	}
@@ -65,7 +71,7 @@ export const PdlVisning = ({ pdlData, loading = false, environments }: PdlVisnin
 
 	return (
 		<ErrorBoundary>
-			<div className="boks">
+			<div className={miljoeVisning ? 'boks' : ''}>
 				<PdlPersonInfo
 					data={hentPerson}
 					tpsMessagingData={tpsMessaging?.tpsMessagingData}

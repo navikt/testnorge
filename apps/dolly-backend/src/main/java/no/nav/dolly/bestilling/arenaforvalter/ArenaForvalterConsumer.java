@@ -5,6 +5,8 @@ import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadata;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -16,18 +18,17 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
-import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
@@ -45,7 +46,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class ArenaForvalterConsumer {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
-    private static final String ARENAFORVALTER_DAGPENGER = "/api/v1/dagpenger";
 
     private final WebClient webClient;
     private final NaisServerProperties serviceProperties;
@@ -91,7 +91,7 @@ public class ArenaForvalterConsumer {
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_deleteIdent" })
-    public Mono<List<Void>> deleteIdenter(List<String> identer) {
+    public Mono<List<String>> deleteIdenter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
@@ -103,53 +103,35 @@ public class ArenaForvalterConsumer {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_postBruker" })
-    public ResponseEntity<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere) {
+    @Timed(name = "providers", tags = { "operation", "arena_deleteIdent" })
+    public Flux<String> deleteIdent(String ident, String miljoe, AccessToken token) {
 
-        return webClient.post().uri(
-                        uriBuilder -> uriBuilder
-                                .path(ARENAFORVALTER_BRUKER)
-                                .build())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .bodyValue(arenaNyeBrukere)
-                .retrieve()
-                .toEntity(ArenaNyeBrukereResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        return new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call();
+    }
+
+    public Mono<AccessToken> getToken() {
+
+        return tokenService.exchange(serviceProperties);
+    }
+
+    @Timed(name = "providers", tags = { "operation", "arena_postBruker" })
+    public Flux<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
+
+        log.info("Arena opprett {}", arenaNyeBrukere);
+        return new ArenaforvalterPostArenadata(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call();
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_postDagpenger" })
-    public ResponseEntity<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger) {
+    public Flux<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger, AccessToken accessToken) {
 
-        return webClient.post().uri(
-                        uriBuilder -> uriBuilder
-                                .path(ARENAFORVALTER_DAGPENGER)
-                                .build())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .bodyValue(arenaDagpenger)
-                .retrieve()
-                .toEntity(ArenaNyeDagpengerResponse.class)
-                .doOnError(error -> error instanceof WebClientResponseException.InternalServerError,
-                        error -> log.error(((WebClientResponseException) error).getResponseBodyAsString(StandardCharsets.UTF_8)))
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.InternalServerError,
-                        throwable -> Mono.empty())
-                .block();
+        log.info("Arena opprett {}", arenaDagpenger);
+        return new ArenaforvalterPostArenadagpenger(webClient, arenaDagpenger, accessToken.getTokenValue()).call();
     }
 
     @Timed(name = "providers", tags = { "operation", "arena_getEnvironments" })
-    public List<String> getEnvironments() {
+    public Flux<String> getEnvironments(AccessToken token) {
 
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call())
-                .collectList()
-                .block();
+        return new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call();
     }
 
     public Map<String, String> checkAlive() {

@@ -3,9 +3,8 @@ package no.nav.dolly.domain.resultset.arenaforvalter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +12,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -50,8 +48,7 @@ public class ArenaDagpenger {
     private List<NyeDagp> nyeDagp;
 
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -76,8 +73,7 @@ public class ArenaDagpenger {
         private List<Vilkaar> vilkaar;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -87,8 +83,7 @@ public class ArenaDagpenger {
         private String status;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -99,8 +94,7 @@ public class ArenaDagpenger {
         private String nullstillPermitteringstellerFisk;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -109,8 +103,7 @@ public class ArenaDagpenger {
         private LocalDate tom;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -121,8 +114,7 @@ public class ArenaDagpenger {
         private Integer naavaerendeArbeidstid;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
