@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.bestilling.arenaforvalter.mapper;
 
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
@@ -60,6 +60,9 @@ public class ArenaMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Arenadata arenadata, ArenaDagpenger arenaDagpenger, MappingContext context) {
                         RsArenaDagpenger rsArenaDagpenger = arenadata.getDagpenger().get(0);
+
+                        arenaDagpenger.setMiljoe((String) context.getProperty("miljoe"));
+                        arenaDagpenger.setPersonident((String) context.getProperty("ident"));
 
                         NyeDagp dagpenger = new NyeDagp();
 

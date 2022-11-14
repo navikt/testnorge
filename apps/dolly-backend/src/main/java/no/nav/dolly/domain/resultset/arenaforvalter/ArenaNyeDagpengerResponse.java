@@ -3,17 +3,15 @@ package no.nav.dolly.domain.resultset.arenaforvalter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,8 +23,7 @@ public class ArenaNyeDagpengerResponse {
     private List<Dagp> nyeDagp;
     private List<NyDagpFeilV1> nyeDagpFeilList;
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -36,8 +33,7 @@ public class ArenaNyeDagpengerResponse {
         private NyeDagpResponse nyeDagpResponse;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -47,8 +43,7 @@ public class ArenaNyeDagpengerResponse {
         private String begrunnelse;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -58,8 +53,7 @@ public class ArenaNyeDagpengerResponse {
         private String status;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

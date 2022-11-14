@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
-import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -12,22 +12,23 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import org.springframework.http.ResponseEntity;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -39,25 +40,26 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
-    private static void appendErrorText(StringBuilder status, RuntimeException e) {
+    private static ArenaNyeBrukere filtrerEksisterendeBrukere(ArenaNyeBrukere arenaNyeBrukere) {
 
-        status.append("Feil: ")
-                .append(nonNull(e.getMessage()) ? e.getMessage().replace(',', ';') : e);
+        return new ArenaNyeBrukere(arenaNyeBrukere.getNyeBrukere().stream()
+                .filter(arenaNyBruker ->
+                        (nonNull(arenaNyBruker.getKvalifiseringsgruppe()) || nonNull(arenaNyBruker.getUtenServicebehov())))
+                .toList());
+    }
 
-        if (e instanceof HttpClientErrorException) {
-            status.append(" (")
-                    .append(((HttpClientErrorException) e).getResponseBodyAsString().replace(',', '='))
-                    .append(')');
-        }
+    private static String getFeilbeskrivelse(String feil) {
+
+        return !feil.contains("message: 555 User Defined Resource Error") ?
+                ErrorStatusDecoder.encodeStatus(feil) : "";
     }
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
-
-            StringBuilder status = new StringBuilder();
 
             if (!dollyPerson.isOpprettetIPDL()) {
                 progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
@@ -66,39 +68,18 @@ public class ArenaForvalterClient implements ClientRegister {
                 return Flux.just();
             }
 
-            var arenaForvalterGyldigeEnvironments = arenaForvalterConsumer.getEnvironments();
-
-            var availEnvironments = new ArrayList<>(arenaForvalterGyldigeEnvironments);
-
-            availEnvironments.retainAll(bestilling.getEnvironments());
-
-            if (!availEnvironments.isEmpty()) {
-
-                arenaForvalterConsumer.deleteIdenter(List.of(dollyPerson.getHovedperson())).block();
-
-                ArenaNyeBrukere arenaNyeBrukere = new ArenaNyeBrukere();
-                List<ArenaDagpenger> dagpengerListe = new ArrayList<>();
-                availEnvironments.forEach(environment -> {
-                    ArenaNyBruker arenaNyBruker = mapperFacade.map(bestilling.getArenaforvalter(), ArenaNyBruker.class);
-                    arenaNyBruker.setPersonident(dollyPerson.getHovedperson());
-                    arenaNyBruker.setMiljoe(environment);
-                    arenaNyeBrukere.getNyeBrukere().add(arenaNyBruker);
-
-                    if (!bestilling.getArenaforvalter().getDagpenger().isEmpty()) {
-                        ArenaDagpenger arenaDagpenger = mapperFacade.map(bestilling.getArenaforvalter(), ArenaDagpenger.class);
-                        arenaDagpenger.setPersonident(dollyPerson.getHovedperson());
-                        arenaDagpenger.setMiljoe(environment);
-                        dagpengerListe.add(arenaDagpenger);
-                    }
-                });
-
-                sendArenadata(arenaNyeBrukere, status, dagpengerListe.isEmpty());
-                dagpengerListe.forEach(dagpenger -> sendArenadagpenger(dagpenger, status));
-            }
-
-            if (status.length() > 1) {
-                progress.setArenaforvalterStatus(status.substring(1));
-            }
+            progress.setArenaforvalterStatus(
+                            requireNonNull(arenaForvalterConsumer.getToken()
+                                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                                            .filter(miljo -> bestilling.getEnvironments().contains(miljo))
+                                            .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
+                                                    sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
+                                                    sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+                                    .collectList()
+                                    .block())
+                                    .stream()
+                            .filter(StringUtils::isNotBlank)
+                            .collect(Collectors.joining(",")));
         }
         return Flux.just();
     }
@@ -111,6 +92,11 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
+    public Map<String, Object> status() {
+        return arenaForvalterConsumer.checkStatus();
+    }
+
+    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getArenaforvalter()) ||
@@ -118,107 +104,60 @@ public class ArenaForvalterClient implements ClientRegister {
                         .allMatch(entry -> isNotBlank(entry.getArenaforvalterStatus()));
     }
 
-    private void sendArenadagpenger(ArenaDagpenger arenaNyeDagpenger, StringBuilder status) {
+    private Flux<String> sendArenadata(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
-        try {
-            log.info("Sender dagpenger: \n" + Json.pretty(arenaNyeDagpenger));
-            ResponseEntity<ArenaNyeDagpengerResponse> response = arenaForvalterConsumer.postArenaDagpenger(arenaNyeDagpenger);
-            log.info("Dagpenger mottatt: \n" + Json.pretty(response));
-            if (response.hasBody()) {
-                if (nonNull(response.getBody().getNyeDagpFeilList()) && !response.getBody().getNyeDagpFeilList().isEmpty()) {
-                    response.getBody().getNyeDagpFeilList().forEach(brukerfeil -> {
-                        log.info("Brukerfeil dagpenger: " + Json.pretty(brukerfeil));
-                        status.append(',')
-                                .append(brukerfeil.getMiljoe())
-                                .append("$Feilstatus dagpenger: \"")
-                                .append(brukerfeil.getNyDagpFeilstatus())
-                                .append("\". Se detaljer i logg.");
-                        log.error("Feilet å opprette dagpenger for testperson {} i ArenaForvalter på miljø: {}, feilstatus: {}, melding: \"{}\"",
-                                brukerfeil.getPersonident(), brukerfeil.getMiljoe(), brukerfeil.getNyDagpFeilstatus(), brukerfeil.getMelding());
-                    });
-                } else if (nonNull(response.getBody().getNyeDagp()) && !response.getBody().getNyeDagp().isEmpty()
-                        && (nonNull(response.getBody().getNyeDagp().get(0).getNyeDagpResponse()))) {
-                    status.append(',')
-                            .append(arenaNyeDagpenger.getMiljoe())
-                            .append(
-                                    response.getBody().getNyeDagp().get(0).getNyeDagpResponse().getUtfall().equals("JA")
-                                            ? "$OK"
-                                            : "$Feil dagpenger: " + response.getBody().getNyeDagp().get(0).getNyeDagpResponse().getBegrunnelse());
-                } else {
-                    status.append(',')
-                            .append(arenaNyeDagpenger.getMiljoe())
-                            .append("$OK");
-                }
-            } else {
-                status.append(',')
-                        .append(arenaNyeDagpenger.getMiljoe())
-                        .append("Feilstatus: Mottok ugyldig dagpenge respons fra Arena");
-            }
-        } catch (RuntimeException e) {
+        var arenaNyeBrukere = ArenaNyeBrukere.builder()
+                .nyeBrukere(List.of(mapperFacade.map(arenadata, ArenaNyBruker.class)))
+                .build();
+        arenaNyeBrukere.getNyeBrukere().get(0).setPersonident(ident);
+        arenaNyeBrukere.getNyeBrukere().get(0).setMiljoe(miljoe);
 
-            status.append(',')
-                    .append(arenaNyeDagpenger.getMiljoe())
-                    .append('$');
-            appendErrorText(status, e);
-            log.error("Feilet å legge til dagpenger i Arena: ", e);
+        var filtrerteBrukere = filtrerEksisterendeBrukere(arenaNyeBrukere);
+        if (filtrerteBrukere.getNyeBrukere().isEmpty()) {
+            log.info("Alle brukere eksisterer i Arena allerede.");
+            return Flux.empty();
         }
+
+        return arenaForvalterConsumer.postArenadata(filtrerteBrukere, token)
+                .map(respons ->
+                        respons.getArbeidsokerList().stream()
+                                .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
+                                .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
+                                .map(arbeidsoker -> String.format("%s$%s", arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
+                                .collect(Collectors.joining(","))
+                                +
+                                respons.getNyBrukerFeilList().stream()
+                                        .map(brukerfeil ->
+                                                String.format("%s$Feil: %s. Se detaljer i logg. %s", brukerfeil.getMiljoe(),
+                                                        brukerfeil.getNyBrukerFeilstatus(), getFeilbeskrivelse(brukerfeil.getMelding())))
+                                        .collect(Collectors.joining(",")));
     }
 
-    private void sendArenadata(ArenaNyeBrukere arenaNyeBrukere, StringBuilder status, boolean harIkkeDagpenger) {
+    private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
-        try {
-            ArenaNyeBrukere filtrerteBrukere = filtrerEksisterendeBrukere(arenaNyeBrukere);
-            if (filtrerteBrukere.getNyeBrukere().isEmpty()) {
-                log.info("Alle brukere eksisterer i Arena allerede.");
-                return;
-            }
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", ident);
+        context.setProperty("miljoe", miljoe);
 
-            ResponseEntity<ArenaNyeBrukereResponse> response = arenaForvalterConsumer.postArenadata(arenaNyeBrukere);
-            if (response.hasBody()) {
-                if (nonNull((response.getBody().getArbeidsokerList()))) {
-                    response.getBody().getArbeidsokerList().forEach(arbeidsoker -> {
-                        if ("OK".equals(arbeidsoker.getStatus()) && harIkkeDagpenger) {
-                            status.append(',')
-                                    .append(arbeidsoker.getMiljoe())
-                                    .append('$')
-                                    .append(arbeidsoker.getStatus());
-                        }
-                    });
-                }
-                if (nonNull(response.getBody().getNyBrukerFeilList())) {
-                    response.getBody().getNyBrukerFeilList().forEach(brukerfeil -> {
-                        status.append(',')
-                                .append(brukerfeil.getMiljoe())
-                                .append("$Feilstatus: \"")
-                                .append(brukerfeil.getNyBrukerFeilstatus())
-                                .append("\". Se detaljer i logg.");
-                        log.error("Feilet å opprette testperson {} i ArenaForvalter på miljø: {}, feilstatus: {}, melding: \"{}\"",
-                                brukerfeil.getPersonident(), brukerfeil.getMiljoe(), brukerfeil.getNyBrukerFeilstatus(), brukerfeil.getMelding());
-                    });
-                }
-            }
+        return Flux.fromIterable(arenadata.getDagpenger())
+                .map(ettSettDagpenger -> mapperFacade.map(arenadata, ArenaDagpenger.class, context))
+                .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
+                .map(response -> response.getNyeDagpFeilList().stream()
+                        .map(brukerfeil -> String.format("%s$Feil: OPPRETT_DAGPENGER %s", brukerfeil.getMiljoe(),
+                                errorStatusDecoder.getStatusMessage(brukerfeil.getMelding())))
+                        .collect(Collectors.joining(",")) +
 
-        } catch (WebClientResponseException e) {
+                        response.getNyeDagp().stream()
+                                .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
+                                .filter(Objects::nonNull)
+                                .map(dagp -> new StringBuilder().append(miljoe).append('$')
+                                        .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " + dagp.getBegrunnelse()))
+                                        .toString())
+                                .collect(Collectors.joining(",")) +
 
-            arenaNyeBrukere.getNyeBrukere().forEach(bruker -> {
-                status.append(',')
-                        .append(bruker.getMiljoe())
-                        .append('$');
-                appendErrorText(status, e);
-            });
-            log.error("Feilet å legge inn ny testperson i Arena: ", e);
-        }
-    }
-
-    private ArenaNyeBrukere filtrerEksisterendeBrukere(ArenaNyeBrukere arenaNyeBrukere) {
-
-        return new ArenaNyeBrukere(arenaNyeBrukere.getNyeBrukere().stream()
-                .filter(arenaNyBruker ->
-                        (!isNull(arenaNyBruker.getKvalifiseringsgruppe()) || !isNull(arenaNyBruker.getUtenServicebehov())))
-                .collect(Collectors.toList()));
-    }
-
-    public Map<String, Object> status() {
-        return arenaForvalterConsumer.checkStatus();
+                        response.getNyeDagp().stream()
+                                .filter(oppretting -> response.getNyeDagp().isEmpty() && response.getNyeDagpFeilList().isEmpty())
+                                .map(oppretting -> String.format("%s$OK", miljoe))
+                                .collect(Collectors.joining(",")));
     }
 }

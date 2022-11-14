@@ -114,12 +114,12 @@ public class ErrorStatusDecoder {
         return builder.toString();
     }
 
-    private String getStatusMessage(String responseBody) {
+    public String getStatusMessage(String json) {
 
         var builder = new StringBuilder();
-        if (responseBody.contains("{")) {
+        if (json.contains("{")) {
             try {
-                Map<String, Object> status = objectMapper.readValue(responseBody, Map.class);
+                Map<String, Object> status = objectMapper.readValue(json, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
                     builder.append("error=").append(status.get(ERROR)).append("; ");
                 }
@@ -143,7 +143,7 @@ public class ErrorStatusDecoder {
             }
 
         } else {
-            builder.append(encodeStatus(responseBody));
+            builder.append(encodeStatus(json));
         }
 
         return builder.toString();
