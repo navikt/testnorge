@@ -94,10 +94,10 @@ public class ErrorStatusDecoder {
 
             if (webClientResponseException.getStatusCode().is4xxClientError()) {
 
-                builder.append(getStatusMessage(isNotBlank(webClientResponseException.getResponseBodyAsString()) &&
+                builder.append(isNotBlank(webClientResponseException.getResponseBodyAsString()) &&
                         !getStatusMessage(webClientResponseException.getResponseBodyAsString()).equals("null") ?
-                        webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                        webClientResponseException.getStatusCode().toString()));
+                        getStatusMessage(webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8)) :
+                        webClientResponseException.getStatusCode().toString());
 
             } else {
                 builder.append(TEKNISK_FEIL_SE_LOGG);
