@@ -62,8 +62,8 @@ const Visning = ({ data }) => {
 }
 
 const ARENASYNT = 'ARENASYNT'
-
 const ARENA_MILJOE = ['q1', 'q2', 'q4']
+const SYNT_MILJOE = 'q2'
 
 const initialVisningData = {
 	brukertype: undefined,
@@ -119,6 +119,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 
 	const visningData = mapTilVisingData(arenaBestillinger, harArenasyntTag)
 	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const bestilteMiljoer = visningData.filter((d) => d.data?.length > 0).map((d) => d.miljo)
 
 	return (
 		<div>
@@ -126,8 +127,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 				<div>
 					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 					<MiljoTabs
-						bestilteMiljoer={ARENA_MILJOE}
-						forsteMiljo={forsteMiljo ? forsteMiljo : 'q2'}
+						bestilteMiljoer={bestilteMiljoer?.length > 0 ? bestilteMiljoer : [SYNT_MILJOE]}
+						forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 						data={visningData}
 					>
 						<Visning />
@@ -137,8 +138,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
 					<div className="person-visning">
 						<MiljoTabs
-							bestilteMiljoer={ARENA_MILJOE}
-							forsteMiljo={forsteMiljo ? forsteMiljo : 'q2'}
+							bestilteMiljoer={bestilteMiljoer?.length > 0 ? bestilteMiljoer : [SYNT_MILJOE]}
+							forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 							data={visningData}
 						>
 							<Visning />
@@ -169,7 +170,7 @@ const mapTilVisingData = (bestillinger, harArenaSyntTag) => {
 		}
 
 		const info =
-			miljoe === 'q2' && harArenaSyntTag
+			miljoe === SYNT_MILJOE && harArenaSyntTag
 				? 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
 				: null
 
