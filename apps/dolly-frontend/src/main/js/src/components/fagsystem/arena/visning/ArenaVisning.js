@@ -4,7 +4,6 @@ import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Panel from '~/components/ui/panel/Panel'
 import _orderBy from 'lodash/orderBy'
 import { DollyApi } from '~/service/Api'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
@@ -75,7 +74,7 @@ const initialVisningData = {
 	dagpenger: [],
 }
 
-export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard = true }) => {
+export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
@@ -117,40 +116,24 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
 	const arenaMiljoer = data?.arbeidsokerList?.map((arb) => arb.miljoe)
-	const visningData = mapTilVisingData(data, arenaMiljoer, arenaBestillinger, harArenasyntTag)
+	const visningData = mapTilVisningData(data, arenaMiljoer, arenaBestillinger, harArenasyntTag)
 	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	return (
 		<div>
-			{useStandard ? (
-				<div>
-					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
-					<MiljoTabs
-						bestilteMiljoer={arenaMiljoer?.length > 0 ? arenaMiljoer : [SYNT_MILJOE]}
-						forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
-						data={visningData}
-					>
-						<Visning />
-					</MiljoTabs>
-				</div>
-			) : (
-				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
-					<div className="person-visning">
-						<MiljoTabs
-							bestilteMiljoer={arenaMiljoer?.length > 0 ? arenaMiljoer : [SYNT_MILJOE]}
-							forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
-							data={visningData}
-						>
-							<Visning />
-						</MiljoTabs>
-					</div>
-				</Panel>
-			)}
+			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
+			<MiljoTabs
+				bestilteMiljoer={arenaMiljoer?.length > 0 ? arenaMiljoer : [SYNT_MILJOE]}
+				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
+				data={visningData}
+			>
+				<Visning />
+			</MiljoTabs>
 		</div>
 	)
 }
 
-const mapTilVisingData = (arenaData, bestilteMiljoer, bestillinger, harArenaSyntTag) => {
+const mapTilVisningData = (arenaData, bestilteMiljoer, bestillinger, harArenaSyntTag) => {
 	const miljoeData = []
 
 	const getMiljoe = (bestilling) => {
