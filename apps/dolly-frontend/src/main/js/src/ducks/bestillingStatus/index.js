@@ -27,6 +27,7 @@ export const getBestillingsListe = (bestillinger, IDer) => {
 			data: bestillinger[id]?.bestilling,
 			id: id,
 			erGjenopprettet: bestillinger[id]?.hasOwnProperty('opprettetFraId'),
+			status: bestillinger[id]?.status,
 		}
 		const suksessMiljoer = successMiljoSelector(bestillinger[id]?.status)
 		// Arena-bestillinger brukes i personvisning, skal derfor ikke returnere Arena-bestillinger som har feilet

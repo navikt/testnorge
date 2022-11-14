@@ -7,24 +7,25 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import Panel from '~/components/ui/panel/Panel'
 import _orderBy from 'lodash/orderBy'
 import { DollyApi } from '~/service/Api'
-import { Alert } from '@navikt/ds-react'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 const Visning = ({ data }) => {
-	if (!data) {
+	if (!data || data.length === 0) {
 		return null
 	}
+	const arenaData = data[0]
 	return (
-		<>
-			<TitleValue title="Brukertype" value={data.brukertype} />
-			<TitleValue title="Servicebehov" value={data.servicebehov} />
-			<TitleValue title="Inaktiv fra dato" value={data.inaktiveringDato} />
+		<div className="person-visning_content">
+			<TitleValue title="Brukertype" value={arenaData.brukertype} />
+			<TitleValue title="Servicebehov" value={arenaData.servicebehov} />
+			<TitleValue title="Inaktiv fra dato" value={arenaData.inaktiveringDato} />
 			<TitleValue
 				title="Automatisk innsending av meldekort"
-				value={data.automatiskInnsendingAvMeldekort}
+				value={arenaData.automatiskInnsendingAvMeldekort}
 			/>
 
-			{data.aap115?.[0] && (
-				<DollyFieldArray header="11.5 vedtak" data={data.aap115} nested>
+			{arenaData.aap115?.[0] && (
+				<DollyFieldArray header="11.5 vedtak" data={arenaData.aap115} nested>
 					{(vedtak, idx) => (
 						<React.Fragment key={idx}>
 							<TitleValue title="Fra dato" value={Formatters.formatDate(vedtak.fraDato)} />
@@ -33,8 +34,8 @@ const Visning = ({ data }) => {
 				</DollyFieldArray>
 			)}
 
-			{data.aap?.[0] && (
-				<DollyFieldArray header="AAP-UA vedtak" data={data.aap} nested>
+			{arenaData.aap?.[0] && (
+				<DollyFieldArray header="AAP-UA vedtak" data={arenaData.aap} nested>
 					{(vedtak, idx) => (
 						<React.Fragment key={idx}>
 							<TitleValue title="Fra dato" value={Formatters.formatDate(vedtak.fraDato)} />
@@ -44,8 +45,8 @@ const Visning = ({ data }) => {
 				</DollyFieldArray>
 			)}
 
-			{data.dagpenger?.[0] && (
-				<DollyFieldArray header="Dagpenger vedtak" data={data.dagpenger} nested>
+			{arenaData.dagpenger?.[0] && (
+				<DollyFieldArray header="Dagpenger vedtak" data={arenaData.dagpenger} nested>
 					{(vedtak, idx) => (
 						<React.Fragment key={idx}>
 							<TitleValue title="Rettighet kode" value={vedtak.rettighetKode} />
@@ -56,11 +57,23 @@ const Visning = ({ data }) => {
 					)}
 				</DollyFieldArray>
 			)}
-		</>
+		</div>
 	)
 }
 
 const ARENASYNT = 'ARENASYNT'
+
+const ARENA_MILJOE = ['q1', 'q2', 'q4']
+
+const initialVisningData = {
+	brukertype: undefined,
+	servicebehov: undefined,
+	inaktiveringDato: undefined,
+	automatiskInnsendingAvMeldekort: undefined,
+	aap115: [],
+	aap: [],
+	dagpenger: [],
+}
 
 export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard = true }) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
@@ -104,52 +117,75 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, useStandard =
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
 
-	const sortedBestillinger =
-		arenaBestillinger?.length > 0 ? _orderBy(arenaBestillinger, ['id'], ['desc']) : []
-	const sisteArenaBestilling = sortedBestillinger?.[0]
-
-	const visningData = {
-		brukertype: undefined,
-		servicebehov: undefined,
-		inaktiveringDato: undefined,
-		automatiskInnsendingAvMeldekort: undefined,
-		aap115: [],
-		aap: [],
-		dagpenger: [],
-	}
-
-	// Arenaforvalternen returnerer veldig lite informasjon, bruker derfor data fra bestillingen i tillegg
-
-	fyllVisningData(sisteArenaBestilling, visningData)
-
-	const TagAlert = () => (
-		<Alert variant={'info'} style={{ marginBottom: '20px' }}>
-			Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser.
-		</Alert>
-	)
+	const visningData = mapTilVisingData(arenaBestillinger, harArenasyntTag)
+	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	return (
 		<div>
 			{useStandard ? (
 				<div>
 					<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
-					{harArenasyntTag && !data && <TagAlert />}
-					<div className="person-visning_content">
-						<Visning data={visningData} />
-					</div>
+					<MiljoTabs
+						bestilteMiljoer={ARENA_MILJOE}
+						forsteMiljo={forsteMiljo ? forsteMiljo : 'q2'}
+						data={visningData}
+					>
+						<Visning />
+					</MiljoTabs>
 				</div>
 			) : (
 				<Panel heading="Registrerte arbeidsytelser" iconType="arena">
 					<div className="person-visning">
-						{harArenasyntTag && !data && <TagAlert />}
-						<div className="person-visning_content">
-							<Visning data={visningData} />
-						</div>
+						<MiljoTabs
+							bestilteMiljoer={ARENA_MILJOE}
+							forsteMiljo={forsteMiljo ? forsteMiljo : 'q2'}
+							data={visningData}
+						>
+							<Visning />
+						</MiljoTabs>
 					</div>
 				</Panel>
 			)}
 		</div>
 	)
+}
+
+const mapTilVisingData = (bestillinger, harArenaSyntTag) => {
+	const miljoeData = []
+
+	const getMiljoe = (bestilling) => {
+		return bestilling?.status
+			?.filter((status) => status.id === 'ARENA')?.[0]
+			?.statuser?.filter((status) => status.melding === 'OK')?.[0]
+			?.detaljert?.map((detalj) => detalj.miljo)
+	}
+
+	for (const miljoe of ARENA_MILJOE) {
+		const data = []
+		for (const bestilling of bestillinger) {
+			if (getMiljoe(bestilling).includes(miljoe)) {
+				data.push(bestilling)
+			}
+		}
+
+		const info =
+			miljoe === 'q2' && harArenaSyntTag
+				? 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
+				: null
+
+		let visningData = []
+		if (data.length > 0) {
+			const sortedBestillinger = data.length > 0 ? _orderBy(data, ['id'], ['desc']) : []
+			const sisteArenaBestilling = sortedBestillinger?.[0]
+			let mappedData = { ...initialVisningData }
+			fyllVisningData(sisteArenaBestilling, mappedData)
+			visningData.push(mappedData)
+		}
+
+		miljoeData.push({ miljo: miljoe, data: visningData, info: info })
+	}
+
+	return miljoeData
 }
 
 function fyllVisningData(bestilling, visningData) {
