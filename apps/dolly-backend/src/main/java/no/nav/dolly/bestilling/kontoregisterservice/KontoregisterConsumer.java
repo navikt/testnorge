@@ -187,7 +187,7 @@ public class KontoregisterConsumer {
         consumerStatus.put("team", TEAM_DOLLY);
 
         var status = new ConcurrentHashMap<String, Object>();
-        status.put("testnav-kontoregister-person-proxy", status);
+        status.put("testnav-kontoregister-person-proxy", consumerStatus);
 
         try {
             Map response = statusWebClient.get()
