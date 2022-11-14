@@ -9,9 +9,10 @@ import { useFormikContext } from 'formik'
 
 type ArbeidsgiverIdentProps = {
 	path: string
+	isDisabled?: boolean
 }
 
-export const ArbeidsgiverIdent = ({ path }: ArbeidsgiverIdentProps) => {
+export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
 	const formikBag = useFormikContext()
 	const [error, setError] = useState(null)
 	const [personnummer, setPersonnummer] = useState(_get(formikBag.values, path))
@@ -73,7 +74,7 @@ export const ArbeidsgiverIdent = ({ path }: ArbeidsgiverIdentProps) => {
 				defaultValue={personnummer}
 				label={'Arbeidsgiver ident'}
 				onBlur={handleChange}
-				disabled={loading}
+				isDisabled={loading || isDisabled}
 				feil={
 					error && {
 						feilmelding: error,

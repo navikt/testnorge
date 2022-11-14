@@ -110,7 +110,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 									onChange={(e) => handleBrukerChange(e, formikBag)}
 									value={bruker}
 									isClearable={false}
-									disabled={!malAktiv}
+									isDisabled={!malAktiv}
 								/>
 								<FormikSelect
 									name="mal"
@@ -119,7 +119,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 									options={malOptions}
 									size="grow"
 									fastfield={false}
-									disabled={!malAktiv}
+									isDisabled={!malAktiv}
 								/>
 							</InputDiv>
 							{erTpsfMal && (

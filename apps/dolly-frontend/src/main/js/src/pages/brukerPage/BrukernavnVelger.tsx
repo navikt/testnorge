@@ -80,7 +80,7 @@ export default ({ organisasjon, addToSession }: BrukernavnVelgerProps) => {
 					// @ts-ignore
 					size="xlarge"
 					onChange={(e: any) => onChange(e.target.value)}
-					disabled={loading}
+					isDisabled={loading}
 					feil={
 						error && {
 							feilmelding: error,

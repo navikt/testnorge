@@ -47,7 +47,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								name={`${path}.tjeneste`}
 								label="Tjeneste"
 								options={Options('tjeneste')}
-								disabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
+								isDisabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
 								fastfield={false}
 								isClearable={false}
 								size="large"

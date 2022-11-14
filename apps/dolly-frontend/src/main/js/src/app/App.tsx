@@ -18,9 +18,9 @@ import {
 } from '~/utils/hooks/useMaler'
 import { runningTestcafe } from '~/service/services/Request'
 
-const logout = (stackTrace: string) => {
+const logout = (feilmelding: string) => {
 	if (!runningTestcafe()) {
-		logoutBruker(stackTrace)
+		logoutBruker(feilmelding)
 	}
 }
 

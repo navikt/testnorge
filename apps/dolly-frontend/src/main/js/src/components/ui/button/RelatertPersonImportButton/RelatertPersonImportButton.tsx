@@ -94,7 +94,7 @@ export const RelatertPersonImportButton = ({
 								checked={values?.includes(ident.id)}
 								onChange={onClick}
 								size={'grow'}
-								disabled={disabledCheckbox}
+								isDisabled={disabledCheckbox}
 								attributtCheckbox
 							/>
 						</div>

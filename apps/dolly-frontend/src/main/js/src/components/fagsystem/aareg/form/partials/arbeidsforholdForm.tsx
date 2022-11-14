@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _set from 'lodash/set'
@@ -22,13 +22,39 @@ import {
 	initialForenkletOppgjoersordningOrg,
 	initialForenkletOppgjoersordningPers,
 } from '../initialValues'
-import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent.tsx'
+import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
 import { isDate } from 'date-fns'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _isEmpty from 'lodash/isEmpty'
-import { useFormikContext } from 'formik'
-import { isEqual } from 'lodash'
+import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
+import _, { isEqual } from 'lodash'
+import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
+
+type Arbeidsforhold = {
+	type?: string
+	ansettelsesPeriode?: Ansettelsesperiode
+	antallTimerForTimeloennet?: Array<unknown>
+	arbeidsavtaler?: Array<unknown>
+	arbeidsgiver?: ArbeidsgiverProps
+	fartoy?: any
+	permisjonPermitteringer?: Array<unknown>
+	utenlandsopphold?: Array<unknown>
+	arbeidsforholdId?: string
+	navArbeidsforholdPeriode?: Date
+}
+
+type ArbeidsgiverProps = {
+	type?: string
+	orgnummer?: string
+	offentligIdent?: string
+}
+
+type Ansettelsesperiode = {
+	fom?: string
+	tom?: string
+	sluttaarsak?: string
+}
 
 export const ArbeidsforholdForm = ({
 	path,
@@ -49,7 +75,8 @@ export const ArbeidsforholdForm = ({
 
 		return _.uniqWith(
 			aaregBestillinger,
-			(best1, best2) => best1?.arbeidsgiver?.orgnummer === best2?.arbeidsgiver?.orgnummer
+			(best1: Arbeidsforhold, best2) =>
+				best1?.arbeidsgiver?.orgnummer === best2?.arbeidsgiver?.orgnummer
 		)
 	}
 
@@ -60,9 +87,23 @@ export const ArbeidsforholdForm = ({
 		return !isEqual(values.aareg, [initialArbeidsforholdOrg])
 	}
 
-	const { touched, values, errors, setFieldValue } = useFormikContext()
+	const {
+		touched,
+		values,
+		errors,
+		setFieldValue,
+	}: {
+		touched: FormikTouched<any>
+		values: FormikValues
+		errors: FormikErrors<any>
+		setFieldValue: any
+	} = useFormikContext()
+	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
+	const erLaastArbeidsforhold =
+		arbeidsgiverType !== ArbeidsgiverTyper.privat &&
+		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
 	useEffect(() => {
 		if (_isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
@@ -78,14 +119,15 @@ export const ArbeidsforholdForm = ({
 				return aaregBestilling
 			})
 		)
-	}, [])
+	}, [values.aareg])
 
 	const gjeldendeArbeidsgiver = _get(values, `${path}.arbeidsgiver`)
+
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
 			? _get(values, 'aareg[0].arbeidsforholdstype')
 			: _get(values, `${path}.arbeidsforholdstype`)
-	const onChangeLenket = (fieldPath) => {
+	const onChangeLenket = (fieldPath: string) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return (field) => {
 				const value = isDate(field) ? field : field?.value || field?.target?.value || null
@@ -94,7 +136,7 @@ export const ArbeidsforholdForm = ({
 		} else {
 			return (field) => {
 				const value = isDate(field) ? field : field?.value || field?.target?.value || null
-				const amelding = _get(values, 'aareg[0].amelding')
+				const amelding = _get(values, 'aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
@@ -160,6 +202,18 @@ export const ArbeidsforholdForm = ({
 		}
 	}
 
+	useEffect(() => {
+		setFieldValue(
+			`${path}.navArbeidsforholdPeriode`,
+			navArbeidsforholdPeriode
+				? {
+						year: navArbeidsforholdPeriode.getFullYear(),
+						monthValue: navArbeidsforholdPeriode.getMonth(),
+				  }
+				: undefined
+		)
+	}, [navArbeidsforholdPeriode])
+
 	const feilmelding = () => {
 		if (
 			!_get(values, `${path}.arbeidsforholdstype`) &&
@@ -204,6 +258,7 @@ export const ArbeidsforholdForm = ({
 						path={`${path}.arbeidsgiver.orgnummer`}
 						label={'Organisasjonsnummer'}
 						feil={checkAktiveArbeidsforhold(values.aareg)}
+						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.fritekst && (
@@ -212,6 +267,8 @@ export const ArbeidsforholdForm = ({
 						label={'Organisasjonsnummer'}
 						size="xlarge"
 						feil={checkAktiveArbeidsforhold(values.aareg)}
+						defaultValue={gjeldendeArbeidsgiver?.orgnummer}
+						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 				{arbeidsgiverType !== ArbeidsgiverTyper.egen && (
@@ -223,28 +280,26 @@ export const ArbeidsforholdForm = ({
 						isClearable={false}
 						onChange={handleArbeidsforholdstypeChange}
 						feil={feilmelding()}
+						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.privat && (
-					<ArbeidsgiverIdent path={`${path}.arbeidsgiver.ident`} />
+					<ArbeidsgiverIdent
+						path={`${path}.arbeidsgiver.ident`}
+						isDisabled={erLaastArbeidsforhold}
+					/>
 				)}
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.fom`}
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
 					fastfield={false}
+					disabled={erLaastArbeidsforhold}
 				/>
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
 					label="Ansatt til"
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
-					fastfield={false}
-				/>
-
-				<FormikDatepicker
-					name={`${path}.navArbeidsforholdPeriode`}
-					label="NAV arbeidsforholdsperiode"
-					onChange={onChangeLenket('navArbeidsforholdPeriode')}
 					fastfield={false}
 				/>
 				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
@@ -254,9 +309,16 @@ export const ArbeidsforholdForm = ({
 						kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 						size="xlarge"
 						onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-						disabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
+						isDisabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
 					/>
 				)}
+				<Monthpicker
+					name={`${path}.navArbeidsforholdPeriode`}
+					date={navArbeidsforholdPeriode}
+					label="NAV arbeidsforholdsperiode"
+					onChange={setNavArbeidsforholdPeriode}
+					isClearable={true}
+				/>
 				{arbeidsforholdstype === 'forenkletOppgjoersordning' && (
 					<FormikSelect
 						name={`${path}.arbeidsavtale.yrke`}
@@ -266,15 +328,24 @@ export const ArbeidsforholdForm = ({
 						isClearable={false}
 						optionHeight={50}
 						onChange={onChangeLenket('arbeidsavtale.yrke')}
+						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 			</div>
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-				<ArbeidsavtaleForm path={`${path}.arbeidsavtale`} onChangeLenket={onChangeLenket} />
+				<ArbeidsavtaleForm
+					path={`${path}.arbeidsavtale`}
+					onChangeLenket={onChangeLenket}
+					disabled={erLaastArbeidsforhold}
+				/>
 			)}
 			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
-				<MaritimtArbeidsforholdForm path={`${path}.fartoy[0]`} onChangeLenket={onChangeLenket} />
+				<MaritimtArbeidsforholdForm
+					path={`${path}.fartoy[0]`}
+					onChangeLenket={onChangeLenket}
+					disabled={erLaastArbeidsforhold}
+				/>
 			)}
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (

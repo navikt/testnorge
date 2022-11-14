@@ -11,16 +11,36 @@ import './Select.less'
 import MenuList from '~/components/ui/form/inputs/select/MenuList'
 import Option from '~/components/ui/form/inputs/select/Option'
 
+type SelectProps = {
+	id?: string
+	name: string
+	value?: any
+	className?: any
+	classNamePrefix?: string
+	isDisabled?: boolean
+	isLoading?: boolean
+	isSearchable?: boolean
+	isClearable?: boolean
+	placeholder?: string
+	options?: any
+	isMulti?: boolean
+	styles?: any
+	kodeverk?: string
+	label?: string
+	feil?: { feilmelding: string }
+	info?: any
+	visHvisAvhuket?: any
+	afterChange?: any
+	fastfield?: boolean
+}
+
 export const Select = ({
 	id,
 	name,
 	value,
-	onChange,
-	onBlur,
 	className,
-	optionHeight,
 	classNamePrefix = 'select',
-	disabled = false,
+	isDisabled = false,
 	isLoading = false,
 	isSearchable = true,
 	isClearable = true,
@@ -29,7 +49,7 @@ export const Select = ({
 	isMulti = false,
 	styles,
 	...rest
-}) => {
+}: SelectProps) => {
 	let _value = isMulti
 		? options.filter((o) => value?.some((el) => el === o.value))
 		: options.filter((o) => o.value === value)
@@ -40,30 +60,27 @@ export const Select = ({
 			options={options}
 			name={name}
 			inputId={id || name}
-			filterOption={createFilter({ ignoreAccents: false })}
-			onChange={onChange}
-			onBlur={onBlur}
 			placeholder={placeholder}
+			filterOption={createFilter({ ignoreAccents: false })}
 			className={cn('basic-single', className)}
 			classNamePrefix={classNamePrefix}
 			components={{
 				MenuList,
 				Option,
 			}}
-			isDisabled={disabled}
+			isDisabled={isDisabled}
 			isSearchable={isSearchable}
 			isLoading={isLoading}
 			isClearable={isClearable}
 			isMulti={isMulti}
 			styles={styles ? styles : { menuPortal: (base) => ({ ...base, zIndex: 99999 }) }}
 			menuPortalTarget={document.getElementById('react-select-root')}
-			optionHeight={optionHeight}
 			{...rest}
 		/>
 	)
 }
 
-export const SelectMedKodeverk = ({ kodeverk, isLoading, ...rest }) => (
+export const SelectMedKodeverk = ({ kodeverk, isLoading, ...rest }: SelectProps) => (
 	<KodeverkConnector navn={kodeverk}>
 		{(kodeverkVerdier) => (
 			<Select {...rest} isLoading={!kodeverkVerdier || isLoading} options={kodeverkVerdier} />
@@ -71,7 +88,7 @@ export const SelectMedKodeverk = ({ kodeverk, isLoading, ...rest }) => (
 	</KodeverkConnector>
 )
 
-export const DollySelect = (props) => (
+export const DollySelect = (props: SelectProps) => (
 	<InputWrapper {...props}>
 		<Label
 			containerClass="dollyselect"
@@ -85,7 +102,7 @@ export const DollySelect = (props) => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ _fastfield, feil, ...props }) => {
+const P_FormikSelect = ({ _fastfield, feil, ...props }: SelectProps) => {
 	const [field, meta] = useField(props)
 	const handleChange = (selected, meta) => {
 		let value
@@ -120,7 +137,7 @@ const P_FormikSelect = ({ _fastfield, feil, ...props }) => {
 	)
 }
 
-export const FormikSelect = ({ visHvisAvhuket = false, ...props }) => {
+export const FormikSelect = ({ visHvisAvhuket = false, ...props }: SelectProps) => {
 	const component = <P_FormikSelect {...props} />
 	return visHvisAvhuket ? <Vis attributt={props.name}>{component}</Vis> : component
 }

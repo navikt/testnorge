@@ -54,19 +54,19 @@ export const PdlNyPerson = ({
 				name={`${nyPersonPath}.identtype`}
 				label="Identtype"
 				options={identtypeOptions}
-				disabled={hasEksisterendePerson}
+				isDisabled={hasEksisterendePerson}
 			/>
 			<FormikSelect
 				name={`${nyPersonPath}.kjoenn`}
 				label="Kjønn"
 				options={Options('kjoenn')}
-				disabled={hasEksisterendePerson}
+				isDisabled={hasEksisterendePerson}
 			/>
 			<FormikTextInput
 				name={`${nyPersonPath}.alder`}
 				type="number"
 				label="Alder"
-				disabled={disableAlder || hasEksisterendePerson}
+				isDisabled={disableAlder || hasEksisterendePerson}
 			/>
 			<DatepickerWrapper>
 				<FormikDatepicker
@@ -90,7 +90,7 @@ export const PdlNyPerson = ({
 					label="Statsborgerskap"
 					kodeverk={AdresseKodeverk.StatsborgerskapLand}
 					size="large"
-					disabled={hasEksisterendePerson}
+					isDisabled={hasEksisterendePerson}
 				/>
 			)}
 			{!erNyIdent && (
@@ -98,13 +98,13 @@ export const PdlNyPerson = ({
 					name={`${nyPersonPath}.gradering`}
 					label="Gradering"
 					options={Options('gradering')}
-					disabled={hasEksisterendePerson}
+					isDisabled={hasEksisterendePerson}
 				/>
 			)}
 			<FormikCheckbox
 				name={`${nyPersonPath}.nyttNavn.hasMellomnavn`}
 				label="Har mellomnavn"
-				disabled={hasEksisterendePerson}
+				isDisabled={hasEksisterendePerson}
 				checkboxMargin={true}
 			/>
 		</div>

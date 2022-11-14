@@ -74,7 +74,7 @@ export const MedServicebehov = ({ formikBag, path }) => {
 					<FormikSelect
 						name={`${path}.dagpenger[0].rettighetKode`}
 						options={Options('rettighetKode')}
-						disabled={true}
+						isDisabled={true}
 						value={'DAGO'} // Endre disabled og denne når flere koder blir støttet
 						label="Rettighetskode"
 						size={'xlarge'}

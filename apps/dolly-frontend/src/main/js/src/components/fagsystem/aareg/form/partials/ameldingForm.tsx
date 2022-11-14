@@ -220,7 +220,6 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				/>
 				<>
 					<Monthpicker
-						formikBag={formikBag}
 						name="aareg[0].genererPeriode.fom"
 						label="F.o.m. kalendermåned"
 						date={fom}
@@ -229,7 +228,6 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 						maxDate={add(new Date(), { years: 1 })}
 					/>
 					<Monthpicker
-						formikBag={formikBag}
 						name="aareg[0].genererPeriode.tom"
 						label="T.o.m. kalendermåned"
 						date={tom}

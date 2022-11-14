@@ -6,6 +6,9 @@ type OrganisasjonMedArbeidsforholdSelectProps = {
 	label: string
 	afterChange?: (value: any) => void
 	valueNavn?: boolean
+	feil?: { feilmelding: string }
+	isDisabled?: boolean
+	defaultValue?: string
 }
 
 export const OrganisasjonMedArbeidsforholdSelect = (

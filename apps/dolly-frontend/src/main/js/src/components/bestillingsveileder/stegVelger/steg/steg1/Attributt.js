@@ -11,7 +11,7 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null, ..
 				size={'small'}
 				onChange={attr.checked ? attr.remove : attr.add}
 				value={attr.label}
-				disabled={disabled}
+				isDisabled={disabled}
 				{...props}
 			/>
 		</div>

@@ -109,11 +109,6 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 				</>
 			) : (
 				<>
-					<StyledAlert variant={'info'}>
-						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
-						ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere med disse
-						attributtene må du bruke egen organisasjon for å opprette A-meldinger.
-					</StyledAlert>
 					<FormikDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"

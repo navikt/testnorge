@@ -31,7 +31,7 @@ export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues
 						name={`${path}.master`}
 						label="Master"
 						options={Options('master')}
-						disabled={!kanVelgeMaster}
+						isDisabled={!kanVelgeMaster}
 					/>
 					{/*Gjeldende skjules frem til vi finner en måte å håndtere den på*/}
 					{/*<FormikCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />*/}

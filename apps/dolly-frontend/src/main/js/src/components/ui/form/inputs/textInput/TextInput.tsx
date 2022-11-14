@@ -19,8 +19,16 @@ export const TextInput = React.forwardRef(
 			placeholder = 'Ikke spesifisert',
 			className,
 			icon,
+			isDisabled,
 			...props
-		}: { name?: string; className?: string; icon?: string; placeholder?: string; feil?: any },
+		}: {
+			name?: string
+			className?: string
+			icon?: string
+			placeholder?: string
+			feil?: any
+			isDisabled?: boolean
+		},
 		ref
 	) => {
 		const css = cn('skjemaelement__input', className, {
@@ -30,7 +38,14 @@ export const TextInput = React.forwardRef(
 		return (
 			<>
 				{/*@ts-ignore*/}
-				<input ref={ref} id={props.name} className={css} placeholder={placeholder} {...props} />
+				<input
+					ref={ref}
+					disabled={isDisabled}
+					id={props.name}
+					className={css}
+					placeholder={placeholder}
+					{...props}
+				/>
 				{icon && <StyledIcon size={20} kind={icon} />}
 			</>
 		)
@@ -46,6 +61,7 @@ export const DollyTextInput = (props: {
 	type?: string
 	readOnly?: boolean
 	useOnChange?: boolean
+	isDisabled?: boolean
 	onBlur?: Function
 	onSubmit?: Function
 	onChange?: Function
@@ -72,10 +88,11 @@ export const FormikTextInput = ({
 	type?: string
 	useOnChange?: boolean
 	useControlled?: boolean
-	disabled?: boolean
+	defaultValue?: string
+	isDisabled?: boolean
 	onKeyPress?: Function
 	autoFocus?: boolean
-	feil?: string
+	feil?: { feilmelding: string }
 }) => {
 	const component = <FormikFieldInput {...props} />
 	// @ts-ignore

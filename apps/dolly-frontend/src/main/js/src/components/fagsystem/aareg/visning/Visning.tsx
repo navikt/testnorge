@@ -32,7 +32,6 @@ type Arbeidsforhold = {
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string
-	navArbeidsforholdPeriode?: Date
 }
 
 type ArbeidsgiverProps = {
@@ -123,13 +122,6 @@ export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVi
 										</>
 									)}
 								</div>
-
-								{arbeidsforhold.navArbeidsforholdPeriode && (
-									<TitleValue
-										title="NAV arbeidsforholdsperiode"
-										value={Formatters.formatDate(arbeidsforhold.navArbeidsforholdPeriode)}
-									/>
-								)}
 
 								<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
 

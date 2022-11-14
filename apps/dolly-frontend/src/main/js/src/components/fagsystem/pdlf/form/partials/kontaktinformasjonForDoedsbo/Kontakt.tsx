@@ -161,7 +161,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${personPath}.navn.fornavn`)}
-						disabled={disablePersoninfo}
+						isDisabled={disablePersoninfo}
 					/>
 				</div>
 			)}
