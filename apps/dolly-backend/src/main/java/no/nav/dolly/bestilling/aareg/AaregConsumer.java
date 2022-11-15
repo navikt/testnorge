@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.aareg;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdGetCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPostCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPutCommand;
@@ -25,7 +26,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Component
-public class AaregConsumer {
+public class AaregConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
@@ -71,20 +72,14 @@ public class AaregConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusWebClient = WebClient.builder().build();
-        var checkMap = new HashMap<String, Object>();
-
-        var statusMap = CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                statusWebClient);
-        statusMap.put("team", TEAM_DOLLY);
-
-        checkMap.put("testnav-aaregister-proxy", statusMap);
-
-        return checkMap;
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-aaregister-proxy";
+    }
+
 }

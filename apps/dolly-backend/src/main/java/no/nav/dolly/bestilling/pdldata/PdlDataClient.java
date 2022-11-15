@@ -64,12 +64,6 @@ public class PdlDataClient implements ClientRegister {
     }
 
     @Override
-    public Map<String, Object> status() {
-        //return pdlDataConsumer.checkStatus();
-        return new HashMap<>();
-    }
-
-    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getPdldata()) ||

@@ -158,7 +158,4 @@ public class AaregClient implements ClientRegister {
                 .toString();
     }
 
-    public Map<String, Object> status() {
-        return aaregConsumer.checkStatus();
-    }
 }

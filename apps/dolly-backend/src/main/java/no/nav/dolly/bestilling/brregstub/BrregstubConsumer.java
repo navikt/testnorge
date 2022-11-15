@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.brregstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.brregstub.command.BrregDeleteCommand;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.config.credentials.BrregstubProxyProperties;
@@ -30,7 +31,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class BrregstubConsumer {
+public class BrregstubConsumer implements ConsumerStatus {
 
     private static final String ROLLEOVERSIKT_URL = "/api/v2/rolleoversikt";
 
@@ -109,25 +110,14 @@ public class BrregstubConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        // "BrregStub" ikke direkte tilgang
-        var registerStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://brreg-stub.dev.adeo.no/isAlive",
-                "https://brreg-stub.dev.adeo.no/isReady",
-                WebClient.builder().build());
-        registerStatus.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-brregstub-proxy", statusMap,
-                "brreg-stub", registerStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-brregstub-proxy";
+    }
+
 }

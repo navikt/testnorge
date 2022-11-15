@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.kontoregisterperson;
+package no.nav.testnav.proxies.inntektstubproxy;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,20 +13,20 @@ import java.util.stream.Stream;
 
 @RestController
 public class StatusController {
-    private static final String TEAM_OKONOMI = "Team utbetale og informere (okonomi)";
+    private static final String TEAM = "Team Inntekt";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String>> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
-                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
+                "https://inntektstub.dev.adeo.no/internal/isAlive",
+                "https://inntektstub.dev.adeo.no/internal/isReady",
                 statusWebClient);
-        pensjonStatus.put("team", TEAM_OKONOMI);
+        pensjonStatus.put("team", TEAM);
 
         return Map.of(
-                "sokos-kontoregister-person", pensjonStatus
+                "inntektstub", pensjonStatus
         );
     }
 

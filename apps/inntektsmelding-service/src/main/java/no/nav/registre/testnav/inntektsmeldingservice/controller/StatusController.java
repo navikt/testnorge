@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.skjermingsregisterproxy;
+package no.nav.registre.testnav.inntektsmeldingservice.controller;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,20 +11,20 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class StatusController {
-    private static final String TEAM = "Team Org (NOM)";
+    private static final String TEAM = "Team Dolly";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String>> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://skjermede-personer.dev.adeo.no" + "/internal/isAlive",
-                "https://skjermede-personer.dev.adeo.no" + "/internal/isReady",
+                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isAlive",
+                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isReady",
                 statusWebClient);
         status.put("team", TEAM);
 
         return Map.of(
-                "skjermede-personer", status
+                "testnav-inntektsmelding-generator-service", status
         );
     }
 
@@ -39,7 +39,7 @@ public class StatusController {
         try {
             blockingThread.join();
         } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
         }
 
         return status;

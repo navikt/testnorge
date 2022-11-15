@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteEgenansattCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteSikkerhetstiltakCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteTelefonnummerCommand;
@@ -34,7 +35,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class TpsMessagingConsumer {
+public class TpsMessagingConsumer implements ConsumerStatus {
 
     private static final String BASE_URL = "/api/v1/personer/{ident}";
     private static final String UTENLANDSK_BANKKONTO_URL = BASE_URL + "/bankkonto-utenlandsk";
@@ -152,17 +153,14 @@ public class TpsMessagingConsumer {
                 .flatMapMany(token -> new HentPersonCommand(webClient, ident, miljoer, token.getTokenValue()).call());
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-tps-messaging-service", statusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-tps-messaging-service";
+    }
+
 }

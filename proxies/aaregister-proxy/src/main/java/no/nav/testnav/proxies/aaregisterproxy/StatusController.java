@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.skjermingsregisterproxy;
+package no.nav.testnav.proxies.aaregisterproxy;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -8,24 +8,31 @@ import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 public class StatusController {
-    private static final String TEAM = "Team Org (NOM)";
+    private static final String TEAM = "aareg";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String>> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
-        var status = checkConsumerStatus(
-                "https://skjermede-personer.dev.adeo.no" + "/internal/isAlive",
-                "https://skjermede-personer.dev.adeo.no" + "/internal/isReady",
-                statusWebClient);
-        status.put("team", TEAM);
-
-        return Map.of(
-                "skjermede-personer", status
-        );
+        return Stream.of("q1", "q2", "q4", "q5", "t0", "t1", "t3", "t4", "t5")
+                .parallel()
+                .map(miljo -> {
+                    var miljoStatus = checkConsumerStatus(
+                            "https://modapp-" + miljo + ".adeo.no/internal/isAlive",
+                            "https://modapp-" + miljo + ".adeo.no/internal/isReady",
+                            statusWebClient);
+                    miljoStatus.put("team", TEAM);
+                    return Map.of(
+                            "modapp-" + miljo, miljoStatus
+                    );
+                })
+                .flatMap(map -> map.entrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.dokarkiv;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
@@ -34,7 +35,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @Service
-public class DokarkivConsumer {
+public class DokarkivConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -86,34 +87,14 @@ public class DokarkivConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_DOKARKIV = "Team Dokumentløsninger";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        Map<String, Object> miljoerStatuser = new HashMap<>();
-
-//        // "Dokarkiv-proxy" ikke direkte tilgang
-//        Map<String, Object> miljoerStatuser = Stream.of("q1", "q2", "q4", "q5", "qx", "t0", "t1", "t2", "t3", "t4", "t5", "t13")
-//                .map(miljo -> {
-//                    var url = "https://dokarkiv-" + miljo + ".dev.adeo.no";
-//                    var miljoStatus = CheckAliveUtil.checkConsumerStatus(
-//                            url + "/actuator/health/liveness",
-//                            url + "/actuator/health/readiness",
-//                            WebClient.builder().build());
-//                    miljoStatus.put("team", TEAM_DOKARKIV);
-//                    return Map.of("dokarkiv-" + miljo, miljoStatus);
-//                })
-//                .flatMap(map -> map.entrySet().stream())
-//                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-
-        miljoerStatuser.put("testnav-dokarkiv-proxy", statusMap);
-
-        return miljoerStatuser;
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-dokarkiv-proxy";
+    }
+
 }

@@ -127,11 +127,6 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
-    public Map<String, Object> status() {
-        return pensjonforvalterConsumer.checkStatus();
-    }
-
-    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getPensjonforvalter()) ||

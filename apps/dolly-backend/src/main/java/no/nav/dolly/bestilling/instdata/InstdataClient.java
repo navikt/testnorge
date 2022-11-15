@@ -156,7 +156,4 @@ public class InstdataClient implements ClientRegister {
         return status.toString();
     }
 
-    public Map<String, Object> status() {
-        return instdataConsumer.checkStatus();
-    }
 }

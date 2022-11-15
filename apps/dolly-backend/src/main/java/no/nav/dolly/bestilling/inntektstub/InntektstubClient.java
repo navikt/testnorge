@@ -128,7 +128,4 @@ public class InntektstubClient implements ClientRegister {
         }
     }
 
-    public Map<String, Object> status() {
-        return inntektstubConsumer.checkStatus();
-    }
 }

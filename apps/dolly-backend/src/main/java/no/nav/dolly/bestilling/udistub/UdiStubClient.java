@@ -80,8 +80,4 @@ public class UdiStubClient implements ClientRegister {
             udiStubConsumer.updateUdiPerson(wrapper.getUdiPerson());
         }
     }
-
-    public Map<String, Object> status() {
-        return udiStubConsumer.checkStatus();
-    }
 }
