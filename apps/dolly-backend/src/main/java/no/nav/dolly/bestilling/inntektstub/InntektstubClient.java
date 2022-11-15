@@ -8,19 +8,15 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
-import no.nav.dolly.bestilling.inntektstub.util.CompareUtil;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
@@ -55,11 +51,20 @@ public class InntektstubClient implements ClientRegister {
 
             progress.setInntektstubStatus(String.join(",",
                     requireNonNull(
-                            inntektstubConsumer.getToken()
-                                    .flatMapMany(token ->
-                                            betingetOpprettInntekter(inntektsinformasjonWrapper.getInntektsinformasjon(), token))
+                            inntektstubConsumer.postInntekter(inntektsinformasjonWrapper.getInntektsinformasjon())
                                     .collectList()
-                                    .block())));
+                                    .map(inntekter -> {
+                                        log.info("Inntektstub respons {}", inntekter);
+                                        return inntekter.stream()
+                                                .map(Inntektsinformasjon::getFeilmelding)
+                                                .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                                "Feil= " + inntekter.stream()
+                                                        .map(Inntektsinformasjon::getFeilmelding)
+                                                        .filter(StringUtils::isNotBlank)
+                                                        .map(feil -> encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
+                                                        .collect(Collectors.joining(","));
+                                    }))
+                            .block()));
         }
         return Flux.just();
     }
@@ -77,27 +82,6 @@ public class InntektstubClient implements ClientRegister {
         return isNull(kriterier.getInntektstub()) ||
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getInntektstubStatus()));
-    }
-
-    private Mono<String> betingetOpprettInntekter(List<Inntektsinformasjon> inntektsinformasjon, AccessToken accessToken) {
-
-        return inntektstubConsumer.getInntekter(inntektsinformasjon.get(0).getNorskIdent(), accessToken)
-                .collectList()
-                .map(inntekt -> CompareUtil.isSubsetOf(inntektsinformasjon, inntekt))
-                .filter(BooleanUtils::isFalse)
-                .flatMapMany(status -> inntektstubConsumer.postInntekter(inntektsinformasjon, accessToken))
-                .collectList()
-                .map(inntekter -> {
-                    log.info("Inntektstub respons {}", inntekter);
-                    return inntekter.stream()
-                            .map(Inntektsinformasjon::getFeilmelding)
-                            .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                            "Feil= " + inntekter.stream()
-                                    .map(Inntektsinformasjon::getFeilmelding)
-                                    .filter(StringUtils::isNotBlank)
-                                    .map(feil -> encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
-                                    .collect(Collectors.joining(","));
-                });
     }
 
     public Map<String, Object> status() {

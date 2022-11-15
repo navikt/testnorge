@@ -13,7 +13,6 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -58,22 +57,11 @@ public class InntektstubConsumer {
                 .build();
     }
 
-    public Mono<AccessToken> getToken() {
-
-        return tokenService.exchange(serviceProperties);
-    }
-
-    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
-    public Flux<Inntektsinformasjon> getInntekter(String ident, AccessToken accessToken) {
-
-        return new InntektstubGetCommand(webClient, ident, accessToken.getTokenValue()).call();
-    }
-
     @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
     public List<Inntektsinformasjon> getInntekter(String ident) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> getInntekter(ident, token))
+                .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call())
                 .collectList()
                 .block();
     }
@@ -82,24 +70,22 @@ public class InntektstubConsumer {
     public Mono<List<String>> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size())
-                        .delayElements(Duration.ofMillis(10))
-                        .map(index -> deleteInntekter(identer.get(index), token))
+                .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                        .delayElements(Duration.ofMillis(100))
+                        .map(index -> new InntektstubDeleteCommand(webClient,
+                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
+                                token.getTokenValue()).call())
                         .flatMap(Flux::from))
                 .collectList();
     }
 
-    public Flux<String> deleteInntekter(String ident, AccessToken accessToken) {
-
-        return new InntektstubDeleteCommand(webClient, List.of(ident), accessToken.getTokenValue()).call();
-    }
-
     @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
-    public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon, AccessToken accessToken) {
+    public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         log.info("Sender inntektstub: {}", inntektsinformasjon);
 
-        return new InntektstubPostCommand(webClient, inntektsinformasjon, accessToken.getTokenValue()).call();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
