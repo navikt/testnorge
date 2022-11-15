@@ -38,6 +38,7 @@ import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/Gjenoppre
 import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
@@ -143,23 +144,21 @@ export const PersonVisning = ({
 		) {
 			return true
 		}
-
+		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold)) {
+			return true
+		}
 		if (poppData && sjekkManglerPensjonData(poppData)) {
 			return true
 		}
-
 		if (tpData && sjekkManglerTpData(tpData)) {
 			return true
 		}
-
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
 			return true
 		}
-
 		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
-
 		return false
 	}
 
@@ -275,7 +274,6 @@ export const PersonVisning = ({
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
 				<AaregVisning
-					ident={ident.ident}
 					liste={arbeidsforhold}
 					loading={loadingAareg}
 					bestilteMiljoer={bestilteMiljoer}

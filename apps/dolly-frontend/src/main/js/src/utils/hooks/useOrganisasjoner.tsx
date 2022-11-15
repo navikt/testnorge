@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAny } from '~/api'
+import { fetcher, multiFetcherFagsystemer } from '~/api'
 import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -20,10 +20,10 @@ const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
 	}`
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
-	return miljoer.map(
-		(miljoe) =>
-			`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
-	)
+	return miljoer.map((miljoe) => ({
+		url: `/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
+		miljo: miljoe,
+	}))
 }
 export type Bestillingsstatus = {
 	id: number
@@ -157,12 +157,12 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, error } = useSWR<Arbeidsforhold[], Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		multiFetcherAny,
+		multiFetcherFagsystemer,
 		{ dedupingInterval: 30000 }
 	)
 
 	return {
-		arbeidsforhold: data?.[0],
+		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,
 		error: error,
 	}

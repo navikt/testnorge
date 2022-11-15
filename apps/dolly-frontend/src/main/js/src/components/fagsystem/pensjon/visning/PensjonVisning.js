@@ -47,6 +47,8 @@ export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -59,7 +61,7 @@ export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 					Kunne ikke hente pensjon-data på person
 				</Alert>
 			) : (
-				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={'q1'} data={data}>
+				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
 					<PensjonInntekt />
 				</MiljoTabs>
 			)}
