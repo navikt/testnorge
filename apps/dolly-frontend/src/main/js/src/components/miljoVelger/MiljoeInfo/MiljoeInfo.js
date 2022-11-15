@@ -1,10 +1,14 @@
 import React from 'react'
 import _get from 'lodash/get'
-import { ArenaApi, InstApi, PensjonApi } from '~/service/Api'
+import { InstApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 import { Alert } from '@navikt/ds-react'
+import { useArenaEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import Formatters from '~/utils/DataFormatter'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
+	const { arenaEnvironments, arenaLoading } = useArenaEnvironments()
+	const { pensjonEnvironments, pensjonLoading } = usePensjonEnvironments()
 	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
 	if (
 		!instdata &&
@@ -46,10 +50,11 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				{arenaforvalter && (
 					<li>
 						Arena:&nbsp;
-						<TilgjengeligeMiljoer
-							endepunkt={ArenaApi.getTilgjengeligeMiljoer}
-							dollyEnvironments={dollyEnvironments}
-						/>
+						<span>
+							{arenaLoading
+								? 'Laster tilgjengelige miljøer..'
+								: Formatters.arrayToString(arenaEnvironments)}
+						</span>
 					</li>
 				)}
 
@@ -59,10 +64,11 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
 						{pensjonforvalter?.tp && 'TP'}
 						):&nbsp;
-						<TilgjengeligeMiljoer
-							endepunkt={PensjonApi.getTilgjengeligeMiljoer}
-							dollyEnvironments={dollyEnvironments}
-						/>
+						<span>
+							{pensjonLoading
+								? 'Laster tilgjengelige miljøer..'
+								: Formatters.arrayToString(pensjonEnvironments)}
+						</span>
 					</li>
 				)}
 

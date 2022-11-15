@@ -7,6 +7,7 @@ import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray
 import _orderBy from 'lodash/orderBy'
 import { DollyApi } from '~/service/Api'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useArenaEnvironments } from '~/utils/hooks/useEnvironments'
 
 const Visning = ({ data }) => {
 	if (!data || data.length === 0) {
@@ -105,7 +106,9 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 			mountedRef.current = false
 		}
 	}, [])
-	if (loading || tagsloading) {
+	const { arenaEnvironments, arenaLoading } = useArenaEnvironments()
+
+	if (loading || tagsloading || arenaLoading) {
 		return <Loading label="Laster arena-data" />
 	}
 	if (!data && !harArenasyntTag) {
@@ -115,7 +118,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
-	let visningData = mapTilVisningData(arenaBestillinger, harArenasyntTag)
+	let visningData = mapTilVisningData(arenaBestillinger, harArenasyntTag, arenaEnvironments)
 	const bestilteMiljoer = visningData
 		.filter((best) => best.data?.length > 0)
 		.map((best) => best.miljo)
@@ -141,7 +144,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	)
 }
 
-const mapTilVisningData = (bestillinger, harArenaSyntTag) => {
+const mapTilVisningData = (bestillinger, harArenaSyntTag, arenaMiljoer) => {
 	const miljoeData = []
 
 	const getMiljoe = (bestilling) => {
@@ -151,7 +154,7 @@ const mapTilVisningData = (bestillinger, harArenaSyntTag) => {
 			?.detaljert?.map((detalj) => detalj.miljo)
 	}
 
-	for (const miljoe of ['q1', 'q2', 'q4']) {
+	for (const miljoe of arenaMiljoer) {
 		const data = []
 		for (const bestilling of bestillinger) {
 			if (getMiljoe(bestilling)?.includes(miljoe)) {
