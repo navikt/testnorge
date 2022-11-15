@@ -17,9 +17,18 @@ import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 type AaregVisningProps = {
 	ident?: string
-	liste?: Array<Arbeidsforhold>
+	liste?: Array<MiljoDataListe>
 	loading?: boolean
 	bestilteMiljoer?: Array<string>
+}
+
+type MiljoDataListe = {
+	miljo: string
+	data: Array<Arbeidsforhold>
+}
+
+type ArbeidsforholdArray = {
+	data?: Array<Arbeidsforhold>
 }
 
 type Arbeidsforhold = {
@@ -59,7 +68,7 @@ const getHeader = (data: Arbeidsforhold) => {
 	})`
 }
 
-const Arbeidsforhold = ({ data }) => {
+const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	if (!data) return null
 
 	const sortedData = data

@@ -5,6 +5,11 @@ import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljo
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 
+type MiljoDataListe = {
+	miljo: string
+	data: Array<Arbeidsforhold>
+}
+
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
 
@@ -155,12 +160,12 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
 
-	const { data, error } = useSWR<Arbeidsforhold[], Error>(
+	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
 		multiFetcherFagsystemer,
 		{ dedupingInterval: 30000 }
 	)
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	return {
 		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,
