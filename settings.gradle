@@ -133,7 +133,7 @@ includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
 includeBuild './apps/skd-service'
 includeBuild './apps/inst-service'
-includeBuild './apps/status-frontend'
+includeBuild './apps/status'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 

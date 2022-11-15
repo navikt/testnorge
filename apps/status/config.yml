@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-status-frontend
+  name: testnav-status
   namespace: dolly
   labels:
     team: dolly
@@ -12,6 +12,7 @@ spec:
     outbound:
       rules:
         - application: dolly-backend
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -36,4 +37,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://status-dolly.dev.intern.nav.no"
+    - "https://dollystatus.dev.intern.nav.no"

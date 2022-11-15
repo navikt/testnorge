@@ -11,8 +11,8 @@ Applikasjon for viser status på forskjellig applikasjoner og tjeneserter fra Do
 Lenke https://status-dolly.dev.intern.nav.no/ 
 
 ## Lokal kjøring
-Ha naisdevice kjørende og kjør OversiktFrontendApplicationStarter med følgende argumenter:
+Ha naisdevice kjørende og i "src/main/js" mappe kjør
 ```
--Dspring.cloud.vault.token=[kopier token fra vault]
--Dspring.profiles.active=dev
+npm install
+npm start
 ```
