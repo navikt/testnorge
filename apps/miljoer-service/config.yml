@@ -22,8 +22,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
-        - application: testnorge-aareg
-          cluster: dev-fss
         - application: testnav-orgnummer-service
           cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
