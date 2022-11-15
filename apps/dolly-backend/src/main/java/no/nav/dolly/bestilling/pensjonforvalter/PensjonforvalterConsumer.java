@@ -74,12 +74,14 @@ public class PensjonforvalterConsumer {
     public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest, Set<String> miljoer, AccessToken token) {
 
         opprettPersonRequest.setMiljoer(miljoer);
+        log.info("Pensjon opprett person {}", opprettPersonRequest);
         return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
     public Flux<PensjonforvalterResponse> lagreInntekt(LagreInntektRequest lagreInntektRequest, AccessToken token) {
 
+        log.info("Pensjon lagre inntekt {}", lagreInntektRequest);
         return new LagreInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest).call();
     }
 
@@ -94,6 +96,7 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
     public Flux<PensjonforvalterResponse> lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest, AccessToken token) {
 
+        log.info("Pensjon lagre TP-forhold {}", lagreTpForholdRequest);
         return new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call();
     }
 
@@ -120,6 +123,7 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
     public Flux<PensjonforvalterResponse> lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
 
+        log.info("Pensjon lagre TP-ytelse {}", lagreTpYtelseRequest);
         return  new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call();
     }
 
