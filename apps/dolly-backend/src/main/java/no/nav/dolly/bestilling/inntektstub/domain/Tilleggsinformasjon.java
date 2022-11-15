@@ -2,15 +2,13 @@ package no.nav.dolly.bestilling.inntektstub.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor
@@ -30,17 +28,14 @@ public class Tilleggsinformasjon {
     private ReiseKostOgLosji reiseKostOgLosji;
     private UtenlandskArtist utenlandskArtist;
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @EqualsAndHashCode
     @NoArgsConstructor
     public static class BilOgBaat {}
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class BonusFraForsvaret {
@@ -48,17 +43,13 @@ public class Tilleggsinformasjon {
         private String aaretUtbetalingenGjelderFor;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     public static class DagmammaIEgenBolig {}
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Periode {
@@ -67,17 +58,13 @@ public class Tilleggsinformasjon {
         private LocalDate sluttdato;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     public static class NorskKontinentalsokkel {}
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Inntjeningsforhold {
@@ -85,31 +72,23 @@ public class Tilleggsinformasjon {
         private String inntjeningsforhold;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     public static class Livrente {}
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     public static class LottOgPartInnenFiske {}
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     public static class Nettoloennsordning {}
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class AldersUfoereEtterlatteAvtalefestetOgKrigspensjon {
@@ -122,10 +101,8 @@ public class Tilleggsinformasjon {
         private Integer ufoeregrad;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ReiseKostOgLosji {
@@ -133,10 +110,8 @@ public class Tilleggsinformasjon {
         private String persontype;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
-    @EqualsAndHashCode
     @NoArgsConstructor
     public static class UtenlandskArtist {}
 }
