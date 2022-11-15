@@ -83,7 +83,7 @@ export const BestillingProgresjon = ({
 			percent += 10
 		}
 
-		if (antallLevert === total) {
+		if (antallLevert === total || bestilling?.ferdig || bestillingStatus?.ferdig) {
 			text = `Ferdigstiller bestilling`
 			ferdigstillBestilling()
 		}

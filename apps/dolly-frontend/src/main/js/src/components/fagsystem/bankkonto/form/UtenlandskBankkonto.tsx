@@ -40,14 +40,14 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 					<FormikTextInput
 						name={`${path}.kontonummer`}
 						label={'Kontonummer'}
-						disabled={disableKontonummer}
+						isDisabled={disableKontonummer}
 					/>
 					<div style={{ marginTop: '31px' }}>
 						<FormikCheckbox
 							name={`${path}.tilfeldigKontonummer`}
 							label="Har tilfeldig kontonummer"
 							size="x-small"
-							disabled={disableTilfeldigKontonummer}
+							isDisabled={disableTilfeldigKontonummer}
 						/>
 					</div>
 				</div>

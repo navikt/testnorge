@@ -75,7 +75,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 									onChange={(e: { value: any }) => handleBrukerChange(e, formikBag)}
 									value={bruker}
 									isClearable={false}
-									disabled={!malAktiv}
+									isDisabled={!malAktiv}
 								/>
 								<FormikSelect
 									name="mal"
@@ -84,7 +84,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 									options={malOptions}
 									size="grow"
 									fastfield={false}
-									disabled={!malAktiv}
+									isDisabled={!malAktiv}
 								/>
 							</InputDiv>
 							<div className="mal-admin">

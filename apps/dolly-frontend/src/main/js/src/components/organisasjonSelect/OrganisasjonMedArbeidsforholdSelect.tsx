@@ -4,8 +4,11 @@ import { OrganisasjonSelect } from './OrganisasjonSelect'
 type OrganisasjonMedArbeidsforholdSelectProps = {
 	path: string
 	label: string
-	afterChange?: Function
+	afterChange?: (value: any) => void
 	valueNavn?: boolean
+	feil?: { feilmelding: string }
+	isDisabled?: boolean
+	defaultValue?: string
 }
 
 export const OrganisasjonMedArbeidsforholdSelect = (

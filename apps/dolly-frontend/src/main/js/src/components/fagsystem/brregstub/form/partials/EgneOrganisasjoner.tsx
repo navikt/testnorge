@@ -1,17 +1,15 @@
 import React from 'react'
-import Loading from '~/components/ui/loading/Loading'
 import _get from 'lodash/get'
-import { FormikProps } from 'formik'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+import { useFormikContext } from 'formik'
 
 interface OrgProps {
 	path: string
 	label?: string
-	formikBag: FormikProps<{}>
 	handleChange: (event: React.ChangeEvent<any>) => void
 	warningMessage?: string
 	filterValidEnhetstyper?: boolean
@@ -88,7 +86,6 @@ const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
 export const EgneOrganisasjoner = ({
 	path,
 	label,
-	formikBag,
 	handleChange,
 	warningMessage,
 	filterValidEnhetstyper,
@@ -96,6 +93,7 @@ export const EgneOrganisasjoner = ({
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
+	const formikBag = useFormikContext()
 
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
@@ -119,7 +117,6 @@ export const EgneOrganisasjoner = ({
 
 	return (
 		<>
-			{loading && <Loading label="Laster organisasjoner" />}
 			{error && (
 				<Alert variant={'warning'}>
 					Noe gikk galt med henting av egne organisasjoner! Prøv på nytt, velg et annet alternativ
@@ -137,13 +134,14 @@ export const EgneOrganisasjoner = ({
 						<a href="/organisasjoner">her</a>.
 					</Alert>
 				))}
-			{harEgneOrganisasjoner && !error && (
+			{!error && (
 				<EgneOrgSelect
 					name={path}
 					label={label ? label : 'Organisasjonsnummer'}
 					options={
 						filterValidEnhetstyper ? getFilteredOptions(egneOrganisasjoner) : egneOrganisasjoner
 					}
+					isLoading={loading}
 					size="xlarge"
 					onChange={handleChange}
 					value={_get(formikBag.values, path)}

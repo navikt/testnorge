@@ -12,12 +12,12 @@ type PersonMiljoeinfoProps = {
 export const ArbeidsforholdMiljoeVisning = ({ ident, miljoe }: PersonMiljoeinfoProps) => {
 	const { loading, arbeidsforhold, error } = useArbeidsforhold(ident, true, miljoe)
 
-	if (error || !arbeidsforhold) {
+	if (error) {
 		return null
 	}
 
 	if (loading) {
-		return <Loading label="Laster miljøer" fullpage />
+		return <Loading label="Laster miljøer" />
 	}
 
 	return !arbeidsforhold || arbeidsforhold?.length < 1 ? (

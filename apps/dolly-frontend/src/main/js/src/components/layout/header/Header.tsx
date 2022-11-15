@@ -15,16 +15,13 @@ import Loading from '~/components/ui/loading/Loading'
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
-	const {
-		currentBruker: { brukertype },
-		loading,
-	} = useCurrentBruker()
+	const { currentBruker, loading } = useCurrentBruker()
 
 	if (loading) {
 		return <Loading label="Laster bruker" panel />
 	}
 
-	const bankidBruker = brukertype === 'BANKID'
+	const bankidBruker = currentBruker?.brukertype === 'BANKID'
 	return (
 		<header className="app-header">
 			<NavLink to="/" end className="home-nav">

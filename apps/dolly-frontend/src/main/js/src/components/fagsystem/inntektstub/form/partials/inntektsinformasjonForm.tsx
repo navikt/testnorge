@@ -46,7 +46,6 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 		<div key={path}>
 			<div className="flexbox--flex-wrap">
 				<Monthpicker
-					formikBag={formikBag}
 					name={`${path}.sisteAarMaaned`}
 					label="År/måned"
 					date={date}

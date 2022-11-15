@@ -5,14 +5,15 @@ import Icon from '~/components/ui/icon/Icon'
 import Loading from '~/components/ui/loading/Loading'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { TpsfApi } from '~/service/Api'
-import { FormikProps } from 'formik'
+import { useFormikContext } from 'formik'
 
 type ArbeidsgiverIdentProps = {
-	formikBag: FormikProps<{}>
 	path: string
+	isDisabled?: boolean
 }
 
-export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) => {
+export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
+	const formikBag = useFormikContext()
 	const [error, setError] = useState(null)
 	const [personnummer, setPersonnummer] = useState(_get(formikBag.values, path))
 	const [success, setSuccess] = useBoolean(false)
@@ -73,7 +74,7 @@ export const ArbeidsgiverIdent = ({ formikBag, path }: ArbeidsgiverIdentProps) =
 				defaultValue={personnummer}
 				label={'Arbeidsgiver ident'}
 				onBlur={handleChange}
-				disabled={loading}
+				isDisabled={loading || isDisabled}
 				feil={
 					error && {
 						feilmelding: error,
