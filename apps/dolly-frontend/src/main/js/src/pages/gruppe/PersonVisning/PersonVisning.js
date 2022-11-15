@@ -42,7 +42,7 @@ import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visn
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
-import { sjekkManglerTpData } from '~/components/fagsystem/pensjon/visning/TpVisning'
+import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import {
 	harAaregBestilling,
 	harPoppBestilling,

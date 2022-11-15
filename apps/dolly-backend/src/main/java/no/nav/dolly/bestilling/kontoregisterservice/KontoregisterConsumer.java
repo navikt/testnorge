@@ -28,6 +28,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -176,23 +177,29 @@ public class KontoregisterConsumer {
 
     public Map<String, Object> checkStatus() {
         final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_OKONOMI = "Team utbetale og informere (okonomi)";
+
+        var statusWebClient = WebClient.builder().build();
 
         var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
                 serviceProperties.getUrl() + "/internal/isAlive",
                 serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
+                statusWebClient);
         consumerStatus.put("team", TEAM_DOLLY);
 
-//        var endServiceStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
-//                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
-//                WebClient.builder().build());
-//        endServiceStatus.put("team", TEAM_OKONOMI);
+        var status = new ConcurrentHashMap<String, Object>();
+        status.put("testnav-kontoregister-person-proxy", consumerStatus);
 
-        return Map.of(
-                "testnav-kontoregister-person-proxy", consumerStatus
-                //"sokos-kontoregister-person", endServiceStatus
-        );
+        try {
+            Map response = statusWebClient.get()
+                    .uri(serviceProperties.getUrl() + "/internal/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            status.putAll(response);
+        } catch (Exception e) {
+            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
+        }
+
+        return status;
     }
 }
