@@ -62,11 +62,6 @@ public class SigrunStubClient implements ClientRegister {
     }
 
     @Override
-    public Map<String, Object> status() {
-        return sigrunStubConsumer.checkStatus();
-    }
-
-    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getSigrunstub()) ||

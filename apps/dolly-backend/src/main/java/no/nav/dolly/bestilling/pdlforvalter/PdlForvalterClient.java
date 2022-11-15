@@ -507,13 +507,4 @@ public class PdlForvalterClient implements ClientRegister {
         builder.append("&OK");
     }
 
-    public Map<String, Object> status() {
-        return Stream.of(
-                        pdlForvalterConsumer.checkStatus(),
-                        pdlDataConsumer.checkStatus()
-                        //pdlStatus
-                )
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
 }

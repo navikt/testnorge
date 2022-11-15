@@ -132,7 +132,4 @@ public class InntektsmeldingClient implements ClientRegister {
         return null;
     }
 
-    public Map<String, Object> status() {
-        return inntektsmeldingConsumer.checkStatus();
-    }
 }

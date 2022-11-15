@@ -145,7 +145,4 @@ public class DokarkivClient implements ClientRegister {
         return null;
     }
 
-    public Map<String, Object> status() {
-        return dokarkivConsumer.checkStatus();
-    }
 }

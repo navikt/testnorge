@@ -16,7 +16,5 @@ public interface ClientRegister {
 
     void release(List<String> identer);
 
-    Map<String, Object> status();
-
     boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling);
 }
