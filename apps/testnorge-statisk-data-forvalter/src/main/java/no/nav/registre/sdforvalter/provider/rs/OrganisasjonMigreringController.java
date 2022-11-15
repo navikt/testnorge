@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonFasteDataConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.organisasjon.OrganisasjonFasteDataConsumer;
 
 @RestController
 @RequestMapping("/api/v1/organisasjon/migrering")
