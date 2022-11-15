@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-status
+  name: testnav-dollystatus
   namespace: dolly
   labels:
     team: dolly
