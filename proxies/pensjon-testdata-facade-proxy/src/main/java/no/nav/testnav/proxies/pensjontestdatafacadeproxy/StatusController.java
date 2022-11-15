@@ -39,7 +39,7 @@ public class StatusController {
         try {
             blockingThread.join();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
 
         return status;
