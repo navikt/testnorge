@@ -61,8 +61,8 @@ const Visning = ({ data }) => {
 }
 
 const ARENASYNT = 'ARENASYNT'
-const ARENA_MILJOE = ['q1', 'q2', 'q4']
 const SYNT_MILJOE = 'q2'
+const SYNT_INFO = 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
 
 const initialVisningData = {
 	brukertype: undefined,
@@ -115,16 +115,24 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
-	const arenaMiljoer = data?.arbeidsokerList?.map((arb) => arb.miljoe)
-	const visningData = mapTilVisningData(data, arenaMiljoer, arenaBestillinger, harArenasyntTag)
-	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	let visningData = mapTilVisningData(arenaBestillinger, harArenasyntTag)
+	const bestilteMiljoer = visningData
+		.filter((best) => best.data?.length > 0)
+		.map((best) => best.miljo)
 
+	const arenaMiljoer = data?.arbeidsokerList?.map((arb) => arb.miljoe)
+	visningData = visningData.map((vData) => {
+		if (!arenaMiljoer?.includes(vData.miljo)) {
+			vData.data = []
+		}
+		return vData
+	})
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 			<MiljoTabs
-				bestilteMiljoer={arenaMiljoer?.length > 0 ? arenaMiljoer : [SYNT_MILJOE]}
-				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
+				bestilteMiljoer={bestilteMiljoer}
+				forsteMiljo={bestilteMiljoer?.[0] ? bestilteMiljoer[0] : SYNT_MILJOE}
 				data={visningData}
 			>
 				<Visning />
@@ -133,7 +141,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	)
 }
 
-const mapTilVisningData = (arenaData, bestilteMiljoer, bestillinger, harArenaSyntTag) => {
+const mapTilVisningData = (bestillinger, harArenaSyntTag) => {
 	const miljoeData = []
 
 	const getMiljoe = (bestilling) => {
@@ -143,28 +151,22 @@ const mapTilVisningData = (arenaData, bestilteMiljoer, bestillinger, harArenaSyn
 			?.detaljert?.map((detalj) => detalj.miljo)
 	}
 
-	for (const miljoe of ARENA_MILJOE) {
+	for (const miljoe of ['q1', 'q2', 'q4']) {
 		const data = []
-		if (bestilteMiljoer?.includes(miljoe)) {
-			for (const bestilling of bestillinger) {
-				if (getMiljoe(bestilling)?.includes(miljoe)) {
-					data.push(bestilling)
-				}
+		for (const bestilling of bestillinger) {
+			if (getMiljoe(bestilling)?.includes(miljoe)) {
+				data.push(bestilling)
 			}
 		}
 
-		const info =
-			miljoe === SYNT_MILJOE && harArenaSyntTag
-				? 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
-				: null
+		const info = miljoe === SYNT_MILJOE && harArenaSyntTag ? SYNT_INFO : null
 
 		let visningData = []
 		if (data.length > 0) {
 			const sortedBestillinger = data.length > 0 ? _orderBy(data, ['id'], ['desc']) : []
 			const sisteArenaBestilling = sortedBestillinger?.[0]
 			let mappedData = { ...initialVisningData }
-			const arena = arenaData?.arbeidsokerList?.filter((arbs) => arbs.miljoe === miljoe)?.[0]
-			fyllVisningData(arena, sisteArenaBestilling, mappedData)
+			fyllVisningData(sisteArenaBestilling, mappedData)
 			visningData.push(mappedData)
 		}
 
@@ -174,7 +176,7 @@ const mapTilVisningData = (arenaData, bestilteMiljoer, bestillinger, harArenaSyn
 	return miljoeData
 }
 
-function fyllVisningData(data, bestilling, visningData) {
+function fyllVisningData(bestilling, visningData) {
 	if (!bestilling) {
 		return null
 	}
@@ -188,10 +190,8 @@ function fyllVisningData(data, bestilling, visningData) {
 		dagpenger,
 	} = bestilling.data.arenaforvalter
 	visningData.brukertype =
-		arenaBrukertype === data?.servicebehov ? 'Med servicebehov' : 'Uten servicebehov'
-	if (data?.servicebehov) {
-		visningData.servicebehov = servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
-	}
+		arenaBrukertype === 'MED_SERVICEBEHOV' ? 'Med servicebehov' : 'Uten servicebehov'
+	visningData.servicebehov = servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
 	visningData.inaktiveringDato = Formatters.formatDate(inaktiveringDato)
 	visningData.automatiskInnsendingAvMeldekort = Formatters.oversettBoolean(
 		automatiskInnsendingAvMeldekort
