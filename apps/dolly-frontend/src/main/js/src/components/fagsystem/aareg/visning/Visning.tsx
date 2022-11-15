@@ -13,7 +13,6 @@ import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
-// import { ArbeidsforholdMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/ArbeidsforholdMiljoeInfo'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 
 type AaregVisningProps = {
@@ -142,7 +141,6 @@ export const AaregVisning = ({ liste, loading, bestilteMiljoer }: AaregVisningPr
 				<ErrorBoundary>
 					<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={liste}>
 						<Arbeidsforhold />
-						{/*<ArbeidsforholdMiljoeInfo ident={ident} bestilteMiljoer={bestilteMiljoer} />*/}
 					</MiljoTabs>
 				</ErrorBoundary>
 			)}
