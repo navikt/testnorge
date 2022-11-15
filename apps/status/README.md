@@ -1,10 +1,4 @@
----
-layout: default
-title: Team Token Frontend
-parent: Applikasjoner
----
-
-# Status Frontend
+# Status applikasjon
 
 Applikasjon for viser status på forskjellig applikasjoner og tjeneserter fra Dolly. 
 
