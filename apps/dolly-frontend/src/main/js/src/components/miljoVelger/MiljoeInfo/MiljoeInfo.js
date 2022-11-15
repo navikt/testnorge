@@ -7,8 +7,8 @@ import { useArenaEnvironments, usePensjonEnvironments } from '~/utils/hooks/useE
 import Formatters from '~/utils/DataFormatter'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { arenaEnvironments, arenaLoading } = useArenaEnvironments()
-	const { pensjonEnvironments, pensjonLoading } = usePensjonEnvironments()
+	const { arenaEnvironments, loading: loadingArena } = useArenaEnvironments()
+	const { pensjonEnvironments, loading: loadingPensjon } = usePensjonEnvironments()
 	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
 	if (
 		!instdata &&
@@ -51,7 +51,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					<li>
 						Arena:&nbsp;
 						<span>
-							{arenaLoading
+							{loadingArena
 								? 'Laster tilgjengelige miljøer..'
 								: Formatters.arrayToString(arenaEnvironments)}
 						</span>
@@ -65,7 +65,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						{pensjonforvalter?.tp && 'TP'}
 						):&nbsp;
 						<span>
-							{pensjonLoading
+							{loadingPensjon
 								? 'Laster tilgjengelige miljøer..'
 								: Formatters.arrayToString(pensjonEnvironments)}
 						</span>

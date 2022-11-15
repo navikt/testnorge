@@ -31,7 +31,7 @@ export const usePensjonEnvironments = () => {
 
 	return {
 		pensjonEnvironments: data,
-		pensjonLoading: !error && !data,
+		loading: !error && !data,
 		error: error,
 	}
 }
@@ -47,7 +47,7 @@ export const useArenaEnvironments = () => {
 
 	return {
 		arenaEnvironments: data,
-		arenaLoading: !error && !data,
+		loading: !error && !data,
 		error: error,
 	}
 }

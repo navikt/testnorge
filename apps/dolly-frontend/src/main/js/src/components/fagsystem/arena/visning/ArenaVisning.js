@@ -106,9 +106,9 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 			mountedRef.current = false
 		}
 	}, [])
-	const { arenaEnvironments, arenaLoading } = useArenaEnvironments()
+	const { arenaEnvironments, loading: loadingArena } = useArenaEnvironments()
 
-	if (loading || tagsloading || arenaLoading) {
+	if (loading || tagsloading || loadingArena) {
 		return <Loading label="Laster arena-data" />
 	}
 	if (!data && !harArenasyntTag) {
