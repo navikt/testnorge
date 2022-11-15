@@ -65,12 +65,13 @@ export const ArbeidsforholdForm = ({
 	warningMessage,
 }) => {
 	const hentUnikeAaregBestillinger = (bestillinger) => {
-		if (_isEmpty(bestillinger)) {
+		if (_isEmpty(bestillinger) || ameldingIndex) {
 			return null
 		}
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
 			?.flatMap((bestilling) => bestilling.data.aareg)
+			?.filter((bestilling) => !bestilling?.amelding)
 			?.filter((bestilling) => !bestilling?.ansettelsesPeriode?.sluttaarsak)
 
 		return _.uniqWith(
@@ -102,8 +103,11 @@ export const ArbeidsforholdForm = ({
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
 	const erLaastArbeidsforhold =
-		arbeidsgiverType !== ArbeidsgiverTyper.privat &&
+		(arbeidsgiverType === ArbeidsgiverTyper.felles ||
+			arbeidsgiverType === ArbeidsgiverTyper.fritekst) &&
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
+
+	console.log('tidligereAaregBestillinger: ', tidligereAaregBestillinger) //TODO - SLETT MEG
 
 	useEffect(() => {
 		if (_isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
@@ -232,13 +236,13 @@ export const ArbeidsforholdForm = ({
 				return orgnummer
 			}
 		})
-		const duplikateAktiveArbeidsforhold = aktiveArbeidsforhold
+		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
 			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
 			.filter((arbeidsforhold) => !_isEmpty(arbeidsforhold))
-		return _isEmpty(duplikateAktiveArbeidsforhold)
+		return _isEmpty(dupliserteAktiveArbeidsforhold)
 			? null
 			: {
-					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${duplikateAktiveArbeidsforhold.toString()}`,
+					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
 			  }
 	}
 

@@ -1,24 +1,5 @@
 import subYears from 'date-fns/subYears'
 
-export const initialPeriode = {
-	fom: null,
-	tom: null,
-	periode: [],
-}
-
-export const initialAmelding = [
-	{
-		maaned: null,
-		arbeidsforhold: [],
-	},
-]
-
-export const initialValues = {
-	arbeidsforholdstype: '',
-	genererPeriode: initialPeriode,
-	amelding: initialAmelding,
-}
-
 export const initialForenkletOppgjoersordningOrg = {
 	arbeidsgiver: {
 		aktoertype: 'ORG',
@@ -95,6 +76,25 @@ export const initialArbeidsforholdPers = {
 		avtaltArbeidstimerPerUke: 37.5,
 	},
 	navArbeidsforholdPeriode: null,
+}
+
+export const initialPeriode = {
+	fom: null,
+	tom: null,
+	periode: [],
+}
+
+export const initialAmelding = [
+	{
+		maaned: null,
+		arbeidsforhold: [],
+	},
+]
+
+export const initialValues = {
+	arbeidsforholdstype: '',
+	genererPeriode: initialPeriode,
+	amelding: initialAmelding,
 }
 
 export const initialAaregOrg = {
