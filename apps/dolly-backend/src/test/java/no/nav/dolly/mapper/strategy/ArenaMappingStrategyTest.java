@@ -1,6 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.arenaforvalter.mapper.ArenaMappingStrategy;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;

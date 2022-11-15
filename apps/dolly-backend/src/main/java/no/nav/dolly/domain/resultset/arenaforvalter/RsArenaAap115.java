@@ -1,17 +1,15 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import java.time.LocalDateTime;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.time.LocalDateTime;
+
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

@@ -5,9 +5,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sdforvalter.consumer.rs.tpsf.request.SendToTpsRequest;
+import no.nav.registre.sdforvalter.consumer.rs.tpsf.response.SkdMeldingerTilTpsRespons;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -17,13 +18,13 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
-import no.nav.registre.sdforvalter.consumer.rs.response.SkdResponse;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
@@ -32,16 +33,15 @@ import no.nav.testnav.libs.testing.JsonWiremockHelper;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
 @AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application-test.yml"
-)
-@Disabled
+@TestPropertySource(locations = "classpath:application-test.yml")
+@ActiveProfiles("test")
 class OrkestreringsControllerIdentIntegrationTest {
 
     @Value("${tps.statisk.avspillergruppeId}")
     private Long staticDataPlaygroup;
 
     private static final String ENVIRONMENT = "t1";
+    private static final String FNR = "01010101011";
 
     @Autowired
     private MockMvc mvc;
@@ -53,14 +53,21 @@ class OrkestreringsControllerIdentIntegrationTest {
     private TpsIdenterRepository tpsIdenterRepository;
 
     private String hodejegerenUrlPattern;
-    private String startAvspillingUrlPattern;
     private String levendeIdenterUrlPattern;
+    private String tpsfGetMeldingerUrlPattern;
+    private String tpsfSendSkdmeldingerUrlPattern;
+    private String tpOpprettPersonerUrlPattern;
+    private List<String> identer = Collections.singletonList(FNR);
+    private List<Long> skdMeldinger = Collections.singletonList(1234567L);
+    private final String tokenResponse = "{\"access_token\": \"dummy\"}";
 
     @BeforeEach
     public void setup() {
-        hodejegerenUrlPattern = "(.*)/v1/alle-identer/" + staticDataPlaygroup;
-        startAvspillingUrlPattern = "(.*)/v1/startAvspilling/" + staticDataPlaygroup;
-        levendeIdenterUrlPattern = "(.*)/v1/levende-identer/" + staticDataPlaygroup;
+        hodejegerenUrlPattern = "(.*)/hodejegeren/api/v1/alle-identer/" + staticDataPlaygroup;
+        levendeIdenterUrlPattern = "(.*)/hodejegeren/api/v1/levende-identer/" + staticDataPlaygroup;
+        tpsfGetMeldingerUrlPattern = "(.*)/tpsf/api/v1/endringsmelding/skd/meldinger/" + staticDataPlaygroup;
+        tpsfSendSkdmeldingerUrlPattern = "(.*)/tpsf/api/v1/endringsmelding/skd/send/" + staticDataPlaygroup;
+        tpOpprettPersonerUrlPattern = "(.*)/testnorge-tp/api/v1/orkestrering/opprettPersoner/" + ENVIRONMENT;
 
         JsonWiremockHelper.builder(objectMapper).withUrlPathMatching("(.*)/v1/orkestrering/opprettPersoner/(.*)").stubPost();
     }
@@ -68,8 +75,20 @@ class OrkestreringsControllerIdentIntegrationTest {
 
     @Test
     void shouldInitiateIdent() throws Exception {
-        final TpsIdentModel tpsIdent = create("01010101011", "Test", "Testen");
+        final TpsIdentModel tpsIdent = create(FNR, "Test", "Testen");
         tpsIdenterRepository.save(tpsIdent);
+
+        var sendToTpsfRequest = new SendToTpsRequest(ENVIRONMENT, skdMeldinger);
+        var skdResponse = SkdMeldingerTilTpsRespons.builder()
+                .antallSendte(1)
+                .antallFeilet(0)
+                .build();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
+                .stubPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -79,14 +98,28 @@ class OrkestreringsControllerIdentIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(levendeIdenterUrlPattern)
-                .withResponseBody(Collections.singletonList(tpsIdent.getFnr()))
+                .withUrlPathMatching(tpsfGetMeldingerUrlPattern)
+                .withResponseBody(Collections.singletonList((1234567)))
                 .stubGet();
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(startAvspillingUrlPattern)
-                .withResponseBody(new SkdResponse(1, 0, new ArrayList<>(), new ArrayList<>()))
+                .withUrlPathMatching(tpsfSendSkdmeldingerUrlPattern)
+                .withRequestBody(sendToTpsfRequest)
+                .withResponseBody(skdResponse)
+                .stubPost();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching(levendeIdenterUrlPattern)
+                .withResponseBody(identer)
+                .stubGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching(tpOpprettPersonerUrlPattern)
+                .withRequestBody(identer)
+                .withResponseBody(identer)
                 .stubPost();
 
         mvc.perform(post("/api/v1/orkestrering/tps/" + ENVIRONMENT)
@@ -95,41 +128,40 @@ class OrkestreringsControllerIdentIntegrationTest {
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(startAvspillingUrlPattern)
+                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
+                .withResponseBody(tokenResponse)
                 .verifyPost();
-    }
-
-    @Test
-    void shouldUpdateTpsPlaygroupFromDatabaseAndRunPlaygroup() throws Exception {
-        final TpsIdentModel tpsIdent = create("01010101011", "Test", "Testen");
-        tpsIdenterRepository.save(tpsIdent);
-
 
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(hodejegerenUrlPattern)
                 .withResponseBody(Collections.EMPTY_SET)
-                .stubGet();
+                .verifyGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching(tpsfGetMeldingerUrlPattern)
+                .withResponseBody(Collections.singletonList((1234567)))
+                .verifyGet();
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching(tpsfSendSkdmeldingerUrlPattern)
+                .withRequestBody(sendToTpsfRequest)
+                .withResponseBody(skdResponse)
+                .verifyPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)
                 .withUrlPathMatching(levendeIdenterUrlPattern)
-                .withResponseBody(Collections.singletonList(tpsIdent.getFnr()))
-                .stubGet();
+                .withResponseBody(identer)
+                .verifyGet();
 
         JsonWiremockHelper
                 .builder(objectMapper)
-                .withUrlPathMatching(startAvspillingUrlPattern)
-                .withResponseBody(new SkdResponse(1, 0, new ArrayList<>(), new ArrayList<>()))
-                .stubPost();
-
-
-        mvc.perform(post("/api/v1/orkestrering/tps/" + ENVIRONMENT).contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching(startAvspillingUrlPattern)
+                .withUrlPathMatching(tpOpprettPersonerUrlPattern)
+                .withRequestBody(identer)
+                .withResponseBody(identer)
                 .verifyPost();
     }
 

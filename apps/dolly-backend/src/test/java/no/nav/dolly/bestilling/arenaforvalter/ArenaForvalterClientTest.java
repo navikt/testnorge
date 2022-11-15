@@ -9,31 +9,32 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.http.ResponseEntity;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.emptyString;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class ArenaForvalterClientTest {
+class ArenaForvalterClientTest {
 
     private static final String IDENT = "12423353112";
     private static final String ENV = "q2";
@@ -47,22 +48,28 @@ public class ArenaForvalterClientTest {
     @Mock
     private MapperFacade mapperFacade;
 
+    @Mock
+    private AccessToken accessToken;
+
     @Test
-    public void gjenopprett_Ok() {
+    void gjenopprett_Ok() {
 
         BestillingProgress progress = new BestillingProgress();
-        when(arenaForvalterConsumer.getEnvironments()).thenReturn(singletonList(ENV));
+        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
         when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
                 .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
                 .build());
-        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenReturn(ResponseEntity.ok(
-                ArenaNyeBrukereResponse.builder()
-                        .arbeidsokerList(singletonList(ArenaNyeBrukereResponse.Bruker.builder()
-                                .miljoe(ENV)
-                                .status("OK")
-                                .build()))
-                        .build()));
-        when(arenaForvalterConsumer.deleteIdenter(anyList())).thenReturn(Mono.just(emptyList()));
+        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class), eq(accessToken)))
+                .thenReturn(Flux.just(
+                        ArenaNyeBrukereResponse.builder()
+                                .arbeidsokerList(singletonList(ArenaNyeBrukereResponse.Bruker.builder()
+                                        .miljoe(ENV)
+                                        .status("OK")
+                                        .build()))
+                                .build()));
+        when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
+        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
+        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -71,46 +78,47 @@ public class ArenaForvalterClientTest {
                 .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
-        verify(arenaForvalterConsumer).getEnvironments();
-        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
+        verify(arenaForvalterConsumer).getEnvironments(accessToken);
+        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
     @Test
     public void gjenopprett_FunksjonellFeil() {
 
-        BestillingProgress progress = new BestillingProgress();
-        when(arenaForvalterConsumer.getEnvironments()).thenReturn(singletonList(ENV));
+        var progress = new BestillingProgress();
+        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
         when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
                 .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
                 .build());
-        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class))).thenReturn(ResponseEntity.ok(
-                ArenaNyeBrukereResponse.builder()
-                        .nyBrukerFeilList(singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
-                                .miljoe(ENV)
-                                .nyBrukerFeilstatus(DUPLIKAT)
-                                .melding("Lang feilmelding uegnet til å presenteres for bruker")
-                                .build()))
-                        .build()));
-        when(arenaForvalterConsumer.deleteIdenter(anyList())).thenReturn(Mono.just(emptyList()));
+        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class), eq(accessToken)))
+                .thenReturn(Flux.just(
+                        ArenaNyeBrukereResponse.builder()
+                                .nyBrukerFeilList(singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
+                                        .miljoe(ENV)
+                                        .nyBrukerFeilstatus(DUPLIKAT)
+                                        .melding("message: 555 User Defined Resource Error Lang feilmelding uegnet til å presenteres for bruker")
+                                        .build()))
+                                .build()));
+        when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
+        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
 
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                 .opprettetIPDL(true).build(), progress, false);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feilstatus: \"DUPLIKAT\". Se detaljer i logg.")));
-        verify(arenaForvalterConsumer).getEnvironments();
-        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class));
+        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feil: DUPLIKAT. Se detaljer i logg. ")));
+        verify(arenaForvalterConsumer).getEnvironments(accessToken);
+        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
     @Test
     public void gjenopprett_TekniskFeil() {
 
-        BestillingProgress progress = new BestillingProgress();
-        when(arenaForvalterConsumer.getEnvironments()).thenReturn(singletonList(ENV));
+        var progress = new BestillingProgress();
 
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList(ENV));
 
@@ -122,23 +130,26 @@ public class ArenaForvalterClientTest {
     @Test
     public void gjenopprett_EnvironmentForArenaNotSelected() {
 
-        BestillingProgress progress = new BestillingProgress();
+        var progress = new BestillingProgress();
 
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList("t3"));
+        when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
+        when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                 .opprettetIPDL(true).build(), progress, false);
 
-        assertThat(progress.getArenaforvalterStatus(), is(nullValue()));
+        assertThat(progress.getArenaforvalterStatus(), is(emptyString()));
     }
 
     @Test
     public void gjenopprett_ArenaForvalterNotIncluded() {
 
-        BestillingProgress progress = new BestillingProgress();
+        var progress = new BestillingProgress();
 
-        RsDollyBestillingRequest request = new RsDollyBestillingRequest();
+        var request = new RsDollyBestillingRequest();
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                 .opprettetIPDL(true).build(), progress, false);

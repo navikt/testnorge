@@ -1,15 +1,17 @@
 package no.nav.dolly.domain.resultset.arenaforvalter;
 
-import static java.util.Objects.isNull;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.fasterxml.jackson.annotation.JsonInclude;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import static java.util.Objects.isNull;
 
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

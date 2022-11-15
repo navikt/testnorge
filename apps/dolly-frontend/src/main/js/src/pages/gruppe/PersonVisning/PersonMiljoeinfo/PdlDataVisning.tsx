@@ -47,7 +47,9 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 				</div>
 			)
 		}
-		return <PdlVisning pdlData={pdlMiljoe ? pdlDataQ1 : pdlData} loading={pdlLoading} />
+		return (
+			<PdlVisning pdlData={pdlMiljoe ? pdlDataQ1 : pdlData} loading={pdlLoading} miljoeVisning />
+		)
 	}
 
 	if (!ident) {

@@ -192,6 +192,12 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 		.eql(false, 'ErrorBoundary utløst, en komponent kaster Error under visning av ident')
 
 	await testController
+		.click(
+			ReactSelector('PensjonVisning').findReact('MiljoTabs').withText('Pensjonsgivende inntekter')
+		)
+		.wait(1500)
+
+	await testController
 		.click(ReactSelector('TpVisning').findReact('MiljoTabs').withText('ORDNING'))
 		.wait(1500)
 
