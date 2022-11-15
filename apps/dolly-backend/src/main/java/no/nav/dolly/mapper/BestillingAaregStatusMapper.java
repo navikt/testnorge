@@ -2,6 +2,7 @@ package no.nav.dolly.mapper;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import no.nav.dolly.bestilling.aareg.util.AaaregUtility;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
@@ -30,7 +31,10 @@ public final class BestillingAaregStatusMapper {
                     String[] environErrMsg = status.split(":");
                     String environ = environErrMsg[0];
                     String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim() : "";
-                    checkAndUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsg);
+                    String errMsgWithBAFeilmelding = errMsg.contains("BA")
+                            ? AaaregUtility.konverterBAfeilkodeTilFeilmelding(errMsg)
+                            : errMsg;
+                    checkAndUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsgWithBAFeilmelding);
                 });
             }
         });
