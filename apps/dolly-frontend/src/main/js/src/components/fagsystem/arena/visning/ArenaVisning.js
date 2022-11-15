@@ -123,9 +123,9 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 		.filter((best) => best.data?.length > 0)
 		.map((best) => best.miljo)
 
-	const arenaMiljoer = data?.arbeidsokerList?.map((arb) => arb.miljoe)
+	const miljoerMedData = data?.arbeidsokerList?.map((arb) => arb.miljoe)
 	visningData = visningData.map((vData) => {
-		if (!arenaMiljoer?.includes(vData.miljo)) {
+		if (!miljoerMedData?.includes(vData.miljo)) {
 			vData.data = []
 		}
 		return vData
