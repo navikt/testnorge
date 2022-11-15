@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 @RestController
 public class StatusController {
-    final String TEAM = "teamdokumenthandtering";
+    private static final String TEAM = "teamdokumenthandtering";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String>> getStatus() {
@@ -36,7 +36,7 @@ public class StatusController {
     }
 
     public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap();
+        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
 
         Thread blockingThread = new Thread(() -> {
             status.put("alive", checkStatus(webClient, aliveUrl).block());

@@ -12,7 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class StatusController {
-    private final String TEAM = "Team Dolly";
+    private static final String TEAM = "Team Dolly";
 
     @Value("${proxy.url}")
     private String url;
@@ -33,7 +33,7 @@ public class StatusController {
     }
 
     public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap();
+        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
 
         Thread blockingThread = new Thread(() -> {
             status.put("alive", checkStatus(webClient, aliveUrl).block());
