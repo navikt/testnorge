@@ -50,7 +50,7 @@ export const MiljoTabs = ({ bestilteMiljoer, forsteMiljo, data, children }) => {
 							React.cloneElement(children, { data: miljoData?.data })
 						) : (
 							<Alert variant="info" size="small" inline>
-								Fant ingen data i dette miljøet
+								{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
 							</Alert>
 						)}
 					</StyledPanel>
