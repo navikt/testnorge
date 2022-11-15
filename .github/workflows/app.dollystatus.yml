@@ -1,17 +1,17 @@
-name: App status
+name: App dollystatus
 
 on:
   push:
     paths:
-      - apps/status/**
-      - .github/workflows/app.status.yml
+      - apps/dollystatus/**
+      - .github/workflows/app.dollystatus.yml
 
 jobs:
   scan:
     name: Scan
     uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
     with:
-      working-directory: 'apps/status/'
+      working-directory: 'apps/dollystatus/'
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
@@ -19,18 +19,18 @@ jobs:
     name: Build
     uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
     with:
-      working-directory: 'apps/status/'
-      app-name: 'status'
+      working-directory: 'apps/dollystatus/'
+      app-name: 'dollystatus'
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   deploy-dev:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-status') }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-dollystatus') }}
     with:
-      resource: 'apps/status/config.yml'
-      app-name: 'status'
+      resource: 'apps/dollystatus/config.yml'
+      app-name: 'dollystatus'
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
