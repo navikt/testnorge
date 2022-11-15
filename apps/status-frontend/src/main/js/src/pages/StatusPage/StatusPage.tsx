@@ -13,11 +13,10 @@ export default () => {
     const [dataLoading, setDataLoading] = useBoolean(true)
 
     useEffect(() => {
-        // const endpoint = window.location.hostname.includes('frontend')
-        //     ? 'https://dolly-backend-dev.dev.intern.nav.no/v1/status'
-        //     : 'https://dolly-backend.dev.intern.nav.no/v1/status'
+        const endpoint = window.location.hostname.includes('frontend')
+            ? 'https://dolly-backend-dev.dev.intern.nav.no/v1/status'
+            : 'https://dolly-backend.dev.intern.nav.no/v1/status'
 
-        const endpoint = 'https://dolly-backend.dev.intern.nav.no/v1/status'
         fetch(endpoint)
             .then((response) => response.json())
             .then((json) => {
@@ -108,7 +107,7 @@ export default () => {
 
     if (dataLoading) {
         return <div style={{display: 'flex', width: '100%', height: '100vh', alignItems: 'center', justifyContent: 'center'}}>
-            <Loading label="Sjekke tjenester" />
+            <Loading label="Sjekker tjenester" />
         </div>
     }
 
