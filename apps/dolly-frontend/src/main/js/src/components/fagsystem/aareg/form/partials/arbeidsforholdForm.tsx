@@ -107,8 +107,6 @@ export const ArbeidsforholdForm = ({
 			arbeidsgiverType === ArbeidsgiverTyper.fritekst) &&
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
-	console.log('tidligereAaregBestillinger: ', tidligereAaregBestillinger) //TODO - SLETT MEG
-
 	useEffect(() => {
 		if (_isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
 			return

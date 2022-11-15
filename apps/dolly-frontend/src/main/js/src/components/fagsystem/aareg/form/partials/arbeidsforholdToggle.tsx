@@ -46,8 +46,6 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 			? ArbeidsgiverTyper.felles
 			: ArbeidsgiverTyper.fritekst
 
-	console.log('getArbeidsgiverType: ', getArbeidsgiverType) //TODO - SLETT MEG
-
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType)
 
 	const toggleValues = [
