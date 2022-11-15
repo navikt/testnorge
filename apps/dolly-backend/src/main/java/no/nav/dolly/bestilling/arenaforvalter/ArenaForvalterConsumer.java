@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.arenaforvalter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
@@ -43,7 +44,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Component
 @Slf4j
-public class ArenaForvalterConsumer {
+public class ArenaForvalterConsumer implements ConsumerStatus {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 
@@ -138,26 +139,14 @@ public class ArenaForvalterConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_ARENA = "Team Arena";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-//        // "Arena" ikke direkte tilgang
-//        var arenaStatusMap =  CheckAliveUtil.checkConsumerStatus(
-//                "https://arena-forvalteren.dev.adeo.no/internal/isAlive",
-//                "https://arena-forvalteren.dev.adeo.no/internal/isReady",
-//                WebClient.builder().build());
-//        arenaStatusMap.put("team", TEAM_ARENA);
-
-        return Map.of(
-                "testnav-arena-forvalteren-proxy", statusMap
-                //"arena-forvalteren", arenaStatusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-arena-forvalteren-proxy";
+    }
+
 }

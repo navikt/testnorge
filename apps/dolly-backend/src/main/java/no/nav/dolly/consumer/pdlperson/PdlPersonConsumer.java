@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
 import no.nav.dolly.consumer.pdlperson.command.PdlBolkPersonGetCommand;
 import no.nav.dolly.consumer.pdlperson.command.PdlPersonGetCommand;
@@ -32,7 +33,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class PdlPersonConsumer {
+public class PdlPersonConsumer implements ConsumerStatus {
 
     private static final String PDL_API_URL = "/pdl-api";
     private static final int BLOCK_SIZE = 50;
@@ -102,60 +103,14 @@ public class PdlPersonConsumer {
         Q1, Q2
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_PDL = "Team Persondata";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-//        // "pdl-testdata" ikke direkte tilgang
-//        var pdlTestdataStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://pdl-testdata.dev.intern.nav.no/internal/health/liveness",
-//                "https://pdl-testdata.dev.intern.nav.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        pdlTestdataStatus.put("team", TEAM_PDL);
-//
-//        // ikke direkte tilgang
-//        var pdlApiStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://pdl-api.dev.intern.nav.no/internal/health/liveness",
-//                "https://pdl-api.dev.intern.nav.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        pdlApiStatus.put("team", TEAM_PDL);
-//
-//        // ikke direkte tilgang
-//        var pdlApiQ1Status = CheckAliveUtil.checkConsumerStatus(
-//                "https://pdl-api-q1.dev.intern.nav.no/internal/health/liveness",
-//                "https://pdl-api-q1.dev.intern.nav.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        pdlApiQ1Status.put("team", TEAM_PDL);
-//
-//        // ikke direkte tilgang
-//        var pdlIdenthendelseStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/liveness",
-//                "https://pdl-identhendelse-lager.dev.intern.nav.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        pdlIdenthendelseStatus.put("team", TEAM_PDL);
-//
-//        // ikke direkte tilgang
-//        var pdlAktorStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://pdl-aktor.dev.intern.nav.no/internal/health/liveness",
-//                "https://pdl-aktor.dev.intern.nav.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        pdlAktorStatus.put("team", TEAM_PDL);
-
-        // https://pdl-es-q.adeo.no
-
-        return Map.of(
-                "testnav-pdl-proxy", statusMap
-//                "pdl-testdata", pdlTestdataStatus,
-//                "pdl-api", pdlApiStatus,
-//                "pdl-api-q1", pdlApiQ1Status,
-//                "pdl-identhendelse", pdlIdenthendelseStatus,
-//                "pdl-aktor", pdlAktorStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-pdl-proxy";
+    }
+
 }

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.krrstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataCommand;
 import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataPersonCommand;
 import no.nav.dolly.bestilling.krrstub.command.GetKontaktdataCommand;
@@ -36,7 +37,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class KrrstubConsumer {
+public class KrrstubConsumer implements ConsumerStatus {
 
     private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
 
@@ -112,25 +113,14 @@ public class KrrstubConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_ROCKET = "Team Rocket";
-
-        var statusMap = CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-//        var digdirKrrStubStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://digdir-krr-stub.dev.intern.nav.no/internal/health/liveness",
-//                "https://digdir-krr-stub.dev.intern.nav.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        digdirKrrStubStatus.put("team", TEAM_ROCKET);
-
-        return Map.of(
-                "testnav-krrstub-proxy", statusMap
-                //"digdir-krr-stub", digdirKrrStubStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-krrstub-proxy";
+    }
+
 }

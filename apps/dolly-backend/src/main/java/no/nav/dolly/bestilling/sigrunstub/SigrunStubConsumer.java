@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sigrunstub.command.SigrunstubSlettCommand;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
@@ -36,7 +37,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @Component
-public class SigrunStubConsumer {
+public class SigrunStubConsumer implements ConsumerStatus {
 
     private static final String CONSUMER = "Dolly";
     private static final String URL_VERSION = "/api/v1";
@@ -100,26 +101,14 @@ public class SigrunStubConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_INNTEKT = "Team Inntekt";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-//        // "SigrunStub" ikke direkte tilgang
-//        var sigrunStubStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive",
-//                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive", // samme url brukes for begge
-//                WebClient.builder().build());
-//        sigrunStubStatus.put("team", TEAM_INNTEKT);
-
-        return Map.of(
-                "testnav-sigrunstub-proxy", statusMap
-                //"sigrun-skd-stub", sigrunStubStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-sigrunstub-proxy";
+    }
+
 }

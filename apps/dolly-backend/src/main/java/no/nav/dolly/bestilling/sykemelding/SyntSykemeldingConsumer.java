@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.sykemelding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.command.PostSyntSykemeldingCommand;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.config.credentials.SyntSykemeldingApiProperties;
@@ -23,7 +24,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class SyntSykemeldingConsumer {
+public class SyntSykemeldingConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -64,18 +65,15 @@ public class SyntSykemeldingConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "SyntSykelemding", statusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-synt-sykemelding-api";
+    }
+
 }
 
