@@ -36,7 +36,7 @@ const TpOrdning = ({ data, ordninger }) => {
 export const TpVisning = ({ data, loading, bestillingIdListe }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.tp') //TODO: må sjekke tp under denne
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.tp')
 
 	useEffect(() => {
 		if (!ordninger.length) {

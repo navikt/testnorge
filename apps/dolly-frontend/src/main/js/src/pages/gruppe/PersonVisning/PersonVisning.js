@@ -106,7 +106,6 @@ export const PersonVisning = ({
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer)
 	)
-	console.log('tpData: ', tpData) //TODO - SLETT MEG
 
 	const { loading: loadingPoppData, poppData } = usePoppData(
 		ident.ident,

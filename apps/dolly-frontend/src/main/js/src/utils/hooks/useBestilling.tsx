@@ -131,12 +131,10 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 		[getMultipleBestillingByIdUrl(bestillingIdListe)],
 		multiFetcherAll
 	)
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	const miljoer = []
 	data?.map((bestilling) => {
-		// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
 		bestilling?.environments?.forEach((miljo) => {
-			// if (!miljoer.includes(miljo) && bestilling.bestilling[fagsystem]) {
 			if (!miljoer.includes(miljo) && _has(bestilling, `bestilling.${fagsystem}`)) {
 				miljoer.push(miljo)
 			}
