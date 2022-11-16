@@ -7,7 +7,6 @@ import {
 	useInstEnvironments,
 } from '~/utils/hooks/useEnvironments'
 import Formatters from '~/utils/DataFormatter'
-import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
@@ -84,4 +83,21 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 			</ul>
 		</Alert>
 	)
+}
+
+export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
+	if (!utvalgteMiljoer) return []
+	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
+
+	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
+	//men ikke Dolly per dags dato
+	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
+}
+
+const flatDollyMiljoe = (dollymiljoe) => {
+	const miljoeArray = []
+	Object.values(dollymiljoe).forEach((miljoeKat) =>
+		miljoeKat.forEach((miljoe) => miljoeArray.push(miljoe.id))
+	)
+	return miljoeArray
 }

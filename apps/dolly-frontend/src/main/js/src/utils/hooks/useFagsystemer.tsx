@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { multiFetcherFagsystemer } from '~/api'
-import { usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import { useInstEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -51,6 +51,30 @@ export const useTpData = (ident, harTpBestilling) => {
 	const { data, error } = useSWR<any, Error>(
 		[
 			tpUrl(ident, pensjonEnvironments),
+			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
+		],
+		multiFetcherFagsystemer
+	)
+
+	return {
+		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useInstData = (ident, harTpBestilling) => {
+	const { instEnvironments } = useInstEnvironments()
+
+	if (!harTpBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>(
+		[
+			tpUrl(ident, instEnvironments),
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
 		multiFetcherFagsystemer
