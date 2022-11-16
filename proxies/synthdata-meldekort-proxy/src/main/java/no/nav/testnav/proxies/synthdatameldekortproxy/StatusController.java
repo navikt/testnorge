@@ -57,6 +57,7 @@ public class StatusController {
         return webClient.get().uri(url)
                 .retrieve()
                 .bodyToMono(String.class)
+                .defaultIfEmpty("OK")
                 .onErrorResume(Exception.class, error -> Mono.just("Error: " + error.getMessage()))
                 .doOnSuccess(result -> Mono.just("OK"))
                 .map(result -> result.startsWith("Error:") ? result : "OK");
