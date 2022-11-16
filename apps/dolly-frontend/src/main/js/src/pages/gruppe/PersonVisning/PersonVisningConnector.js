@@ -14,8 +14,6 @@ const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
 	actions.slettPersonOgRelatertePersoner
 )
-const loadingSelectorPensjon = createLoadingSelector(actions.getPensjon)
-const loadingSelectorPensjonTP = createLoadingSelector(actions.getPensjonTP)
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
 
 const loadingSelector = createSelector(
@@ -30,8 +28,6 @@ const loadingSelector = createSelector(
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
-			pensjonforvalter: loadingSelectorPensjon({ loading }),
-			tpforvalter: loadingSelectorPensjonTP({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
 		}
 	}

@@ -8,7 +8,6 @@ import {
 	InntektstubApi,
 	KrrApi,
 	PdlforvalterApi,
-	PensjonApi,
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
@@ -36,18 +35,6 @@ export const actions = createActions(
 		],
 		getSigrunSekvensnr: [
 			SigrunApi.getSekvensnummer,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getPensjon: [
-			PensjonApi.getPoppInntekt,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getPensjonTP: [
-			PensjonApi.getPersonTpOrdninger,
 			(ident) => ({
 				ident,
 			}),
@@ -171,12 +158,6 @@ export default handleActions(
 		[onSuccess(actions.getArena)](state, action) {
 			state.arenaforvalteren[action.meta.ident] = action.payload.data
 		},
-		[onSuccess(actions.getPensjon)](state, action) {
-			state.pensjonforvalter[action.meta.ident] = action.payload.data
-		},
-		[onSuccess(actions.getPensjonTP)](state, action) {
-			state.tpforvalter[action.meta.ident] = action.payload.data
-		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
@@ -234,8 +215,6 @@ const deleteIdentState = (state, ident) => {
 	delete state.pdl[ident]
 	delete state.pdlforvalter[ident]
 	delete state.udistub[ident]
-	delete state.pensjonforvalter[ident]
-	delete state.tpforvalter[ident]
 	delete state.brregstub[ident]
 }
 
@@ -299,14 +278,10 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getArena(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
-			case 'PEN_INNTEKT':
-				return dispatch(actions.getPensjon(personId, success[system][0]))
 			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
 			case 'SKJERMINGSREGISTER':
 				return dispatch(actions.getSkjermingsregister(personId))
-			case 'TP_FORVALTER':
-				return dispatch(actions.getPensjonTP(personId, success[system][0]))
 		}
 	})
 }
@@ -511,8 +486,6 @@ export const selectDataForIdent = (state, ident) => {
 		pdl: state.fagsystem.pdl[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		udistub: state.fagsystem.udistub[ident],
-		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
-		tpforvalter: state.fagsystem.tpforvalter[ident],
 		brregstub: state.fagsystem.brregstub[ident],
 		skjermingsregister: state.fagsystem.skjermingsregister[ident],
 	}
