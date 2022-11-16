@@ -39,14 +39,14 @@ const PensjonInntekt = ({ data }) => {
 }
 
 export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
+
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
 	}
 	if (!data) {
 		return null
 	}
-
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 

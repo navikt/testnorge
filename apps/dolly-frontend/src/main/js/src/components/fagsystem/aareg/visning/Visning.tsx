@@ -89,36 +89,33 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 					<div className="person-visning_content" key={idx}>
 						<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
 
-									{arbeidsforhold.ansettelsesperiode && (
-										<>
-							<TitleValue
-								title="Arbeidsforhold type"
-								value={arbeidsforhold.type}
-								kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-							/>
+						{arbeidsforhold.ansettelsesperiode && (
+							<>
+								<TitleValue
+									title="Arbeidsforhold type"
+									value={arbeidsforhold.type}
+									kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+								/>
 
-
-						{ arbeidsforhold.ansettelsesperiode.periode && (
-							<TitleValue
-								title="Ansatt fra"
-								value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom
-							)}
-						/>
+								{arbeidsforhold.ansettelsesperiode.periode && (
+									<TitleValue
+										title="Ansatt fra"
+										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
+									/>
+								)}
+								{arbeidsforhold.ansettelsesperiode.periode && (
+									<TitleValue
+										title="Ansatt til"
+										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
+									/>
+								)}
+								<TitleValue
+									title="Sluttårsak"
+									value={arbeidsforhold?.ansettelsesperiode?.sluttaarsak}
+									kodeverk={ArbeidKodeverk.SluttaarsakAareg}
+								/>
+							</>
 						)}
-											{ arbeidsforhold.ansettelsesperiode.periode && (
-							<TitleValue
-								title="Ansatt til"
-								value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom
-							)}
-						/>
-						)}
-											<TitleValue
-												title="Sluttårsak"
-												value={arbeidsforhold?.ansettelsesperiode?.sluttaarsak}
-												kodeverk={ArbeidKodeverk.SluttaarsakAareg}
-											/>
-										</>
-									)}
 					</div>
 
 					<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
@@ -139,14 +136,14 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 }
 
 export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisningProps) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
+
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
 	if (!liste) {
 		return null
 	}
-
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
 
 	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
