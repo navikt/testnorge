@@ -8,8 +8,4 @@ export default {
 		const endpoint = `${getInstUrl()}/ident?identer=${ident}&miljoe=${env}`
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
 	},
-	getTilgjengeligeMiljoer() {
-		const endpoint = `${getInstUrl()}/miljoer`
-		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
-	},
 }
