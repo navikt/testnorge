@@ -16,7 +16,7 @@ import { useGruppeById } from '~/utils/hooks/useGruppe'
 import { useIkkeFerdigBestillingerGruppe } from '~/utils/hooks/useBestilling'
 import StatusListeConnector from '~/components/bestilling/statusListe/StatusListeConnector'
 import './Gruppe.less'
-import ManglerTilgang from '~/pages/gruppe/ManglerTilgang/ManglerTilgang'
+import { GruppeFeil, GruppeFeilmelding } from '~/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import { ToggleGroup } from '@navikt/ds-react'
 
 export type GruppeProps = {
@@ -33,7 +33,14 @@ export enum VisningType {
 	VISNING_BESTILLING = 'bestilling',
 }
 
-export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update }: GruppeProps) => {
+export default ({
+	visning,
+	setVisning,
+	sidetall,
+	sideStoerrelse,
+	sorting,
+	update,
+}: GruppeProps) => {
 	const { gruppeId } = useParams()
 	const {
 		currentBruker: { brukernavn, brukertype },
@@ -45,7 +52,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		'personer',
 		sidetall,
 		sideStoerrelse,
-		update,
+		update
 	)
 
 	const { bestillingerById, loading: loadingBestillinger } = useIkkeFerdigBestillingerGruppe(
@@ -53,7 +60,7 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		visning,
 		sidetall,
 		sideStoerrelse,
-		update,
+		update
 	)
 
 	const {
@@ -62,7 +69,6 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		loading: loadingGruppe,
 		// @ts-ignore
 	} = useGruppeById(gruppeId, sidetall, sideStoerrelse, false, sorting?.kolonne, sorting?.retning)
-
 	const [startBestillingAktiv, visStartBestilling, skjulStartBestilling] = useBoolean(false)
 
 	const dispatch = useDispatch()
@@ -74,8 +80,12 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		return <Loading label="Laster personer" panel />
 	}
 
+	if (!gruppe) {
+		return <GruppeFeilmelding feil={GruppeFeil.FETCH_FAILED} />
+	}
+
 	if (bankIdBruker && !gruppe?.erEierAvGruppe) {
-		return <ManglerTilgang />
+		return <GruppeFeilmelding feil={GruppeFeil.ACCESS_DENIED} />
 	}
 
 	const byttVisning = (value: VisningType) => {
@@ -188,4 +198,3 @@ export default ({ visning, setVisning, sidetall, sideStoerrelse, sorting, update
 		</div>
 	)
 }
-
