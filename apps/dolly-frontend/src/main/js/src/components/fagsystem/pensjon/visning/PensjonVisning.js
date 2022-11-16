@@ -8,6 +8,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { runningTestcafe } from '~/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
@@ -37,7 +38,9 @@ const PensjonInntekt = ({ data }) => {
 	)
 }
 
-export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
+export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
+
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
 	}
@@ -46,6 +49,8 @@ export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 	}
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
+
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	return (
 		<ErrorBoundary>
@@ -59,7 +64,7 @@ export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
 					Kunne ikke hente pensjon-data på person
 				</Alert>
 			) : (
-				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={'q1'} data={data}>
+				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
 					<PensjonInntekt />
 				</MiljoTabs>
 			)}

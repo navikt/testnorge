@@ -38,9 +38,9 @@ import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/Gjenoppre
 import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
+import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
-import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import {
 	harAaregBestilling,
@@ -118,8 +118,6 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe)
-
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
 
@@ -143,23 +141,21 @@ export const PersonVisning = ({
 		) {
 			return true
 		}
-
+		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold)) {
+			return true
+		}
 		if (poppData && sjekkManglerPensjonData(poppData)) {
 			return true
 		}
-
 		if (tpData && sjekkManglerTpData(tpData)) {
 			return true
 		}
-
 		if (brregstub && sjekkManglerBrregData(brregstub)) {
 			return true
 		}
-
 		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
-
 		return false
 	}
 
@@ -275,18 +271,17 @@ export const PersonVisning = ({
 					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
 				<AaregVisning
-					ident={ident.ident}
 					liste={arbeidsforhold}
 					loading={loadingAareg}
-					bestilteMiljoer={bestilteMiljoer}
+					bestillingIdListe={bestillingIdListe}
 				/>
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
-					bestilteMiljoer={bestilteMiljoer}
+					bestillingIdListe={bestillingIdListe}
 				/>
-				<TpVisning data={tpData} loading={loadingTpData} bestilteMiljoer={bestilteMiljoer} />
+				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

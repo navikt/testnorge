@@ -12,14 +12,24 @@ import { Utenlandsopphold } from './partials/Utenlandsopphold'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
-import { ArbeidsforholdMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/ArbeidsforholdMiljoeInfo'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 import Formatters from '~/utils/DataFormatter'
 
 type AaregVisningProps = {
 	ident?: string
-	liste?: Array<Arbeidsforhold>
+	liste?: Array<MiljoDataListe>
 	loading?: boolean
-	bestilteMiljoer?: Array<string>
+	bestillingIdListe?: Array<string>
+}
+
+type MiljoDataListe = {
+	miljo: string
+	data: Array<Arbeidsforhold>
+}
+
+type ArbeidsforholdArray = {
+	data?: Array<Arbeidsforhold>
 }
 
 type Arbeidsforhold = {
@@ -50,13 +60,84 @@ type Periode = {
 	tom?: string
 }
 
+export const sjekkManglerAaregData = (aaregData) => {
+	return aaregData?.length < 1 || aaregData?.every((miljoData) => miljoData?.data?.length < 1)
+}
+
 const getHeader = (data: Arbeidsforhold) => {
 	return `Arbeidsforhold (${data.arbeidsgiver.type}: ${
 		data.arbeidsgiver.organisasjonsnummer || data.arbeidsgiver.offentligIdent
 	})`
 }
 
-export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVisningProps) => {
+const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
+	if (!data) return null
+
+	const sortedData = data
+		?.slice()
+		?.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
+
+	return (
+		<DollyFieldArray
+			header="Arbeidsforhold"
+			getHeader={getHeader}
+			data={sortedData}
+			expandable={sortedData.length > 1}
+		>
+			{(arbeidsforhold: Arbeidsforhold, idx: number) => (
+				<React.Fragment>
+					<div className="person-visning_content" key={idx}>
+						<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
+
+						{arbeidsforhold.ansettelsesperiode && (
+							<>
+								<TitleValue
+									title="Arbeidsforhold type"
+									value={arbeidsforhold.type}
+									kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+								/>
+
+								{arbeidsforhold.ansettelsesperiode.periode && (
+									<TitleValue
+										title="Ansatt fra"
+										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
+									/>
+								)}
+								{arbeidsforhold.ansettelsesperiode.periode && (
+									<TitleValue
+										title="Ansatt til"
+										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
+									/>
+								)}
+								<TitleValue
+									title="Sluttårsak"
+									value={arbeidsforhold?.ansettelsesperiode?.sluttaarsak}
+									kodeverk={ArbeidKodeverk.SluttaarsakAareg}
+								/>
+							</>
+						)}
+					</div>
+
+					<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
+
+					<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
+
+					<Fartoy data={arbeidsforhold.fartoy} />
+
+					<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
+
+					<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
+
+					<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
+				</React.Fragment>
+			)}
+		</DollyFieldArray>
+	)
+}
+
+export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisningProps) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
+
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
@@ -64,11 +145,9 @@ export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVi
 		return null
 	}
 
-	const sortedData = liste
-		.slice()
-		.sort((a, b) => parseInt(a.arbeidsforholdId) - parseInt(b.arbeidsforholdId))
+	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
-	const manglerFagsystemdata = sortedData?.length < 1
+	const forsteMiljo = liste.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	return (
 		<div>
@@ -79,65 +158,9 @@ export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVi
 				</Alert>
 			) : (
 				<ErrorBoundary>
-					<DollyFieldArray
-						header="Arbeidsforhold"
-						getHeader={getHeader}
-						data={sortedData}
-						expandable={sortedData.length > 1}
-					>
-						{(arbeidsforhold: Arbeidsforhold) => (
-							<React.Fragment>
-								<div className="person-visning_content">
-									<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
-
-									{arbeidsforhold.ansettelsesperiode && (
-										<>
-											<TitleValue
-												title="Arbeidsforhold type"
-												value={arbeidsforhold.type}
-												kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-											/>
-
-											{arbeidsforhold.ansettelsesperiode.periode && (
-												<TitleValue
-													title="Ansatt fra"
-													value={Formatters.formatDate(
-														arbeidsforhold.ansettelsesperiode.periode.fom
-													)}
-												/>
-											)}
-											{arbeidsforhold.ansettelsesperiode.periode && (
-												<TitleValue
-													title="Ansatt til"
-													value={Formatters.formatDate(
-														arbeidsforhold.ansettelsesperiode.periode.tom
-													)}
-												/>
-											)}
-											<TitleValue
-												title="Sluttårsak"
-												value={arbeidsforhold?.ansettelsesperiode?.sluttaarsak}
-												kodeverk={ArbeidKodeverk.SluttaarsakAareg}
-											/>
-										</>
-									)}
-								</div>
-
-								<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />
-
-								<Arbeidsavtaler data={arbeidsforhold.arbeidsavtaler} />
-
-								<Fartoy data={arbeidsforhold.fartoy} />
-
-								<AntallTimerForTimeloennet data={arbeidsforhold.antallTimerForTimeloennet} />
-
-								<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
-
-								<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
-							</React.Fragment>
-						)}
-					</DollyFieldArray>
-					<ArbeidsforholdMiljoeInfo ident={ident} bestilteMiljoer={bestilteMiljoer} />
+					<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={liste}>
+						<Arbeidsforhold />
+					</MiljoTabs>
 				</ErrorBoundary>
 			)}
 		</div>

@@ -26,7 +26,7 @@ export const multiFetcherAll = (urlListe, headers = null) => {
 	return Promise.all(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
-				return [result]
+				return result
 			})
 		)
 	)

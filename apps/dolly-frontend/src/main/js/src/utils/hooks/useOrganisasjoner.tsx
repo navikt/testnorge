@@ -1,10 +1,15 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAny } from '~/api'
+import { fetcher, multiFetcherFagsystemer } from '~/api'
 import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
 import _isArray from 'lodash/isArray'
+
+type MiljoDataListe = {
+	miljo: string
+	data: Array<Arbeidsforhold>
+}
 
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
@@ -21,10 +26,10 @@ const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
 	}`
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
-	return miljoer.map(
-		(miljoe) =>
-			`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
-	)
+	return miljoer.map((miljoe) => ({
+		url: `/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
+		miljo: miljoe,
+	}))
 }
 
 const fasteDataFallback = [
@@ -195,17 +200,14 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
 
-	const { data, error } = useSWR<Arbeidsforhold[], Error>(
+	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		miljoer.length > 1 ? multiFetcherAny : fetcher,
+		multiFetcherFagsystemer,
 		{ dedupingInterval: 30000 }
 	)
 
-	const arbeidsforhold = miljoer.length > 1 ? data?.[0] : data
-	const arbeidsforholdListe = _isArray(arbeidsforhold) ? arbeidsforhold : [arbeidsforhold]
-
 	return {
-		arbeidsforhold: arbeidsforholdListe?.[0] ? arbeidsforholdListe : null,
+		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,
 		error: error,
 	}
