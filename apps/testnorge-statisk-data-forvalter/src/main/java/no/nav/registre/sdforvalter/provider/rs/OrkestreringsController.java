@@ -3,7 +3,7 @@ package no.nav.registre.sdforvalter.provider.rs;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.PersonConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.person.PersonConsumer;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.provider.rs.dto.Orgnummer;
 import no.nav.registre.sdforvalter.service.EnvironmentInitializationService;
@@ -29,13 +29,13 @@ public class OrkestreringsController {
 
     @PostMapping(value = "/{miljoe}")
     public ResponseEntity<HttpStatus> initializeInEnvironment(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeEnvironmentWithStaticData(miljoe, gruppe.name());
+        environmentInitializationService.initializeEnvironmentWithStaticData(miljoe, gruppe != null ? gruppe.name() : null);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/tps/{miljoe}")
     public ResponseEntity<HttpStatus> initializeTps(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeIdent(miljoe, gruppe.name());
+        environmentInitializationService.initializeIdent(miljoe, gruppe != null ? gruppe.name() : null);
         return ResponseEntity.ok().build();
     }
 
@@ -48,19 +48,19 @@ public class OrkestreringsController {
 
     @PostMapping(value = "/aareg/{miljoe}")
     public ResponseEntity<HttpStatus> initializeAareg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeAareg(miljoe, gruppe.name());
+        environmentInitializationService.initializeAareg(miljoe, gruppe != null ? gruppe.name() : null);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/krr")
     public ResponseEntity<HttpStatus> initializeKrr(@RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeKrr(gruppe.name());
+        environmentInitializationService.initializeKrr(gruppe != null ? gruppe.name() : null);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping(value = "/ereg/{miljoe}")
     public ResponseEntity<HttpStatus> initializeEreg(@PathVariable String miljoe, @RequestParam(name = "gruppe", required = false) Gruppe gruppe) {
-        environmentInitializationService.initializeEreg(miljoe, gruppe.name());
+        environmentInitializationService.initializeEreg(miljoe, gruppe != null ? gruppe.name() : null);
         return ResponseEntity.ok().build();
     }
 
@@ -72,7 +72,7 @@ public class OrkestreringsController {
 
     @PostMapping(value = "/ereg/{miljoe}/update")
     public ResponseEntity<HttpStatus> updateEregByGruppe(@PathVariable String miljoe, @RequestParam(name = "gruppe") Gruppe gruppe) {
-        environmentInitializationService.updateEregByGruppe(miljoe, gruppe.name());
+        environmentInitializationService.updateEregByGruppe(miljoe, gruppe != null ? gruppe.name() : null);
         return ResponseEntity.ok().build();
     }
 

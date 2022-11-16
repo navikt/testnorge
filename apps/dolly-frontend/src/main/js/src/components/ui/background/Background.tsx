@@ -33,23 +33,23 @@ const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
 
 const DefaultBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${() => {
+	background-image: url(${() => {
 		if (month >= 2 && month <= 4) {
-			return btoa(Spring)
+			return Spring
 		} else if (month >= 5 && month <= 7) {
-			return btoa(Sommer)
+			return Sommer
 		} else if (isHalloween) {
-			return btoa(Halloween)
+			return Halloween
 		} else if (month === 8 && day > 23 && weekDay === 4) {
-			return btoa(Faarikaal)
+			return Faarikaal
 		} else if (month >= 8 && month <= 10) {
-			return btoa(Fall)
+			return Fall
 		} else if (isWinter) {
-			return btoa(Winter)
+			return Winter
 		} else if (isChristmas) {
-			return btoa(Christmas)
+			return Christmas
 		}
-		return btoa(Default)
+		return Default
 	}});
 	background-size: 100%;
 	background-repeat: no-repeat;
@@ -65,7 +65,7 @@ const DefaultBackground = styled.div`
 `
 
 const PaaskeBackground = styled.div`
-	background-image: url(data:image/svg+xml;base64,${btoa(Paaske)});
+	background-image: url(${Paaske});
 	background-size: 100%;
 	background-repeat: no-repeat;
 	background-position: bottom;

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.udistub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.udistub.command.UdistubDeleteCommand;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
@@ -33,7 +34,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class UdiStubConsumer {
+public class UdiStubConsumer implements ConsumerStatus {
 
     private static final String CONSUMER = "Dolly";
     private static final String UDISTUB_PERSON = "/api/v1/person";
@@ -144,25 +145,13 @@ public class UdiStubConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
+    }
 
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        // "UdiStub" ikke direkte tilgang
-        var udiStubStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://udi-stub.dev.intern.nav.no/internal/isAlive",
-                "https://udi-stub.dev.intern.nav.no/internal/isReady",
-                WebClient.builder().build());
-        udiStubStatus.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-udistub-proxy", statusMap,
-                "testnav-udi-stub", udiStubStatus
-        );
+    @Override
+    public String consumerName() {
+        return "testnav-udistub-proxy";
     }
 }

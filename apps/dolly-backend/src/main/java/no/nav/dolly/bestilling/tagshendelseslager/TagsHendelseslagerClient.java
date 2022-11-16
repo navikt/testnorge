@@ -126,8 +126,4 @@ public class TagsHendelseslagerClient implements ClientRegister {
                         .distinct()
                         .toList());
     }
-
-    public Map<String, Object> status() {
-        return Map.of();
-    }
 }

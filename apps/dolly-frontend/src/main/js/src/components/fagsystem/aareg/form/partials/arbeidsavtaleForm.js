@@ -4,7 +4,7 @@ import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepic
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ArbeidKodeverk } from '~/config/kodeverk'
 
-export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
+export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => {
 	return (
 		<div>
 			<h3>Ansettelsesdetaljer</h3>
@@ -17,6 +17,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					isClearable={false}
 					optionHeight={50}
 					onChange={onChangeLenket('arbeidsavtale.yrke')}
+					{...props}
 				/>
 				<FormikSelect
 					name={`${path}.ansettelsesform`}
@@ -24,6 +25,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					kodeverk={ArbeidKodeverk.AnsettelsesformAareg}
 					onChange={onChangeLenket('arbeidsavtale.ansettelsesform')}
 					isClearable={false}
+					{...props}
 				/>
 				<FormikTextInput
 					key={`${path}.stillingsprosent`}
@@ -31,18 +33,21 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					label="Stillingsprosent"
 					type="number"
 					onBlur={onChangeLenket('arbeidsavtale.stillingsprosent')}
+					{...props}
 				/>
 				<FormikDatepicker
 					name={`${path}.endringsdatoStillingsprosent`}
 					label="Endringsdato stillingsprosent"
 					onChange={onChangeLenket('arbeidsavtale.endringsdatoStillingsprosent')}
 					fastfield={false}
+					{...props}
 				/>
 				<FormikDatepicker
 					name={`${path}.sisteLoennsendringsdato`}
 					label="Endringsdato lønn"
 					onChange={onChangeLenket('arbeidsavtale.sisteLoennsendringsdato')}
 					fastfield={false}
+					{...props}
 				/>
 				<FormikSelect
 					name={`${path}.arbeidstidsordning`}
@@ -51,6 +56,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					size="xxlarge"
 					isClearable={false}
 					onChange={onChangeLenket('arbeidsavtale.arbeidstidsordning')}
+					{...props}
 				/>
 				<FormikTextInput
 					key={`${path}.avtaltArbeidstimerPerUke`}
@@ -58,6 +64,7 @@ export const ArbeidsavtaleForm = ({ path, onChangeLenket }) => {
 					label="Avtalte arbeidstimer per uke"
 					type="number"
 					onBlur={onChangeLenket('arbeidsavtale.avtaltArbeidstimerPerUke')}
+					{...props}
 				/>
 			</div>
 		</div>

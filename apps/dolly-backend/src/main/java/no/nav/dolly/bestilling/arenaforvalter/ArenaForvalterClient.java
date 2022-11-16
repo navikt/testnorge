@@ -94,11 +94,6 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
-    public Map<String, Object> status() {
-        return arenaForvalterConsumer.checkStatus();
-    }
-
-    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getArenaforvalter()) ||

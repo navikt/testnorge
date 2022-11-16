@@ -4,10 +4,16 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 
 type MaritimtArbeidsforhold = {
 	path: string
-	onChangeLenket: (fieldPath: string) => string
+	onChangeLenket: (fieldPath: string) => any
+	disabled?: boolean
+	isClearable?: boolean
 }
 
-export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArbeidsforhold) => {
+export const MaritimtArbeidsforholdForm = ({
+	path,
+	onChangeLenket,
+	...props
+}: MaritimtArbeidsforhold) => {
 	return (
 		<div>
 			<h3>Fartøy</h3>
@@ -18,6 +24,7 @@ export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArb
 					kodeverk={ArbeidKodeverk.Skipsregistre}
 					onChange={onChangeLenket('fartoy[0].skipsregister')}
 					isClearable={false}
+					{...props}
 				/>
 				<FormikSelect
 					name={`${path}.skipstype`}
@@ -25,6 +32,7 @@ export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArb
 					kodeverk={ArbeidKodeverk.Skipstyper}
 					onChange={onChangeLenket('fartoy[0].skipstype')}
 					isClearable={false}
+					{...props}
 				/>
 				<FormikSelect
 					name={`${path}.fartsomraade`}
@@ -32,6 +40,7 @@ export const MaritimtArbeidsforholdForm = ({ path, onChangeLenket }: MaritimtArb
 					kodeverk={ArbeidKodeverk.Fartsomraader}
 					onChange={onChangeLenket('fartoy[0].fartsomraade')}
 					isClearable={false}
+					{...props}
 				/>
 			</div>
 		</div>

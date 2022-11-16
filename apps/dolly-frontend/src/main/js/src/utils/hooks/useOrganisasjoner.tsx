@@ -4,6 +4,7 @@ import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisa
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import _isArray from 'lodash/isArray'
 
 type MiljoDataListe = {
 	miljo: string
@@ -30,6 +31,7 @@ const getArbeidsforholdUrl = (miljoer: string[]) => {
 		miljo: miljoe,
 	}))
 }
+
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]

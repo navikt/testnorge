@@ -32,41 +32,48 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(InntektMultiplierWrapper inntektMultiplierWrapper, InntektsinformasjonWrapper inntektsinformasjonWrapper, MappingContext context) {
 
-                        inntektMultiplierWrapper.getInntektsinformasjon().forEach(inntektsinformasjon -> {
+                        inntektMultiplierWrapper.getInntektsinformasjon()
+                                .forEach(inntektsinformasjon -> {
 
-                            AtomicReference<LocalDate> yearMonth =
-                                    new AtomicReference<>(LocalDate.parse(inntektsinformasjon.getSisteAarMaaned() + "-01"));
-                            int antallMaaneder = isNull(inntektsinformasjon.getAntallMaaneder()) || inntektsinformasjon.getAntallMaaneder() < 0 ? 1 :
-                                    inntektsinformasjon.getAntallMaaneder();
+                                    var yearMonth =
+                                            new AtomicReference<>(LocalDate.parse(inntektsinformasjon.getSisteAarMaaned() + "-01"));
+                                    int antallMaaneder = isNull(inntektsinformasjon.getAntallMaaneder()) || inntektsinformasjon.getAntallMaaneder() < 0 ? 1 :
+                                            inntektsinformasjon.getAntallMaaneder();
 
-                            do {
-                                Inntektsinformasjon inntektsinformasjon1 = mapperFacade.map(
-                                        inntektsinformasjon, Inntektsinformasjon.class);
+                                    inntektsinformasjon.getInntektsliste()
+                                            .forEach(inntekt ->
+                                                    inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
+                                                            inntekt.getTilleggsinformasjon().isEmpty() ? null :
+                                                            inntekt.getTilleggsinformasjon()));
+                                    do {
+                                        Inntektsinformasjon inntektsinformasjon1 = mapperFacade.map(
+                                                inntektsinformasjon, Inntektsinformasjon.class);
 
-                                inntektsinformasjon1.setAarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT));
+                                        inntektsinformasjon1.setAarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT));
+                                        inntektsinformasjon1.setNorskIdent((String) context.getProperty("ident"));
 
-                                inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinformasjon1);
+                                        inntektsinformasjonWrapper.getInntektsinformasjon().add(inntektsinformasjon1);
 
-                                AtomicInteger versjon = new AtomicInteger(0);
-                                inntektsinformasjon.getHistorikk().forEach(historikk ->
+                                        var versjon = new AtomicInteger(0);
+                                        inntektsinformasjon.getHistorikk().forEach(historikk ->
 
-                                        inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
-                                                .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
-                                                .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
-                                                .virksomhet(inntektsinformasjon.getVirksomhet())
-                                                .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
-                                                .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
-                                                .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
-                                                .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
-                                                .versjon(versjon.addAndGet(1))
-                                                .rapporteringsdato(historikk.getRapporteringsdato())
-                                                .build())
-                                );
+                                                inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
+                                                        .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
+                                                        .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
+                                                        .virksomhet(inntektsinformasjon.getVirksomhet())
+                                                        .inntektsliste(mapperFacade.mapAsList(historikk.getInntektsliste(), Inntekt.class))
+                                                        .fradragsliste(mapperFacade.mapAsList(historikk.getFradragsliste(), Fradrag.class))
+                                                        .forskuddstrekksliste(mapperFacade.mapAsList(historikk.getForskuddstrekksliste(), Forskuddstrekk.class))
+                                                        .arbeidsforholdsliste(mapperFacade.mapAsList(historikk.getArbeidsforholdsliste(), Arbeidsforhold.class))
+                                                        .versjon(versjon.addAndGet(1))
+                                                        .rapporteringsdato(historikk.getRapporteringsdato())
+                                                        .build())
+                                        );
 
-                                yearMonth.updateAndGet(ym -> ym.minusMonths(1));
-                            } while (--antallMaaneder > 0);
+                                        yearMonth.updateAndGet(ym -> ym.minusMonths(1));
+                                    } while (--antallMaaneder > 0);
 
-                        });
+                                });
                     }
                 })
                 .register();

@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendHentKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendOppdaterKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendSlettKontoregisterCommand;
@@ -36,7 +37,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class KontoregisterConsumer {
+public class KontoregisterConsumer implements ConsumerStatus {
 
     private static final int IBAN_COUNTRY_LENGTH = 2;
     private static final int DEFAULT_ACCOUNT_LENGTH = 15;
@@ -175,31 +176,14 @@ public class KontoregisterConsumer {
         }
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusWebClient = WebClient.builder().build();
-
-        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                statusWebClient);
-        consumerStatus.put("team", TEAM_DOLLY);
-
-        var status = new ConcurrentHashMap<String, Object>();
-        status.put("testnav-kontoregister-person-proxy", consumerStatus);
-
-        try {
-            Map response = statusWebClient.get()
-                    .uri(serviceProperties.getUrl() + "/internal/status")
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            status.putAll(response);
-        } catch (Exception e) {
-            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
-        }
-
-        return status;
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-kontoregister-person-proxy";
+    }
+
 }

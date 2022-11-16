@@ -1,7 +1,6 @@
 package no.nav.dolly.domain.resultset.pensjon;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,6 +10,8 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -24,6 +25,13 @@ public class PensjonData {
 
     @Schema(description = "Data for tjenestepensjon (TP)")
     private List<TpOrdning> tp;
+
+    public List<TpOrdning> getTp() {
+        if (isNull(tp)) {
+            tp = new ArrayList<>();
+        }
+        return tp;
+    }
 
     @Getter
     @Setter

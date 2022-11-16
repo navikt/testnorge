@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.instdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
@@ -38,7 +39,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class InstdataConsumer {
+public class InstdataConsumer implements ConsumerStatus {
 
     private static final String INSTDATA_URL = "/api/v1/ident";
     private static final String DELETE_POST_FMT_BLD = INSTDATA_URL + "/batch";
@@ -150,31 +151,14 @@ public class InstdataConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusWebClient = WebClient.builder().build();
-
-        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        consumerStatus.put("team", TEAM_DOLLY);
-
-        var status = new ConcurrentHashMap<String, Object>();
-        status.put("testnav-inst-service", consumerStatus);
-
-        try {
-            Map response = statusWebClient.get()
-                    .uri(serviceProperties.getUrl() + "/internal/status")
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            status.putAll(response);
-        } catch (Exception e) {
-            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
-        }
-
-        return status;
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-inst-service";
+    }
+
 }

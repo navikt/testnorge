@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.skjermingsregister;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterDeleteCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPostCommand;
@@ -27,7 +28,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class SkjermingsRegisterConsumer {
+public class SkjermingsRegisterConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -95,26 +96,14 @@ public class SkjermingsRegisterConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_NOM = "Team Org (nom)";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-//        // Skjermede ikke direkte tilgang
-//        var registerStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://skjermede-personer.dev.adeo.no/internal/isAlive",
-//                "https://skjermede-personer.dev.adeo.no/internal/isReady",
-//                WebClient.builder().build());
-//        registerStatus.put("team", TEAM_NOM);
-
-        return Map.of(
-                "testnav-skjermingsregister-proxy", statusMap
-                //"skjermede-personer", registerStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-skjermingsregister-proxy";
+    }
+
 }

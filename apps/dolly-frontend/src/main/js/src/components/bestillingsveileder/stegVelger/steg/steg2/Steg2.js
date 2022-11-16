@@ -19,6 +19,7 @@ import { OrganisasjonForm } from '~/components/fagsystem/organisasjoner/form/For
 import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { ifPresent } from '~/utils/YupValidations'
 import { Alert } from '@navikt/ds-react'
+import { useFormikContext } from 'formik'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -37,8 +38,10 @@ const getEmptyMessage = (leggTil, importTestnorge, gruppe = null) => {
 	return 'Du har ikke valgt noen egenskaper. Dolly oppretter personer med tilfeldige verdier.'
 }
 
-export const Steg2 = ({ formikBag }) => {
+export const Steg2 = () => {
 	const opts = useContext(BestillingsveilederContext)
+	const formikBag = useFormikContext()
+
 	const leggTil = opts.is.leggTil
 	const importTestnorge = opts.is.importTestnorge
 	const gruppe = opts.gruppe
@@ -50,7 +53,7 @@ export const Steg2 = ({ formikBag }) => {
 	return (
 		<div>
 			<PdlfForm formikBag={formikBag} />
-			<AaregForm formikBag={formikBag} />
+			<AaregForm />
 			<SigrunstubForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
 			<InntektsmeldingForm formikBag={formikBag} />

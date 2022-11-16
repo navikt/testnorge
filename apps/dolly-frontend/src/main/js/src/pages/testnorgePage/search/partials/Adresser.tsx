@@ -49,7 +49,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				disabled={_get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -57,7 +57,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
-				disabled={_get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -65,7 +65,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				disabled={_get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>

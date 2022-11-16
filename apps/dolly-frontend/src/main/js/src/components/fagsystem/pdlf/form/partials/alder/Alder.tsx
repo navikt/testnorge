@@ -32,7 +32,7 @@ export const Alder = ({ formikBag }: AlderForm) => {
 				type="number"
 				onKeyPress={onlyNumberKeyPressHandler}
 				label="Alder"
-				disabled={disableAlder}
+				isDisabled={disableAlder}
 			/>
 			<FormikDatepicker
 				name={paths.foedtEtter}

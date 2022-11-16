@@ -74,7 +74,4 @@ public class BrregstubClient implements ClientRegister {
             return isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError());
     }
 
-    public Map<String, Object> status() {
-        return brregstubConsumer.checkStatus();
-    }
 }

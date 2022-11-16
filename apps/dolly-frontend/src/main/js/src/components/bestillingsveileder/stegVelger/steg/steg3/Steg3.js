@@ -11,13 +11,25 @@ import { OppsummeringKommentarForm } from '~/components/bestillingsveileder/steg
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import _get from 'lodash/get'
 import { MalFormOrganisasjon } from '~/pages/organisasjoner/MalFormOrganisasjon'
+import { useFormikContext } from 'formik'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 
-export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
+export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
+	const formikBag = useFormikContext()
+	const { currentBruker } = useCurrentBruker()
+
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
-	const bankIdBruker = brukertype === 'BANKID'
+	const erQ2MiljoeAvhengig =
+		_get(formikBag.values, 'pdldata.person.fullmakt') ||
+		_get(formikBag.values, 'pdldata.person.falskIdentitet') ||
+		_get(formikBag.values, 'pdldata.person.falskIdentitet') ||
+		_get(formikBag.values, 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
+		_get(formikBag.values, 'pdldata.person.kontaktinformasjonForDoedsbo')
+
+	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
 	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
@@ -30,9 +42,9 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker) {
-			return ['q1']
+			return erQ2MiljoeAvhengig ? ['q1', 'q2'] : ['q1']
 		}
-		return []
+		return erQ2MiljoeAvhengig ? ['q2'] : []
 	}
 
 	useEffect(() => {
@@ -45,6 +57,8 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 			formikBag.setFieldValue('environments', ['q1'])
 		} else if (!formikBag.values?.environments) {
 			formikBag.setFieldValue('environments', [])
+		} else if (erQ2MiljoeAvhengig) {
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 		}
 		if (harRelatertPersonVedSivilstand || harEksisterendeNyIdent || harRelatertPersonBarn) {
 			formikBag.setFieldValue('malBestillingNavn', undefined)
@@ -87,11 +101,15 @@ export const Steg3 = ({ formikBag, brukertype, brukerId }) => {
 				!harRelatertPersonVedSivilstand &&
 				!harEksisterendeNyIdent &&
 				!harRelatertPersonBarn && (
-					<MalForm formikBag={formikBag} brukerId={brukerId} opprettetFraMal={opts?.mal?.malNavn} />
+					<MalForm
+						formikBag={formikBag}
+						brukerId={currentBruker?.brukerId}
+						opprettetFraMal={opts?.mal?.malNavn}
+					/>
 				)}
 			{erOrganisasjon && (
 				<MalFormOrganisasjon
-					brukerId={brukerId}
+					brukerId={currentBruker?.brukerId}
 					formikBag={formikBag}
 					opprettetFraMal={opts?.mal?.malNavn}
 				/>

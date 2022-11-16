@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @RestController
 public class StatusController {
-    private final String TEAM = "Team Dolly";
+    private static final String TEAM = "Team Dolly";
 
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String>> getStatus() {
@@ -29,7 +29,7 @@ public class StatusController {
     }
 
     public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap();
+        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
 
         Thread blockingThread = new Thread(() -> {
             status.put("alive", checkStatus(webClient, aliveUrl).block());
@@ -39,7 +39,7 @@ public class StatusController {
         try {
             blockingThread.join();
         } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            Thread.currentThread().interrupt();
         }
 
         return status;

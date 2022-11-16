@@ -1,7 +1,7 @@
 import React from 'react'
 import Panel from '~/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialValues } from '~/components/fagsystem/aareg/form/initialValues'
+import { initialArbeidsforholdOrg } from '~/components/fagsystem/aareg/form/initialValues'
 import { harValgtAttributt } from '~/components/ui/form/formUtils'
 import { aaregAttributt } from '~/components/fagsystem/aareg/form/Form'
 import { sigrunAttributt } from '~/components/fagsystem/sigrunstub/form/Form'
@@ -49,11 +49,11 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 
 ArbeidInntektPanel.heading = 'Arbeid og inntekt'
 
-ArbeidInntektPanel.initialValues = ({ set, del, has, dispatch }) => ({
+ArbeidInntektPanel.initialValues = ({ set, del, has }) => ({
 	aareg: {
 		label: 'Har arbeidsforhold',
 		checked: has('aareg'),
-		add: () => set('aareg', [initialValues]),
+		add: () => set('aareg', [initialArbeidsforholdOrg]),
 		remove() {
 			del('aareg')
 		},

@@ -1,16 +1,14 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
-import java.time.LocalDate;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.time.LocalDate;
+
+@Data
 @Builder
 @EqualsAndHashCode
 @NoArgsConstructor

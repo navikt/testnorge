@@ -74,10 +74,6 @@ public class KontoregisterClient implements ClientRegister {
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
     }
 
-    public Map<String, Object> status() {
-        return kontoregisterConsumer.checkStatus();
-    }
-
     @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 

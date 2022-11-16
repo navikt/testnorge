@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CheckAliveUtil {
     public static Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
-        ConcurrentHashMap<String, String> status = new ConcurrentHashMap();
+        ConcurrentHashMap<String, String> status = new ConcurrentHashMap<>();
 
         Thread blockingThread = new Thread(() -> {
             status.put("alive", checkStatus(webClient, aliveUrl).block());

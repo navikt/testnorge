@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCommand;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
@@ -22,7 +23,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Slf4j
 @Service
-public class InntektsmeldingConsumer {
+public class InntektsmeldingConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -57,24 +58,14 @@ public class InntektsmeldingConsumer {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        var inntektsmeldingGeneratorStatus = CheckAliveUtil.checkConsumerStatus(
-                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isAlive",
-                "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no/internal/isReady",
-                WebClient.builder().build());
-        inntektsmeldingGeneratorStatus.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-inntektsmelding-service", statusMap,
-                "testnav-inntektsmelding-generator-service", inntektsmeldingGeneratorStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-inntektsmelding-service";
+    }
+
 }
