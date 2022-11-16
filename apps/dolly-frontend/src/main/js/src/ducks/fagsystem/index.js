@@ -119,27 +119,6 @@ export const actions = createActions(
 	}
 )
 
-// TODO: DENNE MÅ FIKSES
-// export const GET_KRR_PERSON = createAction(
-// 	'GET_KRR_PERSON',
-// 	async ident => {
-// 		try {
-// 			const res = await KrrApi.getPerson(ident)
-// 			return res
-// 		} catch (err) {
-// 			if (err.response && err.response.status === 404) {
-// 				console.error(err.response.data.melding)
-// 				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
-// 				return { data: [null] }
-// 			}
-// 			return err
-// 		}
-// 	},
-// 	ident => ({
-// 		ident
-// 	})
-// )
-
 const initialState = {
 	tpsf: {},
 	tpsMessaging: {},
