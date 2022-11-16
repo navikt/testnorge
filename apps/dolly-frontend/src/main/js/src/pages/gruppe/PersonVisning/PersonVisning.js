@@ -163,7 +163,6 @@ export const PersonVisning = ({
 		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
-
 		if (instData && sjekkManglerInstData(instData)) {
 			return true
 		}
@@ -302,7 +301,11 @@ export const PersonVisning = ({
 				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
 				<BrregVisning data={brregstub} loading={loading.brregstub} />
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<InstVisning data={instData} loading={loadingInstData} bestilteMiljoer={bestilteMiljoer} />
+				<InstVisning
+					data={instData}
+					loading={loadingInstData}
+					bestillingIdListe={bestillingIdListe}
+				/>
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}

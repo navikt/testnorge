@@ -6,8 +6,8 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
-import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 const getSortedData = (data) => {
 	return Array.isArray(data)
@@ -24,7 +24,9 @@ export const sjekkManglerInstData = (instData) => {
 	return instData?.length < 1 || instData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
-export const InstVisning = ({ data, loading, bestilteMiljoer }) => {
+export const InstVisning = ({ data, loading, bestillingIdListe }) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'instdata')
+
 	if (loading) {
 		return <Loading label="Laster inst data" />
 	}
@@ -32,11 +34,14 @@ export const InstVisning = ({ data, loading, bestilteMiljoer }) => {
 		return null
 	}
 
-	// const sortedData = getSortedData(data)
-	// const manglerFagsystemdata = sortedData?.length < 1
-
 	const manglerFagsystemdata = sjekkManglerInstData(data)
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const sortedData = data.map((miljoeData) => {
+		if (miljoeData.data) {
+			miljoeData.data = getSortedData(miljoeData?.data)
+		}
+		return miljoeData
+	})
 
 	return (
 		<ErrorBoundary>
@@ -50,7 +55,7 @@ export const InstVisning = ({ data, loading, bestilteMiljoer }) => {
 					Kunne ikke hente institusjonsopphold-data på person
 				</Alert>
 			) : (
-				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
+				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={sortedData}>
 					<DollyFieldArray nested>
 						{(opphold, idx) => (
 							<div className="person-visning_content" key={idx}>
