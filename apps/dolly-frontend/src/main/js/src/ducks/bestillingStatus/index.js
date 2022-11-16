@@ -50,7 +50,7 @@ export const sokSelector = (bestillingerById, searchStr) => {
 }
 
 // Object med system som key, og OK-miljøer som value
-export const successMiljoSelector = (statusArray) => {
+export const successMiljoSelector = (statusArray, ident = null) => {
 	const success_list = statusArray
 		?.filter((curr) => !_isNil(curr))
 		?.reduce((acc, curr) => {
@@ -60,11 +60,14 @@ export const successMiljoSelector = (statusArray) => {
 				// Dette er statuser som er OK
 				const detaljert = statuser[0].detaljert
 				const envs = detaljert && detaljert.map((v) => v.miljo)
+				const identer = detaljert ? detaljert.flatMap((v) => v.identer) : statuser[0].identer
 
-				if (acc[curr.id]) {
-					acc[curr.id] = acc[curr.id].concat(envs)
-				} else {
-					acc[curr.id] = envs
+				if (!ident || identer.includes(ident)) {
+					if (acc[curr.id]) {
+						acc[curr.id] = acc[curr.id].concat(envs)
+					} else {
+						acc[curr.id] = envs
+					}
 				}
 			}
 
