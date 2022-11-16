@@ -18,6 +18,10 @@ const getSortedData = (data) => {
 		: data
 }
 
+export const sjekkManglerInstData = (instData) => {
+	return instData?.length < 1 || instData?.every((miljoData) => miljoData.data?.length < 1)
+}
+
 export const InstVisning = ({ data, loading }) => {
 	if (loading) {
 		return <Loading label="Laster inst data" />

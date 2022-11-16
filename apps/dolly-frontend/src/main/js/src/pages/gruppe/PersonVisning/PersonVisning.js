@@ -40,10 +40,11 @@ import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
+import { useInstData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import {
 	harAaregBestilling,
+	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '~/utils/SjekkBestillingFagsystem'
@@ -112,6 +113,11 @@ export const PersonVisning = ({
 		harPoppBestilling(bestillingerFagsystemer)
 	)
 
+	const { loading: loadingInstData, instData } = useInstData(
+		ident.ident,
+		harInstBestilling(bestillingerFagsystemer)
+	)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -135,7 +141,7 @@ export const PersonVisning = ({
 
 	const manglerFagsystemdata = () => {
 		if (
-			[sigrunstub, inntektstub, krrstub, instdata].some(
+			[sigrunstub, inntektstub, krrstub].some(
 				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
 			)
 		) {
@@ -156,6 +162,11 @@ export const PersonVisning = ({
 		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
+
+		if (instData && sjekkManglerInstData(instData)) {
+			return true
+		}
+
 		return false
 	}
 

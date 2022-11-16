@@ -71,7 +71,6 @@ export const useTpData = (ident, harTpBestilling) => {
 
 export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
-
 	if (!harInstBestilling) {
 		return {
 			loading: false,
@@ -79,7 +78,7 @@ export const useInstData = (ident, harInstBestilling) => {
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		instUrl(ident, instEnvironments),
+		[instUrl(ident, instEnvironments)],
 		multiFetcherFagsystemer
 	)
 
