@@ -89,26 +89,28 @@ const arbeidsgiver = Yup.object({
 
 const arbeidsavtale = Yup.object({
 	yrke: fullArbeidsforholdTest(requiredString),
-	ansettelsesform: Yup.string(),
-	stillingsprosent: Yup.number().typeError(messages.required),
+	ansettelsesform: Yup.string().nullable(),
+	stillingsprosent: Yup.number().typeError(messages.required).nullable(),
 	endringsdatoStillingsprosent: Yup.date().nullable(),
 	sisteLoennsendringsdato: Yup.date().nullable(),
-	arbeidstidsordning: fullArbeidsforholdTest(Yup.string()),
+	arbeidstidsordning: fullArbeidsforholdTest(Yup.string()).nullable(),
 	avtaltArbeidstimerPerUke: fullArbeidsforholdTest(
 		Yup.number()
 			.min(1, 'Kan ikke være mindre enn ${min}')
 			.max(75, 'Kan ikke være større enn ${max}')
 			.typeError(messages.required)
-	),
+	).nullable(),
 })
 
-const fartoy = Yup.array().of(
-	Yup.object({
-		skipsregister: requiredString,
-		skipstype: requiredString,
-		fartsomraade: requiredString,
-	})
-)
+const fartoy = Yup.array()
+	.nullable()
+	.of(
+		Yup.object({
+			skipsregister: requiredString,
+			skipstype: requiredString,
+			fartsomraade: requiredString,
+		})
+	)
 
 const requiredPeriode = Yup.mixed()
 	.when('$aareg[0].arbeidsforholdstype', {
@@ -128,12 +130,12 @@ const requiredPeriode = Yup.mixed()
 export const validation = {
 	aareg: Yup.array().of(
 		Yup.object({
-			ansettelsesPeriode: ifPresent('$aareg[0].arbeidsgiver', ansettelsesPeriode),
+			ansettelsesPeriode: ifPresent('$aareg[0].arbeidsgiver.aktoertype', ansettelsesPeriode),
 			arbeidsforholdstype: requiredString,
 			arbeidsforholdID: Yup.string().nullable(),
-			arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver', arbeidsgiver),
-			arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver', arbeidsavtale),
-			fartoy: ifPresent('$aareg[0].fartoy', fartoy),
+			arbeidsgiver: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsgiver),
+			arbeidsavtale: ifPresent('$aareg[0].arbeidsgiver.aktoertype', arbeidsavtale),
+			fartoy: ifPresent('$aareg[0].fartoy.skipstype', fartoy),
 			antallTimerForTimeloennet: Yup.array().of(
 				Yup.object({
 					periode: Yup.object({
@@ -241,7 +243,7 @@ export const validation = {
 				)
 			),
 			genererPeriode: ifPresent(
-				'$aareg[0].amelding',
+				'$aareg[0].amelding[0]',
 				Yup.object({
 					fom: testDatoFom(requiredPeriode, 'tom'),
 					tom: testDatoTom(requiredPeriode, 'fom'),

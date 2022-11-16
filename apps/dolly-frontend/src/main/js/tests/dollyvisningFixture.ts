@@ -43,7 +43,7 @@ const kontoregister = new RegExp(/testnav-kontoregister-person-proxy\/api/)
 const backendTransaksjon = new RegExp(/dolly-backend\/api\/v1\/transaksjonid/)
 const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/\/kodeverk\//)
-const aareg = new RegExp(/dolly-backend\/api\/v1\/aareg\/arbeidsforhold/)
+const aareg = new RegExp(/testnav-aaregister-proxy\/q1\/api\/v1\/arbeidstaker/)
 const inst = new RegExp(/testnav-inst-service\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
 const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
@@ -190,6 +190,10 @@ test('Gå inn på testgruppe og åpne en ident med data i alle fagsystem', async
 	await testController
 		.expect(ReactSelector('AppError').exists)
 		.eql(false, 'ErrorBoundary utløst, en komponent kaster Error under visning av ident')
+
+	await testController
+		.click(ReactSelector('AaregVisning').findReact('MiljoTabs').withText('Arbeidsforhold'))
+		.wait(1500)
 
 	await testController
 		.click(

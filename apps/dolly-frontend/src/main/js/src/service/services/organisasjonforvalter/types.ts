@@ -40,7 +40,7 @@ export type OrganisasjonFasteData = {
 	forretningsAdresse?: AdresseFasteData
 	postadresse?: AdresseFasteData
 	opprinnelse?: string
-	tags: string[]
+	tags?: string[]
 }
 
 export type AdresseFasteData = {

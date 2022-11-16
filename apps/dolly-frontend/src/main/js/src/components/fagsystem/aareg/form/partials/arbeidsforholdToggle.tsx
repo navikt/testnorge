@@ -14,6 +14,7 @@ import {
 } from '../initialValues'
 import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
 import { useFormikContext } from 'formik'
+import { useDollyFasteDataOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -23,30 +24,30 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
-
-// Har hardkodet liste over felles Dolly-arbeidsgivere, fordi det tar for lang tid å hente ut fra API
-const fellesOrg = [
-	'972674818',
-	'896929119',
-	'839942907',
-	'967170232',
-	'805824352',
-	'907670201',
-	'947064649',
-]
-
 export const ArbeidsforholdToggle = (): ReactElement => {
 	const formikBag = useFormikContext()
-	const getArbeidsgiverType =
-		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
-			? ArbeidsgiverTyper.egen
-			: _get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS'
-			? ArbeidsgiverTyper.privat
-			: fellesOrg.some((org) => org === _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer'))
-			? ArbeidsgiverTyper.felles
-			: ArbeidsgiverTyper.fritekst
+	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
-	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType)
+	const getArbeidsgiverType = () => {
+		const orgnummer = _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
+		if (
+			_get(formikBag.values, 'aareg[0].amelding[0]') ||
+			_get(formikBag.values, 'aareg[0].arbeidsforhold')
+		) {
+			return ArbeidsgiverTyper.egen
+		} else if (_get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+			return ArbeidsgiverTyper.privat
+		} else if (
+			!orgnummer ||
+			organisasjoner.map((organisasjon) => organisasjon.orgnummer).some((org) => org === orgnummer)
+		) {
+			return ArbeidsgiverTyper.felles
+		} else {
+			return ArbeidsgiverTyper.fritekst
+		}
+	}
+
+	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType())
 
 	const toggleValues = [
 		{

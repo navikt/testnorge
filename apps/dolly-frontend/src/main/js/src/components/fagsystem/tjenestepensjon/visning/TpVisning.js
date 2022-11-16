@@ -8,6 +8,7 @@ import { Alert } from '@navikt/ds-react'
 import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 export const sjekkManglerTpData = (tpData) => {
 	return tpData?.length < 1 || tpData?.every((miljoData) => miljoData.data?.length < 1)
@@ -32,8 +33,10 @@ const TpOrdning = ({ data, ordninger }) => {
 	)
 }
 
-export const TpVisning = ({ data, loading, bestilteMiljoer }) => {
+export const TpVisning = ({ data, loading, bestillingIdListe }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
+
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.tp')
 
 	useEffect(() => {
 		if (!ordninger.length) {
