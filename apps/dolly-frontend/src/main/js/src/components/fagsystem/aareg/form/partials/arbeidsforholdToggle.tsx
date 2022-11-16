@@ -31,7 +31,7 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const getArbeidsgiverType = () => {
 		const orgnummer = _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
 		if (
-			_get(formikBag.values, 'aareg[0].amelding') ||
+			_get(formikBag.values, 'aareg[0].amelding[0]') ||
 			_get(formikBag.values, 'aareg[0].arbeidsforhold')
 		) {
 			return ArbeidsgiverTyper.egen
