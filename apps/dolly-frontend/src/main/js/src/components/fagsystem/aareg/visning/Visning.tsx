@@ -14,12 +14,13 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 type AaregVisningProps = {
 	ident?: string
 	liste?: Array<MiljoDataListe>
 	loading?: boolean
-	bestilteMiljoer?: Array<string>
+	bestillingIdListe?: Array<string>
 }
 
 type MiljoDataListe = {
@@ -127,13 +128,15 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	)
 }
 
-export const AaregVisning = ({ liste, loading, bestilteMiljoer }: AaregVisningProps) => {
+export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisningProps) => {
 	if (loading) {
 		return <Loading label="Laster Aareg-data" />
 	}
 	if (!liste) {
 		return null
 	}
+
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
 
 	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 

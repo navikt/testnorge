@@ -1,6 +1,7 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '~/api'
 import { System } from '~/ducks/bestillingStatus/bestillingStatusMapper'
+import _has from 'lodash/has'
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
@@ -118,7 +119,7 @@ export const useBestillingById = (
 	}
 }
 
-export const useBestilteMiljoer = (bestillingIdListe: Array<string>) => {
+export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: string) => {
 	if (!bestillingIdListe || bestillingIdListe?.length < 1) {
 		return {
 			loading: false,
@@ -130,11 +131,13 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>) => {
 		[getMultipleBestillingByIdUrl(bestillingIdListe)],
 		multiFetcherAll
 	)
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	const miljoer = []
 	data?.map((bestilling) => {
-		bestilling?.[0]?.environments?.forEach((miljo) => {
-			if (!miljoer.includes(miljo)) {
+		// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
+		bestilling?.environments?.forEach((miljo) => {
+			// if (!miljoer.includes(miljo) && bestilling.bestilling[fagsystem]) {
+			if (!miljoer.includes(miljo) && _has(bestilling, `bestilling.${fagsystem}`)) {
 				miljoer.push(miljo)
 			}
 		})

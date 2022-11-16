@@ -41,7 +41,6 @@ import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/
 import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
-import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import {
 	harAaregBestilling,
@@ -107,6 +106,7 @@ export const PersonVisning = ({
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer)
 	)
+	console.log('tpData: ', tpData) //TODO - SLETT MEG
 
 	const { loading: loadingPoppData, poppData } = usePoppData(
 		ident.ident,
@@ -118,8 +118,6 @@ export const PersonVisning = ({
 	}
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
-
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe)
 
 	const mountedRef = useRef(true)
 	const navigate = useNavigate()
@@ -276,15 +274,15 @@ export const PersonVisning = ({
 				<AaregVisning
 					liste={arbeidsforhold}
 					loading={loadingAareg}
-					bestilteMiljoer={bestilteMiljoer}
+					bestillingIdListe={bestillingIdListe}
 				/>
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
-					bestilteMiljoer={bestilteMiljoer}
+					bestillingIdListe={bestillingIdListe}
 				/>
-				<TpVisning data={tpData} loading={loadingTpData} bestilteMiljoer={bestilteMiljoer} />
+				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

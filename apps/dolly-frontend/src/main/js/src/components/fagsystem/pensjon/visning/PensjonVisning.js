@@ -8,6 +8,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { runningTestcafe } from '~/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
@@ -37,13 +38,15 @@ const PensjonInntekt = ({ data }) => {
 	)
 }
 
-export const PensjonVisning = ({ data, loading, bestilteMiljoer }) => {
+export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
 	}
 	if (!data) {
 		return null
 	}
+
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 

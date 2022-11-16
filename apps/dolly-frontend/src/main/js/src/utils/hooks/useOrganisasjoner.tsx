@@ -165,7 +165,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 		multiFetcherFagsystemer,
 		{ dedupingInterval: 30000 }
 	)
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	return {
 		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,

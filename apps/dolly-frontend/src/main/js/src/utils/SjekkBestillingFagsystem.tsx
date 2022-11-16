@@ -11,7 +11,7 @@ export const harAaregBestilling = (bestillingerFagsystemer) => {
 export const harTpBestilling = (bestillingerFagsystemer) => {
 	let tp = false
 	bestillingerFagsystemer?.forEach((i) => {
-		if (i.pensjonforvalter?.tp) {
+		if (i.pensjonforvalter?.tp?.length > 0) {
 			tp = true
 		}
 	})
