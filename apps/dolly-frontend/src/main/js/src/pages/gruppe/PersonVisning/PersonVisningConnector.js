@@ -9,7 +9,6 @@ const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.
 const loadingSelectorInntektstub = createLoadingSelector(actions.getInntektstub)
 const loadingSelectorPdlForvalter = createLoadingSelector(actions.getPdlForvalter)
 const loadingSelectorArena = createLoadingSelector(actions.getArena)
-const loadingSelectorInst = createLoadingSelector(actions.getInst)
 const loadingSelectorUdi = createLoadingSelector(actions.getUdi)
 const loadingSelectorSlettPerson = createLoadingSelector(actions.slettPerson)
 const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
@@ -28,7 +27,6 @@ const loadingSelector = createSelector(
 			inntektstub: loadingSelectorInntektstub({ loading }),
 			pdlforvalter: loadingSelectorPdlForvalter({ loading }),
 			arenaforvalteren: loadingSelectorArena({ loading }),
-			instdata: loadingSelectorInst({ loading }),
 			udistub: loadingSelectorUdi({ loading }),
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
