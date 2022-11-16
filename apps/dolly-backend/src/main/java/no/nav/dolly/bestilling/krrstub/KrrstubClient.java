@@ -82,11 +82,6 @@ public class KrrstubClient implements ClientRegister {
     }
 
     @Override
-    public Map<String, Object> status() {
-        return krrstubConsumer.checkStatus();
-    }
-
-    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getKrrstub()) ||

@@ -1,0 +1,59 @@
+@import (reference) '~lessVars';
+
+@headerHoverColor: lighten(@color-nav-black, 7%);
+
+header.blank-header {
+  background-color: @color-nav-black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 0 15px 0;
+
+  .home-nav {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+
+    .img-logo {
+      width: 128px;
+      text-align: center;
+      border-right: 2px solid #88b1d6;
+
+      img {
+        height: 30px;
+      }
+    }
+
+    h1 {
+      display: inline-block;
+      margin: 0;
+      padding-left: 10px;
+      font-size: 1.6rem;
+      color: white;
+    }
+  }
+
+  .menu-links {
+    display: flex;
+    justify-content: center;
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: normal;
+      margin: 0 20px;
+      font-size: 1.2em;
+      &.active {
+        font-weight: bold;
+        background-color: lighten(@color-nav-black, 10%);
+      }
+      &:hover {
+        background-color: @headerHoverColor;
+      }
+    }
+  }
+}
+
+.dollysheep {
+  margin-left: 10px;
+}

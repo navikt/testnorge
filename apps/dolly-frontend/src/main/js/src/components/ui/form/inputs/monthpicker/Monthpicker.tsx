@@ -1,30 +1,34 @@
 import React from 'react'
 import ReactDatepicker from 'react-datepicker'
 import _get from 'lodash/get'
-import { FormikProps } from 'formik'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
+import { FormikProps, useFormikContext } from 'formik'
 import { Label } from '~/components/ui/form/inputs/label/Label'
 import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
 
 interface MonthpickerProps {
-	formikBag: FormikProps<any>
 	name: string
 	label: string
-	date: Date
-	handleDateChange: (dato: string, type: string) => void
+	date?: Date
+	handleDateChange?: (dato: string, type: string) => void
+	onChange?: (date: Date) => void
+	isClearable?: boolean
 	minDate?: Date
 	maxDate?: Date
 }
 
 export const Monthpicker = ({
-	formikBag,
 	name,
 	label,
-	date,
+	date = null,
 	handleDateChange,
+	onChange,
+	isClearable = false,
 	minDate = null,
 	maxDate = null,
+	...props
 }: MonthpickerProps) => {
+	const formikBag = useFormikContext()
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
 		const feilmelding = _get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
@@ -39,7 +43,7 @@ export const Monthpicker = ({
 					locale="nb"
 					dateFormat="yyyy-MM"
 					selected={formattedDate}
-					onChange={handleDateChange}
+					onChange={onChange ? onChange : handleDateChange}
 					placeholderText={'yyyy-MM'}
 					showMonthYearPicker
 					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
@@ -47,6 +51,7 @@ export const Monthpicker = ({
 					autoComplete="off"
 					minDate={minDate}
 					maxDate={maxDate}
+					{...props}
 				/>
 			</Label>
 		</InputWrapper>

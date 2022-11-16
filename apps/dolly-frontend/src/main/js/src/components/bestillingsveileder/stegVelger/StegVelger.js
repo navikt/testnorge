@@ -20,7 +20,7 @@ import { Stepper } from '@navikt/ds-react'
 
 const STEPS = [Steg1, Steg2, Steg3]
 
-export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) => {
+export const StegVelger = ({ initialValues, onSubmit }) => {
 	const [step, setStep] = useState(0)
 
 	const opts = useContext(BestillingsveilederContext)
@@ -87,12 +87,7 @@ export const StegVelger = ({ initialValues, onSubmit, brukertype, brukerId }) =>
 
 						<BestillingsveilederHeader />
 
-						<CurrentStepComponent
-							formikBag={formikBag}
-							stateModifier={stateModifier}
-							brukertype={brukertype}
-							brukerId={brukerId}
-						/>
+						<CurrentStepComponent formikBag={formikBag} stateModifier={stateModifier} />
 
 						{devEnabled && <DisplayFormikState {...formikBag} />}
 

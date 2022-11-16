@@ -4,9 +4,11 @@ import useSWR from 'swr'
 
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
 const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
+const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 
 const prefetchedMiljoer = ['t0', 't1', 't3', 't4', 't5', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
+const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 
 export const useDollyEnvironments = () => {
 	const { data, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
@@ -29,6 +31,22 @@ export const usePensjonEnvironments = () => {
 
 	return {
 		pensjonEnvironments: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useArenaEnvironments = () => {
+	const { data, error } = useSWR<string[], Error>(
+		[getArenaMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
+		fetcher,
+		{
+			fallbackData: prefetchedArenaMiljoer,
+		}
+	)
+
+	return {
+		arenaEnvironments: data,
 		loading: !error && !data,
 		error: error,
 	}

@@ -20,14 +20,13 @@ import { ArbeidsforholdForm } from './arbeidsforholdForm'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 import DollyKjede from '~/components/dollyKjede/DollyKjede'
 import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
-import { FormikProps } from 'formik'
-import { AaregListe, Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
-import { Alert } from '@navikt/ds-react'
+import { useFormikContext } from 'formik'
+import { Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { ReactComponent } from 'testcafe-react-selectors'
 
 interface AmeldingFormProps {
-	formikBag: FormikProps<{ aareg: AaregListe }>
-	warningMessage?: Alert
+	warningMessage?: ReactComponent<any>
 }
 
 const KjedeContainer = styled.div`
@@ -45,7 +44,8 @@ const Slettknapp = styled(Button)`
 	margin: 10px 0;
 `
 
-export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): JSX.Element => {
+export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element => {
+	const formikBag = useFormikContext()
 	const paths = {
 		arbeidsforholdstype: 'aareg[0].arbeidsforholdstype',
 		periode: 'aareg[0].genererPeriode.periode',
@@ -177,7 +177,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 		nyPeriode.splice(selectedIndex, 1)
 		formikBag.setFieldValue(paths.periode, nyPeriode)
 
-		if (periode.length === 1) {
+		if (periode?.length === 1) {
 			setSelectedIndex(0)
 		} else if (selectedIndex > 0) {
 			setSelectedIndex(selectedIndex - 1)
@@ -220,7 +220,6 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 				/>
 				<>
 					<Monthpicker
-						formikBag={formikBag}
 						name="aareg[0].genererPeriode.fom"
 						label="F.o.m. kalendermåned"
 						date={fom}
@@ -229,7 +228,6 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 						maxDate={add(new Date(), { years: 1 })}
 					/>
 					<Monthpicker
-						formikBag={formikBag}
 						name="aareg[0].genererPeriode.tom"
 						label="T.o.m. kalendermåned"
 						date={tom}
@@ -257,7 +255,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 							</Hjelpetekst>
 						</div>
 					</div>
-					{periode.length > 0 && (
+					{periode?.length > 0 && (
 						<>
 							<KjedeContainer>
 								<DollyKjede
@@ -277,7 +275,7 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 								</Hjelpetekst>
 							</KjedeContainer>
 							{arbeidsforholdstype === 'frilanserOppdragstakerHonorarPersonerMm' &&
-								periode.length > 1 && (
+								periode?.length > 1 && (
 									<Slettknapp kind="trashcan" onClick={handleFjernMaaned}>
 										Fjern måned
 									</Slettknapp>
@@ -300,7 +298,6 @@ export const AmeldingForm = ({ formikBag, warningMessage }: AmeldingFormProps): 
 										key={idx}
 										ameldingIndex={selectedIndex}
 										arbeidsforholdIndex={idx}
-										formikBag={formikBag}
 										arbeidsgiverType={'EGEN'}
 										erLenket={erLenket}
 										warningMessage={warningMessage}

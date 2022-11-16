@@ -12,12 +12,9 @@ import {
 	initialArbeidsforholdPers,
 	initialValues,
 } from '../initialValues'
-import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-import { FormikProps } from 'formik'
-
-interface ArbeidsforholdToggleProps {
-	formikBag: FormikProps<{ aareg: AaregListe }>
-}
+import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { useFormikContext } from 'formik'
+import { useDollyFasteDataOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -27,29 +24,30 @@ const ToggleArbeidsgiver = styled(ToggleGroup)`
 const StyledAlert = styled(Alert)`
 	margin-top: 10px;
 `
+export const ArbeidsforholdToggle = (): ReactElement => {
+	const formikBag = useFormikContext()
+	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
-// Har hardkodet liste over felles Dolly-arbeidsgivere, fordi det tar for lang tid å hente ut fra API
-const fellesOrg = [
-	'972674818',
-	'896929119',
-	'839942907',
-	'967170232',
-	'805824352',
-	'907670201',
-	'947064649',
-]
+	const getArbeidsgiverType = () => {
+		const orgnummer = _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
+		if (
+			_get(formikBag.values, 'aareg[0].amelding[0]') ||
+			_get(formikBag.values, 'aareg[0].arbeidsforhold')
+		) {
+			return ArbeidsgiverTyper.egen
+		} else if (_get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+			return ArbeidsgiverTyper.privat
+		} else if (
+			!orgnummer ||
+			organisasjoner.map((organisasjon) => organisasjon.orgnummer).some((org) => org === orgnummer)
+		) {
+			return ArbeidsgiverTyper.felles
+		} else {
+			return ArbeidsgiverTyper.fritekst
+		}
+	}
 
-export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): ReactElement => {
-	const getArbeidsgiverType =
-		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
-			? ArbeidsgiverTyper.egen
-			: _get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS'
-			? ArbeidsgiverTyper.privat
-			: fellesOrg.some((org) => org === _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer'))
-			? ArbeidsgiverTyper.felles
-			: ArbeidsgiverTyper.fritekst
-
-	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType)
+	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(getArbeidsgiverType())
 
 	const toggleValues = [
 		{
@@ -107,16 +105,11 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 				<>
 					{
 						// @ts-ignore
-						<AmeldingForm formikBag={formikBag} warningMessage={warningMessage} />
+						<AmeldingForm warningMessage={warningMessage} />
 					}
 				</>
 			) : (
 				<>
-					<StyledAlert variant={'info'}>
-						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
-						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere med
-						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
-					</StyledAlert>
 					<FormikDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"
@@ -132,7 +125,6 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 								path={path}
 								key={idx}
 								arbeidsforholdIndex={idx}
-								formikBag={formikBag}
 								erLenket={null}
 								arbeidsgiverType={typeArbeidsgiver}
 								ameldingIndex={undefined}

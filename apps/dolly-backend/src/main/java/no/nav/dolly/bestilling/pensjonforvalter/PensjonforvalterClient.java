@@ -15,9 +15,11 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,6 +53,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
@@ -124,11 +127,6 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
-    public Map<String, Object> status() {
-        return pensjonforvalterConsumer.checkStatus();
-    }
-
-    @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
         return isNull(kriterier.getPensjonforvalter()) ||
@@ -152,7 +150,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Mono<PensjonforvalterResponse> lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
 
-        return nonNull(pensjonData) ?
+        return nonNull(pensjonData) && !pensjonData.getTp().isEmpty() ?
                 Flux.merge(
                                 Flux.fromIterable(pensjonData.getTp())
                                         .map(tp -> {
@@ -182,14 +180,12 @@ public class PensjonforvalterClient implements ClientRegister {
 
         log.info("Mottatt status på {} fra Pensjon-Testdata-Facade: {}", ident, response);
 
-        var pensjonStatus = new StringBuilder();
-        response.getStatus().forEach(status ->
-                pensjonStatus.append(status.getMiljo()).append(':')
-                        .append(status.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
-                                "Feil= " + encodeStatus(status.getResponse().getMessage()))
-                        .append(',')
-        );
-
-        return pensjonStatus.toString();
+        return response.getStatus().stream()
+                .map(entry -> String.format("%s:%s", entry.getMiljo(),
+                        entry.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :
+                                encodeStatus(errorStatusDecoder.getErrorText(
+                                        HttpStatus.valueOf(entry.getResponse().getHttpStatus().getStatus()),
+                                        entry.getResponse().getMessage()))))
+                .collect(Collectors.joining(","));
     }
 }

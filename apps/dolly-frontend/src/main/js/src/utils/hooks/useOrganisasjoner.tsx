@@ -4,6 +4,7 @@ import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisa
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import _isArray from 'lodash/isArray'
 
 const getOrganisasjonerUrl = (brukerId: string) =>
 	`/dolly-backend/api/v1/organisasjon?brukerId=${brukerId}`
@@ -25,6 +26,45 @@ const getArbeidsforholdUrl = (miljoer: string[]) => {
 			`/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`
 	)
 }
+
+const fasteDataFallback = [
+	{
+		orgnummer: '896929119',
+		enhetstype: 'BEDR',
+		navn: 'Sauefabrikk',
+	},
+	{
+		orgnummer: '947064649',
+		enhetstype: 'BEDR',
+		navn: 'Sjokkerende elektriker',
+	},
+	{
+		orgnummer: '967170232',
+		enhetstype: 'BEDR',
+		navn: 'Snill torpedo',
+	},
+	{
+		orgnummer: '972674818',
+		enhetstype: 'BEDR',
+		navn: 'Pengeløs Sparebank',
+	},
+	{
+		orgnummer: '839942907',
+		enhetstype: 'BEDR',
+		navn: 'Hårreisende frisør',
+	},
+	{
+		orgnummer: '805824352',
+		enhetstype: 'BEDR',
+		navn: 'Vegansk slakteri',
+	},
+	{
+		orgnummer: '907670201',
+		enhetstype: 'BEDR',
+		navn: 'Klonelabben',
+	},
+]
+
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]
@@ -62,7 +102,7 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 	const { data, error } = useSWR<OrganisasjonFasteData[], Error>(
 		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
 		fetcher,
-		{ fallbackData: [] }
+		{ fallbackData: fasteDataFallback }
 	)
 
 	return {
@@ -157,12 +197,15 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, error } = useSWR<Arbeidsforhold[], Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		multiFetcherAny,
+		miljoer.length > 1 ? multiFetcherAny : fetcher,
 		{ dedupingInterval: 30000 }
 	)
 
+	const arbeidsforhold = miljoer.length > 1 ? data?.[0] : data
+	const arbeidsforholdListe = _isArray(arbeidsforhold) ? arbeidsforhold : [arbeidsforhold]
+
 	return {
-		arbeidsforhold: data?.[0],
+		arbeidsforhold: arbeidsforholdListe?.[0] ? arbeidsforholdListe : null,
 		loading: !error && !data,
 		error: error,
 	}

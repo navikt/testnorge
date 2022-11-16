@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.instdata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
@@ -27,6 +28,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.lang.String.format;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -37,7 +39,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class InstdataConsumer {
+public class InstdataConsumer implements ConsumerStatus {
 
     private static final String INSTDATA_URL = "/api/v1/ident";
     private static final String DELETE_POST_FMT_BLD = INSTDATA_URL + "/batch";
@@ -149,34 +151,14 @@ public class InstdataConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        // final String TEAM_ROCKET = "Team Rocket";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        // "Inst-proxy" ikke direkte tilgang
-        var instProxyStatusMap =  CheckAliveUtil.checkConsumerStatus(
-                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isAlive",
-                "https://testnav-inst-proxy.dev.intern.nav.no/internal/isReady",
-                WebClient.builder().build());
-        instProxyStatusMap.put("team", TEAM_DOLLY);
-
-//        // Inst-data ikke direktre tilgang
-//        var instDataStatusMap =  CheckAliveUtil.checkConsumerStatus(
-//                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
-//                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
-//                WebClient.builder().build());
-//        instDataStatusMap.put("team", TEAM_ROCKET);
-
-        return Map.of(
-                "testnav-inst-service", statusMap,
-                "testnav-inst-proxy", instProxyStatusMap
-                // "inst-testdata", instDataStatusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-inst-service";
+    }
+
 }

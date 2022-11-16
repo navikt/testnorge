@@ -19,7 +19,7 @@ import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson
 import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 
 interface KontaktValues {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<any>
 	path: string
 }
 
@@ -161,7 +161,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
 						}
 						value={_get(formikBag.values, `${personPath}.navn.fornavn`)}
-						disabled={disablePersoninfo}
+						isDisabled={disablePersoninfo}
 					/>
 				</div>
 			)}

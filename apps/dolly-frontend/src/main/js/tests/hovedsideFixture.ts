@@ -107,14 +107,14 @@ test('Gå inn på gruppe og opprett en ny testperson', async (testController) =>
 
 	await testController
 		.click(malerCheckbox)
-		.expect(brukerSelect.getReact(({ props }) => props.disabled))
+		.expect(brukerSelect.getReact(({ props }) => props.isDisabled))
 		.eql(false, 'Maler checkbox på opprett person ble ikke enablet etter klikk.')
 
 		.click(brukerSelect)
 		.click(malerSelect)
 
 		.click(malerCheckbox)
-		.expect(brukerSelect.getReact(({ props }) => props.disabled))
+		.expect(brukerSelect.getReact(({ props }) => props.isDisabled))
 		.eql(true, 'Maler checkbox på opprett person ble ikke disablet etter klikk.')
 
 		.click(ReactSelector('NavButton').withText('Start bestilling'))

@@ -102,8 +102,4 @@ public class SkjermingsRegisterClient implements ClientRegister {
                         .build(),
                 SkjermingsDataRequest.class);
     }
-
-    public Map<String, Object> status() {
-        return skjermingsRegisterConsumer.checkStatus();
-    }
 }

@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
@@ -37,7 +38,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class PensjonforvalterConsumer {
+public class PensjonforvalterConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -74,12 +75,14 @@ public class PensjonforvalterConsumer {
     public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest, Set<String> miljoer, AccessToken token) {
 
         opprettPersonRequest.setMiljoer(miljoer);
+        log.info("Pensjon opprett person {}", opprettPersonRequest);
         return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})
     public Flux<PensjonforvalterResponse> lagreInntekt(LagreInntektRequest lagreInntektRequest, AccessToken token) {
 
+        log.info("Pensjon lagre inntekt {}", lagreInntektRequest);
         return new LagreInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest).call();
     }
 
@@ -94,6 +97,7 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
     public Flux<PensjonforvalterResponse> lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest, AccessToken token) {
 
+        log.info("Pensjon lagre TP-forhold {}", lagreTpForholdRequest);
         return new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call();
     }
 
@@ -120,6 +124,7 @@ public class PensjonforvalterConsumer {
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
     public Flux<PensjonforvalterResponse> lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
 
+        log.info("Pensjon lagre TP-ytelse {}", lagreTpYtelseRequest);
         return  new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call();
     }
 
@@ -127,31 +132,14 @@ public class PensjonforvalterConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusWebClient = WebClient.builder().build();
-
-        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                statusWebClient);
-        consumerStatus.put("team", TEAM_DOLLY);
-
-        var status = new ConcurrentHashMap<String, Object>();
-        status.put("pensjonforvalter", consumerStatus);
-
-        try {
-            Map response = statusWebClient.get()
-                    .uri(serviceProperties.getUrl() + "/internal/status")
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            status.putAll(response);
-        } catch (Exception e) {
-            log.warn("Feil med henting status fra " + serviceProperties.getUrl() + " med feil: " + e.getMessage(), e);
-        }
-
-        return status;
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-pensjon-testdata-facade-proxy";
+    }
+
 }

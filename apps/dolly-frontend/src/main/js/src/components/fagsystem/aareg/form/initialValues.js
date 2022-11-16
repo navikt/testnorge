@@ -1,24 +1,5 @@
 import subYears from 'date-fns/subYears'
 
-export const initialPeriode = {
-	fom: null,
-	tom: null,
-	periode: [],
-}
-
-export const initialAmelding = [
-	{
-		maaned: null,
-		arbeidsforhold: [],
-	},
-]
-
-export const initialValues = {
-	arbeidsforholdstype: '',
-	genererPeriode: initialPeriode,
-	amelding: initialAmelding,
-}
-
 export const initialForenkletOppgjoersordningOrg = {
 	arbeidsgiver: {
 		aktoertype: 'ORG',
@@ -32,6 +13,7 @@ export const initialForenkletOppgjoersordningOrg = {
 	arbeidsavtale: {
 		yrke: '',
 	},
+	navArbeidsforholdPeriode: null,
 }
 
 export const initialForenkletOppgjoersordningPers = {
@@ -47,14 +29,15 @@ export const initialForenkletOppgjoersordningPers = {
 	arbeidsavtale: {
 		yrke: '',
 	},
+	navArbeidsforholdPeriode: null,
 }
 
 export const initialArbeidsforholdOrg = {
+	arbeidsforholdstype: '',
 	arbeidsgiver: {
 		aktoertype: 'ORG',
 		orgnummer: '',
 	},
-	arbeidsforholdID: '',
 	ansettelsesPeriode: {
 		fom: subYears(new Date().setHours(0, 0, 0, 0), 20),
 		tom: null,
@@ -69,6 +52,7 @@ export const initialArbeidsforholdOrg = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
+	navArbeidsforholdPeriode: null,
 }
 
 export const initialArbeidsforholdPers = {
@@ -91,6 +75,26 @@ export const initialArbeidsforholdPers = {
 		arbeidstidsordning: 'ikkeSkift',
 		avtaltArbeidstimerPerUke: 37.5,
 	},
+	navArbeidsforholdPeriode: null,
+}
+
+export const initialPeriode = {
+	fom: null,
+	tom: null,
+	periode: [],
+}
+
+export const initialAmelding = [
+	{
+		maaned: null,
+		arbeidsforhold: [],
+	},
+]
+
+export const initialValues = {
+	arbeidsforholdstype: '',
+	genererPeriode: initialPeriode,
+	amelding: initialAmelding,
 }
 
 export const initialAaregOrg = {

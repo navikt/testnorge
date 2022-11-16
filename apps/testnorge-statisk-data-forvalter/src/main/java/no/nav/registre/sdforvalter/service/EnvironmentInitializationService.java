@@ -9,9 +9,8 @@ import java.util.List;
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.AaregConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonMottakServiceConsumer;
-import no.nav.registre.sdforvalter.consumer.rs.KrrConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.organisasjon.OrganisasjonMottakServiceConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.krr.KrrConsumer;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 
@@ -20,7 +19,7 @@ import no.nav.registre.sdforvalter.domain.status.ereg.OrganisasjonStatusMap;
 @RequiredArgsConstructor
 public class EnvironmentInitializationService {
 
-    private final AaregConsumer aaregConsumer;
+    private final AaregService aaregService;
     private final KrrConsumer krrConsumer;
     private final OrganisasjonMottakServiceConsumer organisasjonMottakServiceConsumer;
     private final EregStatusService eregStatusService;
@@ -49,7 +48,7 @@ public class EnvironmentInitializationService {
 
     public void initializeAareg(String environment, String gruppe) {
         log.info("Start init av Aareg...");
-        aaregConsumer.sendArbeidsforhold(aaregAdapter.fetchBy(gruppe), environment);
+        aaregService.sendArbeidsforhold(aaregAdapter.fetchBy(gruppe), environment);
         log.info("Init av Aareg eer ferdig.");
     }
 

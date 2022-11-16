@@ -23,13 +23,13 @@ export const UtenlandskAdresse = ({ formikBag, path }: UtenlandskAdresseForm) =>
 				name={`${path}.adressenavnNummer`}
 				label="Gatenavn og husnummer"
 				// @ts-ignore
-				disabled={harPostboksnummer}
+				isDisabled={harPostboksnummer}
 			/>
 			<FormikTextInput
 				name={`${path}.postboksNummerNavn`}
 				label="Postboksnummer og -navn"
 				// @ts-ignore
-				disabled={harAdressenavn}
+				isDisabled={harAdressenavn}
 			/>
 			<FormikTextInput name={`${path}.postkode`} label="Postkode" />
 			<FormikTextInput name={`${path}.bySted`} label="By eller sted" />

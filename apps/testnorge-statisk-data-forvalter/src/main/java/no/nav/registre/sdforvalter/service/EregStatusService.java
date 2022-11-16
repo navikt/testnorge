@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Set;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.OrganisasjonConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.organisasjon.OrganisasjonConsumer;
 import no.nav.registre.sdforvalter.domain.Ereg;
 import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
