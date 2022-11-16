@@ -95,6 +95,9 @@ public class DollyBestillingService {
         } else if (isNotBlank(bestilling.getOpprettFraIdenter())) {
             return "opprett fra eksisterende identer (" + bestilling.getOpprettFraIdenter() + ") ";
 
+        } else if (isNotBlank(bestilling.getIdent())) {
+            return "legg-til-endre";
+
         } else {
             return "opprett fra kriterier";
         }

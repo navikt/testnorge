@@ -108,7 +108,8 @@ public class OppslagController {
 
     @GetMapping("/inntektstub/{ident}")
     @Operation(description = "Hent inntekter tilhørende ident fra Inntektstub")
-    public ResponseEntity<List<Inntektsinformasjon>> inntektstub(@PathVariable String ident) {
+    public List<Inntektsinformasjon> inntektstub(@PathVariable String ident) {
+
         return inntektstubConsumer.getInntekter(ident);
     }
 

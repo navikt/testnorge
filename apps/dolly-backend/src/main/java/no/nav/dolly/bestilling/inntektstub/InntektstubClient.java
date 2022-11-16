@@ -1,13 +1,13 @@
 package no.nav.dolly.bestilling.inntektstub;
 
-import io.swagger.v3.core.util.Json;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
-import no.nav.dolly.bestilling.inntektstub.util.CompareUtil;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -15,16 +15,17 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.core.annotation.Order;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static java.util.Objects.requireNonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -42,33 +43,28 @@ public class InntektstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-            log.info("Mottok inntektstub med info: {}", Json.pretty(bestilling.getInntektstub().getInntektsinformasjon()));
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("ident", dollyPerson.getHovedperson());
 
-            bestilling.getInntektstub().getInntektsinformasjon()
-                    .forEach(inntekter ->
-                            inntekter.getInntektsliste()
-                                    .forEach(inntekt ->
-                                            inntekt.setTilleggsinformasjon(isNull(inntekt.getTilleggsinformasjon()) ||
-                                                    inntekt.getTilleggsinformasjon().isEmpty() ? null :
-                                                    inntekt.getTilleggsinformasjon())));
+            var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
+                    InntektsinformasjonWrapper.class, context);
 
-            try {
-                InntektsinformasjonWrapper inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(), InntektsinformasjonWrapper.class);
-                inntektsinformasjonWrapper.getInntektsinformasjon().forEach(info -> info.setNorskIdent(dollyPerson.getHovedperson()));
-
-                if (!isOpprettEndre) {
-                    inntektstubConsumer.deleteInntekter(List.of(dollyPerson.getHovedperson())).block();
-                }
-
-                if (isOpprettEndre || !existInntekter(inntektsinformasjonWrapper.getInntektsinformasjon())) {
-                    opprettInntekter(inntektsinformasjonWrapper.getInntektsinformasjon(), progress);
-                } else {
-                    progress.setInntektstubStatus("OK");
-                }
-
-            } catch (RuntimeException e) {
-                progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
-            }
+            progress.setInntektstubStatus(String.join(",",
+                    requireNonNull(
+                            inntektstubConsumer.postInntekter(inntektsinformasjonWrapper.getInntektsinformasjon())
+                                    .collectList()
+                                    .map(inntekter -> {
+                                        log.info("Inntektstub respons {}", inntekter);
+                                        return inntekter.stream()
+                                                .map(Inntektsinformasjon::getFeilmelding)
+                                                .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                                "Feil= " + inntekter.stream()
+                                                        .map(Inntektsinformasjon::getFeilmelding)
+                                                        .filter(StringUtils::isNotBlank)
+                                                        .map(feil -> encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
+                                                        .collect(Collectors.joining(","));
+                                    }))
+                            .block()));
         }
         return Flux.just();
     }
@@ -87,45 +83,4 @@ public class InntektstubClient implements ClientRegister {
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getInntektstubStatus()));
     }
-
-    private boolean existInntekter(List<Inntektsinformasjon> inntekterRequest) {
-
-        ResponseEntity<List<Inntektsinformasjon>> inntekter =
-                inntektstubConsumer.getInntekter(inntekterRequest.get(0).getNorskIdent());
-
-        if (inntekter.hasBody() && !inntekter.getBody().isEmpty()) {
-
-            return CompareUtil.isSubsetOf(inntekterRequest, inntekter.getBody());
-        }
-        return false;
-    }
-
-    private void opprettInntekter(List<Inntektsinformasjon> inntektsinformasjon, BestillingProgress progress) {
-
-        try {
-            ResponseEntity<List<Inntektsinformasjon>> response = inntektstubConsumer.postInntekter(inntektsinformasjon);
-
-            if (response.hasBody() && !response.getBody().isEmpty()) {
-
-                progress.setInntektstubStatus(response.getBody().stream()
-                        .filter(inntekt -> isNotBlank(inntekt.getFeilmelding()))
-                        .findFirst()
-                        .orElse(Inntektsinformasjon.builder()
-                                .feilmelding("OK")
-                                .build())
-                        .getFeilmelding());
-
-            } else {
-
-                progress.setInntektstubStatus(format("Feilet å opprette inntekter i Inntektstub for ident %s.", inntektsinformasjon.get(0).getNorskIdent()));
-            }
-
-        } catch (RuntimeException e) {
-
-            progress.setInntektstubStatus(errorStatusDecoder.decodeThrowable(e));
-
-            log.error("Feilet å opprette inntekter i Inntektstub for ident {}. Feilmelding: {}", inntektsinformasjon.get(0).getNorskIdent(), e.getMessage(), e);
-        }
-    }
-
 }
