@@ -27,6 +27,44 @@ const getArbeidsforholdUrl = (miljoer: string[]) => {
 	)
 }
 
+const fasteDataFallback = [
+	{
+		orgnummer: '896929119',
+		enhetstype: 'BEDR',
+		navn: 'Sauefabrikk',
+	},
+	{
+		orgnummer: '947064649',
+		enhetstype: 'BEDR',
+		navn: 'Sjokkerende elektriker',
+	},
+	{
+		orgnummer: '967170232',
+		enhetstype: 'BEDR',
+		navn: 'Snill torpedo',
+	},
+	{
+		orgnummer: '972674818',
+		enhetstype: 'BEDR',
+		navn: 'Pengeløs Sparebank',
+	},
+	{
+		orgnummer: '839942907',
+		enhetstype: 'BEDR',
+		navn: 'Hårreisende frisør',
+	},
+	{
+		orgnummer: '805824352',
+		enhetstype: 'BEDR',
+		navn: 'Vegansk slakteri',
+	},
+	{
+		orgnummer: '907670201',
+		enhetstype: 'BEDR',
+		navn: 'Klonelabben',
+	},
+]
+
 export type Bestillingsstatus = {
 	id: number
 	environments: string[]
@@ -64,7 +102,7 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 	const { data, error } = useSWR<OrganisasjonFasteData[], Error>(
 		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
 		fetcher,
-		{ fallbackData: [] }
+		{ fallbackData: fasteDataFallback }
 	)
 
 	return {
