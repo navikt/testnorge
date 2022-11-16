@@ -42,6 +42,7 @@ import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visn
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
 import { useInstData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
+import { sjekkManglerInstData } from '~/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
 	harInstBestilling,
@@ -137,7 +138,7 @@ export const PersonVisning = ({
 		return null
 	}
 
-	const { sigrunstub, inntektstub, brregstub, krrstub, instdata, arenaforvalteren, udistub } = data
+	const { sigrunstub, inntektstub, brregstub, krrstub, arenaforvalteren, udistub } = data
 
 	const manglerFagsystemdata = () => {
 		if (
@@ -301,7 +302,7 @@ export const PersonVisning = ({
 				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
 				<BrregVisning data={brregstub} loading={loading.brregstub} />
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<InstVisning data={instdata} loading={loading.instdata} />
+				<InstVisning data={instData} loading={loadingInstData} bestilteMiljoer={bestilteMiljoer} />
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}
