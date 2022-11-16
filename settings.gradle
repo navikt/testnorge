@@ -131,6 +131,7 @@ includeBuild './apps/import-fra-tpsf-service'
 includeBuild './apps/synt-vedtakshistorikk-service'
 includeBuild './apps/testnav-ident-pool'
 includeBuild './apps/inst-service'
+includeBuild './apps/dollystatus'
 
 includeBuild './xsd/arbeidsforhold-xsd'
 
