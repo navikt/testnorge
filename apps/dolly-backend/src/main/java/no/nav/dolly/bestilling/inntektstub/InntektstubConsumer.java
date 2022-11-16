@@ -25,7 +25,6 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,7 +57,7 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_getInntekter"})
     public List<Inntektsinformasjon> getInntekter(String ident) {
 
         return tokenService.exchange(serviceProperties)
@@ -67,7 +66,7 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})
     public Mono<List<String>> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -80,7 +79,7 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
+    @Timed(name = "providers", tags = {"operation", "inntk_postInntekter"})
     public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
         log.info("Sender inntektstub: {}", inntektsinformasjon);
@@ -89,7 +88,7 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
+    @Timed(name = "providers", tags = {"operation", "inntk_validerInntekt"})
     public ResponseEntity<Object> validerInntekter(ValiderInntekt validerInntekt) {
 
         return webClient.post()
@@ -119,5 +118,4 @@ public class InntektstubConsumer implements ConsumerStatus {
     public String consumerName() {
         return "testnav-inntektstub-proxy";
     }
-
 }
