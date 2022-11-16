@@ -14,6 +14,12 @@ const tpUrl = (ident, miljoer) =>
 		miljo: miljo,
 	}))
 
+const instUrl = (ident, miljoer) =>
+	miljoer?.map((miljo) => ({
+		url: `/testnav-inst-service/api/v1/ident?identer=${ident}&miljoe=${miljo}`,
+		miljo: miljo,
+	}))
+
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
@@ -63,25 +69,22 @@ export const useTpData = (ident, harTpBestilling) => {
 	}
 }
 
-export const useInstData = (ident, harTpBestilling) => {
+export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
 
-	if (!harTpBestilling) {
+	if (!harInstBestilling) {
 		return {
 			loading: false,
 		}
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		[
-			tpUrl(ident, instEnvironments),
-			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
-		],
+		instUrl(ident, instEnvironments),
 		multiFetcherFagsystemer
 	)
 
 	return {
-		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		instData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,
 		error: error,
 	}
