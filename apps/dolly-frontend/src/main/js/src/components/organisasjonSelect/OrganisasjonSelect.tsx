@@ -20,6 +20,7 @@ export const OrganisasjonSelect = ({
 	kanHaArbeidsforhold,
 	value,
 	feil,
+	...props
 }: OrganisasjonSelectProps) => (
 	<OrganisasjonLoader
 		kanHaArbeidsforhold={kanHaArbeidsforhold}
@@ -30,5 +31,6 @@ export const OrganisasjonSelect = ({
 		afterChange={afterChange}
 		value={value}
 		feil={feil}
+		{...props}
 	/>
 )

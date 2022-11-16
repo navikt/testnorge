@@ -24,6 +24,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
+import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -43,6 +44,7 @@ import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anySet;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
@@ -313,6 +315,7 @@ public class PensjonforvalterClientTest {
 
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn("Feil= " + test2EnvYtelseResponse.getMessage());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
 
@@ -373,6 +376,7 @@ public class PensjonforvalterClientTest {
 
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn(test2EnvYtelseResponse.getMessage());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
 

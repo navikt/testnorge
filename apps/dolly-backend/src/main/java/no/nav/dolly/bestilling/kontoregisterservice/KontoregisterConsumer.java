@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendHentKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendOppdaterKontoregisterCommand;
 import no.nav.dolly.bestilling.kontoregisterservice.command.SendSlettKontoregisterCommand;
@@ -28,6 +29,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -35,7 +37,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class KontoregisterConsumer {
+public class KontoregisterConsumer implements ConsumerStatus {
 
     private static final int IBAN_COUNTRY_LENGTH = 2;
     private static final int DEFAULT_ACCOUNT_LENGTH = 15;
@@ -174,25 +176,14 @@ public class KontoregisterConsumer {
         }
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        //final String TEAM_OKONOMI = "Team utbetale og informere (okonomi)";
-
-        var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        consumerStatus.put("team", TEAM_DOLLY);
-
-//        var endServiceStatus = CheckAliveUtil.checkConsumerStatus(
-//                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
-//                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
-//                WebClient.builder().build());
-//        endServiceStatus.put("team", TEAM_OKONOMI);
-
-        return Map.of(
-                "testnav-kontoregister-person-proxy", consumerStatus
-                //"sokos-kontoregister-person", endServiceStatus
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-kontoregister-person-proxy";
+    }
+
 }

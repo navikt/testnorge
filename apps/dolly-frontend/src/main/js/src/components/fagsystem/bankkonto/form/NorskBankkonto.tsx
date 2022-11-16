@@ -27,14 +27,14 @@ export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) =>
 					isClearable={true}
 					name={`${path}.kontonummer`}
 					label={'Kontonummer'}
-					disabled={harTilfeldig}
+					isDisabled={harTilfeldig}
 				/>
 				<div style={{ marginTop: '31px' }}>
 					<FormikCheckbox
 						name={`${path}.tilfeldigKontonummer`}
 						label="Har tilfeldig kontonummer"
 						size="x-small"
-						disabled={kontonummer}
+						isDisabled={kontonummer}
 					/>
 				</div>
 			</div>

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdldata;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataCheckIdentCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataHentCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataOppdateringCommand;
@@ -33,7 +34,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-public class PdlDataConsumer {
+public class PdlDataConsumer implements ConsumerStatus {
 
     private static final int BLOCK_SIZE = 10;
 
@@ -131,17 +132,14 @@ public class PdlDataConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-pdl-forvalter", statusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-pdl-forvalter";
+    }
+
 }

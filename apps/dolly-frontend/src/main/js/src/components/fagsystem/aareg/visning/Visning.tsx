@@ -1,7 +1,6 @@
 import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
 import Loading from '~/components/ui/loading/Loading'
-import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '~/components/ui/titleValue/TitleValue'
 import { Arbeidsavtaler } from './partials/Arbeidsavtaler'
@@ -14,6 +13,7 @@ import { ArbeidKodeverk } from '~/config/kodeverk'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { ArbeidsforholdMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/ArbeidsforholdMiljoeInfo'
+import Formatters from '~/utils/DataFormatter'
 
 type AaregVisningProps = {
 	ident?: string
@@ -42,6 +42,7 @@ type ArbeidsgiverProps = {
 
 type Ansettelsesperiode = {
 	periode?: Periode
+	sluttaarsak?: string
 }
 
 type Periode = {
@@ -87,31 +88,39 @@ export const AaregVisning = ({ ident, liste, loading, bestilteMiljoer }: AaregVi
 						{(arbeidsforhold: Arbeidsforhold) => (
 							<React.Fragment>
 								<div className="person-visning_content">
-									{arbeidsforhold.ansettelsesperiode && (
-										<TitleValue
-											title="Arbeidsforhold type"
-											value={arbeidsforhold.type}
-											kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
-										/>
-									)}
-
 									<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold.arbeidsforholdId} />
 
-									{arbeidsforhold.ansettelsesperiode &&
-										arbeidsforhold.ansettelsesperiode.periode && (
+									{arbeidsforhold.ansettelsesperiode && (
+										<>
 											<TitleValue
-												title="Ansatt fra"
-												value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
+												title="Arbeidsforhold type"
+												value={arbeidsforhold.type}
+												kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
 											/>
-										)}
-									{arbeidsforhold.ansettelsesperiode &&
-										arbeidsforhold.ansettelsesperiode.periode && (
+
+											{arbeidsforhold.ansettelsesperiode.periode && (
+												<TitleValue
+													title="Ansatt fra"
+													value={Formatters.formatDate(
+														arbeidsforhold.ansettelsesperiode.periode.fom
+													)}
+												/>
+											)}
+											{arbeidsforhold.ansettelsesperiode.periode && (
+												<TitleValue
+													title="Ansatt til"
+													value={Formatters.formatDate(
+														arbeidsforhold.ansettelsesperiode.periode.tom
+													)}
+												/>
+											)}
 											<TitleValue
-												title="Ansatt til"
-												value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
+												title="Sluttårsak"
+												value={arbeidsforhold?.ansettelsesperiode?.sluttaarsak}
+												kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 											/>
-										)}
-									{/* //TODO: Sluttårsak mangler fra Aareg */}
+										</>
+									)}
 								</div>
 
 								<Arbeidsgiver data={arbeidsforhold.arbeidsgiver} />

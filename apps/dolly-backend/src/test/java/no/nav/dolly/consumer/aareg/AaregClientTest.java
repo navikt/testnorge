@@ -60,6 +60,30 @@ class AaregClientTest {
         when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
     }
 
+    private ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
+
+        return ArbeidsforholdRespons.builder()
+                .eksisterendeArbeidsforhold(singletonList(
+                        Arbeidsforhold.builder()
+                                .arbeidstaker(Person.builder()
+                                        .offentligIdent(IDENT)
+                                        .build())
+                                .arbeidsgiver(isOrgnummer ?
+                                        Organisasjon.builder()
+                                                .organisasjonsnummer(ORGNUMMER)
+                                                .build() :
+                                        Person.builder()
+                                                .offentligIdent(IDENT)
+                                                .build())
+                                .arbeidsavtaler(singletonList(OrdinaerArbeidsavtale.builder()
+                                        .yrke("121232")
+                                        .arbeidstidsordning("nada")
+                                        .build()))
+                                .arbeidsforholdId("1")
+                                .build()))
+                .build();
+    }
+
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
 
@@ -160,29 +184,5 @@ class AaregClientTest {
                 .opprettetIPDL(true).build(), progress, false);
 
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
-    }
-
-    private ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
-
-        return ArbeidsforholdRespons.builder()
-                .eksisterendeArbeidsforhold(singletonList(
-                        Arbeidsforhold.builder()
-                                .arbeidstaker(Person.builder()
-                                        .offentligIdent(IDENT)
-                                        .build())
-                                .arbeidsgiver(isOrgnummer ?
-                                        Organisasjon.builder()
-                                                .organisasjonsnummer(ORGNUMMER)
-                                                .build() :
-                                        Person.builder()
-                                                .offentligIdent(IDENT)
-                                                .build())
-                                .arbeidsavtaler(singletonList(OrdinaerArbeidsavtale.builder()
-                                        .yrke("121232")
-                                        .arbeidstidsordning("nada")
-                                        .build()))
-                                .arbeidsforholdId("1")
-                                .build()))
-                .build();
     }
 }

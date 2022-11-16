@@ -167,13 +167,4 @@ public class SykemeldingClient implements ClientRegister {
         }
         return null;
     }
-
-    public Map<String, Object> status() {
-        return Stream.of(
-                        sykemeldingConsumer.checkStatus(),
-                        syntSykemeldingConsumer.checkStatus()
-                )
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
-    }
 }

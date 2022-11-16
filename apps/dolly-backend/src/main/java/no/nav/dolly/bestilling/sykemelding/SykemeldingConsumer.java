@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.sykemelding;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.config.credentials.SykemeldingApiProxyProperties;
 import no.nav.dolly.metrics.Timed;
@@ -28,7 +29,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
-public class SykemeldingConsumer {
+public class SykemeldingConsumer implements ConsumerStatus {
 
     public static final String DETALJERT_SYKEMELDING_URL = "/sykemelding/api/v1/sykemeldinger";
 
@@ -78,17 +79,14 @@ public class SykemeldingConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-sykemelding-api-proxy", statusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-sykemelding-api-proxy";
+    }
+
 }

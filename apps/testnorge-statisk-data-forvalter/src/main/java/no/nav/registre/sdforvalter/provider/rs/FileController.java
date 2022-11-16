@@ -55,7 +55,7 @@ public class FileController {
         response.setContentType("text/csv");
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
         response.setHeader("Content-Disposition", "attachment; filename=ereg-" + LocalDateTime.now().toString() + ".csv");
-        EregListe eregListe = eregAdapter.fetchBy(gruppe.name());
+        EregListe eregListe = eregAdapter.fetchBy(gruppe != null ? gruppe.name() : null);
 
         EregCsvConverter.inst().write(response.getWriter(), eregListe.getListe());
     }

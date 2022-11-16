@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
-import no.nav.registre.sdforvalter.consumer.rs.PersonFasteDataConsumer;
+import no.nav.registre.sdforvalter.consumer.rs.person.PersonFasteDataConsumer;
 
 @RestController
 @RequestMapping("/api/v1/person/migrering")

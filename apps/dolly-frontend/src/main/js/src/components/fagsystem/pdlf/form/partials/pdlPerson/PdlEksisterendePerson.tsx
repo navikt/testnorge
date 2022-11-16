@@ -160,7 +160,7 @@ export const PdlEksisterendePerson = ({
 					label={label}
 					options={identOptions}
 					size={'xlarge'}
-					disabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
+					isDisabled={hasNyPersonValues || bestillingFlerePersoner || disabled}
 				/>
 			) : (
 				!loadingIdentOptions && (

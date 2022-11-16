@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pdlforvalter;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pdlforvalter.command.PdlAktoerNpidCommand;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlAdressebeskyttelse;
 import no.nav.dolly.bestilling.pdlforvalter.domain.PdlBostedadresse;
@@ -60,7 +61,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Slf4j
 @Service
-public class PdlForvalterConsumer {
+public class PdlForvalterConsumer implements ConsumerStatus {
 
     private static final String PDL_BESTILLING_URL = "/api/v1/bestilling";
     private static final String PDL_BESTILL_KONTAKTINFORMASJON_FOR_DODESDBO_URL = PDL_BESTILLING_URL + "/kontaktinformasjonfordoedsbo";
@@ -432,17 +433,14 @@ public class PdlForvalterConsumer {
                 .block();
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-
-        var statusMap =  CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                WebClient.builder().build());
-        statusMap.put("team", TEAM_DOLLY);
-
-        return Map.of(
-                "testnav-pdl-proxy", statusMap
-        );
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-pdl-proxy";
+    }
+
 }

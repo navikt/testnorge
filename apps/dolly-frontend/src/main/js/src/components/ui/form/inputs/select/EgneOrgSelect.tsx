@@ -53,6 +53,7 @@ const StyledOption = styled.div`
 
 			&.main {
 				background-color: #eaf3fa;
+
 				&.disabled {
 					background-color: #f2f2f2;
 				}
@@ -105,6 +106,7 @@ export const EgneOrgSelect = (props: any) => {
 					name={props.name}
 					filterOption={createFilter({ ignoreAccents: false })}
 					onChange={props.onChange}
+					isLoading={props.isLoading}
 					placeholder={'Velg organisasjon..'}
 					className={cn('basic-single', props.className)}
 					classNamePrefix={'select'}

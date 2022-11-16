@@ -12,12 +12,8 @@ import {
 	initialArbeidsforholdPers,
 	initialValues,
 } from '../initialValues'
-import { AaregListe, ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
-import { FormikProps } from 'formik'
-
-interface ArbeidsforholdToggleProps {
-	formikBag: FormikProps<{ aareg: AaregListe }>
-}
+import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { useFormikContext } from 'formik'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -39,7 +35,8 @@ const fellesOrg = [
 	'947064649',
 ]
 
-export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): ReactElement => {
+export const ArbeidsforholdToggle = (): ReactElement => {
+	const formikBag = useFormikContext()
 	const getArbeidsgiverType =
 		_get(formikBag.values, 'aareg[0].amelding') || _get(formikBag.values, 'aareg[0].arbeidsforhold')
 			? ArbeidsgiverTyper.egen
@@ -107,16 +104,11 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 				<>
 					{
 						// @ts-ignore
-						<AmeldingForm formikBag={formikBag} warningMessage={warningMessage} />
+						<AmeldingForm warningMessage={warningMessage} />
 					}
 				</>
 			) : (
 				<>
-					<StyledAlert variant={'info'}>
-						For denne typen arbeidsgiver er det ikke mulig å registrere nye attributter som
-						sluttårsak, ansettelsesform, endringsdato lønn og fartøy. For å bestille brukere med
-						disse attributtene må du bruke egen organisasjon for å opprette A-meldinger.
-					</StyledAlert>
 					<FormikDollyFieldArray
 						name="aareg"
 						header="Arbeidsforhold"
@@ -132,7 +124,6 @@ export const ArbeidsforholdToggle = ({ formikBag }: ArbeidsforholdToggleProps): 
 								path={path}
 								key={idx}
 								arbeidsforholdIndex={idx}
-								formikBag={formikBag}
 								erLenket={null}
 								arbeidsgiverType={typeArbeidsgiver}
 								ameldingIndex={undefined}

@@ -2,9 +2,11 @@ import React, { useContext } from 'react'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
+import { useFormikContext } from 'formik'
 
-export const Steg1 = ({ formikBag, stateModifier }) => {
+export const Steg1 = ({ stateModifier }) => {
 	const opts = useContext(BestillingsveilederContext)
+	const formikBag = useFormikContext()
 
 	return opts.is.nyOrganisasjon ||
 		opts.is.nyStandardOrganisasjon ||

@@ -36,8 +36,6 @@ spec:
           cluster: dev-fss
         - application: testnorge-tp
           cluster: dev-fss
-        - application: testnorge-aareg
-          cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: testnav-hodejegeren-proxy

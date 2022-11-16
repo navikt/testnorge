@@ -3,7 +3,7 @@ import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { Vedlegg } from '~/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Document, Page } from 'react-pdf/dist/umd/entry.webpack'
+import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5'
 import styled from 'styled-components'
 import Button from '~/components/ui/button/Button'
 

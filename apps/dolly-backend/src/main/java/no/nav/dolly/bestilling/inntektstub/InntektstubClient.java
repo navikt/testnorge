@@ -83,8 +83,4 @@ public class InntektstubClient implements ClientRegister {
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getInntektstubStatus()));
     }
-
-    public Map<String, Object> status() {
-        return inntektstubConsumer.checkStatus();
-    }
 }

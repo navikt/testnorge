@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.inntektstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubGetCommand;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubPostCommand;
@@ -33,7 +34,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Service
 @Slf4j
-public class InntektstubConsumer {
+public class InntektstubConsumer implements ConsumerStatus {
 
     private static final String VALIDER_INNTEKTER_URL = "/api/v2/valider";
 
@@ -109,30 +110,14 @@ public class InntektstubConsumer {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
-    public Map<String, Object> checkStatus() {
-        final String TEAM_DOLLY = "Team Dolly";
-        // final String TEAM_INNTEKT = "Team Inntekt";
-
-        var statusWebClient = WebClient.builder().build();
-        var checkMap = new HashMap<String, Object>();
-
-        var statusMap = CheckAliveUtil.checkConsumerStatus(
-                serviceProperties.getUrl() + "/internal/isAlive",
-                serviceProperties.getUrl() + "/internal/isReady",
-                statusWebClient);
-        statusMap.put("team", TEAM_DOLLY);
-
-        checkMap.put("testnav-inntektstub-proxy", statusMap);
-
-//        // "InntektStub" ikke direktre tilgang
-//        var inntektStubStatusMap = CheckAliveUtil.checkConsumerStatus(
-//                "https://inntektstub.dev.adeo.no/internal/isAlive",
-//                "https://inntektstub.dev.adeo.no/internal/isReady",
-//                statusWebClient);
-//        inntektStubStatusMap.put("team", TEAM_INNTEKT);
-//
-//        checkMap.put("inntektstub", inntektStubStatusMap);
-
-        return checkMap;
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
     }
+
+    @Override
+    public String consumerName() {
+        return "testnav-inntektstub-proxy";
+    }
+
 }

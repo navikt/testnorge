@@ -20,10 +20,10 @@ export const OrganisasjonLoader = ({
 	label,
 	path,
 	handleChange,
-	afterChange,
 	useFormikSelect,
 	feil,
 	value,
+	...props
 }: OrganisasjonLoaderProps) => {
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
@@ -61,9 +61,9 @@ export const OrganisasjonLoader = ({
 			isLoading={loading}
 			options={organisasjonerSorted}
 			size="xlarge"
-			afterChange={afterChange}
 			optionHeight={50}
 			isClearable={false}
+			{...props}
 		/>
 	) : (
 		<DollySelect
@@ -76,6 +76,7 @@ export const OrganisasjonLoader = ({
 			value={value}
 			feil={feil}
 			isClearable={false}
+			{...props}
 		/>
 	)
 }

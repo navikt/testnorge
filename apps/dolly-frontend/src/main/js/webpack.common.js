@@ -73,13 +73,10 @@ module.exports = {
 				},
 			},
 			{
-				test: /\.svg$/,
-				loader: 'svg-inline-loader',
-			},
-			{
 				// images
-				test: /\.(ico|jpe?g|png|gif|woff|woff2|eot|otf|ttf)$/,
-				use: ['file-loader'],
+				test: /\.(ico|jpe?g|png|svg|gif|woff|woff2|eot|otf|ttf)$/,
+				exclude: /node_modules/,
+				type: 'asset/inline',
 			},
 			{
 				test: /\.s[ac]ss$/i,

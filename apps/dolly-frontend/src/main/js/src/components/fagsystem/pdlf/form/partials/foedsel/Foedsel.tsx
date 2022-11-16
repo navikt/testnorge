@@ -59,7 +59,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 				label="Fødekommune"
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
-				disabled={
+				isDisabled={
 					_get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
 					_get(formikBag.values, `${path}.foedeland`) !== null
 				}

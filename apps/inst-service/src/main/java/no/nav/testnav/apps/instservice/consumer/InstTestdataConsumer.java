@@ -9,6 +9,7 @@ import no.nav.testnav.apps.instservice.consumer.credential.InstTestdataPropertie
 import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
+import no.nav.testnav.apps.instservice.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,8 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
@@ -87,5 +90,33 @@ public class InstTestdataConsumer {
         } else {
             return emptyList();
         }
+    }
+
+    public Map<String, Object> checkStatus() {
+        final String TEAM_DOLLY = "Team Dolly";
+
+        var statusWebClient = WebClient.builder().build();
+
+        var consumerStatus = CheckAliveUtil.checkConsumerStatus(
+                properties.getUrl() + "/internal/isAlive",
+                properties.getUrl() + "/internal/isReady",
+                WebClient.builder().build());
+        consumerStatus.put("team", TEAM_DOLLY);
+
+        var status = new ConcurrentHashMap<String, Object>();
+        status.put("testnav-inst-service", consumerStatus);
+
+        try {
+            Map response = statusWebClient.get()
+                    .uri(properties.getUrl() + "/internal/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            status.putAll(response);
+        } catch (Exception e) {
+            log.warn("Feil med henting status fra " + properties.getUrl() + " med feil: " + e.getMessage(), e);
+        }
+
+        return status;
     }
 }
