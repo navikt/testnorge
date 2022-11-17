@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,7 +22,7 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
 
     Page<Testgruppe> findAllByOrderByNavn(Pageable pageable);
 
-    Page<Testgruppe> findAllByOpprettetAvInOrFavorisertAvIn(List<Bruker> bruker, Pageable pageable);
+    Page<Testgruppe> findAllByOpprettetAvIn(Collection<Bruker> brukere, Pageable pageable);
 
     Page<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
 

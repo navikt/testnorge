@@ -155,7 +155,7 @@ public class TestgruppeServiceTest {
                 .build();
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
-        when(testgruppeRepository.findAllByOpprettetAvInOrFavorisertAvIn(anyList(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(tg1, tg2, tg3)));
+        when(testgruppeRepository.findAllByOpprettetAvIn(anyList(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(tg1, tg2, tg3)));
 
         Page<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(0, 10, BRUKERID);
 

@@ -28,10 +28,12 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -101,7 +103,7 @@ public class TestgruppeService {
         List<Bruker> eidAvBruker = brukerService.fetchEidAv(bruker);
         eidAvBruker.add(bruker);
 
-        return testgruppeRepository.findAllByOpprettetAvInOrFavorisertAvIn(eidAvBruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
+        return testgruppeRepository.findAllByOpprettetAvIn(eidAvBruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
@@ -155,6 +157,7 @@ public class TestgruppeService {
 
     public RsTestgruppeMedBestillingPage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
+        var bruker = isBlank(brukerId) ? null : brukerService.fetchBruker(brukerId);
         var paginertGruppe = isBlank(brukerId)
                 ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize))
                 : fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
@@ -165,6 +168,7 @@ public class TestgruppeService {
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
                 .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppeMedBestillingId.class))
+                .favoritter(nonNull(bruker) ? bruker.getFavoritter() : Collections.emptySet())
                 .build();
     }
 
