@@ -308,7 +308,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
 
 	// Liste over systemer som har data
-	const success = successMiljoSelector(statusArray)
+	const success = successMiljoSelector(statusArray, personId)
 
 	// Samle alt fra PDL under en ID
 	if (Object.keys(success)?.some((a) => a.substring(0, 3) === 'PDL')) {
