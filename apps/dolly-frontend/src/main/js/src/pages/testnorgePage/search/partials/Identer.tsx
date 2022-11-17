@@ -1,4 +1,4 @@
-import React, {BaseSyntheticEvent} from 'react'
+import React, { BaseSyntheticEvent } from 'react'
 import { Field, FieldArray, FormikProps } from 'formik'
 import Button from '~/components/ui/button/Button'
 import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
@@ -29,7 +29,9 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 											type="text"
 											style={{ width: '220px' }}
 											onKeyPress={(event: BaseSyntheticEvent<KeyboardEvent>) => {
-												event.nativeEvent.code === 'Enter' && !Object.keys(formikBag.errors).length && formikBag.handleSubmit()
+												event.nativeEvent.code === 'Enter' &&
+													!Object.keys(formikBag.errors).length &&
+													formikBag.handleSubmit()
 											}}
 										/>
 										<ErrorMessageWithFocus

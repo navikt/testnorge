@@ -3,18 +3,25 @@ import _get from 'lodash/get'
 import { InstApi } from '~/service/Api'
 import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 import { Alert } from '@navikt/ds-react'
-import { useArenaEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import {
+	useArenaEnvironments,
+	usePensjonEnvironments,
+	useDokarkivEnvironments,
+} from '~/utils/hooks/useEnvironments'
 import Formatters from '~/utils/DataFormatter'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena } = useArenaEnvironments()
 	const { pensjonEnvironments, loading: loadingPensjon } = usePensjonEnvironments()
-	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
+	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
+	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } =
+		bestillingsdata
 	if (
 		!instdata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
 		!sykemelding &&
+		!dokarkiv &&
 		!_get(pdldata, 'bostedsadresse') &&
 		!_get(pdldata, 'fullmakt') &&
 		!_get(pdldata, 'falskIdentitet') &&
@@ -73,6 +80,17 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				)}
 
 				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
+
+				{dokarkiv && (
+					<li>
+						Dokarkiv:&nbsp;
+						<span>
+							{loadingDokarkiv
+								? 'Laster tilgjengelige miljøer..'
+								: Formatters.arrayToString(dokarkivEnvironments)}
+						</span>
+					</li>
+				)}
 			</ul>
 		</Alert>
 	)
