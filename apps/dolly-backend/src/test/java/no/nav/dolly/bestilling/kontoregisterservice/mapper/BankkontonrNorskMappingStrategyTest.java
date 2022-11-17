@@ -5,7 +5,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,7 +12,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.blankOrNullString;
 
 @ExtendWith(SpringExtension.class)
 class BankkontonrNorskMappingStrategyTest {
@@ -38,17 +40,22 @@ class BankkontonrNorskMappingStrategyTest {
         bankkonto1.setLandkode("SE");
 
         var mapped1 = mapperFacade.map(bankkonto1, OppdaterKontoRequestDTO.class);
-        assertThat("genererer kontonummer", StringUtils.isNoneBlank(mapped1.getKontonummer()));
-        assertThat("generert kontonummer starter med SE", mapped1.getKontonummer().startsWith("SE"));
+
+        assertThat(mapped1.getKontonummer(), is(not(blankOrNullString())));
+        assertThat(mapped1.getKontonummer(), startsWith("SE"));
 
         var bankkonto2 = new BankkontonrUtlandDTO();
 
         bankkonto2.setKontonummer("123");
         bankkonto2.setLandkode("SWE");
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("ident", IDENT);
 
-        var mapped2 = mapperFacade.map(bankkonto2, OppdaterKontoRequestDTO.class);
-        assertThat("kontonummer er 123", "123".equals(mapped2.getKontonummer()));
-        assertThat("landkode er SE", "SE".equals(mapped2.getUtenlandskKonto().getBankLandkode()));
+        var mapped2 = mapperFacade.map(bankkonto2, OppdaterKontoRequestDTO.class, context);
+
+        assertThat(mapped2.getKontonummer(), is(equalTo("123")));
+        assertThat(mapped2.getUtenlandskKonto().getBankLandkode(), is(equalTo("SE")));
+        assertThat(mapped2.getKontohaver(), is(equalTo(IDENT)));
     }
 
     @Test
