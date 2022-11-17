@@ -18,7 +18,7 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
 
     Testgruppe save(Testgruppe testgruppe);
 
-    List<Testgruppe> findAllByOrderByNavn();
+    Page<Testgruppe> findAllByOrderByNavn(Pageable pageable);
 
     Page<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
 

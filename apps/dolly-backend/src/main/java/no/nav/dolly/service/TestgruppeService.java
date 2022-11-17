@@ -22,6 +22,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -85,7 +86,7 @@ public class TestgruppeService {
 
     public Page<Testgruppe> getAllTestgrupper(Integer pageNo, Integer pageSize) {
 
-        return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize));
+        return testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
 
     public List<Testgruppe> fetchGrupperByIdsIn(Collection<Long> grupperIDer) {
@@ -157,9 +158,9 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public List<Testgruppe> getTestgruppeByBrukerId(String brukerId) {
+    public List<Testgruppe> getTestgruppeByBrukerId(String brukerId, Integer pageNo, Integer pageSize) {
 
-        return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByNavn() : fetchTestgrupperByBrukerId(brukerId);
+        return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize)).toList() : fetchTestgrupperByBrukerId(brukerId);
     }
 
     public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {

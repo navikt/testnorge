@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.domain.resultset.tpsf.Person;
@@ -61,9 +62,15 @@ public class NavigasjonService {
         var testident = identRepository.findByIdentIn(miljoeIdenter).stream().findFirst()
                 .orElseThrow(() -> new NotFoundException(ident + " ble ikke funnet i database"));
 
+        var hovedPerson = testident.getTestgruppe().getTestidenter()
+                .stream()
+                .map(Testident::getIdent)
+                .filter(identnummer -> identnummer.equals(ident))
+                .findFirst();
+
         return RsWhereAmI.builder()
                 .gruppe(mapperFacade.map(testident.getTestgruppe(), RsTestgruppe.class))
-                .identHovedperson(testident.getIdent())
+                .identHovedperson(hovedPerson.orElse(testident.getIdent()))
                 .identNavigerTil(ident)
                 .sidetall(Math.floorDiv(
                         identService.getPaginertIdentIndex(testident.getIdent(), testident.getTestgruppe().getId())
