@@ -29,9 +29,11 @@ class GenererSyntAmeldingServiceTest {
 
     @Test
     void shouldThrowExceptionWithIncorrectDates() {
+        var startDato = LocalDate.of(2020, 3, 1);
+        var sluttDato = LocalDate.of(2020, 2, 1);
         Assertions.assertThrows(
                 ResponseStatusException.class,
-                () -> service.getAntallMeldinger(LocalDate.of(2020, 3, 1), LocalDate.of(2020, 2, 1))
+                () -> service.getAntallMeldinger(startDato, sluttDato)
         );
     }
 }
