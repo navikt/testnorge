@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
@@ -55,9 +54,6 @@ class KontoregisterConsumerTest {
 
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
-
-    @Autowired
-    private MapperFacade mapperFacade;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
