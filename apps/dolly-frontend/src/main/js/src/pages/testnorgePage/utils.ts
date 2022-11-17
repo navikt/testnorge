@@ -92,8 +92,8 @@ export const yesNoOptions = [
 ]
 
 export const getPdlIdent = (person: PdlData) => {
-	const identer = person.hentIdenter?.identer?.filter(
+	const identer = person?.hentIdenter?.identer?.filter(
 		(ident) => ident.gruppe === 'FOLKEREGISTERIDENT'
 	)
-	return identer.length > 0 ? identer[0].ident : ''
+	return identer?.length > 0 ? identer[0].ident : ''
 }

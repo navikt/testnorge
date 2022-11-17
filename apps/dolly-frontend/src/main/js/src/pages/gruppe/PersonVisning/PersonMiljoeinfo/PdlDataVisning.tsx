@@ -16,39 +16,70 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlDataQ1, setPdlDataQ1] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
+	const [pdlLoadingQ1, setPdlLoadingQ1] = useBoolean(true)
 	const [pdlError, setPdlError] = useState(null)
+	const [pdlErrorQ1, setPdlErrorQ1] = useState(null)
+
+	const setError = (pdlMiljoe: string, feilmelding: string) => {
+		if (pdlMiljoe) {
+			setPdlErrorQ1(feilmelding)
+		} else {
+			setPdlError(feilmelding)
+		}
+	}
+
+	const stopLoading = (pdlMiljoe: string) => {
+		if (pdlMiljoe) {
+			setPdlLoadingQ1(false)
+		} else {
+			setPdlLoading(false)
+		}
+	}
+
+	const ApiFeilmelding = (feil: any) => {
+		return (
+			<div className="flexbox--align-center">
+				<Icon size={20} kind="report-problem-circle" />
+				<div>
+					<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
+						{feil}
+					</pre>
+				</div>
+			</div>
+		)
+	}
 
 	const getPersonInfo = (pdlMiljoe = null as string) => {
 		if ((!pdlData && !pdlMiljoe) || (!pdlDataQ1 && pdlMiljoe)) {
 			DollyApi.getPersonFraPdl(ident.ident || ident, pdlMiljoe)
 				.then((response: PdlDataWrapper) => {
-					if (!pdlMiljoe) setPdlData(response.data?.data)
-					if (pdlMiljoe) setPdlDataQ1(response?.data?.data)
-					setPdlLoading(false)
+					if (!pdlMiljoe) {
+						setPdlData(response?.data?.data)
+					} else {
+						setPdlDataQ1(response?.data?.data)
+					}
+					stopLoading(pdlMiljoe)
 					const feil = response.data?.errors?.find((e) => e.path?.some((i) => i === 'hentPerson'))
 					if (feil) {
-						setPdlError(feil.message)
+						setError(pdlMiljoe, feil.message)
 					}
 				})
 				.catch(() => {
-					setPdlLoading(false)
-					setPdlError('Henting av data feilet')
+					stopLoading(pdlMiljoe)
+					setError(pdlMiljoe, 'Henting av data feilet')
 				})
 		}
-		if (pdlError) {
-			return (
-				<div className="flexbox--align-center">
-					<Icon size={20} kind="report-problem-circle" />
-					<div>
-						<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
-							{pdlError}
-						</pre>
-					</div>
-				</div>
-			)
+		if (!pdlMiljoe && pdlError) {
+			return ApiFeilmelding(pdlError)
+		} else if (pdlMiljoe && pdlErrorQ1) {
+			return ApiFeilmelding(pdlErrorQ1)
 		}
 		return (
-			<PdlVisning pdlData={pdlMiljoe ? pdlDataQ1 : pdlData} loading={pdlLoading} miljoeVisning />
+			<PdlVisning
+				pdlData={pdlMiljoe ? pdlDataQ1 : pdlData}
+				loading={pdlMiljoe ? pdlLoadingQ1 : pdlLoading}
+				miljoeVisning
+			/>
 		)
 	}
 

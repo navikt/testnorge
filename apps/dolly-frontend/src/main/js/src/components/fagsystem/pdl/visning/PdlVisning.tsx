@@ -40,14 +40,14 @@ export const PdlVisning = ({
 	environments,
 	miljoeVisning = false,
 }: PdlVisningProps) => {
+	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), environments, loading)
+
 	if (loading) {
 		return <Loading label="Laster PDL-data" />
 	}
 	if (!pdlData?.hentPerson) {
 		return null
 	}
-
-	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), environments, loading)
 
 	const { hentPerson, hentIdenter, hentGeografiskTilknytning } = pdlData
 	const {
