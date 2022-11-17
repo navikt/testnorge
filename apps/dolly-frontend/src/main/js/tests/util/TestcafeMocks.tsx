@@ -1224,7 +1224,7 @@ export const nyGruppeMock = {
 	tags: [],
 }
 
-export const gjeldendeGruppeMock = {
+export const eksisterendeGruppeMock = {
 	id: 1,
 	navn: 'Testytest',
 	hensikt: 'Testing av testytest',
@@ -1238,6 +1238,10 @@ export const gjeldendeGruppeMock = {
 	erLaast: false,
 	identer: [testidentMock],
 	tags: [],
+}
+
+export const paginerteGrupperMock = {
+	contents: [eksisterendeGruppeMock],
 }
 
 export const miljoeMock = '["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]'

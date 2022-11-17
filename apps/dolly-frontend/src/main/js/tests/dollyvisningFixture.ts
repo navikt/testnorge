@@ -8,7 +8,7 @@ import {
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
 	gjeldendeBrukerMock,
-	gjeldendeGruppeMock,
+	paginerteGrupperMock,
 	gjeldendeProfilMock,
 	instMock,
 	joarkDokumentMock,
@@ -24,6 +24,7 @@ import {
 	skjermingMock,
 	tpsMessagingMock,
 	udistubMock,
+	eksisterendeGruppeMock,
 } from './util/TestcafeMocks'
 import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from './util/TestcafePdlMocks'
 
@@ -31,7 +32,7 @@ const miljoer = new RegExp(/\/miljoer/)
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/testnorge-profil-api\/api\/v1\/profil$/)
-const hentGrupper = new RegExp(/gruppe\?brukerId/)
+const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
 const pdlPersonBolk = new RegExp(/\/api\/v1\/pdlperson\/identer/)
@@ -66,9 +67,9 @@ const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
 	.respond(miljoeMock, 200)
 	.onRequestTo(hentGrupper)
-	.respond([gjeldendeGruppeMock], 200)
+	.respond(paginerteGrupperMock, 200)
 	.onRequestTo(hentGruppe)
-	.respond(gjeldendeGruppeMock, 200)
+	.respond(eksisterendeGruppeMock, 200)
 	.onRequestTo(hentGruppeBestilling)
 	.respond(backendBestillingerMock, 200)
 	.onRequestTo(spesifikkGruppe)
