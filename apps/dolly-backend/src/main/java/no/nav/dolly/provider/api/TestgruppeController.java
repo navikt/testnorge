@@ -127,10 +127,8 @@ public class TestgruppeController {
     @GetMapping
     @Operation(description = "Hent testgrupper")
     public List<RsTestgruppe> getTestgrupper(
-            @RequestParam(name = "brukerId", required = false) String brukerId,
-            @RequestParam(value = "pageNo", required = false, defaultValue = "0") Integer pageNo,
-            @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize) {
-        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(brukerId, pageNo, pageSize), RsTestgruppe.class);
+            @RequestParam(value = "pageNo", required = false, defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize, @RequestParam(name = "brukerId", required = false) String brukerId) {
+        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(pageNo, pageSize, brukerId), RsTestgruppe.class);
     }
 
     @Cacheable(CACHE_GRUPPE)

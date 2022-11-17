@@ -158,7 +158,7 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public List<Testgruppe> getTestgruppeByBrukerId(String brukerId, Integer pageNo, Integer pageSize) {
+    public List<Testgruppe> getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
         return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize)).toList() : fetchTestgrupperByBrukerId(brukerId);
     }

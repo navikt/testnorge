@@ -70,8 +70,8 @@ public class TestgruppeControllerTest {
 
     @Test
     public void getTestgrupper() {
-        testgruppeController.getTestgrupper("nav");
-        verify(testgruppeService).getTestgruppeByBrukerId("nav");
+        testgruppeController.getTestgrupper(0, 10, "nav");
+        verify(testgruppeService).getTestgruppeByBrukerId(0, 10, "nav");
     }
 
     @Test
