@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntAmeldingConsumer;
 import org.springframework.http.HttpStatus;
@@ -40,7 +39,7 @@ public class GenererSyntAmeldingService {
 
             var response = syntAmeldingConsumer.getHistorikk(initialAmelding);
             response.add(0, initialAmelding);
-            return response.stream().map(ArbeidsforholdDTO::new).collect(Collectors.toList());
+            return response.stream().map(ArbeidsforholdDTO::new).toList();
         }
 
         return Collections.singletonList(new ArbeidsforholdDTO(initialAmelding));
