@@ -11,8 +11,9 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingPage;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -155,19 +156,19 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public RsTestgruppeMedBestillingPage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
+    public RsTestgruppePage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
         var bruker = isBlank(brukerId) ? null : brukerService.fetchBruker(brukerId);
         var paginertGruppe = isBlank(brukerId)
                 ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize))
                 : fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
 
-        return RsTestgruppeMedBestillingPage.builder()
+        return RsTestgruppePage.builder()
                 .pageNo(paginertGruppe.getNumber())
                 .antallPages(paginertGruppe.getTotalPages())
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
-                .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppeMedBestillingId.class))
+                .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
                 .favoritter(nonNull(bruker) ? bruker.getFavoritter() : Collections.emptySet())
                 .build();
     }
