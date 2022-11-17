@@ -12,6 +12,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingPage;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -26,11 +27,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
@@ -97,16 +96,12 @@ public class TestgruppeService {
         throw new NotFoundException("Finner ikke grupper basert på IDer : " + grupperIDer);
     }
 
-    public List<Testgruppe> fetchTestgrupperByBrukerId(String brukerId) {
+    public Page<Testgruppe> fetchTestgrupperByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
         List<Bruker> eidAvBruker = brukerService.fetchEidAv(bruker);
         eidAvBruker.add(bruker);
 
-        Set<Testgruppe> testgrupper = eidAvBruker.stream().map(Bruker::getTestgrupper).flatMap(Collection::stream).collect(Collectors.toSet());
-        Set<Testgruppe> favoritter = eidAvBruker.stream().map(Bruker::getFavoritter).flatMap(Collection::stream).collect(Collectors.toSet());
-        testgrupper.addAll(favoritter);
-
-        return new ArrayList<>(testgrupper);
+        return testgruppeRepository.findAllByOpprettetAvInOrFavorisertAvIn(eidAvBruker, PageRequest.of(pageNo, pageSize, Sort.by("id").descending()));
     }
 
     public Testgruppe saveGruppeTilDB(Testgruppe testgruppe) {
@@ -158,9 +153,19 @@ public class TestgruppeService {
         return saveGruppeTilDB(testgruppe);
     }
 
-    public List<Testgruppe> getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
+    public RsTestgruppeMedBestillingPage getTestgruppeByBrukerId(Integer pageNo, Integer pageSize, String brukerId) {
 
-        return isBlank(brukerId) ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize)).toList() : fetchTestgrupperByBrukerId(brukerId);
+        var paginertGruppe = isBlank(brukerId)
+                ? testgruppeRepository.findAllByOrderByIdDesc(PageRequest.of(pageNo, pageSize))
+                : fetchTestgrupperByBrukerId(pageNo, pageSize, brukerId);
+
+        return RsTestgruppeMedBestillingPage.builder()
+                .pageNo(paginertGruppe.getNumber())
+                .antallPages(paginertGruppe.getTotalPages())
+                .pageSize(paginertGruppe.getSize())
+                .antallElementer(paginertGruppe.getTotalElements())
+                .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppeMedBestillingId.class))
+                .build();
     }
 
     public Testgruppe oppdaterTestgruppeMedLaas(Long gruppeId, RsLockTestgruppe lockTestgruppe) {

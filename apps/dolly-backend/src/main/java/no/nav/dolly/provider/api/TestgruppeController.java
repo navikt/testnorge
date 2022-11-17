@@ -21,6 +21,7 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingPage;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.SplittGruppeService;
@@ -41,7 +42,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Set;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
@@ -126,9 +126,9 @@ public class TestgruppeController {
     @Cacheable(CACHE_GRUPPE)
     @GetMapping
     @Operation(description = "Hent testgrupper")
-    public List<RsTestgruppe> getTestgrupper(
+    public RsTestgruppeMedBestillingPage getTestgrupper(
             @RequestParam(value = "pageNo", required = false, defaultValue = "0") Integer pageNo, @RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize, @RequestParam(name = "brukerId", required = false) String brukerId) {
-        return mapperFacade.mapAsList(testgruppeService.getTestgruppeByBrukerId(pageNo, pageSize, brukerId), RsTestgruppe.class);
+        return testgruppeService.getTestgruppeByBrukerId(pageNo, pageSize, brukerId);
     }
 
     @Cacheable(CACHE_GRUPPE)

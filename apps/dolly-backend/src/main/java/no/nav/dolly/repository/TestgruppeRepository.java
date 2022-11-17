@@ -1,5 +1,6 @@
 package no.nav.dolly.repository;
 
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +20,8 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
     Testgruppe save(Testgruppe testgruppe);
 
     Page<Testgruppe> findAllByOrderByNavn(Pageable pageable);
+
+    Page<Testgruppe> findAllByOpprettetAvInOrFavorisertAvIn(List<Bruker> bruker, Pageable pageable);
 
     Page<Testgruppe> findAllByOrderByIdDesc(Pageable pageable);
 
