@@ -140,4 +140,11 @@ public class BestillingProgress implements Serializable {
 
         return isNotBlank(getIdent()) && getIdent().length() == 11;
     }
+
+    public void setDokarkivStatus(String dokarkivStatus) {
+        if (dokarkivStatus.length() > 4000) {
+            dokarkivStatus = dokarkivStatus.substring(0, 4000);
+        }
+        this.dokarkivStatus = dokarkivStatus;
+    }
 }
