@@ -24,6 +24,7 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -223,8 +224,9 @@ public class TestgruppeServiceTest {
 
     @Test
     public void getTestgrupper() {
+        when(testgruppeRepository.findAllByOrderByIdDesc(Pageable.ofSize(10))).thenReturn(Page.empty());
         testgruppeService.getTestgruppeByBrukerId(0, 10, null);
-        verify(testgruppeRepository).findAllByOrderByNavn(Pageable.ofSize(10));
+        verify(testgruppeRepository).findAllByOrderByIdDesc(Pageable.ofSize(10));
     }
 
     @BeforeEach
