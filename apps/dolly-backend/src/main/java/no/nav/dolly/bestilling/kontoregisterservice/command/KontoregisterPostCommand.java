@@ -20,7 +20,8 @@ import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SendOppdaterKontoregisterCommand implements Callable<Mono<String>> {
+public class KontoregisterPostCommand implements Callable<Mono<String>> {
+
     private static final String KONTOREGISTER_API_URL = "/api/system/v1/oppdater-konto";
 
     private final WebClient webClient;
