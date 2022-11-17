@@ -39,7 +39,11 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	} = useCurrentBruker()
 	const [visning, setVisning] = useState(VisningType.MINE)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
-	const { grupper, loading } = useGrupper(visning === VisningType.MINE ? brukerId : null)
+	const { grupper, loading } = useGrupper(
+		sidetall,
+		sideStoerrelse,
+		visning === VisningType.MINE ? brukerId : null
+	)
 	const dispatch = useDispatch()
 
 	const byttVisning = (value: VisningType) => {
@@ -83,8 +87,12 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
-				gruppeDetaljer={{ pageSize: sideStoerrelse }}
-				items={grupper}
+				gruppeDetaljer={{
+					pageSize: sideStoerrelse,
+					antallPages: grupper?.antallPages,
+					antallElementer: grupper?.antallElementer,
+				}}
+				items={grupper?.contents}
 				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}
