@@ -42,3 +42,5 @@ consumers:
     cluster: dev-fss
     name: dokarkiv-q1
     namespace: teamdokumenthandtering
+
+environments: q1,q2,q4,q5,t0,t4
