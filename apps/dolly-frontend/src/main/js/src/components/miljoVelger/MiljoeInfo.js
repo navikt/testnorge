@@ -5,6 +5,7 @@ import {
 	useArenaEnvironments,
 	usePensjonEnvironments,
 	useInstEnvironments,
+	useDokarkivEnvironments,
 } from '~/utils/hooks/useEnvironments'
 import Formatters from '~/utils/DataFormatter'
 
@@ -16,12 +17,15 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		error: errorPensjon,
 	} = usePensjonEnvironments()
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
-	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
+	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
+	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } =
+		bestillingsdata
 	if (
 		!instdata &&
 		!arenaforvalter &&
 		!pensjonforvalter &&
 		!sykemelding &&
+		!dokarkiv &&
 		!_get(pdldata, 'bostedsadresse') &&
 		!_get(pdldata, 'fullmakt') &&
 		!_get(pdldata, 'falskIdentitet') &&
@@ -80,6 +84,17 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				)}
 
 				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
+
+				{dokarkiv && (
+					<li>
+						Dokarkiv:&nbsp;
+						<span>
+							{loadingDokarkiv
+								? 'Laster tilgjengelige miljøer..'
+								: Formatters.arrayToString(dokarkivEnvironments)}
+						</span>
+					</li>
+				)}
 			</ul>
 		</Alert>
 	)
