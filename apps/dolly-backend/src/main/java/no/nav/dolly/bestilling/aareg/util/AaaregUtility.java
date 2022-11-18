@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -35,7 +35,7 @@ public class AaaregUtility {
 
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> isFalse(arbeidsforhold.getIsOppdatering()) ||
+                        .filter(arbeidsforhold -> isNotTrue(arbeidsforhold.getIsOppdatering()) ||
                                 isTrue(arbeidsforhold.getIsOppdatering()) &&
                                         response.getEksisterendeArbeidsforhold().stream()
                                                 .noneMatch(response1 ->

@@ -1,9 +1,8 @@
-package no.nav.dolly.bestilling.aareg.util;
+package no.nav.dolly.bestilling.aareg.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aareg.AaregClient;
-import no.nav.dolly.bestilling.aareg.mapper.AaregRequestMappingStrategy;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsAnsettelsesPeriode;
@@ -50,6 +49,18 @@ class AaregRequestMappingStrategyTest {
     @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new AaregRequestMappingStrategy());
+    }
+
+    @Test
+    void mapIsOppdatering_OK() {
+
+        var kilde = RsAareg.builder()
+                .isOppdatering(true)
+                .build();
+
+        var destinasjon = mapperFacade.map(kilde, Arbeidsforhold.class);
+
+        assertThat(destinasjon.getIsOppdatering(), is(true));
     }
 
     @Test
