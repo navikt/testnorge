@@ -40,10 +40,12 @@ import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
+import { useInstData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
+import { sjekkManglerInstData } from '~/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '~/utils/SjekkBestillingFagsystem'
@@ -112,6 +114,11 @@ export const PersonVisning = ({
 		harPoppBestilling(bestillingerFagsystemer)
 	)
 
+	const { loading: loadingInstData, instData } = useInstData(
+		ident.ident,
+		harInstBestilling(bestillingerFagsystemer)
+	)
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -131,11 +138,11 @@ export const PersonVisning = ({
 		return null
 	}
 
-	const { sigrunstub, inntektstub, brregstub, krrstub, instdata, arenaforvalteren, udistub } = data
+	const { sigrunstub, inntektstub, brregstub, krrstub, arenaforvalteren, udistub } = data
 
 	const manglerFagsystemdata = () => {
 		if (
-			[sigrunstub, inntektstub, krrstub, instdata].some(
+			[sigrunstub, inntektstub, krrstub].some(
 				(fagsystem) => Array.isArray(fagsystem) && !fagsystem.length
 			)
 		) {
@@ -156,6 +163,10 @@ export const PersonVisning = ({
 		if (udistub && sjekkManglerUdiData(udistub)) {
 			return true
 		}
+		if (instData && sjekkManglerInstData(instData)) {
+			return true
+		}
+
 		return false
 	}
 
@@ -290,7 +301,11 @@ export const PersonVisning = ({
 				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
 				<BrregVisning data={brregstub} loading={loading.brregstub} />
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<InstVisning data={instdata} loading={loading.instdata} />
+				<InstVisning
+					data={instData}
+					loading={loadingInstData}
+					bestillingIdListe={bestillingIdListe}
+				/>
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}

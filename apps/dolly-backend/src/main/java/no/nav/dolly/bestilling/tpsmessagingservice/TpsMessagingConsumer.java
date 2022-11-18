@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteEgenansattCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteSikkerhetstiltakCommand;
 import no.nav.dolly.bestilling.tpsmessagingservice.command.DeleteTelefonnummerCommand;
@@ -29,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigNorskBankkonto;
-import static no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer.tilfeldigUtlandskBankkonto;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -70,7 +69,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     public List<TpsMeldingResponseDTO> sendUtenlandskBankkontoRequest(String ident, List<String> miljoer, BankkontonrUtlandDTO body) {
 
         if (nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
-            body = body.withKontonummer(tilfeldigUtlandskBankkonto(body.getLandkode()));
+            body = body.withKontonummer(BankkontoGenerator.tilfeldigUtlandskBankkonto(body.getLandkode()));
         }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, UTENLANDSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();
@@ -80,7 +79,7 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     public List<TpsMeldingResponseDTO> sendNorskBankkontoRequest(String ident, List<String> miljoer, BankkontonrNorskDTO body) {
 
         if (nonNull(body.getTilfeldigKontonummer()) && body.getTilfeldigKontonummer()) {
-            body = body.withKontonummer(tilfeldigNorskBankkonto());
+            body = body.withKontonummer(BankkontoGenerator.tilfeldigNorskBankkonto());
         }
 
         return new SendTpsMessagingCommand(webClient, ident, miljoer, body, NORSK_BANKKONTO_URL, serviceProperties.getAccessToken(tokenService)).call();

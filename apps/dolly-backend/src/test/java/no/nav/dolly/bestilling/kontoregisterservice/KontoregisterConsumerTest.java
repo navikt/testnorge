@@ -3,17 +3,11 @@ package no.nav.dolly.bestilling.kontoregisterservice;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoResponseDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.apache.commons.lang3.StringUtils;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -31,11 +25,17 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
 import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -55,9 +55,6 @@ class KontoregisterConsumerTest {
     @Autowired
     private KontoregisterConsumer kontoregisterConsumer;
 
-    @Autowired
-    private MapperFacade mapperFacade;
-
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
@@ -70,52 +67,6 @@ class KontoregisterConsumerTest {
     public void cleanUp() {
         WireMock.getAllServeEvents()
                 .stream().forEach(e -> WireMock.removeServeEvent(e.getId()));
-    }
-
-    @Test
-    void testBankkontoMapping() {
-        var bankkonto1 = new BankkontonrUtlandDTO();
-
-        bankkonto1.setTilfeldigKontonummer(true);
-        bankkonto1.setLandkode("SE");
-
-        var mapped1 = mapperFacade.map(bankkonto1, OppdaterKontoRequestDTO.class);
-        assertThat("genererer kontonummer", StringUtils.isNoneBlank(mapped1.getKontonummer()));
-        assertThat("generert kontonummer starter med SE", mapped1.getKontonummer().startsWith("SE"));
-
-        var bankkonto2 = new BankkontonrUtlandDTO();
-
-        bankkonto2.setKontonummer("123");
-        bankkonto2.setLandkode("SWE");
-
-        var mapped2 = mapperFacade.map(bankkonto2, OppdaterKontoRequestDTO.class);
-        assertThat("kontonummer er 123", "123".equals(mapped2.getKontonummer()));
-        assertThat("landkode er SE", "SE".equals(mapped2.getUtenlandskKonto().getBankLandkode()));
-    }
-
-    @Test
-    void generateDifferentBankkonto() {
-        var kontoer = IntStream.range(1, 100).boxed()
-                .map((i) -> KontoregisterConsumer.tilfeldigUtlandskBankkonto(KontoregisterLandkode.SE.name()))
-                .sorted()
-                .collect(Collectors.toList());
-
-        var unikKontoer = kontoer.stream().distinct().count();
-
-        assertThat("forskjellige kontoer", unikKontoer == kontoer.size());
-    }
-
-    @Test
-    void generateBankkontoWithUknownLandkode() {
-        var konto = KontoregisterConsumer.tilfeldigUtlandskBankkonto("AABB");
-        assertThat("konto har data", !konto.isEmpty());
-        assertThat("konto begynner med AA", konto.substring(0, 2).equals("AA"));
-    }
-
-    @Test
-    void generateBankkontoWithIsoLandkode() {
-        var konto = KontoregisterConsumer.tilfeldigUtlandskBankkonto("SWE");
-        assertThat("konto begynner med SE", konto.substring(0, 2).equals("SE"));
     }
 
     private String hentKontoResponse() {
@@ -140,133 +91,48 @@ class KontoregisterConsumerTest {
     }
 
     @Test
-    void generateTilfeldigUtenlandskbankkonto() {
-        stubFor(
-                post(urlPathMatching("(.*)/api/kontoregister/v1/oppdater-konto"))
-                        .willReturn(ok()
-                                .withBody("")
-                                .withHeader("Content-Type", "application/json")));
+    void opprettBankkonto_OK() {
 
-        var dto = new BankkontonrUtlandDTO();
-        dto.setTilfeldigKontonummer(true);
-
-        List.of("1111111111", "2222222222", "333333333", "4444444444")
-                .parallelStream()
-                .forEach(
-                        p -> kontoregisterConsumer.sendUtenlandskBankkontoRequest(p, dto)
-                );
-
-        var sendtBankkontoer = WireMock.getAllServeEvents()
-                .stream()
-                .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> {
-                    try {
-                        return objectMapper.readValue(s, OppdaterKontoResponseDTO.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .map(k -> k.getKontonummer())
-                .collect(Collectors.toList());
-
-        var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().collect(Collectors.toList());
-
-        assertThat("tilfeldig kontonummer is True", dto.getTilfeldigKontonummer());
-        assertThat("sendt forskjellige kontonummer", forskjelligeBankkontoer.size() == sendtBankkontoer.size());
-    }
-
-    @Test
-    void oppdaterNorskbankkonto() {
-        stubFor(
-                post(urlPathMatching("(.*)/api/kontoregister/v1/oppdater-konto"))
-                        .willReturn(ok()
-                                .withBody("")
-                                .withHeader("Content-Type", "application/json")));
-
-        var dto = new BankkontonrNorskDTO();
-        dto.setKontonummer(KONTONUMMER);
-
-        List.of(IDENT)
-                .parallelStream()
-                .forEach(
-                        p -> kontoregisterConsumer.sendNorskBankkontoRequest(p, dto)
-                );
-
-        var sendtBankkontoer = WireMock.getAllServeEvents()
-                .stream()
-                .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> {
-                    try {
-                        return objectMapper.readValue(s, OppdaterKontoResponseDTO.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
-
-        sendtBankkontoer.stream()
-                .forEach(b-> {
-                    assertThat("sendt kontonummer er riktig", KONTONUMMER.equals(b.getKontonummer()));
-                    assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver()));
-                    assertThat("opprettet av Dolly", "Dolly".equals(b.getOpprettetAv()));
-                    assertThat("utenlandskKonto er null", b.getUtenlandskKonto() == null);
-                });
-
-
-    }
-
-    @Test
-    void oppdaterUtenlandskbankkonto() {
         stubFor(
                 post(urlPathMatching("(.*)/api/system/v1/oppdater-konto"))
                         .willReturn(ok()
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
 
-        var dto = new BankkontonrUtlandDTO();
-        dto.setKontonummer(KONTONUMMER);
-        dto.setSwift("SHEDSE22");
-        dto.setValuta("SEK");
-        dto.setLandkode("SE");
-        dto.setBanknavn("banknavn");
-        dto.setBankAdresse1("address1");
-        dto.setBankAdresse2("address2");
-        dto.setBankAdresse3("address3");
+        var response = kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO())
+                .block();
 
-        List.of(IDENT)
-                .parallelStream()
-                .forEach(
-                        p -> kontoregisterConsumer.sendUtenlandskBankkontoRequest(p, dto)
-                );
+        assertThat(response, is(equalTo("OK")));
+    }
 
-        var sendtBankkontoer = WireMock.getAllServeEvents()
-                .stream()
-                .map(e -> e.getRequest().getBodyAsString())
-                .map(s -> {
-                    try {
-                        return objectMapper.readValue(s, OppdaterKontoResponseDTO.class);
-                    } catch (JsonProcessingException e) {
-                        throw new RuntimeException(e);
-                    }
-                })
-                .collect(Collectors.toList());
+    @Test
+    void opprettBankkonto_feil() {
 
-        sendtBankkontoer.stream()
-                .forEach(b-> {
-                    assertThat("sendt kontonummer er riktig", KONTONUMMER.equals(b.getKontonummer()));
-                    assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver()));
-                    assertThat("opprettet av Dolly", "Dolly".equals(b.getOpprettetAv()));
-                    assertThat("utenlandskKonto er ikke null", b.getUtenlandskKonto() != null);
+        stubFor(
+                post(urlPathMatching("(.*)/api/system/v1/oppdater-konto"))
+                        .willReturn(badRequest()
+                                .withBody("{\"feilmelding\":\"Noe galt har skjedd\"}")
+                                .withHeader("Content-Type", "application/json")));
 
-                    var utenlandsk = b.getUtenlandskKonto();
-                    assertThat("swift", "SHEDSE22".equals(utenlandsk.getSwiftBicKode()));
-                    assertThat("valuta", "SEK".equals(utenlandsk.getValutakode()));
-                    assertThat("landkode", "SE".equals(utenlandsk.getBankLandkode()));
-                    assertThat("banknavn", "banknavn".equals(utenlandsk.getBanknavn()));
-                    assertThat("address1", "address1".equals(utenlandsk.getBankadresse1()));
-                    assertThat("address2", "address2".equals(utenlandsk.getBankadresse2()));
-                    assertThat("address3", "address3".equals(utenlandsk.getBankadresse3()));
-                });
+        var response = kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO())
+                .block();
+
+        assertThat(response, is(equalTo("Feil= Noe galt har skjedd")));
+    }
+
+    @Test
+    void slettBankkonto_OK() {
+
+        stubFor(
+                post(urlPathMatching("(.*)/api/system/v1/slett-konto"))
+                        .willReturn(ok()
+                                .withBody("")
+                                .withHeader("Content-Type", "application/json")));
+
+        var response = kontoregisterConsumer.deleteKontonumre(List.of(IDENT))
+                .block();
+
+        assertThat(response, is(empty()));
     }
 
     @Test
@@ -277,7 +143,7 @@ class KontoregisterConsumerTest {
                                 .withBody(hentKontoResponse())
                                 .withHeader("Content-Type", "application/json")));
 
-        var hentResponse = kontoregisterConsumer.sendHentKontoRequest(IDENT).block();
+        var hentResponse = kontoregisterConsumer.getKontonummer(IDENT).block();
 
         var hentBankkontoer = WireMock.getAllServeEvents()
                 .stream()
@@ -292,40 +158,13 @@ class KontoregisterConsumerTest {
                 .collect(Collectors.toList());
 
         hentBankkontoer.stream()
-                .forEach(b-> {
+                .forEach(b -> {
                     assertThat("sendt ident er riktig", IDENT.equals(b.getKontohaver()));
                 });
 
-        assertThat("kontonummer", KONTONUMMER.equals(hentResponse.getAktivKonto().getKontonummer()));
-        assertThat("ident", IDENT.equals(hentResponse.getAktivKonto().getKontohaver()));
-        assertThat("bankkode", "XXXX".equals(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getBankkode()));
-        assertThat("swift", "SHEDSE22".equals(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getSwiftBicKode()));
-    }
-
-    private boolean mod11Kontroll(String kontonummer) {
-        var lastDigit = kontonummer.substring(kontonummer.length() - 1);
-        var m11 = String.valueOf(
-                KontoregisterConsumer.NorskBankkontoGenerator.getCheckDigit(kontonummer.substring(0, kontonummer.length()-1))
-        ); // exclude kontroll tall
-        return lastDigit.equals(m11);
-    }
-
-    private boolean validerNorskKonto(String kontonummer) {
-        if (kontonummer.length() != 11 || kontonummer.equals("00000000000") || !mod11Kontroll(kontonummer)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Test
-    void testTilfeldigNorskkonto() {
-        var test = "3654737113";
-        var digit = KontoregisterConsumer.NorskBankkontoGenerator.getCheckDigit(test);
-
-        IntStream.range(0, 100).forEach(i -> {
-            var norskKonto = KontoregisterConsumer.tilfeldigNorskBankkonto();
-            var validatingResult = validerNorskKonto(norskKonto);
-            assertThat("tilfeldig norsk bankkonto", validatingResult);
-        });
+        assertThat(hentResponse.getAktivKonto().getKontonummer(), is(equalTo(KONTONUMMER)));
+        assertThat(hentResponse.getAktivKonto().getKontohaver(), is(equalTo(IDENT)));
+        assertThat(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getBankkode(), is(equalTo("XXXX")));
+        assertThat(hentResponse.getAktivKonto().getUtenlandskKontoInfo().getSwiftBicKode(), is(equalTo("SHEDSE22")));
     }
 }

@@ -27,3 +27,13 @@ export const harPoppBestilling = (bestillingerFagsystemer) => {
 	})
 	return popp
 }
+
+export const harInstBestilling = (bestillingerFagsystemer) => {
+	let inst = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.instdata) {
+			inst = true
+		}
+	})
+	return inst
+}

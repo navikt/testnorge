@@ -3,7 +3,6 @@ import TpsfService from './services/tpsf/TpsfService'
 import SigrunService from './services/sigrun/SigrunService'
 import KrrService from './services/krr/KrrService'
 import ArenaService from './services/arena/ArenaService'
-import InstService from './services/inst/InstService'
 import PensjonService from './services/pensjon/PensjonService'
 import InntektstubService from './services/inntektstub/InntektstubService'
 import Norg2Service from './services/norg2/Norg2Service'
@@ -25,7 +24,6 @@ export const TpsMessagingApi = TpsMessagingService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
 export const ArenaApi = ArenaService
-export const InstApi = InstService
 export const PensjonApi = PensjonService
 export const InntektstubApi = InntektstubService
 export const Norg2Api = Norg2Service
@@ -46,7 +44,6 @@ export default {
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
 	ArenaApi: ArenaService,
-	InstApi: InstService,
 	PensjonApi: PensjonService,
 	InntektstubApi: InntektstubService,
 	Norg2Api: Norg2Service,
