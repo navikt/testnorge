@@ -49,7 +49,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	const { grupper, loading } = useGrupper(
 		sidetall,
 		sideStoerrelse,
-		visning === VisningType.MINE ? brukerId : null
+		visning === VisningType.ALLE ? null : brukerId
 	)
 	const dispatch = useDispatch()
 
@@ -103,8 +103,12 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 			<Liste
 				gruppeDetaljer={{
 					pageSize: sideStoerrelse,
-					antallPages: grupper?.antallPages,
-					antallElementer: grupper?.antallElementer,
+					antallPages:
+						visning === VisningType.FAVORITTER
+							? grupper?.favoritter?.length / sideStoerrelse
+							: grupper?.antallPages,
+					antallElementer:
+						visning === VisningType.FAVORITTER ? grupper?.favoritter?.length : grupper?.antallPages,
 				}}
 				items={visning === VisningType.FAVORITTER ? grupper?.favoritter : grupper?.contents}
 				isFetching={loading}
