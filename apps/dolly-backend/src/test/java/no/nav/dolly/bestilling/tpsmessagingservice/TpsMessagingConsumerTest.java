@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
-import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
@@ -26,11 +25,16 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.ok;
+import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
@@ -47,6 +51,9 @@ class TpsMessagingConsumerTest {
 
     @MockBean
     private TokenExchange tokenService;
+
+    @MockBean
+    private AccessToken accessToken;
 
     @Autowired
     private TpsMessagingConsumer tpsMessagingConsumer;
@@ -72,10 +79,12 @@ class TpsMessagingConsumerTest {
 
         stubPostUtenlandskBankkontoData();
 
-        List<TpsMeldingResponseDTO> response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
-                IDENT,
-                MILJOER,
-                new BankkontonrUtlandDTO());
+        var response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                        IDENT,
+                        MILJOER,
+                        new BankkontonrUtlandDTO(), accessToken)
+                .collectList()
+                .block();
 
         assertThat("First env should be q1", response.get(0).getMiljoe().equals("q1"));
     }
@@ -88,9 +97,11 @@ class TpsMessagingConsumerTest {
         BankkontonrUtlandDTO bankkontonrUtlandDTO = new BankkontonrUtlandDTO();
 
         Assertions.assertThrows(SecurityException.class, () -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
-                IDENT,
-                MILJOER,
-                bankkontonrUtlandDTO));
+                        IDENT,
+                        MILJOER,
+                        bankkontonrUtlandDTO, accessToken)
+                .collectList()
+                .block());
 
         verify(tokenService).exchange(any(TpsMessagingServiceProperties.class));
     }
@@ -108,9 +119,10 @@ class TpsMessagingConsumerTest {
         dto.setTilfeldigKontonummer(true);
 
         List.of("1111111111", "2222222222", "333333333", "4444444444")
-                .parallelStream()
                 .forEach(
-                        p -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(p, MILJOER, dto)
+                        p -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(p, MILJOER, dto, accessToken)
+                                .collectList()
+                                .block()
                 );
 
         var sendtBankkontoer = WireMock.getAllServeEvents()
@@ -127,7 +139,7 @@ class TpsMessagingConsumerTest {
 
         var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().collect(Collectors.toList());
 
-        assertThat("tilfeldig kontonummer is True", dto.getTilfeldigKontonummer());
-        assertThat("sendt forskjellige kontonummer", forskjelligeBankkontoer.size() == sendtBankkontoer.size());
+        assertThat(dto.getTilfeldigKontonummer(), is(true));
+        assertThat(forskjelligeBankkontoer.size(), is(equalTo(sendtBankkontoer.size())));
     }
 }
