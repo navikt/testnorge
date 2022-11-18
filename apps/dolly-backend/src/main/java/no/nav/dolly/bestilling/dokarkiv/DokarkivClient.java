@@ -74,8 +74,11 @@ public class DokarkivClient implements ClientRegister {
                 dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
             }
 
+            var dokarkivMiljoer = dokarkivConsumer.getEnvironments().block();
+
             bestilling.getEnvironments().stream()
                     .filter(StringUtils::isNotBlank)
+                    .filter(miljo -> dokarkivMiljoer.contains(miljo))
                     .forEach(environment -> {
 
                         if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
