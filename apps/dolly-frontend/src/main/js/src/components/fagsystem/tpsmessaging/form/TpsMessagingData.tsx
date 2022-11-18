@@ -68,9 +68,8 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 		}
 		return tpsMessaging()
 	}, [environments])
-
 	useEffect(() => {
-		if (!loading && environments && environments.length > 0) {
+		if (!loading && ident && ident !== '' && environments && environments.length > 0) {
 			execute()
 		}
 		return () => {
