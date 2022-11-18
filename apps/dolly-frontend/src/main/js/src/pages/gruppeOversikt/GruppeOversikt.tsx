@@ -108,7 +108,9 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 							? grupper?.favoritter?.length / sideStoerrelse
 							: grupper?.antallPages,
 					antallElementer:
-						visning === VisningType.FAVORITTER ? grupper?.favoritter?.length : grupper?.antallPages,
+						visning === VisningType.FAVORITTER
+							? grupper?.favoritter?.length
+							: grupper?.antallElementer,
 				}}
 				items={visning === VisningType.FAVORITTER ? grupper?.favoritter : grupper?.contents}
 				isFetching={loading}
