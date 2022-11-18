@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import no.nav.dolly.domain.jpa.Testident.Master;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
@@ -32,6 +33,8 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Table(name = "BESTILLING_PROGRESS")
 @Builder
 public class BestillingProgress implements Serializable {
+
+    private static final int MAX_DOKARKIV_STATUS_LENGTH = 2000;
 
     @Id
     @GeneratedValue(generator = "bestillingProgressIdGenerator")
@@ -139,5 +142,9 @@ public class BestillingProgress implements Serializable {
     public boolean isIdentGyldig() {
 
         return isNotBlank(getIdent()) && getIdent().length() == 11;
+    }
+
+    public void setDokarkivStatus(String dokarkivStatus) {
+        this.dokarkivStatus = StringUtils.left(dokarkivStatus, MAX_DOKARKIV_STATUS_LENGTH);
     }
 }
