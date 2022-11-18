@@ -79,7 +79,7 @@ public class BankkontoGenerator {
                 kontonummerLengde = kontoregisterLandkode.getIbanLengde() - IBAN_COUNTRY_LENGTH;
             }
         } catch (Exception e) {
-            log.warn("bruker ukjent 'landkode' {} for generere kontonummer", landkode);
+            log.warn("bruker ukjent 'landkode' {} for å generere kontonummer", landkode);
         }
 
         var kontonummer = random.ints(kontonummerLengde, 0, 10)
