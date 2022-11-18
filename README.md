@@ -93,4 +93,4 @@ Deretter kan itegrasjonstester kjøres med kommandoen:
 ./gradlew iTest
 ```
 
-NB: Dette vil kun fungere hvis appen støtter itegrasjonstester. 
+NB: Dette vil kun fungere hvis appen støtter itegrasjonstester.
