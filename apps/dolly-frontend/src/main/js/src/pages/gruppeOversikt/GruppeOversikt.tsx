@@ -25,11 +25,18 @@ type GruppeOversiktProps = {
 enum VisningType {
 	MINE = 'mine',
 	ALLE = 'alle',
+	FAVORITTER = 'favoritter',
 }
 
 const StyledToggleItem = styled(ToggleGroup.Item)`
 	&& {
 		padding-right: 13px;
+	}
+`
+
+const StyledDiv = styled.div`
+	&& {
+		margin-bottom: 10px;
 	}
 `
 
@@ -63,26 +70,33 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 					</Hjelpetekst>
 				</div>
 			</div>
-			<div className="toolbar">
+			<div className="toolbar gruppe--full">
 				<NavButton variant="primary" onClick={visNyGruppe}>
 					Ny gruppe
 				</NavButton>
-				{!bankIdBruker && (
-					<div>
-						<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
-							<StyledToggleItem value="mine">
-								<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
-								Mine
-							</StyledToggleItem>
-							<StyledToggleItem value="alle">
-								<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
-								Alle
-							</StyledToggleItem>
-						</ToggleGroup>
-					</div>
-				)}
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
+			{!bankIdBruker && (
+				<StyledDiv className="gruppe--flex-column-center">
+					<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
+						<StyledToggleItem value={VisningType.MINE}>
+							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
+							Mine
+						</StyledToggleItem>
+						<StyledToggleItem value={VisningType.FAVORITTER}>
+							<Icon
+								size={16}
+								kind={visning === VisningType.FAVORITTER ? 'starLight' : 'starDark'}
+							/>
+							Favoritter
+						</StyledToggleItem>
+						<StyledToggleItem value={VisningType.ALLE}>
+							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
+							Alle
+						</StyledToggleItem>
+					</ToggleGroup>
+				</StyledDiv>
+			)}
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
@@ -92,7 +106,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 					antallPages: grupper?.antallPages,
 					antallElementer: grupper?.antallElementer,
 				}}
-				items={grupper?.contents}
+				items={visning === VisningType.FAVORITTER ? grupper?.favoritter : grupper?.contents}
 				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}

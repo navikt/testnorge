@@ -7,8 +7,8 @@ import {
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
+	eksisterendeGruppeMock,
 	gjeldendeBrukerMock,
-	paginerteGrupperMock,
 	gjeldendeProfilMock,
 	instMock,
 	joarkDokumentMock,
@@ -18,13 +18,13 @@ import {
 	krrstubMock,
 	miljoeMock,
 	nyGruppeMock,
+	paginerteGrupperMock,
 	pensjonMock,
 	pensjonTpMock,
 	sigrunstubMock,
 	skjermingMock,
 	tpsMessagingMock,
 	udistubMock,
-	eksisterendeGruppeMock,
 } from './util/TestcafeMocks'
 import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from './util/TestcafePdlMocks'
 
@@ -156,6 +156,24 @@ test('Naviger til min side og test mal funksjonalitet', async (testController) =
 		.eql(
 			false,
 			'ErrorBoundary utløst, en komponent kaster Error under visning av bestillingsstatus'
+		)
+})
+
+test('Naviger til favoritter og alle grupper tab', async (testController) => {
+	await testController
+		.click(ReactSelector('ToggleGroupItem').withText('Favoritter'))
+		.expect(ReactSelector('AppError').exists)
+		.eql(
+			false,
+			'ErrorBoundary utløst, en komponent kaster Error under visning av favoritter gruppetoggle'
+		)
+
+	await testController
+		.click(ReactSelector('ToggleGroupItem').withText('Alle'))
+		.expect(ReactSelector('AppError').exists)
+		.eql(
+			false,
+			'ErrorBoundary utløst, en komponent kaster Error under visning av favoritter gruppetoggle'
 		)
 })
 

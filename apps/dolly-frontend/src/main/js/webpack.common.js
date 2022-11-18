@@ -75,7 +75,6 @@ module.exports = {
 			{
 				// images
 				test: /\.(ico|jpe?g|png|svg|gif|woff|woff2|eot|otf|ttf)$/,
-				exclude: /node_modules/,
 				type: 'asset/inline',
 			},
 			{
