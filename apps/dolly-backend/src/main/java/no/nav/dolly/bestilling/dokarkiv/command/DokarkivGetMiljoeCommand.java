@@ -38,7 +38,7 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(String[].class)
-                .map(list -> Arrays.asList(list))
+                .map(Arrays::asList)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

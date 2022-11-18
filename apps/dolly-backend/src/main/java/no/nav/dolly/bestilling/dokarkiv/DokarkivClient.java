@@ -78,7 +78,7 @@ public class DokarkivClient implements ClientRegister {
 
             bestilling.getEnvironments().stream()
                     .filter(StringUtils::isNotBlank)
-                    .filter(miljo -> dokarkivMiljoer.contains(miljo))
+                    .filter(dokarkivMiljoer::contains)
                     .forEach(environment -> {
 
                         if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
