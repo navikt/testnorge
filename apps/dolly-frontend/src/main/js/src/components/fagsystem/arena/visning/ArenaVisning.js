@@ -130,12 +130,14 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 		}
 		return vData
 	})
+
+	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 			<MiljoTabs
 				bestilteMiljoer={bestilteMiljoer}
-				forsteMiljo={bestilteMiljoer?.[0] ? bestilteMiljoer[0] : SYNT_MILJOE}
+				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 				data={visningData}
 			>
 				<Visning />
