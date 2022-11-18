@@ -38,8 +38,8 @@ public class AaaregUtility {
                         .filter(arbeidsforhold -> isFalse(arbeidsforhold.getIsOppdatering()) ||
                                 isTrue(arbeidsforhold.getIsOppdatering()) &&
                                         response.getEksisterendeArbeidsforhold().stream()
-                                                .anyMatch(response1 ->
-                                                        !isEqualArbeidsforhold(response1, arbeidsforhold)))
+                                                .noneMatch(response1 ->
+                                                        isEqualArbeidsforhold(response1, arbeidsforhold)))
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
                         .filter(arbeidsforhold -> isTrue(arbeidsforhold.getIsOppdatering()) &&
