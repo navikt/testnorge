@@ -6,7 +6,6 @@ import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
@@ -31,7 +30,9 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.service.excel.ExcelUtil.*;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_COL_WIDTHS;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_FANE;
+import static no.nav.dolly.service.excel.ExcelUtil.BANKKONTO_HEADER;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -196,7 +197,7 @@ public class BankkontoExcelService {
 
     private Mono<List<Object[]>> kontoregisterBankkonto(List<String> identer) {
         return Flux.range(0, identer.size())
-                .flatMap(index -> kontoregisterConsumer.sendHentKontoRequest(identer.get(index)))
+                .flatMap(index -> kontoregisterConsumer.getKontonummer(identer.get(index)))
                 .filter(konto -> konto != null && konto.getAktivKonto() != null)
                 .map(konto -> unpackBankkonto(konto.getAktivKonto()))
                 .collectList();
