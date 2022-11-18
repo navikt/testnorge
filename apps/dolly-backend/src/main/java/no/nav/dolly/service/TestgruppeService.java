@@ -169,7 +169,7 @@ public class TestgruppeService {
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
                 .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
-                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : Collections.emptySet())
+                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : Collections.emptyList())
                 .build();
     }
 
