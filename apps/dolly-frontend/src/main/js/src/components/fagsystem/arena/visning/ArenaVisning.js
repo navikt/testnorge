@@ -124,6 +124,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 		.map((best) => best.miljo)
 
 	const miljoerMedData = data?.arbeidsokerList?.map((arb) => arb.miljoe)
+	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 	visningData = visningData.map((vData) => {
 		if (!miljoerMedData?.includes(vData.miljo)) {
 			vData.data = []
@@ -137,6 +138,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 			<MiljoTabs
 				bestilteMiljoer={bestilteMiljoer}
+				errorMiljoer={errorMiljoer}
 				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 				data={visningData}
 			>
