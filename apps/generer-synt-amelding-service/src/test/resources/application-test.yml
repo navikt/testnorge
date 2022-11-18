@@ -11,7 +11,10 @@ spring:
 
 consumers:
   synt-amelding:
-    url: dummy
+    url: http://localhost:${wiremock.server.port:0}/synt
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-amelding
+
+
+AAD_ISSUER_URI: http://localhost:${wiremock.server.port:0}/token
