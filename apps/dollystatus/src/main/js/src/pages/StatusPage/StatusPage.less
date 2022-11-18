@@ -4,6 +4,10 @@
   width: 100%;
 }
 
+.navds-accordion__header {
+  padding: 0;
+}
+
 .consumers-container {
   display: flex;
   flex-wrap: wrap;
@@ -11,8 +15,9 @@
 }
 .consumer-status {
   border: 1px solid grey;
-  width: 500px;
-  padding: 2em;
+  width: min(30vw, 500px);
+  min-width: 250px;
+  padding: 1em;
   background-color: #fefefe;
   margin-top: 1em;
   margin-left: 0.5em;
@@ -20,7 +25,7 @@
   .consumer-name {
     display: flex;
     align-items: center;
-
+    font-size: clamp(10px, 2vw, 20px);
     h2 {
       flex-grow: 2;
     }
