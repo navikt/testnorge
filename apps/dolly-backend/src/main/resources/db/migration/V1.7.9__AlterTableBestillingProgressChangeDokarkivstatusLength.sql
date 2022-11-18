@@ -3,4 +3,4 @@
 ------------------------------
 
 alter table bestilling_progress
-    ALTER COLUMN dokarkiv_status TYPE varchar(4000);
+    ALTER COLUMN dokarkiv_status TYPE varchar(2000);
