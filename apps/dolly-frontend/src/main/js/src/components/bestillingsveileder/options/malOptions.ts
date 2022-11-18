@@ -1,6 +1,6 @@
 import { initialValues } from './utils'
 import _ from 'lodash'
-import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
+import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,
 	KontaktadresseData,

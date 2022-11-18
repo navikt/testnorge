@@ -16,7 +16,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
 @Slf4j
-public class SendSlettKontoregisterCommand implements Callable<Flux<String>> {
+public class KontoregisterDeleteCommand implements Callable<Flux<Void>> {
+
     private static final String KONTOREGISTER_API_URL = "/api/system/v1/slett-konto";
 
     private final WebClient webClient;
@@ -24,7 +25,7 @@ public class SendSlettKontoregisterCommand implements Callable<Flux<String>> {
     private final String token;
 
     @Override
-    public Flux<String> call() {
+    public Flux<Void> call() {
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(KONTOREGISTER_API_URL)
@@ -33,7 +34,7 @@ public class SendSlettKontoregisterCommand implements Callable<Flux<String>> {
                 .header(AUTHORIZATION, "Bearer " + token)
                 .bodyValue(new SlettKontoRequestDTO(ident, "Dolly"))
                 .retrieve()
-                .bodyToFlux(String.class)
+                .bodyToFlux(Void.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

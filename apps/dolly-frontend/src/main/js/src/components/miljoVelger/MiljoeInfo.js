@@ -1,14 +1,21 @@
 import React from 'react'
 import _get from 'lodash/get'
-import { InstApi } from '~/service/Api'
-import TilgjengeligeMiljoer from './TilgjengeligeMiljoer'
 import { Alert } from '@navikt/ds-react'
-import { useArenaEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import {
+	useArenaEnvironments,
+	usePensjonEnvironments,
+	useInstEnvironments,
+} from '~/utils/hooks/useEnvironments'
 import Formatters from '~/utils/DataFormatter'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
-	const { arenaEnvironments, loading: loadingArena } = useArenaEnvironments()
-	const { pensjonEnvironments, loading: loadingPensjon } = usePensjonEnvironments()
+	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
+	const {
+		pensjonEnvironments,
+		loading: loadingPensjon,
+		error: errorPensjon,
+	} = usePensjonEnvironments()
+	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding } = bestillingsdata
 	if (
 		!instdata &&
@@ -20,8 +27,19 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		!_get(pdldata, 'falskIdentitet') &&
 		!_get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
 		!_get(pdldata, 'kontaktinformasjonForDoedsbo')
-	)
+	) {
 		return null
+	}
+
+	const getMiljoer = (environments, loading, error) => {
+		if (loading) {
+			return 'Laster tilgjengelige miljøer..'
+		} else if (error && (!environments || environments.length === 0)) {
+			return 'Noe gikk galt i henting av miljøer'
+		} else {
+			return Formatters.arrayToString(filterMiljoe(dollyEnvironments, environments))
+		}
+	}
 
 	return (
 		<Alert variant={'info'}>
@@ -31,10 +49,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				{instdata && (
 					<li>
 						Institusjonsopphold:&nbsp;
-						<TilgjengeligeMiljoer
-							endepunkt={InstApi.getTilgjengeligeMiljoer}
-							dollyEnvironments={dollyEnvironments}
-						/>
+						<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
 					</li>
 				)}
 
@@ -50,11 +65,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 				{arenaforvalter && (
 					<li>
 						Arena:&nbsp;
-						<span>
-							{loadingArena
-								? 'Laster tilgjengelige miljøer..'
-								: Formatters.arrayToString(arenaEnvironments)}
-						</span>
+						<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
 					</li>
 				)}
 
@@ -64,11 +75,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
 						{pensjonforvalter?.tp && 'TP'}
 						):&nbsp;
-						<span>
-							{loadingPensjon
-								? 'Laster tilgjengelige miljøer..'
-								: Formatters.arrayToString(pensjonEnvironments)}
-						</span>
+						<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 					</li>
 				)}
 
@@ -76,4 +83,21 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 			</ul>
 		</Alert>
 	)
+}
+
+export const filterMiljoe = (dollyMiljoe, utvalgteMiljoer) => {
+	if (!utvalgteMiljoer) return []
+	const dollyMiljoeArray = flatDollyMiljoe(dollyMiljoe)
+
+	//Filtrerer bort de miljøene som er tilgjengelige for fagsystemene eller en mal,
+	//men ikke Dolly per dags dato
+	return utvalgteMiljoer.filter((miljoe) => dollyMiljoeArray.includes(miljoe))
+}
+
+const flatDollyMiljoe = (dollymiljoe) => {
+	const miljoeArray = []
+	Object.values(dollymiljoe).forEach((miljoeKat) =>
+		miljoeKat.forEach((miljoe) => miljoeArray.push(miljoe.id))
+	)
+	return miljoeArray
 }
