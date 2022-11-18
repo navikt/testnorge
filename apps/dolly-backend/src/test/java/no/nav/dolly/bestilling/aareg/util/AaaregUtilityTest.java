@@ -43,13 +43,13 @@ class AaaregUtilityTest {
                                               int antallEksisterende, int antallNye) {
 
         var arbeidsforhold = getArbeidsforhold(reqArbForholdId, isOppdatering);
-        var response = ArbeidsforholdRespons.builder()
+        var respons = ArbeidsforholdRespons.builder()
                 .eksisterendeArbeidsforhold(List.of(getArbeidsforhold(respArbForholdId, null)))
                 .build();
 
-        var ekistens = AaaregUtility.doEksistenssjekk(response, List.of(arbeidsforhold));
+        var eksistens = AaaregUtility.doEksistenssjekk(respons, List.of(arbeidsforhold));
 
-        assertThat(ekistens.getEksisterendeArbeidsforhold(), hasSize(antallEksisterende));
-        assertThat(ekistens.getNyeArbeidsforhold(), hasSize(antallNye));
+        assertThat(eksistens.getEksisterendeArbeidsforhold(), hasSize(antallEksisterende));
+        assertThat(eksistens.getNyeArbeidsforhold(), hasSize(antallNye));
     }
 }
