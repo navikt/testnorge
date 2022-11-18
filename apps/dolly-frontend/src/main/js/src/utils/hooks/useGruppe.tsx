@@ -1,10 +1,12 @@
 import useSWR from 'swr'
 import { fetcher } from '~/api'
 
-const getGruppeUrl = (pageNo, pageSize, brukerId) =>
+const getGrupperUrl = (pageNo, pageSize, brukerId) =>
 	`/dolly-backend/api/v1/gruppe?pageNo=${pageNo}&pageSize=${pageSize}${
 		brukerId ? '&brukerId=' + brukerId : ''
 	}`
+const getEgneGrupperUrl = (brukerId) => `/dolly-backend/api/v1/gruppe?brukerId=${brukerId}`
+
 const getPaginertGruppeUrl = (
 	gruppeId: string,
 	pageNo: number,
@@ -74,11 +76,22 @@ export const useGruppeById = (
 		error: error,
 	}
 }
+
 export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
 	const { data, error } = useSWR<PaginertGruppe, Error>(
-		getGruppeUrl(pageNo, pageSize, brukerId),
+		getGrupperUrl(pageNo, pageSize, brukerId),
 		fetcher
 	)
+
+	return {
+		grupper: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useEgneGrupper = (brukerId: string) => {
+	const { data, error } = useSWR<PaginertGruppe, Error>(getEgneGrupperUrl(brukerId), fetcher)
 
 	return {
 		grupper: data,

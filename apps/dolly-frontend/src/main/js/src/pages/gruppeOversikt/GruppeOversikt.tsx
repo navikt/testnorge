@@ -34,6 +34,12 @@ const StyledToggleItem = styled(ToggleGroup.Item)`
 	}
 `
 
+const StyledNavButton = styled(NavButton)`
+	&& {
+		min-width: 200px;
+	}
+`
+
 const StyledDiv = styled.div`
 	&& {
 		margin-bottom: 10px;
@@ -71,9 +77,9 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				</div>
 			</div>
 			<div className="toolbar gruppe--full">
-				<NavButton variant="primary" onClick={visNyGruppe}>
+				<StyledNavButton variant="primary" onClick={visNyGruppe}>
 					Ny gruppe
-				</NavButton>
+				</StyledNavButton>
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
 			{!bankIdBruker && (

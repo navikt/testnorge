@@ -2,8 +2,7 @@ import React from 'react'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Loading from '~/components/ui/loading/Loading'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { Gruppe, useGrupper } from '~/utils/hooks/useGruppe'
-import { useSelector } from 'react-redux'
+import { Gruppe, useEgneGrupper } from '~/utils/hooks/useGruppe'
 
 interface EksisterendeGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -17,11 +16,10 @@ type Options = {
 }
 
 export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: EksisterendeGruppe) => {
-	const { sidetall, sideStoerrelse } = useSelector((state: any) => state.finnPerson)
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
-	const { grupper, loading } = useGrupper(sidetall, sideStoerrelse, brukerId)
+	const { grupper, loading } = useEgneGrupper(brukerId)
 
 	const filteredGruppeliste = grupper?.contents?.filter((gruppe) => gruppe.id !== fraGruppe)
 
