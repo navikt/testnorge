@@ -4,7 +4,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator;
-import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
+import no.nav.dolly.bestilling.kontoregisterservice.util.KontoregisterLandkode;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
