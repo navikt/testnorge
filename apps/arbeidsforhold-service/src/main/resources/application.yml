@@ -17,11 +17,11 @@ spring:
           accepted-audience: dev-gcp:dolly:testnav-arbeidsforhold-service
 
 
-consumers.testnav-aareg-proxy:
-  url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
+consumers.testnav-aaregister-proxy:
+  url: https://testnav-aaregister-proxy.dev-fss-pub.nais.io
   cluster: dev-fss
   namespace: dolly
-  name: testnav-aareg-proxy
+  name: testnav-aaregister-proxy
 
 management:
   endpoints:

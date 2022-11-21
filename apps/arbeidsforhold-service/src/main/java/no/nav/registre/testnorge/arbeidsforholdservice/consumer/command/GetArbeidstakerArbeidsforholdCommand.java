@@ -25,9 +25,8 @@ import static java.lang.String.format;
 @Slf4j
 @RequiredArgsConstructor
 public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<ArbeidsforholdDTO>> {
+
     private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String HEADER_NAV_CONSUMER_ID = "Nav-Consumer-Id";
-    private static final String HEADER_NAV_CALL_ID = "Nav-Call-Id";
     private static final String CONSUMER = "Dolly";
     private final WebClient webClient;
     private final String miljo;
@@ -45,7 +44,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
             var arbeidsforhold = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/{miljo}/v1/arbeidstaker/arbeidsforhold")
+                            .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                             .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
                             .build(miljo))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
