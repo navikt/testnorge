@@ -2,8 +2,7 @@ import React from 'react'
 import { DollySelect } from '~/components/ui/form/inputs/select/Select'
 import Loading from '~/components/ui/loading/Loading'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { Gruppe, useGrupper } from '~/utils/hooks/useGruppe'
-import _orderBy from 'lodash/orderBy'
+import { Gruppe, useEgneGrupper } from '~/utils/hooks/useGruppe'
 
 interface EksisterendeGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -20,10 +19,9 @@ export default ({ setValgtGruppe, valgtGruppe, fraGruppe = null }: EksisterendeG
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
-	const { grupperById, loading } = useGrupper(brukerId)
+	const { grupper, loading } = useEgneGrupper(brukerId)
 
-	const sortedGruppeliste = grupperById && _orderBy(Object.values(grupperById), ['id'], ['desc'])
-	const filteredGruppeliste = sortedGruppeliste?.filter((gruppe) => gruppe.id !== fraGruppe)
+	const filteredGruppeliste = grupper?.contents?.filter((gruppe) => gruppe.id !== fraGruppe)
 
 	const gruppeOptions = filteredGruppeliste?.map((gruppe: Gruppe) => {
 		return {

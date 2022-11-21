@@ -4,13 +4,14 @@ import { ClientFunction, RequestMock } from 'testcafe'
 import { ReactSelector, waitForReact } from 'testcafe-react-selectors'
 import { clickAllSiblings } from './util/TestcafeUtils'
 import {
+	eksisterendeGruppeMock,
 	gjeldendeBrukerMock,
-	gjeldendeGruppeMock,
 	gjeldendeProfilMock,
 	kodeverkMock,
 	malerMock,
 	miljoeMock,
 	nyGruppeMock,
+	paginerteGrupperMock,
 	varslingerRequestMock,
 	varslingerVelkommenResponseMock,
 } from './util/TestcafeMocks'
@@ -21,7 +22,7 @@ const azureAuth = new RegExp(/\/oauth2\/authorization\/aad/)
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/testnorge-profil-api\/api\/v1\/profil$/)
-const hentGrupper = new RegExp(/gruppe\?brukerId/)
+const hentGrupper = new RegExp(/dolly-backend\/api\/v1\/gruppe\?pageNo/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const spesifikkGruppe = new RegExp(/\/gruppe$/)
 const tags = new RegExp(/\/tags$/)
@@ -37,9 +38,9 @@ const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
 	.respond(miljoeMock, 200)
 	.onRequestTo(hentGrupper)
-	.respond([gjeldendeGruppeMock], 200)
+	.respond(paginerteGrupperMock, 200)
 	.onRequestTo(hentGruppe)
-	.respond(gjeldendeGruppeMock, 200)
+	.respond(eksisterendeGruppeMock, 200)
 	.onRequestTo(spesifikkGruppe)
 	.respond(nyGruppeMock, 201)
 	.onRequestTo(varslinger)

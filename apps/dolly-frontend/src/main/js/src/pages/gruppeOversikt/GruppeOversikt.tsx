@@ -25,11 +25,24 @@ type GruppeOversiktProps = {
 export enum VisningType {
 	MINE = 'mine',
 	ALLE = 'alle',
+	FAVORITTER = 'favoritter',
 }
 
 const StyledToggleItem = styled(ToggleGroup.Item)`
 	&& {
 		padding-right: 13px;
+	}
+`
+
+const StyledNavButton = styled(NavButton)`
+	&& {
+		min-width: 200px;
+	}
+`
+
+const StyledDiv = styled.div`
+	&& {
+		margin-bottom: 10px;
 	}
 `
 
@@ -39,7 +52,11 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	} = useCurrentBruker()
 	const [visning, setVisning] = useState(VisningType.MINE)
 	const [visNyGruppeState, visNyGruppe, skjulNyGruppe] = useBoolean(false)
-	const { grupper, loading } = useGrupper(visning === VisningType.MINE ? brukerId : null)
+	const { grupper, loading } = useGrupper(
+		sidetall,
+		sideStoerrelse,
+		visning === VisningType.ALLE ? null : brukerId
+	)
 	const dispatch = useDispatch()
 
 	const byttVisning = (value: VisningType) => {
@@ -59,32 +76,49 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 					</Hjelpetekst>
 				</div>
 			</div>
-			<div className="toolbar">
-				<NavButton variant="primary" onClick={visNyGruppe}>
+			<div className="toolbar gruppe--full">
+				<StyledNavButton variant="primary" onClick={visNyGruppe}>
 					Ny gruppe
-				</NavButton>
-				{!bankIdBruker && (
-					<div>
-						<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
-							<StyledToggleItem value="mine">
-								<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
-								Mine
-							</StyledToggleItem>
-							<StyledToggleItem value="alle">
-								<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
-								Alle
-							</StyledToggleItem>
-						</ToggleGroup>
-					</div>
-				)}
+				</StyledNavButton>
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
+			{!bankIdBruker && (
+				<StyledDiv className="gruppe--flex-column-center">
+					<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
+						<StyledToggleItem value={VisningType.MINE}>
+							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
+							Mine
+						</StyledToggleItem>
+						<StyledToggleItem value={VisningType.FAVORITTER}>
+							<Icon
+								size={16}
+								kind={visning === VisningType.FAVORITTER ? 'starLight' : 'starDark'}
+							/>
+							Favoritter
+						</StyledToggleItem>
+						<StyledToggleItem value={VisningType.ALLE}>
+							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
+							Alle
+						</StyledToggleItem>
+					</ToggleGroup>
+				</StyledDiv>
+			)}
 
 			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
-				gruppeDetaljer={{ pageSize: sideStoerrelse }}
-				items={grupper}
+				gruppeDetaljer={{
+					pageSize: sideStoerrelse,
+					antallPages:
+						visning === VisningType.FAVORITTER
+							? grupper?.favoritter?.length / sideStoerrelse
+							: grupper?.antallPages,
+					antallElementer:
+						visning === VisningType.FAVORITTER
+							? grupper?.favoritter?.length
+							: grupper?.antallElementer,
+				}}
+				items={visning === VisningType.FAVORITTER ? grupper?.favoritter : grupper?.contents}
 				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}

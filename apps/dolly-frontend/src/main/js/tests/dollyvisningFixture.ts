@@ -7,8 +7,8 @@ import {
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
+	eksisterendeGruppeMock,
 	gjeldendeBrukerMock,
-	gjeldendeGruppeMock,
 	gjeldendeProfilMock,
 	instMock,
 	joarkDokumentMock,
@@ -18,6 +18,7 @@ import {
 	krrstubMock,
 	miljoeMock,
 	nyGruppeMock,
+	paginerteGrupperMock,
 	pensjonMock,
 	pensjonTpMock,
 	sigrunstubMock,
@@ -31,7 +32,7 @@ const miljoer = new RegExp(/\/miljoer/)
 const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/testnorge-profil-api\/api\/v1\/profil$/)
-const hentGrupper = new RegExp(/gruppe\?brukerId/)
+const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
 const pdlPersonBolk = new RegExp(/\/api\/v1\/pdlperson\/identer/)
@@ -66,9 +67,9 @@ const cookieMock = RequestMock()
 	.onRequestTo(miljoer)
 	.respond(miljoeMock, 200)
 	.onRequestTo(hentGrupper)
-	.respond([gjeldendeGruppeMock], 200)
+	.respond(paginerteGrupperMock, 200)
 	.onRequestTo(hentGruppe)
-	.respond(gjeldendeGruppeMock, 200)
+	.respond(eksisterendeGruppeMock, 200)
 	.onRequestTo(hentGruppeBestilling)
 	.respond(backendBestillingerMock, 200)
 	.onRequestTo(spesifikkGruppe)
@@ -155,6 +156,24 @@ test('Naviger til min side og test mal funksjonalitet', async (testController) =
 		.eql(
 			false,
 			'ErrorBoundary utløst, en komponent kaster Error under visning av bestillingsstatus'
+		)
+})
+
+test('Naviger til favoritter og alle grupper tab', async (testController) => {
+	await testController
+		.click(ReactSelector('ToggleGroupItem').withText('Favoritter'))
+		.expect(ReactSelector('AppError').exists)
+		.eql(
+			false,
+			'ErrorBoundary utløst, en komponent kaster Error under visning av favoritter gruppetoggle'
+		)
+
+	await testController
+		.click(ReactSelector('ToggleGroupItem').withText('Alle'))
+		.expect(ReactSelector('AppError').exists)
+		.eql(
+			false,
+			'ErrorBoundary utløst, en komponent kaster Error under visning av favoritter gruppetoggle'
 		)
 })
 
