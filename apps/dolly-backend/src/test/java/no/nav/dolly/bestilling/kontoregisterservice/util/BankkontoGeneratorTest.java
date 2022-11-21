@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.kontoregisterservice.util;
 
-import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
