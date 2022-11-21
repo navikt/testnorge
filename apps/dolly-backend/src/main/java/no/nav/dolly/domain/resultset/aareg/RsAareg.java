@@ -46,6 +46,9 @@ public class RsAareg {
     @Schema(description = "Angir periode oppdateringen gjelder fra")
     private YearMonth navArbeidsforholdPeriode;
 
+    @Schema(description = "Angir om posten er oppdatering")
+    private Boolean isOppdatering;
+
     private List<RsAmeldingRequest> amelding;
 
     public List<RsAntallTimerIPerioden> getAntallTimerForTimeloennet() {

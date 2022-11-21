@@ -17,14 +17,12 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.EnvironmentsCrossConnect;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -99,14 +97,13 @@ public class AaregClient implements ClientRegister {
         context.setProperty(IDENT, dollyPerson.getHovedperson());
         var arbeidsforholdRequest = mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context);
 
-        return StringUtils.join(
-                aaregConsumer.getAccessToken()
+        return aaregConsumer.getAccessToken()
                         .flatMapMany(token -> Flux.fromIterable(miljoer)
                                 .parallel()
                                 .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), miljoe, token)
                                         .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token))))
-                        .collectList()
-                        .block(), ",");
+                .collect(Collectors.joining(","))
+                .block();
     }
 
     private Flux<String> doInsertOrUpdate(ArbeidsforholdRespons response, List<Arbeidsforhold> request,
