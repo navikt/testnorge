@@ -12,7 +12,7 @@ type PdlDataVisningProps = {
 	ident: Ident
 }
 
-export const ApiFeilmelding = (feil: any) => {
+export const ApiFeilmelding = ({ feil }) => {
 	return (
 		<div className="flexbox--align-center">
 			<Icon size={20} kind="report-problem-circle" />
@@ -70,9 +70,9 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 				})
 		}
 		if (!pdlMiljoe && pdlError) {
-			return ApiFeilmelding(pdlError)
+			return <ApiFeilmelding feil={pdlError} />
 		} else if (pdlMiljoe && pdlErrorQ1) {
-			return ApiFeilmelding(pdlErrorQ1)
+			return <ApiFeilmelding feil={pdlErrorQ1} />
 		}
 		return (
 			<PdlVisning

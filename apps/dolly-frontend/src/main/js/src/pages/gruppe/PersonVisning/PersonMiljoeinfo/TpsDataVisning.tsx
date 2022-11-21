@@ -32,7 +32,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 			const feilmelding = miljoeData.utfyllendeMelding
 				? miljoeData.utfyllendeMelding
 				: 'Ukjent feil'
-			return ApiFeilmelding('Feil ved henting fra TPS: ' + feilmelding)
+			return <ApiFeilmelding feil={'Feil ved henting fra TPS: ' + feilmelding} />
 		} else {
 			return (
 				<div className="boks">
