@@ -21,6 +21,17 @@ export default function Liste({
 	const navigate = useNavigate()
 	if (isFetching) return <Loading label="Laster grupper" panel />
 
+	const getEmptyStartText = (visningType) => {
+		switch (visningType) {
+			case VisningType.ALLE:
+				return 'Fant ingen grupper.'
+			case VisningType.FAVORITTER:
+				return 'Fant ingen favoritter.'
+			default:
+				return 'Du har for øyeblikket ingen grupper på denne brukerkontoen.'
+		}
+	}
+
 	if (!items || !items.length) {
 		return (
 			<ContentContainer>
@@ -28,12 +39,10 @@ export default function Liste({
 					<p>Søket gav ingen resultater.</p>
 				) : (
 					<>
-						<p>
-							{visningType === VisningType.ALLE
-								? 'Fant ingen grupper.'
-								: 'Du har for øyeblikket ingen grupper på denne brukerkontoen.'}
-						</p>
-						<p>For å opprette en ny gruppe, trykk på "Ny gruppe"-knappen over.</p>
+						<p>{getEmptyStartText(visningType)}</p>
+						{visningType !== VisningType.FAVORITTER && (
+							<p>For å opprette en ny gruppe, trykk på "Ny gruppe"-knappen over.</p>
+						)}
 					</>
 				)}
 			</ContentContainer>
