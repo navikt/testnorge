@@ -1,11 +1,53 @@
 @import '@navikt/ds-css';
+@import (reference) '~lessVars';
+
+@media (max-width: 600px) {
+
+  .consumer-service {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 1100px) {
+  .consumer-OK {
+    color: @color-success;
+  }
+  .consumer-Warn {
+    color: @color-warning;
+  }
+  .consumer-Feil {
+    color: @color-error;
+  }
+
+  .consumer-name {
+    svg {
+      display: none ;
+    }
+  }
+
+  .navds-accordion__content {
+    padding: 0;
+  }
+  .navds-accordion__header {
+    padding: 0;
+  }
+}
+
+@media (min-width: 1100px) {
+  .consumer-OK {
+    color: inherit;
+  }
+  .consumer-Warn {
+    color: inherit;
+  }
+  .consumer-Feil {
+    color: inherit;
+  }
+
+}
 
 .navds-accordion__header-content {
   width: 100%;
-}
-
-.navds-accordion__header {
-  padding: 0;
 }
 
 .consumers-container {
@@ -15,17 +57,22 @@
 }
 .consumer-status {
   border: 1px solid grey;
-  width: min(30vw, 500px);
-  min-width: 250px;
-  padding: 1em;
+  width: min(20vw, 500px);
+  min-width: 220px;
+  padding: 1.2vw;
   background-color: #fefefe;
-  margin-top: 1em;
+  margin-top: 1.2vw;
   margin-left: 0.5em;
+
+  .consumer-status-icon {
+    display: flex;
+    align-items: center;
+  }
 
   .consumer-name {
     display: flex;
     align-items: center;
-    font-size: clamp(10px, 2vw, 20px);
+    font-size: clamp(12px, 1.5vw, 18px);
     h2 {
       flex-grow: 2;
     }
@@ -47,15 +94,12 @@
 
       h5 {
         margin-right: 1em;
+        font-size: clamp(12px, 1.5vw, 16px);
       }
 
       span {
         font-size: small;
       }
     }
-  }
-
-  .consumer-service h5 {
-
   }
 }
