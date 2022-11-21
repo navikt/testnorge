@@ -18,6 +18,11 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 consumers:
   testnav-inst-proxy:
     url: https://testnav-inst-proxy.dev-fss-pub.nais.io
@@ -31,7 +36,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true

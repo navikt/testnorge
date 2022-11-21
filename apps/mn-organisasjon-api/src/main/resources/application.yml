@@ -19,6 +19,11 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-fss:dolly:mn-organisasjon-api
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 consumers:
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
@@ -33,7 +38,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true

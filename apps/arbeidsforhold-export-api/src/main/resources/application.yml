@@ -23,13 +23,19 @@ spring:
     name: testnorge-arbeidsforhold-export-api
     description: Api for å eksportere arbeidsforhold.
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 management:
   endpoints:
     enabled-by-default: true
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
