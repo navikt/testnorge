@@ -12,6 +12,19 @@ type PdlDataVisningProps = {
 	ident: Ident
 }
 
+export const ApiFeilmelding = (feil: any) => {
+	return (
+		<div className="flexbox--align-center">
+			<Icon size={20} kind="report-problem-circle" />
+			<div>
+				<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
+					{feil}
+				</pre>
+			</div>
+		</div>
+	)
+}
+
 export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlDataQ1, setPdlDataQ1] = useState(null)
@@ -34,19 +47,6 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 		} else {
 			setPdlLoading(false)
 		}
-	}
-
-	const ApiFeilmelding = (feil: any) => {
-		return (
-			<div className="flexbox--align-center">
-				<Icon size={20} kind="report-problem-circle" />
-				<div>
-					<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
-						{feil}
-					</pre>
-				</div>
-			</div>
-		)
 	}
 
 	const getPersonInfo = (pdlMiljoe = null as string) => {

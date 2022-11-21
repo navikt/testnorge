@@ -5,6 +5,7 @@ import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'
 import { TpsfVisning } from '~/components/fagsystem'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
+import { ApiFeilmelding } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 
 type TpsData = {
 	data: Array<Data>
@@ -26,12 +27,19 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 		return 0
 	})
 
-	const getPersonInfo = (person: object) => {
-		return (
-			<div className="boks">
-				<TpsfVisning data={person} />
-			</div>
-		)
+	const getPersonInfo = (miljoeData: any) => {
+		if (miljoeData?.status === 'FEIL') {
+			const feilmelding = miljoeData.utfyllendeMelding
+				? miljoeData.utfyllendeMelding
+				: 'Ukjent feil'
+			return ApiFeilmelding('Feil ved henting fra TPS: ' + feilmelding)
+		} else {
+			return (
+				<div className="boks">
+					<TpsfVisning data={miljoeData.person} />
+				</div>
+			)
+		}
 	}
 
 	return (
@@ -39,7 +47,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 			{data.map((miljoe, idx) => {
 				return (
 					<DollyTooltip
-						overlay={getPersonInfo(miljoe.person)}
+						overlay={getPersonInfo(miljoe)}
 						align={{
 							offset: ['0', '-10'],
 						}}
