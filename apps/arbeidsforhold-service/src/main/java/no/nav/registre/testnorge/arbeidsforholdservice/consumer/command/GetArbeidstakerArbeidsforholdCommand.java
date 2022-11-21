@@ -44,7 +44,7 @@ public class GetArbeidstakerArbeidsforholdCommand implements Callable<List<Arbei
             var arbeidsforhold = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/api/{miljo}/v1/arbeidstaker/arbeidsforhold")
+                            .path("/{miljoe}/api/v1/arbeidstaker/arbeidsforhold")
                             .queryParam("arbeidsforholdtype", "forenkletOppgjoersordning", "frilanserOppdragstakerHonorarPersonerMm", "maritimtArbeidsforhold", "ordinaertArbeidsforhold")
                             .build(miljo))
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
