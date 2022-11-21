@@ -22,7 +22,7 @@ type GruppeOversiktProps = {
 	searchActive: boolean
 }
 
-enum VisningType {
+export enum VisningType {
 	MINE = 'mine',
 	ALLE = 'alle',
 }
@@ -88,6 +88,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				isFetching={loading}
 				searchActive={searchActive}
 				visSide={sidetall}
+				visningType={visning}
 			/>
 		</div>
 	)
