@@ -8,10 +8,6 @@ spring:
       maximum-pool-size: 5
       minimum-idle: 1
 
-springdoc:
-  swagger-ui:
-    disable-swagger-default-url: true
-    url: /v3/api-docs
 
 #consumers:
 #  testnav-helsepersonell-service:

@@ -70,6 +70,13 @@ public class OpenApiConfig implements WebMvcConfigurer {
                 )
                 .components(
                         new Components()
+                                .addSecuritySchemes(userJwt,
+                                        new SecurityScheme()
+                                                .name(UserConstant.USER_HEADER_JWT)
+                                                .type(SecurityScheme.Type.APIKEY)
+                                                .in(SecurityScheme.In.HEADER)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT"))
                                 .addSecuritySchemes(bearerAuth,
                                         new SecurityScheme()
                                                 .description("Legg inn token kun, uten \"Bearer \"")
@@ -77,14 +84,6 @@ public class OpenApiConfig implements WebMvcConfigurer {
                                                 .type(SecurityScheme.Type.HTTP)
                                                 .scheme("bearer")
                                                 .bearerFormat("JWT"))
-                                .addSecuritySchemes(userJwt,
-                                        new SecurityScheme()
-                                                .name(UserConstant.USER_HEADER_JWT)
-                                                .type(SecurityScheme.Type.APIKEY)
-                                                .in(SecurityScheme.In.HEADER)
-                                                .scheme("bearer")
-                                                .bearerFormat("JWT")
-                                )
                 );
     }
 

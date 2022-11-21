@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.7"
-    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+    id "org.sonarqube" version "3.5.0.2730"
+    id 'org.springframework.boot' version "2.7.5"
+    id 'io.spring.dependency-management' version "1.1.0"
 }
 
 sonarqube {
@@ -19,12 +19,12 @@ sonarqube {
 
 bootJar {
     archiveFileName = "app.jar"
-    mainClassName = 'no.nav.dolly.DollyBackendApplicationStarter'
+    mainClass = 'no.nav.dolly.DollyBackendApplicationStarter'
 }
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
     }
 }
 
@@ -59,8 +59,8 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -78,16 +78,16 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.codehaus.jettison:jettison:1.4.1'
+    implementation 'org.codehaus.jettison:jettison:1.5.1'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
-    implementation 'org.apache.poi:poi:5.2.0'
-    implementation 'org.apache.poi:poi-ooxml:5.2.0'
+    implementation 'org.apache.poi:poi:5.2.2'
+    implementation 'org.apache.poi:poi-ooxml:5.2.2'
 
     testImplementation "org.springframework.boot:spring-boot-starter-test"
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'com.h2database:h2'
-    testImplementation 'org.bitbucket.b_c:jose4j:0.7.9'
+    testImplementation 'org.bitbucket.b_c:jose4j:0.9.1'
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
