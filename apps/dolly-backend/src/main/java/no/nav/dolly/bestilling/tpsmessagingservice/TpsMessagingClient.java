@@ -52,6 +52,11 @@ public class TpsMessagingClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final DollyPersonCache dollyPersonCache;
 
+    private static String getResultat(TpsMeldingResponseDTO respons) {
+
+        return "OK".equals(respons.getStatus()) ? "OK" : "FEIL= " + respons.getUtfyllendeMelding();
+    }
+
     private static String getStatus(String melding, List<TpsMeldingResponseDTO> statuser) {
 
         return !statuser.isEmpty() ?
@@ -60,7 +65,7 @@ public class TpsMessagingClient implements ClientRegister {
                         statuser.stream()
                                 .map(respons -> String.format("%s:%s",
                                         respons.getMiljoe(),
-                                        "OK".equals(respons.getStatus()) ? "OK" : "FEIL= " + respons.getUtfyllendeMelding()))
+                                        getResultat(respons)))
                                 .collect(Collectors.joining(","))) :
                 "";
     }
