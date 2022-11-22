@@ -42,12 +42,12 @@ export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = nu
 	)
 }
 
-export const multiFetcherDokarkiv = (miljoUrlListe, headers = null, path = null) => {
+export const multiFetcherDokarkiv = (miljoUrlListe) => {
 	return Promise.all(
 		miljoUrlListe?.map((obj) =>
 			obj.url
 				? fetcher(obj.url, { miljo: obj.miljo }).then((result) => {
-						return { miljo: obj.miljo, data: path ? result[path] : result }
+						return { miljo: obj.miljo, data: result }
 				  })
 				: { miljo: obj.miljo, data: null }
 		)
