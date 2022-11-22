@@ -72,10 +72,7 @@ export const Persondetaljer = ({
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
 				<SkjermingVisning data={skjerming} />
-				<TpsMPersonInfo
-					data={tpsMessaging.tpsMessagingData}
-					loading={tpsMessaging.tpsMessagingLoading}
-				/>
+				<TpsMPersonInfo data={tpsMessaging} />
 			</div>
 		)
 	}
