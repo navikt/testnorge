@@ -74,10 +74,11 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 		} else if (pdlMiljoe && pdlErrorQ1) {
 			return <ApiFeilmelding feil={pdlErrorQ1} />
 		}
+
 		return (
 			<PdlVisning
 				pdlData={pdlMiljoe ? pdlDataQ1 : pdlData}
-				loading={pdlMiljoe ? pdlLoadingQ1 : pdlLoading}
+				loading={{ pdl: pdlMiljoe ? pdlLoadingQ1 : pdlLoading }}
 				miljoeVisning
 			/>
 		)

@@ -14,7 +14,6 @@ import {
 	PensjonVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
-	TpsfVisning,
 	TpVisning,
 	UdiVisning,
 } from '~/components/fagsystem'
@@ -270,14 +269,15 @@ export const PersonVisning = ({
 				)}
 				{ident.master !== 'PDL' && (
 					<PdlfVisningConnector
-						data={data.pdlforvalter}
-						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
-						skjermingData={data.skjermingsregister}
-						loading={loading.pdlforvalter}
+						fagsystemData={data}
+						bestillingListe={bestillingListe}
+						loading={loading}
 						master={ident.master}
 					/>
 				)}
-				{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} />}
+				{ident.master === 'PDL' && (
+					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
+				)}
 				<AaregVisning
 					liste={arbeidsforhold}
 					loading={loadingAareg}

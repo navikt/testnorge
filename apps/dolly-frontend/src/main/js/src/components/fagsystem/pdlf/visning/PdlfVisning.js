@@ -32,31 +32,60 @@ import {
 	TpsfVergemaal,
 } from '~/components/fagsystem/tpsf/visning/partials'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
-import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
+import { TpsfVisning } from '~/components/fagsystem'
 
-export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersoner, master }) => {
-	if (loading) {
+export const getBankkontoData = (data) => {
+	if (data?.kontoregister?.aktivKonto) {
+		return getKontoregisterBankkonto(data.kontoregister.aktivKonto)
+	} else {
+		return {
+			bankkontonrUtland: data?.tpsMessaging?.bankkontonrUtland,
+			bankkontonrNorsk: data?.tpsMessaging?.bankkontonrNorsk,
+		}
+	}
+}
+
+const getKontoregisterBankkonto = (bankkontoData) => {
+	const resp = {
+		bankkontonrUtland: null,
+		bankkontonrNorsk: null,
+	}
+	if (bankkontoData.utenlandskKontoInfo) {
+		resp.bankkontonrUtland = {
+			kontonummer: bankkontoData.kontonummer,
+			swift: bankkontoData.utenlandskKontoInfo?.swiftBicKode,
+			landkode: bankkontoData.utenlandskKontoInfo?.bankLandkode,
+			banknavn: bankkontoData.utenlandskKontoInfo?.banknavn,
+			iban: bankkontoData.kontonummer,
+			valuta: bankkontoData.utenlandskKontoInfo?.valutakode,
+			bankAdresse1: bankkontoData.utenlandskKontoInfo?.bankadresse1,
+			bankAdresse2: bankkontoData.utenlandskKontoInfo?.bankadresse2,
+			bankAdresse3: bankkontoData.utenlandskKontoInfo?.bankadresse3,
+		}
+	} else {
+		resp.bankkontonrNorsk = {
+			kontonummer: bankkontoData?.kontonummer,
+		}
+	}
+	return resp
+}
+
+export const PdlfVisning = ({ fagsystemData, bestillingListe, loading, tmpPersoner, master }) => {
+	if (loading?.pdlforvalter) {
 		return <Loading label="Laster PDL-data" />
 	}
+	const data = fagsystemData?.pdlforvalter
+	const tpsfData = TpsfVisning.filterValues(fagsystemData?.tpsf, bestillingListe)
+
 	if (!data && !tpsfData) {
 		return null
 	}
-
 	const ident = data ? data.person?.ident : tpsfData?.ident
-	const tpsMessaging = TpsMessagingData(ident)
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+	const skjermingData = fagsystemData?.skjermingsregister
 
-	const getBankkontoData = () => {
-		return {
-			bankkontonrUtland: tpsMessaging?.tpsMessagingData?.bankkontonrUtland
-				? tpsMessaging?.tpsMessagingData?.bankkontonrUtland
-				: tpsfData?.bankkontonrUtland,
-			bankkontonrNorsk: tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
-				? tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
-				: tpsfData?.bankkontonrNorsk,
-		}
-	}
+	const bankkontoData = getBankkontoData(fagsystemData)
 
 	return (
 		<ErrorBoundary>
@@ -67,7 +96,8 @@ export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersone
 							data={data?.person}
 							tmpPersoner={tmpPersoner}
 							ident={ident}
-							tpsMessaging={tpsMessaging}
+							tpsMessaging={fagsystemData?.tpsMessaging}
+							tpsMessagingLoading={loading?.tpsMessaging}
 							skjermingData={skjermingData}
 						/>
 						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
@@ -90,7 +120,7 @@ export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersone
 					</>
 				) : (
 					<>
-						<TpsfPersoninfo data={tpsfData} />
+						<TpsfPersoninfo data={tpsfData} fagsystemData={fagsystemData} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
 						<TpsfNasjonalitet data={tpsfData} />
 						<Telefonnummer data={tpsfData?.telefonnumre} />
@@ -99,8 +129,8 @@ export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersone
 					</>
 				)}
 				<TpsMBankkonto
-					data={getBankkontoData()}
-					loading={tpsMessaging?.tpsMessagingLoading}
+					data={bankkontoData}
+					loading={loading?.tpsMessaging || loading?.kontoregister}
 					ident={ident}
 					extraButtons={true}
 				/>
