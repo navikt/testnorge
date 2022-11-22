@@ -274,13 +274,10 @@ export const PersonVisning = ({
 						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
 						skjermingData={data.skjermingsregister}
 						loading={loading.pdlforvalter}
-						environments={bestilling?.environments}
 						master={ident.master}
 					/>
 				)}
-				{ident.master === 'PDL' && (
-					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
-				)}
+				{ident.master === 'PDL' && <PdlVisning pdlData={data.pdl} />}
 				<AaregVisning
 					liste={arbeidsforhold}
 					loading={loadingAareg}

@@ -83,11 +83,11 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 	)
 }
 
-export const TpsfPersoninfo = ({ data, visTittel = true, pdlData, environments }) => {
+export const TpsfPersoninfo = ({ data, visTittel = true, pdlData }) => {
 	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
 	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
 
-	const tpsMessaging = TpsMessagingData(data?.ident, environments)
+	const tpsMessaging = TpsMessagingData(data?.ident)
 
 	return (
 		<div>

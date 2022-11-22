@@ -30,17 +30,15 @@ import { PdlVergemaal } from '~/components/fagsystem/pdl/visning/partials/vergem
 type PdlVisningProps = {
 	pdlData: PdlData
 	loading?: boolean
-	environments?: string[]
 	miljoeVisning?: boolean
 }
 
 export const PdlVisning = ({
 	pdlData,
 	loading = false,
-	environments,
 	miljoeVisning = false,
 }: PdlVisningProps) => {
-	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), environments, loading)
+	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), loading)
 
 	if (loading) {
 		return <Loading label="Laster PDL-data" />

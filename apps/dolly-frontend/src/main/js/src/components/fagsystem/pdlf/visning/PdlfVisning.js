@@ -35,15 +35,7 @@ import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bank
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 
-export const PdlfVisning = ({
-	data,
-	tpsfData,
-	skjermingData,
-	loading,
-	tmpPersoner,
-	environments,
-	master,
-}) => {
+export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersoner, master }) => {
 	if (loading) {
 		return <Loading label="Laster PDL-data" />
 	}
@@ -52,7 +44,7 @@ export const PdlfVisning = ({
 	}
 
 	const ident = data ? data.person?.ident : tpsfData?.ident
-	const tpsMessaging = TpsMessagingData(ident, environments)
+	const tpsMessaging = TpsMessagingData(ident)
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
 
 	return (
@@ -87,7 +79,7 @@ export const PdlfVisning = ({
 					</>
 				) : (
 					<>
-						<TpsfPersoninfo data={tpsfData} environments={environments} />
+						<TpsfPersoninfo data={tpsfData} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
 						<TpsfNasjonalitet data={tpsfData} />
 						<Telefonnummer data={tpsfData?.telefonnumre} />

@@ -3,7 +3,7 @@ import { TpsMessagingApi, BankkontoApi } from '~/service/Api'
 import { addGlobalError } from '~/ducks/errors'
 import { useDispatch } from 'react-redux'
 
-export const TpsMessagingData = (ident: string, environments: Array<string>, loading = false) => {
+export const TpsMessagingData = (ident: string, loading = false) => {
 	const [tpsMessagingData, setTpsMessagingData] = useState(null)
 	const [tpsMessagingLoading, setTpsMessagingLoading] = useState(false)
 	const mountedRef = useRef(true)
@@ -12,7 +12,7 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 	const execute = useCallback(() => {
 		const tpsMessaging = async () => {
 			setTpsMessagingLoading(true)
-			const tpsApi = TpsMessagingApi.getTpsPersonInfo(ident, environments[0])
+			const tpsApi = TpsMessagingApi.getTpsPersonInfoAllEnvs(ident)
 				.then((response: any) => {
 					return response?.data[0]?.person
 				})
@@ -67,9 +67,9 @@ export const TpsMessagingData = (ident: string, environments: Array<string>, loa
 			}
 		}
 		return tpsMessaging()
-	}, [environments])
+	}, [])
 	useEffect(() => {
-		if (!loading && ident && ident !== '' && environments && environments.length > 0) {
+		if (!loading && ident && ident !== '') {
 			execute()
 		}
 		return () => {
