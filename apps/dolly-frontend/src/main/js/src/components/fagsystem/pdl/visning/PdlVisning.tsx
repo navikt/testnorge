@@ -36,7 +36,7 @@ type PdlVisningProps = {
 export const PdlVisning = ({
 	pdlData,
 	fagsystemData = {},
-	loading = false,
+	loading = {},
 	miljoeVisning = false,
 }: PdlVisningProps) => {
 	if (loading?.pdl) {
