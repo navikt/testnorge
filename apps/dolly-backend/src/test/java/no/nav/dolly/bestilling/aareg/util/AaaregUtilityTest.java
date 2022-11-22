@@ -30,6 +30,7 @@ class AaaregUtilityTest {
                         .offentligIdent(IDENT)
                         .build())
                 .arbeidsforholdId(arbeidsforholdId)
+                .type("ordinaert")
                 .isOppdatering(isOppdatering)
                 .build();
     }
