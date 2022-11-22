@@ -21,6 +21,7 @@ type PersondetaljerTypes = {
 	ident: string
 	erPdlVisning: boolean
 	tpsMessaging: any
+	tpsMessagingLoading?: boolean
 	skjermingData: Skjerming
 }
 
@@ -48,6 +49,7 @@ export const Persondetaljer = ({
 	ident,
 	erPdlVisning = false,
 	tpsMessaging,
+	tpsMessagingLoading = false,
 	skjermingData,
 }: PersondetaljerTypes) => {
 	if (!data) {
@@ -72,7 +74,7 @@ export const Persondetaljer = ({
 					value={Formatters.showLabel('personstatus', personstatus?.status)}
 				/>
 				<SkjermingVisning data={skjerming} />
-				<TpsMPersonInfo data={tpsMessaging} />
+				<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 			</div>
 		)
 	}

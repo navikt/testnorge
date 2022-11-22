@@ -97,6 +97,7 @@ export const PdlfVisning = ({ fagsystemData, bestillingListe, loading, tmpPerson
 							tmpPersoner={tmpPersoner}
 							ident={ident}
 							tpsMessaging={fagsystemData?.tpsMessaging}
+							tpsMessagingLoading={loading?.tpsMessaging}
 							skjermingData={skjermingData}
 						/>
 						<Foedsel data={data?.person?.foedsel} tmpPersoner={tmpPdlforvalter} ident={ident} />
@@ -119,7 +120,7 @@ export const PdlfVisning = ({ fagsystemData, bestillingListe, loading, tmpPerson
 					</>
 				) : (
 					<>
-						<TpsfPersoninfo data={tpsfData} fagsystemData={data} />
+						<TpsfPersoninfo data={tpsfData} fagsystemData={fagsystemData} />
 						<Doedsfall data={data?.person?.doedsfall} tmpPersoner={tmpPdlforvalter} ident={ident} />
 						<TpsfNasjonalitet data={tpsfData} />
 						<Telefonnummer data={tpsfData?.telefonnumre} />
