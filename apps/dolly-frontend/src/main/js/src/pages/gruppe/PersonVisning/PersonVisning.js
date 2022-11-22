@@ -45,6 +45,7 @@ import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visni
 import { sjekkManglerInstData } from '~/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
@@ -114,7 +115,10 @@ export const PersonVisning = ({
 		harPoppBestilling(bestillingerFagsystemer)
 	)
 
-	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(ident.ident, true)
+	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(
+		ident.ident,
+		harDokarkivBestilling(bestillingerFagsystemer)
+	)
 
 	const { loading: loadingInstData, instData } = useInstData(
 		ident.ident,

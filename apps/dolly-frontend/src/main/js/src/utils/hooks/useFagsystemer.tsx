@@ -1,6 +1,10 @@
 import useSWR from 'swr'
 import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
-import { useInstEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import {
+	useDokarkivEnvironments,
+	useInstEnvironments,
+	usePensjonEnvironments,
+} from '~/utils/hooks/useEnvironments'
 
 import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
 
@@ -22,11 +26,17 @@ const instUrl = (ident, miljoer) =>
 		miljo: miljo,
 	}))
 
-const journalpostUrl = (transaksjonsid) =>
-	transaksjonsid?.map((id) => ({
-		url: `/testnav-joark-dokument-service/api/v2/journalpost/${id.transaksjonId?.journalpostId}`,
-		miljo: id.miljoe,
-	}))
+const journalpostUrl = (transaksjonsid, miljoer) =>
+	miljoer?.map((miljoe) => {
+		const journalpostId = transaksjonsid?.find((id) => id.miljoe === miljoe)?.transaksjonId
+			?.journalpostId
+		return {
+			url: journalpostId
+				? `/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}`
+				: null,
+			miljo: miljoe,
+		}
+	})
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -99,6 +109,7 @@ export const useInstData = (ident, harInstBestilling) => {
 
 export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
+	const { dokarkivEnvironments } = useDokarkivEnvironments()
 
 	if (!harDokarkivbestilling) {
 		return {
@@ -106,7 +117,10 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 		}
 	}
 
-	const { data, error } = useSWR<any, Error>([journalpostUrl(transaksjonsid)], multiFetcherDokarkiv)
+	const { data, error } = useSWR<any, Error>(
+		[journalpostUrl(transaksjonsid, dokarkivEnvironments)],
+		multiFetcherDokarkiv
+	)
 
 	return {
 		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),

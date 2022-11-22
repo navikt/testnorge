@@ -25,11 +25,7 @@ type DokarkivTypes = {
 const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
 	if (!data) return null
 
-	return (
-		// <div className="person-visning_content">
-		<DokarkivVisning journalpost={data} miljoe={miljo} />
-		// </div>
-	)
+	return <DokarkivVisning journalpost={data} miljoe={miljo} />
 }
 
 export default ({ data, bestillingIdListe, loading }: Form) => {

@@ -63,17 +63,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 			{data.map((miljoData) => {
 				return (
 					<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
-						{/*typeof miljoData?.data === 'object' ||*/}
-						{/*// TODO: Evt. skriv om til a sjekke om ikke data forst og vise alert*/}
-						{/*{(!(miljoData?.data instanceof Array) && miljoData?.data) ||*/}
-						{/*miljoData?.data?.length > 0 ? (*/}
-						{/*	React.cloneElement(children, { data: miljoData?.data, miljo: miljoData.miljo })*/}
-						{/*) : (*/}
-						{/*	<Alert variant="info" size="small" inline>*/}
-						{/*		{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}*/}
-						{/*	</Alert>*/}
-						{/*)}*/}
-						{miljoData?.data?.length < 1 ? (
+						{!miljoData?.data || miljoData?.data?.length < 1 ? (
 							<Alert variant="info" size="small" inline>
 								{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
 							</Alert>

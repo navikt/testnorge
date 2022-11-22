@@ -37,3 +37,13 @@ export const harInstBestilling = (bestillingerFagsystemer) => {
 	})
 	return inst
 }
+
+export const harDokarkivBestilling = (bestillingerFagsystemer) => {
+	let dokarkiv = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.dokarkiv) {
+			dokarkiv = true
+		}
+	})
+	return dokarkiv
+}
