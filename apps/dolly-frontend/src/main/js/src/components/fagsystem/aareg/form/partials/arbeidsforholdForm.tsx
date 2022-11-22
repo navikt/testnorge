@@ -69,11 +69,11 @@ export const ArbeidsforholdForm = ({
 		if (_isEmpty(bestillinger) || ameldingIndex) {
 			return null
 		}
+
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
 			?.flatMap((bestilling) => bestilling.data.aareg)
 			?.filter((bestilling) => _isEmpty(bestilling?.amelding))
-			?.filter((bestilling) => !bestilling?.ansettelsesPeriode?.sluttaarsak)
 
 		return _.uniqWith(
 			aaregBestillinger,
