@@ -1,6 +1,8 @@
 import useSWR from 'swr'
-import { multiFetcherFagsystemer } from '~/api'
+import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
 import { usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+
+import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -12,6 +14,12 @@ const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
+	}))
+
+const journalpostUrl = (transaksjonsid) =>
+	transaksjonsid?.map((id) => ({
+		url: `/testnav-joark-dokument-service/api/v2/journalpost/${id.transaksjonId?.journalpostId}`,
+		miljo: id.miljoe,
 	}))
 
 export const usePoppData = (ident, harPoppBestilling) => {
@@ -58,6 +66,24 @@ export const useTpData = (ident, harTpBestilling) => {
 
 	return {
 		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useDokarkivData = (ident, harDokarkivbestilling) => {
+	const { transaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
+
+	if (!harDokarkivbestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>([journalpostUrl(transaksjonsid)], multiFetcherDokarkiv)
+
+	return {
+		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
 		loading: !error && !data,
 		error: error,
 	}

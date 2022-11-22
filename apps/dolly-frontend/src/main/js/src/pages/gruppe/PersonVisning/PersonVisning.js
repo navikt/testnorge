@@ -40,7 +40,7 @@ import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
+import { useDokarkivData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import {
 	harAaregBestilling,
@@ -111,6 +111,8 @@ export const PersonVisning = ({
 		ident.ident,
 		harPoppBestilling(bestillingerFagsystemer)
 	)
+
+	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(ident.ident, true)
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -301,7 +303,11 @@ export const PersonVisning = ({
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
 				/>
-				<DokarkivVisning ident={ident.ident} />
+				<DokarkivVisning
+					data={dokarkivData}
+					bestillingIdListe={bestillingIdListe}
+					loading={loadingDokarkivData}
+				/>
 				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
 				<PdlPersonMiljoeInfo ident={ident.ident} />
 				<TidligereBestillinger ids={ident.bestillingId} />

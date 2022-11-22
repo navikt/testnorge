@@ -1,66 +1,56 @@
-import React, { useState } from 'react'
+import React from 'react'
 import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DollyApi } from '~/service/Api'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import JoarkDokumentService, { Journalpost } from '~/service/services/JoarkDokumentService'
-import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
 import DokarkivVisning from './DokarkivVisning'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import Loading from '~/components/ui/loading/Loading'
+import { Journalpost } from '~/service/services/JoarkDokumentService'
 
 interface Form {
-	ident: string
+	data?: Array<MiljoDataListe>
+	bestillingIdListe: Array<string>
+	loading: boolean
 }
 
-type TransaksjonId = {
-	transaksjonId: {
-		journalpostId: number
-	}
-	miljoe: string
+type MiljoDataListe = {
+	miljo: string
+	data: Array<Journalpost>
 }
 
-export default ({ ident }: Form) => {
-	const [miljoe, setMiljoe] = useState('')
+type DokarkivTypes = {
+	data?: Journalpost
+	miljo?: string
+}
+
+const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
+	if (!data) return null
 
 	return (
-		<div>
-			<LoadableComponentWithRetry
-				onFetch={() =>
-					DollyApi.getTransaksjonid('DOKARKIV', ident)
-						.then(({ data }: { data: Array<TransaksjonId> }) => {
-							data[0] && setMiljoe(data[0].miljoe)
-							return data.map((bestilling: TransaksjonId) =>
-								JoarkDokumentService.hentJournalpost(
-									bestilling.transaksjonId.journalpostId,
-									bestilling.miljoe
-								)
-							)
-						})
-						.then((data: Array<Promise<any>>) => Promise.all(data))
-				}
-				render={(data: Journalpost[]) => {
-					const filteredData = data.filter((journalpost) => journalpost.journalpostId != null)
-
-					if (!filteredData) {
-						return null
-					}
-
-					return (
-						filteredData &&
-						filteredData.length > 0 && (
-							<>
-								<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-								<DollyFieldArray data={filteredData} nested={true} ignoreOnSingleElement={true}>
-									{(journalpost: Journalpost, idx: number) => (
-										<div key={idx} className="person-visning_content">
-											<DokarkivVisning journalpost={journalpost} miljoe={miljoe} />
-										</div>
-									)}
-								</DollyFieldArray>
-							</>
-						)
-					)
-				}}
-				label="Laster dokarkiv data"
-			/>
+		<div className="person-visning_content">
+			<DokarkivVisning journalpost={data} miljoe={miljo} />
 		</div>
+	)
+}
+
+export default ({ data, bestillingIdListe, loading }: Form) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'dokarkiv')
+
+	if (loading) {
+		return <Loading label="Laster dokument-data" />
+	}
+
+	if (!data) {
+		return null
+	}
+
+	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
+
+	return (
+		<>
+			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
+			<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
+				<Dokarkiv />
+			</MiljoTabs>
+		</>
 	)
 }
