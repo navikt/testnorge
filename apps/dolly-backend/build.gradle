@@ -30,6 +30,7 @@ dependencyManagement {
 
 test {
     useJUnitPlatform()
+    jvmArgs '--add-opens java.base/java.lang=ALL-UNNAMED'
 }
 
 java.sourceCompatibility = JavaVersion.VERSION_17
