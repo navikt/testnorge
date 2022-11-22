@@ -44,7 +44,7 @@ export const Monthpicker = ({
 					dateFormat="yyyy-MM"
 					selected={formattedDate}
 					onChange={onChange ? onChange : handleDateChange}
-					placeholderText={'yyyy-MM'}
+					placeholderText={'yyyy-mm'}
 					showMonthYearPicker
 					customInput={<TextInput icon="calendar" feil={getFeilmelding(formikBag, name)} />}
 					dropdownMode="select"

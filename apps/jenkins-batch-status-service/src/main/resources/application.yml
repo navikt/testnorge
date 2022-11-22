@@ -18,6 +18,12 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-jenkins-batch-status-service
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 consumers:
   jenkins:
     url: https://testnorge-batch-adeo-proxy.dev-fss-pub.nais.io
@@ -36,7 +42,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true

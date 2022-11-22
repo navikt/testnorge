@@ -56,7 +56,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true

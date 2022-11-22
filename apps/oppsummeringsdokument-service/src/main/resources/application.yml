@@ -26,6 +26,11 @@ spring:
       password: ${OPEN_SEARCH_PASSWORD}
       uris: ${OPEN_SEARCH_URI}
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 consumers.aareg-synt-services:
   url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
   cluster: dev-fss
@@ -38,7 +43,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
