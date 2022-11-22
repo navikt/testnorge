@@ -39,12 +39,20 @@ export default ({ data, bestillingIdListe, loading }: Form) => {
 		return null
 	}
 
+	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
+	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
+
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
 	return (
 		<>
 			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-			<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
+			<MiljoTabs
+				bestilteMiljoer={bestilteMiljoer}
+				errorMiljoer={errorMiljoer}
+				forsteMiljo={forsteMiljo}
+				data={data}
+			>
 				<Dokarkiv />
 			</MiljoTabs>
 		</>
