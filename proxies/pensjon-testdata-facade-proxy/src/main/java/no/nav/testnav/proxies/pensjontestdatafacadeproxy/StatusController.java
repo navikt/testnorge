@@ -23,6 +23,16 @@ public class StatusController {
                 statusWebClient);
         pensjonStatus.put("team", TEAM_PENSJON_TESTDATA);
 
+        try {
+            Map response = statusWebClient.get()
+                    .uri("https://pensjon-testdata-facade.dev.intern.nav.no/api/v1/status")
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block();
+            pensjonStatus.putAll(response);
+        } catch (Exception e) {
+        }
+
         return Map.of(
                 "pensjon-testdata", pensjonStatus
         );
@@ -51,7 +61,6 @@ public class StatusController {
                     .bodyToMono(String.class)
                     .defaultIfEmpty("OK")
                     .onErrorResume(Exception.class, error -> Mono.just("Error: " + error.getMessage()))
-                    .doOnSuccess(result -> Mono.just("OK"))
                     .map(result -> result.startsWith("Error:") ? result : "OK");
     }
 }
