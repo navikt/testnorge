@@ -32,6 +32,7 @@ type PdlVisningProps = {
 	loading?: boolean
 	environments?: string[]
 	miljoeVisning?: boolean
+	ident?: string
 }
 
 export const PdlVisning = ({
@@ -39,6 +40,7 @@ export const PdlVisning = ({
 	loading = false,
 	environments,
 	miljoeVisning = false,
+	ident = null,
 }: PdlVisningProps) => {
 	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), environments, loading)
 
@@ -90,6 +92,7 @@ export const PdlVisning = ({
 				<TpsMBankkonto
 					data={tpsMessaging?.tpsMessagingData}
 					loading={tpsMessaging?.tpsMessagingLoading}
+					ident={ident}
 				/>
 				<PdlBoadresse data={bostedsadresse} />
 				<PdlDeltBosted data={deltBosted} />

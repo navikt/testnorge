@@ -4,10 +4,11 @@ import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bank
 
 type TpsMBankkontoProps = {
 	data: any
+	ident: string
 	loading?: boolean
 }
 
-export const TpsMBankkonto = ({ data, loading = false }: TpsMBankkontoProps) => {
+export const TpsMBankkonto = ({ data, ident, loading = false }: TpsMBankkontoProps) => {
 	if (loading) {
 		return <Loading />
 	}
@@ -17,8 +18,8 @@ export const TpsMBankkonto = ({ data, loading = false }: TpsMBankkontoProps) => 
 
 	return (
 		<>
-			<UtenlandskBankkonto data={data.bankkontonrUtland} />
-			<NorskBankkonto data={data.bankkontonrNorsk} />
+			<UtenlandskBankkonto data={data.bankkontonrUtland} ident={ident} />
+			<NorskBankkonto data={data.bankkontonrNorsk} ident={ident} />
 		</>
 	)
 }

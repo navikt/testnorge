@@ -25,7 +25,7 @@ const EditDeleteKnapper = styled.div`
 
 type Data = {
 	data: UtenlandskBankkontoData
-	extraButtons: boolean
+	extraButtons?: boolean
 	ident: string
 }
 
@@ -97,7 +97,7 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 										closeModal()
 										return handleDelete()
 									}}
-									type="hoved"
+									variant={'primary'}
 								>
 									Ja, jeg er sikker
 								</NavButton>

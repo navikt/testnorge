@@ -12,7 +12,7 @@ import styled from 'styled-components'
 
 type Data = {
 	data: NorskBankkontoData
-	extraButtons: boolean
+	extraButtons?: boolean
 	ident: string
 }
 
@@ -74,7 +74,7 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 										closeModal()
 										return handleDelete()
 									}}
-									type="hoved"
+									variant={'primary'}
 								>
 									Ja, jeg er sikker
 								</NavButton>
