@@ -13,7 +13,7 @@ import styled from 'styled-components'
 type Data = {
 	data: NorskBankkontoData
 	extraButtons?: boolean
-	ident: string
+	ident?: string
 }
 
 type NorskBankkontoData = {
@@ -43,7 +43,11 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 			await Promise.all([kontoregister, tpsMessaging]).catch((e) => console.error(e))
 			setHide()
 		}
-		return slett()
+		if (ident) {
+			return slett()
+		} else {
+			return
+		}
 	}, [])
 
 	if (!show) {

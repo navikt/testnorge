@@ -14,7 +14,7 @@ import {
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 
-export const TpsfVisning = ({ data, ident }) => {
+export const TpsfVisning = ({ data }) => {
 	if (!data) {
 		return null
 	}
@@ -29,8 +29,8 @@ export const TpsfVisning = ({ data, ident }) => {
 			<Postadresse postadresse={data?.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data?.midlertidigAdresse} />
 			<Telefonnummer data={data?.telefonnumre} />
-			<UtenlandskBankkonto data={data?.bankkontonrUtland} ident={ident} />
-			<NorskBankkonto data={data?.bankkontonrNorsk} ident={ident} />
+			<UtenlandskBankkonto data={data?.bankkontonrUtland} />
+			<NorskBankkonto data={data?.bankkontonrNorsk} />
 			<TpsfIdenthistorikk identhistorikk={data?.identHistorikk} />
 			<Relasjoner relasjoner={data?.relasjoner} />
 		</div>

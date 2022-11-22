@@ -92,7 +92,6 @@ export const PdlVisning = ({
 				<TpsMBankkonto
 					data={tpsMessaging?.tpsMessagingData}
 					loading={tpsMessaging?.tpsMessagingLoading}
-					ident={ident}
 				/>
 				<PdlBoadresse data={bostedsadresse} />
 				<PdlDeltBosted data={deltBosted} />
