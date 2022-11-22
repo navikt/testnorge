@@ -13,6 +13,12 @@ spring:
   jackson:
     serialization:
       write_dates_as_timestamps: false
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 altinn:
   api:
     url: ${ALTINN_URL}
@@ -27,7 +33,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true

@@ -22,6 +22,11 @@ spring:
     serialization:
       write_dates_as_timestamps: false
 
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
+
 consumers:
   tps-forvalteren-proxy:
     url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
@@ -40,7 +45,8 @@ management:
     web:
       base-path: /internal
       exposure.include: prometheus,heapdump,health
-      path-mapping.prometheus: metrics
+      path-mapping:
+        prometheus: metrics
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
