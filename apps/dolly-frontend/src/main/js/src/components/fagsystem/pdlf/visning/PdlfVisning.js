@@ -31,9 +31,9 @@ import {
 	TpsfPersoninfo,
 	TpsfVergemaal,
 } from '~/components/fagsystem/tpsf/visning/partials'
-import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 import { PdlSikkerhetstiltak } from '~/components/fagsystem/pdl/visning/partials/PdlSikkerhetstiltak'
 import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
+import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 
 export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersoner, master }) => {
 	if (loading) {
@@ -46,6 +46,17 @@ export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersone
 	const ident = data ? data.person?.ident : tpsfData?.ident
 	const tpsMessaging = TpsMessagingData(ident)
 	const tmpPdlforvalter = tmpPersoner?.pdlforvalter
+
+	const getBankkontoData = () => {
+		return {
+			bankkontonrUtland: tpsMessaging?.tpsMessagingData?.bankkontonrUtland
+				? tpsMessaging?.tpsMessagingData?.bankkontonrUtland
+				: tpsfData?.bankkontonrUtland,
+			bankkontonrNorsk: tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
+				? tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
+				: tpsfData?.bankkontonrNorsk,
+		}
+	}
 
 	return (
 		<ErrorBoundary>
@@ -87,24 +98,11 @@ export const PdlfVisning = ({ data, tpsfData, skjermingData, loading, tmpPersone
 						<Fullmakt data={tpsfData?.fullmakt} relasjoner={tpsfData?.relasjoner} />
 					</>
 				)}
-
-				<UtenlandskBankkonto
-					data={
-						tpsMessaging?.tpsMessagingData?.bankkontonrUtland
-							? tpsMessaging?.tpsMessagingData?.bankkontonrUtland
-							: tpsfData?.bankkontonrUtland
-					}
-					extraButtons={true}
+				<TpsMBankkonto
+					data={getBankkontoData()}
+					loading={tpsMessaging?.tpsMessagingLoading}
 					ident={ident}
-				/>
-				<NorskBankkonto
-					data={
-						tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
-							? tpsMessaging?.tpsMessagingData?.bankkontonrNorsk
-							: tpsfData?.bankkontonrNorsk
-					}
 					extraButtons={true}
-					ident={ident}
 				/>
 				<Boadresse
 					data={data?.person?.bostedsadresse}
