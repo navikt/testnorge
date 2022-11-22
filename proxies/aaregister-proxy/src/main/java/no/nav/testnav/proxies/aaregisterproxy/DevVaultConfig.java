@@ -12,7 +12,7 @@ import java.util.Optional;
 
 @Profile("dev")
 @Configuration
-@VaultPropertySource(value = "kv/preprod/fss/testnav-aareg-proxy/dev", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "kv/preprod/fss/testnav-aaregister-proxy/dev", ignoreSecretNotFound = false)
 public class DevVaultConfig extends AbstractVaultConfiguration {
 
     @Override

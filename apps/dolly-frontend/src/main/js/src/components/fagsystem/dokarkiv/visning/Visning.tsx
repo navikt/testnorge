@@ -26,9 +26,9 @@ const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
 	if (!data) return null
 
 	return (
-		<div className="person-visning_content">
-			<DokarkivVisning journalpost={data} miljoe={miljo} />
-		</div>
+		// <div className="person-visning_content">
+		<DokarkivVisning journalpost={data} miljoe={miljo} />
+		// </div>
 	)
 }
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { FieldArray } from 'formik'
 import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { MiljoeInfo } from './MiljoeInfo/MiljoeInfo'
+import { MiljoeInfo } from './MiljoeInfo'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'

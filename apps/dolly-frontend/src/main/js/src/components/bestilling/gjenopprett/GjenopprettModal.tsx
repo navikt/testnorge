@@ -1,6 +1,6 @@
 import DollyModal from '~/components/ui/modal/DollyModal'
 import { Formik } from 'formik'
-import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo/TilgjengeligeMiljoer'
+import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo'
 import React, { Fragment } from 'react'
 import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
 import NavButton from '~/components/ui/button/NavButton/NavButton'

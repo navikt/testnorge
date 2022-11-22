@@ -66,6 +66,9 @@ public class Arbeidsforhold {
     @Schema(description = "Angir periode oppdateringen gjelder fra")
     private YearMonth navArbeidsforholdPeriode;
 
+    @Schema(description = "Angir om posten er oppdatering")
+    private Boolean isOppdatering;
+
     public List<Arbeidsavtale> getArbeidsavtaler() {
 
         if (isNull(arbeidsavtaler)) {

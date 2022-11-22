@@ -1,6 +1,6 @@
 import useSWR from 'swr'
 import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
-import { usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import { useInstEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
 
 import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
 
@@ -13,6 +13,12 @@ const poppUrl = (ident, miljoer) =>
 const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
+		miljo: miljo,
+	}))
+
+const instUrl = (ident, miljoer) =>
+	miljoer?.map((miljo) => ({
+		url: `/testnav-inst-service/api/v1/ident?identer=${ident}&miljoe=${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -66,6 +72,26 @@ export const useTpData = (ident, harTpBestilling) => {
 
 	return {
 		tpData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useInstData = (ident, harInstBestilling) => {
+	const { instEnvironments } = useInstEnvironments()
+	if (!harInstBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>(
+		[instUrl(ident, instEnvironments)],
+		multiFetcherFagsystemer
+	)
+
+	return {
+		instData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
 		loading: !error && !data,
 		error: error,
 	}

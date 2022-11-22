@@ -170,6 +170,11 @@ consumers:
     namespace: dolly
     url: https://testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-dokarkiv-proxy:
+    name: testnav-dokarkiv-proxy
+    namespace: dolly
+    url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 management:
   endpoints:

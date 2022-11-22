@@ -1,11 +1,13 @@
 package no.nav.testnav.proxies.dokarkivproxy;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -15,11 +17,14 @@ import java.util.stream.Stream;
 public class StatusController {
     private static final String TEAM_DOKARKIV = "Team Dokumentløsninger";
 
+    @Value("${environments}")
+    private String environments;
+
     @GetMapping(value = "/internal/status", produces = MediaType.APPLICATION_JSON_VALUE)
     public Map<String, Map<String, String>> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
-        return Stream.of("q1", "q2", "q4", "q5", "qx", "t0", "t1", "t2", "t3", "t4", "t5", "t13")
+        return Arrays.asList(environments.split(",")).stream()
                 .parallel()
                 .map(miljo -> {
                     var miljoStatus = checkConsumerStatus(

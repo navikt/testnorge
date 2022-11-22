@@ -1,7 +1,12 @@
 import useSWR from 'swr'
 import { fetcher } from '~/api'
 
-const getGruppeUrl = `/dolly-backend/api/v1/gruppe`
+const getGrupperUrl = (pageNo, pageSize, brukerId) =>
+	`/dolly-backend/api/v1/gruppe?pageNo=${pageNo}&pageSize=${pageSize}${
+		brukerId ? '&brukerId=' + brukerId : ''
+	}`
+const getEgneGrupperUrl = (brukerId) => `/dolly-backend/api/v1/gruppe?brukerId=${brukerId}`
+
 const getPaginertGruppeUrl = (
 	gruppeId: string,
 	pageNo: number,
@@ -11,7 +16,16 @@ const getPaginertGruppeUrl = (
 ) => {
 	const sorting =
 		sortKolonne && sortRetning ? `&sortRetning=${sortRetning}&sortKolonne=${sortKolonne}` : ''
-	return `${getGruppeUrl}/${gruppeId}/page/${pageNo}?pageSize=${pageSize}${sorting}`
+	return `/dolly-backend/api/v1/gruppe/${gruppeId}/page/${pageNo}?pageSize=${pageSize}${sorting}`
+}
+
+export type PaginertGruppe = {
+	antallElementer: number
+	antallPages: number
+	contents: Gruppe[]
+	favoritter: Gruppe[]
+	pageNo: number
+	pageSize: number
 }
 
 export type Gruppe = {
@@ -62,19 +76,25 @@ export const useGruppeById = (
 		error: error,
 	}
 }
-export const useGrupper = (brukerId?: string) => {
-	const { data, error } = useSWR<Gruppe[], Error>(
-		`${getGruppeUrl}${brukerId ? `?brukerId=${brukerId}` : ''}`,
+
+export const useGrupper = (pageNo, pageSize, brukerId?: string) => {
+	const { data, error } = useSWR<PaginertGruppe, Error>(
+		getGrupperUrl(pageNo, pageSize, brukerId),
 		fetcher
 	)
 
-	const grupperSorted = data
-		?.sort((gruppe, gruppe2) => (gruppe.id < gruppe2.id ? 1 : -1))
-		.reduce((acc: { [key: string]: Gruppe }, curr) => ((acc[curr.id] = curr), acc), {})
+	return {
+		grupper: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useEgneGrupper = (brukerId: string) => {
+	const { data, error } = useSWR<PaginertGruppe, Error>(getEgneGrupperUrl(brukerId), fetcher)
 
 	return {
 		grupper: data,
-		grupperById: grupperSorted,
 		loading: !error && !data,
 		error: error,
 	}

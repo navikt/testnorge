@@ -20,11 +20,28 @@ const BestiltMiljoTab = styled(Tabs.Tab)`
 	}
 `
 
-export const MiljoTabs = ({ bestilteMiljoer, forsteMiljo, data, children }) => {
+const ErrorMiljoTab = styled(Tabs.Tab)`
+	&&& {
+		.navds-tabs__tab-inner {
+			color: #ba3a26;
+		}
+	}
+`
+
+export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, data, children }) => {
 	return (
 		<StyledTabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
 				{data.map((miljoData) => {
+					if (errorMiljoer?.includes(miljoData?.miljo)) {
+						return (
+							<ErrorMiljoTab
+								key={miljoData?.miljo}
+								value={miljoData?.miljo}
+								label={miljoData?.miljo?.toUpperCase()}
+							/>
+						)
+					}
 					if (bestilteMiljoer?.includes(miljoData?.miljo)) {
 						return (
 							<BestiltMiljoTab

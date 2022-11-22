@@ -10,6 +10,7 @@ import no.nav.dolly.web.credentials.TestnavAaregisterProxyProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavDokarkivProxyProperties;
 import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
 import no.nav.dolly.web.credentials.TestnavInstServiceProperties;
 import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
@@ -90,6 +91,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
     private final KontoregisterProxyProperties kontoregisterProxyProperties;
     private final SkjermingsregisterProxyProperties skjermingsregisterProxyProperties;
+    private final TestnavDokarkivProxyProperties testnavDokarkivProxyProperties;
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
@@ -122,6 +124,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavPersonOrganisasjonTilgangServiceProperties, "testnav-person-organisasjon-tilgang-service"))
                 .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
                 .route(createRoute(skjermingsregisterProxyProperties))
+                .route(createRoute(testnavDokarkivProxyProperties))
                 .build();
     }
 

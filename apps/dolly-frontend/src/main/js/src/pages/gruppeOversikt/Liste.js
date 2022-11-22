@@ -8,10 +8,29 @@ import Icon from '~/components/ui/icon/Icon'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import Formatters from '~/utils/DataFormatter'
 import { useNavigate } from 'react-router-dom'
+import { VisningType } from '~/pages/gruppeOversikt/GruppeOversikt'
 
-export default function Liste({ items, searchActive, isFetching, gruppeDetaljer, visSide }) {
+export default function Liste({
+	items,
+	searchActive,
+	isFetching,
+	gruppeDetaljer,
+	visSide,
+	visningType = null,
+}) {
 	const navigate = useNavigate()
 	if (isFetching) return <Loading label="Laster grupper" panel />
+
+	const getEmptyStartText = (visningType) => {
+		switch (visningType) {
+			case VisningType.ALLE:
+				return 'Fant ingen grupper.'
+			case VisningType.FAVORITTER:
+				return 'Fant ingen favoritter.'
+			default:
+				return 'Du har for øyeblikket ingen grupper på denne brukerkontoen.'
+		}
+	}
 
 	if (!items || !items.length) {
 		return (
@@ -20,8 +39,10 @@ export default function Liste({ items, searchActive, isFetching, gruppeDetaljer,
 					<p>Søket gav ingen resultater.</p>
 				) : (
 					<>
-						<p>Du har for øyeblikket ingen grupper på denne brukerkontoen.</p>
-						<p>For å opprette en ny gruppe, trykk på "Ny gruppe"-knappen over.</p>
+						<p>{getEmptyStartText(visningType)}</p>
+						{visningType !== VisningType.FAVORITTER && (
+							<p>For å opprette en ny gruppe, trykk på "Ny gruppe"-knappen over.</p>
+						)}
 					</>
 				)}
 			</ContentContainer>

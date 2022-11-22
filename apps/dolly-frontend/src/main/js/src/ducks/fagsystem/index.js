@@ -6,10 +6,8 @@ import {
 	BrregstubApi,
 	DollyApi,
 	InntektstubApi,
-	InstApi,
 	KrrApi,
 	PdlforvalterApi,
-	PensjonApi,
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
@@ -41,18 +39,6 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		getPensjon: [
-			PensjonApi.getPoppInntekt,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getPensjonTP: [
-			PensjonApi.getPersonTpOrdninger,
-			(ident) => ({
-				ident,
-			}),
-		],
 		getInntektstub: [
 			InntektstubApi.getInntektsinformasjon,
 			(ident) => ({
@@ -67,12 +53,6 @@ export const actions = createActions(
 		],
 		getArena: [
 			ArenaApi.getPerson,
-			(ident) => ({
-				ident,
-			}),
-		],
-		getInst: [
-			InstApi.getPerson,
 			(ident) => ({
 				ident,
 			}),
@@ -126,27 +106,6 @@ export const actions = createActions(
 	}
 )
 
-// TODO: DENNE MÅ FIKSES
-// export const GET_KRR_PERSON = createAction(
-// 	'GET_KRR_PERSON',
-// 	async ident => {
-// 		try {
-// 			const res = await KrrApi.getPerson(ident)
-// 			return res
-// 		} catch (err) {
-// 			if (err.response && err.response.status === 404) {
-// 				console.error(err.response.data.melding)
-// 				//ERROR 404 betyr at det ikke finnes data for identen, fake opp datastruktur slik at reducer blir consistent
-// 				return { data: [null] }
-// 			}
-// 			return err
-// 		}
-// 	},
-// 	ident => ({
-// 		ident
-// 	})
-// )
-
 const initialState = {
 	tpsf: {},
 	tpsMessaging: {},
@@ -199,12 +158,6 @@ export default handleActions(
 		[onSuccess(actions.getArena)](state, action) {
 			state.arenaforvalteren[action.meta.ident] = action.payload.data
 		},
-		[onSuccess(actions.getPensjon)](state, action) {
-			state.pensjonforvalter[action.meta.ident] = action.payload.data
-		},
-		[onSuccess(actions.getPensjonTP)](state, action) {
-			state.tpforvalter[action.meta.ident] = action.payload.data
-		},
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
@@ -242,9 +195,6 @@ export default handleActions(
 				state.pdlforvalter[ident.person.ident] = ident
 			})
 		},
-		[onSuccess(actions.getInst)](state, action) {
-			state.instdata[action.meta.ident] = action.payload.data
-		},
 		[onSuccess(actions.slettPerson)](state, action) {
 			deleteIdentState(state, action.meta.ident)
 		},
@@ -264,10 +214,7 @@ const deleteIdentState = (state, ident) => {
 	delete state.arenaforvalteren[ident]
 	delete state.pdl[ident]
 	delete state.pdlforvalter[ident]
-	delete state.instdata[ident]
 	delete state.udistub[ident]
-	delete state.pensjonforvalter[ident]
-	delete state.tpforvalter[ident]
 	delete state.brregstub[ident]
 }
 
@@ -308,7 +255,7 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 	const statusArray = bestillinger.reduce((acc, curr) => acc.concat(curr.status), [])
 
 	// Liste over systemer som har data
-	const success = successMiljoSelector(statusArray)
+	const success = successMiljoSelector(statusArray, personId)
 
 	// Samle alt fra PDL under en ID
 	if (Object.keys(success)?.some((a) => a.substring(0, 3) === 'PDL')) {
@@ -331,53 +278,8 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getArena(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
-			case 'INST2':
-				return dispatch(actions.getInst(personId, success[system][0]))
-			case 'PEN_INNTEKT':
-				return dispatch(actions.getPensjon(personId, success[system][0]))
 			case 'BRREGSTUB':
 				return dispatch(actions.getBrreg(personId))
-			case 'SKJERMINGSREGISTER':
-				return dispatch(actions.getSkjermingsregister(personId))
-			case 'TP_FORVALTER':
-				return dispatch(actions.getPensjonTP(personId, success[system][0]))
-		}
-	})
-}
-
-export const fetchDataFraFagsystemerForSoek = (personId) => (dispatch) => {
-	// Liste over systemer
-	const systemer = [
-		'KRRSTUB',
-		'SIGRUNSTUB',
-		'INNTK',
-		'ARENA',
-		'PDL_FORVALTER',
-		'PDL',
-		'INST2,',
-		'PEN_INNTEKT',
-		'TP_FORVALTER',
-	]
-
-	systemer.forEach((system) => {
-		switch (system) {
-			case 'KRRSTUB':
-				return dispatch(actions.getKrr(personId))
-			case 'SIGRUNSTUB':
-				dispatch(actions.getSigrun(personId))
-				return dispatch(actions.getSigrunSekvensnr(personId))
-			case 'INNTK':
-				return dispatch(actions.getInntektstub(personId))
-			case 'ARENA':
-				return dispatch(actions.getArena(personId))
-			case 'PDL_FORVALTER':
-				return dispatch(actions.getPdlForvalter(personId))
-			case 'INST2':
-				return dispatch(actions.getInst(personId, 'q2'))
-			case 'PEN_INNTEKT':
-				return dispatch(actions.getPensjon(personId, 'q2'))
-			case 'TP_FORVALTER':
-				return dispatch(actions.getPensjonTP(personId))
 			case 'SKJERMINGSREGISTER':
 				return dispatch(actions.getSkjermingsregister(personId))
 		}
@@ -583,10 +485,7 @@ export const selectDataForIdent = (state, ident) => {
 		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		pdl: state.fagsystem.pdl[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
-		instdata: state.fagsystem.instdata[ident],
 		udistub: state.fagsystem.udistub[ident],
-		pensjonforvalter: state.fagsystem.pensjonforvalter[ident],
-		tpforvalter: state.fagsystem.tpforvalter[ident],
 		brregstub: state.fagsystem.brregstub[ident],
 		skjermingsregister: state.fagsystem.skjermingsregister[ident],
 	}

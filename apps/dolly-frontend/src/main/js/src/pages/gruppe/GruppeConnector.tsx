@@ -13,7 +13,7 @@ const mapStateToProps = (
 			sideStoerrelse: number
 			sorting: string
 			update: string
-		},
+		}
 	},
 	ownProps: FormikProps<any>
 ) => ({

@@ -6,6 +6,8 @@ import Formatters from '~/utils/DataFormatter'
 import Loading from '~/components/ui/loading/Loading'
 import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
+import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
 
 const getSortedData = (data) => {
 	return Array.isArray(data)
@@ -18,7 +20,13 @@ const getSortedData = (data) => {
 		: data
 }
 
-export const InstVisning = ({ data, loading }) => {
+export const sjekkManglerInstData = (instData) => {
+	return instData?.length < 1 || instData?.every((miljoData) => miljoData.data?.length < 1)
+}
+
+export const InstVisning = ({ data, loading, bestillingIdListe }) => {
+	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'instdata')
+
 	if (loading) {
 		return <Loading label="Laster inst data" />
 	}
@@ -26,11 +34,17 @@ export const InstVisning = ({ data, loading }) => {
 		return null
 	}
 
-	const sortedData = getSortedData(data)
-	const manglerFagsystemdata = sortedData?.length < 1
+	const manglerFagsystemdata = sjekkManglerInstData(data)
+	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const sortedData = data.map((miljoeData) => {
+		if (miljoeData.data) {
+			miljoeData.data = getSortedData(miljoeData?.data)
+		}
+		return miljoeData
+	})
 
 	return (
-		<div>
+		<ErrorBoundary>
 			<SubOverskrift
 				label="Institusjonsopphold"
 				iconKind="institusjon"
@@ -41,8 +55,8 @@ export const InstVisning = ({ data, loading }) => {
 					Kunne ikke hente institusjonsopphold-data på person
 				</Alert>
 			) : (
-				<ErrorBoundary>
-					<DollyFieldArray data={sortedData} nested>
+				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={sortedData}>
+					<DollyFieldArray nested>
 						{(opphold, idx) => (
 							<div className="person-visning_content" key={idx}>
 								<TitleValue
@@ -60,8 +74,8 @@ export const InstVisning = ({ data, loading }) => {
 							</div>
 						)}
 					</DollyFieldArray>
-				</ErrorBoundary>
+				</MiljoTabs>
 			)}
-		</div>
+		</ErrorBoundary>
 	)
 }

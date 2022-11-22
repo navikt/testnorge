@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.tpsmessagingservice;
+package no.nav.dolly.bestilling.kontoregisterservice.util;
 
 
 import java.util.HashMap;

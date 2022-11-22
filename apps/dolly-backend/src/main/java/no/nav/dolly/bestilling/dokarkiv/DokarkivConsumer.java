@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.dokarkiv;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.dokarkiv.command.DokarkivGetMiljoeCommand;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
@@ -19,16 +20,12 @@ import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
@@ -77,6 +74,11 @@ public class DokarkivConsumer implements ConsumerStatus {
                 .onErrorResume(error -> Mono.just(DokarkivResponse.builder()
                         .feilmelding(WebClientFilter.getMessage(error))
                         .build()));
+    }
+
+    @Timed(name = "providers", tags = { "operation", "dokarkiv_getEnvironments" })
+    public Mono<List<String>> getEnvironments() {
+        return new DokarkivGetMiljoeCommand(webClient, serviceProperties.getAccessToken(tokenService)).call();
     }
 
     public Map<String, String> checkAlive() {

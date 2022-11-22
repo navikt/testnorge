@@ -96,6 +96,7 @@ public class AaregRequestMappingStrategy implements MappingStrategy {
                         arbeidsforhold.getPermisjonPermitteringer().addAll(mapperFacade.mapAsList(rsArbeidsforhold.getPermittering(), PermisjonPermittering.class));
 
                         arbeidsforhold.setNavArbeidsforholdPeriode(rsArbeidsforhold.getNavArbeidsforholdPeriode());
+                        arbeidsforhold.setIsOppdatering(rsArbeidsforhold.getIsOppdatering());
                     }
 
                     private Ansettelsesperiode getAnsettelsesperiode(RsAnsettelsesPeriode ansettelsesperiode) {
