@@ -279,11 +279,7 @@ export const PersonVisning = ({
 					/>
 				)}
 				{ident.master === 'PDL' && (
-					<PdlVisning
-						pdlData={data.pdl}
-						environments={bestilling?.environments}
-						ident={ident?.ident}
-					/>
+					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
 				)}
 				<AaregVisning
 					liste={arbeidsforhold}
