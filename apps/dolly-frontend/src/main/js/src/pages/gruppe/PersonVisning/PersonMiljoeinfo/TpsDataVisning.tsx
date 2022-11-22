@@ -9,6 +9,7 @@ import { ApiFeilmelding } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/Pd
 
 type TpsData = {
 	data: Array<Data>
+	ident: string
 }
 
 type Data = {
@@ -16,7 +17,7 @@ type Data = {
 	person: object
 }
 
-export const TpsDataVisning = ({ data }: TpsData) => {
+export const TpsDataVisning = ({ data, ident }: TpsData) => {
 	data.sort(function (a, b) {
 		if (a.miljoe < b.miljoe) {
 			return -1
@@ -36,7 +37,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 		} else {
 			return (
 				<div className="boks">
-					<TpsfVisning data={miljoeData.person} />
+					<TpsfVisning data={miljoeData.person} ident={ident} />
 				</div>
 			)
 		}

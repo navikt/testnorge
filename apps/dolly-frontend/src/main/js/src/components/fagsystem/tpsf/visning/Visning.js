@@ -12,9 +12,9 @@ import {
 	TpsfVergemaal,
 } from './partials'
 import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/form'
+import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
 
-export const TpsfVisning = ({ data }) => {
+export const TpsfVisning = ({ data, ident }) => {
 	if (!data) {
 		return null
 	}
@@ -29,8 +29,8 @@ export const TpsfVisning = ({ data }) => {
 			<Postadresse postadresse={data?.postadresse} />
 			<MidlertidigAdresse midlertidigAdresse={data?.midlertidigAdresse} />
 			<Telefonnummer data={data?.telefonnumre} />
-			<UtenlandskBankkonto data={data?.bankkontonrUtland} />
-			<NorskBankkonto data={data?.bankkontonrNorsk} />
+			<UtenlandskBankkonto data={data?.bankkontonrUtland} ident={ident} />
+			<NorskBankkonto data={data?.bankkontonrNorsk} ident={ident} />
 			<TpsfIdenthistorikk identhistorikk={data?.identHistorikk} />
 			<Relasjoner relasjoner={data?.relasjoner} />
 		</div>

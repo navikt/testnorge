@@ -62,7 +62,7 @@ export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps)
 			<SubOverskrift label="Opprettet i miljøer" iconKind="visTpsData" />
 			{state.loading && <Loading label="Laster miljøer" />}
 			{/* @ts-ignore */}
-			{state.value && <TpsDataVisning data={state.value.data} />}
+			{state.value && <TpsDataVisning data={state.value.data} ident={ident} />}
 			{state.value && (
 				<p>
 					<i>
