@@ -23,19 +23,37 @@ public class StatusController {
                 statusWebClient);
         pensjonStatus.put("team", TEAM_PENSJON_TESTDATA);
 
+        var additionalStatus = additionalConsumerStatus("https://pensjon-testdata-facade.dev.intern.nav.no/api/v1/status", statusWebClient);
+
+        var statusMap = new ConcurrentHashMap<String, Map<String, String>>();
+        statusMap.put("pensjon-testdata", pensjonStatus);
+        statusMap.putAll(additionalStatus);
+
+        return statusMap;
+    }
+
+    public Map<String, Map<String, String>> additionalConsumerStatus(String url, WebClient webClient) {
+        ConcurrentHashMap<String, Map<String, String>> status = new ConcurrentHashMap<>();
+
+        Thread blockingThread = new Thread(() -> {
+            try {
+                Map response = webClient.get()
+                        .uri(url)
+                        .retrieve()
+                        .bodyToMono(Map.class)
+                        .block();
+                status.putAll(response);
+            } catch (Exception e) {
+            }
+        });
+        blockingThread.start();
         try {
-            Map response = statusWebClient.get()
-                    .uri("https://pensjon-testdata-facade.dev.intern.nav.no/api/v1/status")
-                    .retrieve()
-                    .bodyToMono(Map.class)
-                    .block();
-            pensjonStatus.putAll(response);
-        } catch (Exception e) {
+            blockingThread.join();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
 
-        return Map.of(
-                "pensjon-testdata", pensjonStatus
-        );
+        return status;
     }
 
     public Map<String, String> checkConsumerStatus(String aliveUrl, String readyUrl, WebClient webClient) {
