@@ -42,6 +42,18 @@ export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = nu
 	)
 }
 
+export const multiFetcherDokarkiv = (miljoUrlListe) => {
+	return Promise.all(
+		miljoUrlListe?.map((obj) =>
+			obj.url
+				? fetcher(obj.url, { miljo: obj.miljo }).then((result) => {
+						return { miljo: obj.miljo, data: result }
+				  })
+				: { miljo: obj.miljo, data: null }
+		)
+	)
+}
+
 export const fetcher = (url, headers: Record<string, string>) =>
 	axios
 		.get(url, { headers: headers })

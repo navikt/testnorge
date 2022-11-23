@@ -63,12 +63,12 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 			{data.map((miljoData) => {
 				return (
 					<StyledPanel key={miljoData?.miljo} value={miljoData?.miljo}>
-						{miljoData?.data?.length > 0 ? (
-							React.cloneElement(children, { data: miljoData?.data })
-						) : (
+						{!miljoData?.data || miljoData?.data?.length < 1 ? (
 							<Alert variant="info" size="small" inline>
 								{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
 							</Alert>
+						) : (
+							React.cloneElement(children, { data: miljoData?.data, miljo: miljoData.miljo })
 						)}
 					</StyledPanel>
 				)

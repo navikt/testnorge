@@ -180,7 +180,7 @@ export const useOrganisasjonBestillingStatus = (
 
 export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
 	const { dollyEnvironmentList } = useDollyEnvironments()
-	const unsupportedEnvironments = ['t0', 't13', 'qx']
+	const unsupportedEnvironments = ['t13', 'qx']
 	const filteredEnvironments = dollyEnvironmentList
 		?.map((miljoe) => miljoe.id)
 		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))

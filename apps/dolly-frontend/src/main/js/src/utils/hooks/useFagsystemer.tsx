@@ -1,6 +1,12 @@
 import useSWR from 'swr'
-import { multiFetcherFagsystemer } from '~/api'
-import { useInstEnvironments, usePensjonEnvironments } from '~/utils/hooks/useEnvironments'
+import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
+import {
+	useDokarkivEnvironments,
+	useInstEnvironments,
+	usePensjonEnvironments,
+} from '~/utils/hooks/useEnvironments'
+
+import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -19,6 +25,18 @@ const instUrl = (ident, miljoer) =>
 		url: `/testnav-inst-service/api/v1/ident?identer=${ident}&miljoe=${miljo}`,
 		miljo: miljo,
 	}))
+
+const journalpostUrl = (transaksjonsid, miljoer) =>
+	miljoer?.map((miljoe) => {
+		const journalpostId = transaksjonsid?.find((id) => id.miljoe === miljoe)?.transaksjonId
+			?.journalpostId
+		return {
+			url: journalpostId
+				? `/testnav-joark-dokument-service/api/v2/journalpost/${journalpostId}`
+				: null,
+			miljo: miljoe,
+		}
+	})
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -84,6 +102,28 @@ export const useInstData = (ident, harInstBestilling) => {
 
 	return {
 		instData: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useDokarkivData = (ident, harDokarkivbestilling) => {
+	const { transaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
+	const { dokarkivEnvironments } = useDokarkivEnvironments()
+
+	if (!harDokarkivbestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>(
+		[journalpostUrl(transaksjonsid, dokarkivEnvironments)],
+		multiFetcherDokarkiv
+	)
+
+	return {
+		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
 		loading: !error && !data,
 		error: error,
 	}
