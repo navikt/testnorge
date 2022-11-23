@@ -1,7 +1,7 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        jcenter()
+        mavenCentral()
         maven {
             url "https://dl.bintray.com/gradle/gradle-plugins"
         }
@@ -49,6 +49,7 @@ includeBuild './proxies/synthdata-meldekort-proxy'
 includeBuild './proxies/kontoregister-person-proxy'
 includeBuild './proxies/inst-proxy'
 includeBuild './proxies/aaregister-proxy'
+includeBuild './proxies/aareg-services-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'
