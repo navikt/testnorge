@@ -22,13 +22,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 @Slf4j
-public class AaaregUtility {
+public class AaregUtility {
 
     public static boolean isEqualArbeidsforhold(Arbeidsforhold response, Arbeidsforhold request) {
 
         return (isArbeidsgiverOrganisasjonAlike(response, request) ||
                 isArbeidsgiverPersonAlike(response, request)) &&
-                response.getType().equals(response.getType());
+                response.getType().equals(request.getType());
     }
 
     public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,

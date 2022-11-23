@@ -28,9 +28,9 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.aareg.util.AaaregUtility.appendPermisjonPermitteringId;
-import static no.nav.dolly.bestilling.aareg.util.AaaregUtility.doEksistenssjekk;
-import static no.nav.dolly.bestilling.aareg.util.AaaregUtility.isEqualArbeidsforhold;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPermitteringId;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isBlank;
