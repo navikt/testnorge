@@ -32,9 +32,12 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 				)
 					return false
 			}
-			const arrayPos = _get(values, 'aareg[0].amelding')
-				? `aareg[0].amelding[${ameldingIndex}].arbeidsforhold[${arbeidsforholdIndex}]`
-				: `aareg[${aaregIndex}]`
+
+			const amelding = _get(values, 'aareg[0].amelding')
+			const arrayPos =
+				amelding && amelding?.length > 0
+					? `aareg[0].amelding[${ameldingIndex}].arbeidsforhold[${arbeidsforholdIndex}]`
+					: `aareg[${aaregIndex}]`
 
 			const ansattFom = _get(values, `${arrayPos}.ansettelsesPeriode.fom`)
 			const ansattTom = _get(values, `${arrayPos}.ansettelsesPeriode.tom`)
