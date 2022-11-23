@@ -12,10 +12,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
-class GenererSyntAmeldingServiceTest {
+class GenererServiceTest {
 
     @InjectMocks
-    private GenererSyntAmeldingService service;
+    private GenererService service;
 
     @Test
     void shouldGetCorrectAntallMeldinger() {
