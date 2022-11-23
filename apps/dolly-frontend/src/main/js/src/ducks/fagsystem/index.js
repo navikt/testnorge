@@ -11,6 +11,7 @@ import {
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
+	BankkontoApi,
 } from '~/service/Api'
 import { onSuccess } from '~/ducks/utils/requestActions'
 import { successMiljoSelector } from '~/ducks/bestillingStatus'
@@ -87,6 +88,12 @@ export const actions = createActions(
 				ident,
 			}),
 		],
+		getKontoregister: [
+			BankkontoApi.hentKonto,
+			(ident) => ({
+				ident,
+			}),
+		],
 		slettPerson: [
 			DollyApi.slettPerson,
 			(ident) => ({
@@ -121,6 +128,7 @@ const initialState = {
 	tpforvalter: {},
 	brregstub: {},
 	skjermingsregister: {},
+	kontoregister: {},
 }
 
 export default handleActions(
@@ -163,6 +171,9 @@ export default handleActions(
 		},
 		[onSuccess(actions.getBrreg)](state, action) {
 			state.brregstub[action.meta.ident] = action.payload?.data
+		},
+		[onSuccess(actions.getKontoregister)](state, action) {
+			state.kontoregister[action.meta.ident] = action.payload?.data
 		},
 		[onSuccess(actions.getPDLPersoner)](state, action) {
 			const identerBolk = action.payload.data?.data?.hentIdenterBolk?.reduce(
@@ -216,6 +227,8 @@ const deleteIdentState = (state, ident) => {
 	delete state.pdlforvalter[ident]
 	delete state.udistub[ident]
 	delete state.brregstub[ident]
+	delete state.kontoregister[ident]
+	delete state.tpsMessaging[ident]
 }
 
 // Thunk
@@ -282,6 +295,8 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getBrreg(personId))
 			case 'SKJERMINGSREGISTER':
 				return dispatch(actions.getSkjermingsregister(personId))
+			case 'KONTOREGISTER':
+				return dispatch(actions.getKontoregister(personId))
 		}
 	})
 }
@@ -488,5 +503,6 @@ export const selectDataForIdent = (state, ident) => {
 		udistub: state.fagsystem.udistub[ident],
 		brregstub: state.fagsystem.brregstub[ident],
 		skjermingsregister: state.fagsystem.skjermingsregister[ident],
+		kontoregister: state.fagsystem.kontoregister[ident],
 	}
 }

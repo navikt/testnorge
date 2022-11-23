@@ -77,6 +77,7 @@ class AaregClientTest {
                                         .yrke("121232")
                                         .arbeidstidsordning("nada")
                                         .build()))
+                                .type("ordinaert")
                                 .arbeidsforholdId("1")
                                 .isOppdatering(true)
                                 .build()))

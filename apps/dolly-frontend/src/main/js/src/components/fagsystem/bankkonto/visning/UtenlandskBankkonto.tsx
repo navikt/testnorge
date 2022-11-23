@@ -25,8 +25,8 @@ const EditDeleteKnapper = styled.div`
 
 type Data = {
 	data: UtenlandskBankkontoData
-	extraButtons: boolean
-	ident: string
+	extraButtons?: boolean
+	ident?: string
 }
 
 type UtenlandskBankkontoData = {
@@ -54,7 +54,11 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 			await Promise.all([kontoregister, tpsMessaging]).catch((e) => console.error(e))
 			setHide()
 		}
-		return slett()
+		if (ident) {
+			return slett()
+		} else {
+			return
+		}
 	}, [])
 
 	if (!show) {
@@ -97,7 +101,7 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 										closeModal()
 										return handleDelete()
 									}}
-									type="hoved"
+									variant={'primary'}
 								>
 									Ja, jeg er sikker
 								</NavButton>

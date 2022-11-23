@@ -20,29 +20,26 @@ import { FalskIdentitet } from '~/components/fagsystem/pdlf/visning/partials/Fal
 import { KontaktinformasjonForDoedsbo } from '~/components/fagsystem/pdlf/visning/partials/KontaktinformasjonForDoedsbo'
 import { PdlOppholdsstatus } from '~/components/fagsystem/pdlf/visning/partials/Oppholdsstatus'
 import { Foedsel } from '~/components/fagsystem/pdlf/visning/partials/Foedsel'
-import { getPdlIdent } from '~/pages/testnorgePage/utils'
 import { TpsMBankkonto } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 import { PdlDeltBosted } from '~/components/fagsystem/pdl/visning/partials/adresser/PdlDeltBosted'
 import { Doedsfall } from '~/components/fagsystem/pdlf/visning/partials/Doedsfall'
-import { TpsMessagingData } from '~/components/fagsystem/tpsmessaging/form/TpsMessagingData'
 import { PdlVergemaal } from '~/components/fagsystem/pdl/visning/partials/vergemaal/PdlVergemaal'
+import { getBankkontoData } from '~/components/fagsystem/pdlf/visning/PdlfVisning'
 
 type PdlVisningProps = {
 	pdlData: PdlData
-	loading?: boolean
-	environments?: string[]
+	fagsystemData?: any
+	loading?: any
 	miljoeVisning?: boolean
 }
 
 export const PdlVisning = ({
 	pdlData,
-	loading = false,
-	environments,
+	fagsystemData = {},
+	loading = {},
 	miljoeVisning = false,
 }: PdlVisningProps) => {
-	const tpsMessaging = TpsMessagingData(getPdlIdent(pdlData), environments, loading)
-
-	if (loading) {
+	if (loading?.pdl) {
 		return <Loading label="Laster PDL-data" />
 	}
 	if (!pdlData?.hentPerson) {
@@ -69,13 +66,15 @@ export const PdlVisning = ({
 		doedsfall,
 	} = hentPerson
 
+	const bankkontoData = getBankkontoData(fagsystemData)
+
 	return (
 		<ErrorBoundary>
 			<div className={miljoeVisning ? 'boks' : ''}>
 				<PdlPersonInfo
 					data={hentPerson}
-					tpsMessagingData={tpsMessaging?.tpsMessagingData}
-					tpsMessagingLoading={tpsMessaging?.tpsMessagingLoading}
+					tpsMessagingData={fagsystemData?.tpsMessaging}
+					tpsMessagingLoading={loading?.tpsMessaging}
 				/>
 				<IdentInfo pdlResponse={hentIdenter} />
 				<Foedsel data={foedsel} erPdlVisning />
@@ -88,8 +87,8 @@ export const PdlVisning = ({
 				<PdlSikkerhetstiltak data={sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
-					data={tpsMessaging?.tpsMessagingData}
-					loading={tpsMessaging?.tpsMessagingLoading}
+					data={bankkontoData}
+					loading={loading?.tpsMessaging || loading?.kontoregister}
 				/>
 				<PdlBoadresse data={bostedsadresse} />
 				<PdlDeltBosted data={deltBosted} />

@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static no.nav.dolly.bestilling.aareg.util.AaaregUtility.appendResult;
+import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendResult;
 import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
 
 @Service

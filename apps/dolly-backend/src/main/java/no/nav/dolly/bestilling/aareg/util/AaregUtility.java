@@ -22,12 +22,13 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 @Slf4j
-public class AaaregUtility {
+public class AaregUtility {
 
     public static boolean isEqualArbeidsforhold(Arbeidsforhold response, Arbeidsforhold request) {
 
         return (isArbeidsgiverOrganisasjonAlike(response, request) ||
-                isArbeidsgiverPersonAlike(response, request));
+                isArbeidsgiverPersonAlike(response, request)) &&
+                response.getType().equals(request.getType());
     }
 
     public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
@@ -71,6 +72,20 @@ public class AaaregUtility {
         }
     }
 
+    private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
+
+        return arbeidsforhold1.getArbeidsgiver() instanceof Person person1 &&
+                arbeidsforhold2.getArbeidsgiver() instanceof Person person2 &&
+                person1.getOffentligIdent().equals(person2.getOffentligIdent());
+    }
+
+    private static boolean isArbeidsgiverOrganisasjonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
+
+        return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
+                arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
+                organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
+    }
+
     public static StringBuilder appendResult(Map.Entry<String, String> entry, String
             arbeidsforholdId, StringBuilder builder) {
         return builder.append(',')
@@ -97,19 +112,5 @@ public class AaaregUtility {
                 .filter(ord -> ord.contains("BA"))
                 .findFirst()
                 .orElse("");
-    }
-
-    private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
-
-        return arbeidsforhold1.getArbeidsgiver() instanceof Person person1 &&
-                arbeidsforhold2.getArbeidsgiver() instanceof Person person2 &&
-                person1.getOffentligIdent().equals(person2.getOffentligIdent());
-    }
-
-    private static boolean isArbeidsgiverOrganisasjonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
-
-        return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
-                arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
-                organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
     }
 }
