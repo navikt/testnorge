@@ -4,8 +4,8 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.tp.provider.request.OrkestreringRequest;
+import no.nav.registre.tp.service.TpService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,9 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.registre.tp.database.multitenancy.TenantContext;
-import no.nav.registre.tp.service.TpService;
 
 @Slf4j
 @RestController
@@ -33,7 +30,6 @@ public class OrkestreringController {
     public ResponseEntity<Integer> initializeDatabase(
             @RequestBody OrkestreringRequest request
     ) {
-        TenantContext.setTenant(request.getMiljoe());
         var count = tpService.initializeTpDbForEnvironment(request.getAvspillergruppeId());
         return ResponseEntity.ok(count);
     }
@@ -44,7 +40,6 @@ public class OrkestreringController {
             @PathVariable String miljoe,
             @RequestBody List<String> fnrs
     ) {
-        TenantContext.setTenant(miljoe);
         var people = tpService.createPeople(fnrs);
         var feilet = fnrs.parallelStream().filter(fnr -> !people.contains(fnr)).collect(Collectors.toList());
         return ResponseEntity.ok(feilet);
@@ -56,19 +51,13 @@ public class OrkestreringController {
             @PathVariable String miljoe,
             @RequestBody List<String> fnrs
     ) {
-        TenantContext.setTenant(miljoe);
         return tpService.filterTpOnFnrs(fnrs);
     }
 
-    @Transactional
     @ApiOperation(value = "Enkel implementasjon for å fjerne personer i en gitt liste fra TP. Personene fjernes kun hvis de ikke"
             + "har tilhørende forhold. Returnerer en liste med de personene som ble slettet.")
     @DeleteMapping("/fjernPersoner/{miljoe}")
-    public List<String> removeIdentsFromTp(
-            @PathVariable String miljoe,
-            @RequestBody List<String> fnrs
-    ) {
-        TenantContext.setTenant(miljoe);
+    public List<String> removeIdentsFromTp(@PathVariable String miljoe, @RequestBody List<String> fnrs) {
         return tpService.removeFnrsFromTp(fnrs);
     }
 }
