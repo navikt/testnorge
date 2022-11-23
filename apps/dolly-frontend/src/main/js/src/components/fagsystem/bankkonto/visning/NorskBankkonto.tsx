@@ -54,11 +54,19 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 		return null
 	}
 
+	const mapBankkontoNummer = (nummer: string) => {
+		if (!nummer || nummer?.length < 11) {
+			return nummer
+		} else {
+			return nummer.slice(0, 4) + '.' + nummer.slice(4, 6) + '.' + nummer.slice(6)
+		}
+	}
+
 	return (
 		<div style={{ position: 'relative' }}>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue title={'Kontonummer'} value={data.kontonummer} />
+					<TitleValue title={'Kontonummer'} value={mapBankkontoNummer(data.kontonummer)} />
 				</ErrorBoundary>
 			</div>
 			{extraButtons && (
