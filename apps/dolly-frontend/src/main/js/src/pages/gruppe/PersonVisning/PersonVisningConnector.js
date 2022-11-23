@@ -15,6 +15,8 @@ const loadingSelectorSlettPersonOgRelatertePersoner = createLoadingSelector(
 	actions.slettPersonOgRelatertePersoner
 )
 const loadingSelectorBrregstub = createLoadingSelector(actions.getBrreg)
+const loadingSelectorTpsMessaging = createLoadingSelector(actions.getTpsMessaging)
+const loadingSelectorKontoregister = createLoadingSelector(actions.getKontoregister)
 
 const loadingSelector = createSelector(
 	(state) => state.loading,
@@ -29,6 +31,8 @@ const loadingSelector = createSelector(
 			slettPerson: loadingSelectorSlettPerson({ loading }),
 			slettPersonOgRelatertePersoner: loadingSelectorSlettPersonOgRelatertePersoner({ loading }),
 			brregstub: loadingSelectorBrregstub({ loading }),
+			tpsMessaging: loadingSelectorTpsMessaging({ loading }),
+			kontoregister: loadingSelectorKontoregister({ loading }),
 		}
 	}
 )
