@@ -187,7 +187,7 @@ const FinnPersonBestilling = ({
 			let tpsfPersoner = tpsfValues.value?.data
 			if (Array.isArray(tpsfPersoner) && Array.isArray(pdlfPersoner)) {
 				tpsfPersoner = tpsfPersoner.filter(
-					(person: Person) => !pdlfIdenter.map((p: Person) => p.ident).includes(person.ident)
+					(person: Person) => !pdlfPersoner.map((p: Person) => p.ident).includes(person.ident)
 				)
 			}
 			mapToPersoner(tpsfPersoner, personer)
