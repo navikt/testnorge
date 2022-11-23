@@ -22,6 +22,9 @@ server:
     max-http-header-size: 70KB
 
 spring:
+  cloud:
+    vault:
+      enabled: false
   main:
     allow-bean-definition-overriding: true
   flyway:
@@ -44,6 +47,11 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
 
 management:
   endpoints:

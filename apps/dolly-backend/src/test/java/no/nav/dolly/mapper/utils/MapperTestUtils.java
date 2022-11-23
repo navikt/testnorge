@@ -1,11 +1,11 @@
 package no.nav.dolly.mapper.utils;
 
-import static java.util.Objects.nonNull;
-
 import ma.glasnost.orika.CustomConverter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.impl.DefaultMapperFactory;
 import no.nav.dolly.mapper.MappingStrategy;
+
+import static java.util.Objects.nonNull;
 
 public class MapperTestUtils {
 
