@@ -24,7 +24,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.YearMonth;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -69,7 +68,7 @@ public class AaregClient implements ClientRegister {
                     .map(RsAareg::getAmelding)
                     .anyMatch(amelding -> !amelding.isEmpty())) {
 
-                progress.setAaregStatus(ameldingService.sendAmelding(bestilling, dollyPerson, progress.getBestilling().getId(), miljoer));
+                progress.setAaregStatus(ameldingService.sendAmelding(bestilling, dollyPerson, miljoer));
 
             } else {
 

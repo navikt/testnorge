@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.bestilling.aareg.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
@@ -117,7 +117,7 @@ public class AmeldingRequestMappingStrategyTest {
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", IDENT);
         context.setProperty("arbeidsforholdstype", ARBEIDSFORHOLDSTYPE);
-        context.setProperty("opplysningsPliktig", Map.of(ORGNUMMER, JURIDISK_ENHET));
+        context.setProperty("opplysningspliktig", Map.of(ORGNUMMER, JURIDISK_ENHET));
 
         List<AMeldingDTO> result = mapperFacade.mapAsList(rsAmeldingRequest, AMeldingDTO.class, context);
 
