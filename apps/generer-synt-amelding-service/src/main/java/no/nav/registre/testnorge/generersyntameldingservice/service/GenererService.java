@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntAmeldingConsumer;
+import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -13,7 +14,6 @@ import org.springframework.web.server.ResponseStatusException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
-import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
 import no.nav.registre.testnorge.generersyntameldingservice.provider.response.ArbeidsforholdDTO;
 
 @Slf4j
@@ -23,15 +23,19 @@ public class GenererService {
 
     private final SyntAmeldingConsumer syntAmeldingConsumer;
 
-    public List<ArbeidsforholdDTO> generateAmeldinger(SyntAmeldingRequest request) {
-        var antallMeldinger = getAntallMeldinger(request.getStartdato(), request.getSluttdato());
+    public List<ArbeidsforholdDTO> generateAmeldinger(
+            LocalDate startdato,
+            LocalDate sluttdato,
+            ArbeidsforholdType arbeidsforholdType
+    ) {
+        var antallMeldinger = getAntallMeldinger(startdato, sluttdato);
 
         var initialAmelding = syntAmeldingConsumer.getEnkeltArbeidsforhold(
                 ArbeidsforholdPeriode.builder()
-                        .startdato(request.getStartdato())
+                        .startdato(startdato)
                         .build(),
-                request.getArbeidsforholdType());
-        initialAmelding.setRapporteringsmaaned(request.getStartdato().format(DateTimeFormatter.ofPattern("yyyy-MM")));
+                arbeidsforholdType);
+        initialAmelding.setRapporteringsmaaned(startdato.format(DateTimeFormatter.ofPattern("yyyy-MM")));
 
         if (antallMeldinger > 1) {
             initialAmelding.emptyPermisjoner();

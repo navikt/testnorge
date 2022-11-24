@@ -8,7 +8,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntAmeldingConsumer;
 import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
-import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import org.junit.jupiter.api.Assertions;
@@ -63,14 +62,13 @@ class GenererServiceTest {
     void shouldGenerateSingleAmelding() throws JsonProcessingException {
         var startDato = LocalDate.of(2020, 1, 1);
         var sluttDato = LocalDate.of(2020, 1, 20);
-        var request = new SyntAmeldingRequest(ArbeidsforholdType.ordinaertArbeidsforhold, startDato, sluttDato);
 
         var arbeidsforholdString = getResourceFileContent("files/synt_arbeidsforhold.json");
         var arbeidsforhold = objectMapper.readValue(arbeidsforholdString, Arbeidsforhold.class);
 
         when(syntAmeldingConsumer.getEnkeltArbeidsforhold(any(ArbeidsforholdPeriode.class), any(ArbeidsforholdType.class))).thenReturn(arbeidsforhold);
 
-        var response = service.generateAmeldinger(request);
+        var response = service.generateAmeldinger(startDato, sluttDato, ArbeidsforholdType.ordinaertArbeidsforhold);
 
         assertThat(response).hasSize(1);
     }
@@ -79,7 +77,6 @@ class GenererServiceTest {
     void shouldGenerateMultipleAmelding() throws JsonProcessingException {
         var startDato = LocalDate.of(2020, 1, 1);
         var sluttDato = LocalDate.of(2020, 7, 20);
-        var request = new SyntAmeldingRequest(ArbeidsforholdType.ordinaertArbeidsforhold, startDato, sluttDato);
 
         var arbeidsforholdString = getResourceFileContent("files/synt_arbeidsforhold.json");
         var arbeidsforhold = objectMapper.readValue(arbeidsforholdString, Arbeidsforhold.class);
@@ -90,7 +87,7 @@ class GenererServiceTest {
         when(syntAmeldingConsumer.getEnkeltArbeidsforhold(any(ArbeidsforholdPeriode.class), any(ArbeidsforholdType.class))).thenReturn(arbeidsforhold);
         when(syntAmeldingConsumer.getHistorikk(arbeidsforhold)).thenReturn(historikk);
 
-        var response = service.generateAmeldinger(request);
+        var response = service.generateAmeldinger(startDato, sluttDato, ArbeidsforholdType.ordinaertArbeidsforhold);
 
         assertThat(response).hasSize(7);
     }

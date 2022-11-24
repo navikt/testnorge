@@ -2,8 +2,6 @@ package no.nav.registre.testnorge.generersyntameldingservice.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
-import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
@@ -23,7 +21,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static no.nav.registre.testnorge.generersyntameldingservice.ResourceUtils.getResourceFileContent;
@@ -58,11 +55,6 @@ public class SyntControllerIntegrationTest {
     private TypeReference<List<Arbeidsforhold>> HISTORIKK_RESPONSE = new TypeReference<>() {
     };
 
-    private final SyntAmeldingRequest request = new SyntAmeldingRequest(
-            ArbeidsforholdType.ordinaertArbeidsforhold,
-            LocalDate.of(2020, 1, 1),
-            LocalDate.of(2020, 7, 1));
-
     @BeforeAll
     public static void setup() {
         arbeidsforholdResponse = getResourceFileContent("files/synt_arbeidsforhold.json");
@@ -93,9 +85,7 @@ public class SyntControllerIntegrationTest {
                 .withResponseBody(historikk)
                 .stubPost();
 
-
-        mvc.perform(post("/api/v1/generer/amelding")
-                        .content(objectMapper.writeValueAsString(request))
+        mvc.perform(post("/api/v1/generer/ordinaert?startdato=2020-01-01&sluttdato=2020-07-01")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
