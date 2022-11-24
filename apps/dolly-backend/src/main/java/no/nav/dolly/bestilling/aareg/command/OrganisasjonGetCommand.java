@@ -6,7 +6,6 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
@@ -40,15 +39,10 @@ public class OrganisasjonGetCommand implements Callable<Flux<OrganisasjonDTO>> {
                 .retrieve()
                 .bodyToFlux(OrganisasjonDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> error instanceof WebClientResponseException.NotFound,
-                        error -> Flux.just(OrganisasjonDTO.builder()
+                .onErrorResume(error -> Flux.just(OrganisasjonDTO.builder()
                                 .orgnummer(orgnummer)
                                 .juridiskEnhet(NOT_FOUND)
                                 .build()))
-                .onErrorResume(error -> Flux.just(OrganisasjonDTO.builder()
-                        .orgnummer(orgnummer)
-                        .feilmelding(error.getMessage())
-                        .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

@@ -24,5 +24,14 @@ public class OrganisasjonDTO {
     private final String redigertnavn;
     private final List<String> driverVirksomheter;
 
-    private final String feilmelding;
+    public OrganisasjonDTO(OrganisasjonDTO dto) {
+        this.orgnummer = dto.getOrgnummer();
+        this.enhetType = dto.getEnhetType();
+        this.navn = dto.getNavn();
+        this.juridiskEnhet = dto.getJuridiskEnhet();
+        this.postadresse = dto.getPostadresse();
+        this.forretningsadresser = dto.getForretningsadresser();
+        this.redigertnavn = dto.getRedigertnavn();
+        this.driverVirksomheter = dto.getDriverVirksomheter();
+    }
 }
