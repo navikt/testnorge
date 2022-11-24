@@ -17,12 +17,12 @@ import org.springframework.context.annotation.Import;
 public class RouteLocatorConfig {
 
     @Bean
-    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TrygdeetatenAzureAdTokenService tokenService, AaregServicesProperties properties) {
+    public RouteLocator customRouteLocator(RouteLocatorBuilder builder, TrygdeetatenAzureAdTokenService tokenService, OnpremProperties onpremProperties, CloudProperties cloudProperties) {
 
-        var authenticationFilter = AddAuthenticationRequestGatewayFilterFactory
+        var onpremAuthentication = AddAuthenticationRequestGatewayFilterFactory
             .bearerAuthenticationHeaderFilter(
                 () -> tokenService
-                    .exchange(properties)
+                    .exchange(onpremProperties)
                     .map(AccessToken::getTokenValue)
             );
 
@@ -37,8 +37,13 @@ public class RouteLocatorConfig {
     }
 
     @Configuration
-    @ConfigurationProperties(prefix = "aareg")
-    public static class AaregServicesProperties extends ServerProperties {
+    @ConfigurationProperties(prefix = "aareg.fss")
+    public static class OnpremProperties extends ServerProperties {
+    }
+
+    @Configuration
+    @ConfigurationProperties(prefix = "aareg.gcp")
+    public static class CloudProperties extends ServerProperties {
     }
 
 }

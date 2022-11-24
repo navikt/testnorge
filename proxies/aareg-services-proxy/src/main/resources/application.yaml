@@ -19,9 +19,15 @@ spring:
 
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-# TODO: Resolve this copy from krrstub-proxy.
+# TODO: Set proper values
 aareg:
-  name: digdir-krr-stub
-  namespace: team-rocket
-  url: https://digdir-krr-stub.dev.intern.nav.no
-  cluster: dev-gcp
+  fss:
+    cluster: dev-fss
+    name: digdir-krr-stub
+    namespace: team-rocket
+    url: https://digdir-krr-stub.dev.intern.nav.no
+  gcp:
+    cluster: dev-gcp
+    name: digdir-krr-stub
+    namespace: team-rocket
+    url: https://digdir-krr-stub.dev.intern.nav.no
