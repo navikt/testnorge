@@ -17,6 +17,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +30,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 public class AmeldingConsumer {
 
     private static final String JURIDISK_ENHET_IKKE_FUNNET = "Feil= Juridisk enhet for organisasjon(ene): %s ble ikke funnet i miljø";
+    private static final DateTimeFormatter YEAR_MONTH = DateTimeFormatter.ofPattern("yyyy-MM");
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -63,7 +65,8 @@ public class AmeldingConsumer {
                                                 .map(VirksomhetDTO::getOrganisajonsnummer)
                                                 .collect(Collectors.joining(",")))));
                             } else {
-                                log.info("Sender Amelding til miljø {}: {}", miljoe, amelding);
+                                log.info("Sender Amelding {} til miljø {}: {}",
+                                        amelding.getKalendermaaned().format(YEAR_MONTH), miljoe, amelding);
                                 return new AmeldingPutCommand(webClient, amelding, miljoe, token.getTokenValue()).call()
                                         .map(status -> status.getStatusCode().is2xxSuccessful() ? "OK" :
                                                 errorStatusDecoder.getErrorText(status.getStatusCode(), status.getBody()));
