@@ -24,9 +24,8 @@ public class AmeldingPutCommand implements Callable<Mono<ResponseEntity<String>>
 
     private final WebClient webClient;
     private final AMeldingDTO amelding;
-    private final String miljoe;
+    private final String miljo;
     private final String token;
-
 
     @Override
     public Mono<ResponseEntity<String>> call() {
@@ -36,7 +35,7 @@ public class AmeldingPutCommand implements Callable<Mono<ResponseEntity<String>>
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
-                .header(MILJOE, miljoe)
+                .header(MILJOE, miljo)
                 .bodyValue(amelding)
                 .retrieve()
                 .toBodilessEntity()
