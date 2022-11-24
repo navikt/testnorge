@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -28,15 +29,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.stream.Collectors.joining;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselVenter;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -53,6 +52,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final DoneService doneService;
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
@@ -84,34 +84,40 @@ public class PensjonforvalterClient implements ClientRegister {
         var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
-        if (!dollyPerson.isOpprettetIPDL()) {
-            progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
-                    tilgjengeligeMiljoer.stream()
-                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("PESYS"))))
-                            .collect(Collectors.joining(",")));
+        progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
+                tilgjengeligeMiljoer.stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselVenter("PESYS"))))
+                        .collect(Collectors.joining(",")));
+        doneService.persist(progress);
 
-        } else if (nonNull(bestilling.getPensjonforvalter()) && bestilteMiljoer.isEmpty()) {
-            progress.setPensjonforvalterStatus(new StringBuilder()
-                    .append(PENSJON_FORVALTER)
-                    .append("NA:Feil= Bestilling ble ikke sendt til Pensjonsforvalter (POPP/TP) da tilgjengelig(e) miljø(er) [")
-                    .append(tilgjengeligeMiljoer.stream().collect(joining(";")))
-                    .append("] ikke er valgt")
-                    .toString());
+        var isAvail = false;
+        var loops = DoneService.MAX_AWAIT_CYCLES;
+        while (loops-- > 0 &&  !(isAvail = doneService.isPdlSync(dollyPerson.getHovedperson())));
+
+        if (isAvail) {
+            dollyPersonCache.fetchIfEmpty(dollyPerson);
+
+            pensjonforvalterConsumer.getAccessToken()
+                    .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
+                            .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
+                                            .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
+                                            .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
+                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())),
+                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                            .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())))))
+                    .collect(Collectors.joining("$"))
+                    .subscribe(respons -> {
+                        progress.setPensjonforvalterStatus(respons);
+                        doneService.isDone(progress);
+                    });
 
         } else {
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-            progress.setPensjonforvalterStatus(String.join("$",
-                    Objects.requireNonNull(pensjonforvalterConsumer.getAccessToken()
-                            .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
-                                    .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
-                                                    .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
-                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
-                                            lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                    .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())),
-                                            lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                    .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())))))
-                            .collectList()
-                            .block())));
+            progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
+                    tilgjengeligeMiljoer.stream()
+                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("PESYS"))))
+                            .collect(Collectors.joining(",")));
+            doneService.isDone(progress);
         }
 
         return Flux.just();
@@ -128,9 +134,9 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
 
-        return isNull(kriterier.getPensjonforvalter()) ||
-                bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()));
+        return bestilling.getProgresser().stream()
+                .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()) &&
+                        !entry.getPensjonforvalterStatus().contains("Info: Venter"));
     }
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {

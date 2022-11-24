@@ -24,6 +24,11 @@ public class ErrorStatusDecoder {
     private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
             "Forsøk gjenopprett for å fikse dette!";
 
+    private static final String VARSEL_VENTER = "Info: Venter på PDL før sending starter til %s ...";
+
+    private static final String VARSEL_SLUTT = "Varsel: Sending til %s ble gitt opp da personen ikke kunne leses tilbake fra PDL. " +
+            "Forsøk gjenopprett for å fikse dette!";
+
     private static final String TEKNISK_FEIL = "Teknisk feil {} mottatt fra system";
     private static final String TEKNISK_FEIL_SE_LOGG = "Teknisk feil. Se logg! ";
     private static final String ERROR = "error";
@@ -37,6 +42,16 @@ public class ErrorStatusDecoder {
     public static String getVarsel(String system) {
 
         return String.format(VARSEL, system);
+    }
+
+    public static String getVarselVenter(String system) {
+
+        return String.format(VARSEL_VENTER, system);
+    }
+
+    public static String getVarselSlutt(String system) {
+
+        return String.format(VARSEL_SLUTT, system);
     }
 
     public static String encodeStatus(String toBeEncoded) {
