@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static no.nav.dolly.bestilling.aareg.command.OrganisasjonGetCommand.NOT_FOUND;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -27,7 +28,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Slf4j
 public class AmeldingConsumer {
 
-    private static final String JURIDISK_ENHET_IKKE_FUNNET = "Juridisk enhet for organisasjon: %s ikke funnet i miljø: %s";
+    private static final String JURIDISK_ENHET_IKKE_FUNNET = "Feil= Juridisk enhet for organisasjon(ene): %s ble ikke funnet i miljø";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -50,17 +51,19 @@ public class AmeldingConsumer {
         this.errorStatusDecoder = errorStatusDecoder;
     }
 
-    @Timed(name = "providers", tags = { "operation", "amelding_put" })
+    @Timed(name = "providers", tags = {"operation", "amelding_put"})
     public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.fromIterable(ameldinger)
                         .flatMap(amelding -> {
                             if (NOT_FOUND.equals(amelding.getOpplysningspliktigOrganisajonsnummer())) {
-                                return Mono.just(String.format(JURIDISK_ENHET_IKKE_FUNNET, amelding.getVirksomheter().stream()
-                                        .map(VirksomhetDTO::getOrganisajonsnummer)
-                                        .findFirst().orElse("Ukjent"), miljoe));
-                        } else {
+                                return Mono.just(ErrorStatusDecoder.encodeStatus(
+                                        String.format(JURIDISK_ENHET_IKKE_FUNNET, amelding.getVirksomheter().stream()
+                                                .map(VirksomhetDTO::getOrganisajonsnummer)
+                                                .collect(Collectors.joining(",")))));
+                            } else {
+                                log.info("Sender Amelding til miljø {}: {}", miljoe, amelding);
                                 return new AmeldingPutCommand(webClient, amelding, miljoe, token.getTokenValue()).call()
                                         .map(status -> status.getStatusCode().is2xxSuccessful() ? "OK" :
                                                 errorStatusDecoder.getErrorText(status.getStatusCode(), status.getBody()));
