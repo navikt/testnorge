@@ -1,4 +1,4 @@
-package no.nav.dolly.mapper.strategy;
+package no.nav.dolly.bestilling.aareg.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
@@ -33,7 +33,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
-public class AmeldingRequestMappingStrategyTest {
+class AmeldingRequestMappingStrategyTest {
 
     private static final String IDENT = "1234567890";
 
@@ -57,7 +57,7 @@ public class AmeldingRequestMappingStrategyTest {
     private AMeldingDTO validAmeldingDto;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new AmeldingRequestMappingStrategy());
 
         RsArbeidsforholdAareg arbeidsforholdAareg = RsArbeidsforholdAareg.builder()
@@ -112,12 +112,12 @@ public class AmeldingRequestMappingStrategyTest {
     }
 
     @Test
-    public void map_AmeldingRequest_Returns_Valid_Amelding() {
+    void map_AmeldingRequest_Returns_Valid_Amelding() {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty("personIdent", IDENT);
         context.setProperty("arbeidsforholdstype", ARBEIDSFORHOLDSTYPE);
-        context.setProperty("opplysningsPliktig", Map.of(ORGNUMMER, JURIDISK_ENHET));
+        context.setProperty("opplysningspliktig", Map.of(ORGNUMMER, JURIDISK_ENHET));
 
         List<AMeldingDTO> result = mapperFacade.mapAsList(rsAmeldingRequest, AMeldingDTO.class, context);
 
@@ -125,7 +125,7 @@ public class AmeldingRequestMappingStrategyTest {
     }
 
     @Test
-    public void map_Permisjon_Returns_Valid_Amelding_Permisjon() {
+    void map_Permisjon_Returns_Valid_Amelding_Permisjon() {
 
         final String PERMISJON = "permisjon";
 
@@ -150,7 +150,7 @@ public class AmeldingRequestMappingStrategyTest {
     }
 
     @Test
-    public void map_Permittering_Returns_Valid_Amelding_Permisjon() {
+    void map_Permittering_Returns_Valid_Amelding_Permisjon() {
 
         final String PERMITTERING = "permittering";
 
