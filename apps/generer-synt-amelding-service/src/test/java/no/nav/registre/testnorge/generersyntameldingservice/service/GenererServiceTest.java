@@ -1,21 +1,43 @@
 package no.nav.registre.testnorge.generersyntameldingservice.service;
 
+import static no.nav.registre.testnorge.generersyntameldingservice.ResourceUtils.getResourceFileContent;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.testnorge.generersyntameldingservice.consumer.SyntAmeldingConsumer;
+import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
+import no.nav.registre.testnorge.generersyntameldingservice.provider.request.SyntAmeldingRequest;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
+import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class GenererServiceTest {
 
+    @Mock
+    private SyntAmeldingConsumer syntAmeldingConsumer;
+
     @InjectMocks
     private GenererService service;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
+
+    private TypeReference<List<Arbeidsforhold>> HISTORIKK_RESPONSE = new TypeReference<>() {
+    };
 
     @Test
     void shouldGetCorrectAntallMeldinger() {
@@ -35,5 +57,41 @@ class GenererServiceTest {
                 ResponseStatusException.class,
                 () -> service.getAntallMeldinger(startDato, sluttDato)
         );
+    }
+
+    @Test
+    void shouldGenerateSingleAmelding() throws JsonProcessingException {
+        var startDato = LocalDate.of(2020, 1, 1);
+        var sluttDato = LocalDate.of(2020, 1, 20);
+        var request = new SyntAmeldingRequest(ArbeidsforholdType.ordinaertArbeidsforhold, startDato, sluttDato);
+
+        var arbeidsforholdString = getResourceFileContent("files/synt_arbeidsforhold.json");
+        var arbeidsforhold = objectMapper.readValue(arbeidsforholdString, Arbeidsforhold.class);
+
+        when(syntAmeldingConsumer.getEnkeltArbeidsforhold(any(ArbeidsforholdPeriode.class), any(ArbeidsforholdType.class))).thenReturn(arbeidsforhold);
+
+        var response = service.generateAmeldinger(request);
+
+        assertThat(response).hasSize(1);
+    }
+
+    @Test
+    void shouldGenerateMultipleAmelding() throws JsonProcessingException {
+        var startDato = LocalDate.of(2020, 1, 1);
+        var sluttDato = LocalDate.of(2020, 7, 20);
+        var request = new SyntAmeldingRequest(ArbeidsforholdType.ordinaertArbeidsforhold, startDato, sluttDato);
+
+        var arbeidsforholdString = getResourceFileContent("files/synt_arbeidsforhold.json");
+        var arbeidsforhold = objectMapper.readValue(arbeidsforholdString, Arbeidsforhold.class);
+
+        var historikkString = getResourceFileContent("files/synt_historikk.json");
+        var historikk = objectMapper.readValue(historikkString, HISTORIKK_RESPONSE);
+
+        when(syntAmeldingConsumer.getEnkeltArbeidsforhold(any(ArbeidsforholdPeriode.class), any(ArbeidsforholdType.class))).thenReturn(arbeidsforhold);
+        when(syntAmeldingConsumer.getHistorikk(arbeidsforhold)).thenReturn(historikk);
+
+        var response = service.generateAmeldinger(request);
+
+        assertThat(response).hasSize(7);
     }
 }

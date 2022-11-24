@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureWireMock(port = 0)
-public class SyntAmeldingConsumerTest {
+class SyntAmeldingConsumerTest {
 
     @MockBean
     private JwtDecoder jwtDecoder;
