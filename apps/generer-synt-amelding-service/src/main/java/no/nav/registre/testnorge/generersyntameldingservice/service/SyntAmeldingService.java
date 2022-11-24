@@ -19,7 +19,7 @@ import no.nav.registre.testnorge.generersyntameldingservice.provider.response.Ar
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class GenererService {
+public class SyntAmeldingService {
 
     private final SyntAmeldingConsumer syntAmeldingConsumer;
 

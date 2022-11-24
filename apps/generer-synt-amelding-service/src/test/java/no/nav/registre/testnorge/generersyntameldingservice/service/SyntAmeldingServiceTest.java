@@ -25,13 +25,13 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class GenererServiceTest {
+class SyntAmeldingServiceTest {
 
     @Mock
     private SyntAmeldingConsumer syntAmeldingConsumer;
 
     @InjectMocks
-    private GenererService service;
+    private SyntAmeldingService service;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
