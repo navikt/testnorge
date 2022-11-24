@@ -4,12 +4,10 @@ import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdEksistens;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.domain.resultset.BAFeilkoder;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -82,23 +80,5 @@ public class AaregUtility {
         return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
                 arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
                 organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
-    }
-
-    public static String konverterBAfeilkodeTilFeilmelding(String baKode) {
-        var baFeilkode = getBaFeilkodeFromFeilmelding(baKode);
-        try {
-            return baKode.replace(baFeilkode, BAFeilkoder.valueOf(baFeilkode).getBeskrivelse());
-        } catch (IllegalArgumentException e) {
-            log.warn("Mottok ukjent BA feilkode i feilmeldingen: {}", baKode);
-            return baKode;
-        }
-    }
-
-    private static String getBaFeilkodeFromFeilmelding(String baKode) {
-        var setninger = baKode.split(" ");
-        return Arrays.stream(setninger)
-                .filter(ord -> ord.contains("BA"))
-                .findFirst()
-                .orElse("");
     }
 }

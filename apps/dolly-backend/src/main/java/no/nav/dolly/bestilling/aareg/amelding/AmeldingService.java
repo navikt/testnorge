@@ -13,6 +13,7 @@ import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.List;
@@ -30,8 +31,8 @@ public class AmeldingService {
     private final MapperFacade mapperFacade;
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
 
-    public String sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                              List<String> miljoer) {
+    public Mono<String> sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
+                                     List<String> miljoer) {
 
         var orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
                 .map(RsAmeldingRequest::getArbeidsforhold)
@@ -48,8 +49,7 @@ public class AmeldingService {
                                         organisasjon, miljoe))
                         .collect(Collectors.joining(",")))
                 .flatMap(Flux::from)
-                .collect(Collectors.joining(","))
-                .block();
+                .collect(Collectors.joining(","));
     }
 
     private Flux<String> prepareAmeldinger(RsAareg aareg, String ident, Map<String, String> organisasjon, String miljoe) {
