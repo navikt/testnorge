@@ -3,7 +3,7 @@ package no.nav.testnav.libs.servletcore.logging;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public abstract class LogRequestInterceptor extends HandlerInterceptorAdapter {
+public abstract class LogRequestInterceptor implements HandlerInterceptor {
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         if (log.isTraceEnabled() && shouldLogRequest(request)) {
             try {
 
@@ -38,7 +38,7 @@ public abstract class LogRequestInterceptor extends HandlerInterceptorAdapter {
                 log.warn("Feil med logging av requests", e);
             }
         }
-        return super.preHandle(request, response, handler);
+        return true;
     }
 
     abstract boolean shouldLogRequest(HttpServletRequest request);

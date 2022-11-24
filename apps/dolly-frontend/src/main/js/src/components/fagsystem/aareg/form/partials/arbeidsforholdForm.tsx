@@ -32,6 +32,7 @@ import _, { isEqual } from 'lodash'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 
 type Arbeidsforhold = {
+	isOppdatering?: boolean
 	type?: string
 	ansettelsesPeriode?: Ansettelsesperiode
 	antallTimerForTimeloennet?: Array<unknown>
@@ -68,11 +69,11 @@ export const ArbeidsforholdForm = ({
 		if (_isEmpty(bestillinger) || ameldingIndex) {
 			return null
 		}
+
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
 			?.flatMap((bestilling) => bestilling.data.aareg)
-			?.filter((bestilling) => !bestilling?.amelding)
-			?.filter((bestilling) => !bestilling?.ansettelsesPeriode?.sluttaarsak)
+			?.filter((bestilling) => _isEmpty(bestilling?.amelding))
 
 		return _.uniqWith(
 			aaregBestillinger,
@@ -114,10 +115,7 @@ export const ArbeidsforholdForm = ({
 		setFieldValue(
 			'aareg',
 			tidligereAaregBestillinger.map((aaregBestilling) => {
-				aaregBestilling.ansettelsesPeriode = {
-					tom: null,
-					...aaregBestilling.ansettelsesPeriode,
-				}
+				aaregBestilling.isOppdatering = true
 				return aaregBestilling
 			})
 		)
@@ -296,7 +294,6 @@ export const ArbeidsforholdForm = ({
 					label="Ansatt fra"
 					onChange={onChangeLenket('ansettelsesPeriode.fom')}
 					fastfield={false}
-					disabled={erLaastArbeidsforhold}
 				/>
 				<FormikDatepicker
 					name={`${path}.ansettelsesPeriode.tom`}
@@ -304,16 +301,14 @@ export const ArbeidsforholdForm = ({
 					onChange={onChangeLenket('ansettelsesPeriode.tom')}
 					fastfield={false}
 				/>
-				{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-					<FormikSelect
-						name={`${path}.ansettelsesPeriode.sluttaarsak`}
-						label="Sluttårsak"
-						kodeverk={ArbeidKodeverk.SluttaarsakAareg}
-						size="xlarge"
-						onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-						isDisabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
-					/>
-				)}
+				<FormikSelect
+					name={`${path}.ansettelsesPeriode.sluttaarsak`}
+					label="Sluttårsak"
+					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
+					size="xlarge"
+					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
+					isDisabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
+				/>
 				<Monthpicker
 					name={`${path}.navArbeidsforholdPeriode`}
 					date={navArbeidsforholdPeriode}
@@ -330,24 +325,15 @@ export const ArbeidsforholdForm = ({
 						isClearable={false}
 						optionHeight={50}
 						onChange={onChangeLenket('arbeidsavtale.yrke')}
-						isDisabled={erLaastArbeidsforhold}
 					/>
 				)}
 			</div>
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (
-				<ArbeidsavtaleForm
-					path={`${path}.arbeidsavtale`}
-					onChangeLenket={onChangeLenket}
-					disabled={erLaastArbeidsforhold}
-				/>
+				<ArbeidsavtaleForm path={`${path}.arbeidsavtale`} onChangeLenket={onChangeLenket} />
 			)}
 			{arbeidsforholdstype === 'maritimtArbeidsforhold' && (
-				<MaritimtArbeidsforholdForm
-					path={`${path}.fartoy[0]`}
-					onChangeLenket={onChangeLenket}
-					disabled={erLaastArbeidsforhold}
-				/>
+				<MaritimtArbeidsforholdForm path={`${path}.fartoy[0]`} onChangeLenket={onChangeLenket} />
 			)}
 
 			{arbeidsforholdstype !== 'forenkletOppgjoersordning' && (

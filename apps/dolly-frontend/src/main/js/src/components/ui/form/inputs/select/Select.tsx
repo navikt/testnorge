@@ -17,17 +17,21 @@ type SelectProps = {
 	value?: any
 	className?: any
 	classNamePrefix?: string
+	onChange?: any
+	onBlur?: any
 	isDisabled?: boolean
 	isLoading?: boolean
 	isSearchable?: boolean
 	isClearable?: boolean
 	placeholder?: string
 	options?: any
+	optionHeight?: number
 	isMulti?: boolean
 	styles?: any
 	kodeverk?: string
 	label?: string
-	feil?: { feilmelding: string }
+	feil?: any
+	size?: string
 	info?: any
 	visHvisAvhuket?: any
 	afterChange?: any
@@ -102,7 +106,7 @@ export const DollySelect = (props: SelectProps) => (
 	</InputWrapper>
 )
 
-const P_FormikSelect = ({ _fastfield, feil, ...props }: SelectProps) => {
+const P_FormikSelect = ({ feil, ...props }: SelectProps) => {
 	const [field, meta] = useField(props)
 	const handleChange = (selected, meta) => {
 		let value

@@ -79,13 +79,14 @@ export default () => {
             </div>
         })
         const consumerStatus = aggregateStatus(Object.values(services))
+        const cssConsumerClass = 'consumer-name ' + `consumer-${consumerStatus}`
         return <div className="consumer-status" key={consumer}>
             <Accordion style={{ width: "100%" }}>
                 <Accordion.Item >
                     <Accordion.Header>
-                        <div className="consumer-name">
+                        <div className={cssConsumerClass}>
                             <div>{consumer}</div>
-                            <div>
+                            <div className="consumer-status-icon">
                                 <Icon kind={iconType(consumerStatus)} />
                             </div>
                         </div>

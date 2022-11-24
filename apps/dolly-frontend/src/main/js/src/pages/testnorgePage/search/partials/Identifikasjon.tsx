@@ -2,7 +2,6 @@ import React from 'react'
 import { FormikProps } from 'formik'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 
 interface IdentifikasjonProps {
 	formikBag: FormikProps<{}>
@@ -26,7 +25,6 @@ const options = {
 
 const paths = {
 	identtype: 'identifikasjon.identtype',
-	adressebeskyttelse: 'identifikasjon.adressebeskyttelse',
 	falsk: 'identifikasjon.falskIdentitet',
 	utenlandsk: 'identifikasjon.utenlandskIdentitet',
 	kjoenn: 'kjoenn',
@@ -43,12 +41,6 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 				path={paths.identtype}
 				legend={'Velg identifikatortype'}
 				options={options.identtype}
-			/>
-			<FormikSelect
-				name={paths.adressebeskyttelse}
-				label="Adressebeskyttelse"
-				options={options.adressebeskyttelse}
-				size="medium"
 			/>
 			<div className="options-title">Identitet</div>
 			<FormikCheckbox name={paths.falsk} label="Har falsk identitet" />

@@ -14,7 +14,6 @@ import {
 	PensjonVisning,
 	SigrunstubVisning,
 	SykemeldingVisning,
-	TpsfVisning,
 	TpVisning,
 	UdiVisning,
 } from '~/components/fagsystem'
@@ -40,11 +39,12 @@ import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/
 import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { useInstData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
+import { useDokarkivData, useInstData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '~/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
@@ -112,6 +112,11 @@ export const PersonVisning = ({
 	const { loading: loadingPoppData, poppData } = usePoppData(
 		ident.ident,
 		harPoppBestilling(bestillingerFagsystemer)
+	)
+
+	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(
+		ident.ident,
+		harDokarkivBestilling(bestillingerFagsystemer)
 	)
 
 	const { loading: loadingInstData, instData } = useInstData(
@@ -270,16 +275,14 @@ export const PersonVisning = ({
 				)}
 				{ident.master !== 'PDL' && (
 					<PdlfVisningConnector
-						data={data.pdlforvalter}
-						tpsfData={TpsfVisning.filterValues(data.tpsf, bestillingListe)}
-						skjermingData={data.skjermingsregister}
-						loading={loading.pdlforvalter}
-						environments={bestilling?.environments}
+						fagsystemData={data}
+						bestillingListe={bestillingListe}
+						loading={loading}
 						master={ident.master}
 					/>
 				)}
 				{ident.master === 'PDL' && (
-					<PdlVisning pdlData={data.pdl} environments={bestilling?.environments} />
+					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
 				<AaregVisning
 					liste={arbeidsforhold}
@@ -316,7 +319,11 @@ export const PersonVisning = ({
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
 				/>
-				<DokarkivVisning ident={ident.ident} />
+				<DokarkivVisning
+					data={dokarkivData}
+					bestillingIdListe={bestillingIdListe}
+					loading={loadingDokarkivData}
+				/>
 				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
 				<PdlPersonMiljoeInfo ident={ident.ident} />
 				<TidligereBestillinger ids={ident.bestillingId} />

@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.kontoregisterservice.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.tpsmessagingservice.KontoregisterLandkode;
 
 import java.security.SecureRandom;
 import java.util.Random;

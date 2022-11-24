@@ -1,9 +1,7 @@
-package no.nav.dolly.consumer.aareg;
+package no.nav.dolly.bestilling.aareg;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.aareg.AaregClient;
-import no.nav.dolly.bestilling.aareg.AaregConsumer;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -79,7 +77,9 @@ class AaregClientTest {
                                         .yrke("121232")
                                         .arbeidstidsordning("nada")
                                         .build()))
+                                .type("ordinaert")
                                 .arbeidsforholdId("1")
+                                .isOppdatering(true)
                                 .build()))
                 .build();
     }
@@ -162,6 +162,7 @@ class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .arbeidsforholdId("1")
+                .isOppdatering(true)
                 .build()));
         request.setEnvironments(singletonList(ENV));
 

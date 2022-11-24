@@ -12,6 +12,19 @@ type PdlDataVisningProps = {
 	ident: Ident
 }
 
+export const ApiFeilmelding = ({ feil }) => {
+	return (
+		<div className="flexbox--align-center">
+			<Icon size={20} kind="report-problem-circle" />
+			<div>
+				<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
+					{feil}
+				</pre>
+			</div>
+		</div>
+	)
+}
+
 export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlDataQ1, setPdlDataQ1] = useState(null)
@@ -36,19 +49,6 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 		}
 	}
 
-	const ApiFeilmelding = (feil: any) => {
-		return (
-			<div className="flexbox--align-center">
-				<Icon size={20} kind="report-problem-circle" />
-				<div>
-					<pre className="api-feilmelding" style={{ fontSize: '1.25em', marginLeft: '5px' }}>
-						{feil}
-					</pre>
-				</div>
-			</div>
-		)
-	}
-
 	const getPersonInfo = (pdlMiljoe = null as string) => {
 		if ((!pdlData && !pdlMiljoe) || (!pdlDataQ1 && pdlMiljoe)) {
 			DollyApi.getPersonFraPdl(ident.ident || ident, pdlMiljoe)
@@ -70,14 +70,15 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 				})
 		}
 		if (!pdlMiljoe && pdlError) {
-			return ApiFeilmelding(pdlError)
+			return <ApiFeilmelding feil={pdlError} />
 		} else if (pdlMiljoe && pdlErrorQ1) {
-			return ApiFeilmelding(pdlErrorQ1)
+			return <ApiFeilmelding feil={pdlErrorQ1} />
 		}
+
 		return (
 			<PdlVisning
 				pdlData={pdlMiljoe ? pdlDataQ1 : pdlData}
-				loading={pdlMiljoe ? pdlLoadingQ1 : pdlLoading}
+				loading={{ pdl: pdlMiljoe ? pdlLoadingQ1 : pdlLoading }}
 				miljoeVisning
 			/>
 		)

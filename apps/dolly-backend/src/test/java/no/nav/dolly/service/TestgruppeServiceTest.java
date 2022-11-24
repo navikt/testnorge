@@ -24,6 +24,9 @@ import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.NonTransientDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -34,6 +37,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -42,6 +46,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -150,12 +155,13 @@ public class TestgruppeServiceTest {
                 .build();
 
         when(brukerService.fetchBruker(any())).thenReturn(bruker);
+        when(testgruppeRepository.findAllByOpprettetAvIn(anyList(), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(tg1, tg2, tg3)));
 
-        List<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(BRUKERID);
+        Page<Testgruppe> grupper = testgruppeService.fetchTestgrupperByBrukerId(0, 10, BRUKERID);
 
-        assertThat(grupper, hasItem(hasProperty("id", equalTo(1L))));
-        assertThat(grupper, hasItem(hasProperty("id", equalTo(2L))));
-        assertThat(grupper, hasItem(hasProperty("id", equalTo(3L))));
+        assertThat(grupper.getContent(), hasItem(hasProperty("id", equalTo(1L))));
+        assertThat(grupper.getContent(), hasItem(hasProperty("id", equalTo(2L))));
+        assertThat(grupper.getContent(), hasItem(hasProperty("id", equalTo(3L))));
     }
 
     @Test
@@ -222,8 +228,9 @@ public class TestgruppeServiceTest {
 
     @Test
     public void getTestgrupper() {
-        testgruppeService.getTestgruppeByBrukerId(null);
-        verify(testgruppeRepository).findAllByOrderByNavn();
+        when(testgruppeRepository.findAllByOrderByIdDesc(any(Pageable.class))).thenReturn(new PageImpl<>(emptyList()));
+        testgruppeService.getTestgruppeByBrukerId(0, 10, null);
+        verify(testgruppeRepository).findAllByOrderByIdDesc(Pageable.ofSize(10));
     }
 
     @BeforeEach

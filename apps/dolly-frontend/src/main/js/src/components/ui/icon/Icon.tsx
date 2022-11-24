@@ -13,6 +13,8 @@ import Telephone from '~/assets/icons/nav-ikoner/line/SVG/06-comment-chat/Teleph
 import ThumbsUp from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-up-2.svg'
 import ThumbsDown from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/filled-version-thumbs-down-2.svg'
 import Star from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1.svg'
+import StarDark from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1-black.svg'
+import StarLight from '~/assets/icons/nav-ikoner/line/SVG/05-votes-rewards/rank-army-star-1-white.svg'
 import Envelope from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-1.svg'
 import EmailText from '~/assets/icons/nav-ikoner/line/SVG/10-email/email-text.svg'
 import AccountCircle from '~/assets/icons/nav-ikoner/filled/SVG/11-users/account-circle.svg'
@@ -93,6 +95,8 @@ export const icons = {
 	'remove-circle': RemoveCircle,
 	edit: EditIcon,
 	star: Star,
+	starDark: StarDark,
+	starLight: StarLight,
 	'star-filled': Star,
 	eraser: Eraser,
 	user: AccountCircle,
@@ -187,6 +191,7 @@ const Icon = ({
 	size = 24,
 	style = undefined,
 	className = undefined,
+	...props
 }) => {
 	if (!icons?.[kind]) {
 		return null
@@ -197,7 +202,14 @@ const Icon = ({
 
 	return (
 		<ErrorBoundary>
-			<SVG src={icons[kind]} className={cssClass} style={styleObj} title={title} role={'img'}>
+			<SVG
+				src={icons[kind]}
+				className={cssClass}
+				style={styleObj}
+				title={title}
+				role={'img'}
+				{...props}
+			>
 				<img
 					src="../assets/icons/nav-ikoner/filled/SVG/01-edition/link-broken-1.svg"
 					alt="fallback"

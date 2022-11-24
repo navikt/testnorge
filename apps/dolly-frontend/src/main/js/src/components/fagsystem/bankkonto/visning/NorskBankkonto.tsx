@@ -12,8 +12,8 @@ import styled from 'styled-components'
 
 type Data = {
 	data: NorskBankkontoData
-	extraButtons: boolean
-	ident: string
+	extraButtons?: boolean
+	ident?: string
 }
 
 type NorskBankkontoData = {
@@ -43,18 +43,30 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 			await Promise.all([kontoregister, tpsMessaging]).catch((e) => console.error(e))
 			setHide()
 		}
-		return slett()
+		if (ident) {
+			return slett()
+		} else {
+			return
+		}
 	}, [])
 
 	if (!show) {
 		return null
 	}
 
+	const mapBankkontoNummer = (nummer: string) => {
+		if (!nummer || nummer?.length < 11) {
+			return nummer
+		} else {
+			return nummer.slice(0, 4) + '.' + nummer.slice(4, 6) + '.' + nummer.slice(6)
+		}
+	}
+
 	return (
 		<div style={{ position: 'relative' }}>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue title={'Kontonummer'} value={data.kontonummer} />
+					<TitleValue title={'Kontonummer'} value={mapBankkontoNummer(data.kontonummer)} />
 				</ErrorBoundary>
 			</div>
 			{extraButtons && (
@@ -74,7 +86,7 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 										closeModal()
 										return handleDelete()
 									}}
-									type="hoved"
+									variant={'primary'}
 								>
 									Ja, jeg er sikker
 								</NavButton>

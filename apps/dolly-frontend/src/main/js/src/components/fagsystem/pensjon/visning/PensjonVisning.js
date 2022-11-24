@@ -50,6 +50,9 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
 
 	const manglerFagsystemdata = sjekkManglerPensjonData(data)
 
+	const miljoerMedData = data?.map((miljoData) => miljoData.data?.length > 0 && miljoData.miljo)
+	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
+
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
 	return (
@@ -64,7 +67,12 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
 					Kunne ikke hente pensjon-data på person
 				</Alert>
 			) : (
-				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={data}>
+				<MiljoTabs
+					bestilteMiljoer={bestilteMiljoer}
+					errorMiljoer={errorMiljoer}
+					forsteMiljo={forsteMiljo}
+					data={data}
+				>
 					<PensjonInntekt />
 				</MiljoTabs>
 			)}

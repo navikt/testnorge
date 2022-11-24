@@ -14,19 +14,19 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 @Slf4j
-public class AaaregUtility {
+public class AaregUtility {
 
     public static boolean isEqualArbeidsforhold(Arbeidsforhold response, Arbeidsforhold request) {
 
         return (isArbeidsgiverOrganisasjonAlike(response, request) ||
                 isArbeidsgiverPersonAlike(response, request)) &&
-                (response.getArbeidsforholdId().equals(request.getArbeidsforholdId()) ||
-                        isAnsettelsesperiodeAlike(response, request));
+                response.getType().equals(request.getType());
     }
 
     public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
@@ -34,13 +34,16 @@ public class AaaregUtility {
 
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .noneMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)
-                                ))
+                        .filter(arbeidsforhold -> isNotTrue(arbeidsforhold.getIsOppdatering()) ||
+                                isTrue(arbeidsforhold.getIsOppdatering()) &&
+                                        response.getEksisterendeArbeidsforhold().stream()
+                                                .noneMatch(response1 ->
+                                                        isEqualArbeidsforhold(response1, arbeidsforhold)))
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
-                                .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
+                        .filter(arbeidsforhold -> isTrue(arbeidsforhold.getIsOppdatering()) &&
+                                response.getEksisterendeArbeidsforhold().stream()
+                                        .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
                         .toList())
                 .build();
     }
@@ -67,6 +70,20 @@ public class AaaregUtility {
         }
     }
 
+    private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
+
+        return arbeidsforhold1.getArbeidsgiver() instanceof Person person1 &&
+                arbeidsforhold2.getArbeidsgiver() instanceof Person person2 &&
+                person1.getOffentligIdent().equals(person2.getOffentligIdent());
+    }
+
+    private static boolean isArbeidsgiverOrganisasjonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
+
+        return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
+                arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
+                organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
+    }
+
     public static String konverterBAfeilkodeTilFeilmelding(String baKode) {
         var baFeilkode = getBaFeilkodeFromFeilmelding(baKode);
         try {
@@ -83,26 +100,5 @@ public class AaaregUtility {
                 .filter(ord -> ord.contains("BA"))
                 .findFirst()
                 .orElse("");
-    }
-
-    private static boolean isAnsettelsesperiodeAlike(Arbeidsforhold response, Arbeidsforhold request) {
-
-        return response.getAnsettelsesperiode().getPeriode().getFom().equals(request.getAnsettelsesperiode().getPeriode().getFom()) ||
-                (isNotBlank(request.getAnsettelsesperiode().getSluttaarsak()) ||
-                        isBlank(response.getAnsettelsesperiode().getSluttaarsak()));
-    }
-
-    private static boolean isArbeidsgiverPersonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
-
-        return arbeidsforhold1.getArbeidsgiver() instanceof Person person1 &&
-                arbeidsforhold2.getArbeidsgiver() instanceof Person person2 &&
-                person1.getOffentligIdent().equals(person2.getOffentligIdent());
-    }
-
-    private static boolean isArbeidsgiverOrganisasjonAlike(Arbeidsforhold arbeidsforhold1, Arbeidsforhold arbeidsforhold2) {
-
-        return arbeidsforhold1.getArbeidsgiver() instanceof Organisasjon organisasjon1 &&
-                arbeidsforhold2.getArbeidsgiver() instanceof Organisasjon organisasjon2 &&
-                organisasjon1.getOrganisasjonsnummer().equals(organisasjon2.getOrganisasjonsnummer());
     }
 }

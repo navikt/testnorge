@@ -35,6 +35,10 @@ export const InstVisning = ({ data, loading, bestillingIdListe }) => {
 	}
 
 	const manglerFagsystemdata = sjekkManglerInstData(data)
+
+	const miljoerMedData = data?.map((miljoData) => miljoData.data?.length > 0 && miljoData.miljo)
+	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
+
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 	const sortedData = data.map((miljoeData) => {
 		if (miljoeData.data) {
@@ -55,7 +59,12 @@ export const InstVisning = ({ data, loading, bestillingIdListe }) => {
 					Kunne ikke hente institusjonsopphold-data på person
 				</Alert>
 			) : (
-				<MiljoTabs bestilteMiljoer={bestilteMiljoer} forsteMiljo={forsteMiljo} data={sortedData}>
+				<MiljoTabs
+					bestilteMiljoer={bestilteMiljoer}
+					errorMiljoer={errorMiljoer}
+					forsteMiljo={forsteMiljo}
+					data={sortedData}
+				>
 					<DollyFieldArray nested>
 						{(opphold, idx) => (
 							<div className="person-visning_content" key={idx}>

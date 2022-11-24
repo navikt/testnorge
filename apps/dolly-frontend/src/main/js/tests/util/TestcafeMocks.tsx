@@ -1217,14 +1217,14 @@ export const nyGruppeMock = {
 	datoEndret: '1990-01-12',
 	antallIdenter: 0,
 	antallIBruk: 0,
-	erEierAvGruppe: true,
-	favorittIGruppen: false,
+	erEierAvGruppe: false,
+	favorittIGruppen: true,
 	erLaast: false,
 	identer: [],
 	tags: [],
 }
 
-export const gjeldendeGruppeMock = {
+export const eksisterendeGruppeMock = {
 	id: 1,
 	navn: 'Testytest',
 	hensikt: 'Testing av testytest',
@@ -1238,6 +1238,11 @@ export const gjeldendeGruppeMock = {
 	erLaast: false,
 	identer: [testidentMock],
 	tags: [],
+}
+
+export const paginerteGrupperMock = {
+	contents: [eksisterendeGruppeMock],
+	favoritter: [nyGruppeMock],
 }
 
 export const miljoeMock = '["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]'
