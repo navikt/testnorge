@@ -6,7 +6,7 @@ import no.nav.registre.sdforvalter.consumer.rs.aareg.command.GetArbeidsforholdCo
 import no.nav.registre.sdforvalter.consumer.rs.aareg.command.PostArbeidsforholdCommand;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdRespons;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
