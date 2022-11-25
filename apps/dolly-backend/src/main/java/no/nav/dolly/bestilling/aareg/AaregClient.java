@@ -7,6 +7,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -33,7 +34,8 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPer
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -49,28 +51,42 @@ public class AaregClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
+    private final DoneService doneService;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setAaregStatus(bestilling.getEnvironments().stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("AAREG"))))
-                        .collect(Collectors.joining(",")));
-                return Flux.just();
-            }
-
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
 
-            progress.setAaregStatus((bestilling.getAareg().stream()
-                    .map(RsAareg::getAmelding)
-                    .anyMatch(amelding -> !amelding.isEmpty()) ?
+            progress.setAaregStatus(miljoer.stream()
+                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselVenter("AAREG"))))
+                    .collect(Collectors.joining(",")));
+            doneService.persist(progress);
 
-                    ameldingService.sendAmelding(bestilling, dollyPerson, miljoer) :
-                    sendArbeidsforhold(bestilling, dollyPerson, miljoer)
-            ).block());
+            var isAvail = false;
+            var loops = DoneService.MAX_AWAIT_CYCLES;
+            while (loops-- > 0 && !(isAvail = doneService.isPdlSync(dollyPerson.getHovedperson()))) ;
+
+            if (isAvail) {
+                (bestilling.getAareg().stream()
+                        .map(RsAareg::getAmelding)
+                        .anyMatch(amelding -> !amelding.isEmpty()) ?
+
+                        ameldingService.sendAmelding(bestilling, dollyPerson, miljoer) :
+                        sendArbeidsforhold(bestilling, dollyPerson, miljoer)
+                ).subscribe(response -> {
+                    progress.setAaregStatus(response);
+                    doneService.isDone(progress);
+                });
+
+            } else {
+                progress.setAaregStatus(miljoer.stream()
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("AAREG"))))
+                        .collect(Collectors.joining(",")));
+                doneService.isDone(progress);
+            }
         }
         return Flux.just();
     }
@@ -86,7 +102,8 @@ public class AaregClient implements ClientRegister {
 
         return isNull(kriterier.getAareg()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getAaregStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getAaregStatus()) &&
+                                !entry.getAaregStatus().contains("Info: Venter"));
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {

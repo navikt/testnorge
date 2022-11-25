@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 @Slf4j
 @Service
@@ -24,7 +25,7 @@ public class DoneService {
 
     public static final Long MAX_AWAIT_CYCLES = 100L;
     private static final Long TIME_STORED_MS = 3 * 60 * 1000L;
-    private static Map<String, Long> pdlIdenter = new HashMap<>();
+    private static final Map<String, Long> pdlIdenter = new HashMap<>();
 
     private final BestillingRepository bestillingRepository;
     private final List<ClientRegister> implementasjoner;
@@ -34,12 +35,19 @@ public class DoneService {
 
     public boolean isDone(BestillingProgress progress) {
 
-        var done = isDone(progress.getBestilling().getId());
         transactionHelperService.persist(progress);
+        var done = isDone(progress.getBestilling().getId());
         if (done) {
             transactionHelperService.oppdaterBestillingFerdig(progress.getBestilling());
         }
         return done;
+    }
+
+    public Function<String, Boolean> test() {
+notifyAll();
+        return var isAvail = false;
+        var loops = DoneService.MAX_AWAIT_CYCLES;
+        while (loops-- > 0 && !(isAvail = doneService.isPdlSync(dollyPerson.getHovedperson())))
     }
 
     @SneakyThrows
