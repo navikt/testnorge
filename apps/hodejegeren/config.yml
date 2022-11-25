@@ -42,6 +42,10 @@ spec:
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
+        - application: testnorge-aareg
+          cluster: dev-fss
+        - application: testnorge-skd
+          cluster: dev-fss
   azure:
     application:
       enabled: true
