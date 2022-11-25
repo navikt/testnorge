@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.inntektstub;
 
-import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -14,18 +13,17 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -49,22 +47,29 @@ public class InntektstubClient implements ClientRegister {
             var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
                     InntektsinformasjonWrapper.class, context);
 
-            progress.setInntektstubStatus(String.join(",",
-                    requireNonNull(
-                            inntektstubConsumer.postInntekter(inntektsinformasjonWrapper.getInntektsinformasjon())
+            progress.setInntektstubStatus(
+                    inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
+                            .collectList()
+                            .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
+                                    .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
+                                            entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
                                     .collectList()
-                                    .map(inntekter -> {
-                                        log.info("Inntektstub respons {}", inntekter);
-                                        return inntekter.stream()
+                                    .map(inntekter -> inntektstubConsumer.postInntekter(inntekter)
+                                            .collectList())
+                                    .flatMap(Mono::from))
+                            .flatMap(Mono::from)
+                            .map(inntekter -> {
+                                log.info("Inntektstub respons {}", inntekter);
+                                return inntekter.stream()
+                                        .map(Inntektsinformasjon::getFeilmelding)
+                                        .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                        "Feil= " + inntekter.stream()
                                                 .map(Inntektsinformasjon::getFeilmelding)
-                                                .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                                                "Feil= " + inntekter.stream()
-                                                        .map(Inntektsinformasjon::getFeilmelding)
-                                                        .filter(StringUtils::isNotBlank)
-                                                        .map(feil -> encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
-                                                        .collect(Collectors.joining(","));
-                                    }))
-                            .block()));
+                                                .filter(StringUtils::isNotBlank)
+                                                .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
+                                                .collect(Collectors.joining(","));
+                            })
+                            .block());
         }
         return Flux.just();
     }
