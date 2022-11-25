@@ -8,18 +8,10 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import static java.util.Objects.nonNull;
 
 @Component
 public class InnflyttingMappingStrategy implements MappingStrategy {
-
-    private static LocalDate toDate(LocalDateTime timestamp) {
-
-        return nonNull(timestamp) ? timestamp.toLocalDate() : null;
-    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -31,8 +23,8 @@ public class InnflyttingMappingStrategy implements MappingStrategy {
                                         PdlInnflytting destinasjon, MappingContext context) {
 
                         destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
-                                .ajourholdstidspunkt(LocalDate.now())
-                                .gyldighetstidspunkt(toDate(kilde.getInnflyttingsdato()))
+                                .ajourholdstidspunkt(LocalDateTime.now())
+                                .gyldighetstidspunkt(kilde.getInnflyttingsdato())
                                 .build());
                     }
                 })

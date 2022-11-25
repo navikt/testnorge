@@ -5,16 +5,19 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -75,6 +78,11 @@ public class MergeService {
         } else {
             requestElement.setId(dbId.incrementAndGet());
             requestElement.setIsNew(true);
+            if (isNull(requestElement.getFolkeregistermetadata())) {
+                requestElement.setFolkeregistermetadata(new FolkeregistermetadataDTO());
+            }
+            requestElement.getFolkeregistermetadata().setGyldighetstidspunkt(LocalDateTime.now());
+            requestElement.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now());
             infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
         }
     }
