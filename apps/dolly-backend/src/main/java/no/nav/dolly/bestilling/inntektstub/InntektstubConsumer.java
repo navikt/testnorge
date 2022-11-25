@@ -14,7 +14,6 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -58,15 +57,11 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .build();
     }
 
-    public Mono<AccessToken> getToken() {
-
-        return tokenService.exchange(serviceProperties);
-    }
-
     @Timed(name = "providers", tags = {"operation", "inntk_getInntekter"})
-    public Flux<Inntektsinformasjon> getInntekter(String ident, AccessToken token) {
+    public Flux<Inntektsinformasjon> getInntekter(String ident) {
 
-        return new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})
