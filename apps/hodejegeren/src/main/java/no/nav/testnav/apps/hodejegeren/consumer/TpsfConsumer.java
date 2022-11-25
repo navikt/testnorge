@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.annotation.Timed;
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsIdenterCommand;
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsServiceRoutineV1Command;
+import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsServiceRoutineV2Command;
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsStatusPaaIdenterCommand;
 import no.nav.testnav.apps.hodejegeren.consumer.credential.TpsfProxyProperties;
+import no.nav.testnav.apps.hodejegeren.consumer.dto.ServiceRoutineDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
@@ -23,9 +25,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
-
-import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsServiceRoutineV2Command;
-import no.nav.testnav.apps.hodejegeren.consumer.dto.ServiceRoutineDTO;
 
 
 @Component
