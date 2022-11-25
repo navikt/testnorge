@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
@@ -81,8 +81,8 @@ public class MergeService {
             if (isNull(requestElement.getFolkeregistermetadata())) {
                 requestElement.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
-            requestElement.getFolkeregistermetadata().setGyldighetstidspunkt(LocalDate.now());
-            requestElement.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDate.now());
+            requestElement.getFolkeregistermetadata().setGyldighetstidspunkt(LocalDateTime.now());
+            requestElement.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now());
             infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
         }
     }

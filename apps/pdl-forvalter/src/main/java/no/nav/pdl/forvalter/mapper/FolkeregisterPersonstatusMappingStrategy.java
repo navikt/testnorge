@@ -8,7 +8,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
@@ -28,18 +27,13 @@ public class FolkeregisterPersonstatusMappingStrategy implements MappingStrategy
                         destinasjon.setStatus(nonNull(kilde.getStatus()) ? kilde.getStatus() : FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.INAKTIV);
 
                         destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
-                                .ajourholdstidspunkt(LocalDate.now())
-                                .gyldighetstidspunkt(toDate(kilde.getGyldigFraOgMed()))
-                                .opphoerstidspunkt(toDate(kilde.getGyldigTilOgMed()))
+                                .ajourholdstidspunkt(LocalDateTime.now())
+                                .gyldighetstidspunkt(kilde.getGyldigFraOgMed())
+                                .opphoerstidspunkt(kilde.getGyldigTilOgMed())
                                 .build());
                     }
                 })
                 .byDefault()
                 .register();
-    }
-
-    private static LocalDate toDate(LocalDateTime timestamp) {
-
-        return nonNull(timestamp) ? timestamp.toLocalDate() : null;
     }
 }
