@@ -13,7 +13,9 @@ import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -21,11 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor
 public class PersonService {
 
-    private HashMap identerStatus = new ConcurrentHashMap<>();
+    private static final long TIME_TO_LIVE_S = 60;
 
     private final PdlApiConsumer pdlApiConsumer;
     private final TpsPersonAdapter tpsPersonAdapter;
     private final PdlTestdataConsumer pdlTestdataConsumer;
+    private Map<String, IdentStatus> identerStatus = new ConcurrentHashMap<>();
 
     public String createPerson(Person person, String kilde) {
         return pdlTestdataConsumer.createPerson(person, kilde);
@@ -50,7 +53,29 @@ public class PersonService {
 
     public Mono<Boolean> syncPdlPerson(String ident) {
 
-        var isPerson = pdlApiConsumer.isPerson(ident);
+
+        if (identerStatus.containsKey(ident)) {
+                if (ChronoUnit.SECONDS.between(LocalDateTime.now(),
+                        identerStatus.get(ident).availStartTime) < TIME_TO_LIVE_S) {
+
+            return Mono.just(true);
+
+            var isPerson = pdlApiConsumer.isPerson(ident);
+            pdlIdenter.remove(ident);
+
+            try {
+                Thread.sleep(100);
+
+            } catch (InterruptedException e) {
+
+                // ingenting
+            }
+
+            if (personServiceConsumer.isPerson(ident)) {
+
+                pdlIdenter.put(ident, System.currentTimeMillis());
+            }
+        }
     }
 
     @Data
@@ -58,7 +83,7 @@ public class PersonService {
     @NoArgsConstructor
     private static class IdentStatus {
 
-        private Long requestStartTime;
-        private Long validStartTime;
+        private LocalDateTime requestStartTime;
+        private LocalDateTime availStartTime;
     }
 }
