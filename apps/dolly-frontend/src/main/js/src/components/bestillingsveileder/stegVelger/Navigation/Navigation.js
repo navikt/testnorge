@@ -29,6 +29,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	}
 
 	const hasInntektstubError = step === 1 && formikBag?.errors?.hasOwnProperty('inntektstub')
+	const hasAaregError = step === 1 && formikBag?.errors?.hasOwnProperty('aareg')
 	const disabledVidere = step === 1 && opts.is.leggTil && !harAvhukedeAttributter(formikBag.values)
 
 	return (
@@ -44,7 +45,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 						<NavButton
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
-							onClick={hasInntektstubError ? () => {} : handleSubmit}
+							onClick={hasInntektstubError || hasAaregError ? () => {} : handleSubmit}
 						>
 							Videre
 						</NavButton>

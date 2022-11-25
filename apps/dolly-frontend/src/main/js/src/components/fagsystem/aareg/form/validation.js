@@ -4,6 +4,9 @@ import _isNil from 'lodash/isNil'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+import { getJuridiskEnhet } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 
 const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => {
 	const errorMsg = 'Dato må være innenfor ansettelsesforhold'
@@ -68,6 +71,42 @@ const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 	)
 }
 
+const orgnummerAmeldingTest = (orgnrValidation) => {
+	// const {
+	// 	currentBruker: { brukerId },
+	// } = useCurrentBruker()
+	// const { organisasjoner } = useOrganisasjoner('952ab92e-926f-4ac4-93d7-f2d552025caf')
+
+	const feilmelding = 'Alle arbeidsgivere i bestilling må ha samme overordnet enhet'
+	return orgnrValidation.test(
+		'har-samme-juridisk-enhet',
+		feilmelding,
+		function harSammeJuridiskEnhet(orgnr) {
+			console.log('this: ', this) //TODO - SLETT MEG
+			console.log('orgnr: ', orgnr) //TODO - SLETT MEG
+			const values = this.options.context
+			console.log('values: ', values) //TODO - SLETT MEG
+
+			// const getValgtJuridiskEnhet = () => {
+			const harArbeidsgiver = values?.aareg?.[0]?.amelding?.map(
+				(a) => a.arbeidsforhold?.find((f) => f.arbeidsgiver?.orgnummer?.length === 9)
+				// ?.arbeidsgiver.orgnummer
+			)
+			const valgtOrg = harArbeidsgiver.find((a) => a?.arbeidsgiver?.orgnummer)?.arbeidsgiver
+				.orgnummer
+			console.log('valgtOrg: ', valgtOrg) //TODO - SLETT MEG
+			// const valgtJurEnh = getJuridiskEnhet(valgtOrg, organisasjoner)
+			// console.log('valgtJurEnh: ', valgtJurEnh) //TODO - SLETT MEG
+			// return valgtJurEnh
+			// }
+
+			// const valgtJuridiskEnhet = getValgtJuridiskEnhet()
+
+			return false
+		}
+	)
+}
+
 const ansettelsesPeriode = Yup.object({
 	fom: testDatoFom(requiredDate, 'tom'),
 	tom: testDatoTom(Yup.date().nullable(), 'fom'),
@@ -88,6 +127,20 @@ const arbeidsgiver = Yup.object({
 			.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
 			.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
 	}),
+})
+
+const arbeidsgiverAmelding = Yup.object({
+	aktoertype: requiredString,
+	// orgnummer: Yup.string()
+	// 	.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
+	// 	.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9)
+	// 	.nullable(),
+	orgnummer: orgnummerAmeldingTest(
+		Yup.string()
+			.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
+			.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9)
+			.nullable()
+	),
 })
 
 const arbeidsavtale = Yup.object({
@@ -192,7 +245,8 @@ export const validation = {
 							Yup.object({
 								ansettelsesPeriode: ansettelsesPeriode,
 								arbeidsforholdID: Yup.string().nullable(),
-								arbeidsgiver: arbeidsgiver,
+								//TODO: lag egen for arbeidsgiver på amelding
+								// arbeidsgiver: arbeidsgiver,
 								arbeidsavtale: arbeidsavtale,
 								fartoy: fartoy,
 								antallTimerForTimeloennet: Yup.array().of(
