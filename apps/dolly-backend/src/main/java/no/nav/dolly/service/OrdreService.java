@@ -80,7 +80,7 @@ public class OrdreService {
                         future.get(1, TimeUnit.MINUTES);
                     } catch (InterruptedException | ExecutionException | TimeoutException e) {
                         log.error("Future task exception {}", e.getMessage(), e);
-                        Thread.interrupted();
+                        Thread.currentThread().interrupt();
                         throw new ResponseStatusException(INTERNAL_SERVER_ERROR, e.getMessage(), e);
                     }
                 });

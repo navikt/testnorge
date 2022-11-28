@@ -103,21 +103,18 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                     .forEach(future -> {
                         try {
                             future.get(60, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             log.error(e.getMessage(), e);
                             Thread.currentThread().interrupt();
-                        } catch (ExecutionException e) {
-                            log.error(e.getMessage(), e);
-                            Thread.interrupted();
                         } catch (TimeoutException e) {
                             log.error("Tidsavbrudd (60 s) ved legg til på gruppe", e);
-                            Thread.interrupted();
+                            Thread.currentThread().interrupt();
                         }
                     });
 
             doFerdig(bestilling);
 
-        } else  {
+        } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             doFerdig(bestilling);
         }

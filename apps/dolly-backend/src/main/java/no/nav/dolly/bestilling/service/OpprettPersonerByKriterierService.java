@@ -109,15 +109,12 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                     .forEach(future -> {
                         try {
                             future.get(60, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException | ExecutionException e) {
                             log.error(e.getMessage(), e);
                             Thread.currentThread().interrupt();
-                        } catch (ExecutionException e) {
-                            log.error(e.getMessage(), e);
-                            Thread.interrupted();
                         } catch (TimeoutException e) {
                             log.error("Tidsavbrudd (60 s) ved opprett personer kriterier", e);
-                            Thread.interrupted();
+                            Thread.currentThread().interrupt();
                         }
                     });
 
