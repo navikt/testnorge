@@ -16,8 +16,11 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+
+import static java.util.Objects.nonNull;
 
 @Service
 @RequiredArgsConstructor
@@ -50,31 +53,31 @@ public class PersonService {
         return pdlApiConsumer.isPerson(ident);
     }
 
-
     public Mono<Boolean> syncPdlPerson(String ident) {
 
-
         if (identerStatus.containsKey(ident)) {
-                if (ChronoUnit.SECONDS.between(LocalDateTime.now(),
-                        identerStatus.get(ident).availStartTime) < TIME_TO_LIVE_S) {
+            if (nonNull(identerStatus.get(ident).availStartTime) && ChronoUnit.SECONDS.between(LocalDateTime.now(),
+                    identerStatus.get(ident).availStartTime) < TIME_TO_LIVE_S) {
 
-            return Mono.just(true);
+                return Mono.just(true);
+            } else if () {}
 
-            var isPerson = pdlApiConsumer.isPerson(ident);
-            pdlIdenter.remove(ident);
+        }
 
-            try {
-                Thread.sleep(100);
+        var isPerson = pdlApiConsumer.isPerson(ident);
+        pdlIdenter.remove(ident);
 
-            } catch (InterruptedException e) {
+        try {
+            Thread.sleep(100);
 
-                // ingenting
-            }
+        } catch (InterruptedException e) {
 
-            if (personServiceConsumer.isPerson(ident)) {
+            // ingenting
+        }
 
-                pdlIdenter.put(ident, System.currentTimeMillis());
-            }
+        if (personServiceConsumer.isPerson(ident)) {
+
+            pdlIdenter.put(ident, System.currentTimeMillis());
         }
     }
 
