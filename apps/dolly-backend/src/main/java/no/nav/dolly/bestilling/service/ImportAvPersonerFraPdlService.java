@@ -100,7 +100,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved import av testnorge personer");
+                            log.error("Tidsavbrudd (60 s) ved import av testnorge personer", e);
                             Thread.interrupted();
                         }
                     });

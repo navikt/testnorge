@@ -116,7 +116,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved opprett personer kriterier");
+                            log.error("Tidsavbrudd (60 s) ved opprett personer kriterier", e);
                             Thread.interrupted();
                         }
                     });
