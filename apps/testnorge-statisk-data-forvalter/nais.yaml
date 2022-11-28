@@ -44,3 +44,8 @@ spec:
     pool: nav-dev
   ingresses:
     - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no"
+  accessPolicy:
+    outbound:
+      rules:
+        - application: testnorge-hodejegeren
+        - application: testnorge-tp

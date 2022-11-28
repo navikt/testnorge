@@ -2,7 +2,7 @@ package no.nav.registre.sdforvalter.consumer.rs.tpsf;
 
 import no.nav.registre.sdforvalter.config.credentials.TpsfProxyProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

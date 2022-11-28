@@ -40,9 +40,9 @@ spec:
     inbound:
       rules:
         - application: testnorge-statisk-data-forvalter
-        - application: testnorge-hodejegeren
     outbound:
       rules:
+        - application: testnorge-hodejegeren
         - application: pensjon-testdata-server-q1
           namespace: pensjontestdata
         - application: pensjon-testdata-server-q2

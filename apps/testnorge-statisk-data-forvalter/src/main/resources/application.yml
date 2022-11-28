@@ -72,8 +72,14 @@ consumers:
     name: tps-forvalteren-proxy
   testnorge-hodejegeren:
     url: https://testnorge-hodejegeren.dev.intern.nav.no
+    name: testnorge-hodejegeren
+    cluster: dev-fss
+    namespace: dolly
   testnorge-tp:
     url: https://testnorge-tp.dev.intern.nav.no
+    name: testnorge-tp
+    cluster: dev-fss
+    namespace: dolly
   krr-stub:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:
