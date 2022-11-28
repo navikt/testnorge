@@ -69,7 +69,8 @@ public class TestgruppeService {
 
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
 
-        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        Testgruppe testgruppe = (Testgruppe) testgruppeRepository.findByIdOrderById(gruppeId)
+                .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
         var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
         testgruppe.setTestidenter(testidentPage.toList());
 
