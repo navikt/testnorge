@@ -1,7 +1,7 @@
 package no.nav.registre.testnorge.generersyntameldingservice.consumer;
 
-import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostArbeidsforholdCommand;
-import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostHistorikkCommand;
+import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostHentArbeidsforholdCommand;
+import no.nav.registre.testnorge.generersyntameldingservice.consumer.command.PostHentHistorikkCommand;
 import no.nav.registre.testnorge.generersyntameldingservice.consumer.credentials.SyntAmeldingProperties;
 import no.nav.registre.testnorge.generersyntameldingservice.domain.ArbeidsforholdType;
 import no.nav.testnav.libs.domain.dto.aareg.amelding.Arbeidsforhold;
@@ -40,12 +40,16 @@ public class SyntAmeldingConsumer {
     }
 
     public Arbeidsforhold getEnkeltArbeidsforhold(ArbeidsforholdPeriode periode, ArbeidsforholdType arbeidsforholdType) {
-        var accessToken = tokenExchange.exchange(properties).block();
-        return new PostArbeidsforholdCommand(periode, webClient, arbeidsforholdType.getPath(), accessToken.getTokenValue()).call();
+        return tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new PostHentArbeidsforholdCommand(
+                        webClient, periode, arbeidsforholdType.getPath(), accessToken.getTokenValue()).call())
+                .block();
     }
 
     public List<Arbeidsforhold> getHistorikk(Arbeidsforhold arbeidsforhold) {
-        var accessToken = tokenExchange.exchange(properties).block();
-        return new PostHistorikkCommand(webClient, arbeidsforhold, accessToken.getTokenValue()).call();
+        return tokenExchange.exchange(properties)
+                .flatMap(accessToken -> new PostHentHistorikkCommand(
+                        webClient, arbeidsforhold, accessToken.getTokenValue()).call())
+                .block();
     }
 }
