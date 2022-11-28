@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -53,6 +54,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final DoneService doneService;
+    private final PersonServiceConsumer personServiceConsumer;
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
@@ -90,35 +92,31 @@ public class PensjonforvalterClient implements ClientRegister {
                         .collect(Collectors.joining(",")));
         doneService.persist(progress);
 
-        var isAvail = false;
-        var loops = DoneService.MAX_AWAIT_CYCLES;
-        while (loops-- > 0 &&  !(isAvail = doneService.isPdlSync(dollyPerson.getHovedperson())));
+        personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                .flatMap(isPresent -> {
+                    if (isPresent) {
+                        dollyPersonCache.fetchIfEmpty(dollyPerson);
 
-        if (isAvail) {
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-
-            pensjonforvalterConsumer.getAccessToken()
-                    .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
-                            .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
-                                            .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
-                                            .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
-                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())),
-                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                            .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())))))
-                    .collect(Collectors.joining("$"))
-                    .subscribe(respons -> {
-                        progress.setPensjonforvalterStatus(respons);
-                        doneService.isDone(progress);
-                    });
-
-        } else {
-            progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
-                    tilgjengeligeMiljoer.stream()
-                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("PESYS"))))
-                            .collect(Collectors.joining(",")));
-            doneService.isDone(progress);
-        }
+                        return pensjonforvalterConsumer.getAccessToken()
+                                .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
+                                        .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
+                                                        .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
+                                                        .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
+                                                lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                        .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())),
+                                                lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                        .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())))))
+                                .collect(Collectors.joining("$"));
+                    } else {
+                        return Mono.just(tilgjengeligeMiljoer.stream()
+                                .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("PESYS"))))
+                                .collect(Collectors.joining(",")));
+                    }
+                })
+                .subscribe(response -> {
+                    progress.setPensjonforvalterStatus(response);
+                    doneService.isDone(progress);
+                });
 
         return Flux.just();
     }
