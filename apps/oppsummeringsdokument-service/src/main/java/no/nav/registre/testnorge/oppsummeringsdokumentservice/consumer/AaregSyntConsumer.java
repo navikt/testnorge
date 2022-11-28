@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer;
 
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.config.credentials.AaregSyntServiceProperties;
 import no.nav.registre.testnorge.oppsummeringsdokumentservice.consumer.command.SaveOpplysningspliktigCommand;
@@ -34,7 +35,7 @@ public class AaregSyntConsumer {
     }
 
     public void saveOpplysningspliktig(Oppsummeringsdokument oppsummeringsdokument, String miljo) {
-        log.info("Oppsummeringsdokument med opplysningspliktig {} i {}.", oppsummeringsdokument.getOpplysningspliktigOrganisajonsnummer(), miljo);
+        log.info("Oppsummeringsdokument {} sendt til miljø: {}.", Json.pretty(oppsummeringsdokument), miljo);
         new SaveOpplysningspliktigCommand(
                 webClient,
                 oppsummeringsdokument.toXml(),
