@@ -7,6 +7,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -52,6 +53,7 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
     private final DoneService doneService;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -65,28 +67,27 @@ public class AaregClient implements ClientRegister {
                     .collect(Collectors.joining(",")));
             doneService.persist(progress);
 
-            var isAvail = false;
-            var loops = DoneService.MAX_AWAIT_CYCLES;
-            while (loops-- > 0 && !(isAvail = doneService.isPdlSync(dollyPerson.getHovedperson()))) ;
+            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                    .map(isPresent -> {
+                                if (isPresent) {
+                                    if (bestilling.getAareg().stream()
+                                            .map(RsAareg::getAmelding)
+                                            .anyMatch(amelding -> !amelding.isEmpty())) {
 
-            if (isAvail) {
-                (bestilling.getAareg().stream()
-                        .map(RsAareg::getAmelding)
-                        .anyMatch(amelding -> !amelding.isEmpty()) ?
-
-                        ameldingService.sendAmelding(bestilling, dollyPerson, miljoer) :
-                        sendArbeidsforhold(bestilling, dollyPerson, miljoer)
-                ).subscribe(response -> {
-                    progress.setAaregStatus(response);
-                    doneService.isDone(progress);
-                });
-
-            } else {
-                progress.setAaregStatus(miljoer.stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("AAREG"))))
-                        .collect(Collectors.joining(",")));
-                doneService.isDone(progress);
-            }
+                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
+                                    } else {
+                                        return sendArbeidsforhold(bestilling, dollyPerson, miljoer);
+                                    }
+                                } else {
+                                    return Mono.just(miljoer.stream()
+                                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("AAREG"))))
+                                            .collect(Collectors.joining(",")));
+                                }
+                            }
+                    ).subscribe(response -> {
+                        progress.setAaregStatus(response.toString());
+                        doneService.isDone(progress);
+                    });
         }
         return Flux.just();
     }

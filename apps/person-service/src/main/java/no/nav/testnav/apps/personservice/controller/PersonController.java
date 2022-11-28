@@ -2,6 +2,7 @@ package no.nav.testnav.apps.personservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
+import no.nav.testnav.apps.personservice.service.PdlSyncService;
 import no.nav.testnav.apps.personservice.service.PersonService;
 import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ import java.util.Optional;
 public class PersonController {
 
     private final PersonService personService;
+    private final PdlSyncService pdlSyncService;
 
     @PostMapping
     public ResponseEntity<Object> createPerson(
@@ -74,10 +76,10 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}/sync")
-    public Mono<Boolean> syncPdlPerson(
+    public Boolean syncPdlPersonReady(
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
 
-        return personService.syncPdlPerson(ident);
+        return pdlSyncService.syncPdlPersonReady(ident);
     }
 
     @GetMapping("/{ident}/aktoerId")
