@@ -20,7 +20,7 @@ public interface TestgruppeUtenIdenter {
 
     LocalDate getDatoEndret();
 
-    Set<Bestilling> getFavorisertAv();
+    Set<Bruker> getFavorisertAv();
 
     Set<Bestilling> getBestillinger();
 
@@ -28,7 +28,9 @@ public interface TestgruppeUtenIdenter {
 
     String getLaastBeskrivelse();
 
-    String getTags();
+    default String getTags() {
+        return null;
+    }
 
 }
 

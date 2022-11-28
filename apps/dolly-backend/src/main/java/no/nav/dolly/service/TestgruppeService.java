@@ -9,6 +9,7 @@ import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.TestgruppeUtenIdenter;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -69,10 +70,22 @@ public class TestgruppeService {
 
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
 
-        Testgruppe testgruppe = (Testgruppe) testgruppeRepository.findByIdOrderById(gruppeId)
+        TestgruppeUtenIdenter testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
+
         var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
-        testgruppe.setTestidenter(testidentPage.toList());
+
+        var testgruppe = Testgruppe.builder()
+                .id(testgruppeUtenIdenter.getId())
+                .favorisertAv(testgruppeUtenIdenter.getFavorisertAv())
+                .bestillinger(testgruppeUtenIdenter.getBestillinger())
+                .opprettetAv(testgruppeUtenIdenter.getOpprettetAv())
+                .sistEndretAv(testgruppeUtenIdenter.getSistEndretAv())
+                .erLaast(testgruppeUtenIdenter.getErLaast())
+                .laastBeskrivelse(testgruppeUtenIdenter.getLaastBeskrivelse())
+                .tags(testgruppeUtenIdenter.getTags())
+                .testidenter(testidentPage.toList())
+                .build();
 
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
