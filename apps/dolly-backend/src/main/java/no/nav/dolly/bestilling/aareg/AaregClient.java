@@ -72,11 +72,11 @@ public class AaregClient implements ClientRegister {
                                 if (isPresent) {
                                     if (bestilling.getAareg().stream()
                                             .map(RsAareg::getAmelding)
-                                            .anyMatch(amelding -> !amelding.isEmpty())) {
+                                            .allMatch(List::isEmpty)) {
 
-                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
-                                    } else {
                                         return sendArbeidsforhold(bestilling, dollyPerson, miljoer);
+                                    } else {
+                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
                                     }
                                 } else {
                                     return Mono.just(miljoer.stream()
