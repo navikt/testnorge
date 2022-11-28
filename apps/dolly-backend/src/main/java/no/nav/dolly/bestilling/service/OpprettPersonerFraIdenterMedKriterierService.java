@@ -97,12 +97,15 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                     .forEach(future -> {
                         try {
                             future.get(60, TimeUnit.SECONDS);
-                        } catch (InterruptedException | ExecutionException e) {
+                        } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
                             Thread.currentThread().interrupt();
+                        } catch (ExecutionException e) {
+                            log.error(e.getMessage(), e);
+                            Thread.interrupted();
                         } catch (TimeoutException e) {
                             log.error("Tidsavbrudd (60 s) ved opprett personer fra identer", e);
-                            Thread.currentThread().interrupt();
+                            Thread.interrupted();
                         }
                     });
 
