@@ -30,11 +30,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -77,9 +77,11 @@ public class TestgruppeService {
 
         var testgruppe = Testgruppe.builder()
                 .id(testgruppeUtenIdenter.getId())
+                .hensikt(testgruppeUtenIdenter.getHensikt())
                 .favorisertAv(testgruppeUtenIdenter.getFavorisertAv())
                 .bestillinger(testgruppeUtenIdenter.getBestillinger())
                 .opprettetAv(testgruppeUtenIdenter.getOpprettetAv())
+                .datoEndret(testgruppeUtenIdenter.getDatoEndret())
                 .sistEndretAv(testgruppeUtenIdenter.getSistEndretAv())
                 .erLaast(testgruppeUtenIdenter.getErLaast())
                 .laastBeskrivelse(testgruppeUtenIdenter.getLaastBeskrivelse())
@@ -183,7 +185,7 @@ public class TestgruppeService {
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
                 .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
-                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : Collections.emptyList())
+                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : emptyList())
                 .build();
     }
 
