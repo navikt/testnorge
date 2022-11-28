@@ -9,6 +9,7 @@ import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.projection.TestgruppeUtenIdenter;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsLockTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
@@ -29,11 +30,11 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
 import static java.lang.String.format;
+import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
@@ -69,9 +70,24 @@ public class TestgruppeService {
 
     public RsTestgruppeMedBestillingId fetchPaginertTestgruppeById(Long gruppeId, Integer pageNo, Integer pageSize, String sortColumn, String sortRetning) {
 
-        Testgruppe testgruppe = fetchTestgruppeById(gruppeId);
+        TestgruppeUtenIdenter testgruppeUtenIdenter = testgruppeRepository.findByIdOrderById(gruppeId)
+                .orElseThrow(() -> new NotFoundException(format("Gruppe med id %s ble ikke funnet.", gruppeId)));
+
         var testidentPage = identService.getTestidenterFromGruppePaginert(gruppeId, pageNo, pageSize, sortColumn, sortRetning);
-        testgruppe.setTestidenter(testidentPage.toList());
+
+        var testgruppe = Testgruppe.builder()
+                .id(testgruppeUtenIdenter.getId())
+                .hensikt(testgruppeUtenIdenter.getHensikt())
+                .favorisertAv(testgruppeUtenIdenter.getFavorisertAv())
+                .bestillinger(testgruppeUtenIdenter.getBestillinger())
+                .opprettetAv(testgruppeUtenIdenter.getOpprettetAv())
+                .datoEndret(testgruppeUtenIdenter.getDatoEndret())
+                .sistEndretAv(testgruppeUtenIdenter.getSistEndretAv())
+                .erLaast(testgruppeUtenIdenter.getErLaast())
+                .laastBeskrivelse(testgruppeUtenIdenter.getLaastBeskrivelse())
+                .tags(testgruppeUtenIdenter.getTags())
+                .testidenter(testidentPage.toList())
+                .build();
 
         RsTestgruppeMedBestillingId rsTestgruppe = mapperFacade.map(testgruppe, RsTestgruppeMedBestillingId.class);
         rsTestgruppe.setAntallIdenter((int) testidentPage.getTotalElements());
@@ -169,7 +185,7 @@ public class TestgruppeService {
                 .pageSize(paginertGruppe.getSize())
                 .antallElementer(paginertGruppe.getTotalElements())
                 .contents(mapperFacade.mapAsList(paginertGruppe.getContent(), RsTestgruppe.class))
-                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : Collections.emptyList())
+                .favoritter(nonNull(bruker) ? mapperFacade.mapAsList(bruker.getFavoritter(), RsTestgruppe.class) : emptyList())
                 .build();
     }
 
