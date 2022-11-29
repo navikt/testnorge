@@ -325,6 +325,11 @@ export const ArbeidsforholdForm = ({
 						isClearable={false}
 						optionHeight={50}
 						onChange={onChangeLenket('arbeidsavtale.yrke')}
+						feil={
+							_get(values, `${path}.arbeidsavtale.yrke`) === '' && {
+								feilmelding: 'Feltet er påkrevd',
+							}
+						}
 					/>
 				)}
 			</div>

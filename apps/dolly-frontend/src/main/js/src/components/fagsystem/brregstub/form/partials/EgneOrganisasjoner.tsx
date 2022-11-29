@@ -59,6 +59,26 @@ export const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	return ''
 }
 
+export const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+	if (!enheter) return ''
+	let oversteJuridiskEnhet = ''
+	enheter.forEach((enhet) => {
+		const getUnderenheter = (underenheter: Organisasjon[]) => {
+			underenheter.forEach((underenhet) => {
+				if (underenhet.organisasjonsnummer === orgnr) {
+					oversteJuridiskEnhet = enhet.organisasjonsnummer
+				} else if (underenhet.underenheter) {
+					getUnderenheter(underenhet.underenheter)
+				}
+			})
+		}
+		if (enhet.underenheter) {
+			getUnderenheter(enhet.underenheter)
+		}
+	})
+	return oversteJuridiskEnhet
+}
+
 const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
 	if (!organisasjoner) {
 		return []
@@ -99,7 +119,6 @@ export const EgneOrganisasjoner = ({
 
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
-
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
@@ -117,20 +136,6 @@ export const EgneOrganisasjoner = ({
 			})
 	}
 
-	// const getValgtJuridiskEnhet = () => {
-	// 	const harArbeidsgiver = formikBag?.values?.aareg?.[0]?.amelding?.map(
-	// 		(a) => a.arbeidsforhold?.find((f) => f.arbeidsgiver?.orgnummer?.length === 9)
-	// 		// ?.arbeidsgiver.orgnummer
-	// 	)
-	// 	const valgtOrg = harArbeidsgiver.find((a) => a?.arbeidsgiver?.orgnummer)?.arbeidsgiver.orgnummer
-	// 	// console.log('valgtOrg: ', valgtOrg) //TODO - SLETT MEG
-	// 	const valgtJurEnh = getJuridiskEnhet(valgtOrg, organisasjoner)
-	// 	// console.log('valgtJurEnh: ', valgtJurEnh) //TODO - SLETT MEG
-	// 	return valgtJurEnh
-	// }
-
-	// const valgtJuridiskEnhet = getValgtJuridiskEnhet()
-
 	const sjekkOrganisasjoner = () => {
 		if (_get(formikBag.values, path) === '') {
 			if (!_has(formikBag.errors, path)) {
@@ -138,10 +143,13 @@ export const EgneOrganisasjoner = ({
 			}
 			return { feilmelding: 'Feltet er påkrevd' }
 		} else if (path.includes('amelding')) {
+			//@ts-ignore
 			const valgtOrgnr = formikBag.values?.aareg?.[0]?.amelding?.flatMap((a) =>
 				a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer)
 			)
-			const valgtJuridiskEnhet = valgtOrgnr?.map((org) => getJuridiskEnhet(org, organisasjoner))
+			const valgtJuridiskEnhet = valgtOrgnr?.map((org) =>
+				getOversteJuridiskEnhet(org, organisasjoner)
+			)
 			const valgtJuridiskEnhetFiltrert = valgtJuridiskEnhet?.filter((org) => org !== '')
 			const juridiskEnhetErLik = valgtJuridiskEnhetFiltrert?.every((org) => {
 				if (org === valgtJuridiskEnhetFiltrert[0]) {
