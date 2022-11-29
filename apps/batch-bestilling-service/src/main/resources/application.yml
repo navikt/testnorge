@@ -45,6 +45,6 @@ consumers:
   dolly-backend:
     cluster: dev-gcp
     namespace: dolly
-    name: dolly-backend
-    url: https://dolly-backend.dev.intern.nav.no
+    name: dolly-backend-dev
+    url: https://dolly-backend-dev.dev.intern.nav.no
     

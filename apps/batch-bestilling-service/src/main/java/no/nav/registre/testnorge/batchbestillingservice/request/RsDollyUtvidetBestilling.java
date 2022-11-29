@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 
 @Getter
 @Setter
@@ -13,7 +12,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 @AllArgsConstructor
 public class RsDollyUtvidetBestilling extends RsDollyBestilling {
 
-    private RsTpsfUtvidetBestilling tpsf;
+    private Object tpsf;
 
     private Boolean navSyntetiskIdent;
 
