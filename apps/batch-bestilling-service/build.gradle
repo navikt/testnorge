@@ -22,7 +22,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
     }
 }
 
@@ -50,13 +50,12 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
