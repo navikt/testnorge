@@ -25,7 +25,7 @@ public class BatchController {
             "Går mot Dolly-backend-dev som standard, med mulighet for Dolly-backend")
     public ResponseEntity.BodyBuilder sendBatchBestilling(@RequestBody RsDollyBestillingRequest request,
                                                           @PathVariable("gruppeId") Long gruppeId,
-                                                          @PathVariable("antallPerBatch") Long antallPerBatch,
+                                                          @PathVariable("antallPerBatch") Integer antallPerBatch,
                                                           @RequestParam(value = "delayInMinutes", defaultValue = "5", required = false) Integer delayInMinutes,
                                                           @RequestParam(value = "antallBatchJobber", defaultValue = "10", required = false) Integer antallBatchJobber) {
 
