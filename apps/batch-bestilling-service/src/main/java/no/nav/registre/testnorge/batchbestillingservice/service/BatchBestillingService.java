@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.batchbestillingservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.batchbestillingservice.consumer.DollyBackendConsumer;
 import no.nav.registre.testnorge.batchbestillingservice.request.RsDollyBestillingRequest;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Service
+@Slf4j
 public class BatchBestillingService {
 
     DollyBackendConsumer dollyBackendConsumer;
@@ -22,9 +24,11 @@ public class BatchBestillingService {
             @Override
             public void run() {
                 if (antallJobberFerdig[0] >= antallBatchJobber) {
+                    log.info("Stopper jobb etter {} kjøringer", antallJobberFerdig[0]);
                     bestillingTimer.cancel();
                 }
-                dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch);
+//                dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch);
+                log.info("antall jobber ferdig {}", antallJobberFerdig[0]);
                 antallJobberFerdig[0] += 1;
             }
         };
