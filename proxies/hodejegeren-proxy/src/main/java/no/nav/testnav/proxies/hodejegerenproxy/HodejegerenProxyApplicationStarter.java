@@ -36,7 +36,7 @@ public class HodejegerenProxyApplicationStarter {
         return builder.routes()
                 .route(spec -> spec.path("/api/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri("https://testnorge-hodejegeren.dev.intern.nav.no"))
+                        .uri(properties.getUrl()))
                 .build();
     }
 }

@@ -23,8 +23,7 @@ public class HodejegerenConsumer {
     private final TokenExchange tokenExchange;
     private final ServerProperties serviceProperties;
 
-    public HodejegerenConsumer(@Value("${testnorge-hodejegeren.rest-api.url}") String hodejegerenServerUrl,
-                               HodejegerenProperties serviceProperties,
+    public HodejegerenConsumer(HodejegerenProperties serviceProperties,
                                TokenExchange tokenExchange,
                                ExchangeFilterFunction metricsWebClientFilterFunction) {
 
@@ -32,7 +31,7 @@ public class HodejegerenConsumer {
         this.tokenExchange = tokenExchange;
 
         this.webClient = WebClient.builder()
-                .baseUrl(hodejegerenServerUrl)
+                .baseUrl(serviceProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }

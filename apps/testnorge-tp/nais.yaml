@@ -40,7 +40,7 @@ spec:
     inbound:
       rules:
         - application: testnorge-statisk-data-forvalter
-        - application: testnav-oversikt-frontend
+        - application: testnav-oversikt-frontendx'x'
           cluster: dev-gcp
     outbound:
       rules:

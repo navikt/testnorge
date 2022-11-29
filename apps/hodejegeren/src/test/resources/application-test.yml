@@ -23,9 +23,3 @@ azure.app.client.secret: dummy
 
 CLIENT_ID: dummy
 CLIENT_SECRET: dummy
-
-azure:
-  app:
-    client:
-      id: dummy
-      secret: dummy

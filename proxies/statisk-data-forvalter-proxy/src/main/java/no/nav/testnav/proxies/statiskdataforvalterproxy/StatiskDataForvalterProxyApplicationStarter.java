@@ -36,7 +36,7 @@ public class StatiskDataForvalterProxyApplicationStarter {
                 .route(spec -> spec
                         .path("/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri("https://testnorge-statisk-data-forvalter.dev.intern.nav.no/")
+                        .uri(properties.getUrl())
                 )
                 .build();
     }

@@ -44,6 +44,10 @@ spec:
           cluster: dev-fss
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
   azure:
     application:
       enabled: true

@@ -45,6 +45,10 @@ spec:
   ingresses:
     - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no"
   accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-statisk-data-forvalter-proxy
+          cluster: dev-fss
     outbound:
       rules:
         - application: testnorge-hodejegeren
