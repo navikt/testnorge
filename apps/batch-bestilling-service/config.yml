@@ -1,0 +1,56 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-batch-bestilling-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{image}}
+  port: 8080
+  webproxy: true
+  tracing:
+    enabled: true
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+    outbound:
+      external:
+        - host: dolly-backend.dev-fss-pub.nais.io
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+      replyURLs:
+        - "https://testnav-batch-bestilling-service.dev.intern.nav.no/login/oauth2/code/aad"
+        - "http://localhost:8080/login/oauth2/code/aad"
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 30
+    periodSeconds: 30
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+    failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 2
+    max: 2
+  vault:
+    enabled: true
+  resources:
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-batch-bestilling-service.dev.intern.nav.no"
