@@ -60,6 +60,10 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 					setError('Organisasjonen må være av type BEDR eller AAFY')
 					return
 				}
+				if (!response.data.juridiskEnhet) {
+					setError('Organisasjonen mangler juridisk enhet')
+					return
+				}
 				setSuccess(true)
 				opplysningspliktigPath &&
 					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
