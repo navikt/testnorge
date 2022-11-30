@@ -2,11 +2,9 @@ package no.nav.registre.sdforvalter.consumer.rs.tp;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.consumer.rs.credential.TestnorgeTpProperties;
-import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.command.GetLevendeIdenterCommand;
 import no.nav.registre.sdforvalter.consumer.rs.tp.command.OpprettPersonerTpCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,7 +12,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.List;
 
 import static java.util.Objects.isNull;
-
 
 @Slf4j
 @Component
@@ -25,7 +22,6 @@ public class TpConsumer {
     private final ServerProperties serviceProperties;
 
     public TpConsumer(
-            @Value("${consumers.testnorge-tp.url}") String testnorgeTpUrl,
             TokenExchange tokenExchange,
             TestnorgeTpProperties serviceProperties,
             ExchangeFilterFunction metricsWebClientFilterFunction
@@ -35,7 +31,7 @@ public class TpConsumer {
 
         this.webClient = WebClient
                 .builder()
-                .baseUrl(testnorgeTpUrl)
+                .baseUrl(serviceProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }
