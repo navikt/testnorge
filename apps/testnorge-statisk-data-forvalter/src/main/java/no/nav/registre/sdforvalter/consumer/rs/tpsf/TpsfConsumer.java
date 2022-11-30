@@ -7,7 +7,7 @@ import no.nav.registre.sdforvalter.consumer.rs.tpsf.command.GetMeldingsIdsComman
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.command.PostSendSkdMeldingerTpsCommand;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.request.SendToTpsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.response.SkdMeldingerTilTpsRespons;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;

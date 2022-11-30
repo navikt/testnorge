@@ -21,6 +21,7 @@ public class OpprettPersonerTpCommand implements Callable<Mono<List<String>>> {
     private final WebClient webClient;
     private final List<String> fnrs;
     private final String miljoe;
+    private final String token;
 
     @Override
     public Mono<List<String>> call() {
@@ -29,6 +30,7 @@ public class OpprettPersonerTpCommand implements Callable<Mono<List<String>>> {
                         builder.path("/api/v1/orkestrering/opprettPersoner/{miljoe}")
                                 .build(miljoe)
                 )
+                .header("Authorization", "Bearer " + token)
                 .body(BodyInserters.fromValue(fnrs))
                 .retrieve()
                 .bodyToMono(RESPONSE_TYPE)
