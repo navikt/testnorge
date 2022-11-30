@@ -68,7 +68,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'io.r2dbc:r2dbc-h2'
-    implementation 'io.r2dbc:r2dbc-postgresql'
+    implementation 'org.postgresql:r2dbc-postgresql'
     implementation 'org.flywaydb:flyway-core'
 
     runtimeOnly 'org.postgresql:postgresql'
