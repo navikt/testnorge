@@ -16,18 +16,17 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
     outbound:
-      external:
-        - host: dolly-backend.dev-fss-pub.nais.io
+      rules:
+        - application: dolly-backend
   tokenx:
     enabled: true
   azure:
     application:
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - "https://testnav-batch-bestilling-service.dev.intern.nav.no/login/oauth2/code/aad"
-        - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
     initialDelay: 30
