@@ -7,7 +7,6 @@ rootProject.name = 'testnorge-statisk-data-forvalter'
 
 includeBuild '../../libs/security-core'
 includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/kafka-config'
 includeBuild '../../libs/kafka-producers'
 includeBuild '../../libs/avro-schema'
