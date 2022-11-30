@@ -46,8 +46,8 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: testnav-oversikt-frontend
-          cluster: dev-gcp
+        - application: tps-forvalteren-proxy
+          cluster: dev-fss
   azure:
     application:
       enabled: true
