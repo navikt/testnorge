@@ -26,12 +26,12 @@ public class BatchBestillingService {
             @Override
             public void run() {
                 if (antallJobberFerdig[0] >= antallBatchJobber) {
-                    log.info("Stopper jobb etter {} kjøringer", antallJobberFerdig[0]);
+                    log.info("Stopper batchjobb etter {} kjøringer", antallJobberFerdig[0]);
                     bestillingTimer.cancel();
                 }
                 dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch, sendToProd);
-                log.info("antall jobber ferdig {}", antallJobberFerdig[0]);
                 antallJobberFerdig[0] += 1;
+                log.info("antall jobber ferdig {}/{}", antallJobberFerdig[0], antallBatchJobber);
             }
         };
 

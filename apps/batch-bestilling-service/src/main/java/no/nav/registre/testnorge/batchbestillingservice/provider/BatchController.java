@@ -19,18 +19,18 @@ public class BatchController {
 
     private final BatchBestillingService batchBestillingService;
 
-    @PostMapping("/{gruppeId}/{antallPerBatch}")
-    @Operation(description = "Send batch bestilling til Dolly backend med timeout mellom hver kjøring. " +
-            "Krever gruppeId og antall identer per batchkjøring, tid mellom hver batch kjøring kan spesifiseres." +
+    @PostMapping("/{gruppeId}/{antallIdenterPerBatch}")
+    @Operation(description = "Send batch bestilling til Dolly backend med mulighet for spesifisert antall minutter pause mellom hver kjøring. " +
+            "Krever gruppeId og antall identer per batchkjøring. " +
             "Går mot Dolly-backend-dev som standard, med mulighet for Dolly-backend")
     public ResponseEntity.BodyBuilder sendBatchBestilling(@RequestBody RsDollyBestillingRequest request,
                                                           @PathVariable("gruppeId") Long gruppeId,
-                                                          @PathVariable("antallPerBatch") Long antallPerBatch,
-                                                          @RequestParam(value = "delayInMinutes", defaultValue = "5", required = false) Integer delayInMinutes,
+                                                          @PathVariable("antallIdenterPerBatch") Long antallIdenterPerBatch,
+                                                          @RequestParam(value = "antallMinutterPause", defaultValue = "5", required = false) Integer delayInMinutes,
                                                           @RequestParam(value = "antallBatchJobber", defaultValue = "10", required = false) Integer antallBatchJobber,
-                                                          @RequestParam(value = "sendToProd", defaultValue = "false", required = false) Boolean sendToProd
+                                                          @RequestParam(value = "sendTilProdDolly", defaultValue = "false", required = false) Boolean sendTilProdDolly
     ) {
 
-        return batchBestillingService.sendBestillinger(gruppeId, request, antallPerBatch, antallBatchJobber, delayInMinutes, sendToProd);
+        return batchBestillingService.sendBestillinger(gruppeId, request, antallIdenterPerBatch, antallBatchJobber, delayInMinutes, sendTilProdDolly);
     }
 }
