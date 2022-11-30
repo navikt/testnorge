@@ -19,9 +19,9 @@ public class OpenApiConfig implements WebMvcConfigurer {
     public OpenAPI openApi(ApplicationProperties applicationProperties) {
         return new OpenAPI()
                 .info(new Info()
-                        .title(applicationProperties.getName())
+                        .title("Testnorge Sykemelding API")
                         .version(applicationProperties.getVersion())
-                        .description(applicationProperties.getDescription())
+                        .description("API for sykemeldinger")
                         .termsOfService("https://nav.no")
                         .contact(new Contact()
                                 .url("https://nav-it.slack.com/archives/CA3P9NGA2")
