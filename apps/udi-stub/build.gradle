@@ -1,9 +1,9 @@
 plugins {
-    id "org.sonarqube" version "3.3"
+    id "org.sonarqube" version "3.5.0.2730"
     id 'java'
     id "uk.co.boothen.gradle.wsimport" version "0.17"
-    id 'org.springframework.boot' version "2.5.7"
-    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+    id 'org.springframework.boot' version "2.7.5"
+    id 'io.spring.dependency-management' version "1.1.0"
 }
 
 sonarqube {
@@ -79,8 +79,8 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'wsdl4j:wsdl4j:1.6.3'
