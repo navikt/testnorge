@@ -49,7 +49,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
 
     implementation 'io.r2dbc:r2dbc-h2'
-    implementation 'io.r2dbc:r2dbc-postgresql'
+    implementation 'org.postgresql:r2dbc-postgresql'
     implementation 'org.flywaydb:flyway-core'
 
     runtimeOnly 'org.postgresql:postgresql'
