@@ -1,7 +1,9 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -9,6 +11,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.sdforvalter.consumer.rs.aareg.request.RsAaregSyntetiseringsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.kodeverk.response.KodeverkResponse;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,8 +22,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -31,6 +38,9 @@ import java.util.List;
 import no.nav.registre.sdforvalter.database.model.AaregModel;
 import no.nav.registre.sdforvalter.database.repository.AaregRepository;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
+import reactor.core.publisher.Mono;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,6 +52,12 @@ class OrkestreringsControllerAaregIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private JwtDecoder jwtDecoder;
+
+    @MockBean
+    private TokenExchange tokenExchange;
 
     @Autowired
     private AaregRepository aaregRepository;
@@ -71,11 +87,7 @@ class OrkestreringsControllerAaregIntegrationTest {
 
         var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
 
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .stubPost();
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -105,12 +117,6 @@ class OrkestreringsControllerAaregIntegrationTest {
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .verifyPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -147,11 +153,7 @@ class OrkestreringsControllerAaregIntegrationTest {
         var arbeidsforholdmelding = objectMapper.readValue(syntString, SYNT_RESPONSE);
         var arbeidsforholdResponse = Collections.singletonList(arbeidsforholdmelding.get(0).getArbeidsforhold().toArbeidsforhold());
 
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .stubPost();
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -162,12 +164,6 @@ class OrkestreringsControllerAaregIntegrationTest {
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .verifyPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -182,11 +178,7 @@ class OrkestreringsControllerAaregIntegrationTest {
         final AaregModel aaregModel = createAaregModel(FNR, ORGNR);
         aaregRepository.save(aaregModel);
 
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .stubPost();
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -210,12 +202,6 @@ class OrkestreringsControllerAaregIntegrationTest {
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .verifyPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)

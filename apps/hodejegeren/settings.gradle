@@ -7,7 +7,7 @@ rootProject.name = 'hodejegeren'
 
 includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-insecure-security'
+includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/domain'
 
 gradleEnterprise {

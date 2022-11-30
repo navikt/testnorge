@@ -77,6 +77,7 @@ public class TestgruppeService {
 
         var testgruppe = Testgruppe.builder()
                 .id(testgruppeUtenIdenter.getId())
+                .navn(testgruppeUtenIdenter.getNavn())
                 .hensikt(testgruppeUtenIdenter.getHensikt())
                 .favorisertAv(testgruppeUtenIdenter.getFavorisertAv())
                 .bestillinger(testgruppeUtenIdenter.getBestillinger())

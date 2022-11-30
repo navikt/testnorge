@@ -10,6 +10,17 @@ spring:
       max-file-size: 10MB
       max-request-size: 10MB
       enabled: true
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-fss:dolly:testnorge-statisk-data-forvalter
 
 springdoc:
   swagger-ui:
@@ -61,8 +72,14 @@ consumers:
     name: tps-forvalteren-proxy
   testnorge-hodejegeren:
     url: https://testnorge-hodejegeren.dev.intern.nav.no
+    name: testnorge-hodejegeren
+    cluster: dev-fss
+    namespace: dolly
   testnorge-tp:
     url: https://testnorge-tp.dev.intern.nav.no
+    name: testnorge-tp
+    cluster: dev-fss
+    namespace: dolly
   krr-stub:
     url: https://krr-stub-%s.dev.intern.nav.no/api
   synthdata-aareg:

@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:servlet-insecure-security'
+    implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:kafka-producers'
     implementation 'no.nav.testnav.libs:avro-schema'
@@ -67,6 +67,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus'
