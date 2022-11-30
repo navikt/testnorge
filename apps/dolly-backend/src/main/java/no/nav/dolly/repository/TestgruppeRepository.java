@@ -2,6 +2,7 @@ package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.projection.TestgruppeUtenIdenter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
@@ -15,6 +16,8 @@ import java.util.Optional;
 public interface TestgruppeRepository extends PagingAndSortingRepository<Testgruppe, Long> {
 
     Optional<Testgruppe> findById(Long id);
+
+    Optional<TestgruppeUtenIdenter> findByIdOrderById(Long id);
 
     List<Testgruppe> findAllById(Iterable<Long> ids);
 

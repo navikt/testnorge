@@ -9,6 +9,5 @@ public class DollyBackendApplicationStarter {
     public static void main(String[] args) {
 
         SpringApplication.run(DollyBackendApplicationStarter.class, args);
-
     }
 }

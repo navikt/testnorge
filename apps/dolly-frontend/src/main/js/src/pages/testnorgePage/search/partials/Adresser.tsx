@@ -12,6 +12,7 @@ type AdresserProps = {
 }
 
 const paths = {
+	adressebeskyttelse: 'identifikasjon.adressebeskyttelse',
 	borINorge: 'adresser.bostedsadresse.borINorge',
 	postnummer: 'adresser.bostedsadresse.postnummer',
 	bydelsnummer: 'adresser.bostedsadresse.bydelsnummer',
@@ -23,6 +24,12 @@ const paths = {
 	kontakt: 'adresser.harKontaktadresse',
 	opphold: 'adresser.harOppholdsadresse',
 }
+
+const adressebeskyttelseOptions = [
+	{ value: 'FORTROLIG', label: 'Fortrolig' },
+	{ value: 'STRENGT_FORTROLIG', label: 'Strengt fortrolig' },
+	{ value: 'INGEN', label: 'Ingen' },
+]
 
 export const Adresser = ({ formikBag }: AdresserProps) => {
 	const bostedOptions = [
@@ -38,6 +45,13 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 	]
 	return (
 		<section>
+			<div className="options-title-bold">Adressebeskyttelse</div>
+			<FormikSelect
+				name={paths.adressebeskyttelse}
+				label="Velg type"
+				options={adressebeskyttelseOptions}
+				size="medium"
+			/>
 			<div className="options-title-bold">Bostedsadresse</div>
 			<RadioGroupOptions
 				formikBag={formikBag}

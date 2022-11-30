@@ -110,7 +110,9 @@ public class OppslagController {
     @Operation(description = "Hent inntekter tilhørende ident fra Inntektstub")
     public List<Inntektsinformasjon> inntektstub(@PathVariable String ident) {
 
-        return inntektstubConsumer.getInntekter(ident);
+        return inntektstubConsumer.getInntekter(ident)
+                .collectList()
+                .block();
     }
 
     @PostMapping("/inntektstub")

@@ -10,17 +10,10 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -28,7 +21,6 @@ public class OrganisasjonServiceConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final ExecutorService executorService;
     private final NaisServerProperties serviceProperties;
 
     public OrganisasjonServiceConsumer(TokenExchange tokenService,
@@ -37,39 +29,22 @@ public class OrganisasjonServiceConsumer {
 
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
-        this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
-        String accessToken = serviceProperties.getAccessToken(tokenService);
-        var futures = orgnummerListe.stream().map(value -> getFutureOrganisasjon(value, accessToken, miljo)).collect(Collectors.toList());
-        List<OrganisasjonDTO> list = new ArrayList<>();
+    public Flux<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
 
-        for (CompletableFuture<OrganisasjonDTO> future : futures) {
-            try {
-                var org = future.get();
-                if (nonNull(org)) {
-                    list.add(org);
-                }
-            } catch (Exception e) {
-                throw new RuntimeException("Klarer ikke å hente ut alle organisasjoner", e);
-            }
-        }
-        return list;
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.fromIterable(orgnummerListe)
+                        .flatMap(orgnummer ->
+                                new OrganisasjonGetCommand(webClient, orgnummer, miljo, token.getTokenValue()).call()));
     }
 
     public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-    }
 
-    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, String accessToken, String miljo) {
-        return CompletableFuture.supplyAsync(
-                () -> new OrganisasjonGetCommand(webClient, accessToken, orgnummer, miljo).call(),
-                executorService
-        );
+        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 }

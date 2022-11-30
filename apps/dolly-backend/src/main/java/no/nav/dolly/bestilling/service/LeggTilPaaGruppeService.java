@@ -110,7 +110,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved legg til på gruppe");
+                            log.error("Tidsavbrudd (60 s) ved legg til på gruppe", e);
                             Thread.interrupted();
                         }
                     });
