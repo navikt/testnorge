@@ -27,7 +27,7 @@ public class BatchBestillingService {
                     log.info("Stopper jobb etter {} kjøringer", antallJobberFerdig[0]);
                     bestillingTimer.cancel();
                 }
-//                dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch);
+                dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch);
                 log.info("antall jobber ferdig {}", antallJobberFerdig[0]);
                 antallJobberFerdig[0] += 1;
             }
