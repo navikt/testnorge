@@ -40,8 +40,10 @@ spec:
     inbound:
       rules:
         - application: testnorge-statisk-data-forvalter
-        - application: testnav-oversikt-frontendx'x'
+        - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
     outbound:
       rules:
         - application: testnorge-hodejegeren
