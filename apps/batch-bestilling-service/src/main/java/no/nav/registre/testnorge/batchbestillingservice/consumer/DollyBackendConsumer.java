@@ -6,8 +6,9 @@ import no.nav.registre.testnorge.batchbestillingservice.credentials.DollyBackend
 import no.nav.registre.testnorge.batchbestillingservice.request.RsDollyBestillingRequest;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
@@ -28,14 +29,15 @@ public class DollyBackendConsumer {
 
     public DollyBackendConsumer(DollyBackendServiceProperties properties,
                                 DollyBackendDevServiceProperties devProperties,
-                                TokenExchange tokenService
+                                TokenExchange tokenService,
+                                ExchangeFilterFunction metricsWebClientFilterFunction
     ) {
 
         this.serviceProperties = properties;
         this.devServiceProperties = devProperties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
-                .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -46,13 +48,13 @@ public class DollyBackendConsumer {
 
         request.setAntall(antall.intValue());
 
-
         tokenService
                 .exchange(sendToProd ? serviceProperties : devServiceProperties)
                 .flatMap(token -> webClient.post()
-                        .uri(builder ->
-                                builder.path("/api/v1/bestilling/{gruppe}").build(gruppeId))
-                        .header(AUTHORIZATION, token.getTokenValue())
+                        .uri(sendToProd ? serviceProperties.getUrl() : devServiceProperties.getUrl(),
+                                builder -> builder
+                                        .path("/api/v1/gruppe/{gruppeId}/bestilling").build(gruppeId))
+                        .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
                         .header(HEADER_NAV_CALL_ID, callId)
                         .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                         .bodyValue(request)
@@ -60,6 +62,7 @@ public class DollyBackendConsumer {
                         .toBodilessEntity()
                         .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                 .filter(WebClientFilter::is5xxException))
-                        .doOnError(throwable -> log.error(throwable.getMessage()))).block();
+                        .doOnError(throwable -> log.error(throwable.getMessage())))
+                .block();
     }
 }

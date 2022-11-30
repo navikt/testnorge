@@ -21,8 +21,6 @@ spec:
     outbound:
       rules:
         - application: dolly-backend
-  tokenx:
-    enabled: true
   azure:
     application:
       enabled: true
