@@ -6,7 +6,6 @@ import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.command.GetAlleIdente
 import no.nav.registre.sdforvalter.consumer.rs.hodejegeren.command.GetLevendeIdenterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -22,7 +21,6 @@ public class HodejegerenConsumer {
     private final ServerProperties serviceProperties;
 
     public HodejegerenConsumer(
-            @Value("${consumers.testnorge-hodejegeren.url}") String hodejegerenServerUrl,
             HodejegerenProperties serviceProperties,
             TokenExchange tokenExchange,
             ExchangeFilterFunction metricsWebClientFilterFunction
@@ -31,7 +29,7 @@ public class HodejegerenConsumer {
         this.tokenExchange = tokenExchange;
 
         this.webClient = WebClient.builder()
-                .baseUrl(hodejegerenServerUrl)
+                .baseUrl(serviceProperties.getUrl())
                 .filter(metricsWebClientFilterFunction)
                 .build();
     }
