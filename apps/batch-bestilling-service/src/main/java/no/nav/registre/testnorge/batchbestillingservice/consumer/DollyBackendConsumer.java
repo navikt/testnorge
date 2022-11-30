@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.batchbestillingservice.credentials.DollyBackendServiceProperties;
 import no.nav.registre.testnorge.batchbestillingservice.request.RsDollyBestillingRequest;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
@@ -35,15 +35,18 @@ public class DollyBackendConsumer {
                 .build();
     }
 
-    public void postDollyBestilling(Long gruppeId, RsDollyBestillingRequest request) {
+    public void postDollyBestilling(Long gruppeId, RsDollyBestillingRequest request, Long antall) {
 
         var callId = "Batch-service";
         var CONSUMER = "Batch-service";
 
+        request.setAntall(antall.intValue());
+
+
         tokenService.exchange(serviceProperties).flatMap(token -> webClient.post()
                 .uri(builder ->
                         builder.path("/api/v1/bestilling/{gruppe}").build(gruppeId))
-                .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
+                .header(AUTHORIZATION, token.getTokenValue())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(request)
