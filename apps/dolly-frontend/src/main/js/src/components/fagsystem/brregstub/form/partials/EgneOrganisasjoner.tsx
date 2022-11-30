@@ -41,7 +41,7 @@ const addAlleVirksomheter = (virksomheter: Organisasjon[], organisasjoner: Organ
 	}
 }
 
-export const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	if (!enheter) return ''
 	for (const enhet of enheter) {
 		if (enhet.underenheter && enhet.underenheter.length > 0) {
@@ -59,7 +59,7 @@ export const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	return ''
 }
 
-export const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 	if (!enheter) return ''
 	let oversteJuridiskEnhet = ''
 	enheter.forEach((enhet) => {
