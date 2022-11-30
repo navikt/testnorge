@@ -10,7 +10,9 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.bestilling.service.DoneService;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -18,7 +20,8 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.DollyPersonCache;
+import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -27,16 +30,20 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -45,16 +52,17 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
+    private static final String SYSTEM = "PESYS";
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     private static final String TP_FORHOLD = "TpForhold#";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final DoneService doneService;
+    private final TransactionHelperService transactionHelperService;
     private final PersonServiceConsumer personServiceConsumer;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
@@ -88,37 +96,75 @@ public class PensjonforvalterClient implements ClientRegister {
 
         progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
                 tilgjengeligeMiljoer.stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselVenter("PESYS"))))
+                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
                         .collect(Collectors.joining(",")));
-        doneService.persist(progress);
+        transactionHelperService.persist(progress);
 
         personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
                     if (isPresent) {
-                        dollyPersonCache.fetchIfEmpty(dollyPerson);
-
                         return pensjonforvalterConsumer.getAccessToken()
-                                .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
-                                        .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
+                                .flatMapMany(token -> getIdenterFamilie(dollyPerson.getHovedperson())
+                                        .map(this::getPersonData)
+                                        .flatMap(Flux::from)
+                                        .map(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(
+                                                                mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
                                                         .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
                                                         .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
-                                                lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                        .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())),
-                                                lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                        .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())))))
+                                                (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                        lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                                .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
+                                                        Flux.just("")),
+                                                (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                        lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                                .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
+                                                        Flux.just(""))))
+                                        .flatMap(Flux::from))
                                 .collect(Collectors.joining("$"));
                     } else {
                         return Mono.just(tilgjengeligeMiljoer.stream()
-                                .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("PESYS"))))
+                                .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
                                 .collect(Collectors.joining(",")));
                     }
                 })
                 .subscribe(response -> {
                     progress.setPensjonforvalterStatus(response);
-                    doneService.isDone(progress);
+                    transactionHelperService.persist(progress);
                 });
 
         return Flux.just();
+    }
+
+    private Flux<List<String>> getIdenterFamilie(String ident) {
+
+        return getPersonData(List.of(ident))
+                .map(person -> Stream.of(List.of(person.getIdent()),
+                                person.getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getForeldreansvar().stream()
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList());
+    }
+
+    private Flux<PdlPerson.Person> getPersonData(List<String> identer) {
+
+        return pdlPersonConsumer.getPdlPersoner(identer)
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(PdlPersonBolk.PersonBolk::getPerson);
     }
 
     @Override
@@ -134,7 +180,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return bestilling.getProgresser().stream()
                 .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()) &&
-                        !entry.getPensjonforvalterStatus().contains("Info: Venter"));
+                        !entry.getPensjonforvalterStatus().contains(getVenterTekst()));
     }
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {

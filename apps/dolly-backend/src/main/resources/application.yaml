@@ -88,6 +88,11 @@ consumers:
     namespace: dolly
     url: https://testnav-tps-messaging-service.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-miljoer-service:
+    name: testnav-miljoer-service
+    namespace: dolly
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+    cluster: dev-gcp
   testnav-generer-navn-service:
     name: generer-navn-service
     namespace: dolly

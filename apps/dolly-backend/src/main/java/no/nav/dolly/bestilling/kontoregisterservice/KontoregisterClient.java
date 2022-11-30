@@ -5,23 +5,29 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -29,23 +35,35 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class KontoregisterClient implements ClientRegister {
 
+    private static final String SYSTEM = "Kontoregister";
     private final KontoregisterConsumer kontoregisterConsumer;
     private final MapperFacade mapperFacade;
+    private final PersonServiceConsumer personServiceConsumer;
+    private final TransactionHelperService transactionHelperService;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
-                return Flux.just();
-            }
+
+            progress.setKontoregisterStatus(encodeStatus(getInfoVenter(SYSTEM)));
+            transactionHelperService.persist(progress);
 
             var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
             if (nonNull(request)) {
-                progress.setKontoregisterStatus(kontoregisterConsumer.postKontonummerRegister(request)
-                        .block());
+                personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                        .flatMap(isPresent -> {
+                            if (isPresent) {
+                                return kontoregisterConsumer.postKontonummerRegister(request);
+                            } else {
+                                return Mono.just(encodeStatus(getVarselSlutt(SYSTEM)));
+                            }
+                        })
+                        .subscribe(respons -> {
+                            progress.setKontoregisterStatus(respons);
+                            transactionHelperService.persist(progress);
+                        });
             }
         }
         return Flux.just();
@@ -95,6 +113,7 @@ public class KontoregisterClient implements ClientRegister {
 
         return isNull(kriterier.getBankkonto()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getKontoregisterStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getKontoregisterStatus()) &&
+                                !entry.getKontoregisterStatus().contains(getVenterTekst()));
     }
 }

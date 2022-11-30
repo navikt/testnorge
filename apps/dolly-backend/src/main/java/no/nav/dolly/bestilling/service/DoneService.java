@@ -21,17 +21,6 @@ public class DoneService {
     private final BestillingRepository bestillingRepository;
     private final List<ClientRegister> implementasjoner;
     private final ObjectMapper objectMapper;
-    private final TransactionHelperService transactionHelperService;
-
-    public boolean isDone(BestillingProgress progress) {
-
-        transactionHelperService.persist(progress);
-        var done = isDone(progress.getBestilling().getId());
-        if (done) {
-            transactionHelperService.oppdaterBestillingFerdig(progress.getBestilling());
-        }
-        return done;
-    }
 
     @SneakyThrows
     public boolean isDone(Long bestillingId) {
@@ -46,10 +35,5 @@ public class DoneService {
         return bestilling.get().getAntallIdenter() == bestilling.get().getProgresser().size() &&
                 implementasjoner.stream()
                         .allMatch(client -> client.isDone(kriterier, bestilling.get()));
-    }
-
-    public void persist(BestillingProgress progress) {
-
-        transactionHelperService.persist(progress);
     }
 }

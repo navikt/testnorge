@@ -17,6 +17,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.EnvironmentsCrossConnect;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.core.annotation.Order;
@@ -36,7 +37,8 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -47,12 +49,13 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class AaregClient implements ClientRegister {
 
     public static final String IDENT = "Ident";
+    private static final String SYSTEM = "AAREG";
 
     private final AaregConsumer aaregConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
-    private final DoneService doneService;
+    private final TransactionHelperService transactionHelperService;
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
@@ -63,9 +66,9 @@ public class AaregClient implements ClientRegister {
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
 
             progress.setAaregStatus(miljoer.stream()
-                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselVenter("AAREG"))))
+                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
                     .collect(Collectors.joining(",")));
-            doneService.persist(progress);
+            transactionHelperService.persist(progress);
 
             personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .map(isPresent -> {
@@ -80,13 +83,13 @@ public class AaregClient implements ClientRegister {
                                     }
                                 } else {
                                     return Mono.just(miljoer.stream()
-                                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("AAREG"))))
+                                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
                                             .collect(Collectors.joining(",")));
                                 }
                             }
                     ).subscribe(response -> {
                         progress.setAaregStatus(response.toString());
-                        doneService.isDone(progress);
+                        transactionHelperService.persist(progress);
                     });
         }
         return Flux.just();
@@ -104,7 +107,7 @@ public class AaregClient implements ClientRegister {
         return isNull(kriterier.getAareg()) ||
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getAaregStatus()) &&
-                                !entry.getAaregStatus().contains("Info: Venter"));
+                                !entry.getAaregStatus().contains(getVenterTekst()));
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {

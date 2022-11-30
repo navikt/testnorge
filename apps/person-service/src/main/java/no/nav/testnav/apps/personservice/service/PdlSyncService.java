@@ -18,7 +18,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -34,10 +33,11 @@ public class PdlSyncService {
 
     public Boolean syncPdlPersonReady(String ident) {
 
-        if (identerStatus.containsKey(ident) && nonNull(identerStatus.get(ident).getAvailStartTime()) &&
+        if (identerStatus.containsKey(ident) &&
                 ChronoUnit.SECONDS.between(LocalDateTime.now(),
                         identerStatus.get(ident).getAvailStartTime()) < TIME_TO_LIVE_S) {
 
+            log.info("Eksisterende ident {} isReady {}", ident, identerStatus.get(ident).isReady);
             return identerStatus.get(ident).isReady;
         } else {
 
@@ -55,6 +55,7 @@ public class PdlSyncService {
                 }
             }
         }
+        log.info("Eksisterende ident {} isReady {}", ident, identerStatus.get(ident).isReady);
         return identerStatus.get(ident).isReady;
     }
 
@@ -66,6 +67,7 @@ public class PdlSyncService {
                     .requestStartTime(LocalDateTime.now())
                     .build());
 
+            log.info("Synk av ident {} ble startet {}", ident, LocalDateTime.now());
             synchPdlPerson(ident);
         }
     }
@@ -97,6 +99,7 @@ public class PdlSyncService {
 
                 identerStatus.get(ident).notifyAll();
             }
+            log.info("Synk av ident {} med status {} har klar tid {}", ident, isPerson, LocalDateTime.now());
         }
 
         if (ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED_S) {
