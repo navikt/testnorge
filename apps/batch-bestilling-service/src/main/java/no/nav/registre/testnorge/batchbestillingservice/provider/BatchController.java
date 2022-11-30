@@ -27,8 +27,10 @@ public class BatchController {
                                                           @PathVariable("gruppeId") Long gruppeId,
                                                           @PathVariable("antallPerBatch") Long antallPerBatch,
                                                           @RequestParam(value = "delayInMinutes", defaultValue = "5", required = false) Integer delayInMinutes,
-                                                          @RequestParam(value = "antallBatchJobber", defaultValue = "10", required = false) Integer antallBatchJobber) {
+                                                          @RequestParam(value = "antallBatchJobber", defaultValue = "10", required = false) Integer antallBatchJobber,
+                                                          @RequestParam(value = "sendToProd", defaultValue = "false", required = false) Boolean sendToProd
+    ) {
 
-        return batchBestillingService.sendBestillinger(gruppeId, request, antallPerBatch, antallBatchJobber, delayInMinutes);
+        return batchBestillingService.sendBestillinger(gruppeId, request, antallPerBatch, antallBatchJobber, delayInMinutes, sendToProd);
     }
 }
