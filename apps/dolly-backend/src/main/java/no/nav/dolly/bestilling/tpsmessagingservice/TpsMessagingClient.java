@@ -159,8 +159,8 @@ public class TpsMessagingClient implements ClientRegister {
     private Flux<List<String>> getIdenterHovedpersonOgPartner(String ident) {
 
         return getPersonData(List.of(ident))
-                .map(person -> Stream.of(List.of(person.getIdent()),
-                                person.getSivilstand().stream()
+                .map(person -> Stream.of(List.of(ident),
+                                person.getPerson().getSivilstand().stream()
                                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
                                         .filter(Objects::nonNull)
                                         .toList())
@@ -169,39 +169,38 @@ public class TpsMessagingClient implements ClientRegister {
                         .toList());
     }
 
-    private Flux<PdlPerson.Person> getPersonData(List<String> identer) {
+    private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(PdlPersonBolk.PersonBolk::getPerson);
+                .filter(personBolk -> nonNull(personBolk.getPerson()));
     }
 
-    private Mono<List<TpsMeldingResponseDTO>> sendBostedsadresseUtland(List<PdlPerson.Person> pdlPersoner, AccessToken token) {
+    private Mono<List<TpsMeldingResponseDTO>> sendBostedsadresseUtland(List<PdlPersonBolk.PersonBolk> pdlPersoner, AccessToken token) {
 
         var bostedadresseResponse = pdlPersoner.stream()
-                .filter(person -> !person.getBostedsadresse().isEmpty() &&
-                        person.getBostedsadresse().get(0).isAdresseUtland())
+                .filter(person -> !person.getPerson().getBostedsadresse().isEmpty() &&
+                        person.getPerson().getBostedsadresse().get(0).isAdresseUtland())
                 .map(person ->
                         tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
-                                        mapperFacade.map(person.getBostedsadresse().get(0), AdresseUtlandDTO.class), token)
+                                        mapperFacade.map(person.getPerson().getBostedsadresse().get(0), AdresseUtlandDTO.class), token)
                                 .collectList())
                 .toList();
 
         return !bostedadresseResponse.isEmpty() ? bostedadresseResponse.get(0) : Mono.just(emptyList());
     }
 
-    private Mono<List<TpsMeldingResponseDTO>> sendKontaktadresseUtland(List<PdlPerson.Person> pdlPersoner, AccessToken token) {
+    private Mono<List<TpsMeldingResponseDTO>> sendKontaktadresseUtland(List<PdlPersonBolk.PersonBolk> pdlPersoner, AccessToken token) {
 
         var kontaktadresseResponse = pdlPersoner.stream()
-                .filter(person -> !person.getKontaktadresse().isEmpty() &&
-                        person.getKontaktadresse().get(0).isAdresseUtland())
+                .filter(person -> !person.getPerson().getKontaktadresse().isEmpty() &&
+                        person.getPerson().getKontaktadresse().get(0).isAdresseUtland())
                 .map(person ->
                         tpsMessagingConsumer.sendAdresseUtlandRequest(person.getIdent(), null,
-                                        mapperFacade.map(person.getKontaktadresse().get(0), AdresseUtlandDTO.class), token)
+                                        mapperFacade.map(person.getPerson().getKontaktadresse().get(0), AdresseUtlandDTO.class), token)
                                 .collectList())
                 .toList();
 

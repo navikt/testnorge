@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -34,6 +35,7 @@ public class PdlSyncService {
     public Boolean syncPdlPersonReady(String ident) {
 
         if (identerStatus.containsKey(ident) &&
+                nonNull(identerStatus.get(ident).getAvailStartTime()) &&
                 ChronoUnit.SECONDS.between(LocalDateTime.now(),
                         identerStatus.get(ident).getAvailStartTime()) < TIME_TO_LIVE_S) {
 

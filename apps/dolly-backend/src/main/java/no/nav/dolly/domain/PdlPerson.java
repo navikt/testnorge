@@ -126,13 +126,6 @@ public class PdlPerson {
         private List<SikkerhetstiltakDTO> sikkerhetstiltak;
         private List<DoedfoedtBarnDTO> doedfoedtBarn;
 
-        public String getIdent() {
-
-            return getFolkeregisteridentifikator().stream()
-                    .map(Folkeregisteridentifikator::getIdentifikasjonsnummer)
-                    .findFirst().orElse(null);
-        }
-
         public List<PdlPerson.Navn> getNavn() {
             if (isNull(navn)) {
                 navn = new ArrayList<>();

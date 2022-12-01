@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.dolly.util.DatoFraIdentUtil;
 import org.springframework.stereotype.Component;
@@ -34,34 +35,32 @@ public class OpprettPersonMapper implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(PdlPerson.Person.class, OpprettPersonRequest.class)
+        factory.classMap(PdlPersonBolk.PersonBolk.class, OpprettPersonRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PdlPerson.Person person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
+                    public void mapAtoB(PdlPersonBolk.PersonBolk person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
 
-                        opprettPersonRequest.setFnr(person.getFolkeregisteridentifikator().stream()
-                                .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
-                                .findFirst().orElse(null));
+                        opprettPersonRequest.setFnr(person.getIdent());
 
-                        opprettPersonRequest.setFodselsDato(getFoedselsdato(person.getFoedsel().stream()
+                        opprettPersonRequest.setFodselsDato(getFoedselsdato(person.getPerson().getFoedsel().stream()
                                 .map(PdlPerson.Foedsel::getFoedselsdato)
                                 .findFirst().orElse(null), opprettPersonRequest.getFnr()));
 
-                        opprettPersonRequest.setDodsDato(convertDato(person.getDoedsfall().stream()
+                        opprettPersonRequest.setDodsDato(convertDato(person.getPerson().getDoedsfall().stream()
                                 .map(PdlPerson.Doedsfall::getDoedsdato)
                                 .findFirst().orElse(null)));
 
-                        if (person.getUtflyttingFraNorge().stream()
-                                            .noneMatch(utflytting -> person.getInnflyttingTilNorge().stream()
+                        if (person.getPerson().getUtflyttingFraNorge().stream()
+                                            .noneMatch(utflytting -> person.getPerson().getInnflyttingTilNorge().stream()
                                                             .anyMatch(innflytting -> innflytting.getInnflyttingsdato()
                                                                     .isAfter(utflytting.getUtflyttingsdato())))) {
 
-                            opprettPersonRequest.setBostedsland(person.getUtflyttingFraNorge().stream()
+                            opprettPersonRequest.setBostedsland(person.getPerson().getUtflyttingFraNorge().stream()
                                     .map(PdlPerson.UtflyttingFraNorge::getTilflyttingsland)
                                     .findFirst().orElse("NOR"));
 
                             opprettPersonRequest.setUtvandringsDato(
-                                    convertDato(person.getUtflyttingFraNorge().stream()
+                                    convertDato(person.getPerson().getUtflyttingFraNorge().stream()
                                             .map(PdlPerson.UtflyttingFraNorge::getUtflyttingsdato)
                                             .filter(Objects::nonNull)
                                             .map(LocalDateTime::toLocalDate)

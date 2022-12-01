@@ -139,15 +139,15 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return getPersonData(List.of(ident))
                 .map(person -> Stream.of(List.of(person.getIdent()),
-                                person.getSivilstand().stream()
+                                person.getPerson().getSivilstand().stream()
                                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
                                         .filter(Objects::nonNull)
                                         .toList(),
-                                person.getForelderBarnRelasjon().stream()
+                                person.getPerson().getForelderBarnRelasjon().stream()
                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
                                         .filter(Objects::nonNull)
                                         .toList(),
-                                person.getForeldreansvar().stream()
+                                person.getPerson().getForeldreansvar().stream()
                                         .map(ForeldreansvarDTO::getAnsvarlig)
                                         .filter(Objects::nonNull)
                                         .toList())
@@ -156,15 +156,14 @@ public class PensjonforvalterClient implements ClientRegister {
                         .toList());
     }
 
-    private Flux<PdlPerson.Person> getPersonData(List<String> identer) {
+    private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
                 .map(PdlPersonBolk::getData)
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(PdlPersonBolk.PersonBolk::getPerson);
+                .filter(personBolk -> nonNull(personBolk.getPerson()));
     }
 
     @Override

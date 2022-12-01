@@ -47,7 +47,7 @@ public class KontoregisterClient implements ClientRegister {
 
 
             progress.setKontoregisterStatus(encodeStatus(getInfoVenter(SYSTEM)));
-            transactionHelperService.oppdaterProgress(progress);
+            transactionHelperService.persister(progress);
 
             var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
             if (nonNull(request)) {
@@ -61,7 +61,7 @@ public class KontoregisterClient implements ClientRegister {
                         })
                         .subscribe(respons -> {
                             progress.setKontoregisterStatus(respons);
-                            transactionHelperService.oppdaterProgress(progress);
+                            transactionHelperService.persister(progress);
                         });
             }
         }

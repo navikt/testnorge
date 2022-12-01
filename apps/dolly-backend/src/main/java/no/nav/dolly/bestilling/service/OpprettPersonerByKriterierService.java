@@ -163,10 +163,10 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 } catch (RuntimeException e) {
                     progress = buildProgress(bestilling, originator.getMaster(),
                             errorStatusDecoder.decodeThrowable(e));
+                    transactionHelperService.persister(progress);
 
-                } finally {
-                    transactionHelperService.oppdaterProgress(progress);
                 }
+
                 return progress;
             }
             return null;

@@ -19,7 +19,7 @@ import java.util.Map;
 import static java.time.LocalDateTime.now;
 
 @Slf4j
-@Service
+//@Service
 @Order(5)
 @RequiredArgsConstructor
 public class PersonServiceClient implements ClientRegister {
