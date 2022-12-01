@@ -27,6 +27,7 @@ public class BatchBestillingService {
                 if (antallJobberFerdig[0] >= antallBatchJobber) {
                     log.info("Stopper batchjobb etter {} kjøringer", antallJobberFerdig[0]);
                     bestillingTimer.cancel();
+                    return;
                 }
 
                 if (!dollyBackendConsumer.getAktiveBestillinger(gruppeId, sendToProd).isEmpty()) {
