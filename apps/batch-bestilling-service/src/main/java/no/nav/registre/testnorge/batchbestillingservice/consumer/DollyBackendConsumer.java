@@ -1,31 +1,29 @@
 package no.nav.registre.testnorge.batchbestillingservice.consumer;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.batchbestillingservice.command.GetAktiveBestillingerCommand;
+import no.nav.registre.testnorge.batchbestillingservice.command.PostBestillingCommand;
 import no.nav.registre.testnorge.batchbestillingservice.credentials.DollyBackendDevServiceProperties;
 import no.nav.registre.testnorge.batchbestillingservice.credentials.DollyBackendServiceProperties;
 import no.nav.registre.testnorge.batchbestillingservice.request.RsDollyBestillingRequest;
-import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.util.retry.Retry;
+import reactor.core.publisher.Flux;
 
-import java.time.Duration;
-
-import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import java.util.List;
 
 @Slf4j
 @Service
 public class DollyBackendConsumer {
 
-    private final String HEADER_NAV_CONSUMER_ID = "Nav-Consumer-Id";
+
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
     private final ServerProperties devServiceProperties;
-    private final String HEADER_NAV_CALL_ID = "Nav-Call-Id";
 
     public DollyBackendConsumer(DollyBackendServiceProperties properties,
                                 DollyBackendDevServiceProperties devProperties,
@@ -43,26 +41,25 @@ public class DollyBackendConsumer {
 
     public void postDollyBestilling(Long gruppeId, RsDollyBestillingRequest request, Long antall, Boolean sendToProd) {
 
-        var callId = "Batch-service";
-        var CONSUMER = "Batch-service";
-
         request.setAntall(antall.intValue());
 
         tokenService
                 .exchange(sendToProd ? serviceProperties : devServiceProperties)
-                .flatMap(token -> webClient.post()
-                        .uri(sendToProd ? serviceProperties.getUrl() : devServiceProperties.getUrl(),
-                                builder -> builder
-                                        .path("/api/v1/gruppe/{gruppeId}/bestilling").build(gruppeId))
-                        .header(AUTHORIZATION, "Bearer " + token.getTokenValue())
-                        .header(HEADER_NAV_CALL_ID, callId)
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .bodyValue(request)
-                        .retrieve()
-                        .toBodilessEntity()
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException))
-                        .doOnError(throwable -> log.error(throwable.getMessage())))
+                .map(token -> new PostBestillingCommand(webClient, token.getTokenValue(), gruppeId, request, sendToProd, serviceProperties, devServiceProperties).call())
+                .doOnError(error -> log.error("Bestilling feilet for gruppe {}", gruppeId, error))
+                .doOnSuccess(response -> log.info("Bestilling med {} identer startet i backend for gruppe {}", antall, gruppeId))
+                .subscribe();
+    }
+
+    public List<Object> getAktiveBestillinger(Long gruppeId, Boolean sendToProd) {
+
+        return tokenService
+                .exchange(sendToProd ? serviceProperties : devServiceProperties)
+                .map(token -> new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId, sendToProd, serviceProperties, devServiceProperties).call())
+                .doOnError(error -> log.error("Henting av aktive bestillinger feilet for gruppe {}", gruppeId, error))
+                .onErrorReturn(Flux.empty())
+                .block()
+                .collectList()
                 .block();
     }
 }
