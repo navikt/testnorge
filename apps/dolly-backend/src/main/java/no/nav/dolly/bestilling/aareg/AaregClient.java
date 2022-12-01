@@ -70,7 +70,7 @@ public class AaregClient implements ClientRegister {
             transactionHelperService.persister(progress);
 
             personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .map(isPresent -> {
+                    .flatMap(isPresent -> {
                                 if (isPresent) {
                                     if (bestilling.getAareg().stream()
                                             .map(RsAareg::getAmelding)
@@ -87,7 +87,7 @@ public class AaregClient implements ClientRegister {
                                 }
                             }
                     ).subscribe(response -> {
-                        progress.setAaregStatus(response.toString());
+                        progress.setAaregStatus(response);
                         transactionHelperService.persister(progress);
                     });
         }
