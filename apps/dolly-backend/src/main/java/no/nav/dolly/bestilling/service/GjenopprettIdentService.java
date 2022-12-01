@@ -150,7 +150,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                     progress.setFeil(errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
-                    transactionHelperService.persist(progress);
+                    transactionHelperService.oppdaterProgress(progress);
                 }
                 return progress;
             }

@@ -32,13 +32,22 @@ public class TransactionHelperService {
     }
 
     @SuppressWarnings("java:S1143")
-    public void persist(BestillingProgress progress) {
+    public void oppdaterProgress(BestillingProgress progress) {
 
         transactionTemplate.execute(status -> {
             var best = entityManager.find(Bestilling.class, progress.getBestilling().getId());
             entityManager.persist(progress);
             best.setSistOppdatert(now());
             entityManager.merge(best);
+            clearCache();
+            return null;
+        });
+    }
+
+    public void persister(BestillingProgress progress) {
+
+        transactionTemplate.execute(status -> {
+            entityManager.merge(progress);
             clearCache();
             return null;
         });

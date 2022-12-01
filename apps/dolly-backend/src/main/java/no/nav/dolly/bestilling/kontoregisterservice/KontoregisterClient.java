@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -48,7 +47,7 @@ public class KontoregisterClient implements ClientRegister {
 
 
             progress.setKontoregisterStatus(encodeStatus(getInfoVenter(SYSTEM)));
-            transactionHelperService.persist(progress);
+            transactionHelperService.oppdaterProgress(progress);
 
             var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
             if (nonNull(request)) {
@@ -62,7 +61,7 @@ public class KontoregisterClient implements ClientRegister {
                         })
                         .subscribe(respons -> {
                             progress.setKontoregisterStatus(respons);
-                            transactionHelperService.persist(progress);
+                            transactionHelperService.oppdaterProgress(progress);
                         });
             }
         }

@@ -86,7 +86,7 @@ public class TpsMessagingClient implements ClientRegister {
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(TPS_MESSAGING))))
                         .collect(Collectors.joining(",")))
                 .block());
-        transactionHelperService.persist(progress);
+        transactionHelperService.persister(progress);
 
         personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
@@ -136,7 +136,7 @@ public class TpsMessagingClient implements ClientRegister {
                     }
                 }).subscribe(respons -> {
                     progress.setTpsMessagingStatus(respons.toString());
-                    transactionHelperService.persist(progress);
+                    transactionHelperService.persister(progress);
                 });
 
         return Flux.just();

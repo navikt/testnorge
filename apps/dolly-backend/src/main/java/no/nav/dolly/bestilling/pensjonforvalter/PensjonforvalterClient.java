@@ -98,7 +98,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 tilgjengeligeMiljoer.stream()
                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
                         .collect(Collectors.joining(",")));
-        transactionHelperService.persist(progress);
+        transactionHelperService.persister(progress);
 
         personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
@@ -129,7 +129,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 })
                 .subscribe(response -> {
                     progress.setPensjonforvalterStatus(response);
-                    transactionHelperService.persist(progress);
+                    transactionHelperService.persister(progress);
                 });
 
         return Flux.just();

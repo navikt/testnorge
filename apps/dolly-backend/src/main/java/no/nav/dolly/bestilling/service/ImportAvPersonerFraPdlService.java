@@ -141,7 +141,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     progress.setPdlImportStatus(errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
-                    transactionHelperService.persist(progress);
+                    transactionHelperService.oppdaterProgress(progress);
                 }
                 return progress;
             }

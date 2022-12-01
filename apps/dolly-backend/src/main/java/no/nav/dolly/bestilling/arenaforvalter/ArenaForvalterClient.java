@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.bestilling.service.DoneService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -32,8 +31,8 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -72,7 +71,7 @@ public class ArenaForvalterClient implements ClientRegister {
             progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
                     .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
                     .collect(Collectors.joining(",")));
-            transactionHelperService.persist(progress);
+            transactionHelperService.persister(progress);
 
             personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isPresent -> {
@@ -94,7 +93,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     })
                     .subscribe(respons -> {
                         progress.setArenaforvalterStatus(respons);
-                        transactionHelperService.persist(progress);
+                        transactionHelperService.persister(progress);
                     });
 
         }

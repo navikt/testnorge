@@ -153,6 +153,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             .build();
 
                     progress = new BestillingProgress(bestilling, dollyPerson.getHovedperson(), originator.getMaster());
+                    transactionHelperService.oppdaterProgress(progress);
 
                     identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
                             originator.getMaster(), bestKriterier.getBeskrivelse());
@@ -164,7 +165,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
-                    transactionHelperService.persist(progress);
+                    transactionHelperService.oppdaterProgress(progress);
                 }
                 return progress;
             }

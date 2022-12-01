@@ -153,7 +153,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                 } catch (RuntimeException e) {
                     progress.setFeil("NA:" + errorStatusDecoder.decodeThrowable(e));
                 } finally {
-                    transactionHelperService.persist(progress);
+                    transactionHelperService.oppdaterProgress(progress);
                 }
                 return progress;
             }
