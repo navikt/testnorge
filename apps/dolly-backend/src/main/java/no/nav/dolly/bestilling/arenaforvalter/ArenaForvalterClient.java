@@ -6,6 +6,9 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -19,14 +22,17 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -47,6 +53,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     private static ArenaNyeBrukere filtrerEksisterendeBrukere(ArenaNyeBrukere arenaNyeBrukere) {
 
@@ -74,23 +81,26 @@ public class ArenaForvalterClient implements ClientRegister {
             transactionHelperService.persister(progress);
 
             personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isPresent -> {
-                        if (isPresent) {
-                            return arenaForvalterConsumer.getToken()
-                                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                                            .filter(miljo -> bestilling.getEnvironments().contains(miljo))
-                                            .parallel()
-                                            .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
-                                                    sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
-                                                    sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
-                                    .filter(StringUtils::isNotBlank)
-                                    .collect(Collectors.joining(","));
-                        } else {
-                            return Mono.just(bestilling.getEnvironments().stream()
+                    .flatMap(isPresent -> (isPresent ?
+                            getIdenterFamilie(dollyPerson.getHovedperson())
+                                    .flatMap(personServiceConsumer::getPdlSyncReady)
+                                    .collectList()
+                                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
+                                    .map(assumeTrue -> arenaForvalterConsumer.getToken()
+                                                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                                                            .filter(miljo -> bestilling.getEnvironments().contains(miljo))
+                                                            .parallel()
+                                                            .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
+                                                                    sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
+                                                                    sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+                                                    .filter(StringUtils::isNotBlank)
+                                                    .collect(Collectors.joining(",")))
+                                    .flatMap(Mono::from) :
+
+                            Mono.just(bestilling.getEnvironments().stream()
                                     .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
-                                    .collect(Collectors.joining(",")));
-                        }
-                    })
+                                    .collect(Collectors.joining(","))))
+                    )
                     .subscribe(respons -> {
                         progress.setArenaforvalterStatus(respons);
                         transactionHelperService.persister(progress);
@@ -114,6 +124,30 @@ public class ArenaForvalterClient implements ClientRegister {
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getArenaforvalterStatus()) &&
                                 !entry.getArenaforvalterStatus().contains(getVenterTekst()));
+    }
+
+    private Flux<String> getIdenterFamilie(String ident) {
+
+        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(PdlPersonBolk.PersonBolk::getPerson)
+                .map(person -> Stream.of(
+                                person.getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList())
+                .flatMap(Flux::fromIterable);
     }
 
     private Flux<String> sendArenadata(Arenadata arenadata, String ident, String miljoe, AccessToken token) {

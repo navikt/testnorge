@@ -21,8 +21,8 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -120,6 +120,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                 .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
                                                         Flux.just(""))))
                                         .flatMap(Flux::from))
+                                .filter(StringUtils::isNotBlank)
                                 .collect(Collectors.joining("$"));
                     } else {
                         return Mono.just(tilgjengeligeMiljoer.stream()
@@ -145,10 +146,6 @@ public class PensjonforvalterClient implements ClientRegister {
                                         .toList(),
                                 person.getPerson().getForelderBarnRelasjon().stream()
                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getForeldreansvar().stream()
-                                        .map(ForeldreansvarDTO::getAnsvarlig)
                                         .filter(Objects::nonNull)
                                         .toList())
                         .flatMap(Collection::stream)
