@@ -257,14 +257,13 @@ public class TpsMessagingClient implements ClientRegister {
     private Mono<List<TpsMeldingResponseDTO>> sendEgenansatt(RsDollyUtvidetBestilling bestilling,
                                                              String ident, AccessToken token) {
 
-        return Mono.just(emptyList()); //TODO: Revertere tilbake til kode under etter Nom/Remedy oppgave er ferdig (skal være ferdig innen Januar 2023)
-//        return nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling)) ?
-//
-//                tpsMessagingConsumer.sendEgenansattRequest(ident, null,
-//                                SkjermingUtil.getEgenansattDatoFom(bestilling).toLocalDate(), token)
-//                        .collectList() :
-//
-//                Mono.just(emptyList());
+        return nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling)) ?
+
+                tpsMessagingConsumer.sendEgenansattRequest(ident, null,
+                                SkjermingUtil.getEgenansattDatoFom(bestilling).toLocalDate(), token)
+                        .collectList() :
+
+                Mono.just(emptyList());
     }
 
     private Mono<List<TpsMeldingResponseDTO>> sendBankkontonummerNorge(RsDollyUtvidetBestilling bestilling,
