@@ -12,14 +12,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 @Order(1)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().csrf().disable()
+                .and()
+                .csrf()
+                .disable()
                 .authorizeRequests()
-                .antMatchers("/**")
+                .antMatchers("/api/**")
                 .fullyAuthenticated()
-                .and().oauth2ResourceServer().jwt();
+                .and()
+                .oauth2ResourceServer()
+                .jwt();
     }
 }
