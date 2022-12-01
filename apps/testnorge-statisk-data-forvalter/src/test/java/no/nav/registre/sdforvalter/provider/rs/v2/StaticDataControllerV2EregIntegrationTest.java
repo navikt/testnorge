@@ -2,6 +2,7 @@ package no.nav.registre.sdforvalter.provider.rs.v2;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -72,7 +73,7 @@ class StaticDataControllerV2EregIntegrationTest {
         eregRepository.saveAll(Arrays.asList(as, ans));
 
         String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -94,7 +95,7 @@ class StaticDataControllerV2EregIntegrationTest {
         eregRepository.saveAll(Arrays.asList(aafy, bedr));
 
         String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -117,7 +118,7 @@ class StaticDataControllerV2EregIntegrationTest {
         eregRepository.saveAll(Arrays.asList(as, bedr, ans, enk));
 
         String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -142,7 +143,7 @@ class StaticDataControllerV2EregIntegrationTest {
         eregRepository.save(model);
 
         String json = mvc.perform(get(EREG_API)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -158,7 +159,7 @@ class StaticDataControllerV2EregIntegrationTest {
         Ereg ereg = createEreg("987654321", "BEDR");
         mvc.perform(post(EREG_API)
                         .content(objectMapper.writeValueAsString(create(ereg)))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         assertThat(eregRepository.findAll())
@@ -182,7 +183,7 @@ class StaticDataControllerV2EregIntegrationTest {
         eregRepository.save(eregModel);
 
         String json = mvc.perform(get(EREG_API + "?gruppe=" + gruppeModel.getKode())
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -209,7 +210,7 @@ class StaticDataControllerV2EregIntegrationTest {
         String json = mvc.perform(
                         get(EREG_API)
                                 .param("gruppe", gruppeModel.getKode())
-                                .contentType(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON).with(jwt())
                 )
                 .andExpect(status().isOk())
                 .andReturn()
@@ -232,7 +233,7 @@ class StaticDataControllerV2EregIntegrationTest {
 
         mvc.perform(post(EREG_API)
                         .content(objectMapper.writeValueAsString(create(ereg)))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         Iterable<EregModel> iterable = eregRepository.findAll();
@@ -250,7 +251,7 @@ class StaticDataControllerV2EregIntegrationTest {
         Ereg ereg_987654321 = createEreg("987654321", "BEDR", altinn.getNavn());
         mvc.perform(post(EREG_API)
                         .content(objectMapper.writeValueAsString(create(ereg_123456789, ereg_987654321)))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
         assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
                 .hasSize(1)
