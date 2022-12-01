@@ -2,6 +2,7 @@ package no.nav.registre.sdforvalter.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import org.junit.jupiter.api.AfterEach;
@@ -130,6 +131,7 @@ class FileControllerIntegrationTest {
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
                 .multipart("/api/v1/faste-data/file/tpsIdenter/")
                 .file("file", csvInnhold.getBytes())
+                .with(jwt())
                 .characterEncoding("UTF_8");
 
         mvc.perform(builder).andExpect(status().isOk());

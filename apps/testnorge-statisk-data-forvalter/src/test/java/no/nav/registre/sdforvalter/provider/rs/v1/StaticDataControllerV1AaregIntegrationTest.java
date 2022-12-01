@@ -2,6 +2,7 @@ package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,7 +52,7 @@ class StaticDataControllerV1AaregIntegrationTest {
         AaregModel model = createAaregModel("0101011236", "987654321");
         repository.save(model);
         String json = mvc.perform(get("/api/v1/faste-data/aareg/")
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()

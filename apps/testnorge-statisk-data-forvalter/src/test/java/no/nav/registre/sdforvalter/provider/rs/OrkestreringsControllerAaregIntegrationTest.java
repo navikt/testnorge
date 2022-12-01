@@ -4,6 +4,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -115,7 +116,7 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .stubPost();
 
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
@@ -162,7 +163,7 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .stubGet();
 
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
@@ -200,7 +201,7 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .stubGet();
 
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         JsonWiremockHelper
