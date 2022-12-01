@@ -24,11 +24,6 @@ public class BatchBestillingService {
 
             @Override
             public void run() {
-                if (antallJobberFerdig[0] >= antallBatchJobber) {
-                    log.info("Stopper batchjobb etter {} kjøringer", antallJobberFerdig[0]);
-                    bestillingTimer.cancel();
-                    return;
-                }
 
                 if (!dollyBackendConsumer.getAktiveBestillinger(gruppeId, sendToProd).isEmpty()) {
                     log.warn("Gruppe {} har aktive bestillinger kjørende, venter {} minutter før neste kjøring.", gruppeId, delayInMinutes);
@@ -38,6 +33,11 @@ public class BatchBestillingService {
                 dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch, sendToProd);
                 antallJobberFerdig[0] += 1;
                 log.info("antall jobber ferdig {}/{}", antallJobberFerdig[0], antallBatchJobber);
+
+                if (antallJobberFerdig[0] >= antallBatchJobber) {
+                    log.info("Stopper batchjobb etter {} kjøringer", antallJobberFerdig[0]);
+                    bestillingTimer.cancel();
+                }
             }
         };
 
