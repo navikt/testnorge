@@ -25,6 +25,9 @@ const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
 		kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 	}`
 
+const getFasteDataOrganisasjon = (orgnummer: string) =>
+	orgnummer ? `/testnav-organisasjon-faste-data-service/api/v1/organisasjoner/${orgnummer}` : null
+
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
 		url: `/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
@@ -112,6 +115,26 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 
 	return {
 		organisasjoner: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useFasteDataOrganisasjon = (orgnummer: string) => {
+	const { data, error } = useSWR<OrganisasjonFasteData, Error>(
+		getFasteDataOrganisasjon(orgnummer),
+		fetcher
+	)
+
+	if (!orgnummer) {
+		return {
+			loading: false,
+			error: 'Organisasjonsnummer mangler!',
+		}
+	}
+
+	return {
+		organisasjon: data,
 		loading: !error && !data,
 		error: error,
 	}
