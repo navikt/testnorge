@@ -1,6 +1,7 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -8,10 +9,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
+import no.nav.registre.sdforvalter.config.credentials.TpsfProxyProperties;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
+import org.apache.http.HttpHeaders;
+import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -33,6 +41,10 @@ import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
+import reactor.core.publisher.Mono;
+
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -57,13 +69,23 @@ class StaticDataControllerV1TpsIntegrationTest {
     private OpprinnelseRepository opprinnelseRepository;
 
     @Test
+    void shouldGiveUnauthorizedWithoutJwt() throws Exception {
+
+        TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
+        mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
+                        .content(objectMapper.writeValueAsString(createTpsIdenter(tpsIdent)))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     void shouldGetTpsIdentSetWithOpprinnelse() throws Exception {
         OpprinnelseModel altinn = opprinnelseRepository.save(new OpprinnelseModel("Altinn"));
         TpsIdentModel tpsIdentModel = createIdentModel("01010101011", "Petter", "Petterson", altinn);
         tpsIdenterRepository.save(tpsIdentModel);
 
         String json = mvc.perform(get("/api/v1/faste-data/tps?genererManglendeNavn=false")
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
                 .getResponse()
@@ -75,10 +97,11 @@ class StaticDataControllerV1TpsIntegrationTest {
 
     @Test
     void shouldAddTpsIdentSetToDatabase() throws Exception {
+
         TpsIdent tpsIdent = createIdent("01010101011", "Petter", "Petterson");
         mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
                 .content(objectMapper.writeValueAsString(createTpsIdenter(tpsIdent)))
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         assertThat(tpsIdenterRepository.findAll()).containsOnly(new TpsIdentModel(tpsIdent, null, null));
@@ -92,7 +115,7 @@ class StaticDataControllerV1TpsIntegrationTest {
 
         mvc.perform(post("/api/v1/faste-data/tps?genererManglendeNavn=false")
                 .content(objectMapper.writeValueAsString(createTpsIdenter(hans, petter)))
-                .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
 
         assertThat(Lists.newArrayList(opprinnelseRepository.findAll()))
@@ -103,7 +126,6 @@ class StaticDataControllerV1TpsIntegrationTest {
                         "navn"
                 );
     }
-
 
     @AfterEach
     public void cleanUp() {
