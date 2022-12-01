@@ -8,7 +8,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ApplicationContextTest {
+class ApplicationContextTest {
 
     @MockBean
     private JwtDecoder jwtDecoder;

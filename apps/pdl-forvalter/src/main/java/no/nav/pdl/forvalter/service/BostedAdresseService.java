@@ -103,7 +103,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                                             .isAfter(utflytting.getUtflyttingsdato())))) {
 
                 if (person.getUtflytting().get(0).isVelkjentLand()) {
-                    if (bostedadresse.getUtenlandskAdresse().isEmpty()) {
+                    if (isNull(bostedadresse.getUtenlandskAdresse())) {
                         bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
                     }
 

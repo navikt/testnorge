@@ -32,6 +32,7 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnorge-tp.dev.intern.nav.no"
+  webproxy: true
   azure:
     application:
       enabled: true
