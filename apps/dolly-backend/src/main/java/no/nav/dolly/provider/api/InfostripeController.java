@@ -39,7 +39,7 @@ public class InfostripeController {
     public Collection<RsInfostripeMelding> hentAlle() {
         return informasjonsmeldingRepository.findGyldigMeldinger().stream()
                 .map(melding -> mapperFacade.map(melding, RsInfostripeMelding.class))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PostMapping(produces = MediaType.TEXT_PLAIN_VALUE)
