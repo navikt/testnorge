@@ -105,8 +105,8 @@ public class EksisterendeIdenterService {
                 index = maxIndex;
             }
 
-            log.info("Fant {} levende identer", utvalgteIdenter.size());
-            return Flux.fromIterable(utvalgteIdenter);
+            log.info("Fant {} levende identer", isNull(utvalgteIdenter) ? 0 : utvalgteIdenter.size());
+            return isNull(utvalgteIdenter) ? Flux.empty() : Flux.fromIterable(utvalgteIdenter);
         }
     }
 
