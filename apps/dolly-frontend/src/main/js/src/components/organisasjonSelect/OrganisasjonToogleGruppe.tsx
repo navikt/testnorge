@@ -1,5 +1,6 @@
 import React from 'react'
 import { ToggleGroup } from '@navikt/ds-react'
+import { ORGANISASJONSTYPE_TOGGLE } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 interface OrganisasjonToogleGruppeProps {
 	inputType: string
@@ -13,7 +14,7 @@ export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToo
 		<ToggleGroup
 			size={'small'}
 			onChange={handleToggleChange}
-			defaultValue={inputValg.fraFellesListe}
+			defaultValue={sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe}
 			style={{ margin: '5px 0 5px' }}
 		>
 			<ToggleGroup.Item key={inputValg.fraEgenListe} value={inputValg.fraEgenListe}>
