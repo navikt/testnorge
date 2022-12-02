@@ -24,22 +24,17 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Executor;
-
 
 @Component
 public class TpsfConsumer {
     private final WebClient webClient;
-    private final Executor executor;
     private final TokenExchange tokenExchange;
     private final TpsfProxyProperties serviceProperties;
 
     public TpsfConsumer(
-            Executor executor,
             TpsfProxyProperties serviceProperties,
             TokenExchange tokenExchange
     ) {
-        this.executor = executor;
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
 
