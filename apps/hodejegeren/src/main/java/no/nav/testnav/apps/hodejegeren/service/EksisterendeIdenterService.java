@@ -1,5 +1,7 @@
 package no.nav.testnav.apps.hodejegeren.service;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.testnav.apps.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET;
 import static no.nav.testnav.apps.hodejegeren.service.EndringskodeTilFeltnavnMapperService.NAV_ENHET_BESKRIVELSE;
 import static no.nav.testnav.apps.hodejegeren.service.TpsStatusQuoService.AKSJONSKODE;
@@ -35,6 +37,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -74,42 +77,59 @@ public class EksisterendeIdenterService {
     ) {
         log.info("Henter identer med minimum alder {}...", minimumAlder);
         var gyldigeIdenter = finnAlleIdenterOverAlder(gruppeId, minimumAlder);
-        log.info("{} identer hentet.", gyldigeIdenter.size());
+        var antallGyldige = gyldigeIdenter.size();
+        log.info("Fant {} identer over alder {} i avspillergruppe.", antallGyldige, minimumAlder);
         List<String> utvalgteIdenter;
 
-        if (henteAntall != null) {
-            Collections.shuffle(gyldigeIdenter);
-            if (gyldigeIdenter.size() < henteAntall) {
-                log.info("Antall ønskede identer å hente er større enn identer over alder i avspillergruppe. - HenteAntall:{} GyldigeIdenter:{}",
-                        henteAntall.toString().replaceAll("[\r\n]", ""),
-                        gyldigeIdenter.size());
-                henteAntall = gyldigeIdenter.size();
-            }
-            utvalgteIdenter = gyldigeIdenter.subList(0, henteAntall);
-        } else {
-            utvalgteIdenter = new ArrayList<>(gyldigeIdenter);
-        }
-
-
-        if (utvalgteIdenter.isEmpty()) {
+        if (gyldigeIdenter.isEmpty()) {
             return Flux.empty();
         }
 
-        var count = new AtomicInteger();
         log.info("Fjerner personer som er død...");
-        return utvalgteIdenter
-                .parallelStream()
-                .map(ident -> Flux.from(tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident)))
-                .reduce(Flux.empty(), Flux::concat)
-                .filter(value -> value.getResponse().getData1().getDatoDo() == null || Strings.isBlank(value.getResponse().getData1().getDatoDo()))
-                .filter(value -> value.getResponse().getData1().getFnr() != null)
+        if (isNull(henteAntall) || antallGyldige <= henteAntall) {
+            utvalgteIdenter = new ArrayList<>(gyldigeIdenter);
+            return filtrerUtDoedeIdenter(utvalgteIdenter, miljoe);
+        } else {
+            Collections.shuffle(gyldigeIdenter);
+
+            var index = henteAntall;
+            var initialIdenter = gyldigeIdenter.subList(0, index);
+            utvalgteIdenter = filtrerUtDoedeIdenter(initialIdenter, miljoe).collectList().block();
+            while (nonNull(utvalgteIdenter) && utvalgteIdenter.size() < henteAntall && index < antallGyldige){
+                var antallMangler = henteAntall - utvalgteIdenter.size();
+
+                var maxIndex = Math.min(index + antallMangler, antallGyldige);
+                var ekstraUtvalg = gyldigeIdenter.subList(index, maxIndex);
+                var extraIdenter = filtrerUtDoedeIdenter(ekstraUtvalg, miljoe).collectList().block();
+                utvalgteIdenter.addAll(extraIdenter);
+                index = maxIndex;
+            }
+
+            log.info("Fant {} levende identer", utvalgteIdenter.size());
+            return Flux.fromIterable(utvalgteIdenter);
+        }
+    }
+
+    private Flux<String> filtrerUtDoedeIdenter(
+            List<String> utvalgteIdenter,
+            String miljoe
+    ){
+        var count = new AtomicInteger();
+        return tpsfConsumer.getToken().flatMapMany(accessToken -> Flux.fromIterable(utvalgteIdenter)
+                .flatMap(ident -> tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident, accessToken))
+                .filter(Objects::nonNull)
+                .filter(value -> isEmptyOrNull(value.getResponse().getData1().getDatoDo()) && nonNull(value.getResponse().getData1().getFnr()))
                 .map(value -> {
                     var index = count.incrementAndGet();
                     if (index % 10 == 0) {
                         log.info("Hentet {}", index);
                     }
                     return value.getResponse().getData1().getFnr();
-                });
+                }));
+    }
+
+    private boolean isEmptyOrNull (String value){
+        return isNull(value) || Strings.isBlank(value);
     }
 
 

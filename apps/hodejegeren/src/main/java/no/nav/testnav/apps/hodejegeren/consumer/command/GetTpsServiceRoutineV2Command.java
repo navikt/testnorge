@@ -4,12 +4,12 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.hodejegeren.consumer.dto.ServiceRoutineDTO;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class GetTpsServiceRoutineV2Command implements Callable<Mono<ServiceRoutineDTO>> {
+public class GetTpsServiceRoutineV2Command implements Callable<Flux<ServiceRoutineDTO>> {
     private final WebClient webClient;
     private final String token;
     private final String routineName;
@@ -18,7 +18,7 @@ public class GetTpsServiceRoutineV2Command implements Callable<Mono<ServiceRouti
     private final String fnr;
 
     @Override
-    public Mono<ServiceRoutineDTO> call() {
+    public Flux<ServiceRoutineDTO> call() {
         return webClient
                 .get()
                 .uri(builder -> builder
@@ -30,6 +30,6 @@ public class GetTpsServiceRoutineV2Command implements Callable<Mono<ServiceRouti
                 )
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
-                .bodyToMono(ServiceRoutineDTO.class);
+                .bodyToFlux(ServiceRoutineDTO.class);
     }
 }
