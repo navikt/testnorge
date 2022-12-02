@@ -42,12 +42,11 @@ public class NavAzureAdTokenService implements ExchangeToken {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             HttpClient httpClient = HttpClient
-                    .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
+                .create()
+                .proxy(proxy -> proxy
+                    .type(ProxyProvider.Proxy.HTTP)
+                    .host(uri.getHost())
+                    .port(uri.getPort()));
             builder.clientConnector(new ReactorClientHttpConnector(httpClient));
         }
         this.webClient = builder.build();
