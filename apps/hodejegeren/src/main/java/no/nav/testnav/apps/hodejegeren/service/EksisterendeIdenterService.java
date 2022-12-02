@@ -22,7 +22,7 @@ import no.nav.testnav.apps.hodejegeren.provider.responses.kontoinfo.KontoinfoRes
 import no.nav.testnav.apps.hodejegeren.provider.responses.persondata.PersondataResponse;
 import no.nav.testnav.apps.hodejegeren.provider.responses.relasjon.Relasjon;
 import no.nav.testnav.apps.hodejegeren.provider.responses.relasjon.RelasjonsResponse;
-import org.apache.logging.log4j.util.Strings;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -115,10 +115,11 @@ public class EksisterendeIdenterService {
             String miljoe
     ){
         var count = new AtomicInteger();
-        return tpsfConsumer.getToken().flatMapMany(accessToken -> Flux.fromIterable(utvalgteIdenter)
+        return tpsfConsumer.getToken()
+                .flatMapMany(accessToken -> Flux.fromIterable(utvalgteIdenter)
                 .flatMap(ident -> tpsfConsumer.getTpsServiceRoutineV2(ROUTINE_PERSDATA, AKSJONSKODE, miljoe, ident, accessToken))
                 .filter(Objects::nonNull)
-                .filter(value -> isEmptyOrNull(value.getResponse().getData1().getDatoDo()) && nonNull(value.getResponse().getData1().getFnr()))
+                .filter(value -> StringUtils.isBlank(value.getResponse().getData1().getDatoDo()) && StringUtils.isNotBlank(value.getResponse().getData1().getFnr()))
                 .map(value -> {
                     var index = count.incrementAndGet();
                     if (index % 10 == 0) {
@@ -127,11 +128,6 @@ public class EksisterendeIdenterService {
                     return value.getResponse().getData1().getFnr();
                 }));
     }
-
-    private boolean isEmptyOrNull (String value){
-        return isNull(value) || Strings.isBlank(value);
-    }
-
 
     public List<NavEnhetResponse> hentFnrMedNavKontor(
             String miljoe,
