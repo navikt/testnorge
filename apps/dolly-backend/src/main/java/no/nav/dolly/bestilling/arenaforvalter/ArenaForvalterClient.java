@@ -86,15 +86,19 @@ public class ArenaForvalterClient implements ClientRegister {
                                     .flatMap(personServiceConsumer::getPdlSyncReady)
                                     .collectList()
                                     .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
-                                    .map(assumeTrue -> arenaForvalterConsumer.getToken()
-                                                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                                                            .filter(miljo -> bestilling.getEnvironments().contains(miljo))
-                                                            .parallel()
-                                                            .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
-                                                                    sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
-                                                                    sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
-                                                    .filter(StringUtils::isNotBlank)
-                                                    .collect(Collectors.joining(",")))
+                                    .map(isFamilyPresent -> (isFamilyPresent ? arenaForvalterConsumer.getToken()
+                                            .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                                                    .filter(miljo -> bestilling.getEnvironments().contains(miljo))
+                                                    .parallel()
+                                                    .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
+                                                            sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
+                                                            sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+                                            .filter(StringUtils::isNotBlank)
+                                            .collect(Collectors.joining(",")) :
+
+                                            Mono.just(bestilling.getEnvironments().stream()
+                                                    .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
+                                                    .collect(Collectors.joining(",")))))
                                     .flatMap(Mono::from) :
 
                             Mono.just(bestilling.getEnvironments().stream()
@@ -201,7 +205,8 @@ public class ArenaForvalterClient implements ClientRegister {
                                     .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
                                     .filter(Objects::nonNull)
                                     .map(dagp -> new StringBuilder().append(miljoe).append('$')
-                                            .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " + dagp.getBegrunnelse()))
+                                            .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
+                                                    errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))
                                             .toString())
                                     .collect(Collectors.joining(",")) +
 
