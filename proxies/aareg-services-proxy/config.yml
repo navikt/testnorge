@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: aareg-services-proxy
+  name: testnav-aareg-services-proxy
   namespace: dolly
   labels:
     team: dolly
