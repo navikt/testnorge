@@ -6,6 +6,7 @@ import './Navigation.less'
 import { AvbrytButton } from '~/components/ui/button/AvbrytButton/AvbrytButton'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { useNavigate } from 'react-router-dom'
+import { setNestedObjectValues } from 'formik'
 
 export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	const showPrevious = step > 0
@@ -13,7 +14,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	const importTestnorge = opts.is.importTestnorge
 
 	const navigate = useNavigate()
-	const { isSubmitting, handleSubmit } = formikBag
+	const { isSubmitting, handleSubmit, setTouched, errors } = formikBag
 
 	const onAbort = () => navigate(-1)
 
@@ -29,6 +30,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	}
 
 	const hasInntektstubError = step === 1 && formikBag?.errors?.hasOwnProperty('inntektstub')
+	const hasAaregError = step === 1 && formikBag?.errors?.hasOwnProperty('aareg')
 	const disabledVidere = step === 1 && opts.is.leggTil && !harAvhukedeAttributter(formikBag.values)
 
 	return (
@@ -44,7 +46,11 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 						<NavButton
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
-							onClick={hasInntektstubError ? () => {} : handleSubmit}
+							onClick={
+								hasInntektstubError || hasAaregError
+									? () => setTouched(setNestedObjectValues(errors, true))
+									: handleSubmit
+							}
 						>
 							Videre
 						</NavButton>

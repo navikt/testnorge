@@ -6,6 +6,7 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
+import _has from 'lodash/has'
 
 interface OrgProps {
 	path: string
@@ -41,6 +42,7 @@ const addAlleVirksomheter = (virksomheter: Organisasjon[], organisasjoner: Organ
 }
 
 const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+	if (!enheter) return ''
 	for (const enhet of enheter) {
 		if (enhet.underenheter && enhet.underenheter.length > 0) {
 			for (const underenhet of enhet.underenheter) {
@@ -55,6 +57,26 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 		}
 	}
 	return ''
+}
+
+const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+	if (!enheter) return ''
+	let oversteJuridiskEnhet = ''
+	enheter.forEach((enhet) => {
+		const getUnderenheter = (underenheter: Organisasjon[]) => {
+			underenheter.forEach((underenhet) => {
+				if (underenhet.organisasjonsnummer === orgnr) {
+					oversteJuridiskEnhet = enhet.organisasjonsnummer
+				} else if (underenhet.underenheter) {
+					getUnderenheter(underenhet.underenheter)
+				}
+			})
+		}
+		if (enhet.underenheter) {
+			getUnderenheter(enhet.underenheter)
+		}
+	})
+	return oversteJuridiskEnhet
 }
 
 const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
@@ -97,7 +119,6 @@ export const EgneOrganisasjoner = ({
 
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
-
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
@@ -113,6 +134,36 @@ export const EgneOrganisasjoner = ({
 					isDisabled: !virksomhet.juridiskEnhet,
 				}
 			})
+	}
+
+	const sjekkOrganisasjoner = () => {
+		if (_get(formikBag.values, path) === '') {
+			if (!_has(formikBag.errors, path)) {
+				formikBag.setFieldError(path, 'Feltet er påkrevd')
+			}
+			return { feilmelding: 'Feltet er påkrevd' }
+		} else if (path.includes('amelding')) {
+			//@ts-ignore
+			const valgtOrgnr = formikBag.values?.aareg?.[0]?.amelding?.flatMap((a) =>
+				a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer)
+			)
+			const valgtJuridiskEnhet = valgtOrgnr?.map((org) =>
+				getOversteJuridiskEnhet(org, organisasjoner)
+			)
+			const valgtJuridiskEnhetFiltrert = valgtJuridiskEnhet?.filter((org) => org !== '')
+			const juridiskEnhetErLik = valgtJuridiskEnhetFiltrert?.every((org) => {
+				if (org === valgtJuridiskEnhetFiltrert[0]) {
+					return true
+				}
+			})
+			if (!juridiskEnhetErLik && !_has(formikBag.errors, path)) {
+				formikBag.setFieldError(path, 'Alle organisasjoner må tilhøre samme overordnet enhet')
+			}
+			return juridiskEnhetErLik
+				? null
+				: { feilmelding: 'Alle organisasjoner må tilhøre samme overordnet enhet' }
+		}
+		return null
 	}
 
 	return (
@@ -145,11 +196,7 @@ export const EgneOrganisasjoner = ({
 					size="xlarge"
 					onChange={handleChange}
 					value={_get(formikBag.values, path)}
-					feil={
-						_get(formikBag.values, path) === '' && {
-							feilmelding: 'Feltet er påkrevd',
-						}
-					}
+					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>
 			)}
