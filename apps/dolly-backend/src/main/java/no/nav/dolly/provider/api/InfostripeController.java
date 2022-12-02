@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
 import java.util.Collection;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
