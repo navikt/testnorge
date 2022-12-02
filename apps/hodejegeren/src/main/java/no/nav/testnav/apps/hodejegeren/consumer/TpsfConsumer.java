@@ -9,13 +9,14 @@ import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsServiceRoutineV2Co
 import no.nav.testnav.apps.hodejegeren.consumer.command.GetTpsStatusPaaIdenterCommand;
 import no.nav.testnav.apps.hodejegeren.consumer.credential.TpsfProxyProperties;
 import no.nav.testnav.apps.hodejegeren.consumer.dto.ServiceRoutineDTO;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -23,23 +24,17 @@ import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-
 
 @Component
 public class TpsfConsumer {
     private final WebClient webClient;
-    private final Executor executor;
     private final TokenExchange tokenExchange;
-    private final ServerProperties serviceProperties;
+    private final TpsfProxyProperties serviceProperties;
 
     public TpsfConsumer(
-            Executor executor,
             TpsfProxyProperties serviceProperties,
             TokenExchange tokenExchange
     ) {
-        this.executor = executor;
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
 
@@ -84,19 +79,12 @@ public class TpsfConsumer {
         return new ObjectMapper().readTree(response);
     }
 
-    public Mono<ServiceRoutineDTO> getTpsServiceRoutineV2(String routineName, String aksjonsKode, String miljoe, String fnr) {
-        return Mono.fromFuture(getFuture(routineName, aksjonsKode, miljoe, fnr));
+    public Mono<AccessToken> getToken() {
+        return tokenExchange.exchange(serviceProperties);
     }
 
-
-    private CompletableFuture<ServiceRoutineDTO> getFuture(String routineName, String aksjonsKode, String miljoe, String fnr) {
-        return CompletableFuture.supplyAsync(
-                () -> tokenExchange.exchange(serviceProperties).flatMap(accessToken ->
-                                new GetTpsServiceRoutineV2Command(
-                                        webClient, accessToken.getTokenValue(), routineName, aksjonsKode, miljoe, fnr).call())
-                        .block(),
-                executor
-        );
+    public Flux<ServiceRoutineDTO> getTpsServiceRoutineV2(String routineName, String aksjonsKode, String miljoe, String fnr, AccessToken token) {
+        return new GetTpsServiceRoutineV2Command(webClient, token.getTokenValue(), routineName, aksjonsKode, miljoe, fnr).call();
     }
 
     @Timed(value = "hodejegeren.resource.latency", extraTags = {"operation", "tpsf"})

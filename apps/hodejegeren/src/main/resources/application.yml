@@ -1,10 +1,10 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-application:
-  version: application.version.todo
-  name: testnorge-hodejegeren
-
 spring:
+  application:
+    version: application.version.todo
+    name: testnorge-hodejegeren
+    description: Testnorge-Hodejegeren jakter på hoder/testpersoner i TPSF og TPS i testmiljø for å fylle meldingene med identer som oppfyller visse kriterier.
   security:
     oauth2:
       resourceserver:
