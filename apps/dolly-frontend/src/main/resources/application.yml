@@ -5,6 +5,7 @@ spring:
     name: dolly-frontend
   main:
     banner-mode: off
+    allow-circular-references: true
   session:
     timeout: 60m
   security:

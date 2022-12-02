@@ -54,6 +54,7 @@ const ValgtePersonerList = styled.div`
 	max-height: 18.4rem;
 	display: block;
 	margin-left: 20px;
+
 	&& {
 		ul {
 			margin-top: 10px;
@@ -65,6 +66,7 @@ const ValgtePersonerList = styled.div`
 const ModalContent = styled.div`
 	display: flex;
 	flex-direction: column;
+
 	&&& {
 		h2 {
 			font-size: 1.2em;
@@ -74,12 +76,15 @@ const ModalContent = styled.div`
 
 const GruppeVelger = styled.div`
 	margin-bottom: 20px;
+
 	.skjemaelement {
 		margin-bottom: 0;
 	}
+
 	.error-message {
 		margin-top: 10px;
 	}
+
 	.navds-button {
 		margin-top: 10px;
 	}
@@ -96,10 +101,12 @@ const PersonKolonne = styled.div`
 	display: flex;
 	flex-direction: column;
 	width: 50%;
+
 	.navds-alert {
 		margin-left: 20px;
 		color: #368da8;
 	}
+
 	&&& {
 		div {
 			margin-right: 0;
@@ -109,6 +116,7 @@ const PersonKolonne = styled.div`
 
 const PersonSoek = styled.div`
 	position: relative;
+
 	&& {
 		svg {
 			position: absolute;
@@ -136,6 +144,9 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 	const navigate = useNavigate()
 
 	useEffect(() => {
+		if (!modalIsOpen) {
+			return
+		}
 		const getGruppe = async () => {
 			const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
 				return response.data?.identer?.map((person: PersonData) => {
