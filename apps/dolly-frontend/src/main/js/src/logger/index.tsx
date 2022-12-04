@@ -23,19 +23,10 @@ const log = (
 	})
 }
 
-interface Log {
-	event: string
-	message?: string
-	uuid?: string
-	rating?: Rating
-	isAnonym?: boolean
-	brukerType?: string
-}
-
 export default {
-	trace: ({ event, message, uuid }: Log) => log(Level.TRACE, event, message, uuid),
-	log: ({ event, message, uuid, rating, isAnonym, brukerType }: Log) =>
+	trace: ({ event, message, uuid }) => log(Level.TRACE, event, message, uuid),
+	log: ({ event, message, uuid, rating, isAnonym, brukerType }) =>
 		log(Level.INFO, event, message, uuid, rating, isAnonym, brukerType),
-	warn: ({ event, message, uuid, rating }: Log) => log(Level.WARNING, event, message, uuid, rating),
-	error: ({ event, message, uuid, rating }: Log) => log(Level.ERROR, event, message, uuid, rating),
+	warn: ({ event, message, uuid, rating }) => log(Level.WARNING, event, message, uuid, rating),
+	error: ({ event, message, uuid, rating }) => log(Level.ERROR, event, message, uuid, rating),
 }

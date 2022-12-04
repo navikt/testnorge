@@ -126,7 +126,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		return response
 	})
 
-const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
+const fetchJson = (url: string, config: Config, body?: object): Promise =>
 	_fetch(
 		url,
 		{

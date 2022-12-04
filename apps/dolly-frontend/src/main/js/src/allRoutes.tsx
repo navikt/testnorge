@@ -4,8 +4,8 @@ import GruppeConnector from '~/pages/gruppe/GruppeConnector'
 
 const GruppeOversikt = lazy(() => import('./pages/gruppeOversikt/GruppeOversiktConnector'))
 const Organisasjon = lazy(() => import('./pages/organisasjoner/OrganisasjonerConnector'))
-const BestillingsveilederConnector = lazy(() =>
-	import('./components/bestillingsveileder/BestillingsveilederConnector')
+const BestillingsveilederConnector = lazy(
+	() => import('./components/bestillingsveileder/BestillingsveilederConnector')
 )
 const MinSide = lazy(() => import('./pages/minSide/MinSide'))
 const UI = lazy(() => import('./pages/ui/index'))
