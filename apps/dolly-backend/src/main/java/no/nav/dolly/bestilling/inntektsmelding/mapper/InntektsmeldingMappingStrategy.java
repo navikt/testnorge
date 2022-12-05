@@ -1,16 +1,5 @@
 package no.nav.dolly.bestilling.inntektsmelding.mapper;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.*;
-import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendersystem;
-import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Inntektsmelding;
-import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Kontaktinformasjon;
-import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
-
-import java.time.LocalDateTime;
-import org.springframework.stereotype.Component;
-
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
@@ -18,9 +7,29 @@ import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.mapper.MappingStrategy;
+import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendersystem;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Avsendertype;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Inntektsmelding;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.JoarkMetadata;
+import static no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest.Kontaktinformasjon;
+import static no.nav.dolly.util.NullcheckUtil.nullcheckSetDefaultValue;
 
 @Component
 public class InntektsmeldingMappingStrategy implements MappingStrategy {
+
+    private static Kontaktinformasjon getFiktivKontaktinformasjon() {
+
+        return Kontaktinformasjon.builder()
+                .kontaktinformasjonNavn("Dolly Dollesen")
+                .telefonnummer("99999999")
+                .build();
+    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -29,16 +38,17 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsInntektsmelding rsInntektsmelding,
-                            InntektsmeldingRequest inntektsmelding, MappingContext context) {
+                                        InntektsmeldingRequest inntektsmelding, MappingContext context) {
 
                         if (isNull(rsInntektsmelding.getJoarkMetadata())) {
                             inntektsmelding.setJoarkMetadata(new JoarkMetadata());
                         }
                         inntektsmelding.getJoarkMetadata().setAvsenderMottakerIdType(
                                 !inntektsmelding.getInntekter().isEmpty() &&
-                                nonNull(inntektsmelding.getInntekter().get(0).getArbeidsgiver()) ?
+                                        nonNull(inntektsmelding.getInntekter().get(0).getArbeidsgiver()) ?
                                         Avsendertype.ORGNR : Avsendertype.FNR
                         );
+                        inntektsmelding.setArbeidstakerFnr((String) context.getProperty("ident"));
                     }
                 })
                 .byDefault()
@@ -48,7 +58,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(RsInntektsmelding.Inntektsmelding rsInntektsmelding,
-                            Inntektsmelding inntektsmelding, MappingContext context) {
+                                        Inntektsmelding inntektsmelding, MappingContext context) {
 
                         inntektsmelding.setAarsakTilInnsending(
                                 nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakTilInnsendingType.NY));
@@ -74,13 +84,5 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
-    }
-
-    private static Kontaktinformasjon getFiktivKontaktinformasjon() {
-
-        return Kontaktinformasjon.builder()
-                .kontaktinformasjonNavn("Dolly Dollesen")
-                .telefonnummer("99999999")
-                .build();
     }
 }

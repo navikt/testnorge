@@ -5,31 +5,34 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
-import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
-import org.springframework.http.ResponseEntity;
+import no.nav.dolly.util.TransactionHelperService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,35 +41,48 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public class InntektsmeldingClient implements ClientRegister {
 
     private final InntektsmeldingConsumer inntektsmeldingConsumer;
-    private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
+    private final TransactionHelperService transactionHelperService;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
-                        .collect(Collectors.joining(",")));
-                return Flux.just();
-            }
+            progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
+                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter("JOARK"))))
+                    .collect(Collectors.joining(",")));
+            transactionHelperService.persister(progress);
 
-            StringBuilder status = new StringBuilder();
-            InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class);
-            bestilling.getEnvironments().forEach(environment -> {
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("ident", dollyPerson.getHovedperson());
 
-                inntektsmeldingRequest.setArbeidstakerFnr(dollyPerson.getHovedperson());
-                inntektsmeldingRequest.setMiljoe(environment);
-                postInntektsmelding(isOpprettEndre ||
-                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
-                        inntektsmeldingRequest, progress.getBestilling().getId(), status);
-            });
+            InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
 
-            progress.setInntektsmeldingStatus(status.toString());
+            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                    .flatMap(isReady -> (isReady ?
+                            Flux.fromIterable(bestilling.getEnvironments())
+                                    .flatMap(environment -> {
+
+                                        inntektsmeldingRequest.setMiljoe(environment);
+                                        return postInntektsmelding(isOpprettEndre ||
+                                                        !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
+                                                inntektsmeldingRequest, progress.getBestilling().getId());
+                                    })
+                                    .filter(StringUtils::isNotBlank)
+                                    .collect(Collectors.joining(",")) :
+
+                            Mono.just(bestilling.getEnvironments().stream()
+                                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("JOARK"))))
+                                    .collect(Collectors.joining(","))))
+                    )
+                    .subscribe(response -> {
+                        progress.setInntektsmeldingStatus(response);
+                        transactionHelperService.persister(progress);
+                    });
         }
         return Flux.just();
     }
@@ -82,43 +98,42 @@ public class InntektsmeldingClient implements ClientRegister {
 
         return isNull(kriterier.getInntektsmelding()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getInntektsmeldingStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getInntektsmeldingStatus()) &&
+                                !entry.getInntektsmeldingStatus().contains(getVenterTekst()));
     }
 
-    private void postInntektsmelding(boolean isSendMelding, InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid, StringBuilder status) {
+    private Flux<String> postInntektsmelding(boolean isSendMelding,
+                                             InntektsmeldingRequest inntektsmeldingRequest, Long bestillingid) {
 
-        try {
-            if (isSendMelding) {
-                ResponseEntity<InntektsmeldingResponse> response = inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest);
+        if (isSendMelding) {
+            return inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest)
+                    .map(response -> {
+                        if (isNotBlank(response.getError())) {
 
-                if (response.hasBody()) {
-                    transaksjonMappingService.saveAll(
-                            response.getBody().getDokumenter().stream()
-                                    .map(dokument -> TransaksjonMapping.builder()
-                                            .ident(inntektsmeldingRequest.getArbeidstakerFnr())
-                                            .bestillingId(bestillingid)
-                                            .transaksjonId(toJson(dokument))
-                                            .datoEndret(LocalDateTime.now())
-                                            .miljoe(inntektsmeldingRequest.getMiljoe())
-                                            .system(INNTKMELD.name())
-                                            .build())
-                                    .collect(Collectors.toList()));
-                }
-            }
+                            transaksjonMappingService.saveAll(
+                                    response.getDokumenter().stream()
+                                            .map(dokument -> TransaksjonMapping.builder()
+                                                    .ident(inntektsmeldingRequest.getArbeidstakerFnr())
+                                                    .bestillingId(bestillingid)
+                                                    .transaksjonId(toJson(dokument))
+                                                    .datoEndret(LocalDateTime.now())
+                                                    .miljoe(inntektsmeldingRequest.getMiljoe())
+                                                    .system(INNTKMELD.name())
+                                                    .build())
+                                            .toList());
 
-            status.append(isNotBlank(status) ? ',' : "")
-                    .append(inntektsmeldingRequest.getMiljoe())
-                    .append(":OK");
+                            return inntektsmeldingRequest.getMiljoe() + ":OK";
 
-        } catch (RuntimeException re) {
+                        } else {
+                            log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
+                                    inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), response.getError());
 
-            status.append(isNotBlank(status) ? ',' : "")
-                    .append(inntektsmeldingRequest.getMiljoe())
-                    .append(':')
-                    .append(errorStatusDecoder.decodeThrowable(re));
+                            return String.format("%s:%s", inntektsmeldingRequest.getMiljoe(), encodeStatus(response.getError()));
 
-            log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {}",
-                    inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), re);
+                        }
+                    });
+        } else {
+            return Flux.just(inntektsmeldingRequest.getMiljoe() + ":OK");
         }
     }
 

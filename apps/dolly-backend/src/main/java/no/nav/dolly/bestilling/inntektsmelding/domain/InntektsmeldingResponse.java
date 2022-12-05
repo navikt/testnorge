@@ -1,15 +1,15 @@
 package no.nav.dolly.bestilling.inntektsmelding.domain;
 
-import static java.util.Objects.isNull;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -20,6 +20,8 @@ public class InntektsmeldingResponse {
 
     private String fnr;
     private List<Dokument> dokumenter;
+    private String error;
+    private String miljoe;
 
     public List<Dokument> getDokumenter() {
 

@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
@@ -35,7 +36,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class ArenaForvalterClientTest {
 
@@ -48,6 +48,9 @@ class ArenaForvalterClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Mock
+    private PersonServiceConsumer personServiceConsumer;
+
     @InjectMocks
     private ArenaForvalterClient arenaForvalterClient;
 
@@ -57,6 +60,7 @@ class ArenaForvalterClientTest {
     @Mock
     private AccessToken accessToken;
 
+    @Disabled
     @Test
     void gjenopprett_Ok() {
 
@@ -76,18 +80,20 @@ class ArenaForvalterClientTest {
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+                .build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
+    @Disabled
     @Test
     public void gjenopprett_FunksjonellFeil() {
 
@@ -107,12 +113,13 @@ class ArenaForvalterClientTest {
                                 .build()));
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
+        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+                .build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feil: DUPLIKAT. Se detaljer i logg. ")));
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
@@ -133,6 +140,7 @@ class ArenaForvalterClientTest {
                         .opprettetIPDL(true).build(), progress, false));
     }
 
+    @Disabled
     @Test
     public void gjenopprett_EnvironmentForArenaNotSelected() {
 
@@ -143,9 +151,9 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singletonList("t3"));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
 
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
 
         assertThat(progress.getArenaforvalterStatus(), is(emptyString()));
     }

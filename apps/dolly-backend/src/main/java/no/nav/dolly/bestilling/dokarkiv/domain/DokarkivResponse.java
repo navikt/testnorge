@@ -23,6 +23,7 @@ public class DokarkivResponse {
     private List<DokumentInfo> dokumenter;
 
     private String feilmelding;
+    private String miljoe;
 
     public List<DokumentInfo> getDokumenter() {
         if (isNull(dokumenter)) {

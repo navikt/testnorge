@@ -5,37 +5,41 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
-import org.apache.commons.lang3.StringUtils;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.commons.lang3.StringUtils.substring;
 
 @Slf4j
 @Service
@@ -46,66 +50,62 @@ public class DokarkivClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
-    private final DollyPersonCache dollyPersonCache;
+    private final TransactionHelperService transactionHelperService;
+    private final PersonServiceConsumer personServiceConsumer;
+    private final PdlPersonConsumer pdlPersonConsumer;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getDokarkiv())) {
 
-            StringBuilder status = new StringBuilder();
+            progress.setDokarkivStatus(bestilling.getEnvironments().stream()
+                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter("JOARK"))))
+                    .collect(Collectors.joining(",")));
+            transactionHelperService.persister(progress);
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setDokarkivStatus(bestilling.getEnvironments().stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarsel("JOARK"))))
-                        .collect(Collectors.joining(",")));
-                return Flux.just();
-            }
+            var bestillingId = progress.getBestilling().getId();
+            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                    .flatMap(isReady -> (isReady ?
+                            getPersonData(List.of(dollyPerson.getHovedperson()))
+                                    .map(person -> buildRequest(bestilling.getDokarkiv(), person))
+                                    .flatMap(request -> dokarkivConsumer.getEnvironments()
+                                            .flatMapIterable(env -> env)
+                                            .filter(env -> bestilling.getEnvironments().contains(env))
+                                            .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
+                                                    dollyPerson.getHovedperson(), env) || isOpprettEndre)
+                                            .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
+                                                    .map(status -> getStatus(dollyPerson.getHovedperson(), bestillingId, status))))
+                                    .collect(Collectors.joining(",")) :
 
-            DokarkivRequest dokarkivRequest = mapperFacade.map(bestilling.getDokarkiv(), DokarkivRequest.class);
+                            Mono.just(bestilling.getEnvironments().stream()
+                                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("JOARK"))))
+                                    .collect(Collectors.joining(",")))))
 
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-            dokarkivRequest.getBruker().setId(dollyPerson.getHovedperson());
-            Person avsender = dollyPerson.getPerson(dollyPerson.getHovedperson());
-            if (isBlank(dokarkivRequest.getAvsenderMottaker().getId())) {
-                dokarkivRequest.getAvsenderMottaker().setId(dollyPerson.getHovedperson());
-            }
-            if (isBlank(dokarkivRequest.getAvsenderMottaker().getNavn())) {
-                dokarkivRequest.getAvsenderMottaker().setNavn(String.format("%s, %s%s", avsender.getFornavn(), avsender.getEtternavn(), isNull(avsender.getMellomnavn()) ? "" : ", " + avsender.getMellomnavn()));
-            }
-
-            var dokarkivMiljoer = dokarkivConsumer.getEnvironments().block();
-
-            bestilling.getEnvironments().stream()
-                    .filter(StringUtils::isNotBlank)
-                    .filter(dokarkivMiljoer::contains)
-                    .forEach(environment -> {
-
-                        if (!transaksjonMappingService.existAlready(DOKARKIV, dollyPerson.getHovedperson(), environment) || isOpprettEndre) {
-
-                            var response = dokarkivConsumer.postDokarkiv(environment, dokarkivRequest).block();
-                            if (nonNull(response) && isBlank(response.getFeilmelding())) {
-                                status.append(',')
-                                        .append(environment)
-                                        .append(":OK");
-
-                                saveTransaksjonId(response, dollyPerson.getHovedperson(),
-                                        progress.getBestilling().getId(), environment);
-                            } else {
-
-                                status.append(',')
-                                        .append(environment)
-                                        .append(":FEIL=Teknisk feil se logg! ")
-                                        .append(nonNull(response) ?
-                                                ErrorStatusDecoder.encodeStatus(response.getFeilmelding()) :
-                                                "UKJENT");
-                            }
-                        }
+                    .subscribe(resultat -> {
+                        progress.setDokarkivStatus(resultat);
+                        transactionHelperService.persister(progress);
                     });
-
-            progress.setDokarkivStatus(substring(status.toString(), 1));
         }
+
         return Flux.just();
+    }
+
+    private String getStatus(String ident, Long bestillingId, DokarkivResponse response) {
+
+        if (nonNull(response) && isBlank(response.getFeilmelding())) {
+
+            saveTransaksjonId(response, ident, bestillingId, response.getMiljoe());
+            return response.getMiljoe() + ":OK";
+
+        } else {
+
+            return String.format("%s:FEIL=Teknisk feil se logg! %s", response.getMiljoe(),
+                    isNotBlank(response.getFeilmelding()) ?
+                            ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(response.getFeilmelding())) :
+                            "UKJENT");
+        }
     }
 
     @Override
@@ -119,7 +119,26 @@ public class DokarkivClient implements ClientRegister {
 
         return isNull(kriterier.getDokarkiv()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getDokarkivStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getDokarkivStatus()) &&
+                                !entry.getDokarkivStatus().contains(getVenterTekst()));
+    }
+
+    private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
+
+        return pdlPersonConsumer.getPdlPersoner(identer)
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()));
+    }
+
+    private DokarkivRequest buildRequest(RsDokarkiv rsDokarkiv, PdlPersonBolk.PersonBolk personBolk) {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("personBolk", personBolk);
+
+        return mapperFacade.map(rsDokarkiv, DokarkivRequest.class, context);
     }
 
     private void saveTransaksjonId(DokarkivResponse response, String ident, Long bestillingId, String miljoe) {

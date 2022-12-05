@@ -114,8 +114,10 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
         return () -> {
             if (!bestillingService.isStoppet(bestilling.getId())) {
-                BestillingProgress progress = new BestillingProgress(bestilling, gjenopprettFraProgress.getIdent(),
+                var progress = new BestillingProgress(bestilling, gjenopprettFraProgress.getIdent(),
                         gjenopprettFraProgress.getMaster());
+                transactionHelperService.oppdaterProgress(progress);
+
                 bestKriterier.setNavSyntetiskIdent(isSyntetisk(gjenopprettFraProgress.getIdent()));
                 bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
 
@@ -136,7 +138,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                     progress.setFeil(errorStatusDecoder.decodeThrowable(e));
 
                 } finally {
-                    transactionHelperService.oppdaterProgress(progress);
+                    transactionHelperService.persister(progress);
                 }
                 return progress;
             }

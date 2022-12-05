@@ -13,7 +13,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -23,7 +25,7 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
     private static final String DOKARKIV_PROXY_ENVIRONMENTS = "/internal/miljoe";
 
     private final WebClient webClient;
-    private final String bearerToken;
+    private final String token;
 
     @Override
     public Mono<List<String>> call() {
@@ -34,7 +36,7 @@ public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
                                 .build())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, bearerToken)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(String[].class)
