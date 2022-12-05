@@ -49,4 +49,5 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://aareg-services-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-aareg-services-proxy.dev.intern.nav.no"
+    - "https://testnav-aareg-services-proxy.dev-fss-pub.nais.io"
