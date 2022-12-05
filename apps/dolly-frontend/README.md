@@ -96,4 +96,3 @@ docker run --name redis-image -d -p 6379:6379 redis:6.2.6
 Deretter må du fjerne "local" fra profiles i LocalConfig og legge til "local" i profiles for ProdConfig (husk å endre
 dette tilbake
 før noe pushes til master). Etter dette kan du kjøre applikasjonen som beskrevet i JavaScript.
-
