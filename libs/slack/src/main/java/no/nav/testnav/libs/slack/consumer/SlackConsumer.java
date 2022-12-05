@@ -31,15 +31,14 @@ public class SlackConsumer {
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Slack api", proxyHost);
             var uri = URI.create(proxyHost);
-
-            HttpClient httpClient = HttpClient
+            builder.clientConnector(new ReactorClientHttpConnector(
+                HttpClient
                     .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
-            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
+                    .proxy(proxy -> proxy
+                        .type(ProxyProvider.Proxy.HTTP)
+                        .host(uri.getHost())
+                        .port(uri.getPort()))
+            ));
         }
         webClient = builder
                 .baseUrl(baseUrl)
@@ -50,7 +49,7 @@ public class SlackConsumer {
         log.info("Publiserer melding til slack.");
         SlackResponse response = new PublishMessageCommand(webClient, token, message).call();
         if (!response.getOk()) {
-            throw new RuntimeException("Klarer ikke aa opprette slack melding ( error: " + response.getError() + " )");
+            throw new SlackConsumerException("Klarer ikke aa opprette slack melding", response);
         }
     }
 
@@ -58,7 +57,14 @@ public class SlackConsumer {
         log.info("Publiserer fil til slack.");
         SlackResponse response = new UploadFileCommand(webClient, token, file, fileName, channel, applicationName).call();
         if (!response.getOk()) {
-            throw new RuntimeException("Klarer ikke aa laste opp fil ( error: " + response.getError() + " )");
+            throw new SlackConsumerException("Klarer ikke aa opprette slack melding", response);
         }
     }
+
+    private static class SlackConsumerException extends RuntimeException {
+        public SlackConsumerException(String message, SlackResponse response) {
+            super(message + " ( error: " + response.getError() + " )");
+        }
+    }
+
 }

@@ -16,6 +16,8 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
+import java.util.Objects;
+
 @Slf4j
 @Component
 public class OrganisasjonBestillingConsumer {
@@ -32,22 +34,22 @@ public class OrganisasjonBestillingConsumer {
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
-                .builder()
-                .baseUrl(properties.getUrl())
-                .clientConnector(new ReactorClientHttpConnector(
-                        HttpClient.create()
-                                .tcpConfiguration(tcpClient -> tcpClient
-                                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_SECONDS * 1000)
-                                        .doOnConnected(connection ->
-                                                connection
-                                                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_SECONDS))
-                                                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_SECONDS))))))
-                .filter(metricsWebClientFilterFunction)
-                .build();
+            .builder()
+            .baseUrl(properties.getUrl())
+            .clientConnector(new ReactorClientHttpConnector(
+                HttpClient
+                    .create()
+                    .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, TIMEOUT_SECONDS * 1000)
+                    .doOnConnected(connection -> connection
+                        .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_SECONDS))
+                        .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_SECONDS)))
+            ))
+            .filter(metricsWebClientFilterFunction)
+            .build();
     }
 
     public Long save(String uuid) {
-        var accessToken = tokenExchange.exchange(properties).block();
+        var accessToken = Objects.requireNonNull(tokenExchange.exchange(properties).block(), "Token var null.");
         log.info("Registrerer jobb med uuid: {}.", uuid);
         var id = new SaveOrganisasjonBestillingCommand(webClient, accessToken.getTokenValue(), uuid).call();
         log.info("Jobb registert med id {} og uuid: {}.", uuid, id);
@@ -55,7 +57,7 @@ public class OrganisasjonBestillingConsumer {
     }
 
     public void update(String uuid, String miljo, Long jobId, Long id) {
-        var accessToken = tokenExchange.exchange(properties).block();
+        var accessToken = Objects.requireNonNull(tokenExchange.exchange(properties).block(), "Token var null.");
         log.info("Oppretter organisasjon bestilling for uuid {} med job id: {}", uuid, jobId);
         var dto = new OrderDTO(miljo, jobId);
         new UpdateOrganisasjonBestillingCommand(webClient, dto, accessToken.getTokenValue(), uuid, id).run();
