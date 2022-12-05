@@ -3,10 +3,9 @@ package no.nav.dolly.bestilling.brregstub.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,8 +13,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -47,8 +45,7 @@ public class RolleoversiktTo {
         return enheter;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @EqualsAndHashCode
     @NoArgsConstructor
@@ -75,8 +72,7 @@ public class RolleoversiktTo {
         private String rolle;
     }
 
-    @Getter
-    @Setter
+    @Data
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -87,8 +83,7 @@ public class RolleoversiktTo {
         private String navn3;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -104,8 +99,7 @@ public class RolleoversiktTo {
         private String poststed;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
