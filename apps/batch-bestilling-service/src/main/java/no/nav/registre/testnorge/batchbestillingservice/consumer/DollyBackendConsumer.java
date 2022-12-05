@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -57,6 +58,7 @@ public class DollyBackendConsumer {
                 .onErrorReturn(Flux.empty())
                 .block()
                 .collectList()
+                .onErrorReturn(Collections.emptyList())
                 .block();
     }
 }
