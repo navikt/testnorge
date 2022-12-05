@@ -16,7 +16,7 @@ public class BatchBestillingService {
 
     private final DollyBackendConsumer dollyBackendConsumer;
 
-    public void sendBestillinger(Long gruppeId, RsDollyBestillingRequest request, Long antallPerBatch, Integer antallBatchJobber, Integer delayInMinutes, Boolean sendToProd) {
+    public void sendBestillinger(Long gruppeId, RsDollyBestillingRequest request, Long antallPerBatch, Integer antallBatchJobber, Integer delayInMinutes) {
 
         var bestillingTimer = new Timer();
         final int[] antallJobberFerdig = { 0 };
@@ -25,13 +25,13 @@ public class BatchBestillingService {
             @Override
             public void run() {
 
-                if (!dollyBackendConsumer.getAktiveBestillinger(gruppeId, sendToProd).isEmpty()) {
+                if (!dollyBackendConsumer.getAktiveBestillinger(gruppeId).isEmpty()) {
                     log.warn("Gruppe {} har aktive bestillinger kjørende, venter {} minutter før neste kjøring.", gruppeId, delayInMinutes);
                     return;
                 }
 
-                dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch, sendToProd);
-                antallJobberFerdig[0] += 1;
+                dollyBackendConsumer.postDollyBestilling(gruppeId, request, antallPerBatch);
+                antallJobberFerdig[0]++;
                 log.info("antall jobber ferdig {}/{}", antallJobberFerdig[0], antallBatchJobber);
 
                 if (antallJobberFerdig[0] >= antallBatchJobber) {
@@ -41,6 +41,6 @@ public class BatchBestillingService {
             }
         };
 
-        bestillingTimer.scheduleAtFixedRate(executeBestillinger, 0L, delayInMinutes * (60 * 1000));
+        bestillingTimer.scheduleAtFixedRate(executeBestillinger, 0L, delayInMinutes.longValue() * (60L * 1000L));
     }
 }
