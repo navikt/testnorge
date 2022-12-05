@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
@@ -7,6 +7,10 @@ import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
 import _has from 'lodash/has'
+import { OrgforvalterApi } from '~/service/Api'
+import Icon from '~/components/ui/icon/Icon'
+import Loading from '~/components/ui/loading/Loading'
+import { useBoolean } from 'react-use'
 
 interface OrgProps {
 	path: string
@@ -112,10 +116,30 @@ export const EgneOrganisasjoner = ({
 	warningMessage,
 	filterValidEnhetstyper,
 }: OrgProps) => {
+	const formikBag = useFormikContext()
+	const [orgnr, setOrgnr] = useState(null)
+	const [miljoer, setMiljoer] = useState([])
+	const [miljoeLoading, setMiljoeLoading] = useBoolean(false)
+
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
-	const formikBag = useFormikContext()
+
+	useEffect(() => {
+		if (orgnr) {
+			setMiljoeLoading(true)
+			OrgforvalterApi.getOrganisasjonerMiljoeInfo(orgnr)
+				.then((response: any) => {
+					const orgInfo = response?.data
+					setMiljoer(orgInfo ? Object.keys(orgInfo) : [])
+					setMiljoeLoading(false)
+				})
+				.catch(() => {
+					setMiljoer([])
+					setMiljoeLoading(false)
+				})
+		}
+	}, [orgnr])
 
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
@@ -194,12 +218,21 @@ export const EgneOrganisasjoner = ({
 					}
 					isLoading={loading}
 					size="xlarge"
-					onChange={handleChange}
+					onChange={(event) => {
+						setOrgnr(event.value)
+						handleChange(event)
+					}}
 					value={_get(formikBag.values, path)}
 					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>
 			)}
+			{orgnr && miljoer?.length > 0 && (
+				<div className="flexbox">
+					<Icon size={22} kind="feedback-check-circle" /> Organisasjon funnet i miljø: {miljoer}
+				</div>
+			)}
+			{miljoeLoading && <Loading label="Sjekker organisasjonsnummer..." />}
 		</>
 	)
 }
