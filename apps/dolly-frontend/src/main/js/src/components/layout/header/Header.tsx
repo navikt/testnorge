@@ -5,7 +5,7 @@ import Button from '~/components/ui/button/Button'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
 // @ts-ignore
-import dolly from '~/assets/favicon.ico'
+import dolly from '~/favicon.ico'
 import './Header.less'
 import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'

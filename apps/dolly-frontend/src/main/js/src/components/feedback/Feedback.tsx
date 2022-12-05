@@ -7,7 +7,7 @@ import Logger from '../../logger'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
 // @ts-ignore
-import dolly from '~/assets/favicon.ico'
+import dolly from '~/favicon.ico'
 import Icon from '~/components/ui/icon/Icon'
 
 import './Feedback.less'
