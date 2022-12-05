@@ -38,9 +38,10 @@ export const InfoStripe = () => {
 	const [hiddenAlerts, setHiddenAlerts] = useState(loadHiddenAlerts())
 
 	const hideAlert = (id) => {
-		hiddenAlerts.push(id)
-		setHiddenAlerts(hiddenAlerts)
-		saveHiddenAlerts(hiddenAlerts)
+		const newHiddenAlerts = hiddenAlerts
+		newHiddenAlerts.push(id)
+		setHiddenAlerts(newHiddenAlerts)
+		saveHiddenAlerts(newHiddenAlerts)
 
 		const activeAlerts = getVisibleAlerts(alerts)
 		setVisibleAlerts(activeAlerts)
