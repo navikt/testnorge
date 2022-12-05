@@ -9,4 +9,30 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  .alle-meldinger {
+    display: flex;
+    width: 100%;
+    align-tems: center;
+    flex-flow: column;
+  }
+
+  .expand-alle-meldinger {
+    display: flex;
+    align-items: center;
+    flex-flow: inherit;
+
+    button {
+      z-index: 10;
+    }
+  }
+
+  .lukk-alle-meldinger {
+    width: 100%;
+    text-align: right;
+    position: relative;
+    right: 27px;
+    top: -27px;
+    z-index: 1;
+  }
 }

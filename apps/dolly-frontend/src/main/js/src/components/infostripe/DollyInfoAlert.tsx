@@ -1,21 +1,34 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Alert } from '@navikt/ds-react'
 import { Close } from '@navikt/ds-icons'
 
 import './DollyInfoAlert.less'
 
 type DollyInfoAlertType = {
-    id: number
-    text: string
-    type: "error" | "warning" | "info" | "success"
-    onHide: Function
+	id: number
+	text: string
+	type: 'error' | 'warning' | 'info' | 'success'
+	onHide: Function
 }
 
-export const DollyInfoAlert = ({id, type, text, onHide}: DollyInfoAlertType) => {
-    return (
-        <div className="dolly-info-alert">
-            <Alert size={"small"} variant={type} style={{width: '100%'}}>{text}</Alert>
-            <span><Close onClick={() => onHide(id)}/></span>
-        </div>
-    )
+export const DollyInfoAlert = ({ type, text, id, onHide }: DollyInfoAlertType) => {
+	const [hide, setHide] = useState(false)
+	if (hide) {
+		return null
+	}
+	return (
+		<div className="dolly-info-alert">
+			<Alert size={'small'} variant={type} style={{ width: '100%' }}>
+				{text}
+			</Alert>
+			<span>
+				<Close
+					onClick={() => {
+						setHide(true)
+						onHide(id)
+					}}
+				/>
+			</span>
+		</div>
+	)
 }
