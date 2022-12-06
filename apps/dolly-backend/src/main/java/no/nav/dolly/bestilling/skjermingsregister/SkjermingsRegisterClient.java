@@ -79,12 +79,6 @@ public class SkjermingsRegisterClient implements ClientRegister {
         return Flux.just();
     }
 
-    private String getStatus(SkjermingDataResponse resultat) {
-
-        return isBlank(resultat.getError()) ? "OK" :
-                errorStatusDecoder.getErrorText(null, resultat.getError());
-    }
-
     @Override
     public void release(List<String> identer) {
 
@@ -99,6 +93,12 @@ public class SkjermingsRegisterClient implements ClientRegister {
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getSkjermingsregisterStatus()) &&
                                 !entry.getSkjermingsregisterStatus().equals(getVenterTekst()));
+    }
+
+    private String getStatus(SkjermingDataResponse resultat) {
+
+        return isBlank(resultat.getError()) ? "OK" :
+                errorStatusDecoder.getErrorText(null, resultat.getError());
     }
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
