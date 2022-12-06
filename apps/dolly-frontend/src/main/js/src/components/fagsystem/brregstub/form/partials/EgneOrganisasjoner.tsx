@@ -114,7 +114,6 @@ export const EgneOrganisasjoner = ({
 	warningMessage,
 	filterValidEnhetstyper,
 }: OrgProps) => {
-	const formikBag = useFormikContext()
 	const [orgnr, setOrgnr] = useState(null)
 	const [miljoer, setMiljoer] = useState([])
 	const [miljoeError, setMiljoeError] = useState(false)
@@ -123,6 +122,7 @@ export const EgneOrganisasjoner = ({
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
+	const formikBag = useFormikContext()
 
 	useEffect(() => {
 		if (orgnr) {
