@@ -56,16 +56,14 @@ public class InfostripeController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void oppdaterMeldig(@PathVariable("id") Long id, @RequestBody RsInfostripeMelding melding) {
-        var infostripeMelding = informasjonsmeldingRepository.findById(id);
-        if (infostripeMelding.isEmpty()) {
-            throw new NotFoundException(id + " finnes ikke");
-        }
+        var infostripeMelding = informasjonsmeldingRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException(id + " finnes ikke"));
 
-        infostripeMelding.get().setType(melding.getType());
-        infostripeMelding.get().setMessage(melding.getMessage());
-        infostripeMelding.get().setStart(melding.getStart());
-        infostripeMelding.get().setExpires(melding.getExpires());
-        informasjonsmeldingRepository.save(infostripeMelding.get());
+        infostripeMelding.setType(melding.getType());
+        infostripeMelding.setMessage(melding.getMessage());
+        infostripeMelding.setStart(melding.getStart());
+        infostripeMelding.setExpires(melding.getExpires());
+        informasjonsmeldingRepository.save(infostripeMelding);
     }
 
     @DeleteMapping("{id}")
