@@ -7,6 +7,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import Formatters from '@/utils/DataFormatter'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import React from 'react'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 
@@ -23,6 +24,7 @@ export const PensjonForm = ({ formikBag }) => (
 			startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
 			informasjonstekst={hjelpetekst}
 		>
+			// @ts-ignore
 			<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
 				<React.Fragment>
 					<FormikSelect

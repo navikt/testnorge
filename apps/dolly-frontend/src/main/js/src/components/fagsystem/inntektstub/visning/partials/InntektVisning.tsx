@@ -4,6 +4,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 import texts from '@/components/inntektStub/texts'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import React from 'react'
 
 export const InntektVisning = ({ data }) => {
 	if (!data || data.length === 0) {

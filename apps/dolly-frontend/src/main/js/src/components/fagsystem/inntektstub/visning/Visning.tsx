@@ -10,6 +10,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Formatters from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
+import React from 'react'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>

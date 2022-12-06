@@ -5,6 +5,7 @@ import Button from '@/components/ui/button/Button'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import './LaasModal.less'
+import React from 'react'
 
 type LaasButtonProps = {
 	action: Function

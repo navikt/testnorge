@@ -7,6 +7,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { Textarea } from '@navikt/ds-react'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import styled from 'styled-components'
+import React from 'react'
 
 export const Arbeidsadgang = ({ formikBag }) => {
 	const StyledTextArea = styled(Textarea)`

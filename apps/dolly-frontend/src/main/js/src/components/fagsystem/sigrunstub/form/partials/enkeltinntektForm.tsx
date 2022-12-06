@@ -4,6 +4,7 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { SigrunKodeverk } from '@/config/kodeverk'
 import _get from 'lodash/get'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import React from 'react'
 
 export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
 	return (

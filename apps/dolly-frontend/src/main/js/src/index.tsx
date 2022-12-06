@@ -2,7 +2,6 @@
 import '@/styles/main.less'
 import '@/utils/FormatIso'
 import '@/polyfill'
-import '@navikt/ds-css/dist/index.css'
 
 import { v4 as uuid } from 'uuid'
 import { createRoot } from 'react-dom/client'

@@ -7,6 +7,7 @@ import Loading from '@/components/ui/loading/Loading'
 
 import './FrigjoerModal.less'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import React from 'react'
 
 type RelatertPersonProps = {
 	type: string

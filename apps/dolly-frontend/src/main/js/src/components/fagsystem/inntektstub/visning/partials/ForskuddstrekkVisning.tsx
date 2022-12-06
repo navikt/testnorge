@@ -2,6 +2,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { InntektstubKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import React from 'react'
 
 export const ForskuddstrekkVisning = ({ data }) => {
 	if (!data || data.length === 0) {

@@ -5,6 +5,7 @@ import { Barn } from './Barn'
 import { Partner } from './Partner'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Foreldre } from './Foreldre'
+import React from 'react'
 
 type RelasjonerProps = {
 	relasjoner: Array<Relasjon>

@@ -6,6 +6,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
 import Formatters from '@/utils/DataFormatter'
+import React from 'react'
 
 const Visning = ({ data, header, expandable }) => {
 	if (!data || data.length === 0) {

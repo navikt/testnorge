@@ -5,6 +5,7 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { initialUtenlandsIdValues } from '@/components/fagsystem/pdlf/form/initialValues'
+import React from 'react'
 
 export const UtenlandsId = () => (
 	<FormikDollyFieldArray

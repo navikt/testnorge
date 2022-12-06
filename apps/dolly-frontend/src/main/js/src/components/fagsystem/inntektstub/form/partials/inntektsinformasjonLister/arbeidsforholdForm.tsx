@@ -5,6 +5,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { ArbeidKodeverk } from '@/config/kodeverk'
+import React from 'react'
 
 const initialValues = {
 	arbeidsforholdstype: '',

@@ -2,6 +2,7 @@ import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { DollyFieldArrayWrapper } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Organisasjon } from '@/pages/brukerPage/types'
+import React from 'react'
 
 type OrganisasjonVelgerProps = {
 	orgdata: Organisasjon[]

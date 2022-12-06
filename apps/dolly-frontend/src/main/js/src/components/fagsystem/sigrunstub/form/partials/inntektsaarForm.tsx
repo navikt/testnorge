@@ -7,6 +7,7 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
 import Formatters from '@/utils/DataFormatter'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
+import React from 'react'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),
