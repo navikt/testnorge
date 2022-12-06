@@ -8,9 +8,7 @@ import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
 import _has from 'lodash/has'
 import { OrgforvalterApi } from '~/service/Api'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
-import { useBoolean } from 'react-use'
+import { OrgMiljoeInfoVisning } from '~/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 
 interface OrgProps {
 	path: string
@@ -119,7 +117,8 @@ export const EgneOrganisasjoner = ({
 	const formikBag = useFormikContext()
 	const [orgnr, setOrgnr] = useState(null)
 	const [miljoer, setMiljoer] = useState([])
-	const [miljoeLoading, setMiljoeLoading] = useBoolean(false)
+	const [miljoeError, setMiljoeError] = useState(false)
+	const [miljoeLoading, setMiljoeLoading] = useState(false)
 
 	const {
 		currentBruker: { brukerId },
@@ -128,15 +127,19 @@ export const EgneOrganisasjoner = ({
 	useEffect(() => {
 		if (orgnr) {
 			setMiljoeLoading(true)
+			setMiljoeError(false)
+			setMiljoer([])
 			OrgforvalterApi.getOrganisasjonerMiljoeInfo(orgnr)
 				.then((response: any) => {
 					const orgInfo = response?.data
 					setMiljoer(orgInfo ? Object.keys(orgInfo) : [])
 					setMiljoeLoading(false)
+					setMiljoeError(false)
 				})
 				.catch(() => {
 					setMiljoer([])
 					setMiljoeLoading(false)
+					setMiljoeError(true)
 				})
 		}
 	}, [orgnr])
@@ -227,12 +230,9 @@ export const EgneOrganisasjoner = ({
 					isClearable={false}
 				/>
 			)}
-			{orgnr && miljoer?.length > 0 && (
-				<div className="flexbox">
-					<Icon size={22} kind="feedback-check-circle" /> Organisasjon funnet i miljø: {miljoer}
-				</div>
+			{orgnr && (
+				<OrgMiljoeInfoVisning miljoer={miljoer} loading={miljoeLoading} error={miljoeError} />
 			)}
-			{miljoeLoading && <Loading label="Sjekker organisasjonsnummer..." />}
 		</>
 	)
 }
