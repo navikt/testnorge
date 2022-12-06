@@ -1,12 +1,11 @@
 package no.nav.dolly.bestilling.skjermingsregister.domain;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 
 import java.time.LocalDateTime;
 
@@ -15,10 +14,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BestillingPersonWrapper {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class SkjermingDataRequest {
 
-    private Person person;
-    private PersonDTO pdlfPerson;
+    private String etternavn;
+    private String fornavn;
+    private String personident;
     private LocalDateTime skjermetFra;
     private LocalDateTime skjermetTil;
 }

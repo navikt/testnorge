@@ -3,31 +3,40 @@ package no.nav.dolly.bestilling.skjermingsregister;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.skjermingsregister.domain.BestillingPersonWrapper;
-import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingBestilling;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoFom;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoTom;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEgenansatt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -38,7 +47,9 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
-    private final DollyPersonCache dollyPersonCache;
+    private final PdlPersonConsumer pdlPersonConsumer;
+    private final TransactionHelperService transactionHelperService;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -46,18 +57,32 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
 
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
+            progress.setSkjermingsregisterStatus(encodeStatus(getInfoVenter("Skjermingsregisteret")));
+            transactionHelperService.persister(progress);
 
-            var skjermetFra = getEgenansattDatoFom(bestilling);
-            var skjermetTil = getEgenansattDatoTom(bestilling);
+            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                    .flatMap(isReady -> (isReady ?
 
-            StringBuilder status = new StringBuilder();
+                            getPersonData(dollyPerson.getHovedperson())
+                                    .map(person -> prepRequest(bestilling, person))
+                                    .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
+                                            .map(this::getStatus))
+                                    .collect(Collectors.joining()) :
 
-            sendSkjermingDataRequests(dollyPerson, skjermetFra, skjermetTil, status);
-
-            progress.setSkjermingsregisterStatus(isNotBlank(status) ? status.toString() : "OK");
+                            Mono.just(encodeStatus(getVarselSlutt("Skjermingsregisteret"))))
+                    )
+                    .subscribe(resultat -> {
+                        progress.setSkjermingsregisterStatus(resultat);
+                        transactionHelperService.persister(progress);
+                    });
         }
         return Flux.just();
+    }
+
+    private String getStatus(SkjermingDataResponse resultat) {
+
+        return isBlank(resultat.getError()) ? "OK" :
+                errorStatusDecoder.getErrorText(null, resultat.getError());
     }
 
     @Override
@@ -72,34 +97,29 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         return isNull(kriterier.getSkjerming()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getSkjermingsregisterStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getSkjermingsregisterStatus()) &&
+                                !entry.getSkjermingsregisterStatus().equals(getVenterTekst()));
     }
 
-    private void sendSkjermingDataRequests(DollyPerson dollyPerson, LocalDateTime skjermetFra, LocalDateTime
-            skjermetTil, StringBuilder status) {
+    private Flux<PdlPersonBolk.PersonBolk> getPersonData(String ident) {
 
-        SkjermingsDataRequest skjerming = dollyPerson.isPdlfMaster() ?
-                prepRequest(null, dollyPerson.getPdlfPerson().getPerson(), skjermetFra, skjermetTil) :
-                prepRequest(dollyPerson.getPerson(dollyPerson.getHovedperson()), null, skjermetFra, skjermetTil);
-
-        try {
-            skjermingsRegisterConsumer.oppdaterPerson(skjerming);
-
-        } catch (RuntimeException e) {
-            status.append(errorStatusDecoder.decodeThrowable(e));
-            log.error("Feilet å skjerme person: {}", dollyPerson.getHovedperson(), e);
-        }
+        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()));
     }
 
-    private SkjermingsDataRequest prepRequest(Person person, PersonDTO pdlfPerson,
-                                              LocalDateTime skjermingFra, LocalDateTime skjermingTil) {
+    private SkjermingDataRequest prepRequest(RsDollyUtvidetBestilling bestilling, PdlPersonBolk.PersonBolk person) {
 
-        return mapperFacade.map(BestillingPersonWrapper.builder()
-                        .skjermetFra(skjermingFra)
-                        .skjermetTil(skjermingTil)
-                        .person(person)
-                        .pdlfPerson(pdlfPerson)
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("personBolk", person);
+
+        return mapperFacade.map(SkjermingBestilling.builder()
+                        .skjermetFra(getEgenansattDatoFom(bestilling))
+                        .skjermetTil(getEgenansattDatoTom(bestilling))
                         .build(),
-                SkjermingsDataRequest.class);
+                SkjermingDataRequest.class, context);
     }
 }

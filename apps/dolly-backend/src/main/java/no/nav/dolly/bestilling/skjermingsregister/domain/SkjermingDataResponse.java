@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SkjermingsDataResponse {
+public class SkjermingDataResponse {
 
     private String endretDato;
     private String etternavn;
@@ -22,4 +22,6 @@ public class SkjermingsDataResponse {
 
     @JsonIgnore
     private boolean eksistererIkke;
+
+    private String error;
 }

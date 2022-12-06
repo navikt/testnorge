@@ -205,10 +205,10 @@ public class DollyBestillingService {
 
         counterCustomRegistry.invoke(bestKriterier);
         Flux.fromIterable(clientRegisters)
+                .parallel()
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
-                .collectList()
-                .block();
+                .subscribe(resultat -> log.info("Asynkron bestilling startet ..."));
     }
 
     protected void oppdaterBestillingFerdig(Bestilling bestilling) {
