@@ -2,7 +2,7 @@ import * as React from 'react'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import InntektsmeldingSelect from './inntektsmeldingSelect'
+import InntektsmeldingSelect from '@/components/fagsystem/inntektsmelding/form/partials/InntektsmeldingSelect'
 import { Kodeverk } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface NaturalytelseForm {
