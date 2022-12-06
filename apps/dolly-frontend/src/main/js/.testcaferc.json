@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "typescript": {
-      "configPath": "tsconfig.json"
+      "configPath": "testcafe-tsconfig.json"
     }
   },
   "skipJsErrors": true,
@@ -10,6 +10,6 @@
   "port1": 54321,
   "developmentMode": true,
   "pageRequestTimeout": 30000,
-  "pageLoadTimeout": 6000,
-  "appInitDelay": 60000
+  "pageLoadTimeout": 30000,
+  "appInitDelay": 10000
 }

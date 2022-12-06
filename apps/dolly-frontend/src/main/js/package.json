@@ -4,14 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "vite serve",
+    "start": "vite serve --open",
+    "start-testcafe": "vite serve --host",
     "build": "vite build",
     "test": "jest --watch",
     "test:1": "node ./node_modules/jest-single-file-coverage",
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
-    "test:testcafe": "testcafe chrome:headless tests/ --app 'npm run start' --cache",
-    "test:testcafe-dev": "testcafe chrome tests/ --debug-mode --cache"
+    "test:testcafe": "testcafe chrome:headless tests/ --app 'npm run start-testcafe'",
+    "test:testcafe-dev": "testcafe chrome tests/ --debug-mode"
   },
   "author": "",
   "license": "ISC",
@@ -114,7 +115,7 @@
     "typescript": "^4.7.4",
     "vite": "^3.2.4",
     "vite-plugin-svgr": "^2.2.2",
-    "vite-tsconfig-paths": "^3.6.0"
+    "vite-tsconfig-paths": "^4.0.0"
   },
   "prettier": {
     "singleQuote": true,
