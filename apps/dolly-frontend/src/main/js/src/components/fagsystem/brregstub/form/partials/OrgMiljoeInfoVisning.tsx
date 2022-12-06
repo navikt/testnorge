@@ -11,7 +11,7 @@ type Props = {
 export const OrgMiljoeInfoVisning = ({ miljoer, loading = false, error = false }: Props) => {
 	const harMiljoe = miljoer.length > 0
 	return (
-		<div style={{ paddingBottom: '10px' }}>
+		<div style={{ padding: '0 0 10px 5px' }}>
 			{loading && <Loading label="Sjekker organisasjonsnummer..." />}
 			{!loading && error && (
 				<div className="flexbox">
