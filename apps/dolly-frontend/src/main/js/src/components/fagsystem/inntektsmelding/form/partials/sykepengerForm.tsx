@@ -1,5 +1,5 @@
 import * as React from 'react'
-import InntektsmeldingSelect from './inntektsmeldingSelect'
+import InntektsmeldingSelect from '@/components/fagsystem/inntektsmelding/form/partials/InntektsmeldingSelect'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'

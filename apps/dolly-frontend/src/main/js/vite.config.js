@@ -7,6 +7,7 @@ import path from 'path'
 /** @type {import('vite').UserConfig} */
 export default defineConfig({
 	build: {
+		outDir: 'build',
 		loader: { '.js': 'jsx' },
 	},
 	resolve: {
