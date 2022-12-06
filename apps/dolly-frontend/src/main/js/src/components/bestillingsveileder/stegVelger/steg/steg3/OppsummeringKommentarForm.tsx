@@ -1,5 +1,4 @@
-import React from 'react'
-import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
+import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
 import _get from 'lodash/get'
 
 export const OppsummeringKommentarForm = ({ formikBag }) => {

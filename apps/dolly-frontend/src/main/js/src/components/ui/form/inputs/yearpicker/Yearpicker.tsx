@@ -1,10 +1,9 @@
-import React from 'react'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { Label } from '~/components/ui/form/inputs/label/Label'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { Label } from '@/components/ui/form/inputs/label/Label'
 import ReactDatepicker from 'react-datepicker'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 interface YearpickerProps {
 	formikBag: FormikProps<any>

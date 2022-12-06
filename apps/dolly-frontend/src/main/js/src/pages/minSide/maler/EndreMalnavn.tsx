@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import Button from '~/components/ui/button/Button'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyApi } from '~/service/Api'
+import Button from '@/components/ui/button/Button'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyApi } from '@/service/Api'
 
 export const EndreMalnavn = ({ malNavn, id, bestilling, avsluttRedigering }) => {
 	const [nyttMalnavn, setMalnavn] = useState(malNavn)

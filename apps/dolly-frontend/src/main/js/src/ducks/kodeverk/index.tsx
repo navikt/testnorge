@@ -1,7 +1,7 @@
 import { createActions, handleActions } from 'redux-actions'
-import { DollyApi } from '~/service/Api'
-import { onRequest, onSuccess } from '~/ducks/utils/requestActions'
-import { SortKodeverkArray } from '~/service/services/dolly/Utils'
+import { DollyApi } from '@/service/Api'
+import { onRequest, onSuccess } from '@/ducks/utils/requestActions'
+import { SortKodeverkArray } from '@/service/services/dolly/Utils'
 
 export const { getKodeverk } = createActions(
 	{

@@ -1,6 +1,6 @@
 import _has from 'lodash/has'
 import _isNil from 'lodash/isNil'
-import { runningTestcafe } from '~/service/services/Request'
+import { runningTestcafe } from '@/service/services/Request'
 
 export const fieldError = (meta) => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null

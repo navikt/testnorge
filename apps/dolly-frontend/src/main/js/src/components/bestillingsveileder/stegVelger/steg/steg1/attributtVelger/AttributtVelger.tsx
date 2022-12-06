@@ -1,4 +1,3 @@
-import React from 'react'
 import { Utvalg } from './utvalg/Utvalg'
 
 import './AttributtVelger.less'

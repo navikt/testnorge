@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { Steg1Person } from './Steg1Person'
 import { Steg1Organisasjon } from './Steg1Organisasjon'
 import { useFormikContext } from 'formik'

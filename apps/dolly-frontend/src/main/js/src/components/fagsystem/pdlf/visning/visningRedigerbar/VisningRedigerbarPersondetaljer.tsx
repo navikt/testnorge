@@ -1,27 +1,27 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import { Formik } from 'formik'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
-import Button from '~/components/ui/button/Button'
+import Button from '@/components/ui/button/Button'
 import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '~/service/Api'
-import Icon from '~/components/ui/icon/Icon'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import useBoolean from '~/utils/hooks/useBoolean'
+import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '@/service/Api'
+import Icon from '@/components/ui/icon/Icon'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import useBoolean from '@/utils/hooks/useBoolean'
 import {
 	folkeregisterpersonstatus,
 	kjoenn,
 	navn,
-} from '~/components/fagsystem/pdlf/form/validation/validation'
-import { ifPresent } from '~/utils/YupValidations'
-import { PersondetaljerSamlet } from '~/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
-import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+} from '@/components/fagsystem/pdlf/form/validation/validation'
+import { ifPresent } from '@/utils/YupValidations'
+import { PersondetaljerSamlet } from '@/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
+import { Checkbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { isEqual } from 'lodash'
 import {
 	RedigerLoading,
 	Modus,
-} from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Alert } from '@navikt/ds-react'
 
 type VisningTypes = {

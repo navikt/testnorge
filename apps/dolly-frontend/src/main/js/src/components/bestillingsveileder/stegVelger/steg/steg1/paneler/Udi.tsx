@@ -1,9 +1,8 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialOpphold } from '~/components/fagsystem/pdlf/form/initialValues'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { udiAttributt } from '~/components/fagsystem/udistub/form/Form'
+import { initialOpphold } from '@/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { udiAttributt } from '@/components/fagsystem/udistub/form/Form'
 
 export const UdiPanel = ({ stateModifier, testnorgeIdent, formikBag }) => {
 	const sm = stateModifier(UdiPanel.initialValues)

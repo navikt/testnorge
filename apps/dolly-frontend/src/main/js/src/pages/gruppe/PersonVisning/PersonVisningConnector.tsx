@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
-import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '~/ducks/fagsystem'
-import { createLoadingSelector } from '~/ducks/loading'
+import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '@/ducks/fagsystem'
+import { createLoadingSelector } from '@/ducks/loading'
 import { PersonVisning } from './PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)

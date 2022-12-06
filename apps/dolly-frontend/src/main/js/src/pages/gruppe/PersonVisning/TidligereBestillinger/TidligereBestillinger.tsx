@@ -1,10 +1,8 @@
-import React from 'react'
-
 import './TidligereBestillinger.less'
-import Button from '~/components/ui/button/Button'
+import Button from '@/components/ui/button/Button'
 import styled from 'styled-components'
 import { useDispatch } from 'react-redux'
-import { navigerTilBestilling } from '~/ducks/finnPerson'
+import { navigerTilBestilling } from '@/ducks/finnPerson'
 
 const NavigerTilBestillingButton = styled(Button)`
 	align-self: center;

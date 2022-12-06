@@ -1,7 +1,6 @@
-import React from 'react'
 import { useDispatch } from 'react-redux'
-import { setSearchText } from '~/ducks/search'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { setSearchText } from '@/ducks/search'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 import './SearchField.less'
 

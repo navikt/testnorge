@@ -1,15 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { initialAdressebeskyttelse } from '~/components/fagsystem/pdlf/form/initialValues'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import _get from 'lodash/get'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { FormikProps } from 'formik'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 
 interface AdressebeskyttelseValues {
 	formikBag: FormikProps<{}>

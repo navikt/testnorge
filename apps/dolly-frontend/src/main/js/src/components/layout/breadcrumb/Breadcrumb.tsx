@@ -1,10 +1,9 @@
-import React from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import cn from 'classnames'
-import Version from '~/components/version/Version'
+import Version from '@/components/version/Version'
 
 import './Breadcrumb.less'
-import allRoutes from '~/allRoutes'
+import allRoutes from '@/allRoutes'
 import useReactRouterBreadcrumbs from 'use-react-router-breadcrumbs'
 
 export const Breadcrumbs = () => {

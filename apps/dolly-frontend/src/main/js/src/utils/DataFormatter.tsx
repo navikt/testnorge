@@ -3,7 +3,7 @@ import _startCase from 'lodash/startCase'
 import _capitalize from 'lodash/capitalize'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'

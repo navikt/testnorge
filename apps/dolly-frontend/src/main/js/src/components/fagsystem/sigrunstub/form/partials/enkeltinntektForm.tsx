@@ -1,10 +1,9 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { SigrunKodeverk } from '~/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { SigrunKodeverk } from '@/config/kodeverk'
 import _get from 'lodash/get'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 export const EnkeltinntektForm = ({ path, header, initialGrunnlag, tjeneste, formikBag }) => {
 	return (

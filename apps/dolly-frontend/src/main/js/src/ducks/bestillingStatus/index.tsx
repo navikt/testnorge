@@ -2,7 +2,7 @@ import { createActions } from 'redux-actions'
 import _isNil from 'lodash/isNil'
 import _mapValues from 'lodash/mapValues'
 import _uniq from 'lodash/uniq'
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 
 export const {
 	cancelBestilling,

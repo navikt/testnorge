@@ -1,6 +1,6 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAll } from '~/api'
-import { System } from '~/ducks/bestillingStatus/bestillingStatusMapper'
+import { fetcher, multiFetcherAll } from '@/api'
+import { System } from '@/ducks/bestillingStatus/bestillingStatusMapper'
 import _has from 'lodash/has'
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>

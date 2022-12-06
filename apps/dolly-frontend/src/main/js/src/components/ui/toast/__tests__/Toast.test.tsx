@@ -1,4 +1,3 @@
-import React from 'react'
 import { shallow } from 'enzyme'
 import Toast from '../Toast'
 import { ToastContainer } from 'react-toastify'

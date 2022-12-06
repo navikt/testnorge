@@ -1,8 +1,7 @@
-import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import Button from '~/components/ui/button/Button'
-import BestillingSammendrag from '~/components/bestilling/sammendrag/BestillingSammendrag'
+import useBoolean from '@/utils/hooks/useBoolean'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import Button from '@/components/ui/button/Button'
+import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingSammendrag'
 
 export const BestillingSammendragModal = ({ bestilling }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)

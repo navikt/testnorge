@@ -1,10 +1,9 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 import { Barn } from './Barn'
 import { Partner } from './Partner'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Foreldre } from './Foreldre'
 
 type RelasjonerProps = {

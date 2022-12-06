@@ -1,5 +1,4 @@
-import React from 'react'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
+import LoadableComponent from '@/components/ui/loading/LoadableComponent'
 
 // Eksempel-API. Brukes f.eks. ved behov for å se resultat ved feilet api-kall.
 export const api = {

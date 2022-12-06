@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
-import { yesNoOptions } from '~/pages/testnorgePage/utils'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { yesNoOptions } from '@/pages/testnorgePage/utils'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 const paths = {
 	sivistand: 'sivilstand.type',

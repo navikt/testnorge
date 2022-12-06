@@ -1,7 +1,6 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import Formatters from '@/utils/DataFormatter'
 import ArbeidsforholdVisning from './arbeidsforholdVisning'
 import OmsorgspengerVisning from './omsorgspengerVisning'
 import RefusjonVisning from './refusjonVisning'
@@ -12,9 +11,9 @@ import {
 	EnkelInntektsmelding,
 	Inntekt,
 	Journalpost,
-} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { PersonVisningContent } from '~/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
+} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { PersonVisningContent } from '@/components/fagsystem/inntektsmelding/visning/partials/personVisningContent'
 
 const getHeader = (data: Inntekt) => {
 	const arbeidsgiver = data.arbeidsgiver

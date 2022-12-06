@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { FormikProps } from 'formik'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
 import _get from 'lodash/get'
-import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
-import { FormikDateTimepicker } from '~/components/ui/form/inputs/timepicker/Timepicker'
+import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
+import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 
 interface InntektsinformasjonForm {
 	path: string

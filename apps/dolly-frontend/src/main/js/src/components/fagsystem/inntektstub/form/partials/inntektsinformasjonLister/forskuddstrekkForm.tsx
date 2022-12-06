@@ -1,8 +1,7 @@
-import React from 'react'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { InntektstubKodeverk } from '~/config/kodeverk'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { InntektstubKodeverk } from '@/config/kodeverk'
 
 const initialValues = {
 	beloep: '',

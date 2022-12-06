@@ -1,10 +1,9 @@
-import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 import './appError.less'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import 'rc-tooltip/assets/bootstrap.css'
-import DollyTooltip from '~/components/ui/button/DollyTooltip'
+import DollyTooltip from '@/components/ui/button/DollyTooltip'
 
 export const AppError = ({ error, stackTrace, style }) => (
 	<div className="application-error" style={style}>

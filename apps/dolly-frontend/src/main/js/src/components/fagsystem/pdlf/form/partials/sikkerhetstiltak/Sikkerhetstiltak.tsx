@@ -1,22 +1,22 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { FormikProps } from 'formik'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { genererTilfeldigeNavPersonidenter } from '~/utils/GenererTilfeldigeNavPersonidenter'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialSikkerhetstiltak,
 	initialTpsSikkerhetstiltak,
-} from '~/components/fagsystem/pdlf/form/initialValues'
+} from '@/components/fagsystem/pdlf/form/initialValues'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string

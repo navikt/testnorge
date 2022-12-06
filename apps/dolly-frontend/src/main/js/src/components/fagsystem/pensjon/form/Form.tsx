@@ -1,14 +1,12 @@
-import React from 'react'
-
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import Panel from '~/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
-import { validation } from '~/components/fagsystem/pensjon/form/validation'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import Formatters from '~/utils/DataFormatter'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import Panel from '@/components/ui/panel/Panel'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { validation } from '@/components/fagsystem/pensjon/form/validation'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import Formatters from '@/utils/DataFormatter'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const pensjonPath = 'pensjonforvalter.inntekt'
 

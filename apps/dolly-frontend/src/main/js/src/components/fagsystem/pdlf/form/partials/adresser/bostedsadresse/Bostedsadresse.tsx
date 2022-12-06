@@ -1,32 +1,32 @@
 import React, { useContext, useEffect } from 'react'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import {
 	initialBostedsadresse,
 	initialMatrikkeladresse,
 	initialUkjentBosted,
 	initialUtenlandskAdresse,
 	initialVegadresse,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
 import {
 	UtenlandskAdresse,
 	UkjentBosted,
 	VegadresseVelger,
 	MatrikkeladresseVelger,
-} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
+} from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { FormikProps } from 'formik'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { getPlaceholder, setNavn } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 interface BostedsadresseValues {
 	formikBag: FormikProps<{}>

@@ -2,7 +2,7 @@ import * as Yup from 'yup'
 import _isUndefined from 'lodash/isUndefined'
 import { yupToFormErrors } from 'formik'
 import _isString from 'lodash/isString'
-import Formatters from '~/utils/DataFormatter'
+import Formatters from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 
 /*

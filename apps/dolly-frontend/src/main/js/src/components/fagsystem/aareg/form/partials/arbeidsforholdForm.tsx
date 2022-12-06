@@ -3,18 +3,18 @@ import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _set from 'lodash/set'
 import _cloneDeep from 'lodash/cloneDeep'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
 import { MaritimtArbeidsforholdForm } from './maritimtArbeidsforholdForm'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { ArbeidKodeverk } from '~/config/kodeverk'
-import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { ArbeidKodeverk } from '@/config/kodeverk'
+import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import {
 	initialArbeidsforholdOrg,
 	initialArbeidsforholdPers,
@@ -22,14 +22,14 @@ import {
 	initialForenkletOppgjoersordningOrg,
 	initialForenkletOppgjoersordningPers,
 } from '../initialValues'
-import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
+import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
 import { isDate } from 'date-fns'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import _isEmpty from 'lodash/isEmpty'
 import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
 import _, { isEqual } from 'lodash'
-import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
+import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 
 type Arbeidsforhold = {
 	isOppdatering?: boolean

@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const getBrregstubUrl = () => `/testnav-brregstub-proxy/api/v1`
 

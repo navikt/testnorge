@@ -1,12 +1,12 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
+import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '@/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
 	usePensjonEnvironments,
-} from '~/utils/hooks/useEnvironments'
+} from '@/utils/hooks/useEnvironments'
 
-import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
+import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({

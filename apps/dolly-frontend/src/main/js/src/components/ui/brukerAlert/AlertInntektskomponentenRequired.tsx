@@ -1,4 +1,3 @@
-import React from 'react'
 import { Alert } from '@navikt/ds-react'
 
 export const AlertInntektskomponentenRequired = ({ vedtak }: { vedtak: string }) => {

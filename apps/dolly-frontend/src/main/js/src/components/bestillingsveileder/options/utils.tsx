@@ -1,12 +1,12 @@
-import { initialValues as initialValuesInntektstub } from '~/components/fagsystem/inntektstub/form/Form'
+import { initialValues as initialValuesInntektstub } from '@/components/fagsystem/inntektstub/form/Form'
 import {
 	initialPermisjon,
 	initialUtenlandsopphold,
 	initialValues as initialValuesAareg,
-} from '~/components/fagsystem/aareg/form/initialValues'
-import { initialValues as initialValuesInntektsmelding } from '~/components/fagsystem/inntektsmelding/form/Form'
-import { initialValues as initialValuesInst } from '~/components/fagsystem/inst/form/Form'
-import { initialDoedfoedtBarn } from '~/components/fagsystem/pdlf/form/initialValues'
+} from '@/components/fagsystem/aareg/form/initialValues'
+import { initialValues as initialValuesInntektsmelding } from '@/components/fagsystem/inntektsmelding/form/Form'
+import { initialValues as initialValuesInst } from '@/components/fagsystem/inst/form/Form'
+import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
 
 export const initialValues = {
 	inntektstub: initialValuesInntektstub,

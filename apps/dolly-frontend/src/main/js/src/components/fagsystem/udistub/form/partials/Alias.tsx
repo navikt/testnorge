@@ -1,7 +1,6 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 const initialValues = {
 	identtype: null,

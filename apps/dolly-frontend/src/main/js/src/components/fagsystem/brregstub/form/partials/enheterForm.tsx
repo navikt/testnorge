@@ -1,11 +1,10 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { PersonrollerForm } from './personrollerForm'
-import { OrgnrToggle } from '~/components/fagsystem/brregstub/form/partials/orgnrToggle'
+import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
 
 const initialValues = {
 	rolle: '',

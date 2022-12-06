@@ -1,8 +1,7 @@
-import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialUtenlandsopphold } from '../initialValues'
 
 const infotekst =

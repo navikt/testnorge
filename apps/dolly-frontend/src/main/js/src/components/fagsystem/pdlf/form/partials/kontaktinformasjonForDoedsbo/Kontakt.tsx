@@ -1,22 +1,21 @@
-import React from 'react'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '../utils'
 import _get from 'lodash/get'
 import {
 	initialNyPerson,
 	initialOrganisasjon,
 	initialPerson,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { OrganisasjonSelect } from '~/components/organisasjonSelect'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { OrganisasjonSelect } from '@/components/organisasjonSelect'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
 import { FormikProps } from 'formik'
-import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 
 interface KontaktValues {
 	formikBag: FormikProps<any>

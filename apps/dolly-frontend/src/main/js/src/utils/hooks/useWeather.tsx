@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher } from '@/api'
 
 const fyrstikkAlleenForecastUrl =
 	'https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.91254828924253&lon=10.796522002335804'

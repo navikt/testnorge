@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { actions } from '~/ducks/gruppe'
+import { actions } from '@/ducks/gruppe'
 import { PersonIBrukButton } from './PersonIBrukButton'
 
 const mapDispatchToProps = {

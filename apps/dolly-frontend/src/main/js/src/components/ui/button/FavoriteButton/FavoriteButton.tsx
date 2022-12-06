@@ -1,7 +1,6 @@
-import React from 'react'
 import Button from '../Button'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { REGEX_BACKEND_BRUKER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { REGEX_BACKEND_BRUKER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 function mutateUserOptimisticly(mutate, response) {
 	return mutate(REGEX_BACKEND_BRUKER, response)

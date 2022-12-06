@@ -1,6 +1,6 @@
-import { ifPresent, requiredString } from '~/utils/YupValidations'
+import { ifPresent, requiredString } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { testDatoTom } from '~/components/fagsystem/utils'
+import { testDatoTom } from '@/components/fagsystem/utils'
 
 export const tpsMessagingValidation = {
 	tpsMessaging: ifPresent(

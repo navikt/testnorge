@@ -1,13 +1,12 @@
-import React from 'react'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import Loading from '@/components/ui/loading/Loading'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
-import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
-import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
 const getSortedData = (data) => {
 	return Array.isArray(data)

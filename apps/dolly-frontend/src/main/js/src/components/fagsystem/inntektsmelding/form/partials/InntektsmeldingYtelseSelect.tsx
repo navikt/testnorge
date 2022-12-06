@@ -1,13 +1,12 @@
-import React from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import Formatters from '~/utils/DataFormatter'
+import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import Formatters from '@/utils/DataFormatter'
 import { FormikProps } from 'formik'
-import { Tema, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Tema, Ytelser } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
 	path: string

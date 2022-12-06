@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const kontoregisterHentUrl = '/testnav-kontoregister-person-proxy/api/system/v1/hent-konto'
 const kontoregisterSlettUrl = '/testnav-kontoregister-person-proxy/api/system/v1/slett-konto'

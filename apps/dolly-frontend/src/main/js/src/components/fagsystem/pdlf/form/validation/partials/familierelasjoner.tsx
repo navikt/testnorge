@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
-import { matrikkeladresse, vegadresse } from '~/components/fagsystem/pdlf/form/validation/partials'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+import { requiredDate, requiredString } from '@/utils/YupValidations'
+import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import _get from 'lodash/get'
 
 const testForeldreansvar = (val) => {

@@ -1,11 +1,11 @@
 import * as React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { ArbeidKodeverk, GtKodeverk } from '~/config/kodeverk'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import _get from 'lodash/get'
-import { landkodeIsoMapping } from '~/service/services/kontoregister/landkoder'
+import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
 

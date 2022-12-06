@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
+import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
 import _get from 'lodash/get'
 

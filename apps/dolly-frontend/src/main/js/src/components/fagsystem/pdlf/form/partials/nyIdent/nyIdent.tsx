@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { FormikProps } from 'formik'
-import { initialNyIdent } from '~/components/fagsystem/pdlf/form/initialValues'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
+import { initialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import _get from 'lodash/get'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 
 interface NyIdentForm {
 	formikBag: FormikProps<{}>

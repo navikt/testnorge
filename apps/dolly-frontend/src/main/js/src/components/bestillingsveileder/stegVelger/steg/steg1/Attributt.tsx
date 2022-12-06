@@ -1,5 +1,4 @@
-import React from 'react'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { CheckboxGroup } from '@navikt/ds-react'
 
 export const Attributt = ({ attr, vis = true, disabled = false, title = null, ...props }) =>

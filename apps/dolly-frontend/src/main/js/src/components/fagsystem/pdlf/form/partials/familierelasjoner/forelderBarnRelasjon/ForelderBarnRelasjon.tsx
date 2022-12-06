@@ -1,24 +1,24 @@
 import * as React from 'react'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialBarn,
 	initialForelder,
 	initialPdlBiPerson,
 	initialPdlPerson,
-} from '~/components/fagsystem/pdlf/form/initialValues'
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { BarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { BarnRelasjon } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
 import _cloneDeep from 'lodash/cloneDeep'
 import _set from 'lodash/set'
-import { TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
-import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
-import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
-import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
+import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
+import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { ToggleGroup } from '@navikt/ds-react'
 
 interface ForelderForm {

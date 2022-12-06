@@ -1,9 +1,8 @@
-import React from 'react'
 import cn from 'classnames'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 
 import './kategori.less'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 export const Kategori = ({
 	title = 'Kategori',

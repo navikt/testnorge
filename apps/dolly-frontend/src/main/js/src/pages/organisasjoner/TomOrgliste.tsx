@@ -1,6 +1,5 @@
-import React from 'react'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 
 type Props = {
 	startBestilling: (bestillingstype: string) => void

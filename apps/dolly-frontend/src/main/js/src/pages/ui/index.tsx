@@ -1,41 +1,39 @@
-import React from 'react'
-
 import './ui-demo.less'
 
 // Button
-import Button from '~/components/ui/button/Button'
-import FavoriteButton from '~/components/ui/button/FavoriteButton/FavoriteButton'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
-import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
-import { PersonIBrukButton } from '~/components/ui/button/PersonIBrukButton/PersonIBrukButton'
+import Button from '@/components/ui/button/Button'
+import FavoriteButton from '@/components/ui/button/FavoriteButton/FavoriteButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import LinkButton from '@/components/ui/button/LinkButton/LinkButton'
+import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
+import { PersonIBrukButton } from '@/components/ui/button/PersonIBrukButton/PersonIBrukButton'
 
 // Loading
-import Loading from '~/components/ui/loading/Loading'
+import Loading from '@/components/ui/loading/Loading'
 
 // Icons
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 // Header
-import { Header } from '~/components/ui/header/Header'
+import { Header } from '@/components/ui/header/Header'
 
 // SubOverskrift
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 
 // Panel
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 
 // API Feilmelding
-import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 
 // ContentContainer
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
+import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 
 // AppError
-import { AppError } from '~/components/ui/appError/AppError'
+import { AppError } from '@/components/ui/appError/AppError'
 
 // TextEditor
-import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
+import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
 
 export default function () {
 	return (

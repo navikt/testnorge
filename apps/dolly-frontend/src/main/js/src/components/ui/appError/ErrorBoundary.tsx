@@ -1,6 +1,6 @@
-import React from 'react'
 import { AppError } from './AppError'
-import Logger from '~/logger'
+import { Logger } from '@/logger/Logger'
+import React from 'react'
 
 export class ErrorBoundary extends React.Component {
 	state = {

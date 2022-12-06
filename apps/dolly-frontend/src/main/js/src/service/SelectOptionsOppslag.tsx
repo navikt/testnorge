@@ -1,10 +1,10 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '~/service/Api'
-import Api from '~/api'
+import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '@/service/Api'
+import Api from '@/api'
 import _isNil from 'lodash/isNil'
-import { Person, PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
-import { getAlder } from '~/ducks/fagsystem'
-import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Person, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { getAlder } from '@/ducks/fagsystem'
+import { HentPerson } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 const uri = `/dolly-backend/api/v1`
 

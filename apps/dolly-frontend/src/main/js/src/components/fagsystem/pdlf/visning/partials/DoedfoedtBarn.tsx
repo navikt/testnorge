@@ -1,10 +1,9 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { DoedfoedtBarn } from '~/components/fagsystem/pdlf/PdlTypes'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/PdlTypes'
 
 type DoedfoedtBarnData = {
 	data: Array<DoedfoedtBarn>

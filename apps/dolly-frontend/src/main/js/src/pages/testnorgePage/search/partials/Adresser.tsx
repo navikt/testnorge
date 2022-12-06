@@ -1,11 +1,10 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
+import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
-import { yesNoOptions } from '~/pages/testnorgePage/utils'
-import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
+import { yesNoOptions } from '@/pages/testnorgePage/utils'
+import { AdvancedOptions } from '@/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>

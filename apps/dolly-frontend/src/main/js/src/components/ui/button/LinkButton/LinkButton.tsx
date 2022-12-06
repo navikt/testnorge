@@ -1,5 +1,3 @@
-import React from 'react'
-
 import './LinkButton.less'
 
 export default function LinkButton({ text, onClick }) {

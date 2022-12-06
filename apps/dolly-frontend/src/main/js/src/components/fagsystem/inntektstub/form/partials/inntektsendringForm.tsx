@@ -1,15 +1,14 @@
-import React from 'react'
 import _get from 'lodash/get'
 import { FieldArray, FormikProps } from 'formik'
 import {
 	DollyFaBlokk,
 	DollyFieldArrayWrapper,
 	FieldArrayAddButton,
-} from '~/components/ui/form/fieldArray/DollyFieldArray'
+} from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { Arbeidsforhold, Forskudd, Fradrag, Inntekt } from './inntektstubTypes'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { FormikDateTimepicker } from '~/components/ui/form/inputs/timepicker/Timepicker'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 
 interface InntektendringForm {
 	formikBag: FormikProps<{}>

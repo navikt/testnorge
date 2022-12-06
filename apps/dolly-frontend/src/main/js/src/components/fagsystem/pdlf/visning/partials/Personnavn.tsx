@@ -1,5 +1,4 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 
 export const Personnavn = ({ data }) => {
 	if (!data) return false

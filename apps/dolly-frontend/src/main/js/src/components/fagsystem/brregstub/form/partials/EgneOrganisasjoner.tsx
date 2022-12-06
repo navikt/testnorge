@@ -1,12 +1,12 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
+import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
-import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
+import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
 import _has from 'lodash/has'
+import React from 'react'
 
 interface OrgProps {
 	path: string

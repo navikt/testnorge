@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialNyIdent } from '~/components/fagsystem/pdlf/form/initialValues'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { identifikasjonAttributter } from '~/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
+import { initialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { identifikasjonAttributter } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
 
 export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(IdentifikasjonPanel.initialValues)

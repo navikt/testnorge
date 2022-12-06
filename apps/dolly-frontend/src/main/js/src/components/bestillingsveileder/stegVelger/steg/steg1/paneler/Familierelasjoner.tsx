@@ -1,14 +1,13 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	initialBarn,
 	initialDoedfoedtBarn,
 	initialForeldreansvar,
 	initialSivilstand,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { relasjonerAttributter } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { relasjonerAttributter } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/Familierelasjoner'
 
 export const FamilierelasjonPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(FamilierelasjonPanel.initialValues)

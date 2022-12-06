@@ -1,9 +1,8 @@
-import React from 'react'
 import { format } from 'date-fns'
-import Button from '~/components/ui/button/Button'
-import Logger from '~/logger'
-import Loading from '~/components/ui/loading/Loading'
+import Button from '@/components/ui/button/Button'
+import Loading from '@/components/ui/loading/Loading'
 import './EksporterExcel.less'
+import { Logger } from '@/logger/Logger'
 
 const downloadExcelString = (filPrefix, fileString) => {
 	const dagensDato = format(new Date(), 'yyyy-MM-dd')

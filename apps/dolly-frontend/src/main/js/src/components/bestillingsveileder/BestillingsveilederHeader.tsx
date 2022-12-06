@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
-import { Header } from '~/components/ui/header/Header'
-import Formatter from '~/utils/DataFormatter'
+import { Header } from '@/components/ui/header/Header'
+import Formatter from '@/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
-import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
+import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 
 const getImportFra = (opts) => {
 	if (opts.is.leggTil) {

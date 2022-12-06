@@ -1,12 +1,12 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
-import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { useDollyOrganisasjonMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
-import Loading from '~/components/ui/loading/Loading'
+import { ifPresent, requiredString } from '@/utils/YupValidations'
+import { useDollyOrganisasjonMalerBrukerOgMalnavn } from '@/utils/hooks/useMaler'
+import Loading from '@/components/ui/loading/Loading'
 import {
 	MalerFormProps,
 	MalTyper,
-} from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
-import { MalOppsummering } from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
+import { MalOppsummering } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const MalFormOrganisasjon = ({

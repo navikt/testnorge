@@ -1,8 +1,7 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { ArbeidKodeverk } from '~/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { ArbeidKodeverk } from '@/config/kodeverk'
 
 export const ArbeidsavtaleForm = ({ path, onChangeLenket, ...props }) => {
 	return (

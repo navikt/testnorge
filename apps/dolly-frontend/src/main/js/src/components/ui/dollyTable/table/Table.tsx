@@ -1,11 +1,10 @@
-import React from 'react'
 import cn from 'classnames'
 import Row from './TableRow'
 import Column from './TableColumn'
 import _get from 'lodash/get'
 import _isFunction from 'lodash/isFunction'
 import _isNil from 'lodash/isNil'
-import { LaastGruppeIconItem } from '~/components/ui/icon/IconItem'
+import { LaastGruppeIconItem } from '@/components/ui/icon/IconItem'
 
 import './Table.less'
 

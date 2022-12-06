@@ -1,6 +1,6 @@
-import Api from '~/api'
+import Api from '@/api'
 import { Search } from './types'
-import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 export type SearchResponsePdl = { numberOfItems: number; items: PdlData[] }
 type PdlPerson = {

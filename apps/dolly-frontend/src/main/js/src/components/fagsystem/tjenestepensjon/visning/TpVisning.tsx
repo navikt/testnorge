@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
-import { fetchTpOrdninger } from '~/components/fagsystem/tjenestepensjon/form/Form'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
-import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import { fetchTpOrdninger } from '@/components/fagsystem/tjenestepensjon/form/Form'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
 export const sjekkManglerTpData = (tpData) => {
 	return tpData?.length < 1 || tpData?.every((miljoData) => miljoData.data?.length < 1)

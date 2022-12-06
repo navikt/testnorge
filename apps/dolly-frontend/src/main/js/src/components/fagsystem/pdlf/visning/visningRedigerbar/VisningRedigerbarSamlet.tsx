@@ -1,24 +1,24 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import Loading from '~/components/ui/loading/Loading'
+import Loading from '@/components/ui/loading/Loading'
 import { Formik } from 'formik'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
-import Button from '~/components/ui/button/Button'
+import Button from '@/components/ui/button/Button'
 import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
-import Icon from '~/components/ui/icon/Icon'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { ifPresent, validate } from '~/utils/YupValidations'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { telefonnummer } from '~/components/fagsystem/pdlf/form/validation/partials'
-import { TelefonnummerFormRedigering } from '~/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
-import { TelefonnummerLes } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { DollyApi, PdlforvalterApi } from '@/service/Api'
+import Icon from '@/components/ui/icon/Icon'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { ifPresent, validate } from '@/utils/YupValidations'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/partials'
+import { TelefonnummerFormRedigering } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
+import { TelefonnummerLes } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import {
 	RedigerLoading,
 	Modus,
-} from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 
 type VisningTypes = {
 	getPdlForvalter: Function

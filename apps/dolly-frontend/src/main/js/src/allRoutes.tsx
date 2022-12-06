@@ -1,17 +1,17 @@
 import React, { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
-import GruppeConnector from '~/pages/gruppe/GruppeConnector'
+import GruppeConnector from '@/pages/gruppe/GruppeConnector'
 
-const GruppeOversikt = lazy(() => import('./pages/gruppeOversikt/GruppeOversiktConnector'))
-const Organisasjon = lazy(() => import('./pages/organisasjoner/OrganisasjonerConnector'))
+const GruppeOversikt = lazy(() => import('@/pages/gruppeOversikt/GruppeOversiktConnector'))
+const Organisasjon = lazy(() => import('@/pages/organisasjoner/OrganisasjonerConnector'))
 const BestillingsveilederConnector = lazy(
-	() => import('./components/bestillingsveileder/BestillingsveilederConnector')
+	() => import('@/components/bestillingsveileder/BestillingsveilederConnector')
 )
-const MinSide = lazy(() => import('./pages/minSide/MinSide'))
-const UI = lazy(() => import('./pages/ui/index'))
-const TestnorgePage = lazy(() => import('./pages/testnorgePage/index'))
-const Endringsmelding = lazy(() => import('./pages/endringsmelding/Endringsmelding'))
-const Dokumentasjon = lazy(() => import('./pages/dokumentasjon/Dokumentasjon'))
+const MinSide = lazy(() => import('@/pages/minSide/MinSide'))
+const UI = lazy(() => import('@/pages/ui/index'))
+const TestnorgePage = lazy(() => import('@/pages/testnorgePage/index'))
+const Endringsmelding = lazy(() => import('@/pages/endringsmelding/Endringsmelding'))
+const Dokumentasjon = lazy(() => import('@/pages/dokumentasjon/Dokumentasjon'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 

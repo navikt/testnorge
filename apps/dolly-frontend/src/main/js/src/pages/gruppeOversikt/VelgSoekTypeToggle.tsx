@@ -1,6 +1,6 @@
-import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 import { ToggleGroup } from '@navikt/ds-react'
+import React from 'react'
 
 type Props = {
 	soekValg: SoekTypeValg

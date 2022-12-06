@@ -1,14 +1,13 @@
-import React from 'react'
 import _orderBy from 'lodash/orderBy'
-import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
-import { BestillingIconItem } from '~/components/ui/icon/IconItem'
+import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
+import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
+import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'
+import { BestillingIconItem } from '@/components/ui/icon/IconItem'
 
-import Icon from '~/components/ui/icon/Icon'
-import Spinner from '~/components/ui/loading/Spinner'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
+import Icon from '@/components/ui/icon/Icon'
+import Spinner from '@/components/ui/loading/Spinner'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import bestillingStatusMapper from '@/ducks/bestillingStatus/bestillingStatusMapper'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',

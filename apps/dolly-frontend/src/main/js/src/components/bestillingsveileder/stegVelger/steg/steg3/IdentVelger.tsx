@@ -3,7 +3,7 @@ import _get from 'lodash/get'
 import styled from 'styled-components'
 import { FormikProps } from 'formik'
 import { bottom } from '@popperjs/core'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 
 type Form = {

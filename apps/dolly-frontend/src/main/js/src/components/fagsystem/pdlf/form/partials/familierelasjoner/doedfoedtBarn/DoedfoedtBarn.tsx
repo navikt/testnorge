@@ -1,10 +1,10 @@
 import * as React from 'react'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { initialDoedfoedtBarn } from '~/components/fagsystem/pdlf/form/initialValues'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { initialDoedfoedtBarn } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import _get from 'lodash/get'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 interface DoedfoedtBarnForm {
 	formikBag: FormikProps<{}>

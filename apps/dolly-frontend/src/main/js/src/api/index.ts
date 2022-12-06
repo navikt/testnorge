@@ -1,10 +1,10 @@
-import { NotFoundError } from '~/error'
+import { NotFoundError } from '@/error'
 import { Argument } from 'classnames'
 import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { runningTestcafe } from '~/service/services/Request'
+import logoutBruker from '@/components/utlogging/logoutBruker'
+import { runningTestcafe } from '@/service/services/Request'
 import _isEmpty from 'lodash/isEmpty'
 
 const fetchRetry = fetch_retry(originalFetch)
@@ -54,7 +54,7 @@ export const multiFetcherDokarkiv = (miljoUrlListe) => {
 	)
 }
 
-export const fetcher = (url, headers: Record<string, string>) =>
+export const fetcher = (url, headers) =>
 	axios
 		.get(url, { headers: headers })
 		.then((res) => {

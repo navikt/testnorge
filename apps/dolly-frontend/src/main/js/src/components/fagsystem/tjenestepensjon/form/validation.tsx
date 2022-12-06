@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '~/utils/YupValidations'
-import { testDatoTom } from '~/components/fagsystem/utils'
+import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
+import { testDatoTom } from '@/components/fagsystem/utils'
 
 export const validation = {
 	tp: ifPresent(

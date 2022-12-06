@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import _get from 'lodash/get'
 import { Alert } from '@navikt/ds-react'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,

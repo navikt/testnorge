@@ -1,11 +1,11 @@
-import React from 'react'
 import cn from 'classnames'
 import _isFunction from 'lodash/isFunction'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
-import Loading from '~/components/ui/loading/Loading'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
+import Loading from '@/components/ui/loading/Loading'
 
 import './TitleValue.less'
-import { CopyButton } from '~/components/ui/button/CopyButton/CopyButton'
+import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
+import React from 'react'
 
 const displayValue = (value, visKopier) => {
 	return visKopier ? <CopyButton value={value} /> : value

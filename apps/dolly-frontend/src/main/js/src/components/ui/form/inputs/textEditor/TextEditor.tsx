@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import Button from '~/components/ui/button/Button'
-import useBoolean from '~/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
+import useBoolean from '@/utils/hooks/useBoolean'
 
 import './TextEditor.less'
 import { Textarea } from '@navikt/ds-react'

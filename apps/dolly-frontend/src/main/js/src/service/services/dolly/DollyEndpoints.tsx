@@ -1,4 +1,4 @@
-import Formatters from '~/utils/DataFormatter'
+import Formatters from '@/utils/DataFormatter'
 
 const uri = `/dolly-backend/api/v1`
 

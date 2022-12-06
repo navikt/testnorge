@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { addFavorite, removeFavorite } from '~/ducks/bruker'
+import { addFavorite, removeFavorite } from '@/ducks/bruker'
 import FavoriteButton from './FavoriteButton'
 
 const mapDispatchToProps = (dispatch, ownProps) => ({

@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import _orderBy from 'lodash/orderBy'
-import { DollyApi } from '~/service/Api'
-import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
-import { useArenaEnvironments } from '~/utils/hooks/useEnvironments'
+import { DollyApi } from '@/service/Api'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
 
 const Visning = ({ data }) => {
 	if (!data || data.length === 0) {

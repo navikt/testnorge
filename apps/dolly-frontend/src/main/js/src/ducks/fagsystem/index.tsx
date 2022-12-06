@@ -12,11 +12,11 @@ import {
 	TpsfApi,
 	TpsMessagingApi,
 	BankkontoApi,
-} from '~/service/Api'
-import { onSuccess } from '~/ducks/utils/requestActions'
-import { successMiljoSelector } from '~/ducks/bestillingStatus'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
-import Formatters from '~/utils/DataFormatter'
+} from '@/service/Api'
+import { onSuccess } from '@/ducks/utils/requestActions'
+import { successMiljoSelector } from '@/ducks/bestillingStatus'
+import { handleActions } from '@/ducks/utils/immerHandleActions'
+import Formatters from '@/utils/DataFormatter'
 import { isNil } from 'lodash'
 
 export const actions = createActions(

@@ -1,10 +1,9 @@
-import React from 'react'
 import ReactDatepicker from 'react-datepicker'
 import _get from 'lodash/get'
 import { FormikProps, useFormikContext } from 'formik'
-import { Label } from '~/components/ui/form/inputs/label/Label'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
+import { Label } from '@/components/ui/form/inputs/label/Label'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 
 interface MonthpickerProps {
 	name: string

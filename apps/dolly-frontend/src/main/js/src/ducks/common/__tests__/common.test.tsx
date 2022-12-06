@@ -1,8 +1,8 @@
 import common, { redirectReducer } from '../index'
 import { LOCATION_CHANGE } from 'redux-first-history'
-import { onSuccess } from '~/ducks/utils/requestActions'
-import { createGruppe, deleteGruppe } from '~/ducks/gruppe'
-import { actions as bestillingActions } from '~/ducks/bestilling'
+import { onSuccess } from '@/ducks/utils/requestActions'
+import { createGruppe, deleteGruppe } from '@/ducks/gruppe'
+import { actions as bestillingActions } from '@/ducks/bestilling'
 
 describe('commonReducer', () => {
 	it('should return initial state', () => {

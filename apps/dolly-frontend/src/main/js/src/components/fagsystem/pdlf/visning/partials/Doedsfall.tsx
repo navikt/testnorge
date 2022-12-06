@@ -1,14 +1,13 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
-import { DoedsfallData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import Formatters from '@/utils/DataFormatter'
+import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import _cloneDeep from 'lodash/cloneDeep'
-import { initialDoedsfall, initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
+import { initialDoedsfall, initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type DoedsfallTypes = {
 	data: Array<DoedsfallData>

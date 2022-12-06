@@ -1,17 +1,16 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import {
 	Attributt,
 	AttributtKategori,
-} from '~/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
 import {
 	initialAdressebeskyttelse,
 	initialBostedsadresse,
 	initialKontaktadresse,
 	initialOppholdsadresse,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { adresseAttributter } from '~/components/fagsystem/pdlf/form/partials/adresser/Adresser'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { adresseAttributter } from '@/components/fagsystem/pdlf/form/partials/adresser/Adresser'
 
 export const AdressePanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(AdressePanel.initialValues)

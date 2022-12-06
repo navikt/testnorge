@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
-import { requiredDate } from '~/utils/YupValidations'
-import { nyPerson } from '~/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
+import { requiredDate } from '@/utils/YupValidations'
+import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 
 export const fullmakt = Yup.array().of(
 	Yup.object({

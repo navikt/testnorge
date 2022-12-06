@@ -1,8 +1,7 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { brregAttributt } from '~/components/fagsystem/brregstub/form/Form'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { brregAttributt } from '@/components/fagsystem/brregstub/form/Form'
 
 export const BrregPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(BrregPanel.initialValues)

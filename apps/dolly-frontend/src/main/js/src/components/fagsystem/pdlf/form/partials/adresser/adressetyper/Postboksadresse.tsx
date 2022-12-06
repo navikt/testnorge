@@ -1,7 +1,6 @@
-import React from 'react'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikProps } from 'formik'
 
 interface PostboksadresseValues {

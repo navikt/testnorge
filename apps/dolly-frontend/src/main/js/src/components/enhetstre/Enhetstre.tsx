@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { Node } from './Node'
 import './Enhetstre.less'
-import { Org, OrgTree } from '~/components/enhetstre/OrgTree'
+import { Org, OrgTree } from '@/components/enhetstre/OrgTree'
 
 type EnhetstreProps<T extends Org<T>> = {
 	enheter: OrgTree<T>[]

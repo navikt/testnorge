@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyTextInput, FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormikProps } from 'formik'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import _get from 'lodash/get'
 import {
 	initialTelefonnummer,
 	initialTpsTelefonnummer,
-} from '~/components/fagsystem/pdlf/form/initialValues'
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import styled from 'styled-components'
 
 export interface TelefonnummerArray {

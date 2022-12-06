@@ -1,14 +1,13 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
 import _cloneDeep from 'lodash/cloneDeep'
-import { initialAdressebeskyttelse } from '~/components/fagsystem/pdlf/form/initialValues'
+import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import { AdressebeskyttelseData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type AdressebeskyttelseTypes = {
 	data: Array<AdressebeskyttelseData>

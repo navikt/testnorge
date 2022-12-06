@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
-import { messages, requiredString } from '~/utils/YupValidations'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+import { messages, requiredString } from '@/utils/YupValidations'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { isAfter, isBefore } from 'date-fns'
 
 const gyldigDatoFom = Yup.lazy((val) =>

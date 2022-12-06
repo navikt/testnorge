@@ -1,6 +1,6 @@
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
 import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import Button from '~/components/ui/button/Button'
 
 type Props = {
 	startOpen?: boolean

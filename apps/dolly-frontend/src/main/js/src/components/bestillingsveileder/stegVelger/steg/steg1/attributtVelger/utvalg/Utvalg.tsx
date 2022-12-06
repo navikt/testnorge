@@ -1,4 +1,3 @@
-import React from 'react'
 import './Utvalg.less'
 
 export const Utvalg = ({ checked }) => {

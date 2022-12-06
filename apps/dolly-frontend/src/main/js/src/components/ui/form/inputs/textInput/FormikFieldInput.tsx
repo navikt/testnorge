@@ -1,9 +1,9 @@
 import _get from 'lodash/get'
-import { fieldError } from '~/components/ui/form/formUtils'
-import React from 'react'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { fieldError } from '@/components/ui/form/formUtils'
+
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { useFormikContext } from 'formik'
-import { FormikField } from '~/components/ui/form/FormikField'
+import { FormikField } from '@/components/ui/form/FormikField'
 
 type Props = {
 	name: string

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DollyCheckbox } from '../../form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
 
 const StyledSwitch = styled(DollyCheckbox)`

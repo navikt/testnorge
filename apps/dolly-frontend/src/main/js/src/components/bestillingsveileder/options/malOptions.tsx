@@ -1,13 +1,13 @@
 import { initialValues } from './utils'
 import _ from 'lodash'
-import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo'
+import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
 import {
 	BostedData,
 	KontaktadresseData,
 	OppholdsadresseData,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 export const initialValuesBasedOnMal = (mal: any) => {
 	const { dollyEnvironments } = useDollyEnvironments()

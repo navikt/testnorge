@@ -1,4 +1,4 @@
-import { fetcher } from '~/api'
+import { fetcher } from '@/api'
 import useSWRImmutable from 'swr/immutable'
 import useSWR from 'swr'
 

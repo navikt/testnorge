@@ -1,4 +1,4 @@
-import Api from '~/api'
+import Api from '@/api'
 
 const uri = `/testnav-inntektstub-proxy/api/v1/inntektstub`
 

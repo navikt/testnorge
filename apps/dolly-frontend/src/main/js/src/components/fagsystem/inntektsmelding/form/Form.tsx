@@ -2,22 +2,22 @@ import React, { useState } from 'react'
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import Panel from '~/components/ui/panel/Panel'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import Panel from '@/components/ui/panel/Panel'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	ifPresent,
 	messages,
 	requiredDate,
 	requiredNumber,
 	requiredString,
-} from '~/utils/YupValidations'
+} from '@/utils/YupValidations'
 import { FormikProps } from 'formik'
 import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
@@ -28,10 +28,10 @@ import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
-import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
-import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
-import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequired'
+import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
+import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>

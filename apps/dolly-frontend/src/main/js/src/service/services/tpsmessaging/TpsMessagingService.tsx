@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const TPS_MESSAGING_URL = `/testnav-tps-messaging-service/api/v1/personer`
 

@@ -2,18 +2,21 @@ import * as React from 'react'
 import { useState } from 'react'
 import { useToggle } from 'react-use'
 import { ThumbsRating } from '../rating'
-import { Rating } from '~/logger/types'
-import Logger from '../../logger'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
 // @ts-ignore
-import dolly from '~/favicon.ico'
-import Icon from '~/components/ui/icon/Icon'
+import dolly from '@/favicon.ico'
+import Icon from '@/components/ui/icon/Icon'
 
 import './Feedback.less'
-import { useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Button, Checkbox, Textarea } from '@navikt/ds-react'
+import { Logger } from '@/logger/Logger'
 
+enum Rating {
+	Positive = 'POSITIVE',
+	Negative = 'NEGATIVE',
+}
 interface FeedbackProps {
 	label: string
 	feedbackFor: string

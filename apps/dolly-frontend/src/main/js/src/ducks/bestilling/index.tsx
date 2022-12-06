@@ -1,12 +1,12 @@
 import { createActions } from 'redux-actions'
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 import _set from 'lodash/fp/set'
 import _get from 'lodash/get'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { rootPaths } from '@/components/bestillingsveileder/utils'
-import Logger from '@/logger'
 import { v4 as uuid } from 'uuid'
-import { getLeggTilIdent } from '~/components/bestillingsveileder/utils'
+import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
+import { Logger } from '@/logger/Logger'
 
 export const actions = createActions(
 	{

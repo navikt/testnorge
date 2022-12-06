@@ -1,10 +1,9 @@
-import React from 'react'
-import { AdresseKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 const Statsborgerskap = ({ statsborgerskap, sprak }) => {
 	if (!statsborgerskap) {

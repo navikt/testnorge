@@ -1,10 +1,9 @@
-import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import texts from '~/components/inntektStub/texts'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import texts from '@/components/inntektStub/texts'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const InntektVisning = ({ data }) => {
 	if (!data || data.length === 0) {

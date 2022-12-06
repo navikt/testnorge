@@ -1,13 +1,12 @@
-import React from 'react'
 import { subYears } from 'date-fns'
 import _get from 'lodash/get'
 import _isString from 'lodash/isString'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { EnkeltinntektForm } from './enkeltinntektForm'
-import Formatters from '~/utils/DataFormatter'
-import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
+import Formatters from '@/utils/DataFormatter'
+import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),

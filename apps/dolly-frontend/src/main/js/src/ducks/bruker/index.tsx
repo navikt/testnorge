@@ -1,4 +1,4 @@
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 import { createActions } from 'redux-actions'
 
 export const { addFavorite, removeFavorite } = createActions(

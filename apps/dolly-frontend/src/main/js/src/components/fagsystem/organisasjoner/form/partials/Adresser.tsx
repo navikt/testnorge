@@ -1,9 +1,8 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikProps } from 'formik'
 import { EnhetBestilling } from '../../types'
 

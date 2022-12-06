@@ -1,9 +1,8 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import texts from '../texts'
 import tilleggsinformasjonPaths from '../paths'
 

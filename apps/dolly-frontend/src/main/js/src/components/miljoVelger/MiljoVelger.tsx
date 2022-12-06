@@ -1,15 +1,14 @@
-import React from 'react'
 import { FieldArray } from 'formik'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { MiljoeInfo } from './MiljoeInfo'
 
 import './MiljoVelger.less'
 import styled from 'styled-components'
-import { ifPresent } from '~/utils/YupValidations'
+import { ifPresent } from '@/utils/YupValidations'
 import * as Yup from 'yup'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import Loading from '~/components/ui/loading/Loading'
-import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import Loading from '@/components/ui/loading/Loading'
+import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import { Alert } from '@navikt/ds-react'
 
 const StyledH3 = styled.h3`

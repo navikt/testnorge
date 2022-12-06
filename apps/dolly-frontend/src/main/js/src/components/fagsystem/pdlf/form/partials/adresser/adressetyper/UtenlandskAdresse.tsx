@@ -1,7 +1,6 @@
-import React from 'react'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { GtKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { GtKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 

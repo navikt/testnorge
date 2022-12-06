@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { TpsfApi } from '~/service/Api'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { Adressevalg } from '~/components/fagsystem/tpsf/visning/partials/Adressevalg'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { TpsfApi } from '@/service/Api'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { Adressevalg } from '@/components/fagsystem/tpsf/visning/partials/Adressevalg'
 
 export const Barn = ({ data, type }) => {
 	const [barnInfo, setBarnInfo] = useState(null)

@@ -1,8 +1,7 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
-import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
-import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
+import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
 import { isEqual } from 'lodash'
 
 export type Miljostatus = {

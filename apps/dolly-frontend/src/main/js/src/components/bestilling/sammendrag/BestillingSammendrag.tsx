@@ -1,4 +1,3 @@
-import React from 'react'
 import Bestillingskriterier from './kriterier/Bestillingskriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
 

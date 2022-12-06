@@ -1,4 +1,3 @@
-import React from 'react'
 import _has from 'lodash/has'
 import {
 	TpsfBoadresse,
@@ -11,8 +10,8 @@ import {
 	TpsfPersoninfo,
 	TpsfVergemaal,
 } from './partials'
-import { Telefonnummer } from '~/components/fagsystem/pdlf/visning/partials/Telefonnummer'
-import { NorskBankkonto, UtenlandskBankkonto } from '~/components/fagsystem/bankkonto/visning'
+import { Telefonnummer } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
+import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/visning'
 
 export const TpsfVisning = ({ data }) => {
 	if (!data) {

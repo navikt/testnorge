@@ -1,8 +1,7 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const TpsfIdenthistorikk = ({ identhistorikk, visTittel = true }) => {
 	if (!identhistorikk || identhistorikk.length < 1) return false

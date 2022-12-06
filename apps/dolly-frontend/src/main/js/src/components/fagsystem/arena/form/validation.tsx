@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { messages, requiredDate, requiredString } from '~/utils/YupValidations'
+import { messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { isAfter, isBefore } from 'date-fns'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'

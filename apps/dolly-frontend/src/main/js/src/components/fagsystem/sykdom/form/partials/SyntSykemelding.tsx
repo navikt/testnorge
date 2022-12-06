@@ -1,8 +1,7 @@
-import React from 'react'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 export const SyntSykemelding = () => {
 	return (

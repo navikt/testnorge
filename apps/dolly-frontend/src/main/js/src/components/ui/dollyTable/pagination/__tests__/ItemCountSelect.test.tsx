@@ -1,4 +1,3 @@
-import React from 'react'
 import { shallow } from 'enzyme'
 import Select from 'react-select'
 import ItemCountSelect from '../ItemCountSelect/ItemCountSelect'

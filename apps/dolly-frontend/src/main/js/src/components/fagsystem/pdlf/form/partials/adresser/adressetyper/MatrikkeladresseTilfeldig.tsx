@@ -1,8 +1,7 @@
-import React from 'react'
-import { MatrikkelAdresseVelger } from '~/components/adresseVelger'
+import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
 import { FormikProps } from 'formik'
-import { MatrikkelAdresse } from '~/service/services/AdresseService'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { MatrikkelAdresse } from '@/service/services/AdresseService'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 

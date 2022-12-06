@@ -1,8 +1,6 @@
-import React from 'react'
-
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Panel from '~/components/ui/panel/Panel'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Panel from '@/components/ui/panel/Panel'
 import './historikk.less'
 
 export const ArrayHistorikk = ({ component, data, historiskData, header }) => {

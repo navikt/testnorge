@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { TpsfApi } from '~/service/Api'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { TpsfApi } from '@/service/Api'
 import { Adressevisning } from './Boadresse'
 import { PostadresseVisning } from './Postadresse'
-import { Historikk } from '~/components/ui/historikk/Historikk'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import { Historikk } from '@/components/ui/historikk/Historikk'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 
 type Data = {
 	person: Person

@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const skjermingUrl = '/testnav-skjermingsregister-proxy/api/v1/skjermingdata'
 

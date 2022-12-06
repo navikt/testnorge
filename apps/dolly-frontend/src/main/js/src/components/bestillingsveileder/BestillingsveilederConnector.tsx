@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { sendBestilling } from '~/ducks/bestilling'
+import { sendBestilling } from '@/ducks/bestilling'
 import { Bestillingsveileder } from './Bestillingsveileder'
 
 const mapStateToProps = (state) => ({

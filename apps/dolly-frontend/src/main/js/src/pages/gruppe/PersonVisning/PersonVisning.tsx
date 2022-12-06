@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react'
-import Button from '~/components/ui/button/Button'
+import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
 import {
@@ -16,39 +16,39 @@ import {
 	SykemeldingVisning,
 	TpVisning,
 	UdiVisning,
-} from '~/components/fagsystem'
-import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
-import { SlettButton } from '~/components/ui/button/SlettButton/SlettButton'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
+} from '@/components/fagsystem'
+import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
+import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
+import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 import './PersonVisning.less'
-import { PdlPersonMiljoeInfo } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
-import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
-import PdlfVisningConnector from '~/components/fagsystem/pdlf/visning/PdlfVisningConnector'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { FrigjoerButton } from '~/components/ui/button/FrigjoerButton/FrigjoerButton'
+import { PdlPersonMiljoeInfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlPersonMiljoeinfo'
+import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
+import PdlfVisningConnector from '@/components/fagsystem/pdlf/visning/PdlfVisningConnector'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { FrigjoerButton } from '@/components/ui/button/FrigjoerButton/FrigjoerButton'
 import { useNavigate } from 'react-router-dom'
-import { getBestillingsListe } from '~/ducks/bestillingStatus'
-import { RelatertPersonImportButton } from '~/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
+import { getBestillingsListe } from '@/ducks/bestillingStatus'
+import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { GjenopprettPerson } from '~/components/bestilling/gjenopprett/GjenopprettPerson'
-import { sjekkManglerUdiData } from '~/components/fagsystem/udistub/visning/UdiVisning'
-import { sjekkManglerBrregData } from '~/components/fagsystem/brregstub/visning/BrregVisning'
-import { sjekkManglerPensjonData } from '~/components/fagsystem/pensjon/visning/PensjonVisning'
-import { sjekkManglerAaregData } from '~/components/fagsystem/aareg/visning/Visning'
-import { useArbeidsforhold } from '~/utils/hooks/useOrganisasjoner'
-import { useDokarkivData, useInstData, usePoppData, useTpData } from '~/utils/hooks/useFagsystemer'
-import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visning/TpVisning'
-import { sjekkManglerInstData } from '~/components/fagsystem/inst/visning/InstVisning'
+import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
+import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
+import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
+import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
+import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
+import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useDokarkivData, useInstData, usePoppData, useTpData } from '@/utils/hooks/useFagsystemer'
+import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
+import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
 	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
-} from '~/utils/SjekkBestillingFagsystem'
+} from '@/utils/SjekkBestillingFagsystem'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;

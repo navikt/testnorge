@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import _get from 'lodash/get'
 import _isNil from 'lodash/isNil'
-import { ifPresent, requiredNumber } from '~/utils/YupValidations'
+import { ifPresent, requiredNumber } from '@/utils/YupValidations'
 
 function calculate_age(dob) {
 	const diff_ms = Date.now() - dob.getTime()

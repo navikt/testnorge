@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikProps } from 'formik'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { DollyCheckbox, FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { initialDeltBosted } from '~/components/fagsystem/pdlf/form/initialValues'
-import { DeltBosted } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { DollyCheckbox, FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
+import { DeltBosted } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 import _get from 'lodash/get'
 
 interface BarnRelasjonValues {

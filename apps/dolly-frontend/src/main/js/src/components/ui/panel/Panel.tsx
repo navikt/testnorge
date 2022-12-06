@@ -1,9 +1,8 @@
-import React from 'react'
 import { useToggle } from 'react-use'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
-import Icon from '~/components/ui/icon/Icon'
-import ExpandButton from '~/components/ui/button/ExpandButton/ExpandButton'
-import LinkButton from '~/components/ui/button/LinkButton/LinkButton'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import Icon from '@/components/ui/icon/Icon'
+import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
+import LinkButton from '@/components/ui/button/LinkButton/LinkButton'
 
 import './Panel.less'
 

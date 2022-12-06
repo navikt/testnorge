@@ -1,12 +1,11 @@
-import React from 'react'
 import { FieldArray } from 'formik'
 import _get from 'lodash/get'
-import Button from '~/components/ui/button/Button'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import Button from '@/components/ui/button/Button'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
 
 import './dollyFieldArray.less'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 const numberColor = {
 	ARRAY_LEVEL_ONE: '#CCE3ED',
@@ -94,7 +93,7 @@ export const DollyFaBlokkOrg = ({
 	showDeleteButton,
 	number,
 }) => {
-	const nivaa = (number.match(/\./g) || []).length + 1
+	const nivaa = (number.match(/\@/g) || []).length + 1
 	const name = nivaa & 1 ? 'dfa-blokk-org-odd' : 'dfa-blokk-org-even'
 	const getNivaaColor = () => {
 		switch (nivaa) {

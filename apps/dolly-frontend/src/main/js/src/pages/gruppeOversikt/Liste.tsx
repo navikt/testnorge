@@ -1,14 +1,13 @@
-import React from 'react'
-import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
-import Loading from '~/components/ui/loading/Loading'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import FavoriteButtonConnector from '~/components/ui/button/FavoriteButton/FavoriteButtonConnector'
-import { GruppeIconItem } from '~/components/ui/icon/IconItem'
-import Icon from '~/components/ui/icon/Icon'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Formatters from '~/utils/DataFormatter'
+import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
+import Loading from '@/components/ui/loading/Loading'
+import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
+import FavoriteButtonConnector from '@/components/ui/button/FavoriteButton/FavoriteButtonConnector'
+import { GruppeIconItem } from '@/components/ui/icon/IconItem'
+import Icon from '@/components/ui/icon/Icon'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Formatters from '@/utils/DataFormatter'
 import { useNavigate } from 'react-router-dom'
-import { VisningType } from '~/pages/gruppeOversikt/GruppeOversikt'
+import { VisningType } from '@/pages/gruppeOversikt/GruppeOversikt'
 
 export default function Liste({
 	items,

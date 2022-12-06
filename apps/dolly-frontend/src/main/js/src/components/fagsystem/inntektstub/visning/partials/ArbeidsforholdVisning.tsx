@@ -1,9 +1,8 @@
-import React from 'react'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { ArbeidKodeverk } from '~/config/kodeverk'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { ArbeidKodeverk } from '@/config/kodeverk'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const ArbeidsforholdVisning = ({ data }) => {
 	if (!data || data.length === 0) {

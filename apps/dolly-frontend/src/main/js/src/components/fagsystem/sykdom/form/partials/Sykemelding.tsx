@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { get as _get } from 'lodash'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
-import { Diagnose, SykemeldingForm } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import { Diagnose, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { ToggleGroup } from '@navikt/ds-react'
 
 const initialValuesSyntSykemelding = {

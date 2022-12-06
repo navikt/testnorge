@@ -1,8 +1,7 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { instAttributt } from '~/components/fagsystem/inst/form/Form'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { instAttributt } from '@/components/fagsystem/inst/form/Form'
 
 export const InstitusjonsoppholdPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(InstitusjonsoppholdPanel.initialValues)

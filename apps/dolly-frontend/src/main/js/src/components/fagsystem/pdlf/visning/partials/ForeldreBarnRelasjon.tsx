@@ -1,12 +1,11 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
-import { ForeldreBarnRelasjon, Relasjon } from '~/components/fagsystem/pdlf/PdlTypes'
-import { RelatertPersonUtenId } from '~/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import { ForeldreBarnRelasjon, Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
+import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
 
 type FamilieRelasjonerData = {
 	data: Array<ForeldreBarnRelasjon>

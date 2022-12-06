@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import {
 	initialDoedsfall,
 	initialFoedsel,
@@ -15,9 +15,9 @@ import {
 	initialTilrettelagtKommunikasjon,
 	initialTpsSikkerhetstiltak,
 	initialVergemaal,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { Innflytting, Utflytting } from '~/components/fagsystem/pdlf/PdlTypes'
-import { getSisteDato } from '~/components/bestillingsveileder/utils'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { Innflytting, Utflytting } from '@/components/fagsystem/pdlf/PdlTypes'
+import { getSisteDato } from '@/components/bestillingsveileder/utils'
 
 const ignoreKeysTestnorge = [
 	'alder',

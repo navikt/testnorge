@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
+import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
-} from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import { OrganisasjonLoader } from '~/components/organisasjonSelect/OrganisasjonLoader'
+} from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 
 interface OrgnrToggleProps {
 	path: string

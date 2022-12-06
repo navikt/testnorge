@@ -1,10 +1,10 @@
 import React, { useContext } from 'react'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { harAvhukedeAttributter } from '~/components/bestillingsveileder/utils'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
 
 import './Navigation.less'
-import { AvbrytButton } from '~/components/ui/button/AvbrytButton/AvbrytButton'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { useNavigate } from 'react-router-dom'
 import { setNestedObjectValues } from 'formik'
 

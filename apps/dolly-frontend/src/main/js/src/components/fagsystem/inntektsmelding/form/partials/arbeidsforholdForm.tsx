@@ -1,9 +1,9 @@
 import * as React from 'react'
-import InntektsmeldingSelect from './InntektsmeldingSelect'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Kodeverk, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import InntektsmeldingSelect from './inntektsmeldingSelect'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Kodeverk, Ytelser } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface ArbeidsforholdForm {
 	path: string

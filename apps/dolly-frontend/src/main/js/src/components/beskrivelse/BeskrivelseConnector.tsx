@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import { actions } from '~/ducks/gruppe'
-import { createLoadingSelector } from '~/ducks/loading'
+import { actions } from '@/ducks/gruppe'
+import { createLoadingSelector } from '@/ducks/loading'
 import { Beskrivelse } from './Beskrivelse'
 
 const loadingSelector = createLoadingSelector([actions.updateBeskrivelse])

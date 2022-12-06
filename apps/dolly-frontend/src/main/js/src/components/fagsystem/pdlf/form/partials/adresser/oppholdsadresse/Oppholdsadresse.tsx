@@ -8,24 +8,24 @@ import {
 	initialOppholdsadresse,
 	initialUtenlandskAdresse,
 	initialVegadresse,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
 	VegadresseVelger,
 	UtenlandskAdresse,
 	OppholdAnnetSted,
 	MatrikkeladresseVelger,
-} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+} from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikProps } from 'formik'
-import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { getPlaceholder, setNavn } from '~/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 
 interface OppholdsadresseValues {
 	formikBag: FormikProps<{}>

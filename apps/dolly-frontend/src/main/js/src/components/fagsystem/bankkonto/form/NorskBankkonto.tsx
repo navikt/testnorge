@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { generateValidKontoOptions } from '~/utils/GenererGyldigNorskBankkonto'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { OrgnummerToggle } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 import { ToggleGroup } from '@navikt/ds-react'
 
 type InntektstubVirksomhetToggleProps = {

@@ -1,5 +1,5 @@
 import Breadcrumb from '../Breadcrumb'
-import React from 'react'
+
 import { shallow } from 'enzyme'
 
 const breadcrumbs = [

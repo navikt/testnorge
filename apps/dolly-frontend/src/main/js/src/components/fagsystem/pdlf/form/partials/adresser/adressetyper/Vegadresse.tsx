@@ -1,14 +1,13 @@
-import React from 'react'
-import { AdresseVelger } from '~/components/adresseVelger'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { DollyApi } from '~/service/Api'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { AdresseVelger } from '@/components/adresseVelger'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import LoadableComponent from '@/components/ui/loading/LoadableComponent'
+import { DollyApi } from '@/service/Api'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import _get from 'lodash/get'
 import styled from 'styled-components'
 import { FormikProps } from 'formik'
-import { Adresse } from '~/service/services/AdresseService'
+import { Adresse } from '@/service/services/AdresseService'
 
 interface VegadresseValues {
 	formikBag: FormikProps<{}>

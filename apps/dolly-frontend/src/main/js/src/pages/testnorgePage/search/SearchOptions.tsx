@@ -1,14 +1,14 @@
-import React from 'react'
 import _get from 'lodash/get'
 import { FormikProps } from 'formik'
 import { Alder, AlderPaths } from './partials/Alder'
 import { Identifikasjon, IdentifikasjonPaths } from './partials/Identifikasjon'
-import { Identer, IdenterPaths } from '~/pages/testnorgePage/search/partials/Identer'
-import { Adresser, AdresserPaths } from '~/pages/testnorgePage/search/partials/Adresser'
-import { Nasjonalitet, NasjonalitetPaths } from '~/pages/testnorgePage/search/partials/Nasjonalitet'
-import { Relasjoner, RelasjonerPaths } from '~/pages/testnorgePage/search/partials/Relasjoner'
-import { Personstatus, PersonstatusPaths } from '~/pages/testnorgePage/search/partials/Personstatus'
+import { Identer, IdenterPaths } from '@/pages/testnorgePage/search/partials/Identer'
+import { Adresser, AdresserPaths } from '@/pages/testnorgePage/search/partials/Adresser'
+import { Nasjonalitet, NasjonalitetPaths } from '@/pages/testnorgePage/search/partials/Nasjonalitet'
+import { Relasjoner, RelasjonerPaths } from '@/pages/testnorgePage/search/partials/Relasjoner'
+import { Personstatus, PersonstatusPaths } from '@/pages/testnorgePage/search/partials/Personstatus'
 import { OptionsPanel } from './optionsPanel/OptionsPanel'
+import React from 'react'
 
 export type SearchOptionsProps = {
 	formikBag: FormikProps<{}>

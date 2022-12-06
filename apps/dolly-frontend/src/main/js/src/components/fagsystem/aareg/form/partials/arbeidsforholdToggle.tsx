@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAaregOrg,
 	initialAaregPers,
@@ -12,9 +12,9 @@ import {
 	initialArbeidsforholdPers,
 	initialValues,
 } from '../initialValues'
-import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormikContext } from 'formik'
-import { useDollyFasteDataOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;

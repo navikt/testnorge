@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
-import { ifPresent, messages, requiredString } from '~/utils/YupValidations'
+import { ifPresent, messages, requiredString } from '@/utils/YupValidations'
 import _get from 'lodash/get'
-import { landkoder, landkodeIsoMapping } from '~/service/services/kontoregister/landkoder'
+import { landkoder, landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
 	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {

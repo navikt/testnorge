@@ -1,11 +1,10 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { TelefonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { TelefonData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import _get from 'lodash/get'
-import VisningRedigerbarSamletConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamletConnector'
+import VisningRedigerbarSamletConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamletConnector'
 
 type DataListe = {
 	data: Array<TelefonData>

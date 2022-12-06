@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const getTpsfUrl = () => `/tps-forvalteren-proxy/api/v1`
 

@@ -1,6 +1,5 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { VergeEllerFullmektig } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { VergeEllerFullmektig } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type VergeProps = {
 	data: VergeEllerFullmektig

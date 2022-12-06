@@ -1,7 +1,7 @@
 import _get from 'lodash/get'
 import { isNil } from 'lodash'
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
+import { requiredDate, requiredString } from '@/utils/YupValidations'
 
 const validInnflyttingsdato = (val) => {
 	return val.test('gyldig-innflyttingsdato', function isWithinTest(value) {

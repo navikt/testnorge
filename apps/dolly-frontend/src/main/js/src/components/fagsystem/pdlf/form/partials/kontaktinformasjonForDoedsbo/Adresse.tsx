@@ -1,10 +1,9 @@
-import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import _get from 'lodash/get'
-import useBoolean from '~/utils/hooks/useBoolean'
-import Button from '~/components/ui/button/Button'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
 
 export const Adresse = ({ formikBag, path }) => {
 	const [visAdresse, setVisAdresse, setSkjulAdresse] = useBoolean(false)

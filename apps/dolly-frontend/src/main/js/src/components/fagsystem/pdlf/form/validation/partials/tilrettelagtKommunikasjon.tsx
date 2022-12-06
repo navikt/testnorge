@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredString } from '~/utils/YupValidations'
+import { requiredString } from '@/utils/YupValidations'
 
 export const tilrettelagtKommunikasjon = Yup.array().of(
 	Yup.object().shape(

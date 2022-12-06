@@ -2,20 +2,20 @@ import React, { Fragment, useContext, useState } from 'react'
 import { Formik } from 'formik'
 import { Navigation } from './Navigation/Navigation'
 import { stateModifierFns } from '../stateModifier'
-import { validate } from '~/utils/YupValidations'
+import { validate } from '@/utils/YupValidations'
 import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import DisplayFormikState from '~/utils/DisplayFormikState'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import DisplayFormikState from '@/utils/DisplayFormikState'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
-} from '~/utils/hooks/useMutate'
+} from '@/utils/hooks/useMutate'
 import { Stepper } from '@navikt/ds-react'
 
 const STEPS = [Steg1, Steg2, Steg3]

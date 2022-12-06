@@ -1,12 +1,11 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialArbeidsforholdOrg } from '~/components/fagsystem/aareg/form/initialValues'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { aaregAttributt } from '~/components/fagsystem/aareg/form/Form'
-import { sigrunAttributt } from '~/components/fagsystem/sigrunstub/form/Form'
-import { inntektstubAttributt } from '~/components/fagsystem/inntektstub/form/Form'
-import { inntektsmeldingAttributt } from '~/components/fagsystem/inntektsmelding/form/Form'
+import { initialArbeidsforholdOrg } from '@/components/fagsystem/aareg/form/initialValues'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { aaregAttributt } from '@/components/fagsystem/aareg/form/Form'
+import { sigrunAttributt } from '@/components/fagsystem/sigrunstub/form/Form'
+import { inntektstubAttributt } from '@/components/fagsystem/inntektstub/form/Form'
+import { inntektsmeldingAttributt } from '@/components/fagsystem/inntektsmelding/form/Form'
 
 export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidInntektPanel.initialValues)

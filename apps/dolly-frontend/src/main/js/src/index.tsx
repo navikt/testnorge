@@ -1,13 +1,13 @@
 // Import all CSS først
-import './styles/main.less'
-import '~/utils/FormatIso'
-import './polyfill'
+import '@/styles/main.less'
+import '@/utils/FormatIso'
+import '@/polyfill'
+import '@navikt/ds-css/dist/index.css'
 
-import React from 'react'
-import Logger from './logger'
 import { v4 as uuid } from 'uuid'
 import { createRoot } from 'react-dom/client'
-import { RootComponent } from '~/RootComponent'
+import { RootComponent } from '@/RootComponent'
+import { Logger } from '@/logger/Logger'
 
 window.uuid = uuid()
 window.onerror = (message) => {

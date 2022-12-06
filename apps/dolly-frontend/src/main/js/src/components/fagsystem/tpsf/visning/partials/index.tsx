@@ -1,5 +1,5 @@
-import { Fullmakt } from '~/components/fagsystem/pdlf/visning/partials/Fullmakt'
-import { TpsfPersoninfo } from './Personinfo'
+import { Fullmakt } from '@/components/fagsystem/pdlf/visning/partials/Fullmakt'
+import { TpsfPersoninfo } from './personinfo'
 import { TpsfNasjonalitet } from './Nasjonalitet'
 import { TpsfBoadresse } from './Boadresse'
 import { Postadresse } from './Postadresse'

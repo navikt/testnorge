@@ -1,9 +1,8 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 
 const initialValues = {
 	egenskap: '',

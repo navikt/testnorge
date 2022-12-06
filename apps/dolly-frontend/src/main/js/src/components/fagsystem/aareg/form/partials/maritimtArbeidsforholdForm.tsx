@@ -1,6 +1,5 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { ArbeidKodeverk } from '~/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { ArbeidKodeverk } from '@/config/kodeverk'
 
 type MaritimtArbeidsforhold = {
 	path: string

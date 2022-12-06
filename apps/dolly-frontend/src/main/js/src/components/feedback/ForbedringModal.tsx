@@ -1,15 +1,15 @@
-import DollyModal from '~/components/ui/modal/DollyModal'
+import DollyModal from '@/components/ui/modal/DollyModal'
 import React, { useState } from 'react'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { v4 as _uuid } from 'uuid'
-import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
-import Logger from '~/logger'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { useToggle } from 'react-use'
-import dolly from '~/favicon.ico'
-import Icon from '~/components/ui/icon/Icon'
-import { useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
+import dolly from '@/favicon.ico'
+import Icon from '@/components/ui/icon/Icon'
+import { useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Textarea } from '@navikt/ds-react'
+import { Logger } from '@/logger/Logger'
 
 export const ForbedringModal = ({ closeModal }) => {
 	const { brukerBilde } = useBrukerProfilBilde()

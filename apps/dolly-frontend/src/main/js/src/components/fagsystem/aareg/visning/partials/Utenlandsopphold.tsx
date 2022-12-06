@@ -1,9 +1,9 @@
+import { AdresseKodeverk } from '@/config/kodeverk'
+import Formatters from '@/utils/DataFormatter'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import Formatters from '~/utils/DataFormatter'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
 
 export const Utenlandsopphold = ({ data }) => {
 	if (!data) {

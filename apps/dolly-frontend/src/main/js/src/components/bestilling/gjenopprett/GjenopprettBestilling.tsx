@@ -1,12 +1,11 @@
-import React from 'react'
-import Formatters from '~/utils/DataFormatter'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { GjenopprettModal } from './GjenopprettModal'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
-} from '~/utils/hooks/useMutate'
+} from '@/utils/hooks/useMutate'
 
 export default function GjenopprettBestilling(props) {
 	const { bestilling, closeModal, brukertype } = props

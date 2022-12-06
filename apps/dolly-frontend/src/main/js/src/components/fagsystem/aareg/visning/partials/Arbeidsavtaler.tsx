@@ -1,9 +1,9 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { ArbeidKodeverk } from '~/config/kodeverk'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { ArbeidKodeverk } from '@/config/kodeverk'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import _isEmpty from 'lodash/isEmpty'
+import React from 'react'
 
 export const Arbeidsavtaler = ({ data }) => {
 	if (!data || data.length === 0) {

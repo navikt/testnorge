@@ -1,5 +1,3 @@
-import React from 'react'
-
 import './IconItem.less'
 import IconItem from './IconItem'
 

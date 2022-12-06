@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredString } from '~/utils/YupValidations'
+import { requiredString } from '@/utils/YupValidations'
 
 const personnavnSchema = Yup.object({
 	fornavn: Yup.string(),

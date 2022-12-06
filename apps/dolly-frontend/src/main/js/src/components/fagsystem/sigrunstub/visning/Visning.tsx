@@ -1,12 +1,11 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Loading from '~/components/ui/loading/Loading'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Panel from '~/components/ui/panel/Panel'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import Loading from '@/components/ui/loading/Loading'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
-import Formatters from '~/utils/DataFormatter'
+import Formatters from '@/utils/DataFormatter'
 
 const Visning = ({ data, header, expandable }) => {
 	if (!data || data.length === 0) {

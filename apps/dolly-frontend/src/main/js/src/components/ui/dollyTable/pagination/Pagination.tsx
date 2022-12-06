@@ -1,10 +1,10 @@
 import React, { Fragment, useEffect, useState } from 'react'
 import ReactPaginate from 'react-paginate'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 import ItemCountSelect from './ItemCountSelect/ItemCountSelect'
 
 import './Pagination.less'
-import { setSideStoerrelse, setSidetall } from '~/ducks/finnPerson'
+import { setSideStoerrelse, setSidetall } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 
 type PaginationProps = {

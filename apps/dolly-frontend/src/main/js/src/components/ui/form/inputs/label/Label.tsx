@@ -1,10 +1,9 @@
-import React from 'react'
 import cn from 'classnames'
 import _isNil from 'lodash/isNil'
 import _isEmpty from 'lodash/isEmpty'
 import styled from 'styled-components'
 import './Label.less'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 const StyledLabel = styled.label`
 	font-size: 0.75em;

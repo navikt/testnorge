@@ -1,5 +1,4 @@
-import React from 'react'
-import InntektStub from '../../components/inntektStub/validerInntekt'
+import InntektStub from '@/components/inntektStub/validerInntekt'
 
 const InntektStubPage = () => (
 	<>

@@ -1,18 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import Loading from '~/components/ui/loading/Loading'
+import Loading from '@/components/ui/loading/Loading'
 import { Line } from 'rc-progress'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import Icon from '~/components/ui/icon/Icon'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import Icon from '@/components/ui/icon/Icon'
 
 import './BestillingProgresjon.less'
-import { useOrganisasjonBestillingStatus } from '~/utils/hooks/useOrganisasjoner'
-import { useBestillingById } from '~/utils/hooks/useBestilling'
+import { useOrganisasjonBestillingStatus } from '@/utils/hooks/useOrganisasjoner'
+import { useBestillingById } from '@/utils/hooks/useBestilling'
 import {
 	REGEX_BACKEND_BESTILLINGER,
 	REGEX_BACKEND_GRUPPER,
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
-} from '~/utils/hooks/useMutate'
+} from '@/utils/hooks/useMutate'
 
 type ProgresjonProps = {
 	bestillingID: string

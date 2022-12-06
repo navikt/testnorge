@@ -1,8 +1,7 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { arenaPath } from '~/components/fagsystem/arena/form/Form'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { arenaPath } from '@/components/fagsystem/arena/form/Form'
 
 export const ArenaPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArenaPanel.initialValues)

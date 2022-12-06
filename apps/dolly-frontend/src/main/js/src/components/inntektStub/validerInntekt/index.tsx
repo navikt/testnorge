@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
-import Inntekt from './Inntekt'
+import Inntekt from './inntekt'
 import { Formik } from 'formik'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import _ from 'lodash'

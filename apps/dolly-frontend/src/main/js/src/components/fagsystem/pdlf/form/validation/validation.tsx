@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, messages, requiredDate, requiredString } from '~/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import {
 	bostedsadresse,
 	oppholdsadresse,
@@ -20,10 +20,10 @@ import {
 	statsborgerskap,
 	vergemaal,
 	tilrettelagtKommunikasjon,
-} from '~/components/fagsystem/pdlf/form/validation/partials'
-import { bankkontoValidation } from '~/components/fagsystem/bankkonto/form'
-import { tpsMessagingValidation } from '~/components/fagsystem/tpsmessaging/form/validation'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+} from '@/components/fagsystem/pdlf/form/validation/partials'
+import { bankkontoValidation } from '@/components/fagsystem/bankkonto/form'
+import { tpsMessagingValidation } from '@/components/fagsystem/tpsmessaging/form/validation'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 export const doedsfall = Yup.object({
 	doedsdato: requiredDate.nullable(),

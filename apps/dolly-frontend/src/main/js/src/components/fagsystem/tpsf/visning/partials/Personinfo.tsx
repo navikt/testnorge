@@ -1,9 +1,8 @@
-import React from 'react'
 import { addDays, isBefore } from 'date-fns'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { GtKodeverk, PersoninformasjonKodeverk } from '~/config/kodeverk'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { GtKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import _has from 'lodash/has'
 
 function hentSkjermingData(skjermingPath) {

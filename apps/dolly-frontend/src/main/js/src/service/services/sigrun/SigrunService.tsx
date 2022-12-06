@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const getSigrunBaseUrl = () => `/testnav-sigrunstub-proxy/api/v1`
 

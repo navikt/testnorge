@@ -1,12 +1,12 @@
 import React, { Fragment, useState } from 'react'
 import cn from 'classnames'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { mapBestillingData } from './BestillingKriterieMapper'
 import { OrganisasjonKriterier } from './OrganisasjonKriterier'
-import DollyKjede from '~/components/dollyKjede/DollyKjede'
-import Button from '~/components/ui/button/Button'
-import useBoolean from '~/utils/hooks/useBoolean'
+import DollyKjede from '@/components/dollyKjede/DollyKjede'
+import Button from '@/components/ui/button/Button'
+import useBoolean from '@/utils/hooks/useBoolean'
 
 const _renderBestillingsDetaljer = (data) => {
 	const [selectedIndex, setSelectedIndex] = useState(0)

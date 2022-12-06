@@ -1,9 +1,8 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { initialKontaktinfoForDoedebo } from '~/components/fagsystem/pdlf/form/initialValues'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { doedsboAttributt } from '~/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { doedsboAttributt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
 export const KontaktDoedsboPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(KontaktDoedsboPanel.initialValues)

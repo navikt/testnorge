@@ -1,12 +1,11 @@
-import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { Personnavn } from './Personnavn'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { Personnavn } from './personnavn'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
 export const Visning = ({ data, relasjoner }) => {
 	const kontaktpersonIdent = data.personSomKontakt?.identifikasjonsnummer

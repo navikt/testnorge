@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { isAfter } from 'date-fns'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 
 export const TpsMessagingDiverse = ({ formikBag }) => {
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)

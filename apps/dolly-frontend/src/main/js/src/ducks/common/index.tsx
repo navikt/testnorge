@@ -1,6 +1,6 @@
 import { LOCATION_CHANGE } from 'redux-first-history'
-import { onSuccess } from '~/ducks/utils/requestActions'
-import { actions } from '~/ducks/gruppe'
+import { onSuccess } from '@/ducks/utils/requestActions'
+import { actions } from '@/ducks/gruppe'
 
 export const redirectReducer = (_state, action) => {
 	switch (action.type) {

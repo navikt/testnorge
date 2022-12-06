@@ -1,14 +1,13 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Panel from '~/components/ui/panel/Panel'
-import { runningTestcafe } from '~/service/services/Request'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Panel from '@/components/ui/panel/Panel'
+import { runningTestcafe } from '@/service/services/Request'
 import { Alert } from '@navikt/ds-react'
-import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
-import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)

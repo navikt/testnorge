@@ -1,12 +1,11 @@
-import React from 'react'
 import _get from 'lodash/get'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Textarea } from '@navikt/ds-react'
-import { Label } from '~/components/ui/form/inputs/label/Label'
+import { Label } from '@/components/ui/form/inputs/label/Label'
 import styled from 'styled-components'
 
 export const Arbeidsadgang = ({ formikBag }) => {

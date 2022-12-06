@@ -1,4 +1,4 @@
-import { initialValuesBasedOnMal } from '~/components/bestillingsveileder/options/malOptions'
+import { initialValuesBasedOnMal } from '@/components/bestillingsveileder/options/malOptions'
 
 const TYPE = Object.freeze({
 	NY_BESTILLING: 'NY_BESTILLING',

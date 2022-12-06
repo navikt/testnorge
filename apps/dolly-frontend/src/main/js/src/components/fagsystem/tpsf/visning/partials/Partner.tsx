@@ -1,10 +1,9 @@
-import React from 'react'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Adressevalg } from '~/components/fagsystem/tpsf/visning/partials/Adressevalg'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { Adressevalg } from '@/components/fagsystem/tpsf/visning/partials/Adressevalg'
 
 export const Partner = ({ data }) => {
 	if (!data) {

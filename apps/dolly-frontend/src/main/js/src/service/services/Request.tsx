@@ -1,5 +1,5 @@
 import api from '@/api'
-import Logger from '~/logger'
+import { Logger } from '@/logger/Logger'
 
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 

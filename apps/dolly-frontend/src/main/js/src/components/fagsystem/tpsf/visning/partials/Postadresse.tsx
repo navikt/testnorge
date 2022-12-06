@@ -1,8 +1,7 @@
-import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { Historikk } from '~/components/ui/historikk/Historikk'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { Historikk } from '@/components/ui/historikk/Historikk'
 import { isArray } from 'lodash'
 
 export const PostadresseVisning = ({ postadresse }) => {

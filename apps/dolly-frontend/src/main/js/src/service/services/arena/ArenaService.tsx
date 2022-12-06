@@ -1,5 +1,5 @@
 import { v4 as _uuid } from 'uuid'
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const getArenaUrl = () => '/testnav-arena-forvalteren-proxy/api/v1'
 

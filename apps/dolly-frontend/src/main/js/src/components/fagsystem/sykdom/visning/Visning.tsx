@@ -1,10 +1,9 @@
-import React from 'react'
 import _get from 'lodash/get'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'
 import { Sykemelding, SykemeldingDetaljert, SykemeldingSynt } from '../SykemeldingTypes'
-import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
+import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
 
 export const SykemeldingVisning = ({ data }: Sykemelding) => {
 	// Viser foreløpig bestillingsdata

@@ -1,11 +1,11 @@
 import React, { createContext, useEffect, useState } from 'react'
 import { StegVelger } from './stegVelger/StegVelger'
-import { AppError } from '~/components/ui/appError/AppError'
+import { AppError } from '@/components/ui/appError/AppError'
 import { BVOptions } from './options/options'
 
 import './bestillingsveileder.less'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const BestillingsveilederContext = createContext(undefined)
 

@@ -1,16 +1,16 @@
 import _get from 'lodash/get'
 import _has from 'lodash/has'
 import _isEmpty from 'lodash/isEmpty'
-import Formatters from '~/utils/DataFormatter'
+import Formatters from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
 	VergemaalKodeverk,
-} from '~/config/kodeverk'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+} from '@/config/kodeverk'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner

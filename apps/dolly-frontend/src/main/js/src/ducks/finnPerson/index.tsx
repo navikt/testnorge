@@ -1,9 +1,9 @@
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 import { createActions } from 'redux-actions'
-import { onFailure, onSuccess } from '~/ducks/utils/requestActions'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
+import { onFailure, onSuccess } from '@/ducks/utils/requestActions'
+import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
-import { VisningType } from '~/pages/gruppe/Gruppe'
+import { VisningType } from '@/pages/gruppe/Gruppe'
 
 export const {
 	navigerTilPerson,

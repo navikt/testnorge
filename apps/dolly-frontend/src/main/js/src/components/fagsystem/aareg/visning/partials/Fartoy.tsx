@@ -1,6 +1,5 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { ArbeidKodeverk } from '~/config/kodeverk'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ArbeidKodeverk } from '@/config/kodeverk'
 
 type FartoyProps = {
 	data: {

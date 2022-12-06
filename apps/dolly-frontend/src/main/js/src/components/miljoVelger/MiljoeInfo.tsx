@@ -1,4 +1,3 @@
-import React from 'react'
 import _get from 'lodash/get'
 import { Alert } from '@navikt/ds-react'
 import {
@@ -6,8 +5,8 @@ import {
 	usePensjonEnvironments,
 	useInstEnvironments,
 	useDokarkivEnvironments,
-} from '~/utils/hooks/useEnvironments'
-import Formatters from '~/utils/DataFormatter'
+} from '@/utils/hooks/useEnvironments'
+import Formatters from '@/utils/DataFormatter'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()

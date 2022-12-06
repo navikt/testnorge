@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 import { v4 as _uuid } from 'uuid'
 
 const getPensjonUrl = () => `/testnav-pensjon-testdata-facade-proxy/api/v1`

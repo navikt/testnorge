@@ -1,5 +1,5 @@
 import { connect } from 'react-redux'
-import { fetchKodeverk, getKodeverkSelector } from '~/ducks/kodeverk'
+import { fetchKodeverk, getKodeverkSelector } from '@/ducks/kodeverk'
 import { KodeverkWrapper } from './Kodeverk'
 
 // Koble til kodeverk

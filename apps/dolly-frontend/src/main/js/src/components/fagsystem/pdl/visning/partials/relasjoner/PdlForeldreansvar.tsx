@@ -1,11 +1,10 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import _capitalize from 'lodash/capitalize'
-import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { Foreldreansvar } from '~/components/fagsystem/pdlf/PdlTypes'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import Formatters from '@/utils/DataFormatter'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { Foreldreansvar } from '@/components/fagsystem/pdlf/PdlTypes'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
 type PdlForeldreansvarProps = {
 	data: Array<Foreldreansvar>

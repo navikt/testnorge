@@ -1,4 +1,3 @@
-import React from 'react'
 import { useToggle } from 'react-use'
 
 const FormikState = (props) => (

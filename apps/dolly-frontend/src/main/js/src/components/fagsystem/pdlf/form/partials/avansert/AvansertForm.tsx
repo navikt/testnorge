@@ -1,9 +1,8 @@
-import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import Button from '~/components/ui/button/Button'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 interface AvansertFormValues {
 	path: string

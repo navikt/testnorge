@@ -1,8 +1,7 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DeltBosted } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import { Adresse } from '~/components/fagsystem/pdlf/visning/partials/DeltBosted'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { DeltBosted } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { Adresse } from '@/components/fagsystem/pdlf/visning/partials/DeltBosted'
 
 type PdlDeltBostedProps = {
 	data: Array<DeltBosted>

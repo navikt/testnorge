@@ -1,7 +1,7 @@
-import { VarslingerApi } from '~/service/Api'
+import { VarslingerApi } from '@/service/Api'
 import { createActions } from 'redux-actions'
-import { handleActions } from '~/ducks/utils/immerHandleActions'
-import { onSuccess } from '~/ducks/utils/requestActions'
+import { handleActions } from '@/ducks/utils/immerHandleActions'
+import { onSuccess } from '@/ducks/utils/requestActions'
 
 export const { getVarslinger, getVarslingerBruker, updateVarslingerBruker } = createActions(
 	{

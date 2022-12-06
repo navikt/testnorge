@@ -1,14 +1,14 @@
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import React from 'react'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+
 import _cloneDeep from 'lodash/cloneDeep'
-import { initialStatsborgerskap } from '~/components/fagsystem/pdlf/form/initialValues'
+import { initialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import { PersonData, StatsborgerskapData } from '~/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import Formatters from '~/utils/DataFormatter'
+import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/PdlTypes'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import Formatters from '@/utils/DataFormatter'
 
 type StatsborgerskapTypes = {
 	data: Array<StatsborgerskapData>

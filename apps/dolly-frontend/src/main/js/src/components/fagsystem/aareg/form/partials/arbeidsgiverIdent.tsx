@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useBoolean } from 'react-use'
 import _get from 'lodash/get'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { TpsfApi } from '~/service/Api'
+import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { TpsfApi } from '@/service/Api'
 import { useFormikContext } from 'formik'
 
 type ArbeidsgiverIdentProps = {

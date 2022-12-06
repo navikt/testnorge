@@ -1,7 +1,7 @@
 import Modal from 'react-modal'
 import React, { PureComponent } from 'react'
 import './DollyModal.less'
-import CloseButton from '~/components/ui/button/CloseButton/CloseButton'
+import CloseButton from '@/components/ui/button/CloseButton/CloseButton'
 
 const customStyles = {
 	content: {

@@ -1,5 +1,4 @@
-import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import { FormikProps } from 'formik'
 import styled from 'styled-components'

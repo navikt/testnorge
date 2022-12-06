@@ -1,7 +1,6 @@
-import React from 'react'
-import { Historikk } from '~/components/ui/historikk/Historikk'
-import { Adressevisning } from '~/components/fagsystem/tpsf/visning/partials/Boadresse'
-import { PostadresseVisning } from '~/components/fagsystem/tpsf/visning/partials/Postadresse'
+import { Historikk } from '@/components/ui/historikk/Historikk'
+import { Adressevisning } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
+import { PostadresseVisning } from '@/components/fagsystem/tpsf/visning/partials/Postadresse'
 import { isArray } from 'lodash'
 
 export const Adressevalg = ({ data }: any) => {

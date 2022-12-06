@@ -1,11 +1,10 @@
-import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import Button from '~/components/ui/button/Button'
-import BestillingSammendrag from '~/components/bestilling/sammendrag/BestillingSammendrag'
-import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
+import BestillingSammendrag from '@/components/bestilling/sammendrag/BestillingSammendrag'
+import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
 
 import './BestillingDetaljer.less'
-import { MalModal } from '~/pages/minSide/maler/MalModal'
+import { MalModal } from '@/pages/minSide/maler/MalModal'
 import _get from 'lodash/get'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {

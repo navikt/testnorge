@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '~/utils/YupValidations'
+import { requiredDate, requiredString } from '@/utils/YupValidations'
 
 export const utflytting = Yup.object({
 	tilflyttingsland: requiredString,

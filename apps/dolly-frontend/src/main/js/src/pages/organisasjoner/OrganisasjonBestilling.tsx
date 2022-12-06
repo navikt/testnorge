@@ -1,14 +1,13 @@
-import React from 'react'
 import _orderBy from 'lodash/orderBy'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyTable } from '~/components/ui/dollyTable/DollyTable'
-import { OrganisasjonItem } from '~/components/ui/icon/IconItem'
-import Icon from '~/components/ui/icon/Icon'
-import BestillingDetaljer from '~/components/bestilling/detaljer/BestillingDetaljer'
-import { OrgStatus } from '~/components/fagsystem/organisasjoner/types'
-import Spinner from '~/components/ui/loading/Spinner'
-import Formatters from '~/utils/DataFormatter'
-import bestillingStatusMapper from '~/ducks/bestillingStatus/bestillingStatusMapper'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
+import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
+import Icon from '@/components/ui/icon/Icon'
+import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'
+import { OrgStatus } from '@/components/fagsystem/organisasjoner/types'
+import Spinner from '@/components/ui/loading/Spinner'
+import Formatters from '@/utils/DataFormatter'
+import bestillingStatusMapper from '@/ducks/bestillingStatus/bestillingStatusMapper'
 
 type OrganisasjonBestillingProps = {
 	brukerId: string
