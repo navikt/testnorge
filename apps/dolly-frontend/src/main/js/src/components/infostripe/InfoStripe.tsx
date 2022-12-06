@@ -125,7 +125,7 @@ export const InfoStripe = () => {
 					</div>
 
 					<div className="lukk-alle-meldinger">
-						<Icon size={16} kind="kryss" onClick={hideAllAlerts} />
+						<Icon size={16} kind="kryss" onClick={hideAllAlerts} title="Lukk alle meldinger" />
 					</div>
 				</div>
 			)}

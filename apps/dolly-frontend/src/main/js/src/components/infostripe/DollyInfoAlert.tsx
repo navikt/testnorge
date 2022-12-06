@@ -23,6 +23,7 @@ export const DollyInfoAlert = ({ type, text, id, onHide }: DollyInfoAlertType) =
 			</Alert>
 			<span>
 				<Close
+					title="Lukk denne meldingen"
 					onClick={() => {
 						setHide(true)
 						onHide(id)
