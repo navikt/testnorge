@@ -8,6 +8,7 @@ import _orderBy from 'lodash/orderBy'
 import { DollyApi } from '~/service/Api'
 import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '~/utils/hooks/useEnvironments'
+import { StyledAlert } from '~/pages/gruppe/PersonVisning/PersonVisning'
 
 const Visning = ({ data }) => {
 	if (!data || data.length === 0) {
@@ -16,6 +17,12 @@ const Visning = ({ data }) => {
 	const arenaData = data[0]
 	return (
 		<div className="person-visning_content">
+			{arenaData.error && (
+				<StyledAlert variant={'info'} size={'small'}>
+					Feil i henting av data fra Arena. Forsøk å gjenopprette personen for å fikse dette, og ta
+					eventuelt kontakt med Team Dolly dersom problemet vedvarer.
+				</StyledAlert>
+			)}
 			<TitleValue title="Brukertype" value={arenaData.brukertype} />
 			<TitleValue title="Servicebehov" value={arenaData.servicebehov} />
 			<TitleValue title="Inaktiv fra dato" value={arenaData.inaktiveringDato} />
@@ -126,8 +133,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	const miljoerMedData = data?.arbeidsokerList?.map((arb) => arb.miljoe)
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 	visningData = visningData.map((vData) => {
-		if (!miljoerMedData?.includes(vData.miljo)) {
-			vData.data = []
+		if (vData.data?.length > 0) {
+			vData.data[0].error = !miljoerMedData?.includes(vData.miljo)
 		}
 		return vData
 	})
