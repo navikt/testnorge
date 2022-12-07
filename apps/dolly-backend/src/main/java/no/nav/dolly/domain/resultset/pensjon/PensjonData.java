@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class PensjonData {
 
     @Schema(description = "Data for tjenestepensjon (TP)")
     private List<TpOrdning> tp;
+
+    @Schema(description = "Data for alderspensjon (AP)")
+    private Alderspensjon alderspensjon;
 
     public List<TpOrdning> getTp() {
         if (isNull(tp)) {
@@ -104,5 +108,20 @@ public class PensjonData {
 
         @Schema(description = "Dato iverksatt tom")
         private LocalDate datoYtelseIverksattTom;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Alderspensjon {
+        @Schema(required = true)
+        private LocalDateTime iverksettelsesdato;
+
+        @Schema(required = true)
+        private Integer uttaksgrad;
+
+        @Schema(required = true)
+        private String statsborgerskap;
     }
 }

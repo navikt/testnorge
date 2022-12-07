@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreAlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
@@ -47,6 +48,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String PENSJON_FORVALTER = "PensjonForvalter#";
     private static final String POPP_INNTEKTSREGISTER = "PoppInntekt#";
     private static final String TP_FORHOLD = "TpForhold#";
+    private static final String PEN_ALDERSPENSJON = "AP#";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final DollyPersonCache dollyPersonCache;
@@ -111,7 +113,12 @@ public class PensjonforvalterClient implements ClientRegister {
                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
                                             lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
                                                     .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just("")))))
+                                                    Flux.just("")),
+                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                    lagreAlderspensjon(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
+                                                    Flux.just(""))
+                                    )))
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining("$"))
                     .block());
@@ -134,6 +141,20 @@ public class PensjonforvalterClient implements ClientRegister {
         return isNull(kriterier.getPensjonforvalter()) ||
                 bestilling.getProgresser().stream()
                         .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
+
+        if (nonNull(pensjonData) && nonNull(pensjonData.getAlderspensjon())) {
+            LagreAlderspensjonRequest lagreAlderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(), LagreAlderspensjonRequest.class);
+            lagreAlderspensjonRequest.setPid(dollyPerson.getHovedperson());
+            lagreAlderspensjonRequest.setMiljoer(new ArrayList<>(miljoer));
+
+            return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token);
+
+        } else {
+            return Flux.empty();
+        }
     }
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
