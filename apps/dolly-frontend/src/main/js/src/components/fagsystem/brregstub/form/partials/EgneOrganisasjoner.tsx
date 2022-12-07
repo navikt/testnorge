@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
@@ -7,6 +7,8 @@ import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
 import _has from 'lodash/has'
+import { OrgforvalterApi } from '~/service/Api'
+import { OrgMiljoeInfoVisning } from '~/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 
 interface OrgProps {
 	path: string
@@ -112,10 +114,35 @@ export const EgneOrganisasjoner = ({
 	warningMessage,
 	filterValidEnhetstyper,
 }: OrgProps) => {
+	const [orgnr, setOrgnr] = useState(null)
+	const [miljoer, setMiljoer] = useState([])
+	const [miljoeError, setMiljoeError] = useState(false)
+	const [miljoeLoading, setMiljoeLoading] = useState(false)
+
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
 	const formikBag = useFormikContext()
+
+	useEffect(() => {
+		if (orgnr) {
+			setMiljoeLoading(true)
+			setMiljoeError(false)
+			setMiljoer([])
+			OrgforvalterApi.getOrganisasjonerMiljoeInfo(orgnr)
+				.then((response: any) => {
+					const orgInfo = response?.data
+					setMiljoer(orgInfo ? Object.keys(orgInfo) : [])
+					setMiljoeLoading(false)
+					setMiljoeError(false)
+				})
+				.catch(() => {
+					setMiljoer([])
+					setMiljoeLoading(false)
+					setMiljoeError(true)
+				})
+		}
+	}, [orgnr])
 
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
@@ -194,11 +221,17 @@ export const EgneOrganisasjoner = ({
 					}
 					isLoading={loading}
 					size="xlarge"
-					onChange={handleChange}
+					onChange={(event) => {
+						setOrgnr(event.value)
+						handleChange(event)
+					}}
 					value={_get(formikBag.values, path)}
 					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>
+			)}
+			{orgnr && (
+				<OrgMiljoeInfoVisning miljoer={miljoer} loading={miljoeLoading} error={miljoeError} />
 			)}
 		</>
 	)
