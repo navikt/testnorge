@@ -123,22 +123,12 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 		.filter((best) => best.data?.length > 0)
 		.map((best) => best.miljo)
 
-	const miljoerMedData = data?.arbeidsokerList?.map((arb) => arb.miljoe)
-	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
-	visningData = visningData.map((vData) => {
-		if (!miljoerMedData?.includes(vData.miljo)) {
-			vData.data = []
-		}
-		return vData
-	})
-
 	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 			<MiljoTabs
 				bestilteMiljoer={bestilteMiljoer}
-				errorMiljoer={errorMiljoer}
 				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 				data={visningData}
 			>
