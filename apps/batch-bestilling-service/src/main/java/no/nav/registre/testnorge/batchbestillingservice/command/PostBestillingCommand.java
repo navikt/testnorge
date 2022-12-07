@@ -25,16 +25,11 @@ public class PostBestillingCommand implements Callable<Disposable> {
 
     @Override
     public Disposable call() {
-        final String HEADER_NAV_CONSUMER_ID = "Nav-Consumer-Id";
-        final String HEADER_NAV_CALL_ID = "Nav-Call-Id";
-
         log.info("Sender batch bestilling til Dolly backend for gruppe {}.", gruppeId);
         return webClient.post()
                 .uri(builder -> builder
                         .path("/api/v1/gruppe/{gruppeId}/bestilling").build(gruppeId))
                 .header(AUTHORIZATION, "Bearer " + token)
-                .header(HEADER_NAV_CALL_ID, "Batch-bestilling-service")
-                .header(HEADER_NAV_CONSUMER_ID, "Batch-bestilling-service")
                 .bodyValue(request)
                 .retrieve()
                 .toBodilessEntity()

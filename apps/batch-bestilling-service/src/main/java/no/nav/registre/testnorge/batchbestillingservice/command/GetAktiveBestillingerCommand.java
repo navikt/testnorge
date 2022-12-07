@@ -22,9 +22,6 @@ public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
 
     @Override
     public Flux<Object> call() {
-        final String HEADER_NAV_CALL_ID = "Nav-Call-Id";
-        final String HEADER_NAV_CONSUMER_ID = "Nav-Consumer-Id";
-
         log.info("Henter aktive bestillinger for gruppe {}.", gruppeId);
         return webClient
                 .get()
@@ -32,8 +29,6 @@ public class GetAktiveBestillingerCommand implements Callable<Flux<Object>> {
                         .path("/api/v1/bestilling/gruppe/{gruppeId}/ikkeferdig")
                         .build(gruppeId)
                 )
-                .header(HEADER_NAV_CALL_ID, "Batch-bestilling-service")
-                .header(HEADER_NAV_CONSUMER_ID, "Batch-bestilling-service")
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToFlux(Object.class)
