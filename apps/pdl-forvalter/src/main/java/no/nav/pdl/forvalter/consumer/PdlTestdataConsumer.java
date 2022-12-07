@@ -11,6 +11,8 @@ import no.nav.pdl.forvalter.consumer.command.PdlOpprettPersonCommandPdl;
 import no.nav.pdl.forvalter.dto.ArtifactValue;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility.getIdenttype;
 import static no.nav.pdl.forvalter.utils.PdlTestDataUrls.getBestillingUrl;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_SLETTING;
@@ -73,13 +76,6 @@ public class PdlTestdataConsumer {
                                 .parallel()
                                 .flatMap(order -> Flux.fromIterable(order)
                                         .flatMap(entry -> entry.apply(accessToken))
-                                        .collectList()),
-                        Flux.fromIterable(orders.getOpplysningerFlere())
-                                .parallel()
-                                .flatMap(opplysning -> Flux.concat(opplysning
-                                                .stream()
-                                                .map(entry -> entry.apply(accessToken))
-                                                .toList())
                                         .collectList()))
                 .flatMap(Flux::fromIterable));
     }
@@ -103,6 +99,7 @@ public class PdlTestdataConsumer {
             if (isNull(artifact.getFolkeregistermetadata())) {
                 artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
             }
+            fixAdresseMetadataDatoer(artifact);
             artifact.getFolkeregistermetadata().setGjeldende(artifact.getGjeldende());
             body = objectMapper.writeValueAsString(artifact);
         } catch (JsonProcessingException e) {
@@ -152,6 +149,18 @@ public class PdlTestdataConsumer {
                                 accessToken.getTokenValue(),
                                 value.getBody().getId()
                         ).call());
+        }
+    }
+
+    private static void fixAdresseMetadataDatoer(DbVersjonDTO artifact) {
+
+        if (artifact instanceof AdresseDTO adresseDTO && nonNull(adresseDTO.getGyldigFraOgMed())) {
+            adresseDTO.getFolkeregistermetadata().setAjourholdstidspunkt(adresseDTO.getGyldigFraOgMed());
+            adresseDTO.getFolkeregistermetadata().setGyldighetstidspunkt(adresseDTO.getGyldigFraOgMed());
+        }
+
+        if (artifact instanceof AdresseDTO adresseDTO && nonNull(adresseDTO.getGyldigTilOgMed())) {
+            adresseDTO.getFolkeregistermetadata().setOpphoerstidspunkt(adresseDTO.getGyldigTilOgMed());
         }
     }
 }
