@@ -28,6 +28,6 @@ aareg:
     url: https://digdir-krr-stub.dev.intern.nav.no
   gcp:
     cluster: dev-gcp
-    name: digdir-krr-stub
-    namespace: team-rocket
-    url: https://digdir-krr-stub.dev.intern.nav.no
+    name: n/a
+    namespace: n/a
+    url: https://aareg-services-{env}.dev.intern.nav.no/
