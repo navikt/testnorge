@@ -23,7 +23,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -64,8 +63,8 @@ public class SamhandlerregisteretConsumerTest {
 
         var samhandler = SamhandlerDTO.builder()
                 .identer(Collections.singletonList(IdentDTO.builder()
-                                .ident(ident)
-                                .identTypeKode("FNR")
+                        .ident(ident)
+                        .identTypeKode("FNR")
                         .build()))
                 .kode("LE")
                 .build();
@@ -73,13 +72,13 @@ public class SamhandlerregisteretConsumerTest {
     }
 
     @Test
-    public void shouldGetSamhandler() throws JsonProcessingException, ExecutionException, InterruptedException {
+    public void shouldGetSamhandler() throws JsonProcessingException {
         stubSamhandlerregisteret();
 
-        var response = samhandlerregisteretConsumer.getSamhandler(ident).get();
+        var response = samhandlerregisteretConsumer.getSamhandler(ident);
 
-        assertThat(response).isNotNull().hasSize(1);
-        assertThat(response.get(0).getIdent()).isEqualTo(ident);
+        assertThat(response).isNotNull();
+        assertThat(response.getIdent()).isEqualTo(ident);
     }
 
 
