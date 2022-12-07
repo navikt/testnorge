@@ -2,6 +2,7 @@ package no.nav.registre.testnorge.helsepersonellservice.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import no.nav.registre.testnorge.helsepersonellservice.consumer.DollyBackendConsumer;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.PdlProxyConsumer;
@@ -28,15 +29,8 @@ public class HelsepersonellService {
 
     private List<Samhandler> getSamhandlere(List<String> identer) {
         return identer.stream()
-                .map(samhandlerregisteretConsumer::getSamhandler).map(value -> {
-                    try {
-                        return value.get();
-                    } catch (Exception e) {
-                        log.error("Klarer ikke å hente samhandler", e);
-                        throw new UgyldigSamhandlerException("Feil ved opprettelse av helsepersonell");
-                    }
-                })
-                .flatMap(Collection::stream)
+                .map(samhandlerregisteretConsumer::getSamhandler)
+                .filter(Objects::nonNull)
                 .toList();
     }
 
