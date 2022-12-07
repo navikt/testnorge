@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -43,7 +43,7 @@ export const ArbeidsforholdForm = ({ formikBag, inntektsinformasjonPath }) => {
 						onChange={(forhold) =>
 							formikBag.setFieldValue(`${path}.arbeidsforholdstype`, forhold.value)
 						}
-						value={_get(formikBag.values, `${path}.arbeidsforholdstype`)}
+						value={_.get(formikBag.values, `${path}.arbeidsforholdstype`)}
 						size="xlarge"
 						isClearable={false}
 					/>

@@ -1,7 +1,6 @@
 import * as Yup from 'yup'
-import _isUndefined from 'lodash/isUndefined'
+import * as _ from 'lodash-es'
 import { yupToFormErrors } from 'formik'
-import _isString from 'lodash/isString'
 import Formatters from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 
@@ -33,7 +32,7 @@ export const messages = {
 // Dato som kommer fra Maler er av typen String
 export const requiredDate = Yup.mixed().test('reqDate', messages.required, (value) => {
 	let _value = value
-	if (_isString(value)) _value = Formatters.parseDate(_value)
+	if (_.isString(value)) _value = Formatters.parseDate(_value)
 	return isDate(_value)
 })
 export const requiredString = Yup.string().required(messages.required)
@@ -42,7 +41,7 @@ export const requiredNumber = Yup.number().required(messages.required)
 
 export const ifPresent = (key, schema) =>
 	Yup.mixed().when(key, {
-		is: (v) => !_isUndefined(v),
+		is: (v) => !_.isUndefined(v),
 		then: schema,
 		otherwise: Yup.mixed().notRequired(),
 	})

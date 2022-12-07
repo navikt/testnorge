@@ -1,7 +1,6 @@
 import { createActions } from 'redux-actions'
 import { DollyApi } from '@/service/Api'
-import _set from 'lodash/fp/set'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { rootPaths } from '@/components/bestillingsveileder/utils'
 import { v4 as uuid } from 'uuid'
@@ -55,16 +54,16 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
 	} else if (opts.is.opprettFraIdenter) {
-		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
+		values = _.set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (opts.is.importTestnorge) {
-		values = _set(
+		values = _.set(
 			'identer',
 			opts.importPersoner.map((person) => person.ident),
 			values
 		)
 		if (!values.environments) {
-			values = _set('environments', [], values)
+			values = _.set('environments', [], values)
 		}
 		bestillingAction = actions.postTestnorgeBestilling(values.gruppeId, values)
 	} else if (values.organisasjon) {
@@ -78,8 +77,8 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 	const response = await dispatch(bestillingAction)
 
 	//IF ALL IS GOOD - REDIRECT
-	const res = _get(response, 'action.payload.data', null)
-	const type = _get(response, 'action.type', null)
+	const res = _.get(response, 'action.payload.data', null)
+	const type = _.get(response, 'action.type', null)
 	if (res.error) {
 		dispatch(actions.bestillingFeilet(res))
 	} else if (type.includes('OrganisasjonBestilling')) {

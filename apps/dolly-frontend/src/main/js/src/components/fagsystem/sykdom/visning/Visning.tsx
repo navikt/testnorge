@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { SyntSykemelding } from './partials/SyntSykemelding'
 import { DetaljertSykemelding } from './partials/DetaljertSykemelding'
@@ -16,8 +16,8 @@ export const SykemeldingVisning = ({ data }: Sykemelding) => {
 			<SubOverskrift label="Sykemelding" iconKind="sykdom" />
 			{data.map((bestilling: SykemeldingSynt | SykemeldingDetaljert, idx: number) => {
 				if (!bestilling.erGjenopprettet) {
-					const syntSykemelding = _get(bestilling, 'data.sykemelding.syntSykemelding')
-					const detaljertSykemelding = _get(bestilling, 'data.sykemelding.detaljertSykemelding')
+					const syntSykemelding = _.get(bestilling, 'data.sykemelding.syntSykemelding')
+					const detaljertSykemelding = _.get(bestilling, 'data.sykemelding.detaljertSykemelding')
 
 					return syntSykemelding ? (
 						<SyntSykemelding sykemelding={syntSykemelding} idx={idx} key={idx} />

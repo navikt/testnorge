@@ -1,4 +1,4 @@
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 
 const getAllDatesBetween = (startdato, sluttdato) => {
 	const startDate = new Date(startdato)
@@ -19,7 +19,7 @@ export const getExcludedDatesAndMaxDate = (data) => {
 		const sluttdato = instdata.sluttdato
 		let days = []
 
-		if (_isNil(sluttdato)) {
+		if (_.isNil(sluttdato)) {
 			const start = new Date(startdato)
 			maxDate = start.setDate(start.getDate() - 1)
 		} else {

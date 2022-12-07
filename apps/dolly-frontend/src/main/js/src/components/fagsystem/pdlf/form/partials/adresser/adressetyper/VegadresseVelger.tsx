@@ -2,7 +2,7 @@ import { initialVegadresse } from '@/components/fagsystem/pdlf/form/initialValue
 import { Vegadresse } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
 import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 
@@ -19,7 +19,7 @@ export const VegadresseVelger = ({ formikBag, path }: VegadressevelgerValues) =>
 		DETALJERT: 'DETALJERT',
 	}
 
-	const vegadresseType = _get(formikBag.values, `${path}.vegadresseType`) || null
+	const vegadresseType = _.get(formikBag.values, `${path}.vegadresseType`) || null
 
 	const handleRadioChange = (valg: string) => {
 		formikBag.setFieldValue(path, { ...initialVegadresse, vegadresseType: valg })

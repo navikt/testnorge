@@ -5,11 +5,9 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import _get from 'lodash/get'
-import _cloneDeep from 'lodash/cloneDeep'
-import _set from 'lodash/set'
 import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import * as _ from 'lodash-es'
 
 interface AdressebeskyttelseValues {
 	formikBag: FormikProps<{}>
@@ -28,11 +26,11 @@ type Target = {
 }
 
 export const getIdenttype = (formikBag: any, identtype: string) => {
-	const nyIdenttype = _get(formikBag.values, 'pdldata.person.nyident[0].identtype')
+	const nyIdenttype = _.get(formikBag.values, 'pdldata.person.nyident[0].identtype')
 	if (nyIdenttype) {
 		return nyIdenttype
 	} else {
-		return identtype ? identtype : _get(formikBag.values, 'pdldata.opprettNyPerson.identtype')
+		return identtype ? identtype : _.get(formikBag.values, 'pdldata.opprettNyPerson.identtype')
 	}
 }
 
@@ -54,7 +52,7 @@ export const AdressebeskyttelseForm = ({
 
 	useEffect(() => {
 		const newOptions = getAdressebeskyttelseOptions(identtype)
-		const selectedOption = _get(formikBag.values, `${path}.gradering`)
+		const selectedOption = _.get(formikBag.values, `${path}.gradering`)
 		if (selectedOption && !newOptions.map((opt) => opt.value).includes(selectedOption)) {
 			formikBag.setFieldValue(`${path}.gradering`, null)
 		}
@@ -62,13 +60,13 @@ export const AdressebeskyttelseForm = ({
 	}, [identtype])
 
 	const handleChangeGradering = (target: Target) => {
-		const adressebeskyttelse = _get(formikBag.values, path)
-		const adressebeskyttelseClone = _cloneDeep(adressebeskyttelse)
-		_set(adressebeskyttelseClone, 'gradering', target?.value || null)
+		const adressebeskyttelse = _.get(formikBag.values, path)
+		const adressebeskyttelseClone = _.cloneDeep(adressebeskyttelse)
+		_.set(adressebeskyttelseClone, 'gradering', target?.value || null)
 		if (target?.value === 'STRENGT_FORTROLIG_UTLAND') {
-			_set(adressebeskyttelseClone, 'master', 'PDL')
+			_.set(adressebeskyttelseClone, 'master', 'PDL')
 		} else {
-			_set(adressebeskyttelseClone, 'master', 'FREG')
+			_.set(adressebeskyttelseClone, 'master', 'FREG')
 		}
 		formikBag.setFieldValue(path, adressebeskyttelseClone)
 	}

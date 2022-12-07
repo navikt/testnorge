@@ -3,7 +3,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { yesNoOptions } from '@/pages/testnorgePage/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
@@ -32,7 +32,7 @@ const barnOptions = [
 ]
 
 export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
-	const [foreldre, setForeldre] = useState(_get(formikBag.values, paths.forelderBarnRelasjoner))
+	const [foreldre, setForeldre] = useState(_.get(formikBag.values, paths.forelderBarnRelasjoner))
 	const handleForelderChange = (relasjon: string) => {
 		let nyeForeldre = [...foreldre]
 		if (foreldre.includes(relasjon)) {
@@ -81,19 +81,19 @@ export const Relasjoner = ({ formikBag }: RelasjonerProps) => {
 			<div className="options-title">Har forelder</div>
 			<DollyCheckbox
 				label={'Far'}
-				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.FAR)}
+				checked={_.get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.FAR)}
 				onChange={() => handleForelderChange(foreldreRoller.FAR)}
 				size="small"
 			/>
 			<DollyCheckbox
 				label={'Mor'}
-				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.MOR)}
+				checked={_.get(formikBag.values, paths.forelderBarnRelasjoner).includes(foreldreRoller.MOR)}
 				onChange={() => handleForelderChange(foreldreRoller.MOR)}
 				size="small"
 			/>
 			<DollyCheckbox
 				label={'Medmor'}
-				checked={_get(formikBag.values, paths.forelderBarnRelasjoner).includes(
+				checked={_.get(formikBag.values, paths.forelderBarnRelasjoner).includes(
 					foreldreRoller.MEDMOR
 				)}
 				onChange={() => handleForelderChange(foreldreRoller.MEDMOR)}

@@ -5,7 +5,7 @@ import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { FormikProps } from 'formik'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	initialTelefonnummer,
 	initialTpsTelefonnummer,
@@ -71,7 +71,7 @@ export const TelefonnummerFormRedigering = ({ path }: TelefonnummerProps) => {
 }
 
 export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) => {
-	const tlfListe = _get(formikBag.values, path || 'pdldata.person.telefonnummer')
+	const tlfListe = _.get(formikBag.values, path || 'pdldata.person.telefonnummer')
 
 	useEffect(() => {
 		if (tlfListe && tlfListe.length === 1) {
@@ -127,12 +127,12 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 				name={`${path}.nummer`}
 				label="Telefonnummer"
 				onChange={({ target }: { target: { value: string } }) => handleChangeNummer(target)}
-				value={_get(formikBag.values, `${path}.nummer`)}
+				value={_.get(formikBag.values, `${path}.nummer`)}
 				/*@ts-ignore*/
 				size="large"
 				feil={
-					_get(formikBag.errors, `${path}.nummer`)
-						? { feilmelding: _get(formikBag.errors, `${path}.nummer`) }
+					_.get(formikBag.errors, `${path}.nummer`)
+						? { feilmelding: _.get(formikBag.errors, `${path}.nummer`) }
 						: null
 				}
 			/>
@@ -150,8 +150,8 @@ export const TelefonnummerForm = ({ path, formikBag, idx }: TelefonnummerProps) 
 }
 
 export const Telefonnummer = ({ formikBag, path }: TelefonnummerProps) => {
-	const tlfListe = _get(formikBag.values, path || paths.pdlTelefonnummer)
-	const tlfListeTps = _get(formikBag.values, path || paths.tpsMTelefonnummer)
+	const tlfListe = _.get(formikBag.values, path || paths.pdlTelefonnummer)
+	const tlfListeTps = _.get(formikBag.values, path || paths.tpsMTelefonnummer)
 
 	if (!tlfListe) {
 		return null

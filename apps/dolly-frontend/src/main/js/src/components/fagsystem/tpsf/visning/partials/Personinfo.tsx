@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
-import _has from 'lodash/has'
+import * as _ from 'lodash-es'
 
 function hentSkjermingData(skjermingPath) {
 	if (!skjermingPath) {
@@ -82,8 +82,8 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 }
 
 export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdlData }) => {
-	const harPdlAdressebeskyttelse = pdlData && _has(pdlData, 'adressebeskyttelse')
-	const harPdlUfb = pdlData && _has(pdlData, 'bostedsadresse[0].ukjentBosted')
+	const harPdlAdressebeskyttelse = pdlData && _.has(pdlData, 'adressebeskyttelse')
+	const harPdlUfb = pdlData && _.has(pdlData, 'bostedsadresse[0].ukjentBosted')
 
 	const tpsMessaging = fagsystemData?.tpsMessaging
 

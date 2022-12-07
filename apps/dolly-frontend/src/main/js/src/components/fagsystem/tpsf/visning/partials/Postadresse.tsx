@@ -2,7 +2,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { Historikk } from '@/components/ui/historikk/Historikk'
-import { isArray } from 'lodash'
+import * as _ from 'lodash-es'
 
 export const PostadresseVisning = ({ postadresse }) => {
 	const { postLinje1, postLinje2, postLinje3, postLand } = postadresse
@@ -26,7 +26,7 @@ export const Postadresse = ({ postadresse }) => {
 		<div>
 			<SubOverskrift label="Postadresse" iconKind="postadresse" />
 			<div className="person-visning_content">
-				{isArray(postadresse) ? (
+				{_.isArray(postadresse) ? (
 					<Historikk component={PostadresseVisning} propName="postadresse" data={postadresse} />
 				) : (
 					<PostadresseVisning postadresse={postadresse} />

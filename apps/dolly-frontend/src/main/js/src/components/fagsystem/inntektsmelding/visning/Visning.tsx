@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import {
@@ -131,6 +131,6 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: s
 }
 
 const tomBestilling = (inntekter: Array<Inntekt>) => {
-	const inntekterMedInnhold = inntekter.filter((inntekt) => !_isEmpty(inntekt))
+	const inntekterMedInnhold = inntekter.filter((inntekt) => !_.isEmpty(inntekt))
 	return inntekterMedInnhold.length < 1
 }

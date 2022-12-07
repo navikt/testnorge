@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import _orderBy from 'lodash/orderBy'
+import * as _ from 'lodash-es'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import 'rc-tooltip/assets/bootstrap.css'
 import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
@@ -10,7 +10,6 @@ import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import Loading from '@/components/ui/loading/Loading'
-import _isEmpty from 'lodash/isEmpty'
 import { Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
@@ -97,7 +96,7 @@ export default function OrganisasjonListe({
 			})
 
 	const mergeList = (orgListe: Array<Organisasjon>, bestillingListe: Array<EnhetBestilling>) => {
-		if (_isEmpty(orgListe)) {
+		if (_.isEmpty(orgListe)) {
 			return null
 		}
 
@@ -124,7 +123,7 @@ export default function OrganisasjonListe({
 
 	useEffect(() => {
 		setAntallOrg(organisasjoner?.length)
-		const sortedOrgliste = _orderBy(organisasjoner, ['id'], ['desc'])
+		const sortedOrgliste = _.orderBy(organisasjoner, ['id'], ['desc'])
 		setfiltrertOrgListe(sokSelectorOrg(mergeList(sortedOrgliste, bestillinger), search))
 	}, [organisasjoner, bestillinger])
 

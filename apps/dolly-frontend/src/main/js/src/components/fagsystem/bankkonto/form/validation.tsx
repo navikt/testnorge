@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredString } from '@/utils/YupValidations'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { landkoder, landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
@@ -18,7 +18,7 @@ const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidatio
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
 
-		const checkbox = _get(values, `${path}.${checkboxPath}`)
+		const checkbox = _.get(values, `${path}.${checkboxPath}`)
 
 		if (!checkbox) {
 			return this.createError({ message: feilmelding })
@@ -48,7 +48,7 @@ const validateIban = (kontonummer, form) => {
 	const path = form.path.substring(0, form.path.lastIndexOf('.'))
 	const values = form.options.context
 
-	const landkode = _get(values, `${path}.landkode`)
+	const landkode = _.get(values, `${path}.landkode`)
 	if (landkode) {
 		const isoLandkode = landkodeIsoMapping[landkode]
 		const mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
@@ -73,7 +73,7 @@ const validateSwift = (val) => {
 	return val.test('swift-validering', function isSwiftValid() {
 		const path = this.path.substring(0, this.path.lastIndexOf('.'))
 		const values = this.options.context
-		const landkode = _get(values, `${path}.landkode`)
+		const landkode = _.get(values, `${path}.landkode`)
 
 		let mappedLandkode = null
 
@@ -82,7 +82,7 @@ const validateSwift = (val) => {
 			mappedLandkode = isoLandkode ? isoLandkode : landkode.substring(0, 2)
 		}
 
-		const value = _get(values, `${path}.swift`) // henter siste verdi for swift å unngå gammel swift validering når land endres
+		const value = _.get(values, `${path}.swift`) // henter siste verdi for swift å unngå gammel swift validering når land endres
 		if (!value) {
 			if (mappedLandkode) {
 				const kontoregisterLandkode = landkoder.find((k) => k.landkode === mappedLandkode)

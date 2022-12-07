@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
@@ -10,7 +10,7 @@ const initialValues = {
 }
 
 export const PersonrollerForm = ({ formikBag, path }) => {
-	const personroller = _get(formikBag.values, `${path}.personroller`)
+	const personroller = _.get(formikBag.values, `${path}.personroller`)
 
 	const getEgenskapOptions = () => {
 		const valgteOptions = []
@@ -49,17 +49,17 @@ export const PersonrollerForm = ({ formikBag, path }) => {
 							label="Egenskap"
 							options={egenskapOptions}
 							onChange={(egenskapen) => formikBag.setFieldValue(egenskap, egenskapen.value)}
-							value={_get(formikBag.values, egenskap)}
+							value={_.get(formikBag.values, egenskap)}
 							placeholder={
-								_get(formikBag.values, egenskap) ? _get(formikBag.values, egenskap) : 'Velg..'
+								_.get(formikBag.values, egenskap) ? _.get(formikBag.values, egenskap) : 'Velg..'
 							}
 							isClearable={false}
 							feil={
-								_get(formikBag.values, egenskap) === '' && {
+								_.get(formikBag.values, egenskap) === '' && {
 									feilmelding: 'Feltet er påkrevd',
 								}
 							}
-							styles={_get(formikBag.values, egenskap) ? colorStyles : null}
+							styles={_.get(formikBag.values, egenskap) ? colorStyles : null}
 						/>
 						<FormikCheckbox name={`${path}.fratraadt`} label="Har fratrådt" checkboxMargin />
 					</>

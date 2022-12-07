@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Formatters from '@/utils/DataFormatter'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	initialKjoenn,
 	initialNavn,
@@ -54,7 +54,7 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
+	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
 	const PersondetaljerLes = ({ person, skjerming }: PersonTypes) => {
 		const personNavn = person?.navn?.[0]
@@ -86,8 +86,8 @@ export const Persondetaljer = ({
 			skjermingsregister: skjermingData,
 		}
 
-		const redigertPersonPdlf = _get(tmpPersoner?.pdlforvalter, `${ident}.person`)
-		const redigertSkjerming = _get(tmpPersoner?.skjermingsregister, `${ident}`)
+		const redigertPersonPdlf = _.get(tmpPersoner?.pdlforvalter, `${ident}.person`)
+		const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 		const personValues = redigertPersonPdlf ? redigertPersonPdlf : person
 		const redigertPdlfPersonValues = redigertPersonPdlf

@@ -4,7 +4,7 @@ import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
@@ -55,8 +55,8 @@ export const VergemaalForm = ({
 				label={'VERGE'}
 				formikBag={formikBag}
 				isExpanded={
-					!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
-					_get(formikBag.values, `${path}.vergeIdent`) !== null
+					!isEmpty(_.get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
+					_.get(formikBag.values, `${path}.vergeIdent`) !== null
 				}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />

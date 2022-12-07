@@ -1,5 +1,5 @@
 import React, { ReactElement, useState } from 'react'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
@@ -29,13 +29,13 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
 	const getArbeidsgiverType = () => {
-		const orgnummer = _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
+		const orgnummer = _.get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
 		if (
-			_get(formikBag.values, 'aareg[0].amelding[0]') ||
-			_get(formikBag.values, 'aareg[0].arbeidsforhold')
+			_.get(formikBag.values, 'aareg[0].amelding[0]') ||
+			_.get(formikBag.values, 'aareg[0].arbeidsforhold')
 		) {
 			return ArbeidsgiverTyper.egen
-		} else if (_get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+		} else if (_.get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
 			!orgnummer ||

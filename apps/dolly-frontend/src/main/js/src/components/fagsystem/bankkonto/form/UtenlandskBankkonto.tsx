@@ -4,15 +4,15 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { ArbeidKodeverk, GtKodeverk } from '@/config/kodeverk'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
 
 const path = 'bankkonto.utenlandskBankkonto'
 
 export const UtenlandskBankkonto = ({ formikBag }: any) => {
 	const values = formikBag?.values
-	const disableKontonummer = _get(values, `${path}.tilfeldigKontonummer`)
-	const disableTilfeldigKontonummer = _get(values, `${path}.kontonummer`)
+	const disableKontonummer = _.get(values, `${path}.tilfeldigKontonummer`)
+	const disableTilfeldigKontonummer = _.get(values, `${path}.kontonummer`)
 
 	const updateSwiftLandkode = (selected: any) => {
 		if (!selected) {
@@ -23,7 +23,7 @@ export const UtenlandskBankkonto = ({ formikBag }: any) => {
 		const isoLandkode = landkodeIsoMapping[landkode]
 		if (isoLandkode) {
 			const mappedLandkode = isoLandkode || landkode.substring(0, 2)
-			let swift = _get(values, `${path}.swift`)
+			let swift = _.get(values, `${path}.swift`)
 			if (swift) {
 				swift = swift.substring(0, 4) + mappedLandkode + swift.substring(6)
 			} else {

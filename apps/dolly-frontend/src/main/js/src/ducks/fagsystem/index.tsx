@@ -1,8 +1,7 @@
 import { createActions } from 'redux-actions'
-import _get from 'lodash/get'
-import _isEmpty from 'lodash/isEmpty'
 import {
 	ArenaApi,
+	BankkontoApi,
 	BrregstubApi,
 	DollyApi,
 	InntektstubApi,
@@ -11,13 +10,12 @@ import {
 	SigrunApi,
 	TpsfApi,
 	TpsMessagingApi,
-	BankkontoApi,
 } from '@/service/Api'
 import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import Formatters from '@/utils/DataFormatter'
-import { isNil } from 'lodash'
+import * as _ from 'lodash-es'
 
 export const actions = createActions(
 	{
@@ -239,7 +237,7 @@ export const fetchTpsfPersoner = (identer) => (dispatch) => {
 				return person.ident
 			}
 		})
-		.filter((person) => !isNil(person))
+		.filter((person) => !_.isNil(person))
 
 	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
 }
@@ -318,9 +316,9 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 	if (!bestillingStatus) return totalStatus
 
 	bestillingStatus?.status.forEach((fagsystem) => {
-		_get(fagsystem, 'statuser', []).forEach((status) => {
-			_get(status, 'detaljert', []).forEach((miljoe) => {
-				_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
+		_.get(fagsystem, 'statuser', []).forEach((status) => {
+			_.get(status, 'detaljert', []).forEach((miljoe) => {
+				_.get(miljoe, 'identer', []).forEach((miljoeIdent) => {
 					if (miljoeIdent === ident) {
 						if (status.melding !== 'OK') totalStatus = 'Avvik'
 					}
@@ -334,7 +332,7 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 	if (
 		!identer ||
-		(_isEmpty(fagsystem.tpsf) && _isEmpty(fagsystem.pdlforvalter) && _isEmpty(fagsystem.pdl))
+		(_.isEmpty(fagsystem.tpsf) && _.isEmpty(fagsystem.pdlforvalter) && _.isEmpty(fagsystem.pdl))
 	) {
 		return null
 	}

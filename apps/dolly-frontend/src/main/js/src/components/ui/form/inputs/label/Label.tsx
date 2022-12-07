@@ -1,6 +1,5 @@
 import cn from 'classnames'
-import _isNil from 'lodash/isNil'
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import './Label.less'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
@@ -12,8 +11,8 @@ const StyledLabel = styled.label`
 
 export const Label = ({ name, label, feil, info = null, containerClass, children }) => {
 	const wrapClass = cn('skjemaelement', containerClass, {
-		error: Boolean(feil && !_isEmpty(feil.feilmelding)),
-		'label-offscreen': _isNil(label),
+		error: Boolean(feil && !_.isEmpty(feil.feilmelding)),
+		'label-offscreen': _.isNil(label),
 	})
 
 	return (
@@ -33,7 +32,7 @@ export const Label = ({ name, label, feil, info = null, containerClass, children
 				</StyledLabel>
 			)}
 			{children}
-			{feil && !_isEmpty(feil.feilmelding) && (
+			{feil && !_.isEmpty(feil.feilmelding) && (
 				<div role="alert" aria-live="assertive">
 					<div className="skjemaelement__feilmelding">{feil.feilmelding}</div>
 				</div>

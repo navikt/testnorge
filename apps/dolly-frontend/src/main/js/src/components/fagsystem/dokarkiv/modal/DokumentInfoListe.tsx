@@ -1,9 +1,9 @@
 import React, { BaseSyntheticEvent } from 'react'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/scanning/DokarkivForm'
+import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { Document, Page } from 'react-pdf/dist/esm/entry.webpack5'
+import { Document, Page } from 'react-pdf'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
 

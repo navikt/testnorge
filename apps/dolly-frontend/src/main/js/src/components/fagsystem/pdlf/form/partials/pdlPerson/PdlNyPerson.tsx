@@ -5,7 +5,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { FormikProps } from 'formik'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -31,22 +31,22 @@ export const PdlNyPerson = ({
 	const opts = useContext(BestillingsveilederContext)
 	const isLeggTil = opts?.is?.leggTil
 	const disableAlder =
-		_get(formikBag.values, `${nyPersonPath}.foedtEtter`) != null ||
-		_get(formikBag.values, `${nyPersonPath}.foedtFoer`) != null
+		_.get(formikBag.values, `${nyPersonPath}.foedtEtter`) != null ||
+		_.get(formikBag.values, `${nyPersonPath}.foedtFoer`) != null
 
-	const disableFoedtDato = !['', null].includes(_get(formikBag.values, `${nyPersonPath}.alder`))
+	const disableFoedtDato = !['', null].includes(_.get(formikBag.values, `${nyPersonPath}.alder`))
 
 	const identtypeOptions =
 		erNyIdent && isLeggTil
 			? Options('identtype').filter((a) => a.value !== 'NPID')
 			: Options('identtype')
 
-	const eksisterendePerson = _get(formikBag?.values, eksisterendePersonPath)
+	const eksisterendePerson = _.get(formikBag?.values, eksisterendePersonPath)
 
 	const hasEksisterendePerson =
 		eksisterendePerson &&
 		(gruppeIdenter?.includes(eksisterendePerson) ||
-			_get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value)
+			_.get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>

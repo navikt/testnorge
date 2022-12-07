@@ -2,21 +2,21 @@ import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
 		let feilmelding = null
 		const values = this.options.context
 
-		const foreldrerelasjoner = _get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
+		const foreldrerelasjoner = _.get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
 			(a) => a.minRolleForPerson
 		)
-		const sivilstander = _get(values, 'pdldata.person.sivilstand')?.map((a) => a.type)
-		const barn = _get(values, 'pdldata.person.forelderBarnRelasjon')?.filter(
+		const sivilstander = _.get(values, 'pdldata.person.sivilstand')?.map((a) => a.type)
+		const barn = _.get(values, 'pdldata.person.forelderBarnRelasjon')?.filter(
 			(a) => a.relatertPersonsRolle === 'BARN'
 		)
-		const kjoennListe = _get(values, 'pdldata.person.kjoenn')
+		const kjoennListe = _.get(values, 'pdldata.person.kjoenn')
 
 		const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
@@ -72,7 +72,7 @@ const testDeltBostedAdressetype = (value) => {
 			const personFoerLeggTil = values.personFoerLeggTil
 
 			let fantPartner = false
-			const nyePartnere = _get(values, 'pdldata.person.sivilstand')
+			const nyePartnere = _.get(values, 'pdldata.person.sivilstand')
 			if (nyePartnere?.length > 0) {
 				fantPartner = nyePartnere[0].borIkkeSammen
 			} else if (personFoerLeggTil?.pdlforvalter?.relasjoner) {

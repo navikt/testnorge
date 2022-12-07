@@ -4,7 +4,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import _orderBy from 'lodash/orderBy'
+import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
@@ -170,7 +170,7 @@ const mapTilVisningData = (bestillinger, harArenaSyntTag, arenaMiljoer) => {
 
 		let visningData = []
 		if (data.length > 0) {
-			const sortedBestillinger = data.length > 0 ? _orderBy(data, ['id'], ['desc']) : []
+			const sortedBestillinger = data.length > 0 ? _.orderBy(data, ['id'], ['desc']) : []
 			const sisteArenaBestilling = sortedBestillinger?.[0]
 			let mappedData = { ...initialVisningData }
 			fyllVisningData(sisteArenaBestilling, mappedData)

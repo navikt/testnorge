@@ -1,4 +1,4 @@
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
@@ -13,7 +13,7 @@ interface RefusjonVisning {
 }
 
 export default ({ data }: RefusjonVisning) => {
-	if (!data || _isEmpty(data)) {
+	if (!data || _.isEmpty(data)) {
 		return null
 	}
 	return (

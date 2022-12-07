@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -14,7 +14,7 @@ export const Arbeidsadgang = ({ formikBag }) => {
 		gap: unset;
 	`
 
-	const harArbeidsAdgang = _get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
+	const harArbeidsAdgang = _.get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
 
 	const endreArbeidsadgang = (v) => {
 		formikBag.setFieldValue('udistub.arbeidsadgang.harArbeidsAdgang', v.value)
@@ -28,7 +28,7 @@ export const Arbeidsadgang = ({ formikBag }) => {
 		}
 	}
 
-	const forklaring = _get(formikBag.values, 'udistub.arbeidsadgang.forklaring')
+	const forklaring = _.get(formikBag.values, 'udistub.arbeidsadgang.forklaring')
 
 	const endreForklaring = (text) => {
 		formikBag.setFieldValue('udistub.arbeidsadgang.forklaring', text === '' ? null : text)

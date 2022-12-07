@@ -5,7 +5,7 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import InntektStub from '@/components/inntektStub/validerInntekt'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { ToggleGroup } from '@navikt/ds-react'
 
 const INNTEKTSTYPE_TOGGLE = 'INNTEKTSTYPE_TOGGLE'
@@ -73,7 +73,7 @@ export const InntektForm = ({ formikBag, inntektsinformasjonPath }: data) => {
 
 		const restValues = eventValueSimple && { ...simpleValues }
 
-		const inntektsListe = _get(formikBag.values, `${inntektsinformasjonPath}.inntektsliste`)
+		const inntektsListe = _.get(formikBag.values, `${inntektsinformasjonPath}.inntektsliste`)
 		const newInntektArray =
 			inntektsListe &&
 			inntektsListe.map((inntekt: inntekt) => ({

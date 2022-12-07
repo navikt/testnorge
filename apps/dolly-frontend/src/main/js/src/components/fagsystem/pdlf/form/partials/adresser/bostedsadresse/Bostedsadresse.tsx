@@ -12,15 +12,13 @@ import {
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	UtenlandskAdresse,
 	UkjentBosted,
 	VegadresseVelger,
 	MatrikkeladresseVelger,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import _cloneDeep from 'lodash/cloneDeep'
-import _set from 'lodash/set'
 import { FormikProps } from 'formik'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
@@ -52,25 +50,25 @@ export const BostedsadresseForm = ({
 }: BostedsadresseFormValues) => {
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const boadresse = _get(formikBag.values, path)
-		if (_get(boadresse, 'vegadresse') && _get(boadresse, 'vegadresse') !== null) {
+		const boadresse = _.get(formikBag.values, path)
+		if (_.get(boadresse, 'vegadresse') && _.get(boadresse, 'vegadresse') !== null) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
-			_get(boadresse, 'matrikkeladresse') &&
-			_get(boadresse, 'matrikkeladresse') !== null
+			_.get(boadresse, 'matrikkeladresse') &&
+			_.get(boadresse, 'matrikkeladresse') !== null
 		) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Matrikkel)
 		} else if (
-			_get(boadresse, 'utenlandskAdresse') &&
-			_get(boadresse, 'utenlandskAdresse') !== null
+			_.get(boadresse, 'utenlandskAdresse') &&
+			_.get(boadresse, 'utenlandskAdresse') !== null
 		) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
-		} else if (_get(boadresse, 'ukjentBosted') && _get(boadresse, 'ukjentBosted') !== null) {
+		} else if (_.get(boadresse, 'ukjentBosted') && _.get(boadresse, 'ukjentBosted') !== null) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Ukjent)
 		}
 	}, [])
 
-	const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
 
 	const opts = useContext(BestillingsveilederContext)
 	const getAdresseOptions = () => {
@@ -81,44 +79,44 @@ export const BostedsadresseForm = ({
 	}
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _get(formikBag.values, path)
-		const adresseClone = _cloneDeep(adresse)
+		const adresse = _.get(formikBag.values, path)
+		const adresseClone = _.cloneDeep(adresse)
 
-		_set(adresseClone, 'adressetype', target?.value || null)
+		_.set(adresseClone, 'adressetype', target?.value || null)
 
 		if (!target) {
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'matrikkeladresse', undefined)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
-			_set(adresseClone, 'ukjentBosted', undefined)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'matrikkeladresse', undefined)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'ukjentBosted', undefined)
 		}
 		if (target?.value === 'VEGADRESSE') {
-			_set(adresseClone, 'vegadresse', initialVegadresse)
-			_set(adresseClone, 'matrikkeladresse', undefined)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
-			_set(adresseClone, 'ukjentBosted', undefined)
-			_set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'vegadresse', initialVegadresse)
+			_.set(adresseClone, 'matrikkeladresse', undefined)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'ukjentBosted', undefined)
+			_.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'MATRIKKELADRESSE') {
-			_set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
-			_set(adresseClone, 'ukjentBosted', undefined)
-			_set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'ukjentBosted', undefined)
+			_.set(adresseClone, 'master', 'FREG')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
-			_set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'matrikkeladresse', undefined)
-			_set(adresseClone, 'ukjentBosted', undefined)
-			_set(adresseClone, 'master', 'PDL')
+			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'matrikkeladresse', undefined)
+			_.set(adresseClone, 'ukjentBosted', undefined)
+			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'UKJENT_BOSTED') {
-			_set(adresseClone, 'ukjentBosted', initialUkjentBosted)
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'matrikkeladresse', undefined)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
-			_set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'ukjentBosted', initialUkjentBosted)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'matrikkeladresse', undefined)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'master', 'FREG')
 		}
 
 		formikBag.setFieldValue(path, adresseClone)
@@ -166,7 +164,7 @@ export const BostedsadresseForm = ({
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}
-					value={_get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={valgtAdressetype === null} />

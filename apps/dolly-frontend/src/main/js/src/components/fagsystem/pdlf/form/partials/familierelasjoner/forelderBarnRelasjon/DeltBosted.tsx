@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
-import _get from 'lodash/get'
-import _set from 'lodash/set'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -28,32 +26,32 @@ type Target = {
 }
 
 export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
-	const [adressetype, setAdressetype] = useState(_get(formikBag.values, `${path}.adressetype`))
+	const [adressetype, setAdressetype] = useState(_.get(formikBag.values, `${path}.adressetype`))
 
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
-		const adresse = _get(formikBag.values, adressePath)
-		const adresseClone = _cloneDeep(adresse)
+		const adresse = _.get(formikBag.values, adressePath)
+		const adresseClone = _.cloneDeep(adresse)
 
 		if (!target || target?.value === 'PARTNER_ADRESSE') {
-			_set(adresseClone, 'vegadresse', null)
-			_set(adresseClone, 'matrikkeladresse', null)
-			_set(adresseClone, 'ukjentBosted', null)
+			_.set(adresseClone, 'vegadresse', null)
+			_.set(adresseClone, 'matrikkeladresse', null)
+			_.set(adresseClone, 'ukjentBosted', null)
 		} else if (target?.value === 'VEGADRESSE') {
-			_set(adresseClone, 'vegadresse', initialVegadresse)
-			_set(adresseClone, 'matrikkeladresse', null)
-			_set(adresseClone, 'ukjentBosted', null)
+			_.set(adresseClone, 'vegadresse', initialVegadresse)
+			_.set(adresseClone, 'matrikkeladresse', null)
+			_.set(adresseClone, 'ukjentBosted', null)
 		} else if (target?.value === 'MATRIKKELADRESSE') {
-			_set(adresseClone, 'vegadresse', null)
-			_set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
-			_set(adresseClone, 'ukjentBosted', null)
+			_.set(adresseClone, 'vegadresse', null)
+			_.set(adresseClone, 'matrikkeladresse', initialMatrikkeladresse)
+			_.set(adresseClone, 'ukjentBosted', null)
 		} else if (target?.value === 'UKJENT_BOSTED') {
-			_set(adresseClone, 'vegadresse', null)
-			_set(adresseClone, 'matrikkeladresse', null)
-			_set(adresseClone, 'ukjentBosted', initialUkjentBosted)
+			_.set(adresseClone, 'vegadresse', null)
+			_.set(adresseClone, 'matrikkeladresse', null)
+			_.set(adresseClone, 'ukjentBosted', initialUkjentBosted)
 		}
 
 		setAdressetype(target?.value)
-		_set(adresseClone, 'adressetype', target?.value || null)
+		_.set(adresseClone, 'adressetype', target?.value || null)
 		formikBag.setFieldValue(path, adresseClone)
 	}
 	return (

@@ -5,7 +5,7 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 
 import './BestillingDetaljer.less'
 import { MalModal } from '@/pages/minSide/maler/MalModal'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId, brukertype }) {
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
@@ -15,14 +15,14 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
-	const sivilstand = _get(bestilling, 'bestilling.pdldata.person.sivilstand')
+	const sivilstand = _.get(bestilling, 'bestilling.pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 	const harLevertPersoner = bestilling.antallLevert > 0
 
-	const nyIdent = _get(bestilling, 'bestilling.pdldata.person.nyident')
+	const nyIdent = _.get(bestilling, 'bestilling.pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
-	const forelderBarnRelasjon = _get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
+	const forelderBarnRelasjon = _.get(bestilling, 'bestilling.pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const gjenopprettingsId = bestilling.opprettetFraGruppeId || bestilling.opprettetFraId

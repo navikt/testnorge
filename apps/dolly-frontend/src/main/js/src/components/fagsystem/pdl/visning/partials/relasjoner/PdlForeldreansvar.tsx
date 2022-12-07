@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import _capitalize from 'lodash/capitalize'
+import * as _ from 'lodash-es'
 import Formatters from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -18,7 +18,7 @@ type VisningProps = {
 const PdlForeldreansvarVisning = ({ data, idx }: VisningProps) => {
 	return (
 		<div className="person-visning_content" key={idx}>
-			<TitleValue title="Hvem har ansvaret" value={_capitalize(data.ansvar)} />
+			<TitleValue title="Hvem har ansvaret" value={_.capitalize(data.ansvar)} />
 			<TitleValue title="Ansvarlig" value={data.ansvarlig} />
 			{data.ansvarligUtenIdentifikator && (
 				<div className="flexbox--full-width">

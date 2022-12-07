@@ -5,7 +5,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import * as React from 'react'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 interface PdlPersonUtenIdentifikatorValues {
 	formikBag: FormikProps<{}>
@@ -24,7 +24,7 @@ export const PdlPersonUtenIdentifikator = ({
 	//@ts-ignore
 	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
 
-	const { fornavn, mellomnavn, etternavn } = _get(formikBag?.values, `${path}.navn`)
+	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, `${path}.navn`)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>

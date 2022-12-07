@@ -3,9 +3,8 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
@@ -50,10 +49,10 @@ export const Adressebeskyttelse = ({
 		adressebeskyttelse,
 		idx,
 	}: AdressebeskyttelseVisningTypes) => {
-		const initAdressebeskyttelse = Object.assign(_cloneDeep(initialAdressebeskyttelse), data[idx])
+		const initAdressebeskyttelse = Object.assign(_.cloneDeep(initialAdressebeskyttelse), data[idx])
 		const initialValues = { adressebeskyttelse: initAdressebeskyttelse }
 
-		const redigertAdressebeskyttelsePdlf = _get(
+		const redigertAdressebeskyttelsePdlf = _.get(
 			tmpPersoner,
 			`${ident}.person.adressebeskyttelse`
 		)?.find((a: Person) => a.id === adressebeskyttelse.id)
@@ -69,7 +68,7 @@ export const Adressebeskyttelse = ({
 		const redigertAdressebeskyttelseValues = redigertAdressebeskyttelsePdlf
 			? {
 					adressebeskyttelse: Object.assign(
-						_cloneDeep(initialAdressebeskyttelse),
+						_.cloneDeep(initialAdressebeskyttelse),
 						redigertAdressebeskyttelsePdlf
 					),
 			  }

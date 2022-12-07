@@ -10,7 +10,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { Utflytting } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	getFirstDateAfter,
 	getLastDateBefore,
@@ -28,7 +28,7 @@ type RedigerTypes = {
 }
 
 export const RedigerInnvandringForm = ({ formikBag, path, personFoerLeggTil }: RedigerTypes) => {
-	const hoveddato = new Date(_get(formikBag.values, path)?.innflyttingsdato)
+	const hoveddato = new Date(_.get(formikBag.values, path)?.innflyttingsdato)
 	const datoer = personFoerLeggTil?.pdldata?.person?.utflytting?.map(
 		(utflytting: any) => new Date(utflytting.utflyttingsdato)
 	)

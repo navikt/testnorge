@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -7,9 +7,9 @@ import texts from '../texts'
 import tilleggsinformasjonPaths from '../paths'
 
 const sjekkFelt = (formik, field, options, values, path) => {
-	const fieldValue = _get(values, path)
+	const fieldValue = _.get(values, path)
 	const fieldPath = tilleggsinformasjonPaths(field)
-	const val = _get(fieldValue, fieldPath)
+	const val = _.get(fieldValue, fieldPath)
 
 	if (
 		!options.includes('<TOM>') &&
@@ -101,7 +101,7 @@ const fieldResolver = (field, handleChange, formik, path, index, options = []) =
 		<FormikSelect
 			key={index}
 			name={fieldName}
-			value={_get(values, fieldPath)}
+			value={_.get(values, fieldPath)}
 			label={texts(field)}
 			options={filteredOptions.filter((option) => option.value !== '<TOM>')}
 			fastfield={false}

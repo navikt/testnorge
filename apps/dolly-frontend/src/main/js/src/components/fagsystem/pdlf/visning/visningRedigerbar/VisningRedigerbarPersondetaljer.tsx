@@ -4,7 +4,7 @@ import { Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi, SkjermingApi, TpsMessagingApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -17,7 +17,6 @@ import {
 import { ifPresent } from '@/utils/YupValidations'
 import { PersondetaljerSamlet } from '@/components/fagsystem/pdlf/form/partials/persondetaljerSamlet/PersondetaljerSamlet'
 import { Checkbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { isEqual } from 'lodash'
 import {
 	RedigerLoading,
 	Modus,
@@ -125,11 +124,11 @@ export const VisningRedigerbarPersondetaljer = ({
 			const editFn = async () => {
 				for (const attr of Object.keys(data)) {
 					const initialData = redigertAttributt
-						? _get(redigertAttributt, `${attr}[0]`)
-						: _get(initialValues, `${attr}[0]`)
-					const itemData = _get(data, `${attr}[0]`)
+						? _.get(redigertAttributt, `${attr}[0]`)
+						: _.get(initialValues, `${attr}[0]`)
+					const itemData = _.get(data, `${attr}[0]`)
 
-					if (!isEqual(itemData, initialData)) {
+					if (!_.isEqual(itemData, initialData)) {
 						await PdlforvalterApi.putAttributt(ident, attr, itemData?.id || 0, itemData).catch(
 							(error) => {
 								pdlfError(error)
@@ -194,7 +193,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						} else {
 							pdlf.oppdatert = true
 							setVisningModus(Modus.LoadingPdlf)
-							const id = _get(initialValues, `${attr}[0].id`)
+							const id = _.get(initialValues, `${attr}[0].id`)
 							await PdlforvalterApi.deleteAttributt(ident, attr, id).catch((error) => {
 								pdlfError(error)
 								pdlf.feil = true

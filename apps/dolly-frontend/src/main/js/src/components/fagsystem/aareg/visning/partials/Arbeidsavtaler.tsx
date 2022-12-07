@@ -2,7 +2,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 import React from 'react'
 
 export const Arbeidsavtaler = ({ data }) => {
@@ -12,7 +12,7 @@ export const Arbeidsavtaler = ({ data }) => {
 
 	const detaljer = data[0]
 
-	if (_isEmpty(detaljer)) {
+	if (_.isEmpty(detaljer)) {
 		return null
 	}
 

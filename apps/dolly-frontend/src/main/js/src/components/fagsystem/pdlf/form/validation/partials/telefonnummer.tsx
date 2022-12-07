@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredString } from '@/utils/YupValidations'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 const testTelefonnummer = () =>
 	Yup.string()
@@ -17,7 +17,7 @@ const testPrioritet = (val) => {
 		const values = this?.options?.context
 		if (!values || Object.keys(values).length < 1) return true
 		const index = this?.options?.index || 0
-		const tlfListe = _get(values, 'pdldata.person.telefonnummer') || _get(values, 'telefonnummer')
+		const tlfListe = _.get(values, 'pdldata.person.telefonnummer') || _.get(values, 'telefonnummer')
 		if (tlfListe?.length < 2) {
 			return tlfListe?.[index]?.prioritet === 1
 		}

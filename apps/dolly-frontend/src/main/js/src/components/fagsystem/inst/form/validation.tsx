@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => {
 	const errorMsgAge =
@@ -13,11 +13,11 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 		const path = this.path.split('[')[0]
 		const values = this.options.context
 		const arrayPos = parseInt(this.path.match(/\d+/)[0])
-		const alleOpphold = _get(values, `${path}`)
+		const alleOpphold = _.get(values, `${path}`)
 
 		for (let i = 0; i < alleOpphold.length; i++) {
-			const sluttDatoValue = _get(values, `${path}[${i}].sluttdato`)
-			const startDatoValue = _get(values, `${path}[${i}].startdato`)
+			const sluttDatoValue = _.get(values, `${path}[${i}].sluttdato`)
+			const startDatoValue = _.get(values, `${path}[${i}].startdato`)
 			const sluttDato = new Date(sluttDatoValue)
 			const startDato = new Date(startDatoValue)
 
@@ -30,7 +30,7 @@ const datoOverlapperIkkeAndreOppholdTest = (oppholdValidation, validerStart) => 
 					} else if (selectedDate >= startDato) return false
 				}
 			} else {
-				const selectedStartValue = _get(values, `${path}[${arrayPos}].startdato`)
+				const selectedStartValue = _.get(values, `${path}[${arrayPos}].startdato`)
 				if (!val) {
 					if (i < arrayPos && selectedStartValue !== '') {
 						if (sluttDatoValue === '') return false

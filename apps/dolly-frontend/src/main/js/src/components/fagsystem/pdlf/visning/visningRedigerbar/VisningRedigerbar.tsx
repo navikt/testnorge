@@ -5,7 +5,7 @@ import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/F
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -128,8 +128,8 @@ export const VisningRedigerbar = ({
 
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
-			const id = _get(data, `${path}.id`)
-			const itemData = _get(data, path)
+			const id = _.get(data, `${path}.id`)
+			const itemData = _.get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 				.catch((error: Error) => {
@@ -157,7 +157,7 @@ export const VisningRedigerbar = ({
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
-			const id = _get(initialValues, `${path}.id`)
+			const id = _.get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
 				.catch((error: Error) => {

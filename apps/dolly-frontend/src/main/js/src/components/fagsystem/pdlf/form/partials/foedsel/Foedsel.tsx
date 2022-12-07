@@ -3,7 +3,7 @@ import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -26,8 +26,8 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 		}
 	}
 
-	const foedselsaar = _get(formikBag.values, `${path}.foedselsaar`)
-	const foedselsdato = _get(formikBag.values, `${path}.foedselsdato`)
+	const foedselsaar = _.get(formikBag.values, `${path}.foedselsaar`)
+	const foedselsdato = _.get(formikBag.values, `${path}.foedselsdato`)
 
 	return (
 		<>
@@ -59,8 +59,8 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 				kodeverk={AdresseKodeverk.Kommunenummer}
 				size="large"
 				isDisabled={
-					_get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
-					_get(formikBag.values, `${path}.foedeland`) !== null
+					_.get(formikBag.values, `${path}.foedeland`) !== 'NOR' &&
+					_.get(formikBag.values, `${path}.foedeland`) !== null
 				}
 			/>
 			<FormikSelect
@@ -76,7 +76,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 }
 
 export const Foedsel = ({ formikBag }: FoedselTypes) => {
-	const person = _get(formikBag.values, 'pdldata.opprettNyPerson')
+	const person = _.get(formikBag.values, 'pdldata.opprettNyPerson')
 	const hasAlder = () => {
 		let funnetAlder = false
 		alderProps.forEach((prop) => {

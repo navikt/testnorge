@@ -3,7 +3,7 @@ import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 
@@ -23,7 +23,7 @@ const getFeilmelding = (formikBag) => {
 	let har25Feil = false
 	let har67Feil = false
 	for (let path of errorPaths) {
-		const feil = _get(formikBag.errors, path)
+		const feil = _.get(formikBag.errors, path)
 		if (feil && !har25Feil && feil.includes('25')) {
 			har25Feil = true
 			melding += feilmelding25

@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
+import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
@@ -174,7 +173,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 	const { personFoerLeggTil } = opts
 
 	const fjernIdFoerLeggTil = (path: string) => {
-		const pdlDataElement = _get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
+		const pdlDataElement = _.get(personFoerLeggTil, `pdlforvalter[0].person.${path}`)
 		return pdlDataElement.map(({ id, ...restProperties }: { id: string }) => restProperties)
 	}
 
@@ -242,7 +241,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Statsborgerskap',
 			checked: has(paths.statsborgerskap),
 			add() {
-				_has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
+				_.has(personFoerLeggTil, 'pdlforvalter[0].person.statsborgerskap')
 					? set(paths.statsborgerskap, fjernIdFoerLeggTil('statsborgerskap'))
 					: set(paths.statsborgerskap, [initialStatsborgerskap])
 			},
@@ -254,7 +253,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Innvandret fra',
 			checked: has(paths.innflytting),
 			add() {
-				_has(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
+				_.has(personFoerLeggTil, 'pdlforvalter[0].person.innflytting')
 					? set(paths.innflytting, fjernIdFoerLeggTil('innflytting'))
 					: set(paths.innflytting, [
 							{
@@ -274,7 +273,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Utvandret til',
 			checked: has(paths.utflytting),
 			add() {
-				_has(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
+				_.has(personFoerLeggTil, 'pdlforvalter[0].person.utflytting')
 					? set(paths.utflytting, fjernIdFoerLeggTil('utflytting'))
 					: set(paths.utflytting, [
 							{
@@ -315,15 +314,15 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				setMulti(
 					[
 						paths.egenAnsattDatoFom.tpsM,
-						_get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
-							_get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
+						_.get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
+							_.get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
 							new Date(),
 					],
 					[paths.egenAnsattDatoTom.tpsM, undefined],
 					[
 						paths.egenAnsattDatoFom.skjerming,
-						_get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
-							_get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
+						_.get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
+							_.get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
 							new Date(),
 					],
 					[paths.egenAnsattDatoTom.skjerming, undefined]
@@ -343,10 +342,10 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Telefonnummer',
 			checked: has(paths.telefonnummer.pdl),
 			add() {
-				_has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
+				_.has(personFoerLeggTil, 'pdlforvalter[0].person.telefonnummer')
 					? setMulti(
 							[paths.telefonnummer.pdl, fjernIdFoerLeggTil('telefonnummer')],
-							[paths.telefonnummer.tpsM, _get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
+							[paths.telefonnummer.tpsM, _.get(personFoerLeggTil, 'tpsMessaging.telefonnumre')]
 					  )
 					: setMulti(
 							[
@@ -403,7 +402,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 			label: 'Tilrettelagt komm.',
 			checked: has(paths.tilrettelagtKommunikasjon),
 			add() {
-				_has(personFoerLeggTil, 'pdlforvalter[0].person.tilrettelagtKommunikasjon')
+				_.has(personFoerLeggTil, 'pdlforvalter[0].person.tilrettelagtKommunikasjon')
 					? set(paths.tilrettelagtKommunikasjon, fjernIdFoerLeggTil('tilrettelagtKommunikasjon'))
 					: set(paths.tilrettelagtKommunikasjon, [initialTilrettelagtKommunikasjon])
 			},

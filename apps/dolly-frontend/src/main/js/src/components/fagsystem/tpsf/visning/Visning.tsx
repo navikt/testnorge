@@ -1,4 +1,4 @@
-import _has from 'lodash/has'
+import * as _ from 'lodash-es'
 import {
 	TpsfBoadresse,
 	Fullmakt,
@@ -44,7 +44,7 @@ export const TpsfVisning = ({ data }) => {
 TpsfVisning.filterValues = (data, bestillingsListe) => {
 	// Innvandret/ Utvandret
 	const foersteBestilling = bestillingsListe[bestillingsListe.length - 1]
-	const harFoedselsinnvandring = !_has(foersteBestilling, 'data.tpsf.innvandretFraLand')
+	const harFoedselsinnvandring = !_.has(foersteBestilling, 'data.tpsf.innvandretFraLand')
 	//Voksne personer i Dolly "fødes" ved hjelp av en innvandringsmelding. Vil ikke vise den
 	if (harFoedselsinnvandring)
 		data = {

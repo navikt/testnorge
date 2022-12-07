@@ -1,4 +1,4 @@
-import _omit from 'lodash/omit'
+import * as _ from 'lodash-es'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import Loading from '@/components/ui/loading/Loading'
 import { Oppholdsstatus } from './partials/Oppholdsstatus'
@@ -52,7 +52,7 @@ UdiVisning.filterValues = (data, bestKriterier) => {
 
 	// Asylsøker
 	if (!bestKriterier.soeknadOmBeskyttelseUnderBehandling)
-		data = _omit(data, 'soeknadOmBeskyttelseUnderBehandling')
+		data = _.omit(data, 'soeknadOmBeskyttelseUnderBehandling')
 
 	return data
 }

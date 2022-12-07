@@ -6,9 +6,8 @@ import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/M
 import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { initialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
@@ -61,10 +60,10 @@ export const Oppholdsadresse = ({
 	}
 
 	const OppholdsadresseVisning = ({ oppholdsadresseData, idx }: OppholdsadresseVisningTypes) => {
-		const initOppholdsadresse = Object.assign(_cloneDeep(initialOppholdsadresse), data[idx])
+		const initOppholdsadresse = Object.assign(_.cloneDeep(initialOppholdsadresse), data[idx])
 		const initialValues = { oppholdsadresse: initOppholdsadresse }
 
-		const redigertOppholdsadressePdlf = _get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
+		const redigertOppholdsadressePdlf = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
 			(a: OppholdsadresseData) => a.id === oppholdsadresseData.id
 		)
 		const slettetOppholdsadressePdlf =
@@ -79,7 +78,7 @@ export const Oppholdsadresse = ({
 		const redigertOppholdsadresseValues = redigertOppholdsadressePdlf
 			? {
 					oppholdsadresse: Object.assign(
-						_cloneDeep(initialOppholdsadresse),
+						_.cloneDeep(initialOppholdsadresse),
 						redigertOppholdsadressePdlf
 					),
 			  }

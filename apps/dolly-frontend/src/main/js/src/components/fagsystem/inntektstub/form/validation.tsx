@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { addDays, areIntervalsOverlapping, subMonths } from 'date-fns'
 import {
 	ifPresent,
@@ -20,8 +20,8 @@ const unikOrgMndTest = (unikValidation) => {
 		const currInntektsinformasjonPath = path.split('.', 2).join('.')
 		const inntektsinformasjonPath = currInntektsinformasjonPath.split('[')[0]
 
-		const alleInntekter = _get(values, inntektsinformasjonPath)
-		const currInntektsinformasjon = _get(values, currInntektsinformasjonPath)
+		const alleInntekter = _.get(values, inntektsinformasjonPath)
+		const currInntektsinformasjon = _.get(values, currInntektsinformasjonPath)
 		if (!currInntektsinformasjon.sisteAarMaaned) return true
 
 		return !nyeInntekterOverlapper(alleInntekter, currInntektsinformasjon)

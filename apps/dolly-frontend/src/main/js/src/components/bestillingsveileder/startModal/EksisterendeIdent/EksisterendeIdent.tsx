@@ -1,6 +1,6 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { useAsyncFn } from 'react-use'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { PdlforvalterApi } from '@/service/Api'
 import Loading from '@/components/ui/loading/Loading'
@@ -31,7 +31,7 @@ export const EksisterendeIdent = ({
 				.map((v: { ident: any }) => v.ident),
 		})
 
-	const statuser = _get(state, 'value', [])
+	const statuser = _.get(state, 'value', [])
 	const finnesUgyldige = statuser.some((v) => !v.available)
 	const finnesGyldige = statuser.some((v) => v.available)
 

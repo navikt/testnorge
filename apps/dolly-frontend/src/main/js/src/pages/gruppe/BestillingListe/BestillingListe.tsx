@@ -1,4 +1,4 @@
-import _orderBy from 'lodash/orderBy'
+import * as _ from 'lodash-es'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
 import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'
@@ -44,7 +44,7 @@ export default function BestillingListe({
 		return <ContentContainer>{infoTekst}</ContentContainer>
 	}
 
-	const sortedBestillinger = _orderBy(bestillingListe, ['id'], ['desc'])
+	const sortedBestillinger = _.orderBy(bestillingListe, ['id'], ['desc'])
 
 	const statusBestillinger = bestillingStatusMapper(Object.values(sortedBestillinger))
 

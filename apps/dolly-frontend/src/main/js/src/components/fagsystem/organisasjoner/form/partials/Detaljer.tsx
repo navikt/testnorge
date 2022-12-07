@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import _omit from 'lodash/omit'
+import * as _ from 'lodash-es'
 import { organisasjonPaths } from '../paths'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -41,20 +39,20 @@ export const Detaljer = ({
 	number,
 	maaHaUnderenhet = true,
 }: DetaljerProps) => {
-	const initialValues = _omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
+	const initialValues = _.omit(formikBag.values.organisasjon, ['underenheter', 'sektorkode'])
 	const underenheter = formikBag.values?.organisasjon?.underenheter
 	const sektorkodeErValgt = formikBag.values.organisasjon.hasOwnProperty('sektorkode')
 
 	useEffect(() => {
-		if (level === 0 && !_get(formikBag, `${path}.underenheter`)) {
+		if (level === 0 && !_.get(formikBag, `${path}.underenheter`)) {
 			formikBag.setFieldValue(`${path}.underenheter`, underenheter || [initialValues])
 		}
 	}, [])
 
 	const [typeUnderenhet, setTypeUnderenhet] = useState(
 		level === 0 ||
-			(_has(formikBag.values, `${path}.underenheter`) &&
-				_get(formikBag.values, `${path}.underenheter`))
+			(_.has(formikBag.values, `${path}.underenheter`) &&
+				_.get(formikBag.values, `${path}.underenheter`))
 			? TypeUnderenhet.JURIDISKENHET
 			: TypeUnderenhet.VIRKSOMHET
 	)
@@ -147,7 +145,7 @@ export const Detaljer = ({
 						? 'Du kan ikke legge til underenheter på enhet av type virksomhet'
 						: null
 				}
-				canBeEmpty={!maaHaUnderenhet || _get(formikBag, `values.${path}.enhetstype`) === 'ENK'}
+				canBeEmpty={!maaHaUnderenhet || _.get(formikBag, `values.${path}.enhetstype`) === 'ENK'}
 				tag={number}
 				isOrganisasjon={true}
 			>
@@ -161,7 +159,7 @@ export const Detaljer = ({
 							number={number ? number : (level + 1).toString()}
 							maaHaUnderenhet={
 								typeUnderenhet === 'JURIDISKENHET' &&
-								_get(formikBag, `values.${path}.enhetstype`) !== 'ENK'
+								_.get(formikBag, `values.${path}.enhetstype`) !== 'ENK'
 							}
 						/>
 					)

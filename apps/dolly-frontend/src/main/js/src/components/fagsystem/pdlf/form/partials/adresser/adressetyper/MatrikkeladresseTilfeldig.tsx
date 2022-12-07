@@ -2,7 +2,7 @@ import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
 import { FormikProps } from 'formik'
 import { MatrikkelAdresse } from '@/service/services/AdresseService'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 
 const StyledMatrikkeladresse = styled.div`
@@ -23,12 +23,12 @@ export const MatrikkeladresseTilfeldig = ({ formikBag, path }: MatrikkeladresseP
 			postnummer: adresse.postnummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
 			tilleggsnavn: adresse.tilleggsnavn,
-			matrikkeladresseType: _get(formikBag.values, `${path}.matrikkeladresseType`),
+			matrikkeladresseType: _.get(formikBag.values, `${path}.matrikkeladresseType`),
 		})
 	}
 
 	const renderAdresse = () => {
-		const { kommunenummer, gaardsnummer, bruksnummer, postnummer, tilleggsnavn } = _get(
+		const { kommunenummer, gaardsnummer, bruksnummer, postnummer, tilleggsnavn } = _.get(
 			formikBag.values,
 			path
 		)

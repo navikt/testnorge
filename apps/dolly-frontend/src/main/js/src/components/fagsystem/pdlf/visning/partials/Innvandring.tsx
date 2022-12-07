@@ -8,9 +8,8 @@ import {
 	InnvandringValues,
 	UtvandringValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { initialInnvandring } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
@@ -37,8 +36,10 @@ export const getSisteDatoInnUtvandring = (
 ) => {
 	const tmpPerson = tmpPersoner?.hasOwnProperty(ident)
 
-	const innflytting = tmpPerson ? _get(tmpPersoner, `${ident}.person.innflytting`) : innflyttingData
-	const utflytting = tmpPerson ? _get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
+	const innflytting = tmpPerson
+		? _.get(tmpPersoner, `${ident}.person.innflytting`)
+		: innflyttingData
+	const utflytting = tmpPerson ? _.get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
 
 	let sisteInnflytting = getSisteDato(
 		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))
@@ -91,10 +92,10 @@ export const Innvandring = ({
 	}
 
 	const InnvandringVisning = ({ innvandringData, idx, sisteDato }: InnvandringVisningTypes) => {
-		const initInnvandring = Object.assign(_cloneDeep(initialInnvandring), data[idx])
+		const initInnvandring = Object.assign(_.cloneDeep(initialInnvandring), data[idx])
 		const initialValues = { innflytting: initInnvandring }
 
-		const redigertInnvandringPdlf = _get(tmpPersoner, `${ident}.person.innflytting`)?.find(
+		const redigertInnvandringPdlf = _.get(tmpPersoner, `${ident}.person.innflytting`)?.find(
 			(a: InnvandringValues) => a.id === innvandringData.id
 		)
 		const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
@@ -105,7 +106,7 @@ export const Innvandring = ({
 		const innvandringValues = redigertInnvandringPdlf ? redigertInnvandringPdlf : innvandringData
 		const redigertInnvandringValues = redigertInnvandringPdlf
 			? {
-					innflytting: Object.assign(_cloneDeep(initialInnvandring), redigertInnvandringPdlf),
+					innflytting: Object.assign(_.cloneDeep(initialInnvandring), redigertInnvandringPdlf),
 			  }
 			: null
 		return erPdlVisning ? (

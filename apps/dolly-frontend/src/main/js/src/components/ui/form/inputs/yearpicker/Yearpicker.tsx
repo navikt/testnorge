@@ -1,5 +1,5 @@
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import ReactDatepicker from 'react-datepicker'
@@ -25,7 +25,7 @@ export const Yearpicker = ({
 	disabled = false,
 }: YearpickerProps) => {
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
-		const feilmelding = _get(formikProps.errors, formikPath)
+		const feilmelding = _.get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 

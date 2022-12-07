@@ -1,6 +1,4 @@
-import _isArray from 'lodash/isArray'
-import _isObject from 'lodash/isObject'
-import _isDate from 'lodash/isDate'
+import * as _ from 'lodash-es'
 
 function _mergeKeepShapeArray(dest, source) {
 	if (source.length != dest.length) {
@@ -28,18 +26,18 @@ function _mergeKeepShapeObject(dest, source) {
 
 function _mergeKeepShape(dest, source) {
 	// else if order matters here, because _.isObject is true for arrays also
-	if (_isDate(dest)) {
-		if (!_isDate(source)) {
+	if (_.isDate(dest)) {
+		if (!_.isDate(source)) {
 			return dest
 		}
 		return source
-	} else if (_isArray(dest)) {
-		if (!_isArray(source)) {
+	} else if (_.isArray(dest)) {
+		if (!_.isArray(source)) {
 			return dest
 		}
 		return _mergeKeepShapeArray(dest, source)
-	} else if (_isObject(dest)) {
-		if (!_isObject(source)) {
+	} else if (_.isObject(dest)) {
+		if (!_.isObject(source)) {
 			return dest
 		}
 		return _mergeKeepShapeObject(dest, source)

@@ -1,6 +1,4 @@
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 import Formatters from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
@@ -104,7 +102,7 @@ const mapTpsfBestillingsinformasjon = (bestillingData, data) => {
 		const { identHistorikk, relasjoner, vergemaal, fullmakt, harIngenAdresse, ...persondetaljer } =
 			bestillingData.tpsf
 
-		if (!_isEmpty(persondetaljer)) {
+		if (!_.isEmpty(persondetaljer)) {
 			const personinfo = {
 				header: 'Persondetaljer',
 				items: _getTpsfBestillingData(bestillingData.tpsf),
@@ -168,7 +166,7 @@ const mapPdlNyPerson = (bestillingData, data) => {
 }
 
 const personRelatertTil = (personData, path) => {
-	if (!personData || !_get(personData, path)) return [expandable(null, false, null)]
+	if (!personData || !_.get(personData, path)) return [expandable(null, false, null)]
 	const {
 		identtype,
 		kjoenn,
@@ -181,10 +179,10 @@ const personRelatertTil = (personData, path) => {
 		gradering,
 		nyttNavn,
 		navn,
-	} = _get(personData, path)
+	} = _.get(personData, path)
 
 	return [
-		expandable('PERSON RELATERT TIL', !isEmpty(_get(personData, path), ['syntetisk']), [
+		expandable('PERSON RELATERT TIL', !isEmpty(_.get(personData, path), ['syntetisk']), [
 			obj('Identtype', identtype),
 			obj('Kjønn', kjoenn),
 			obj('Født etter', Formatters.formatDate(foedtEtter)),
@@ -675,8 +673,8 @@ const mapSivilstand = (sivilstand, data) => {
 }
 
 const deltBosted = (personData, path) => {
-	if (!personData || !_get(personData, path)) return [expandable(null, false, null)]
-	const deltBostedData = _get(personData, path)
+	if (!personData || !_.get(personData, path)) return [expandable(null, false, null)]
+	const deltBostedData = _.get(personData, path)
 
 	const fellesVerdier = [
 		obj('Adressetype', Formatters.showLabel('adressetypeDeltBosted', deltBostedData.adressetype)),
@@ -818,12 +816,12 @@ const mapDoedfoedtBarn = (doedfoedtBarn, data) => {
 
 const mapFalskIdentitet = (falskIdentitet, data) => {
 	const sjekkRettIdent = (item) => {
-		if (_has(item, 'rettIdentitetErUkjent')) {
+		if (_.has(item, 'rettIdentitetErUkjent')) {
 			return 'Ukjent'
-		} else if (_has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
+		} else if (_.has(item, 'rettIdentitetVedIdentifikasjonsnummer')) {
 			return 'Ved identifikasjonsnummer'
 		}
-		return _has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
+		return _.has(item, 'rettIdentitetVedOpplysninger') ? 'Ved personopplysninger' : 'Ingen'
 	}
 
 	if (falskIdentitet) {
@@ -994,9 +992,9 @@ const mapKontaktinformasjonForDoedsbo = (kontaktinformasjonForDoedsbo, data) => 
 }
 
 const mapTpsMessaging = (bestillingData, data) => {
-	const tpsMessaging = _get(bestillingData, 'tpsMessaging')
-	const skjerming = _get(bestillingData, 'skjerming')
-	const bankkonto = _get(bestillingData, 'bankkonto')
+	const tpsMessaging = _.get(bestillingData, 'tpsMessaging')
+	const skjerming = _.get(bestillingData, 'skjerming')
+	const bankkonto = _.get(bestillingData, 'bankkonto')
 
 	if (
 		tpsMessaging?.spraakKode ||
@@ -1066,7 +1064,7 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		const harAmelding = _has(aaregKriterier[0], 'amelding')
+		const harAmelding = _.has(aaregKriterier[0], 'amelding')
 		const arbeidsforholdVisning = (arbeidsforhold, i) => [
 			{
 				numberHeader: `Arbeidsforhold ${i + 1}`,
@@ -1282,7 +1280,7 @@ const mapInntektStub = (bestillingData, data) => {
 }
 
 const mapSykemelding = (bestillingData, data) => {
-	const sykemeldingKriterier = _get(bestillingData, 'sykemelding')
+	const sykemeldingKriterier = _.get(bestillingData, 'sykemelding')
 
 	if (sykemeldingKriterier) {
 		const sykemelding = {
@@ -1311,10 +1309,10 @@ const mapSykemelding = (bestillingData, data) => {
 						sykemeldingKriterier.detaljertSykemelding.manglendeTilretteleggingPaaArbeidsplassen
 					)
 				),
-				obj('Diagnose', _get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnose')),
+				obj('Diagnose', _.get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnose')),
 				obj(
 					'Diagnosekode',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnosekode')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'hovedDiagnose.diagnosekode')
 				),
 				obj(
 					'Antall registrerte bidiagnoser',
@@ -1330,22 +1328,22 @@ const mapSykemelding = (bestillingData, data) => {
 				),
 				obj(
 					'Helsepersonell ident',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.ident')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.ident')
 				),
-				obj('HPR-nummer', _get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')),
+				obj('HPR-nummer', _.get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.hprId')),
 				obj(
 					'SamhandlerType',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.samhandlerType')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'helsepersonell.samhandlerType')
 				),
-				obj('Arbeidsgiver', _get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.navn')),
+				obj('Arbeidsgiver', _.get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.navn')),
 				obj(
 					'Yrkesbetegnelse',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.yrkesbetegnelse'),
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.yrkesbetegnelse'),
 					ArbeidKodeverk.Yrker
 				),
 				obj(
 					'Stillingsprosent',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.stillingsprosent')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'arbeidsgiver.stillingsprosent')
 				),
 				obj(
 					'Antall registrerte perioder',
@@ -1353,15 +1351,15 @@ const mapSykemelding = (bestillingData, data) => {
 				),
 				obj(
 					'Tiltak fra NAV',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakNav')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakNav')
 				),
 				obj(
 					'Tiltak på arbeidsplass',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakArbeidsplass')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.tiltakArbeidsplass')
 				),
 				obj(
 					'Hensyn på arbeidsplass',
-					_get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.beskrivHensynArbeidsplassen')
+					_.get(sykemeldingKriterier.detaljertSykemelding, 'detaljer.beskrivHensynArbeidsplassen')
 				),
 				obj(
 					'Arbeidsfør etter endt periode',
@@ -1587,22 +1585,22 @@ const mapUdiStub = (bestillingData, data) => {
 				obj(
 					'Oppholdstillatelse fra dato',
 					Formatters.formatDate(
-						_get(oppholdKriterier, `${currentOppholdsrettType}Periode.fra`) ||
-							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+						_.get(oppholdKriterier, `${currentOppholdsrettType}Periode.fra`) ||
+							_.get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 					)
 				),
 				obj(
 					'Oppholdstillatelse til dato',
 					Formatters.formatDate(
-						_get(oppholdKriterier, `${currentOppholdsrettType}Periode.til`) ||
-							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+						_.get(oppholdKriterier, `${currentOppholdsrettType}Periode.til`) ||
+							_.get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 					)
 				),
 				obj(
 					'Effektueringsdato',
 					Formatters.formatDate(
-						_get(oppholdKriterier, `${currentOppholdsrettType}Effektuering`) ||
-							_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
+						_.get(oppholdKriterier, `${currentOppholdsrettType}Effektuering`) ||
+							_.get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 					)
 				),
 				obj(
@@ -1614,19 +1612,19 @@ const mapUdiStub = (bestillingData, data) => {
 					'Type oppholdstillatelse',
 					Formatters.showLabel(
 						'oppholdstillatelseType',
-						_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseType')
+						_.get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseType')
 					)
 				),
 				obj(
 					'Vedtaksdato',
 					Formatters.formatDate(
-						_get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
+						_.get(oppholdKriterier, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 					)
 				),
 				obj(
 					'Avgjørelsesdato',
 					Formatters.formatDate(
-						_get(
+						_.get(
 							oppholdKriterier,
 							'ikkeOppholdstilatelseIkkeVilkaarIkkeVisum.avslagEllerBortfall.avgjorelsesDato'
 						)
@@ -1654,14 +1652,14 @@ const mapUdiStub = (bestillingData, data) => {
 				),
 				obj(
 					'Arbeidsadgang fra dato',
-					Formatters.formatDate(_get(arbeidsadgangKriterier, 'periode.fra'))
+					Formatters.formatDate(_.get(arbeidsadgangKriterier, 'periode.fra'))
 				),
 				obj(
 					'Arbeidsadgang til dato',
-					Formatters.formatDate(_get(arbeidsadgangKriterier, 'periode.til'))
+					Formatters.formatDate(_.get(arbeidsadgangKriterier, 'periode.til'))
 				),
-				obj('Hjemmel', _get(arbeidsadgangKriterier, 'hjemmel')),
-				obj('Forklaring', _get(arbeidsadgangKriterier, 'forklaring')),
+				obj('Hjemmel', _.get(arbeidsadgangKriterier, 'hjemmel')),
+				obj('Forklaring', _.get(arbeidsadgangKriterier, 'forklaring')),
 				obj('Alias', aliaserListe.length > 0 && aliaserListe),
 				obj('Flyktningstatus', Formatters.oversettBoolean(udiStubKriterier.flyktning)),
 				obj(
@@ -1774,32 +1772,32 @@ const mapInntektsmelding = (bestillingData, data) => {
 			obj('Opphørsdato refusjon', Formatters.formatDate(inntekt.refusjon.refusjonsopphoersdato)),
 			obj(
 				'Endringer i refusjon',
-				_has(inntekt, 'refusjon.endringIRefusjonListe') &&
+				_.has(inntekt, 'refusjon.endringIRefusjonListe') &&
 					inntekt.refusjon.endringIRefusjonListe.length
 			),
 			//Omsorg
-			obj('Har utbetalt pliktige dager', _get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
+			obj('Har utbetalt pliktige dager', _.get(inntekt, 'omsorgspenger.harUtbetaltPliktigeDager')),
 			obj(
 				'Fraværsperioder',
-				_has(inntekt, 'omsorgspenger.fravaersPerioder') &&
+				_.has(inntekt, 'omsorgspenger.fravaersPerioder') &&
 					inntekt.omsorgspenger.fravaersPerioder.length
 			),
 			obj(
 				'Delvis fravær',
-				_has(inntekt, 'omsorgspenger.delvisFravaersListe') &&
+				_.has(inntekt, 'omsorgspenger.delvisFravaersListe') &&
 					inntekt.omsorgspenger.delvisFravaersListe.length
 			),
 			//Sykepenger
-			obj('Brutto utbetalt', _get(inntekt, 'sykepengerIArbeidsgiverperioden.bruttoUtbetalt')),
+			obj('Brutto utbetalt', _.get(inntekt, 'sykepengerIArbeidsgiverperioden.bruttoUtbetalt')),
 			obj(
 				'Begrunnelse for reduksjon eller ikke utbetalt',
 				Formatters.codeToNorskLabel(
-					_get(inntekt, 'sykepengerIArbeidsgiverperioden.begrunnelseForReduksjonEllerIkkeUtbetalt')
+					_.get(inntekt, 'sykepengerIArbeidsgiverperioden.begrunnelseForReduksjonEllerIkkeUtbetalt')
 				)
 			),
 			obj(
 				'Arbeidsgiverperioder',
-				_has(inntekt, 'sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe') &&
+				_.has(inntekt, 'sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe') &&
 					inntekt.sykepengerIArbeidsgiverperioden.arbeidsgiverperiodeListe.length
 			),
 			//Foreldrepenger
@@ -1824,7 +1822,7 @@ const mapInntektsmelding = (bestillingData, data) => {
 	}
 
 	if (inntektsmeldingKriterier) {
-		if (_isEmpty(inntektsmeldingKriterier.inntekter)) {
+		if (_.isEmpty(inntektsmeldingKriterier.inntekter)) {
 			data.push(tomInntektsmelding)
 		} else data.push(mapInntektsmeldingKriterier(inntektsmeldingKriterier.inntekter))
 	}

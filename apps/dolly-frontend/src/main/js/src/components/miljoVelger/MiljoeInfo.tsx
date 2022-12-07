@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
@@ -25,11 +25,11 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		!pensjonforvalter &&
 		!sykemelding &&
 		!dokarkiv &&
-		!_get(pdldata, 'bostedsadresse') &&
-		!_get(pdldata, 'fullmakt') &&
-		!_get(pdldata, 'falskIdentitet') &&
-		!_get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
-		!_get(pdldata, 'kontaktinformasjonForDoedsbo')
+		!_.get(pdldata, 'bostedsadresse') &&
+		!_.get(pdldata, 'fullmakt') &&
+		!_.get(pdldata, 'falskIdentitet') &&
+		!_.get(pdldata, 'utenlandskIdentifikasjonsnummer') &&
+		!_.get(pdldata, 'kontaktinformasjonForDoedsbo')
 	) {
 		return null
 	}

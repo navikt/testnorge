@@ -4,7 +4,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { InntektstubVirksomhetToggle } from './inntektstubVirksomhetToggle'
 import InntektsinformasjonLister from './inntektsinformasjonLister/inntektsinformasjonLister'
 import InntektsendringForm from './inntektsendringForm'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 
@@ -15,14 +15,14 @@ interface InntektsinformasjonForm {
 
 export default ({ path, formikBag }: InntektsinformasjonForm) => {
 	const [date, setDate] = useState(
-		_get(formikBag.values, `${path}.sisteAarMaaned`) !== ''
-			? Date.parse(_get(formikBag.values, `${path}.sisteAarMaaned`))
+		_.get(formikBag.values, `${path}.sisteAarMaaned`) !== ''
+			? Date.parse(_.get(formikBag.values, `${path}.sisteAarMaaned`))
 			: null
 	)
 
 	const [rapporteringsdate, setRapporteringsdato] = useState(
-		_get(formikBag.values, `${path}.rapporteringsdato`) !== ''
-			? Date.parse(_get(formikBag.values, `${path}.rapporteringsdato`))
+		_.get(formikBag.values, `${path}.rapporteringsdato`) !== ''
+			? Date.parse(_.get(formikBag.values, `${path}.rapporteringsdato`))
 			: null
 	)
 

@@ -1,5 +1,5 @@
 import cn from 'classnames'
-import _isFunction from 'lodash/isFunction'
+import * as _ from 'lodash-es'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import Loading from '@/components/ui/loading/Loading'
 
@@ -43,7 +43,7 @@ export const TitleValue = ({ kodeverk = null, visKopier = false, ...restProps })
 					{(kodeverkValues, kodeverkValue) => {
 						if (!kodeverkValue)
 							return !kodeverkValues ? <Loading /> : displayValue(value, visKopier)
-						return _isFunction(restProps.children)
+						return _.isFunction(restProps.children)
 							? restProps.children(kodeverkValue)
 							: kodeverkValue.label
 					}}

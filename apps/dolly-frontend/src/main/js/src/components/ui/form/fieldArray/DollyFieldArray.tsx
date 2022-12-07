@@ -1,5 +1,5 @@
 import { FieldArray } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import Button from '@/components/ui/button/Button'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import ExpandableBlokk from './ExpandableBlokk'
@@ -203,7 +203,7 @@ export const FormikDollyFieldArray = ({
 }) => (
 	<FieldArray name={name}>
 		{(arrayHelpers) => {
-			const values = _get(arrayHelpers.form.values, name, [])
+			const values = _.get(arrayHelpers.form.values, name, [])
 			const addNewEntry = () => {
 				handleNewEntry ? handleNewEntry() : arrayHelpers.push(newEntry)
 			}

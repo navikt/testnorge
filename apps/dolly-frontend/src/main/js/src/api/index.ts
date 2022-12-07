@@ -5,7 +5,7 @@ import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 import { runningTestcafe } from '@/service/services/Request'
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -13,7 +13,7 @@ export const multiFetcherAny = (urlListe, headers) => {
 	return Promise.any(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
-				if (_isEmpty(result)) {
+				if (_.isEmpty(result)) {
 					throw new Error('Returnerte ingen verdi, prøver neste promise..')
 				}
 				return [result]

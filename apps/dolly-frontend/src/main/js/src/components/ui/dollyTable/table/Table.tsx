@@ -1,16 +1,14 @@
 import cn from 'classnames'
 import Row from './TableRow'
 import Column from './TableColumn'
-import _get from 'lodash/get'
-import _isFunction from 'lodash/isFunction'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 import { LaastGruppeIconItem } from '@/components/ui/icon/IconItem'
 
 import './Table.less'
 
 const getColumnValue = (row, column) => {
-	let value = _get(row, `${column.dataField}`, '')
-	value = _isNil(value) ? '' : value.toString()
+	let value = _.get(row, `${column.dataField}`, '')
+	value = _.isNil(value) ? '' : value.toString()
 	return column.formatter ? column.formatter(value, row) : value
 }
 
@@ -28,7 +26,7 @@ const getColumnClass = (cell) => cell.headerCssClass
 // Fallback til row index
 const getRowKey = (row, columns) => {
 	const hasUnique = columns.find((c) => c.unique)
-	return hasUnique && _get(row, `${hasUnique.dataField}`)?.toString()
+	return hasUnique && _.get(row, `${hasUnique.dataField}`)?.toString()
 }
 
 const getIconType = (iconItem, row) => {
@@ -38,7 +36,7 @@ const getIconType = (iconItem, row) => {
 	if (row.erLaast) {
 		iconItem = <LaastGruppeIconItem />
 	}
-	return _isFunction(iconItem) ? iconItem(row) : iconItem
+	return _.isFunction(iconItem) ? iconItem(row) : iconItem
 }
 
 export default function Table({
@@ -89,12 +87,12 @@ export default function Table({
 				const expandPerson =
 					expandComponent &&
 					visPerson &&
-					(_get(expandComponent, 'props.personId') === visPerson.toString() ||
-						_get(expandComponent, 'props.personId') === hovedperson.toString())
+					(_.get(expandComponent, 'props.personId') === visPerson.toString() ||
+						_.get(expandComponent, 'props.personId') === hovedperson.toString())
 				const expandBestilling =
 					expandComponent &&
 					visBestilling &&
-					_get(expandComponent, 'props.bestilling.id')?.toString() === visBestilling.toString()
+					_.get(expandComponent, 'props.bestilling.id')?.toString() === visBestilling.toString()
 
 				return (
 					<Row

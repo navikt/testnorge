@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -15,8 +15,8 @@ const hjelpetekstAdresser =
 	'For å få generert en gyldig norsk adresse kan du velge å fylle ut postnummer, kommunenummer, eller ingen ting. Det vil opprettes en gyldig adresse på grunnlag av det du har fylt ut, og har du ikke fylt ut noe blir adressen en tilfeldig gyldig adresse.'
 
 export const Adresser = ({ formikBag, path }: AdresserProps) => {
-	const landForretningsadresse = _get(formikBag, `values.${path}.forretningsadresse.landkode`)
-	const landPostadresse = _get(formikBag, `values.${path}.postadresse.landkode`)
+	const landForretningsadresse = _.get(formikBag, `values.${path}.forretningsadresse.landkode`)
+	const landPostadresse = _.get(formikBag, `values.${path}.postadresse.landkode`)
 
 	const handleLandChange = (adressePath: string) => {
 		formikBag.setFieldValue(`${adressePath}.postnr`, '')

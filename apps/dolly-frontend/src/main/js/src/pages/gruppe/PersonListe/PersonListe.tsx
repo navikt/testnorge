@@ -12,9 +12,8 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { KommentarModal } from '@/pages/gruppe/PersonListe/modal/KommentarModal'
 import { selectPersonListe, sokSelector } from '@/ducks/fagsystem'
-import { isEmpty, isEqual } from 'lodash'
 import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
@@ -62,13 +61,13 @@ export default function PersonListe({
 					return { ident: ident.ident, master: ident.master }
 				}
 			})
-		if (!isEqual(idents, identListe)) {
+		if (!_.isEqual(idents, identListe)) {
 			setIdentListe(idents)
 		}
 	}, [identer])
 
 	useEffect(() => {
-		if (isEmpty(identListe)) {
+		if (_.isEmpty(identListe)) {
 			return
 		}
 		fetchTpsfPersoner(identListe)
@@ -177,11 +176,11 @@ export default function PersonListe({
 		return column
 	})
 
-	if (isFetching || (personListe?.length === 0 && !isEmpty(identer))) {
+	if (isFetching || (personListe?.length === 0 && !_.isEmpty(identer))) {
 		return <Loading label="Laster personer" panel />
 	}
 
-	if (isEmpty(identer)) {
+	if (_.isEmpty(identer)) {
 		const infoTekst =
 			brukertype === 'BANKID'
 				? 'Trykk på "Importer personer"-knappen for å kunne søke opp og importere identer til gruppen.'
@@ -192,7 +191,7 @@ export default function PersonListe({
 
 	const updatePersonHeader = () => {
 		personListe.map((person) => {
-			const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
+			const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${person?.identNr}.person`)
 			const fornavn = redigertPerson?.navn?.[0]?.fornavn || ''
 			const mellomnavn = redigertPerson?.navn?.[0]?.mellomnavn
 				? `${redigertPerson?.navn?.[0]?.mellomnavn?.charAt(0)}.`

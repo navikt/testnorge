@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
-import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 import { ifPresent, requiredNumber } from '@/utils/YupValidations'
 
 function calculate_age(dob) {
@@ -11,8 +10,8 @@ function calculate_age(dob) {
 }
 
 const getAlder = (values, personFoerLeggTil, importPersoner) => {
-	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
-	if (_isNil(alder)) {
+	let alder = _.get(values, 'pdldata.opprettNyPerson.alder')
+	if (_.isNil(alder)) {
 		let foedselsdato = null
 		if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
 			foedselsdato = values.pdldata.person.foedsel[0].foedselsdato
@@ -32,7 +31,7 @@ const getAlder = (values, personFoerLeggTil, importPersoner) => {
 				.sort((a, b) => new Date(b) - new Date(a))
 			foedselsdato = foedselsdatoer?.[0]
 		}
-		if (!_isNil(foedselsdato)) alder = calculate_age(new Date(foedselsdato))
+		if (!_.isNil(foedselsdato)) alder = calculate_age(new Date(foedselsdato))
 	}
 	return alder
 }
@@ -42,13 +41,13 @@ const invalidAlderFom = (inntektFom, values) => {
 	const importPersoner = values.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
-	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
-	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
-	if (!_isNil(alder) && alder !== '') {
+	const foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	const foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	if (!_.isNil(alder) && alder !== '') {
 		if (new Date().getFullYear() - alder + 17 > inntektFom) {
 			return true
 		}
-	} else if (!_isNil(foedtFoer)) {
+	} else if (!_.isNil(foedtFoer)) {
 		const foedtFoerDate = new Date(foedtFoer)
 		const day = foedtFoerDate.getDate()
 		const month = foedtFoerDate.getMonth()
@@ -58,7 +57,7 @@ const invalidAlderFom = (inntektFom, values) => {
 		if (year + 17 > inntektFom) {
 			return true
 		}
-	} else if (!_isNil(foedtEtter) && _isNil(foedtFoer)) {
+	} else if (!_.isNil(foedtEtter) && _.isNil(foedtFoer)) {
 		const foedtEtterDate = new Date(foedtEtter)
 		if (foedtEtterDate.getFullYear() + 17 > inntektFom) {
 			return true
@@ -74,18 +73,18 @@ const invalidAlderTom = (inntektTom, values) => {
 	const importPersoner = values.importPersoner
 
 	const alder = getAlder(values, personFoerLeggTil, importPersoner)
-	const foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
-	const foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
-	if (!_isNil(alder)) {
+	const foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	const foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	if (!_.isNil(alder)) {
 		if (inntektTom >= new Date().getFullYear() - alder + 69) {
 			return true
 		}
-	} else if (!_isNil(foedtEtter)) {
+	} else if (!_.isNil(foedtEtter)) {
 		const foedtEtterDate = new Date(foedtEtter)
 		if (inntektTom >= foedtEtterDate.getFullYear() + 69) {
 			return true
 		}
-	} else if (!_isNil(foedtFoer)) {
+	} else if (!_.isNil(foedtFoer)) {
 		const foedtFoerDate = new Date(foedtFoer)
 		if (foedtFoerDate.getFullYear() + 69 <= inntektTom) {
 			return true
@@ -99,7 +98,7 @@ const invalidDoedsdato = (inntektTom, values) => {
 	const importPersoner = values.importPersoner
 
 	let doedsdato = values?.pdldata?.person?.doedsfall?.[0]?.doedsdato
-	if (_isNil(doedsdato)) {
+	if (_.isNil(doedsdato)) {
 		if (personFoerLeggTil?.tpsf?.doedsdato) {
 			doedsdato = personFoerLeggTil.tpsf.doedsdato
 		} else if (personFoerLeggTil?.pdlforvalter?.person?.doedsfall) {
@@ -118,7 +117,7 @@ const invalidDoedsdato = (inntektTom, values) => {
 			doedsdato = doedsdatoer?.[0]
 		}
 	}
-	if (!_isNil(doedsdato)) {
+	if (!_.isNil(doedsdato)) {
 		const year = new Date(doedsdato).getFullYear()
 		return year < inntektTom
 	}
@@ -137,8 +136,8 @@ const validFomDateTest = (val) => {
 			return this.createError({ message: 'F.o.m kan tidligst være året personen fyller 17 år' })
 		}
 
-		let inntektTom = _get(values, `${path}.tomAar`)
-		if (!_isNil(inntektTom) && inntektFom > inntektTom) {
+		let inntektTom = _.get(values, `${path}.tomAar`)
+		if (!_.isNil(inntektTom) && inntektFom > inntektTom) {
 			return this.createError({ message: 'F.o.m. dato må være før t.o.m. dato' })
 		}
 
@@ -164,8 +163,8 @@ const validTomDateTest = (val) => {
 			return this.createError({ message: 'T.o.m kan ikke være etter at person har dødd' })
 		}
 
-		const inntektFom = _get(values, `${path}.fomAar`)
-		if (!_isNil(inntektFom) && inntektTom < inntektFom) {
+		const inntektFom = _.get(values, `${path}.fomAar`)
+		if (!_.isNil(inntektFom) && inntektTom < inntektFom) {
 			return this.createError({ message: 'T.o.m. dato må være etter f.o.m. dato' })
 		}
 

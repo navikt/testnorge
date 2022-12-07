@@ -1,6 +1,5 @@
 import { subYears } from 'date-fns'
-import _get from 'lodash/get'
-import _isString from 'lodash/isString'
+import * as _ from 'lodash-es'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -47,7 +46,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 								name={`${path}.tjeneste`}
 								label="Tjeneste"
 								options={Options('tjeneste')}
-								isDisabled={_get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
+								isDisabled={_.get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
 								fastfield={false}
 								isClearable={false}
 								size="large"
@@ -59,23 +58,23 @@ export const InntektsaarForm = ({ formikBag }) => {
 								path={`${path}.grunnlag`}
 								header="Grunnlag fra Fastlands-Norge"
 								initialGrunnlag={initialGrunnlag}
-								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+								tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
 								formikBag={formikBag}
 							/>
 						)}
-						{_get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+						{_.get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
 							<EnkeltinntektForm
 								path={`${path}.svalbardGrunnlag`}
 								header="Grunnlag fra Svalbard"
 								initialGrunnlag={initialGrunnlag}
-								tjeneste={_get(formikBag.values, `${path}.tjeneste`)}
+								tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
 								formikBag={formikBag}
 							/>
 						)}
 
 						<div style={{ marginTop: '20px' }}>
 							{/* TODO: Vise feilmelding uten at den drunker i annen tekst */}
-							{_isString(_get(formikBag.errors, `${path}.grunnlag`)) && (
+							{_isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
 								<ErrorMessageWithFocus
 									name={`${path}.grunnlag`}
 									className="error-message"
@@ -91,5 +90,5 @@ export const InntektsaarForm = ({ formikBag }) => {
 }
 
 const tjenesteErValgt = (formikBag, path) => {
-	return _get(formikBag.values, `${path}.tjeneste`)
+	return _.get(formikBag.values, `${path}.tjeneste`)
 }

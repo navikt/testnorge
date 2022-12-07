@@ -9,9 +9,8 @@ import {
 	UtvandringValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getSisteDatoInnUtvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
 
@@ -71,10 +70,10 @@ export const Utvandring = ({
 	}
 
 	const UtvandringVisning = ({ utvandringData, idx, sisteDato }: UtvandringVisningTypes) => {
-		const initUtvandring = Object.assign(_cloneDeep(initialUtvandring), data[idx])
+		const initUtvandring = Object.assign(_.cloneDeep(initialUtvandring), data[idx])
 		const initialValues = { utflytting: initUtvandring }
 
-		const redigertUtvandringPdlf = _get(tmpPersoner, `${ident}.person.utflytting`)?.find(
+		const redigertUtvandringPdlf = _.get(tmpPersoner, `${ident}.person.utflytting`)?.find(
 			(a: UtvandringValues) => a.id === utvandringData.id
 		)
 		const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
@@ -85,7 +84,7 @@ export const Utvandring = ({
 		const utvandringValues = redigertUtvandringPdlf ? redigertUtvandringPdlf : utvandringData
 		const redigertUtvandringValues = redigertUtvandringPdlf
 			? {
-					utflytting: Object.assign(_cloneDeep(initialUtvandring), redigertUtvandringPdlf),
+					utflytting: Object.assign(_.cloneDeep(initialUtvandring), redigertUtvandringPdlf),
 			  }
 			: null
 		return erPdlVisning ? (

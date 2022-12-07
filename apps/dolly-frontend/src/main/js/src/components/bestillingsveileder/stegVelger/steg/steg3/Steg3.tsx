@@ -9,7 +9,7 @@ import { IdentVelger } from './IdentVelger'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useFormikContext } from 'formik'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
@@ -23,21 +23,21 @@ export const Steg3 = () => {
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
 	const erQ2MiljoeAvhengig =
-		_get(formikBag.values, 'pdldata.person.fullmakt') ||
-		_get(formikBag.values, 'pdldata.person.falskIdentitet') ||
-		_get(formikBag.values, 'pdldata.person.falskIdentitet') ||
-		_get(formikBag.values, 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
-		_get(formikBag.values, 'pdldata.person.kontaktinformasjonForDoedsbo')
+		_.get(formikBag.values, 'pdldata.person.fullmakt') ||
+		_.get(formikBag.values, 'pdldata.person.falskIdentitet') ||
+		_.get(formikBag.values, 'pdldata.person.falskIdentitet') ||
+		_.get(formikBag.values, 'pdldata.person.utenlandskIdentifikasjonsnummer') ||
+		_.get(formikBag.values, 'pdldata.person.kontaktinformasjonForDoedsbo')
 
 	const bankIdBruker = currentBruker?.brukertype === 'BANKID'
 
-	const sivilstand = _get(formikBag.values, 'pdldata.person.sivilstand')
+	const sivilstand = _.get(formikBag.values, 'pdldata.person.sivilstand')
 	const harRelatertPersonVedSivilstand = sivilstand?.some((item) => item.relatertVedSivilstand)
 
-	const nyIdent = _get(formikBag.values, 'pdldata.person.nyident')
+	const nyIdent = _.get(formikBag.values, 'pdldata.person.nyident')
 	const harEksisterendeNyIdent = nyIdent?.some((item) => item.eksisterendeIdent)
 
-	const forelderBarnRelasjon = _get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const forelderBarnRelasjon = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
 	const harRelatertPersonBarn = forelderBarnRelasjon?.some((item) => item.relatertPerson)
 
 	const alleredeValgtMiljoe = () => {

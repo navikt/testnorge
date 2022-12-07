@@ -1,5 +1,4 @@
-import _get from 'lodash/get'
-import { isNil } from 'lodash'
+import * as _ from 'lodash-es'
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
 
@@ -8,9 +7,9 @@ const validInnflyttingsdato = (val) => {
 		if (!value) return true
 		const innflyttingsdato = value
 		const values = this.options.context
-		const utflyttingsdato = _get(values, 'pdldata.person.utflytting[0].utflyttingsdato')
+		const utflyttingsdato = _.get(values, 'pdldata.person.utflytting[0].utflyttingsdato')
 		if (
-			!isNil(utflyttingsdato) &&
+			!_.isNil(utflyttingsdato) &&
 			new Date(innflyttingsdato).getDate() === new Date(utflyttingsdato).getDate()
 		) {
 			return this.createError({ message: 'Innflyttingsdato kan ikke være lik utflyttingsdato' })

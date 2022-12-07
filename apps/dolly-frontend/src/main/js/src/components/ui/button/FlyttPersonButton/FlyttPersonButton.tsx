@@ -5,7 +5,7 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import useBoolean from '@/utils/hooks/useBoolean'
 import { DollyApi } from '@/service/Api'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FieldArray, Formik, FormikProps } from 'formik'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
@@ -348,16 +348,16 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
-						{harRelatertePersoner(_get(formikBag.values, 'identer')) && (
+						{harRelatertePersoner(_.get(formikBag.values, 'identer')) && (
 							<Alert variant="info" size="small" inline>
 								Du har valgt én eller flere personer som har relaterte personer. Disse vil også
 								flyttes.
 							</Alert>
 						)}
 						<ValgtePersonerList>
-							{_get(formikBag.values, 'identer')?.length > 0 ? (
+							{_.get(formikBag.values, 'identer')?.length > 0 ? (
 								<ul>
-									{_get(formikBag.values, 'identer')?.map((ident: string) => (
+									{_.get(formikBag.values, 'identer')?.map((ident: string) => (
 										<li key={ident}>
 											{gruppeOptions?.find((person: Option) => person?.value === ident)?.label}
 										</li>

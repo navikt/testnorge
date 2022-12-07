@@ -1,8 +1,7 @@
 import * as Yup from 'yup'
 import { messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { isAfter, isBefore } from 'date-fns'
-import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 
 const ikkeOverlappendeVedtak = ['aap', 'dagpenger']
 
@@ -50,20 +49,20 @@ const getFoedtEtter = (alder) => {
 
 // Vedtak/støtte må deles opp i vedtak til fylte 25 år og vedtak etter fylte 25 år.
 const overlapp25aarsdag = (fradato, tildato, values) => {
-	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	let foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
-	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	let foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
 	foedtEtter = foedtEtter ? new Date(foedtEtter) : null
 
-	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
-	if (!_isNil(alder)) {
+	let alder = _.get(values, 'pdldata.opprettNyPerson.alder')
+	if (!_.isNil(alder)) {
 		foedtFoer = getFoedtFoer(alder)
 		foedtEtter = getFoedtEtter(alder)
 	}
 
-	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
+	if (_.isNil(foedtFoer) && _.isNil(foedtEtter)) {
 		const foedselsdatoer = getFoedselsdatoer(values)
-		const foedselsaar = _get(values, 'pdldata.person.foedsel[0].foedselsaar')
+		const foedselsaar = _.get(values, 'pdldata.person.foedsel[0].foedselsaar')
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
 				let tjuefem = new Date(fdato)
@@ -73,7 +72,7 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 				}
 			}
 			return false
-		} else if (!_isNil(foedselsaar)) {
+		} else if (!_.isNil(foedselsaar)) {
 			foedtEtter = new Date(foedselsaar, 0, 1)
 			foedtFoer = new Date(foedselsaar, 11, 31)
 		} else {
@@ -82,10 +81,10 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 		}
 	}
 
-	if (_isNil(foedtFoer)) {
+	if (_.isNil(foedtFoer)) {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
 		return isAfter(fradato, foedtEtter) || isAfter(tildato, foedtEtter)
-	} else if (_isNil(foedtEtter)) {
+	} else if (_.isNil(foedtEtter)) {
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
 		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
 	} else {
@@ -102,20 +101,20 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 
 // Vedtak/støtte må opphøre ved fylt 67.
 const erEtter67aarsdag = (fradato, tildato, values) => {
-	let foedtFoer = _get(values, 'pdldata.opprettNyPerson.foedtFoer')
+	let foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	foedtFoer = foedtFoer ? new Date(foedtFoer) : null
-	let foedtEtter = _get(values, 'pdldata.opprettNyPerson.foedtEtter')
+	let foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
 	foedtEtter = foedtEtter ? new Date(foedtEtter) : null
 
-	let alder = _get(values, 'pdldata.opprettNyPerson.alder')
-	if (!_isNil(alder)) {
+	let alder = _.get(values, 'pdldata.opprettNyPerson.alder')
+	if (!_.isNil(alder)) {
 		foedtFoer = getFoedtFoer(alder)
 		foedtEtter = getFoedtEtter(alder)
 	}
 
-	if (_isNil(foedtFoer) && _isNil(foedtEtter)) {
+	if (_.isNil(foedtFoer) && _.isNil(foedtEtter)) {
 		const foedselsdatoer = getFoedselsdatoer(values)
-		const foedselsaar = _get(values, 'pdldata.person.foedsel[0].foedselsaar')
+		const foedselsaar = _.get(values, 'pdldata.person.foedsel[0].foedselsaar')
 		if (foedselsdatoer?.length > 0) {
 			for (let fdato of foedselsdatoer) {
 				let sisteDag = new Date(fdato)
@@ -125,7 +124,7 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 				}
 			}
 			return false
-		} else if (!_isNil(foedselsaar)) {
+		} else if (!_.isNil(foedselsaar)) {
 			let tidligsteDato = new Date(foedselsaar + 67, 0, 1)
 			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 		} else {
@@ -133,7 +132,7 @@ const erEtter67aarsdag = (fradato, tildato, values) => {
 			tidligsteDato.setFullYear(tidligsteDato.getFullYear() + 6)
 			return !isBefore(fradato, tidligsteDato) || isAfter(tildato, tidligsteDato)
 		}
-	} else if (_isNil(foedtEtter)) {
+	} else if (_.isNil(foedtEtter)) {
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 67)
 		return isBefore(fradato, foedtFoer) || isBefore(tildato, foedtFoer)
 	} else {

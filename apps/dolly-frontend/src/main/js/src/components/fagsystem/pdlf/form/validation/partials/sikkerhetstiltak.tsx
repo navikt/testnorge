@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 export const sikkerhetstiltak = Yup.array().of(
 	Yup.object({
@@ -21,15 +21,15 @@ export const sikkerhetstiltak = Yup.array().of(
 					return (
 						(isAfter(
 							new Date(dato),
-							new Date(_get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+							new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
 						) ||
 							isSameDay(
 								new Date(dato),
-								new Date(_get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+								new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
 							)) &&
 						differenceInWeeks(
 							new Date(dato),
-							new Date(_get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
+							new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
 						) <= 12
 					)
 				}

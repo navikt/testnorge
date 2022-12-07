@@ -1,11 +1,10 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { Adresse, Organisasjon } from '@/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { EgneOrgSelect } from '@/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
-import _has from 'lodash/has'
 import React from 'react'
 
 interface OrgProps {
@@ -137,8 +136,8 @@ export const EgneOrganisasjoner = ({
 	}
 
 	const sjekkOrganisasjoner = () => {
-		if (_get(formikBag.values, path) === '') {
-			if (!_has(formikBag.errors, path)) {
+		if (_.get(formikBag.values, path) === '') {
+			if (!_.has(formikBag.errors, path)) {
 				formikBag.setFieldError(path, 'Feltet er påkrevd')
 			}
 			return { feilmelding: 'Feltet er påkrevd' }
@@ -156,7 +155,7 @@ export const EgneOrganisasjoner = ({
 					return true
 				}
 			})
-			if (!juridiskEnhetErLik && !_has(formikBag.errors, path)) {
+			if (!juridiskEnhetErLik && !_.has(formikBag.errors, path)) {
 				formikBag.setFieldError(path, 'Alle organisasjoner må tilhøre samme overordnet enhet')
 			}
 			return juridiskEnhetErLik
@@ -195,7 +194,7 @@ export const EgneOrganisasjoner = ({
 					isLoading={loading}
 					size="xlarge"
 					onChange={handleChange}
-					value={_get(formikBag.values, path)}
+					value={_.get(formikBag.values, path)}
 					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>

@@ -1,4 +1,4 @@
-import _has from 'lodash/has'
+import * as _ from 'lodash-es'
 
 export const tpsfAttributter = [
 	'harMellomnavn',
@@ -72,7 +72,7 @@ export const rootPaths = [
 ]
 
 export const harAvhukedeAttributter = (values) => {
-	return rootPaths.some((path) => _has(values, path))
+	return rootPaths.some((path) => _.has(values, path))
 }
 
 export const getLeggTilIdent = (personFoerLeggTil, identMaster) => {

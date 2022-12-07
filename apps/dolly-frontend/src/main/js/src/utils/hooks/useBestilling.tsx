@@ -1,7 +1,7 @@
 import useSWR from 'swr'
 import { fetcher, multiFetcherAll } from '@/api'
 import { System } from '@/ducks/bestillingStatus/bestillingStatusMapper'
-import _has from 'lodash/has'
+import * as _ from 'lodash-es'
 
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
@@ -135,7 +135,7 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 	const miljoer = []
 	data?.map((bestilling) => {
 		bestilling?.environments?.forEach((miljo) => {
-			if (!miljoer.includes(miljo) && _has(bestilling, `bestilling.${fagsystem}`)) {
+			if (!miljoer.includes(miljo) && _.has(bestilling, `bestilling.${fagsystem}`)) {
 				miljoer.push(miljo)
 			}
 		})

@@ -6,9 +6,8 @@ import Formatters from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type VergemaalTypes = {
@@ -89,14 +88,14 @@ export const Vergemaal = ({
 	}
 
 	const VergemaalVisning = ({ vergemaalData, idx }) => {
-		const initVergemaal = Object.assign(_cloneDeep(initialVergemaal), data[idx])
+		const initVergemaal = Object.assign(_.cloneDeep(initialVergemaal), data[idx])
 		let initialValues = { vergemaal: initVergemaal }
 		initialValues.vergemaal.nyVergeIdent = initialPdlPerson
 
-		const redigertVergemaalPdlf = _get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
+		const redigertVergemaalPdlf = _.get(tmpPersoner, `${ident}.person.vergemaal`)?.find(
 			(a: VergemaalValues) => a.id === vergemaalData.id
 		)
-		const redigertRelatertePersoner = _get(tmpPersoner, `${ident}.relasjoner`)
+		const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
 		const slettetVergemaalPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertVergemaalPdlf
 		if (slettetVergemaalPdlf) {
@@ -106,7 +105,7 @@ export const Vergemaal = ({
 		const vergemaalValues = redigertVergemaalPdlf ? redigertVergemaalPdlf : vergemaalData
 		let redigertVergemaalValues = redigertVergemaalPdlf
 			? {
-					vergemaal: Object.assign(_cloneDeep(initialVergemaal), redigertVergemaalPdlf),
+					vergemaal: Object.assign(_.cloneDeep(initialVergemaal), redigertVergemaalPdlf),
 			  }
 			: null
 		if (redigertVergemaalValues) {

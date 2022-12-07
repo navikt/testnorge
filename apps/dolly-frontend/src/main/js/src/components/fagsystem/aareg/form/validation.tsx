@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
-import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 import { getMonth, getYear, isWithinInterval } from 'date-fns'
 import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
@@ -25,7 +24,7 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 
 			if (validateFomMonth) {
 				const fomPath = path.replace('.tom', '.fom')
-				const fomMonth = _get(values, fomPath)
+				const fomMonth = _.get(values, fomPath)
 				if (
 					getMonth(dateValue) !== getMonth(new Date(fomMonth)) ||
 					getYear(dateValue) !== getYear(new Date(fomMonth))
@@ -33,18 +32,18 @@ const innenforAnsettelsesforholdTest = (periodeValidation, validateFomMonth) => 
 					return false
 			}
 
-			const amelding = _get(values, 'aareg[0].amelding')
+			const amelding = _.get(values, 'aareg[0].amelding')
 			const arrayPos =
 				amelding && amelding?.length > 0
 					? `aareg[0].amelding[${ameldingIndex}].arbeidsforhold[${arbeidsforholdIndex}]`
 					: `aareg[${aaregIndex}]`
 
-			const ansattFom = _get(values, `${arrayPos}.ansettelsesPeriode.fom`)
-			const ansattTom = _get(values, `${arrayPos}.ansettelsesPeriode.tom`)
+			const ansattFom = _.get(values, `${arrayPos}.ansettelsesPeriode.fom`)
+			const ansattTom = _.get(values, `${arrayPos}.ansettelsesPeriode.tom`)
 
 			return isWithinInterval(dateValue, {
 				start: new Date(ansattFom),
-				end: _isNil(ansattTom) ? new Date() : new Date(ansattTom),
+				end: _.isNil(ansattTom) ? new Date() : new Date(ansattTom),
 			})
 		}
 	)
@@ -59,7 +58,7 @@ const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 			let gyldig = true
 			const values = this.options.context
 			const index = this.options.index
-			const arbeidsforholdType = _get(values, `aareg[${index}].arbeidsforholdstype`)
+			const arbeidsforholdType = _.get(values, `aareg[${index}].arbeidsforholdstype`)
 			if (fullArbeidsforholdTyper.some((value) => value === arbeidsforholdType) && !val) {
 				gyldig = false
 			}

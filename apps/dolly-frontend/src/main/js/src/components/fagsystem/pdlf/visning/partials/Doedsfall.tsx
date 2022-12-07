@@ -4,9 +4,8 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import Formatters from '@/utils/DataFormatter'
 import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
-import _cloneDeep from 'lodash/cloneDeep'
+import * as _ from 'lodash-es'
 import { initialDoedsfall, initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type DoedsfallTypes = {
@@ -35,10 +34,10 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 	}
 
 	const DoedsfallVisning = ({ doedsfall, idx }: DoedsfallVisningTypes) => {
-		const initDoedsfall = Object.assign(_cloneDeep(initialDoedsfall), data[idx])
+		const initDoedsfall = Object.assign(_.cloneDeep(initialDoedsfall), data[idx])
 		const initialValues = { doedsfall: initDoedsfall }
 
-		const redigertDoedsfallPdlf = _get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
+		const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
 			(a: Person) => a.id === doedsfall.id
 		)
 		const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
@@ -48,7 +47,7 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 
 		const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
 		const redigertDoedsfallValues = redigertDoedsfallPdlf
-			? { doedsfall: Object.assign(_cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
+			? { doedsfall: Object.assign(_.cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
 			: null
 
 		return erPdlVisning ? (

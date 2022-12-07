@@ -21,7 +21,7 @@ import '@/snow.scss'
 import '@/rain.scss'
 import '@/flowers.scss'
 import { useWeatherFyrstikkAlleen } from '@/utils/hooks/useWeather'
-import { round } from 'lodash'
+import * as _ from 'lodash-es'
 
 const month = new Date().getMonth()
 const day = new Date().getDate()
@@ -84,7 +84,7 @@ const animateNedboer = (millimeterNedboer: number) => {
 	} else if (month >= 5 && month <= 10) {
 		return (
 			<>
-				{Array.from(Array(3 * round(millimeterNedboer) * 10).keys()).map((idx) => (
+				{Array.from(Array(3 * _.round(millimeterNedboer) * 10).keys()).map((idx) => (
 					<div key={idx} className="rain" />
 				))}
 			</>

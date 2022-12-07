@@ -1,10 +1,9 @@
-import _isArray from 'lodash/isArray'
-import _drop from 'lodash/drop'
+import * as _ from 'lodash-es'
 
 import './historikk.less'
 
 export const Historikk = ({ component, data, propName = 'data', ...restProps }) => {
-	if (!_isArray(data)) {
+	if (!_.isArray(data)) {
 		return null
 	}
 
@@ -18,7 +17,7 @@ export const Historikk = ({ component, data, propName = 'data', ...restProps }) 
 			<Main {...{ [propName]: data[0], ...restProps }} />
 			<div className="med-historikk-blokk">
 				<h5>Historikk</h5>
-				{_drop(data).map((element, idx) => (
+				{_.drop(data).map((element, idx) => (
 					<div key={idx} className="med-historikk-content">
 						<Main {...{ [propName]: element, ...restProps }} />
 					</div>

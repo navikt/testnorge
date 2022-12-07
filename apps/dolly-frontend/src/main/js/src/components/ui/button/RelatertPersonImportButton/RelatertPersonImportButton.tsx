@@ -10,7 +10,7 @@ import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Formik, FieldArray } from 'formik'
 import Formatters from '@/utils/DataFormatter'
-import _lowerCase from 'lodash/lowerCase'
+import * as _ from 'lodash-es'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 type RelatertPersonProps = {
@@ -44,7 +44,7 @@ export const RelatertPersonImportButton = ({
 	const disabled =
 		!gruppeIdenter || relatertPersonIdenter?.every((ident) => gruppeIdenter?.includes(ident.id))
 
-	const foersteRelatertPersonType = _lowerCase(relatertPersonIdenter[0]?.type)
+	const foersteRelatertPersonType = _.lowerCase(relatertPersonIdenter[0]?.type)
 
 	const handleImport = async (identer = null as string[]) => {
 		setLoading(true)

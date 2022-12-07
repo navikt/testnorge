@@ -3,7 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Formatters from '@/utils/DataFormatter'
 import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 const getCurrentPersonstatus = (data) => {
 	if (data?.folkeregisterpersonstatus && data?.folkeregisterpersonstatus?.[0] !== null) {
@@ -28,7 +28,7 @@ export const PdlPersonInfo = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner, `${data?.ident}.person`)
+	const redigertPerson = _.get(tmpPersoner, `${data?.ident}.person`)
 	const personNavn = data?.navn?.[0]
 	const personKjoenn = data?.kjoenn?.[0]
 	const personstatus = getCurrentPersonstatus(redigertPerson || data)

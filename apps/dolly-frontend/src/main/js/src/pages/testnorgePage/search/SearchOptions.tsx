@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { Alder, AlderPaths } from './partials/Alder'
 import { Identifikasjon, IdentifikasjonPaths } from './partials/Identifikasjon'
@@ -17,7 +17,7 @@ export type SearchOptionsProps = {
 export const getCount = (paths: string[], formikBag: FormikProps<{}>) => {
 	let count = 0
 	for (const path of paths) {
-		const value = _get(formikBag.values, path)
+		const value = _.get(formikBag.values, path)
 		const valueType = typeof value
 		if (valueType === 'string') {
 			if (value && value !== '') {

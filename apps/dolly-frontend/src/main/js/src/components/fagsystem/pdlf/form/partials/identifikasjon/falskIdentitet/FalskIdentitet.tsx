@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
@@ -6,7 +6,6 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import { getPlaceholder, setNavn } from '../../utils'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import _has from 'lodash/has'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialFalskIdentitetValues } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
@@ -49,20 +48,20 @@ export const FalskIdentitet = ({ formikBag }) => {
 		>
 			{(path, idx) => {
 				const identType = () => {
-					if (_has(formikBag.values, `${path}.rettIdentitetErUkjent`)) {
+					if (_.has(formikBag.values, `${path}.rettIdentitetErUkjent`)) {
 						return 'UKJENT'
-					} else if (_has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)) {
+					} else if (_.has(formikBag.values, `${path}.rettIdentitetVedIdentifikasjonsnummer`)) {
 						return 'ENTYDIG'
 					}
-					return _has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
+					return _.has(formikBag.values, `${path}.rettIdentitetVedOpplysninger`)
 						? 'OMTRENTLIG'
 						: null
 				}
 
 				const advancedValues = {
 					erFalsk: true,
-					kilde: _get(formikBag.values, `${path}.kilde`),
-					master: _get(formikBag.values, `${path}.master`),
+					kilde: _.get(formikBag.values, `${path}.kilde`),
+					master: _.get(formikBag.values, `${path}.master`),
 				}
 
 				return (
@@ -103,7 +102,7 @@ export const FalskIdentitet = ({ formikBag }) => {
 												formikBag.setFieldValue
 											)
 										}
-										value={_get(
+										value={_.get(
 											formikBag.values,
 											`${path}.rettIdentitetVedOpplysninger.personnavn.fornavn`
 										)}

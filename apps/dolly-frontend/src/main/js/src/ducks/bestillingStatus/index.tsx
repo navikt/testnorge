@@ -1,7 +1,5 @@
 import { createActions } from 'redux-actions'
-import _isNil from 'lodash/isNil'
-import _mapValues from 'lodash/mapValues'
-import _uniq from 'lodash/uniq'
+import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 
 export const {
@@ -44,7 +42,7 @@ export const sokSelector = (bestillingerById, searchStr) => {
 	if (!searchStr || !items) return items
 
 	return items.filter(({ listedata }) => {
-		const searchValues = listedata.filter((v) => !_isNil(v)).map((v) => v.toString().toLowerCase())
+		const searchValues = listedata.filter((v) => !_.isNil(v)).map((v) => v.toString().toLowerCase())
 		return searchValues.some((v) => v.includes(searchStr.toLowerCase()))
 	})
 }
@@ -52,7 +50,7 @@ export const sokSelector = (bestillingerById, searchStr) => {
 // Object med system som key, og OK-miljøer som value
 export const successMiljoSelector = (statusArray, ident = null) => {
 	const success_list = statusArray
-		?.filter((curr) => !_isNil(curr))
+		?.filter((curr) => !_.isNil(curr))
 		?.reduce((acc, curr) => {
 			const statuser = curr.statuser.filter((v) => v.melding === 'OK')
 
@@ -75,5 +73,5 @@ export const successMiljoSelector = (statusArray, ident = null) => {
 		}, {})
 
 	// Filtrer og sorter miljøer
-	return _mapValues(success_list, (v) => _uniq(v).sort())
+	return _.mapValues(success_list, (v) => _.uniq(v).sort())
 }

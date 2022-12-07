@@ -2,7 +2,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { Radio, RadioGroup } from '@navikt/ds-react'
 import { FormikProps } from 'formik'
 import styled from 'styled-components'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 
 type Option = {
 	value: string
@@ -32,7 +32,7 @@ export const RadioGroupOptions = ({
 	hideLegend = true,
 	options,
 }: RadioOptionsProps) => {
-	const selected = _get(formikBag.values, `${path}`) || null
+	const selected = _.get(formikBag.values, `${path}`) || null
 	const setSelected = (valg: string) => {
 		formikBag.setFieldValue(`${path}`, valg)
 	}

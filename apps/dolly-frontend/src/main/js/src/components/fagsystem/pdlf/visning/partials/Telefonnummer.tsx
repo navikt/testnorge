@@ -3,7 +3,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { TelefonData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import VisningRedigerbarSamletConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarSamletConnector'
 
 type DataListe = {
@@ -44,9 +44,9 @@ export const Telefonnummer = ({ data, tmpPersoner, ident, erPdlVisning = false }
 	}
 	const initialValues = { telefonnummer: data }
 
-	const redigertTelefonnummerPdlf = _get(tmpPersoner, `${ident}.person.telefonnummer`)
+	const redigertTelefonnummerPdlf = _.get(tmpPersoner, `${ident}.person.telefonnummer`)
 	const redigertTelefonnummerValues = redigertTelefonnummerPdlf && {
-		telefonnummer: _get(tmpPersoner, `${ident}.person.telefonnummer`),
+		telefonnummer: _.get(tmpPersoner, `${ident}.person.telefonnummer`),
 	}
 
 	const slettetTelefonnummerPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertTelefonnummerPdlf

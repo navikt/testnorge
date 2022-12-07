@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { VelgGruppeToggle } from '@/components/velgGruppe/VelgGruppeToggle'
 import { ifPresent } from '@/utils/YupValidations'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import * as Yup from 'yup'
 
@@ -13,7 +13,7 @@ type VelgGruppeProps = {
 }
 
 export const VelgGruppe = ({ formikBag, title, fraGruppe = null }: VelgGruppeProps) => {
-	const [valgtGruppe, setValgtGruppe] = useState(_get(formikBag.values, `gruppeId`))
+	const [valgtGruppe, setValgtGruppe] = useState(_.get(formikBag.values, `gruppeId`))
 
 	useEffect(() => {
 		setValgtGruppe(valgtGruppe || '') // for å vise feilmeldingsvisning

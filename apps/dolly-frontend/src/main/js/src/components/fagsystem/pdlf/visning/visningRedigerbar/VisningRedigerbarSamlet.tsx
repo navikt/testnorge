@@ -5,7 +5,7 @@ import { Formik } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import Icon from '@/components/ui/icon/Icon'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -108,7 +108,7 @@ export const VisningRedigerbarSamlet = ({
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
 			const id = null as number
-			const itemData = _get(data, path)?.filter((item: any) => item)
+			const itemData = _.get(data, path)?.filter((item: any) => item)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 				.catch((error) => {
@@ -130,7 +130,7 @@ export const VisningRedigerbarSamlet = ({
 
 	const handleDelete = useCallback((idx) => {
 		const slett = async () => {
-			const id = _get(initialValues, `${path}[${idx}].id`)
+			const id = _.get(initialValues, `${path}[${idx}].id`)
 			setVisningModus(Modus.LoadingPdlfSlett)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
 				.catch((error) => {
@@ -173,12 +173,12 @@ export const VisningRedigerbarSamlet = ({
 
 	const _validate = (values: any) => validate(values, validationSchema)
 
-	const initialValuesListe = _get(initialValues, path)
+	const initialValuesListe = _.get(initialValues, path)
 
 	const getRedigertAttributtListe = () => {
 		const liste = [] as Array<any>
 		initialValuesListe.forEach((item: any) => {
-			const found = _get(redigertAttributt, path)?.find(
+			const found = _.get(redigertAttributt, path)?.find(
 				(redigertItem: any) => redigertItem.id === item.id
 			)
 			if (found) {
@@ -191,7 +191,7 @@ export const VisningRedigerbarSamlet = ({
 	}
 	const redigertAttributtListe = redigertAttributt && getRedigertAttributtListe()
 
-	const disableIdx = disableSlett(_get(redigertAttributtListe, path) || initialValuesListe)
+	const disableIdx = disableSlett(_.get(redigertAttributtListe, path) || initialValuesListe)
 
 	return (
 		<>
@@ -199,7 +199,7 @@ export const VisningRedigerbarSamlet = ({
 			{[Modus.Les, Modus.LoadingPdlfSlett, Modus.LoadingPdlSlett].includes(visningModus) && (
 				<DollyFieldArray data={initialValuesListe} header="" nested>
 					{(item: any, idx: number) => {
-						const redigertItem = _get(redigertAttributtListe, `${path}.[${idx}]`)
+						const redigertItem = _.get(redigertAttributtListe, `${path}.[${idx}]`)
 						const slettetItem = redigertAttributtListe && !redigertItem
 
 						return (
@@ -288,7 +288,7 @@ export const VisningRedigerbarSamlet = ({
 						return (
 							<>
 								<DollyFieldArray
-									data={_get(redigertAttributtListe, path) || initialValuesListe}
+									data={_.get(redigertAttributtListe, path) || initialValuesListe}
 									header=""
 									nested
 								>

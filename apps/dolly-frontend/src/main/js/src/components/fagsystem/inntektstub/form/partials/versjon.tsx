@@ -1,5 +1,5 @@
 import { FormikProps } from 'formik'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 // @ts-ignore
 import { Inntektsinformasjon } from './inntektinformasjonTypes'
 
@@ -55,7 +55,7 @@ const mapVersjonsliste = (
 ): Array<Versjonsoversikt> => {
 	const versjonsoversikt: Array<Versjonsoversikt> = []
 	inntektValues.forEach((inntektinfo: Inntektsinformasjon, idx: number) => {
-		if (_isNil(inntektinfo.versjon)) {
+		if (_.isNil(inntektinfo.versjon)) {
 			versjonsoversikt.push({ formikIdx: idx, underversjonerIdx: [] })
 		} else {
 			versjonsoversikt.forEach((inntekt) => {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { FormikProps } from 'formik'
 import { bottom } from '@popperjs/core'
@@ -76,11 +76,11 @@ export const IdentVelger = ({ formikBag }: Form) => {
 		formikBag.setFieldValue(`pdldata.opprettNyPerson.syntetisk`, erSyntetisk)
 
 		for (const [key, value] of Object.entries(syntetiskePaths)) {
-			const items = _get(formikBag.values, `pdldata.person.${key}`)
+			const items = _.get(formikBag.values, `pdldata.person.${key}`)
 			if (items !== undefined && !items.isEmpty) {
 				for (let i = 0; i < items.length; i++) {
 					const path = `pdldata.person.${key}[${i}].${value}`
-					if (_get(formikBag.values, path) !== undefined) {
+					if (_.get(formikBag.values, path) !== undefined) {
 						formikBag.setFieldValue(path, erSyntetisk)
 					}
 				}

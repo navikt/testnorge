@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import _isEmpty from 'lodash/isEmpty'
+import * as _ from 'lodash-es'
 import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
@@ -76,7 +76,7 @@ const oppholdStatus = Yup.object()
 	// 'Oppholdsstatus' og 'Type opphold', men disse er ikke en del av selve formet.
 	.test('is-not-empty', function () {
 		const values = this.options.context
-		if (_isEmpty(values.udistub.oppholdStatus)) {
+		if (_.isEmpty(values.udistub.oppholdStatus)) {
 			return values.udistub.harOppholdsTillatelse === false
 		}
 		return true

@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { initialMatrikkeladresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import {
 	Matrikkeladresse,
@@ -12,7 +12,7 @@ export const MatrikkeladresseVelger = ({ formikBag, path }) => {
 		DETALJERT: 'DETALJERT',
 	}
 
-	const matrikkeladresseType = _get(formikBag.values, `${path}.matrikkeladresseType`) || null
+	const matrikkeladresseType = _.get(formikBag.values, `${path}.matrikkeladresseType`) || null
 
 	const handleRadioChange = (valg) => {
 		formikBag.setFieldValue(path, {

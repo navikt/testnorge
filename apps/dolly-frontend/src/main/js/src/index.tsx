@@ -4,9 +4,9 @@ import '@/utils/FormatIso'
 import '@/polyfill'
 
 import { v4 as uuid } from 'uuid'
-import { createRoot } from 'react-dom/client'
 import { RootComponent } from '@/RootComponent'
 import { Logger } from '@/logger/Logger'
+import { createRoot } from 'react-dom/client'
 
 window.uuid = uuid()
 window.onerror = (message) => {

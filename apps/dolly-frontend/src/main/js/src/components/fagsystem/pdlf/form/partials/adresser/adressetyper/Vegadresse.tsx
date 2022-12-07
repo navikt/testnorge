@@ -4,7 +4,7 @@ import LoadableComponent from '@/components/ui/loading/LoadableComponent'
 import { DollyApi } from '@/service/Api'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { FormikProps } from 'formik'
 import { Adresse } from '@/service/services/AdresseService'
@@ -38,12 +38,12 @@ export const Vegadresse = ({ formikBag, path }: VegadresseValues) => {
 			husbokstav: adresse.husbokstav,
 			kommunenummer: adresse.kommunenummer,
 			bruksenhetsnummer: adresse.bruksenhetsnummer,
-			vegadresseType: _get(formikBag.values, `${path}.vegadresseType`),
+			vegadresseType: _.get(formikBag.values, `${path}.vegadresseType`),
 		})
 	}
 
 	const renderAdresse = (postnummerListe: Postnummer) => {
-		const { adressenavn, husnummer, postnummer } = _get(formikBag.values, path)
+		const { adressenavn, husnummer, postnummer } = _.get(formikBag.values, path)
 		if (!adressenavn) {
 			return ''
 		}

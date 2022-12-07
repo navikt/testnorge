@@ -1,7 +1,7 @@
 import { useAsync } from 'react-use'
 import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '@/service/Api'
 import Api from '@/api'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 import { Person, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getAlder } from '@/ducks/fagsystem'
 import { HentPerson } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
@@ -230,8 +230,8 @@ export const SelectOptionsOppslag = {
 			const options: Option[] = []
 			persondata?.length > 0 &&
 				persondata.forEach((personInfo) => {
-					if (!_isNil(personInfo.fornavn)) {
-						const mellomnavn = !_isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
+					if (!_.isNil(personInfo.fornavn)) {
+						const mellomnavn = !_.isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
 						const navn = personInfo.fornavn + mellomnavn + ' ' + personInfo.etternavn
 						options.push({ value: personInfo.fornavn.toUpperCase(), label: navn.toUpperCase() })
 					}
@@ -251,8 +251,8 @@ export const SelectOptionsOppslag = {
 			persondata?.length > 0 &&
 				persondata.forEach(
 					(personInfo: { fornavn: string; mellomnavn: string; etternavn: string; fnr: string }) => {
-						if (!_isNil(personInfo.fornavn)) {
-							const mellomnavn = !_isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
+						if (!_.isNil(personInfo.fornavn)) {
+							const mellomnavn = !_.isNil(personInfo.mellomnavn) ? ' ' + personInfo.mellomnavn : ''
 							const navnOgFnr =
 								(personInfo.fornavn + mellomnavn + ' ' + personInfo.etternavn).toUpperCase() +
 								': ' +

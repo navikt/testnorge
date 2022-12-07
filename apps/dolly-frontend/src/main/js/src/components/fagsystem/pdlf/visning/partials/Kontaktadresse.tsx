@@ -12,8 +12,7 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import _cloneDeep from 'lodash/cloneDeep'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import Formatters from '@/utils/DataFormatter'
 
@@ -164,19 +163,19 @@ export const Kontaktadresse = ({
 		return null
 	}
 
-	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
 	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}
 
 	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
 		const initKontaktadresse = Object.assign(
-			_cloneDeep(initialKontaktadresse),
+			_.cloneDeep(initialKontaktadresse),
 			data?.[idx] || tmpData?.[idx]
 		)
 		const initialValues = { kontaktadresse: initKontaktadresse }
 
-		const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
+		const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
 			(a: KontaktadresseData) => a.id === kontaktadresseData.id
 		)
 		const slettetKontaktadressePdlf =
@@ -191,7 +190,7 @@ export const Kontaktadresse = ({
 		const redigertKontaktadresseValues = redigertKontaktadressePdlf
 			? {
 					kontaktadresse: Object.assign(
-						_cloneDeep(initialKontaktadresse),
+						_.cloneDeep(initialKontaktadresse),
 						redigertKontaktadressePdlf
 					),
 			  }

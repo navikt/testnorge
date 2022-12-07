@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
@@ -15,12 +15,12 @@ export const arenaPath = 'arenaforvalter'
 
 export const ArenaForm = ({ formikBag }) => {
 	const servicebehovAktiv =
-		_get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
-	const dagpengerAktiv = _get(formikBag.values, `${arenaPath}.dagpenger[0]`)
+		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
+	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
 
 	useEffect(() => {
 		servicebehovAktiv &&
-			!_get(formikBag.values, `${arenaPath}.kvalifiseringsgruppe`) &&
+			!_.get(formikBag.values, `${arenaPath}.kvalifiseringsgruppe`) &&
 			formikBag.setFieldValue(`${arenaPath}.kvalifiseringsgruppe`, null)
 
 		servicebehovAktiv &&

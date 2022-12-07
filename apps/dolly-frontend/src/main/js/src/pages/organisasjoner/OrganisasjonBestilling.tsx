@@ -1,4 +1,4 @@
-import _orderBy from 'lodash/orderBy'
+import * as _ from 'lodash-es'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import { OrganisasjonItem } from '@/components/ui/icon/IconItem'
@@ -33,7 +33,7 @@ export default function OrganisasjonBestilling({
 		return null
 	}
 
-	const sortedOrgliste = _orderBy(bestillinger, ['id'], ['desc'])
+	const sortedOrgliste = _.orderBy(bestillinger, ['id'], ['desc'])
 	// @ts-ignore
 	const bestillingStatuser = bestillingStatusMapper(sortedOrgliste)
 

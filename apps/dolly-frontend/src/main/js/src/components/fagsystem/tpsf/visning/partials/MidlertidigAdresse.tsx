@@ -4,7 +4,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import { Historikk } from '@/components/ui/historikk/Historikk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { isArray, isEmpty } from 'lodash'
+import * as _ from 'lodash-es'
 
 type AlleMidlertidigeAdresser = {
 	midlertidigAdresse: Array<MidlertidigAdresseType>
@@ -110,7 +110,7 @@ export const Adressevisning = ({ midlertidigAdresse }: Enkeltadresse) => {
 }
 
 export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdresser) => {
-	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || isEmpty(midlertidigAdresse)) {
+	if (!midlertidigAdresse || midlertidigAdresse.length < 1 || _.isEmpty(midlertidigAdresse)) {
 		return null
 	}
 
@@ -119,7 +119,7 @@ export const MidlertidigAdresse = ({ midlertidigAdresse }: AlleMidlertidigeAdres
 			<>
 				<SubOverskrift label="Midlertidig adresse" iconKind="midlertidigAdresse" />
 				<div className="person-visning_content">
-					{isArray(midlertidigAdresse) ? (
+					{_.isArray(midlertidigAdresse) ? (
 						<Historikk
 							component={Adressevisning}
 							propName="midlertidigAdresse"

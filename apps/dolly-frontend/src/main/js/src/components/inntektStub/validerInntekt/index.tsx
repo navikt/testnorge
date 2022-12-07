@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import _get from 'lodash/get'
 import Inntekt from './inntekt'
 import { Formik } from 'formik'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
-import _ from 'lodash'
+import * as _ from 'lodash-es'
 
 const tilleggsinformasjonAttributter = {
 	BilOgBaat: 'bilOgBaat',
@@ -17,17 +16,17 @@ const tilleggsinformasjonAttributter = {
 
 const InntektStub = ({ formikBag, inntektPath }) => {
 	const [fields, setFields] = useState({})
-	const [inntektValues] = useState(_get(formikBag.values, inntektPath))
+	const [inntektValues] = useState(_.get(formikBag.values, inntektPath))
 	const [currentInntektstype, setCurrentInntektstype] = useState(
-		_get(formikBag.values, `${inntektPath}.inntektstype`)
+		_.get(formikBag.values, `${inntektPath}.inntektstype`)
 	)
-	const currentTilleggsinformasjonstype = _get(
+	const currentTilleggsinformasjonstype = _.get(
 		formikBag.values,
 		`${inntektPath}.tilleggsinformasjonstype`
 	)
 
 	useEffect(() => {
-		setCurrentInntektstype(_get(formikBag.values, `${inntektPath}.inntektstype`))
+		setCurrentInntektstype(_.get(formikBag.values, `${inntektPath}.inntektstype`))
 	}, [formikBag.values])
 
 	useEffect(() => {
@@ -60,16 +59,16 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 
 	const setFormikBag = (values) => {
 		const nullstiltInntekt = {
-			beloep: _get(formikBag.values, `${inntektPath}.beloep`),
-			startOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
-			sluttOpptjeningsperiode: _get(formikBag.values, `${inntektPath}.sluttOpptjeningsperiode`),
+			beloep: _.get(formikBag.values, `${inntektPath}.beloep`),
+			startOpptjeningsperiode: _.get(formikBag.values, `${inntektPath}.startOpptjeningsperiode`),
+			sluttOpptjeningsperiode: _.get(formikBag.values, `${inntektPath}.sluttOpptjeningsperiode`),
 			inntektstype: values.inntektstype,
 		}
 
 		if (values.inntektstype !== currentInntektstype) {
 			formikBag.setFieldValue(inntektPath, nullstiltInntekt)
 		} else {
-			formikBag.setFieldValue(inntektPath, { ..._get(formikBag.values, inntektPath), ...values })
+			formikBag.setFieldValue(inntektPath, { ..._.get(formikBag.values, inntektPath), ...values })
 		}
 	}
 
@@ -79,7 +78,7 @@ const InntektStub = ({ formikBag, inntektPath }) => {
 		if (
 			valueArray.length === 1 &&
 			valueArray[0] === '<TOM>' &&
-			_get(formikBag.values, `${inntektPath}.${name}`)
+			_.get(formikBag.values, `${inntektPath}.${name}`)
 		) {
 			formikBag.setFieldValue(`${inntektPath}.${name}`, undefined)
 		}

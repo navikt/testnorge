@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FieldArray, FormikProps } from 'formik'
 import {
 	DollyFaBlokk,
@@ -26,7 +26,7 @@ type Inntektslister = {
 const hjelpetekst = `Den øverste inntektinformasjonen er den gjeldende inntekten. All inntektsinformasjon merket med "Versjon #" er historiske endringer der økende versjonsnummer er nyere.`
 
 export default ({ formikBag, path }: InntektendringForm) => {
-	const kopiAvGjeldendeInntekt = _get(formikBag.values, path)
+	const kopiAvGjeldendeInntekt = _.get(formikBag.values, path)
 	const initialValues: Inntektslister = {
 		arbeidsforholdsliste: kopiAvGjeldendeInntekt.arbeidsforholdsliste,
 		forskuddstrekksliste: kopiAvGjeldendeInntekt.forskuddstrekksliste,
@@ -35,7 +35,7 @@ export default ({ formikBag, path }: InntektendringForm) => {
 		rapporteringsdato: kopiAvGjeldendeInntekt.rapporteringsdato,
 	}
 	const historikkPath = `${path}.historikk`
-	const data = _get(formikBag.values, historikkPath, [])
+	const data = _.get(formikBag.values, historikkPath, [])
 
 	const handleRapporteringDateChange = (selectedDate: Date, listePath: string) => {
 		formikBag.setFieldValue(

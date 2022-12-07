@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBortfallVisning'
@@ -58,35 +58,35 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 				<TitleValue
 					title="Oppholdstillatelse fra"
 					value={Formatters.formatStringDates(
-						_get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`) ||
-							_get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+						_.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`) ||
+							_.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 					)}
 				/>
 				<TitleValue
 					title="Oppholdstillatelse til"
 					value={Formatters.formatStringDates(
-						_get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`) ||
-							_get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+						_.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`) ||
+							_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 					)}
 				/>
 				<TitleValue
 					title="Effektueringsdato"
 					value={Formatters.formatStringDates(
-						_get(oppholdsstatus, `${currentOppholdsrettType}Effektuering`) ||
-							_get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
+						_.get(oppholdsstatus, `${currentOppholdsrettType}Effektuering`) ||
+							_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 					)}
 				/>
 				<TitleValue
 					title="Type oppholdstillatelse"
 					value={Formatters.showLabel(
 						'oppholdstillatelseType',
-						_get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseType')
+						_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseType')
 					)}
 				/>
 				<TitleValue
 					title="Vedtaksdato"
 					value={Formatters.formatStringDates(
-						_get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
+						_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 					)}
 				/>
 				<TitleValue

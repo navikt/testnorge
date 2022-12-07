@@ -1,4 +1,4 @@
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { fieldError } from '@/components/ui/form/formUtils'
 
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
@@ -17,10 +17,10 @@ export default ({ name, useOnChange = false, useControlled = false, ...props }: 
 		<FormikField name={name} fastfield={false}>
 			{({ field, _form, _meta }) => {
 				const handleChanges = (event: { target: { value: any } }) => {
-					if (!_get(touched, field.name)) {
+					if (!_.get(touched, field.name)) {
 						setFieldTouched(field.name, true)
 					}
-					if (_get(touched, field.name) !== event.target.value) {
+					if (_.get(touched, field.name) !== event.target.value) {
 						setFieldValue(name, event.target.value, true)
 					}
 					if (props.onSubmit) {
@@ -31,24 +31,24 @@ export default ({ name, useOnChange = false, useControlled = false, ...props }: 
 				return useControlled ? (
 					<DollyTextInput
 						name={name}
-						value={_get(values, name)}
+						value={_.get(values, name)}
 						onChange={handleChanges}
 						feil={fieldError({
-							touched: _get(touched, name),
-							error: _get(errors, name),
+							touched: _.get(touched, name),
+							error: _.get(errors, name),
 						})}
 						{...props}
 					/>
 				) : (
 					<DollyTextInput
 						// @ts-ignore
-						defaultValue={props.defaultValue || _get(values, name)}
+						defaultValue={props.defaultValue || _.get(values, name)}
 						onBlur={useOnChange ? null : handleChanges}
 						onChange={useOnChange ? handleChanges : null}
 						name={name}
 						feil={fieldError({
-							touched: _get(touched, name),
-							error: _get(errors, name),
+							touched: _.get(touched, name),
+							error: _.get(errors, name),
 						})}
 						{...props}
 					/>

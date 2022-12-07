@@ -1,13 +1,12 @@
-import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 
 export const getPlaceholder = (values, selectedValuePath) => {
-	const fornavn = _get(values, `${selectedValuePath}.fornavn`)
-	let mellomnavn = _get(values, `${selectedValuePath}.mellomnavn`)
-	const etternavn = _get(values, `${selectedValuePath}.etternavn`)
+	const fornavn = _.get(values, `${selectedValuePath}.fornavn`)
+	let mellomnavn = _.get(values, `${selectedValuePath}.mellomnavn`)
+	const etternavn = _.get(values, `${selectedValuePath}.etternavn`)
 
 	mellomnavn = mellomnavn !== '' ? ' ' + mellomnavn : mellomnavn
-	return !_isNil(fornavn) && fornavn !== '' ? fornavn + mellomnavn + ' ' + etternavn : 'Velg..'
+	return !_.isNil(fornavn) && fornavn !== '' ? fornavn + mellomnavn + ' ' + etternavn : 'Velg..'
 }
 
 export const setNavn = (navn, path, setFieldValue) => {

@@ -1,8 +1,5 @@
 import { format, isDate } from 'date-fns'
-import _startCase from 'lodash/startCase'
-import _capitalize from 'lodash/capitalize'
-import _get from 'lodash/get'
-import _isNil from 'lodash/isNil'
+import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 export const defaultDateFormat = 'dd.MM.yyyy'
@@ -12,12 +9,12 @@ export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy HH:mm:ss'
 const Formatters = {}
 
 Formatters.formatAlder = (alder, dodsdato) => {
-	if (_isNil(alder)) return ''
+	if (_.isNil(alder)) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
 Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
-	if (_isNil(alder)) {
+	if (_.isNil(alder)) {
 		return ''
 	} else if (doedfoedt) {
 		return `${alder.toString()} (dødfødt)`
@@ -124,8 +121,8 @@ Formatters.uppercaseAndUnderscoreToCapitalized = (value) => {
 	if (!value) {
 		return null
 	}
-	const clean = _startCase(value)
-	return _capitalize(clean)
+	const clean = _.startCase(value)
+	return _.capitalize(clean)
 }
 
 Formatters.CapitalizedToUppercaseAndUnderscore = (value) => {
@@ -133,7 +130,7 @@ Formatters.CapitalizedToUppercaseAndUnderscore = (value) => {
 }
 
 Formatters.allCapsToCapitalized = (value) => {
-	return _capitalize(value)
+	return _.capitalize(value)
 }
 
 Formatters.codeToNorskLabel = (value) => {
@@ -150,7 +147,7 @@ Formatters.codeToNorskLabel = (value) => {
 }
 
 Formatters.oversettBoolean = (value) => {
-	if (_isNil(value)) {
+	if (_.isNil(value)) {
 		return value
 	} else if (value === true || value === 'true') {
 		return 'Ja'
@@ -189,7 +186,7 @@ Formatters.showLabel = (optionsGruppe, value) => {
 		(options) => options.value.toUpperCase() === value.toUpperCase()
 	)
 
-	if (_get(obj, 'label') || _get(obj, '[0].label')) {
+	if (_.get(obj, 'label') || _.get(obj, '[0].label')) {
 		return obj.label || obj[0].label
 	}
 
