@@ -15,14 +15,21 @@ const Visning = ({ data }) => {
 		return null
 	}
 	const arenaData = data[0]
+	if (arenaData.error) {
+		return (
+			<div className="person-visning_content">
+				{arenaData.error && (
+					<StyledAlert variant={'info'} size={'small'}>
+						Fant ingen data i dette miljøet. Forsøk å gjenopprette personen for å fikse dette, og ta
+						eventuelt kontakt med Team Dolly dersom problemet vedvarer.
+					</StyledAlert>
+				)}
+			</div>
+		)
+	}
+
 	return (
 		<div className="person-visning_content">
-			{arenaData.error && (
-				<StyledAlert variant={'info'} size={'small'}>
-					Feil i henting av data fra Arena. Forsøk å gjenopprette personen for å fikse dette, og ta
-					eventuelt kontakt med Team Dolly dersom problemet vedvarer.
-				</StyledAlert>
-			)}
 			<TitleValue title="Brukertype" value={arenaData.brukertype} />
 			<TitleValue title="Servicebehov" value={arenaData.servicebehov} />
 			<TitleValue title="Inaktiv fra dato" value={arenaData.inaktiveringDato} />
