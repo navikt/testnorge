@@ -20,7 +20,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -60,7 +59,6 @@ public class CreatePersonService {
                         new NavnDTO()))
                 .bostedsadresse(List.of(
                         BostedadresseDTO.builder()
-                                .vegadresse(new VegadresseDTO())
                                 .build()))
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .landkode(request.getStatsborgerskapLandkode())
