@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.helsepersonellservice.consumer.SamhandlerregisteretConsumer;
 import no.nav.registre.testnorge.helsepersonellservice.exception.UgyldigSamhandlerException;
+import reactor.core.publisher.Flux;
 
 import static java.util.Objects.isNull;
 
@@ -31,10 +32,12 @@ public class HelsepersonellService {
     private final PdlProxyConsumer pdlProxyConsumer;
 
     private List<Samhandler> getSamhandlere(List<String> identer) {
-        return identer.stream()
-                .map(samhandlerregisteretConsumer::getSamhandler)
-                .filter(Objects::nonNull)
-                .toList();
+        return samhandlerregisteretConsumer.getToken()
+                .flatMapMany(accessToken -> Flux.fromIterable(identer)
+                        .flatMap(ident -> samhandlerregisteretConsumer.getSamhandler(ident, accessToken))
+                        .filter(Objects::nonNull)
+                ).collectList()
+                .block();
     }
 
     public HelsepersonellListe getHelsepersonell() {
@@ -45,7 +48,7 @@ public class HelsepersonellService {
                 .stream()
                 .filter(Samhandler::isMulighetForAaLageSykemelding)
                 .toList();
-        if (samhandlere.isEmpty()){
+        if (samhandlere.isEmpty()) {
             throw new SamhandlereNotFoundException("Fant ingen samhandlere");
         }
         return new HelsepersonellListe(samhandlere.stream()
@@ -56,7 +59,7 @@ public class HelsepersonellService {
         );
     }
 
-    private Persondata getPersondata(PdlPersonBolk pdlBolk, String ident){
+    private Persondata getPersondata(PdlPersonBolk pdlBolk, String ident) {
         var pdlPerson = pdlBolk.getData().getHentPersonBolk().stream()
                 .filter(personBolk -> personBolk.getIdent().equals(ident))
                 .findFirst()
