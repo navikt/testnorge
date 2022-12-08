@@ -19,3 +19,10 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
+
+consumers:
+  samhandlerregisteret:
+    url: https://kuhr-sar-api.dev.adeo.no
+    cluster: dev-fss
+    namespace: teamkuhr
+    name: kuhr-sar-api
