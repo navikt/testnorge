@@ -3,6 +3,8 @@ azure.app.client.secret: ${client_secret}
 
 dolly.helsepersonell.gruppeId: 255
 
+helsepersonell.controller.cache.hours: 0
+
 consumers:
   dolly-backend:
     cluster: dev-gcp
