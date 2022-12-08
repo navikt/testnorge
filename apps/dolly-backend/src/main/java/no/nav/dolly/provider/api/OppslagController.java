@@ -141,7 +141,7 @@ public class OppslagController {
     @GetMapping("/udistub/{ident}")
     @Operation(description = "Hent udistub ident")
     public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
-        return udiStubConsumer.getUdiPerson(ident);
+        return udiStubConsumer.getUdiPerson(ident).block();
     }
 
     @Cacheable(CACHE_HELSEPERSONELL)

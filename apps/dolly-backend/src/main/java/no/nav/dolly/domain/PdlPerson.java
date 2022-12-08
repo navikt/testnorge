@@ -28,7 +28,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
 import java.io.Serializable;
@@ -316,7 +315,12 @@ public class PdlPerson {
 
         private String identifikasjonsnummer;
         private String type;
+        private String status;
         private Metadata metadata;
+
+        public boolean isOpphoert() {
+            return "OPPHOERT".equals(status);
+        }
     }
 
     @lombok.Data

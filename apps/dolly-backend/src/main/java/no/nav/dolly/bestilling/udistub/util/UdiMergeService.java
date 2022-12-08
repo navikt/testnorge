@@ -3,71 +3,60 @@ package no.nav.dolly.bestilling.udistub.util;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.udistub.domain.RsAliasRequest;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson.UdiAlias;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.udistub.model.RsUdiAlias;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
-import no.nav.dolly.service.DollyPersonCache;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UdiMergeService {
 
-    private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
 
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
-                                  boolean isLeggTil, DollyPerson dollyPerson) {
+                                  boolean isLeggTil, PdlPersonBolk.PersonBolk personBolk,
+                                  List<PdlPersonBolk.PersonBolk> aliaser) {
 
         UdiPerson udiPerson = mapperFacade.map(nyUdiPerson, UdiPerson.class);
 
-        if (isNull(eksisterendeUdiPerson)) {
-            return appendAttributes(udiPerson, nyUdiPerson.getAliaser(), Status.NEW, dollyPerson);
-        }
-
-        return appendAttributes(udiPerson, isLeggTil ? nyUdiPerson.getAliaser() : emptyList(), Status.UPDATE, dollyPerson);
+        return (HttpStatus.NOT_FOUND.equals(eksisterendeUdiPerson.getStatus())) ?
+                appendAttributes(udiPerson, aliaser, Status.NEW, personBolk) :
+                appendAttributes(udiPerson, isLeggTil ? aliaser : emptyList(), Status.UPDATE, personBolk);
     }
 
-    public List<UdiAlias> getAliaser(DollyPerson dollyPerson) {
+    private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<PdlPersonBolk.PersonBolk> aliaser,
+                                              Status status, PdlPersonBolk.PersonBolk personBolk) {
 
-        if (dollyPerson.isPdlfMaster() && !dollyPerson.getIdenthistorikk().isEmpty()) {
-            return dollyPerson.getIdenthistorikk().stream()
-                    .map(historikk -> UdiAlias.builder().fnr(historikk).build())
-                    .collect(Collectors.toList());
-        } else {
-            return emptyList();
-        }
-    }
+        udiPerson.setIdent(personBolk.getIdent());
+        udiPerson.setNavn(mapperFacade.map(personBolk.getPerson().getNavn().stream()
+                .findFirst().orElse(new PdlPerson.Navn()), UdiPersonNavn.class));
+        udiPerson.setFoedselsDato(personBolk.getPerson().getFoedsel().stream().map(PdlPerson.Foedsel::getFoedselsdato)
+                .findFirst().orElse(null));
 
-    private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<RsUdiAlias> aliaser, Status status, DollyPerson dollyPerson) {
-
-        dollyPersonCache.fetchIfEmpty(dollyPerson);
-
-        udiPerson.setIdent(dollyPerson.getHovedperson());
-        udiPerson.setNavn(mapperFacade.map(dollyPerson.getPerson(dollyPerson.getHovedperson()), UdiPersonNavn.class));
-        udiPerson.setFoedselsDato(dollyPerson.getPerson(dollyPerson.getHovedperson()).getFoedselsdato().toLocalDate());
+        udiPerson.setAliaser(aliaser.stream()
+                .map(alias -> UdiAlias.builder()
+                        .fnr(alias.getIdent())
+                        .navn(mapperFacade.map(alias.getPerson().getNavn().stream()
+                                .findFirst().orElse(new PdlPerson.Navn()), UdiPersonNavn.class))
+                        .build())
+                .toList());
 
         return UdiPersonWrapper.builder()
                 .udiPerson(udiPerson)
                 .status(status)
-                .aliasRequest(!aliaser.isEmpty() ? RsAliasRequest.builder()
-                        .ident(dollyPerson.getHovedperson())
-                        .aliaser(mapperFacade.mapAsList(aliaser, RsAliasRequest.AliasSpesification.class))
-                        .build() : null)
                 .build();
     }
 }

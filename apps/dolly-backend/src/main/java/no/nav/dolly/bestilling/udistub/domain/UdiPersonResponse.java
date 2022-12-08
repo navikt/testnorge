@@ -1,19 +1,17 @@
 package no.nav.dolly.bestilling.udistub.domain;
 
-import org.springframework.http.HttpStatus;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UdiPersonResponse {
+
     private UdiPerson person;
     private String reason;
     private HttpStatus status;

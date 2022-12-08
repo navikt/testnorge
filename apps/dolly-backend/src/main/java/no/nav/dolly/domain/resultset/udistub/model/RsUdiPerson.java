@@ -10,10 +10,6 @@ import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.RsUdiArbeidsadg
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import static java.util.Objects.isNull;
 
 @Getter
 @Setter
@@ -23,7 +19,6 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsUdiPerson {
 
-    private List<RsUdiAlias> aliaser;
     private RsUdiArbeidsadgang arbeidsadgang;
     private RsUdiOppholdStatus oppholdStatus;
     private Boolean avgjoerelseUavklart;
@@ -31,11 +26,4 @@ public class RsUdiPerson {
     private Boolean flyktning;
     private String soeknadOmBeskyttelseUnderBehandling;
     private LocalDateTime soknadDato;
-
-    public List<RsUdiAlias> getAliaser() {
-        if (isNull(aliaser)) {
-            aliaser = new ArrayList<>();
-        }
-        return aliaser;
-    }
 }
