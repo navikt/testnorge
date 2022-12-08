@@ -53,7 +53,7 @@ public class SamhandlerregisteretConsumerTest {
     private SamhandlerregisteretConsumer samhandlerregisteretConsumer;
 
     private static final String ident = "12345678910";
-    private static final String samrUrl = "(.*)/samhandler/rest/sar/samh";
+    private static final String samrUrl = "(.*)/samhandler/sar/rest/v2/samh";
     private SamhandlerDTO[] samhandlerResponse;
 
 
