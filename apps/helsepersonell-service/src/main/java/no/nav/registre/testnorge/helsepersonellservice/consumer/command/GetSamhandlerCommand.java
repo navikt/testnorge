@@ -27,7 +27,7 @@ public class GetSamhandlerCommand implements Callable<SamhandlerDTO[]> {
             SamhandlerDTO[] response = webClient
                     .get()
                     .uri(builder -> builder
-                            .path("/rest/sar/samh")
+                            .path("/sar/rest/v2/samh")
                             .queryParam("ident", ident)
                             .build())
                     .header(AUTHORIZATION, "Bearer " + token)
