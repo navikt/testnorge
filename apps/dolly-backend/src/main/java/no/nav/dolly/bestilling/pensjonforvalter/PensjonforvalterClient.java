@@ -153,7 +153,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private Mono<PensjonforvalterResponse> lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
 
         return nonNull(pensjonData) && !pensjonData.getTp().isEmpty() ?
-                Flux.merge(
+                Flux.concat(
                                 Flux.fromIterable(pensjonData.getTp())
                                         .map(tp -> {
                                             var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
