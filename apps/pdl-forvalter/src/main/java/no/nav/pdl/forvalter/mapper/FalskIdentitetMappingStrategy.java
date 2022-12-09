@@ -6,10 +6,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet;
 import no.nav.pdl.forvalter.dto.PdlFalskIdentitet.IdentifiserendeInformasjon;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -23,12 +20,6 @@ public class FalskIdentitetMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(FalskIdentitetDTO kilde, PdlFalskIdentitet destinasjon, MappingContext context) {
-
-                        destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
-                                .ajourholdstidspunkt(LocalDateTime.now())
-                                .gyldighetstidspunkt(kilde.getGyldigFraOgMed())
-                                .opphoerstidspunkt(kilde.getGyldigTilOgMed())
-                                .build());
 
                         destinasjon.setRettIdentitet(PdlFalskIdentitet.RettIdentitet.builder()
                                 .rettIdentitetErUkjent(kilde.getRettIdentitetErUkjent())
