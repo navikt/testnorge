@@ -163,7 +163,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 	}
 
 	const gruppeOptions = getGruppeOptions()
-	console.log('gruppeOptions: ', gruppeOptions) //TODO - SLETT MEG
+
 	const gruppeIdenterListe = Array.isArray(gruppeOptions)
 		? gruppeOptions?.map((person) => person?.value).filter((person) => person)
 		: []
