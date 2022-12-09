@@ -29,13 +29,6 @@ const tpsforvalterUrl = '/tps-forvalteren-proxy/api/v1/dolly/testdata/hentperson
 export const usePdlOptions = (gruppe) => {
 	const { data, error } = useSWR<any, Error>([multiplePdlforvalterUrl(gruppe)], multiFetcherAll)
 
-	if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
-		return {
-			loading: false,
-			error: 'Gruppe mangler!',
-		}
-	}
-
 	const personData = []
 	data?.flat().forEach((id) => {
 		const navn = id?.person?.navn?.[0]
@@ -58,13 +51,6 @@ export const usePdlOptions = (gruppe) => {
 
 export const useTestnorgeOptions = (gruppe) => {
 	const { data, error } = useSWR<any, Error>([multiplePdlPersonUrl(gruppe)], multiFetcherAll)
-
-	if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
-		return {
-			loading: false,
-			error: 'Gruppe mangler!',
-		}
-	}
 
 	const getRelatertePersoner = (person) => {
 		if (!person) {
@@ -116,13 +102,6 @@ export const useTpsOptions = (gruppe) => {
 	}
 
 	const { data, error } = useSWR<any, Error>([tpsforvalterUrl, identListe], multiFetcherBatchData)
-
-	if (!gruppe || gruppe?.length < 1 || !Array.isArray(gruppe)) {
-		return {
-			loading: false,
-			error: 'Gruppe mangler!',
-		}
-	}
 
 	const personData = []
 	data?.flat().forEach((id) => {
