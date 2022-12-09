@@ -285,7 +285,7 @@ public class MetadataTidspunkterService {
 
     private void fixFolkeregisterMetadata(DbVersjonDTO artifact) {
 
-        if (isNull(artifact)) {
+        if (isNull(artifact.getFolkeregistermetadata())) {
             artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
         }
     }
