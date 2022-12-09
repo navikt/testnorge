@@ -76,9 +76,9 @@ public class AaregClient implements ClientRegister {
                                             .map(RsAareg::getAmelding)
                                             .allMatch(List::isEmpty)) {
 
-                                        return sendArbeidsforhold(bestilling, dollyPerson, miljoer);
+                                        return sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre);
                                     } else {
-                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer, isOpprettEndre);
+                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
                                     }
                                 } else {
                                     return Mono.just(miljoer.stream()
