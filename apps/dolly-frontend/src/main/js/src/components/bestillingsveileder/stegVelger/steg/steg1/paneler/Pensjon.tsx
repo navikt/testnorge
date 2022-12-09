@@ -14,7 +14,8 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 
 	const infoTekst =
 		'Pensjon: \nPensjonsgivende inntekt: \nInntektene blir lagt til i POPP-register. \n\n' +
-		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP.'
+		'Tjenestepensjon: \nTjenestepensjonsforhold lagt til i TP. \n\n' +
+		'Alderspensjon: \nAlderspensjonssak med vedtak blir lagt til i PEN (PESYS).'
 
 	return (
 		<Panel
@@ -31,6 +32,9 @@ export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 			<AttributtKategori title="Tjenestepensjon (TP)" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.tp} />
 			</AttributtKategori>
+			<AttributtKategori title="Alderspensjon (PESYS)" attr={sm.attrs}>
+				<Attributt attr={sm.attrs.alderspensjon} />
+			</AttributtKategori>
 		</Panel>
 	)
 }
@@ -41,6 +45,7 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 	const paths = {
 		inntekt: 'pensjonforvalter.inntekt',
 		tp: 'pensjonforvalter.tp',
+		alderspensjon: 'pensjonforvalter.alderspensjon',
 	}
 	return {
 		inntekt: {
@@ -63,6 +68,23 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 				set(paths.tp, [initialOrdning])
 			},
 			remove: () => del(paths.tp),
+		},
+		alderspensjon: {
+			label: 'Har alderspensjon',
+			checked: has(paths.alderspensjon),
+			add: () => {
+				set(paths.alderspensjon, {
+					iverksettelsesdato: new Date(),
+					uttaksgrad: null,
+					statsborgerskap: null,
+					sivilstand: null,
+					sivilstatusDatoFom: null,
+					relasjonListe: [],
+					flyktning: false,
+					utvandret: false,
+				})
+			},
+			remove: () => del(paths.alderspensjon),
 		},
 	}
 }
