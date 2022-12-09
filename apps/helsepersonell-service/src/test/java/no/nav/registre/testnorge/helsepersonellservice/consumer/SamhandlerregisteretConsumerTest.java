@@ -3,7 +3,6 @@ package no.nav.registre.testnorge.helsepersonellservice.consumer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
-import no.nav.registre.testnorge.helsepersonellservice.config.credentials.SamhandlerregisteretServerProperties;
 import no.nav.testnav.libs.dto.samhandlerregisteret.v1.IdentDTO;
 import no.nav.testnav.libs.dto.samhandlerregisteret.v1.SamhandlerDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -11,7 +10,6 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.ArgumentMatchers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -20,10 +18,8 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
-import reactor.core.publisher.Mono;
 
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
@@ -31,7 +27,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.equalTo;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
 @RunWith(SpringRunner.class)
@@ -60,12 +55,11 @@ public class SamhandlerregisteretConsumerTest {
     @Before
     public void before() {
         WireMock.reset();
-        when(tokenService.exchange(ArgumentMatchers.any(SamhandlerregisteretServerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
 
         var samhandler = SamhandlerDTO.builder()
                 .identer(Collections.singletonList(IdentDTO.builder()
-                                .ident(ident)
-                                .identTypeKode("FNR")
+                        .ident(ident)
+                        .identTypeKode("FNR")
                         .build()))
                 .kode("LE")
                 .build();
@@ -73,13 +67,13 @@ public class SamhandlerregisteretConsumerTest {
     }
 
     @Test
-    public void shouldGetSamhandler() throws JsonProcessingException, ExecutionException, InterruptedException {
+    public void shouldGetSamhandler() throws JsonProcessingException {
         stubSamhandlerregisteret();
 
-        var response = samhandlerregisteretConsumer.getSamhandler(ident).get();
+        var response = samhandlerregisteretConsumer.getSamhandler(ident, new AccessToken("token")).block();
 
-        assertThat(response).isNotNull().hasSize(1);
-        assertThat(response.get(0).getIdent()).isEqualTo(ident);
+        assertThat(response).isNotNull();
+        assertThat(response.getIdent()).isEqualTo(ident);
     }
 
 
