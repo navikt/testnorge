@@ -1,8 +1,6 @@
 package no.nav.registre.testnorge.helsepersonellservice.service;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import no.nav.registre.testnorge.helsepersonellservice.consumer.DollyBackendConsumer;
 import no.nav.registre.testnorge.helsepersonellservice.consumer.PdlProxyConsumer;
@@ -44,7 +42,8 @@ public class HelsepersonellService {
         var helsepersonell = dollyBackendConsumer.getHelsepersonell();
         var pdlInfo = pdlProxyConsumer.getPdlPersoner(helsepersonell);
 
-        var samhandlere = getSamhandlere(helsepersonell)
+        var samhandlere = Optional.ofNullable(getSamhandlere(helsepersonell))
+                .orElse(Collections.emptyList())
                 .stream()
                 .filter(Samhandler::isMulighetForAaLageSykemelding)
                 .toList();
