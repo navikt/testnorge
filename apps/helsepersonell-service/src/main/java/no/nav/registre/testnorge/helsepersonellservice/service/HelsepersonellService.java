@@ -9,17 +9,14 @@ import no.nav.registre.testnorge.helsepersonellservice.domain.Helsepersonell;
 import no.nav.registre.testnorge.helsepersonellservice.domain.PdlPersonBolk;
 import no.nav.registre.testnorge.helsepersonellservice.domain.Persondata;
 import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
-import no.nav.registre.testnorge.helsepersonellservice.exception.SamhandlereNotFoundException;
+import no.nav.registre.testnorge.helsepersonellservice.exception.SamhandlerException;
 import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import no.nav.registre.testnorge.helsepersonellservice.consumer.SamhandlerregisteretConsumer;
-import no.nav.registre.testnorge.helsepersonellservice.exception.UgyldigSamhandlerException;
 import reactor.core.publisher.Flux;
-
-import static java.util.Objects.isNull;
 
 @Slf4j
 @Component
@@ -48,7 +45,7 @@ public class HelsepersonellService {
                 .filter(Samhandler::isMulighetForAaLageSykemelding)
                 .toList();
         if (samhandlere.isEmpty()) {
-            throw new SamhandlereNotFoundException("Fant ingen samhandlere");
+            throw new SamhandlerException("Fant ingen samhandlere");
         }
         return new HelsepersonellListe(samhandlere.stream()
                 .map(samhandler -> new Helsepersonell(
