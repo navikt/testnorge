@@ -11,7 +11,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FalskIdentitetDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.InnflyttingDTO;
@@ -28,7 +27,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Service
@@ -110,8 +108,6 @@ public class MetadataTidspunkterService {
 
     private void fixKjoenn(KjoennDTO kjoennDTO, PersonDTO personDTO) {
 
-        fixFolkeregistermetadata(kjoennDTO);
-
         if (kjoennDTO.getId() == 1) {
 
             kjoennDTO.getFolkeregistermetadata().setAjourholdstidspunkt(personDTO.getFoedsel().stream()
@@ -129,16 +125,12 @@ public class MetadataTidspunkterService {
 
     private void fixForeldreansvar(ForeldreansvarDTO foreldreansvarDTO) {
 
-        fixFolkeregistermetadata(foreldreansvarDTO);
-
         foreldreansvarDTO.getFolkeregistermetadata().setAjourholdstidspunkt(foreldreansvarDTO.getGyldigFraOgMed());
         foreldreansvarDTO.getFolkeregistermetadata().setGyldighetstidspunkt(foreldreansvarDTO.getGyldigFraOgMed());
         foreldreansvarDTO.getFolkeregistermetadata().setOpphoerstidspunkt(foreldreansvarDTO.getGyldigTilOgMed());
     }
 
     private void fixFolkerregisterPersonstatus(FolkeregisterPersonstatusDTO personstatusDTO) {
-
-        fixFolkeregistermetadata(personstatusDTO);
 
         personstatusDTO.getFolkeregistermetadata().setAjourholdstidspunkt(personstatusDTO.getGyldigFraOgMed());
         personstatusDTO.getFolkeregistermetadata().setGyldighetstidspunkt(personstatusDTO.getGyldigFraOgMed());
@@ -147,16 +139,12 @@ public class MetadataTidspunkterService {
 
     private void fixFalskIdentitet(FalskIdentitetDTO falskIdentitetDTO) {
 
-        fixFolkeregistermetadata(falskIdentitetDTO);
-
         falskIdentitetDTO.getFolkeregistermetadata().setAjourholdstidspunkt(falskIdentitetDTO.getGyldigFraOgMed());
         falskIdentitetDTO.getFolkeregistermetadata().setGyldighetstidspunkt(falskIdentitetDTO.getGyldigFraOgMed());
         falskIdentitetDTO.getFolkeregistermetadata().setOpphoerstidspunkt(falskIdentitetDTO.getGyldigTilOgMed());
     }
 
     private void fixDeltBosted(DeltBostedDTO deltBostedDTO) {
-
-        fixFolkeregistermetadata(deltBostedDTO);
 
         deltBostedDTO.getFolkeregistermetadata().setAjourholdstidspunkt(deltBostedDTO.getStartdatoForKontrakt());
         deltBostedDTO.getFolkeregistermetadata().setGyldighetstidspunkt(deltBostedDTO.getStartdatoForKontrakt());
@@ -165,16 +153,12 @@ public class MetadataTidspunkterService {
 
     private void fixFullmakt(FullmaktDTO fullmaktDTO) {
 
-        fixFolkeregistermetadata(fullmaktDTO);
-
         fullmaktDTO.getFolkeregistermetadata().setAjourholdstidspunkt(fullmaktDTO.getGyldigFraOgMed());
         fullmaktDTO.getFolkeregistermetadata().setGyldighetstidspunkt(fullmaktDTO.getGyldigFraOgMed());
         fullmaktDTO.getFolkeregistermetadata().setOpphoerstidspunkt(fullmaktDTO.getGyldigTilOgMed());
     }
 
     private void fixOpphold(OppholdDTO oppholdDTO) {
-
-        fixFolkeregistermetadata(oppholdDTO);
 
         oppholdDTO.getFolkeregistermetadata().setAjourholdstidspunkt(oppholdDTO.getOppholdFra());
         oppholdDTO.getFolkeregistermetadata().setGyldighetstidspunkt(oppholdDTO.getOppholdFra());
@@ -183,16 +167,12 @@ public class MetadataTidspunkterService {
 
     private void fixSikkerhetstiltak(SikkerhetstiltakDTO sikkerhetstiltakDTO) {
 
-        fixFolkeregistermetadata(sikkerhetstiltakDTO);
-
         sikkerhetstiltakDTO.getFolkeregistermetadata().setAjourholdstidspunkt(sikkerhetstiltakDTO.getGyldigFraOgMed());
         sikkerhetstiltakDTO.getFolkeregistermetadata().setGyldighetstidspunkt(sikkerhetstiltakDTO.getGyldigFraOgMed());
         sikkerhetstiltakDTO.getFolkeregistermetadata().setOpphoerstidspunkt(sikkerhetstiltakDTO.getGyldigTilOgMed());
     }
 
     private void fixSivilstand(SivilstandDTO sivilstandDTO) {
-
-        fixFolkeregistermetadata(sivilstandDTO);
 
         sivilstandDTO.getFolkeregistermetadata().setGyldighetstidspunkt(nonNull(sivilstandDTO.getSivilstandsdato()) ?
                 sivilstandDTO.getSivilstandsdato() : LocalDateTime.now().minusSeconds(10).plusSeconds(sivilstandDTO.getId()));
@@ -202,16 +182,12 @@ public class MetadataTidspunkterService {
 
     private void fixStatsborgerskap(StatsborgerskapDTO statsborgerskapDTO) {
 
-        fixFolkeregistermetadata(statsborgerskapDTO);
-
         statsborgerskapDTO.getFolkeregistermetadata().setAjourholdstidspunkt(statsborgerskapDTO.getGyldigFraOgMed());
         statsborgerskapDTO.getFolkeregistermetadata().setGyldighetstidspunkt(statsborgerskapDTO.getGyldigFraOgMed());
         statsborgerskapDTO.getFolkeregistermetadata().setOpphoerstidspunkt(statsborgerskapDTO.getGyldigTilOgMed());
     }
 
     private void fixVersioning(DbVersjonDTO artifact) {
-
-        fixFolkeregistermetadata(artifact);
 
         artifact.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now().minusMinutes(1)
                 .plusSeconds(artifact.getId()));
@@ -221,23 +197,17 @@ public class MetadataTidspunkterService {
 
     private void fixInnflytting(InnflyttingDTO innflyttingDTO) {
 
-        fixFolkeregistermetadata(innflyttingDTO);
-
         innflyttingDTO.getFolkeregistermetadata().setAjourholdstidspunkt(innflyttingDTO.getInnflyttingsdato());
         innflyttingDTO.getFolkeregistermetadata().setGyldighetstidspunkt(innflyttingDTO.getInnflyttingsdato());
     }
 
     private void fixUtflytting(UtflyttingDTO utflyttingDTO) {
 
-        fixFolkeregistermetadata(utflyttingDTO);
-
         utflyttingDTO.getFolkeregistermetadata().setAjourholdstidspunkt(utflyttingDTO.getUtflyttingsdato());
         utflyttingDTO.getFolkeregistermetadata().setGyldighetstidspunkt(utflyttingDTO.getUtflyttingsdato());
     }
 
     private void fixNavn(NavnDTO navnDTO, PersonDTO personDTO) {
-
-        fixFolkeregistermetadata(navnDTO);
 
         if (navnDTO.getId() == 1) {
 
@@ -255,23 +225,17 @@ public class MetadataTidspunkterService {
 
     private void fixDoedsfall(DoedsfallDTO doedsfallDTO) {
 
-        fixFolkeregistermetadata(doedsfallDTO);
-
         doedsfallDTO.getFolkeregistermetadata().setAjourholdstidspunkt(doedsfallDTO.getDoedsdato());
         doedsfallDTO.getFolkeregistermetadata().setGyldighetstidspunkt(doedsfallDTO.getDoedsdato());
     }
 
     private void fixFoedsel(FoedselDTO foedselDTO) {
 
-        fixFolkeregistermetadata(foedselDTO);
-
         foedselDTO.getFolkeregistermetadata().setAjourholdstidspunkt(foedselDTO.getFoedselsdato());
         foedselDTO.getFolkeregistermetadata().setGyldighetstidspunkt(foedselDTO.getFoedselsdato());
     }
 
     private void fixAdresser(AdresseDTO adresseDTO) {
-
-        fixFolkeregistermetadata(adresseDTO);
 
         if (nonNull(adresseDTO.getGyldigFraOgMed())) {
             adresseDTO.getFolkeregistermetadata().setAjourholdstidspunkt(adresseDTO.getGyldigFraOgMed());
@@ -280,13 +244,6 @@ public class MetadataTidspunkterService {
 
         if (nonNull(adresseDTO.getGyldigTilOgMed())) {
             adresseDTO.getFolkeregistermetadata().setOpphoerstidspunkt(adresseDTO.getGyldigTilOgMed());
-        }
-    }
-
-    private void fixFolkeregistermetadata(DbVersjonDTO artifact) {
-
-        if (isNull(artifact.getFolkeregistermetadata())) {
-            artifact.setFolkeregistermetadata(new FolkeregistermetadataDTO());
         }
     }
 }
