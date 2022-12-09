@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import Button from '~/components/ui/button/Button'
 import DollyModal from '~/components/ui/modal/DollyModal'
@@ -11,14 +11,14 @@ import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
 import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { useNavigate } from 'react-router-dom'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
 import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
 import Loading from '~/components/ui/loading/Loading'
 import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
 import Icon from '~/components/ui/icon/Icon'
-import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
+import { usePdlOptions, useTestnorgeOptions, useTpsOptions } from '~/utils/hooks/useSelectOptions'
+import { useGruppeIdenter } from '~/utils/hooks/useGruppe'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -135,48 +135,25 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 	const [loading, setLoading] = useState(false)
 	const [error, setError] = useState(null)
 
-	const [gruppeIdenter, setGruppeIdenter] = useState(null)
-	const [gruppeOptions, setGruppeOptions] = useState(null)
-	const [pdlOptions, setPdlOptions] = useState(null)
-	const [testnorgeOptions, setTestnorgeOptions] = useState(null)
-	const [tpsOptions, setTpsOptions] = useState(null)
+	const {
+		identer: gruppeIdenter,
+		loading: gruppeLoading,
+		error: gruppeError,
+	} = useGruppeIdenter(gruppeId)
+
+	const { data: pdlOptions, loading: pdlLoading, error: pdlError } = usePdlOptions(gruppeIdenter)
+
+	const {
+		data: testnorgeOptions,
+		loading: testnorgeLoading,
+		error: testnorgeError,
+	} = useTestnorgeOptions(gruppeIdenter)
+
+	const { data: tpsOptions, loading: tpsLoading, error: tpsError } = useTpsOptions(gruppeIdenter)
 
 	const navigate = useNavigate()
 
-	useEffect(() => {
-		if (!modalIsOpen) {
-			return
-		}
-		const getGruppe = async () => {
-			const gruppe = await DollyApi.getGruppeById(gruppeId).then((response: any) => {
-				return response.data?.identer?.map((person: PersonData) => {
-					return { ident: person.ident, master: person.master }
-				})
-			})
-			setGruppeIdenter(gruppe)
-		}
-		getGruppe()
-	}, [modalIsOpen])
-
-	useEffect(() => {
-		const getPdlOptions = async () => {
-			const options = await SelectOptionsOppslag.hentPdlOptions(gruppeIdenter)
-			setPdlOptions(options)
-		}
-		const getTestnorgeOptions = async () => {
-			const options = await SelectOptionsOppslag.hentTestnorgeOptions(gruppeIdenter)
-			setTestnorgeOptions(options)
-		}
-		const getTpsOptions = async () => {
-			const options = await SelectOptionsOppslag.hentTpsOptions(gruppeIdenter)
-			setTpsOptions(options)
-		}
-		getPdlOptions()
-		getTestnorgeOptions()
-		getTpsOptions()
-	}, [gruppeIdenter])
-
-	useEffect(() => {
+	const getGruppeOptions = () => {
 		const options = [] as Array<Option>
 		gruppeIdenter?.forEach((person: Person) => {
 			if (person.master === 'PDLF' && pdlOptions) {
@@ -187,8 +164,10 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 				options.push(tpsOptions?.find((p: Option) => p.value === person.ident))
 			}
 		})
-		setGruppeOptions(options)
-	}, [pdlOptions, testnorgeOptions, tpsOptions])
+		return options
+	}
+
+	const gruppeOptions = getGruppeOptions()
 
 	const gruppeIdenterListe = Array.isArray(gruppeOptions)
 		? gruppeOptions?.map((person) => person?.value).filter((person) => person)
@@ -219,7 +198,9 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 		}
 		let relatert = false
 		identer.forEach((ident) => {
-			if (gruppeOptions.find((option: Option) => option.value === ident)?.relasjoner?.length > 0) {
+			if (
+				gruppeOptions?.find((option: Option) => option?.value === ident)?.relasjoner?.length > 0
+			) {
 				relatert = true
 			}
 		})
@@ -305,6 +286,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }: FlyttPersonButtonTypes
 										/>
 										<Icon kind="search" size={20} />
 									</PersonSoek>
+									{/*//TODO Sjekk errors! Og sjekk loading istedenfor*/}
 									{!gruppeOptions || gruppeOptions?.length < 1 ? (
 										<Loading label="Laster personer..." />
 									) : (
