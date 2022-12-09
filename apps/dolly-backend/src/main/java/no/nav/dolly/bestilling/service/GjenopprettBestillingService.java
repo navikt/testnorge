@@ -91,7 +91,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved gjenopprett fra bestilling");
+                            log.error("Tidsavbrudd (60 s) ved gjenopprett fra bestilling", e);
                             Thread.interrupted();
                         }
                     });

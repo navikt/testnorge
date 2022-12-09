@@ -19,3 +19,10 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
+
+consumers:
+  statiskdataforvalter:
+    name: testnorge-statisk-data-forvalter
+    namespace: dolly
+    url: https://testnorge-statisk-data-forvalter.dev.intern.nav.no
+    cluster: dev-fss

@@ -231,7 +231,9 @@ public class PensjonforvalterClientTest {
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        var person = new Person();
+        var person = Person.builder()
+                .ident("000")
+                .build();
         var dollyPerson = DollyPerson.builder()
                 .hovedperson("000")
                 .persondetaljer(List.of(person))
@@ -286,7 +288,9 @@ public class PensjonforvalterClientTest {
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        var person = new Person();
+        var person = Person.builder()
+                .ident("000")
+                .build();
         var dollyPerson = DollyPerson.builder()
                 .hovedperson("000")
                 .persondetaljer(List.of(person))
@@ -347,7 +351,9 @@ public class PensjonforvalterClientTest {
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        var person = new Person();
+        var person = Person.builder()
+                .ident("000")
+                .build();
         var dollyPerson = DollyPerson.builder()
                 .hovedperson("000")
                 .persondetaljer(List.of(person))

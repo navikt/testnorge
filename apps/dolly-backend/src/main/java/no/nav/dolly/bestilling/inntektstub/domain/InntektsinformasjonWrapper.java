@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.inntektstub.domain;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,7 +10,6 @@ import static java.util.Objects.isNull;
 
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class InntektsinformasjonWrapper {
 
     private List<Inntektsinformasjon> inntektsinformasjon;

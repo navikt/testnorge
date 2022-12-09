@@ -7,9 +7,6 @@ dolly:
       description: Dolly er verktøyet som kloner GDPR testdata til ønsket miljø. </br>
         Opprett fiktive testpersoner med arbeidsforhold, inntekter, sykemelding og annet i hht testbehov.
       version: Versjon 1
-      header:
-        nav-consumer-id: Navn på applikasjon som gjør kallet
-        nav-call-id: Unik identifikator, typisk UUID (128 bit)
 
 server:
   port: 8080

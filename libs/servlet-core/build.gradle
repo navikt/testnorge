@@ -33,7 +33,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
 
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'

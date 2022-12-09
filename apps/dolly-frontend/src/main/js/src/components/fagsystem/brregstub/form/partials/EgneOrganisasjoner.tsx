@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import _get from 'lodash/get'
 import { Adresse, Organisasjon } from '~/service/services/organisasjonforvalter/types'
 import { Alert } from '@navikt/ds-react'
@@ -6,6 +6,9 @@ import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import { EgneOrgSelect } from '~/components/ui/form/inputs/select/EgneOrgSelect'
 import { useOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
 import { useFormikContext } from 'formik'
+import _has from 'lodash/has'
+import { OrgforvalterApi } from '~/service/Api'
+import { OrgMiljoeInfoVisning } from '~/components/fagsystem/brregstub/form/partials/OrgMiljoeInfoVisning'
 
 interface OrgProps {
 	path: string
@@ -41,6 +44,7 @@ const addAlleVirksomheter = (virksomheter: Organisasjon[], organisasjoner: Organ
 }
 
 const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+	if (!enheter) return ''
 	for (const enhet of enheter) {
 		if (enhet.underenheter && enhet.underenheter.length > 0) {
 			for (const underenhet of enhet.underenheter) {
@@ -55,6 +59,26 @@ const getJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
 		}
 	}
 	return ''
+}
+
+const getOversteJuridiskEnhet = (orgnr: string, enheter: Organisasjon[]) => {
+	if (!enheter) return ''
+	let oversteJuridiskEnhet = ''
+	enheter.forEach((enhet) => {
+		const getUnderenheter = (underenheter: Organisasjon[]) => {
+			underenheter.forEach((underenhet) => {
+				if (underenhet.organisasjonsnummer === orgnr) {
+					oversteJuridiskEnhet = enhet.organisasjonsnummer
+				} else if (underenhet.underenheter) {
+					getUnderenheter(underenhet.underenheter)
+				}
+			})
+		}
+		if (enhet.underenheter) {
+			getUnderenheter(enhet.underenheter)
+		}
+	})
+	return oversteJuridiskEnhet
 }
 
 const getEgneOrganisasjoner = (organisasjoner: Organisasjon[]) => {
@@ -90,14 +114,38 @@ export const EgneOrganisasjoner = ({
 	warningMessage,
 	filterValidEnhetstyper,
 }: OrgProps) => {
+	const [orgnr, setOrgnr] = useState(null)
+	const [miljoer, setMiljoer] = useState([])
+	const [miljoeError, setMiljoeError] = useState(false)
+	const [miljoeLoading, setMiljoeLoading] = useState(false)
+
 	const {
 		currentBruker: { brukerId },
 	} = useCurrentBruker()
 	const formikBag = useFormikContext()
 
+	useEffect(() => {
+		if (orgnr) {
+			setMiljoeLoading(true)
+			setMiljoeError(false)
+			setMiljoer([])
+			OrgforvalterApi.getOrganisasjonerMiljoeInfo(orgnr)
+				.then((response: any) => {
+					const orgInfo = response?.data
+					setMiljoer(orgInfo ? Object.keys(orgInfo) : [])
+					setMiljoeLoading(false)
+					setMiljoeError(false)
+				})
+				.catch(() => {
+					setMiljoer([])
+					setMiljoeLoading(false)
+					setMiljoeError(true)
+				})
+		}
+	}, [orgnr])
+
 	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
-
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']
 
@@ -113,6 +161,36 @@ export const EgneOrganisasjoner = ({
 					isDisabled: !virksomhet.juridiskEnhet,
 				}
 			})
+	}
+
+	const sjekkOrganisasjoner = () => {
+		if (_get(formikBag.values, path) === '') {
+			if (!_has(formikBag.errors, path)) {
+				formikBag.setFieldError(path, 'Feltet er påkrevd')
+			}
+			return { feilmelding: 'Feltet er påkrevd' }
+		} else if (path.includes('amelding')) {
+			//@ts-ignore
+			const valgtOrgnr = formikBag.values?.aareg?.[0]?.amelding?.flatMap((a) =>
+				a.arbeidsforhold?.flatMap((f) => f.arbeidsgiver?.orgnummer)
+			)
+			const valgtJuridiskEnhet = valgtOrgnr?.map((org) =>
+				getOversteJuridiskEnhet(org, organisasjoner)
+			)
+			const valgtJuridiskEnhetFiltrert = valgtJuridiskEnhet?.filter((org) => org !== '')
+			const juridiskEnhetErLik = valgtJuridiskEnhetFiltrert?.every((org) => {
+				if (org === valgtJuridiskEnhetFiltrert[0]) {
+					return true
+				}
+			})
+			if (!juridiskEnhetErLik && !_has(formikBag.errors, path)) {
+				formikBag.setFieldError(path, 'Alle organisasjoner må tilhøre samme overordnet enhet')
+			}
+			return juridiskEnhetErLik
+				? null
+				: { feilmelding: 'Alle organisasjoner må tilhøre samme overordnet enhet' }
+		}
+		return null
 	}
 
 	return (
@@ -143,15 +221,17 @@ export const EgneOrganisasjoner = ({
 					}
 					isLoading={loading}
 					size="xlarge"
-					onChange={handleChange}
+					onChange={(event) => {
+						setOrgnr(event.value)
+						handleChange(event)
+					}}
 					value={_get(formikBag.values, path)}
-					feil={
-						_get(formikBag.values, path) === '' && {
-							feilmelding: 'Feltet er påkrevd',
-						}
-					}
+					feil={sjekkOrganisasjoner()}
 					isClearable={false}
 				/>
+			)}
+			{orgnr && (
+				<OrgMiljoeInfoVisning miljoer={miljoer} loading={miljoeLoading} error={miljoeError} />
 			)}
 		</>
 	)

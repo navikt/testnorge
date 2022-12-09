@@ -104,7 +104,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved opprett personer fra identer");
+                            log.error("Tidsavbrudd (60 s) ved opprett personer fra identer", e);
                             Thread.interrupted();
                         }
                     });

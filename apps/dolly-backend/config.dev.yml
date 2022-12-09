@@ -18,6 +18,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
+        - application: testnav-batch-bestilling-service
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: app-1

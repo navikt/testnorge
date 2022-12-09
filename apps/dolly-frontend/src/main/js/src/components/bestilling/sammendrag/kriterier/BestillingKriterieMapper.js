@@ -1008,7 +1008,7 @@ const mapTpsMessaging = (bestillingData, data) => {
 		const tpsMessagingData = {
 			header: 'Personinformasjon',
 			items: [
-				obj('Språk', tpsMessaging.spraakKode, PersoninformasjonKodeverk.Spraak),
+				obj('Språk', tpsMessaging?.spraakKode, PersoninformasjonKodeverk.Spraak),
 				obj(
 					'Skjerming fra',
 					Formatters.formatDate(skjerming?.egenAnsattDatoFom || tpsMessaging?.egenAnsattDatoFom)

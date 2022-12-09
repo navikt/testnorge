@@ -1,8 +1,8 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.3"
-    id 'org.springframework.boot' version "2.5.7"
-    id 'io.spring.dependency-management' version "1.0.11.RELEASE"
+    id "org.sonarqube" version "3.5.0.2730"
+    id 'org.springframework.boot' version "2.7.5"
+    id 'io.spring.dependency-management' version "1.1.0"
 }
 
 
@@ -20,7 +20,7 @@ sonarqube {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
     }
 }
 
@@ -45,7 +45,7 @@ dependencies {
     implementation 'com.google.guava:guava:31.0.1-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:servlet-insecure-security'
+    implementation 'no.nav.testnav.libs:servlet-security'
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:kafka-producers'
     implementation 'no.nav.testnav.libs:avro-schema'
@@ -67,10 +67,11 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.0.1'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
@@ -82,7 +83,7 @@ dependencies {
 
     implementation 'org.apache.httpcomponents:httpclient:4.5.13'
     implementation 'javax.xml.bind:jaxb-api'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.1'
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     implementation 'org.projectlombok:lombok'
@@ -92,6 +93,7 @@ dependencies {
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.9.3'
 }
 

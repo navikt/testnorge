@@ -1,7 +1,7 @@
 pluginManagement {
     repositories {
         gradlePluginPortal()
-        jcenter()
+        mavenCentral()
         maven {
             url "https://dl.bintray.com/gradle/gradle-plugins"
         }
@@ -12,7 +12,7 @@ pluginManagement {
 }
 
 plugins {
-    id "com.gradle.enterprise" version "3.7.2"
+    id "com.gradle.enterprise" version "3.11.4"
 }
 
 rootProject.name = 'testnav'
@@ -110,6 +110,7 @@ includeBuild './apps/generer-organisasjon-populasjon-service'
 includeBuild './apps/generer-synt-amelding-service'
 includeBuild './apps/helsepersonell-service'
 includeBuild './apps/miljoer-service'
+includeBuild './apps/batch-bestilling-service'
 includeBuild './apps/mn-organisasjon-api'
 includeBuild './apps/joark-dokument-service'
 includeBuild './apps/inntektsmelding-service'

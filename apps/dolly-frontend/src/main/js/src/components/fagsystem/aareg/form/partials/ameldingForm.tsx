@@ -163,7 +163,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				formikBag.values,
 				`${paths.amelding}[${idMaaned}].arbeidsforhold`
 			)
-			currArbeidsforhold.splice(idArbeidsforhold, 1)
+			currArbeidsforhold?.splice(idArbeidsforhold, 1)
 			formikBag.setFieldValue(`${paths.amelding}[${idMaaned}].arbeidsforhold`, currArbeidsforhold)
 		})
 	}

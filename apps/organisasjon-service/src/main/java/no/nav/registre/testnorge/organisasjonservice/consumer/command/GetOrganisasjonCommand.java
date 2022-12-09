@@ -1,5 +1,6 @@
 package no.nav.registre.testnorge.organisasjonservice.consumer.command;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonservice.consumer.dto.OrganisasjonDTO;
@@ -35,6 +36,7 @@ public class GetOrganisasjonCommand implements Callable<OrganisasjonDTO> {
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .retrieve()
                     .bodyToMono(OrganisasjonDTO.class)
+                    .doOnSuccess(response -> log.info("Response: {}", Json.pretty(response)))
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                     .block();

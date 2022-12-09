@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.config.credentials.OrganisasjonServiceProperties;
 import no.nav.registre.sdforvalter.domain.status.ereg.Organisasjon;
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;

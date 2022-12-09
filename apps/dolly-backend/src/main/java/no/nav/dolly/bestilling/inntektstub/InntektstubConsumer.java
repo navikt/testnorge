@@ -58,12 +58,10 @@ public class InntektstubConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inntk_getInntekter"})
-    public List<Inntektsinformasjon> getInntekter(String ident) {
+    public Flux<Inntektsinformasjon> getInntekter(String ident) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call())
-                .collectList()
-                .block();
+                .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})

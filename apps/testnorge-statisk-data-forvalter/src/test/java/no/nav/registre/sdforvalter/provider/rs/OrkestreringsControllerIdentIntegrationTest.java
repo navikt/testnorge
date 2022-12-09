@@ -1,12 +1,18 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.request.SendToTpsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.response.SkdMeldingerTilTpsRespons;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,8 +22,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,6 +36,7 @@ import java.util.List;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.testnav.libs.testing.JsonWiremockHelper;
+import reactor.core.publisher.Mono;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -45,6 +54,12 @@ class OrkestreringsControllerIdentIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    public JwtDecoder jwtDecoder;
+
+    @MockBean
+    private TokenExchange tokenExchange;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -84,11 +99,7 @@ class OrkestreringsControllerIdentIntegrationTest {
                 .antallFeilet(0)
                 .build();
 
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .stubPost();
+        when(tokenExchange.exchange(any(ServerProperties.class))).thenReturn(Mono.just(new AccessToken("dummy")));
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -123,14 +134,8 @@ class OrkestreringsControllerIdentIntegrationTest {
                 .stubPost();
 
         mvc.perform(post("/api/v1/orkestrering/tps/" + ENVIRONMENT)
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/token/oauth2/v2.0/token")
-                .withResponseBody(tokenResponse)
-                .verifyPost();
 
         JsonWiremockHelper
                 .builder(objectMapper)

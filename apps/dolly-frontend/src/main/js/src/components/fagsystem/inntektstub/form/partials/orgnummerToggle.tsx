@@ -10,8 +10,9 @@ import {
 import { FormikProps } from 'formik'
 import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import { useFasteDataOrganisasjon } from '~/utils/hooks/useOrganisasjoner'
 
-const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
+export const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
 
 type Props = {
 	formikBag: FormikProps<{}>
@@ -32,6 +33,8 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 	const [loading, setLoading] = useBoolean(false)
 	const [environment, setEnvironment] = useState(null)
 	const [orgnummer, setOrgnummer] = useState(null)
+
+	const { organisasjon } = useFasteDataOrganisasjon(orgnummer)
 
 	const handleToggleChange = (value: string) => {
 		setInputType(value)
@@ -60,8 +63,18 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 					setError('Organisasjonen må være av type BEDR eller AAFY')
 					return
 				}
+				if (!response.data.juridiskEnhet) {
+					if (organisasjon?.overenhet) {
+						opplysningspliktigPath &&
+							formikBag.setFieldValue(`${opplysningspliktigPath}`, organisasjon.overenhet)
+					} else {
+						setError('Organisasjonen mangler juridisk enhet')
+						return
+					}
+				}
 				setSuccess(true)
 				opplysningspliktigPath &&
+					response.data.juridiskEnhet &&
 					formikBag.setFieldValue(`${opplysningspliktigPath}`, response.data.juridiskEnhet)
 				formikBag.setFieldValue(`${path}`, response.data.orgnummer)
 			})

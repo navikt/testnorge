@@ -18,6 +18,7 @@ public class GetLevendeIdenterCommand implements Callable<Flux<String>> {
     private final WebClient webClient;
     private final String miljo;
     private final int max;
+    private final String token;
 
     @Override
     public Flux<String> call() {
@@ -31,6 +32,7 @@ public class GetLevendeIdenterCommand implements Callable<Flux<String>> {
                         .queryParam("minimumAlder", 18)
                         .build()
                 )
+                .header("Authorization", "Bearer " + token)
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToFlux(String.class)

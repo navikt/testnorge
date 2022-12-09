@@ -28,20 +28,20 @@ public class AaregUtility {
     }
 
     public static ArbeidsforholdEksistens doEksistenssjekk(ArbeidsforholdRespons response,
-                                                           List<Arbeidsforhold> request) {
+                                                           List<Arbeidsforhold> request,
+                                                           boolean isOpprettEndre) {
 
         return ArbeidsforholdEksistens.builder()
                 .nyeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> isNotTrue(arbeidsforhold.getIsOppdatering()) ||
-                                isTrue(arbeidsforhold.getIsOppdatering()) &&
-                                        response.getEksisterendeArbeidsforhold().stream()
-                                                .noneMatch(response1 ->
-                                                        isEqualArbeidsforhold(response1, arbeidsforhold)))
+                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                                        .noneMatch(response1 ->
+                                                isEqualArbeidsforhold(response1, arbeidsforhold)) ||
+                                isNotTrue(arbeidsforhold.getIsOppdatering()) && isOpprettEndre)
                         .toList())
                 .eksisterendeArbeidsforhold(request.stream()
-                        .filter(arbeidsforhold -> isTrue(arbeidsforhold.getIsOppdatering()) &&
-                                response.getEksisterendeArbeidsforhold().stream()
-                                        .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold)))
+                        .filter(arbeidsforhold -> response.getEksisterendeArbeidsforhold().stream()
+                                        .anyMatch(response1 -> isEqualArbeidsforhold(response1, arbeidsforhold))
+                                && (isTrue(arbeidsforhold.getIsOppdatering()) || !isOpprettEndre))
                         .toList())
                 .build();
     }

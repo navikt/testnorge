@@ -9,6 +9,5 @@ public class PdlForvalterApplicationStarter {
     public static void main(String[] args) {
 
         SpringApplication.run(PdlForvalterApplicationStarter.class, args);
-
     }
 }

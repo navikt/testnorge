@@ -18,6 +18,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-batch-bestilling-service
+          cluster: dev-gcp
         - application: testnav-import-fra-tpsf-service
           cluster: dev-gcp
         - application: etterlatte-testdata

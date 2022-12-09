@@ -108,7 +108,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             computableFuture
                     .forEach(future -> {
                         try {
-                            future.get(60, TimeUnit.SECONDS);
+                            future.get(180, TimeUnit.SECONDS);
                         } catch (InterruptedException e) {
                             log.error(e.getMessage(), e);
                             Thread.currentThread().interrupt();
@@ -116,7 +116,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             log.error(e.getMessage(), e);
                             Thread.interrupted();
                         } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved opprett personer kriterier");
+                            log.error("Tidsavbrudd (60 s) ved opprett personer kriterier", e);
                             Thread.interrupted();
                         }
                     });

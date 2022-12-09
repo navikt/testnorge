@@ -78,7 +78,7 @@ public class AaregClient implements ClientRegister {
 
                                         return sendArbeidsforhold(bestilling, dollyPerson, miljoer);
                                     } else {
-                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
+                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer, isOpprettEndre);
                                     }
                                 } else {
                                     return Mono.just(miljoer.stream()
@@ -109,7 +109,8 @@ public class AaregClient implements ClientRegister {
                                 !entry.getAaregStatus().contains(getVenterTekst()));
     }
 
-    private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {
+    private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
+                                            List<String> miljoer, boolean isOpprettEndre) {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getHovedperson());
@@ -119,16 +120,16 @@ public class AaregClient implements ClientRegister {
                 .flatMapMany(token -> Flux.fromIterable(miljoer)
                         .parallel()
                         .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), miljoe, token)
-                                .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token))))
+                                .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token, isOpprettEndre))))
                 .collect(Collectors.joining(","));
     }
 
     private Flux<String> doInsertOrUpdate(ArbeidsforholdRespons response, List<Arbeidsforhold> request,
-                                          String miljoe, AccessToken token) {
+                                          String miljoe, AccessToken token, boolean isOpprettEndre) {
 
         var arbforholdId = new AtomicInteger(response.getEksisterendeArbeidsforhold().size());
 
-        var eksistens = doEksistenssjekk(response, mapperFacade.mapAsList(request, Arbeidsforhold.class));
+        var eksistens = doEksistenssjekk(response, mapperFacade.mapAsList(request, Arbeidsforhold.class), isOpprettEndre);
         return Flux.merge(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
                                 .flatMap(entry -> {
                                     if (isBlank(entry.getArbeidsforholdId())) {
