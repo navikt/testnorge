@@ -1,0 +1,17 @@
+logging:
+  level:
+    root: WARN
+    nav: INFO
+
+#spring.main.allow-bean-definition-overriding=true
+
+#spring.cloud.vault.token=dummy
+#azure.app.client.id=dummy
+#azure.app.client.secret=dummy
+
+AZURE_OPENID_CONFIG_ISSUER: dummy
+STS_PREPROD_PROVIDER_USERNAME: dummy
+STS_PREPROD_PROVIDER_PASSWORD: dummy
+STS_TEST_PROVIDER_USERNAME: dummy
+STS_TEST_PROVIDER_PASSWORD: dummy
+TOKEN_X_ISSUER: dummy

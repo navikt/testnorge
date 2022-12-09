@@ -1,38 +1,41 @@
 package no.nav.testnav.proxies.aareg;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import lombok.*;
 import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 
-@Import({
-    CoreConfig.class,
-    DevConfig.class,
-    SecurityConfig.class
-})
 @Configuration
 public class StsConfig {
 
-    @Value("${sts.preprod.token.provider.url:}") String qUrl;
-    @Value("${sts.preprod.token.provider.username:}") String qUsername;
-    @Value("${sts.preprod.token.provider.password:}") String qPassword;
-
-    @Value("${sts.test.token.provider.url:}") String tUrl;
-    @Value("${sts.test.token.provider.username:}") String tUsername;
-    @Value("${sts.test.token.provider.password:}") String tPassword;
-
-    @Bean(name = "q")
-    StsOidcTokenService qStsOidcTokenService() {
-        return new StsOidcTokenService(qUrl, qUsername, qPassword);
+    @Bean(name = "preprod")
+    StsOidcTokenService preprodStsOidcTokenService(PreprodConfig config) {
+        return new StsOidcTokenService(config.getUrl(), config.getUsername(), config.getPassword());
     }
 
-    @Bean(name = "t")
-    public StsOidcTokenService tStsOidcTokenService() {
-        return new StsOidcTokenService(tUrl, tUsername, tPassword);
+    @Bean(name = "test")
+    public StsOidcTokenService testStsOidcTokenService(TestConfig config) {
+        return new StsOidcTokenService(config.getUrl(), config.getUsername(), config.getPassword());
+    }
+
+    @Configuration
+    @Getter
+    @Setter
+    abstract static class StsConfigurationProperties {
+        private String url;
+        private String username;
+        private String password;
+    }
+
+    @Configuration
+    @ConfigurationProperties(prefix = "sts.preprod.token.provider")
+    static class PreprodConfig extends StsConfigurationProperties {
+    }
+
+    @Configuration
+    @ConfigurationProperties(prefix = "sts.test.token.provider")
+    static class TestConfig extends StsConfigurationProperties {
     }
 
 }

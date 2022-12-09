@@ -19,15 +19,23 @@ spring:
 
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
-# TODO: Set proper values
-aareg:
-  fss:
-    cluster: dev-fss
+sts:
+  preprod:
+    token:
+      provider:
+        url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
+        username: ${STS_PREPROD_PROVIDER_USERNAME}
+        password: ${STS_PREPROD_PROVIDER_PASSWORD}
+  test:
+    token:
+      provider:
+        url: http://security-token-service-t4.aura.svc.nais.local/rest/v1/sts/token
+        username: ${STS_TEST_PROVIDER_USERNAME}
+        password: ${STS_TEST_PROVIDER_PASSWORD}
+
+app:
+  azure:
     name: digdir-krr-stub
     namespace: team-rocket
-    url: https://digdir-krr-stub.dev.intern.nav.no
-  gcp:
+    url: https://aareg-services-{env}.dev.intern.nav.no
     cluster: dev-gcp
-    name: n/a
-    namespace: n/a
-    url: https://aareg-services-{env}.dev.intern.nav.no/
