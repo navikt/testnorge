@@ -1,6 +1,6 @@
 import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
+import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
 
 type Props = {
 	miljoer: string[]
