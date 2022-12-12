@@ -6,7 +6,6 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 import proxyRoutes from './proxy-routes.json'
 import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
-import { terser } from 'rollup-plugin-terser'
 
 /** @type {import('vite').UserConfig} */
 
@@ -30,7 +29,6 @@ export default defineConfig({
 	plugins: [
 		svgr(),
 		react(),
-		terser(),
 		viteTsconfigPaths(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
