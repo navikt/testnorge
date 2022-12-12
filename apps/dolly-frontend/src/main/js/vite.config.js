@@ -17,6 +17,7 @@ const gitBranch = child.execSync('git branch --show-current').toString()
 export default defineConfig({
 	build: {
 		outDir: 'build',
+		assetsDir: '',
 	},
 	resolve: {
 		alias: {
