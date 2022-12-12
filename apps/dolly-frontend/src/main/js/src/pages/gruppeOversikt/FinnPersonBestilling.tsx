@@ -6,12 +6,12 @@ import { DollyApi, PdlforvalterApi, TpsfApi } from '@/service/Api'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/ui/icon/Icon'
-import { Option } from '@/service/SelectOptionsOppslag'
 import { SoekTypeValg, VelgSoekTypeToggle } from '@/pages/gruppeOversikt/VelgSoekTypeToggle'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 type FinnPersonProps = {
 	feilmelding: string

@@ -1,4 +1,5 @@
 import * as _ from 'lodash-es'
+import _set from 'lodash/fp/set'
 import { useDispatch } from 'react-redux'
 
 export const stateModifierFns = (initial, setInitial, options = null, dispatch = null) => {
@@ -6,7 +7,7 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 		dispatch = useDispatch()
 	}
 	const opts = options
-	const set = (path, value) => setInitial(_.set(path, value, initial))
+	const set = (path, value) => setInitial(_set(path, value, initial))
 	const has = (path) => _.has(initial, path)
 	const del = (path) => {
 		let newObj = _.omit(initial, path)
@@ -22,7 +23,7 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 	const setMulti = (...arrays) => {
 		const newInitial = arrays.reduce((acc, curr) => {
 			const [path, val] = curr
-			return _.set(path, val, acc)
+			return _set(path, val, acc)
 		}, initial)
 		setInitial(newInitial)
 	}
@@ -46,14 +47,26 @@ export const stateModifierFns = (initial, setInitial, options = null, dispatch =
 		setInitial(state)
 	}
 
-	return (fn) => {
+	return (
+		fn: (arg0: {
+			set: (path: any, value: any) => any
+			setMulti: (...arrays: any[]) => void
+			del: (path: any) => void
+			has: (path: any) => boolean
+			dispatch: null
+			opts: null
+			initial: any
+			setInitial: any
+		}) => {}
+	) => {
 		const attrs = fn({ set, setMulti, del, has, dispatch, opts, initial, setInitial }) || {}
 		const checked = allCheckedLabels(attrs)
 		return {
 			attrs,
 			checked,
-			batchAdd: (ignoreKeys) => batchUpdate(attrs, fn, ignoreKeys, 'add'),
-			batchRemove: (ignoreKeys) => batchUpdate(attrs, fn, ignoreKeys, 'remove'),
+			batchAdd: (ignoreKeys: never[] | undefined) => batchUpdate(attrs, fn, ignoreKeys, 'add'),
+			batchRemove: (ignoreKeys: never[] | undefined) =>
+				batchUpdate(attrs, fn, ignoreKeys, 'remove'),
 		}
 	}
 }

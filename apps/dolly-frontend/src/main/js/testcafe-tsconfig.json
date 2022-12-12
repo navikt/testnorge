@@ -18,18 +18,12 @@
     "allowSyntheticDefaultImports": true,
     "moduleResolution": "Node",
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "jsx": "react-jsx",
     "paths": {
       "@/*": [
         "./src/*"
       ]
     }
-  },
-  "ts-node": {
-    "files": true
-  },
-  "include": [
-    "src"
-  ]
+  }
 }

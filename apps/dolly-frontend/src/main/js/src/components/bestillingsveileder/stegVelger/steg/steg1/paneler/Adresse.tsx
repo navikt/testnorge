@@ -50,10 +50,10 @@ AdressePanel.initialValues = ({ set, del, has }: any) => {
 		bostedsadresse: {
 			label: 'Bostedsadresse',
 			checked: has(paths.bostedadresse),
-			add() {
+			add: () => {
 				set(paths.bostedadresse, [initialBostedsadresse])
 			},
-			remove() {
+			remove: () => {
 				del(paths.bostedadresse)
 			},
 		},

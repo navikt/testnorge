@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { fetchKodeverk, getKodeverkSelector } from '@/ducks/kodeverk'
-import { KodeverkWrapper } from './Kodeverk'
+import { KodeverkWrapper } from '@/components/kodeverk/Kodeverk'
 
 // Koble til kodeverk
 const mapStateToProps = (state, ownProps) => ({

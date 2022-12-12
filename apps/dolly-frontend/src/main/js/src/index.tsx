@@ -1,4 +1,5 @@
 // Import all CSS først
+import '@navikt/ds-css'
 import '@/styles/main.less'
 import '@/utils/FormatIso'
 import '@/polyfill'

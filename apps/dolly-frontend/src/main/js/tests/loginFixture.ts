@@ -21,17 +21,15 @@ const cookieMock = RequestMock()
 	.onRequestTo(dollyLogg)
 	.respond(null as any, 200)
 	.onRequestTo(azureAuth)
-	.respond("<script>window.location.href='http://localhost:3000';</script>", 200)
+	.respond("<script>window.location.href='http://localhost:5678';</script>", 200)
 	.onRequestTo(current)
 	.respond(currentBruker, 200)
 	.onRequestTo(varslinger)
 	.respond([], 200)
 
-fixture`Loginside`.page`http://localhost:3000/login`
-	.requestHooks(cookieMock)
-	.beforeEach(async () => {
-		await waitForReact()
-	})
+fixture`Loginside`.page`localhost:5678/login`.requestHooks(cookieMock).beforeEach(async () => {
+	await waitForReact()
+})
 
 test('Trykk logg inn med Nav og bli redirected til Dolly hovedside', async (testController) => {
 	const getLocation = ClientFunction(() => document.location.href)
