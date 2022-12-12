@@ -26,7 +26,7 @@ export const PensjonForm = ({ formikBag }) => (
 			informasjonstekst={hjelpetekst}
 		>
 			<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
-				<React.Fragment>
+				<div className="flexbox--flex-wrap">
 					<FormikSelect
 						name={`${pensjonPath}.fomAar`}
 						label="Fra og med år"
@@ -52,8 +52,9 @@ export const PensjonForm = ({ formikBag }) => (
 						name={`${pensjonPath}.redusertMedGrunnbelop`}
 						label="Nedjuster med grunnbeløp"
 						size="small"
+						checkboxMargin
 					/>
-				</React.Fragment>
+				</div>
 			</Kategori>
 		</Panel>
 	</Vis>

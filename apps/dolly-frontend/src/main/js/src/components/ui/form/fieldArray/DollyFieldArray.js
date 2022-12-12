@@ -201,6 +201,7 @@ export const FormikDollyFieldArray = ({
 	handleRemoveEntry = null,
 	maxEntries = null,
 	maxReachedDescription = null,
+	buttonText = null,
 }) => (
 	<FieldArray name={name}>
 		{(arrayHelpers) => {
@@ -258,7 +259,7 @@ export const FormikDollyFieldArray = ({
 						})}
 						<FieldArrayAddButton
 							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
-							addEntryButtonText={header}
+							addEntryButtonText={buttonText ? buttonText : header}
 							onClick={addNewEntry}
 							disabled={disabled || maxEntries === values.length}
 						/>

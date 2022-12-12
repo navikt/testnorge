@@ -8,6 +8,7 @@ import {
 } from '~/components/fagsystem/tjenestepensjon/form/Form'
 import { harValgtAttributt } from '~/components/ui/form/formUtils'
 import { pensjonPath } from '~/components/fagsystem/pensjon/form/Form'
+import { initialAlderspensjon } from '~/components/fagsystem/alderspensjon/initialValues'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)
@@ -73,18 +74,10 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 			label: 'Har alderspensjon',
 			checked: has(paths.alderspensjon),
 			add: () => {
-				set(paths.alderspensjon, {
-					iverksettelsesdato: new Date(),
-					uttaksgrad: null,
-					statsborgerskap: null,
-					sivilstand: null,
-					sivilstatusDatoFom: null,
-					relasjonListe: [],
-					flyktning: false,
-					utvandret: false,
-				})
+				set(paths.alderspensjon, initialAlderspensjon)
 			},
 			remove: () => del(paths.alderspensjon),
 		},
 	}
 }
+// TODO: Lag form. Sett info hvis alder ikke er satt eller er lavere enn pensjonsalder
