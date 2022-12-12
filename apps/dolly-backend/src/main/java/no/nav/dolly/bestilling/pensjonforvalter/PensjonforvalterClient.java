@@ -153,29 +153,30 @@ public class PensjonforvalterClient implements ClientRegister {
     private Mono<PensjonforvalterResponse> lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
 
         return nonNull(pensjonData) && !pensjonData.getTp().isEmpty() ?
-                Flux.merge(
                                 Flux.fromIterable(pensjonData.getTp())
                                         .map(tp -> {
                                             var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
                                             lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
                                             lagreTpForholdRequest.setMiljoer(miljoer);
-                                            return pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest, token);
-                                        }),
-                                Flux.fromIterable(pensjonData.getTp())
-                                        .map(tp -> Flux.fromIterable(tp.getYtelser())
-                                                .flatMap(ytelse -> {
-                                                    LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
-                                                    lagreTpYtelseRequest.setYtelseType(ytelse.getType());
-                                                    lagreTpYtelseRequest.setOrdning(tp.getOrdning());
-                                                    lagreTpYtelseRequest.setFnr(dollyPerson.getHovedperson());
-                                                    lagreTpYtelseRequest.setMiljoer(miljoer);
-                                                    return pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest, token);
-                                                })))
-                        .flatMap(Flux::from)
-                        .collectList()
-                        .map(PensjonforvalterClient::mergePensjonforvalterResponses) :
-
+                                            return pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest, token)
+                                                    .flatMap(forholdSvar ->
+                                                        Flux.fromIterable(tp.getYtelser())
+                                                                .flatMap(ytelse -> {
+                                                                    LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
+                                                                    lagreTpYtelseRequest.setYtelseType(ytelse.getType());
+                                                                    lagreTpYtelseRequest.setOrdning(tp.getOrdning());
+                                                                    lagreTpYtelseRequest.setFnr(dollyPerson.getHovedperson());
+                                                                    lagreTpYtelseRequest.setMiljoer(miljoer);
+                                                                    return pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest, token);
+                                                                })
+                                                    );
+                                        })
+                                        .flatMap(Flux::from)
+                                        .collectList()
+                                        .map(PensjonforvalterClient::mergePensjonforvalterResponses)
+                :
                 Mono.empty();
+
     }
 
     private String decodeStatus(PensjonforvalterResponse response, String ident) {
