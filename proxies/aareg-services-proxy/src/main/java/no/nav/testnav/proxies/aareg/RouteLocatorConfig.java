@@ -5,8 +5,6 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -28,23 +26,15 @@ import java.util.stream.Stream;
 @Configuration
 public class RouteLocatorConfig {
 
-    // TODO: I følge https://github.com/navikt/aareg-services er kun Q0, Q1 og Q2 (med annet URL-pattern) tilgjengelig. Ser at dolly-backend opererer med miljøene under. Sjekk hvilke vi ønsker.
-    private static final String[] ENV_PREPROD = {"q1", "q2", "q4", "q5"};
+    private static final String[] ENV_PREPROD = {"q0", "q1", "q4", "q5"};
     private static final String[] ENV_TEST = {"t0", "t1", "t3", "t4", "t5"};
 
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
-            @Qualifier("preprod") StsOidcTokenService preprodStsOidcTokenService,
-            @Qualifier("test") StsOidcTokenService testStsOidcTokenService,
             TrygdeetatenAzureAdTokenService tokenService,
             AzureConfig azureProperties
     ) {
-
-        var preprodStsAuthentication = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(preprodStsOidcTokenService::getToken);
-        var testStsAuthentication = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(testStsOidcTokenService::getToken);
 
         var routes = builder.routes();
 
@@ -55,8 +45,7 @@ public class RouteLocatorConfig {
                                     .exchange(azureProperties.forEnvironment(env))
                                     .map(AccessToken::getTokenValue));
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication))
-                            .route(createWritableRouteToOldEndpoint(env, preprodStsAuthentication));
+                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication));
                 });
         Stream.of(ENV_TEST)
                 .forEach(env -> {
@@ -65,29 +54,18 @@ public class RouteLocatorConfig {
                                     .exchange(azureProperties.forEnvironment(env))
                                     .map(AccessToken::getTokenValue));
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication))
-                            .route(createWritableRouteToOldEndpoint(env, testStsAuthentication));
+                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication));
                 });
 
         return routes.build();
 
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createWritableRouteToOldEndpoint(String env, GatewayFilter authentication) {
-        return spec -> spec
-                .path("/" + env + "/**")
-                .and().not(p -> p
-                        .path("/.*/api/v1/arbeidstaker/arbeidsforhold")
-                        .and()
-                        .method(HttpMethod.GET))
-                .filters(f -> f.filter(authentication))
-                .uri("https://modapp-" + env + ".adeo.no");
-    }
-
     private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String env, GatewayFilter authentication) {
-        return spec -> spec
+        return predicateSpec -> predicateSpec
                 .path("/" + env + "/api/v1/arbeidstaker/arbeidsforhold")
-                .and().method(HttpMethod.GET)
+                .and()
+                .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + env + "/(?<segment>.*)", "/api/v1/arbeidstaker/arbeidsforhold")
                         .filter(authentication)
