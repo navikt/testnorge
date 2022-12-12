@@ -3,8 +3,8 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import texts from '../texts'
-import tilleggsinformasjonPaths from '../paths'
+import texts from '@/components/inntektStub/texts'
+import tilleggsinformasjonPaths from '@/components/inntektStub/paths'
 
 const sjekkFelt = (formik, field, options, values, path) => {
 	const fieldValue = _.get(values, path)

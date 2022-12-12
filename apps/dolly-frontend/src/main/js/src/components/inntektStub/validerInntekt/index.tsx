@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Inntekt from './inntekt'
+import Inntekt from '@/components/inntektStub/validerInntekt/Inntekt'
 import { Formik } from 'formik'
 import InntektstubService from '@/service/services/inntektstub/InntektstubService'
 import * as _ from 'lodash-es'

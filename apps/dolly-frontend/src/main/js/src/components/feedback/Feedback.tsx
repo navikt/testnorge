@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useState } from 'react'
 import { useToggle } from 'react-use'
-import { ThumbsRating } from '../rating'
+import { ThumbsRating } from '@/components/rating'
 // @ts-ignore
 import { v4 as _uuid } from 'uuid'
 // @ts-ignore
