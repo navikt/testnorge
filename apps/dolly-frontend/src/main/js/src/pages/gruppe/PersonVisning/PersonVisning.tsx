@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react'
 import Button from '@/components/ui/button/Button'
-import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
-import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
+import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
+import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
 import {
 	AaregVisning,
 	ArenaVisning,

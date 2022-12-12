@@ -3,7 +3,7 @@ import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFiel
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
-import { PersonrollerForm } from './personrollerForm'
+import { PersonrollerForm } from '@/components/fagsystem/brregstub/form/partials/personrollerForm'
 import { OrgnrToggle } from '@/components/fagsystem/brregstub/form/partials/orgnrToggle'
 
 const initialValues = {

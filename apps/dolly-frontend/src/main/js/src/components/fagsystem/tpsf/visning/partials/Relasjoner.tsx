@@ -1,10 +1,10 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
-import { Barn } from './Barn'
-import { Partner } from './Partner'
+import { Barn } from '@/components/fagsystem/tpsf/visning/partials/Barn'
+import { Partner } from '@/components/fagsystem/tpsf/visning/partials/Partner'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { Foreldre } from './Foreldre'
+import { Foreldre } from '@/components/fagsystem/tpsf/visning/partials/Foreldre'
 import React from 'react'
 
 type RelasjonerProps = {
