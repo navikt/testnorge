@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
-import { Personnavn } from './personnavn'
+import { Personnavn } from '@/components/fagsystem/pdlf/visning/partials/Personnavn'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 

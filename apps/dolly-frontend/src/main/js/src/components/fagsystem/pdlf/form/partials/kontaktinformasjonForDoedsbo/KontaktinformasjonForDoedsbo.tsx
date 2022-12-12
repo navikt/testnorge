@@ -1,14 +1,15 @@
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
-import { Kontakt } from './Kontakt'
-import { Adresse } from './Adresse'
+import { Kontakt } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/Kontakt'
+import { Adresse } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/Adresse'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import React from 'react'
 
 export const doedsboAttributt = 'pdldata.person.kontaktinformasjonForDoedsbo'
 

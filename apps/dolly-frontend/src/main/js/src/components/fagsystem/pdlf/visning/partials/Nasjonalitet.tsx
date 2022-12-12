@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { Innvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
 import { Utvandring } from '@/components/fagsystem/pdlf/visning/partials/Utvandring'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
-import { Statsborgerskap } from './Statsborgerskap'
+import { Statsborgerskap } from '@/components/fagsystem/pdlf/visning/partials/Statsborgerskap'
 
 type NasjonalitetTypes = {
 	data: PersonData
