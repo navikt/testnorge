@@ -107,6 +107,8 @@ public class UdiStubClient implements ClientRegister {
 
     private String getStatus(UdiPersonResponse response) {
 
+        log.info("UdiStub {} UdiPerson {} ", response.getType() == UdiPersonResponse.InnsendingType.NEW ?
+                "Opprettet" : "Oppdatert", response);
         return response.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getReason());
     }

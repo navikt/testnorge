@@ -41,7 +41,11 @@ public class UdistubGetCommand implements Callable<Mono<UdiPersonResponse>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(UdiPersonResponse.class)
+                .toEntity(UdiPersonResponse.class)
+                .map(response -> UdiPersonResponse.builder()
+                        .person(response.hasBody() ? response.getBody().getPerson() : null)
+                        .status(response.getStatusCode())
+                        .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(throwable -> Mono.just(UdiPersonResponse.builder()
                         .status(throwable instanceof WebClientResponseException webClientResponseException ?

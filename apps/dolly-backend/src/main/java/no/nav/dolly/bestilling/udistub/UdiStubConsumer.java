@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.udistub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.udistub.command.UdistubDeleteCommand;
 import no.nav.dolly.bestilling.udistub.command.UdistubGetCommand;
@@ -23,7 +22,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class UdiStubConsumer implements ConsumerStatus {
 
@@ -54,15 +52,15 @@ public class UdiStubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "udi_createPerson"})
     public Mono<UdiPersonResponse> createUdiPerson(UdiPerson udiPerson) {
 
-            return tokenService.exchange(serviceProperties)
-                    .flatMap(token -> new UdistubPostCommand(webClient, udiPerson, token.getTokenValue()).call());
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new UdistubPostCommand(webClient, udiPerson, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "udi_updatePerson"})
     public Mono<UdiPersonResponse> updateUdiPerson(UdiPerson udiPerson) {
 
-            return tokenService.exchange(serviceProperties)
-                    .flatMap(token -> new UdistubPutCommand(webClient, udiPerson, token.getTokenValue()).call());
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new UdistubPutCommand(webClient, udiPerson, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "udi_deletePerson"})

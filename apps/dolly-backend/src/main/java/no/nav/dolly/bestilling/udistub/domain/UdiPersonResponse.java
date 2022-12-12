@@ -12,7 +12,11 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class UdiPersonResponse {
 
+    public enum InnsendingType {NEW, UPDATE}
+
     private UdiPerson person;
     private String reason;
     private HttpStatus status;
+
+    private InnsendingType type;
 }

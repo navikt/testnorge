@@ -2,20 +2,18 @@ package no.nav.dolly.domain.resultset.udistub.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.RsUdiArbeidsadgang;
 import no.nav.dolly.domain.resultset.udistub.model.opphold.RsUdiOppholdStatus;
 
 import java.time.LocalDateTime;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
+@Builder
 @NoArgsConstructor
-@ToString
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsUdiPerson {
 

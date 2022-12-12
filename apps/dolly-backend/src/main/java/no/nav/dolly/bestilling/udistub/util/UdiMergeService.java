@@ -25,6 +25,7 @@ public class UdiMergeService {
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
                                  PdlPersonBolk.PersonBolk personBolk) {
 
+        log.info("UdiStub Hentet UdiPerson {}", eksisterendeUdiPerson);
         UdiPerson udiPerson = mapperFacade.map(nyUdiPerson, UdiPerson.class);
 
         udiPerson.setIdent(personBolk.getIdent());

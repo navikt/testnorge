@@ -1,18 +1,18 @@
 package no.nav.dolly.domain.resultset.udistub.model.opphold;
 
-import java.time.LocalDate;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
 
+import java.time.LocalDate;
+
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UdiOppholdSammeVilkaar {
 
