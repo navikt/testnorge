@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
 import static java.util.Objects.nonNull;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Slf4j
 @Service
@@ -74,9 +75,6 @@ public class CreatePersonService {
                                 .gradering(request.getGradering())
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()) : null)
-                .sivilstand(List.of(SivilstandDTO.builder()
-                        .folkeregistermetadata(new FolkeregistermetadataDTO())
-                        .build()))
                 .folkeregisterPersonstatus(
                         List.of(FolkeregisterPersonstatusDTO.builder()
                                 .folkeregistermetadata(new FolkeregistermetadataDTO())
@@ -115,6 +113,13 @@ public class CreatePersonService {
                 .collectList()
                 .block();
 
+        mergedPerson.getSivilstand().add(SivilstandDTO.builder()
+                .type(SivilstandDTO.Sivilstand.UGIFT)
+                .isNew(true)
+                .id(1)
+                .master(FREG)
+                .kilde("Dolly")
+                .build());
         folkeregisterPersonstatusService.convert(mergedPerson);
 
         log.info("Oppretting av ident {} tok {} ms", mergedPerson.getIdent(), currentTimeMillis() - startTime);
