@@ -122,21 +122,18 @@ public class PensjonData {
         private Integer uttaksgrad;
 
         @Schema(required = true)
-        private String statsborgerskap;
-
-        @Schema(required = true)
         private String sivilstand;
 
-        @Schema(required = false)
+        @Schema
         private LocalDate sivilstatusDatoFom;
 
-        @Schema(required = false)
+        @Schema
         private List<SkjemaRelasjon> relasjonListe;
 
-        @Schema(required = false)
+        @Schema
         private Boolean flyktning;
 
-        @Schema(required = false)
+        @Schema
         private Boolean utvandret;
     }
 
@@ -147,11 +144,9 @@ public class PensjonData {
     public static class SkjemaRelasjon {
         @Schema(required = true)
         private LocalDate samboerFraDato;
-
         private LocalDate dodsdato;
         private Boolean varigAdskilt;
         private String fnr;
-
         private LocalDate samlivsbruddDato;
         private Boolean harVaertGift;
         private Boolean harFellesBarn;

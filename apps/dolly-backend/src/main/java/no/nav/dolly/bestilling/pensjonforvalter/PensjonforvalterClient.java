@@ -149,6 +149,7 @@ public class PensjonforvalterClient implements ClientRegister {
             LagreAlderspensjonRequest lagreAlderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(), LagreAlderspensjonRequest.class);
             lagreAlderspensjonRequest.setPid(dollyPerson.getHovedperson());
             lagreAlderspensjonRequest.setMiljoer(new ArrayList<>(miljoer));
+            lagreAlderspensjonRequest.setStatsborgerskap("NOR");
 
             return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token);
 
