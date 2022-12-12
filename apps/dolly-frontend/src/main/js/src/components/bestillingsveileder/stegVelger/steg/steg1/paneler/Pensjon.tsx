@@ -80,4 +80,3 @@ PensjonPanel.initialValues = ({ set, del, has }: any) => {
 		},
 	}
 }
-// TODO: Lag form. Sett info hvis alder ikke er satt eller er lavere enn pensjonsalder
