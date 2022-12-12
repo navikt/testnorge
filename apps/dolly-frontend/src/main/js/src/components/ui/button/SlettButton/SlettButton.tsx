@@ -61,8 +61,9 @@ export const SlettButton = ({
 						<NavButton
 							onClick={() => {
 								closeModal()
-								gruppeId ? action(gruppeId) : action()
-								mutate(REGEX_BACKEND_GRUPPER)
+								gruppeId
+									? action(gruppeId).then(() => mutate(REGEX_BACKEND_GRUPPER))
+									: action().then(() => mutate(REGEX_BACKEND_GRUPPER))
 								navigateHome && navigate('/')
 							}}
 							variant={'primary'}

@@ -8,6 +8,7 @@ import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.service.ArtifactDeleteService;
 import no.nav.pdl.forvalter.service.ArtifactGjeldendeService;
 import no.nav.pdl.forvalter.service.ArtifactUpdateService;
+import no.nav.pdl.forvalter.service.MetadataTidspunkterService;
 import no.nav.pdl.forvalter.service.PdlOrdreService;
 import no.nav.pdl.forvalter.service.PersonService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
@@ -69,6 +70,7 @@ public class PersonController {
     private final ArtifactDeleteService artifactDeleteService;
     private final ArtifactUpdateService artifactUpdateService;
     private final ArtifactGjeldendeService artifactGjeldendeService;
+    private final MetadataTidspunkterService metadataTidspunkterService;
 
     @ResponseBody
     @GetMapping
@@ -126,7 +128,9 @@ public class PersonController {
                                              @Parameter(description = "Angir om 3. personer (egne hovedpersoner i Dolly) skal ekskluderes")
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
+        metadataTidspunkterService.updateMetadata(ident);
         artifactGjeldendeService.setGjeldene(ident);
+
         return pdlOrdreService.send(ident, isTpsMaster, ekskluderEksternePersoner);
     }
 

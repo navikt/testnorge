@@ -8,12 +8,22 @@ import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
+import { StyledAlert } from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 const Visning = ({ data }) => {
 	if (!data || data.length === 0) {
 		return null
 	}
 	const arenaData = data[0]
+	if (arenaData.error) {
+		return (
+			<StyledAlert variant={'info'} size={'small'}>
+				Fant ingen data i dette miljøet. Forsøk å gjenopprette personen for å fikse dette, og ta
+				eventuelt kontakt med Team Dolly dersom problemet vedvarer.
+			</StyledAlert>
+		)
+	}
+
 	return (
 		<div className="person-visning_content">
 			<TitleValue title="Brukertype" value={arenaData.brukertype} />
@@ -126,8 +136,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 	const miljoerMedData = data?.arbeidsokerList?.map((arb) => arb.miljoe)
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
 	visningData = visningData.map((vData) => {
-		if (!miljoerMedData?.includes(vData.miljo)) {
-			vData.data = []
+		if (vData.data?.length > 0) {
+			vData.data[0].error = !miljoerMedData?.includes(vData.miljo)
 		}
 		return vData
 	})
@@ -138,8 +148,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
 			<MiljoTabs
 				bestilteMiljoer={bestilteMiljoer}
-				errorMiljoer={errorMiljoer}
 				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
+				errorMiljoer={errorMiljoer}
 				data={visningData}
 			>
 				<Visning />

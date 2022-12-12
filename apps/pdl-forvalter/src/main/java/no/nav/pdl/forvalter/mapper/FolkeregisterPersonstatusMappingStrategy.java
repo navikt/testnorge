@@ -5,10 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -25,12 +22,6 @@ public class FolkeregisterPersonstatusMappingStrategy implements MappingStrategy
                                         FolkeregisterPersonstatus destinasjon, MappingContext context) {
 
                         destinasjon.setStatus(nonNull(kilde.getStatus()) ? kilde.getStatus() : FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.INAKTIV);
-
-                        destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
-                                .ajourholdstidspunkt(LocalDateTime.now())
-                                .gyldighetstidspunkt(kilde.getGyldigFraOgMed())
-                                .opphoerstidspunkt(kilde.getGyldigTilOgMed())
-                                .build());
                     }
                 })
                 .byDefault()

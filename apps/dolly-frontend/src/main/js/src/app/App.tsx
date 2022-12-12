@@ -9,6 +9,7 @@ import { Forbedring } from '@/components/feedback/Forbedring'
 import Utlogging from '@/components/utlogging'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
+import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import logoutBruker from '@/components/utlogging/logoutBruker'
@@ -57,6 +58,7 @@ export const App = () => {
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
+			<InfoStripe />
 			<main>
 				<Suspense fallback={<Loading label="Laster inn" />}>
 					<Routes>
