@@ -8,11 +8,11 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "app.azure")
 public class AzureConfig extends ServerProperties {
 
-    AzureConfig forEnvironment(String env) {
-        return (AzureConfig) new ServerProperties(
+    ServerProperties forEnvironment(String env) {
+        return new ServerProperties(
                 getUrl().replace("{env}", env),
                 getCluster(),
-                getName(),
+                getName().replace("{env}", env),
                 getNamespace());
     }
 

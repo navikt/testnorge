@@ -35,7 +35,7 @@ sts:
 
 app:
   azure:
-    name: digdir-krr-stub
-    namespace: team-rocket
+    name: aareg-services-nais-{env}
+    namespace: arbeidsforhold
     url: https://aareg-services-{env}.dev.intern.nav.no
     cluster: dev-gcp
