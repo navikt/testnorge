@@ -22,10 +22,6 @@ export default defineConfig({
 			'@': resolve(__dirname, './src'),
 		},
 	},
-	server: {
-		proxy: proxyRoutes,
-		port: 3000,
-	},
 	plugins: [
 		svgr(),
 		react(),
