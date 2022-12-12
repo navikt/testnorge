@@ -3,7 +3,6 @@ import viteTsconfigPaths from 'vite-tsconfig-paths'
 import svgr from 'vite-plugin-svgr'
 import { resolve } from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js'
 import proxyRoutes from './proxy-routes.json'
 import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
@@ -33,7 +32,6 @@ export default defineConfig({
 		react(),
 		terser(),
 		viteTsconfigPaths(),
-		cssInjectedByJsPlugin(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
