@@ -9,7 +9,6 @@ import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
 import no.nav.dolly.bestilling.udistub.util.UdiMergeService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -56,13 +55,11 @@ public class UdiStubClient implements ClientRegister {
             personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isReady -> (isReady ?
                             getPersonData(List.of(dollyPerson.getHovedperson()))
-                                    .flatMap(persondata -> getAliaser(persondata)
-                                            .collectList()
-                                            .flatMap(aliaser -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
-                                                    .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(), eksisterende,
-                                                            isOpprettEndre, persondata, aliaser))
-                                                    .flatMap(request -> sendUdiPerson(request))
-                                                    .map(response -> getStatus(response))))
+                                    .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
+                                            .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
+                                                    eksisterende, persondata))
+                                            .flatMap(this::sendUdiPerson)
+                                            .map(this::getStatus))
                                     .collect(Collectors.joining()) :
 
                             Mono.just(encodeStatus(getVarselSlutt("UdiStub")))
@@ -99,16 +96,6 @@ public class UdiStubClient implements ClientRegister {
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
                 .filter(personBolk -> nonNull(personBolk.getPerson()));
-    }
-
-    private Flux<PdlPersonBolk.PersonBolk> getAliaser(PdlPersonBolk.PersonBolk person) {
-
-        var aliaser = person.getPerson().getFolkeregisteridentifikator().stream()
-                .filter(PdlPerson.Folkeregisteridentifikator::isOpphoert)
-                .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
-                .toList();
-
-        return aliaser.isEmpty() ? Flux.empty() : getPersonData(aliaser);
     }
 
     private Mono<UdiPersonResponse> sendUdiPerson(UdiPersonWrapper wrapper) {

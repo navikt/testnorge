@@ -15,10 +15,6 @@ import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-import static java.util.Collections.emptyList;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -27,18 +23,9 @@ public class UdiMergeService {
     private final MapperFacade mapperFacade;
 
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
-                                  boolean isLeggTil, PdlPersonBolk.PersonBolk personBolk,
-                                  List<PdlPersonBolk.PersonBolk> aliaser) {
+                                 PdlPersonBolk.PersonBolk personBolk) {
 
         UdiPerson udiPerson = mapperFacade.map(nyUdiPerson, UdiPerson.class);
-
-        return (HttpStatus.NOT_FOUND.equals(eksisterendeUdiPerson.getStatus())) ?
-                appendAttributes(udiPerson, aliaser, Status.NEW, personBolk) :
-                appendAttributes(udiPerson, isLeggTil ? aliaser : emptyList(), Status.UPDATE, personBolk);
-    }
-
-    private UdiPersonWrapper appendAttributes(UdiPerson udiPerson, List<PdlPersonBolk.PersonBolk> aliaser,
-                                              Status status, PdlPersonBolk.PersonBolk personBolk) {
 
         udiPerson.setIdent(personBolk.getIdent());
         udiPerson.setNavn(mapperFacade.map(personBolk.getPerson().getNavn().stream()
@@ -46,17 +33,23 @@ public class UdiMergeService {
         udiPerson.setFoedselsDato(personBolk.getPerson().getFoedsel().stream().map(PdlPerson.Foedsel::getFoedselsdato)
                 .findFirst().orElse(null));
 
-        udiPerson.setAliaser(aliaser.stream()
+        udiPerson.setAliaser(personBolk.getPerson().getFolkeregisteridentifikator().stream()
+                .filter(PdlPerson.Folkeregisteridentifikator::isOpphoert)
+                .map(PdlPerson.Folkeregisteridentifikator::getIdentifikasjonsnummer)
+                .filter(ident -> HttpStatus.NOT_FOUND.equals(eksisterendeUdiPerson.getStatus()) ||
+                        eksisterendeUdiPerson.getPerson().getAliaser().stream()
+                                .map(UdiAlias::getFnr)
+                                .noneMatch(alias -> alias.equals(ident)))
                 .map(alias -> UdiAlias.builder()
-                        .fnr(alias.getIdent())
-                        .navn(mapperFacade.map(alias.getPerson().getNavn().stream()
+                        .fnr(alias)
+                        .navn(mapperFacade.map(personBolk.getPerson().getNavn().stream()
                                 .findFirst().orElse(new PdlPerson.Navn()), UdiPersonNavn.class))
                         .build())
                 .toList());
 
         return UdiPersonWrapper.builder()
                 .udiPerson(udiPerson)
-                .status(status)
+                .status(HttpStatus.NOT_FOUND.equals(eksisterendeUdiPerson.getStatus()) ? Status.NEW : Status.UPDATE)
                 .build();
     }
 }
