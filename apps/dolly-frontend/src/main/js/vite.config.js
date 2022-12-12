@@ -1,8 +1,6 @@
-import { defineConfig, splitVendorChunkPlugin } from 'vite'
+import { defineConfig } from 'vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
-import dynamicImport from 'vite-plugin-dynamic-import'
 import svgr from 'vite-plugin-svgr'
-import { terser } from 'rollup-plugin-terser'
 import { resolve } from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
 import proxyRoutes from './proxy-routes.json'
@@ -14,8 +12,14 @@ import * as child from 'child_process'
 const commitHash = child.execSync('git rev-parse --short HEAD').toString()
 const gitBranch = child.execSync('git branch --show-current').toString()
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	build: {
+		lib: {
+			entry: resolve(__dirname, './src/index.tsx'),
+			name: 'dolly',
+			formats: ['es'],
+			fileName: () => `bundle.js`,
+		},
 		outDir: 'build',
 		assetsDir: '',
 	},
@@ -24,7 +28,7 @@ export default defineConfig({
 			'@': resolve(__dirname, './src'),
 		},
 	},
-	server: {
+	server: mode === 'development' && {
 		proxy: proxyRoutes,
 		port: 3000,
 	},
@@ -32,13 +36,10 @@ export default defineConfig({
 		svgr(),
 		react(),
 		viteTsconfigPaths(),
-		splitVendorChunkPlugin(),
-		terser(),
-		dynamicImport(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
 			APP_VERSION: process.env.npm_package_version || '',
 		}),
 	],
-})
+}))
