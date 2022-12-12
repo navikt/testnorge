@@ -6,6 +6,7 @@ import EnvironmentPlugin from 'vite-plugin-environment'
 import proxyRoutes from './proxy-routes.json'
 import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
+import { terser } from 'rollup-plugin-terser'
 
 /** @type {import('vite').UserConfig} */
 
@@ -14,12 +15,6 @@ const gitBranch = child.execSync('git branch --show-current').toString()
 
 export default defineConfig(({ mode }) => ({
 	build: {
-		lib: {
-			entry: resolve(__dirname, './src/index.tsx'),
-			name: 'dolly',
-			formats: ['es'],
-			fileName: () => `bundle.js`,
-		},
 		outDir: 'build',
 		assetsDir: '',
 	},
@@ -35,6 +30,7 @@ export default defineConfig(({ mode }) => ({
 	plugins: [
 		svgr(),
 		react(),
+		terser(),
 		viteTsconfigPaths(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',

@@ -2,7 +2,7 @@
   "name": "dolly",
   "version": "2.5.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.jsx",
   "scripts": {
     "start": "vite --open",
     "build": "vite build",
