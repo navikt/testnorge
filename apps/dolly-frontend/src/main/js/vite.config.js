@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import dynamicImport from 'vite-plugin-dynamic-import'
 import svgr from 'vite-plugin-svgr'
@@ -17,7 +17,6 @@ const gitBranch = child.execSync('git branch --show-current').toString()
 export default defineConfig({
 	build: {
 		outDir: 'build',
-		loader: { '.js': 'jsx' },
 	},
 	resolve: {
 		alias: {
@@ -32,6 +31,7 @@ export default defineConfig({
 		svgr(),
 		react(),
 		viteTsconfigPaths(),
+		splitVendorChunkPlugin(),
 		terser(),
 		dynamicImport(),
 		EnvironmentPlugin({
