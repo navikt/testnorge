@@ -6,6 +6,8 @@ import { resolve } from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
 import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
+import externals from 'rollup-plugin-node-externals'
+import { chunkSplitPlugin } from 'vite-plugin-chunk-split'
 
 /** @type {import('vite').UserConfig} */
 
@@ -29,7 +31,9 @@ export default defineConfig({
 	plugins: [
 		svgr(),
 		react(),
+		externals(),
 		viteTsconfigPaths(),
+		chunkSplitPlugin(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
