@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "vite --open",
-    "build": "vite build --base=./",
+    "build": "vite build",
     "preview": "vite preview --port 5678",
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",

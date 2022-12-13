@@ -57,9 +57,9 @@ public class SecurityConfig {
                         "/favicon.ico",
                         LOGIN,
                         LOGOUT,
-                        "/main.*.css",
-                        "/bundle.*.js",
                         "/oauth2/logout",
+                        "/*.css",
+                        "/*.js",
                         "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()
