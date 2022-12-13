@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.tagshendelseslager;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -20,11 +21,11 @@ import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -40,22 +41,29 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final DollyPersonCache dollyPersonCache;
+    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+
         if (!dollyPerson.getTags().isEmpty()) {
 
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-            tagsHendelseslagerConsumer.createTags(Stream.of(List.of(dollyPerson.getHovedperson()),
-                                    dollyPerson.getPartnere(), dollyPerson.getForeldre(), dollyPerson.getBarn(),
-                                    dollyPerson.getFullmektige(), dollyPerson.getVerger())
-                            .flatMap(Collection::stream)
-                            .toList(), dollyPerson.getTags())
-                    .collectList()
-                    .subscribe(response -> log.info("Lagt til tag(s) {} for ident {}",
-                            dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
-                            dollyPerson.getHovedperson()));
+            var test = personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                    .flatMap(isSync -> isSync ?
+                            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                                    .flatMap(identer -> tagsHendelseslagerConsumer.createTags(identer, dollyPerson.getTags())
+                                            .flatMapMany(response -> tagsHendelseslagerConsumer.publish(identer)
+
+                                                    tagsHendelseslagerConsumer.createTags(Stream.of(List.of(dollyPerson.getHovedperson()),
+                                                                            dollyPerson.getPartnere(), dollyPerson.getForeldre(), dollyPerson.getBarn(),
+                                                                            dollyPerson.getFullmektige(), dollyPerson.getVerger())
+                                                                    .flatMap(Collection::stream)
+                                                                    .toList(), dollyPerson.getTags())
+                                                            .collectList()
+                                                            .subscribe(response -> log.info("Lagt til tag(s) {} for ident {}",
+                                                                    dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
+                                                                    dollyPerson.getHovedperson()));
         }
 
         // Midlertidig ? publisering fra identhendelseslager
@@ -86,7 +94,21 @@ public class TagsHendelseslagerClient implements ClientRegister {
         return true;
     }
 
-    private Flux<List<String>> getPdlIdenter(List<String> identer) {
+    private Mono<String> sendTags(List<String> identer, List<Tags> tags) {
+
+        return tags.isEmpty() ? Mono.just("") : tagsHendelseslagerConsumer.createTags(identer, tags)
+                .map(resultat -> resultat.getStatus().is2xxSuccessful() ?
+                        String.format("Lagt til tag(s) %s for ident(er) %s",
+                                tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
+                                String.join(",", identer)) :
+                        resultat.getMessage());
+//                .collectList()
+//                .subscribe(response -> log.info(""Lagt til tag(s) {} for ident {"}",
+//                        dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
+//                        dollyPerson.getHovedperson()));
+    }
+
+    private Mono<List<String>> getPdlIdenter(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
@@ -124,6 +146,8 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                         .toList())
                         .flatMap(Collection::stream)
                         .distinct()
-                        .toList());
+                        .toList())
+                .flatMap(Flux::fromIterable)
+                .collectList();
     }
 }
