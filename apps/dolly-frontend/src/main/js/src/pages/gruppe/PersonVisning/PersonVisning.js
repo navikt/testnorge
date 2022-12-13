@@ -44,6 +44,7 @@ import { sjekkManglerTpData } from '~/components/fagsystem/tjenestepensjon/visni
 import { sjekkManglerInstData } from '~/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harApBestilling,
 	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,

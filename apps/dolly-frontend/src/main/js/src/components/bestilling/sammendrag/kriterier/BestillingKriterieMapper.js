@@ -1698,7 +1698,7 @@ const mapPensjon = (bestillingData, data) => {
 			data.push(pensjonforvalterPopp)
 		}
 
-		if (pensjonKriterier.tp) {
+		if (pensjonKriterier.tp && pensjonKriterier.tp.length > 0) {
 			const hentTpOrdningNavn = (tpnr) => {
 				if (Options('tpOrdninger').length) {
 					return Options('tpOrdninger').find((ordning) => ordning.value === tpnr)?.label
@@ -1732,6 +1732,38 @@ const mapPensjon = (bestillingData, data) => {
 			})
 
 			data.push(pensjonforvalterTp)
+		}
+
+		if (pensjonKriterier.alderspensjon) {
+			const ap = pensjonKriterier.alderspensjon
+			const pensjonforvalterAlderspensjon = {
+				header: 'Alderspensjon (PESYS)',
+				items: [
+					obj('Iverksettelsesdato', Formatters.formatDate(ap.iverksettelsesdato)),
+					obj('Uttaksgrad', ap.uttaksgrad),
+					obj('Sivilstand', ap.sivilstand, PersoninformasjonKodeverk.Sivilstander),
+					obj('Sivilstand f.o.m. dato', Formatters.formatDate(ap.sivilstatusDatoFom)),
+					obj('Er flyktning', Formatters.oversettBoolean(ap.flyktning)),
+					obj('Er utvandret', Formatters.oversettBoolean(ap.utvandret)),
+				],
+				itemRows: [],
+			}
+
+			ap.relasjonListe?.forEach((relasjon, idx) => {
+				pensjonforvalterAlderspensjon.itemRows.push([
+					{ numberHeader: `Relasjon ${idx + 1}` },
+					obj('Samboer f.o.m. dato', Formatters.formatDate(relasjon.samboerFraDato)),
+					obj('Dødsdato', Formatters.formatDate(relasjon.dodsdato)),
+					obj('Er varig adskilt', Formatters.oversettBoolean(relasjon.varigAdskilt)),
+					obj('FNR', relasjon.fnr),
+					obj('Dato for samlivsbrudd', Formatters.formatDate(relasjon.samlivsbruddDato)),
+					obj('Har vært gift', Formatters.oversettBoolean(relasjon.harVaertGift)),
+					obj('Har felles barn', Formatters.oversettBoolean(relasjon.harFellesBarn)),
+					obj('Sum pensjonsinntekt', relasjon.sumAvForvArbKapPenInntekt),
+					obj('Relasjonstype', relasjon.relasjonType, PersoninformasjonKodeverk.Sivilstander),
+				])
+			})
+			data.push(pensjonforvalterAlderspensjon)
 		}
 	}
 }

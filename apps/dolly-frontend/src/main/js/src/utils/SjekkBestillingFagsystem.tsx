@@ -28,6 +28,16 @@ export const harPoppBestilling = (bestillingerFagsystemer) => {
 	return popp
 }
 
+export const harApBestilling = (bestillingerFagsystemer) => {
+	let alderspensjon = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.pensjonforvalter?.alderspensjon) {
+			alderspensjon = true
+		}
+	})
+	return alderspensjon
+}
+
 export const harInstBestilling = (bestillingerFagsystemer) => {
 	let inst = false
 	bestillingerFagsystemer?.forEach((i) => {
