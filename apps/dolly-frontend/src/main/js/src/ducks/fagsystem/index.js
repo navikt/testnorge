@@ -394,7 +394,7 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent, pdlfIdent) => {
 			tpsfIdent.alder,
 			tpsfIdent.doedsdato ? tpsfIdent.doedsdato : getPdlDoedsdato(pdlfIdent)
 		),
-		status: hentPersonStatus(ident.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
 
@@ -456,7 +456,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
 
