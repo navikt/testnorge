@@ -469,7 +469,7 @@ const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
 		alder: '',
 		status:
 			ident?.bestillingId && bestillingStatuser
-				? hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]])
+				? hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]])
 				: '',
 	}
 }
