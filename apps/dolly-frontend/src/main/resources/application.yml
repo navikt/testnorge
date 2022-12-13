@@ -3,6 +3,9 @@ IDPORTEN_ISSUER_URI: https://oidc.difi.no/idporten-oidc-provider/
 POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.dev.intern.nav.no/login
 
 spring:
+  cloud:
+    vault:
+      enabled: false
   application:
     name: dolly-frontend
   main:
