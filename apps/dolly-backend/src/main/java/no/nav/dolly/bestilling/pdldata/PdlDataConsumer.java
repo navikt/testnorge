@@ -101,9 +101,10 @@ public class PdlDataConsumer implements ConsumerStatus {
                 : ident;
     }
 
-    public List<FullPersonDTO> getPersoner(List<String> identer) {
+    public Mono<List<FullPersonDTO>> getPersoner(List<String> identer) {
 
-        return getPersoner(identer, 0, 10).collectList().block();
+        return getPersoner(identer, 0, 10)
+                .collectList();
     }
 
     public Flux<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {

@@ -133,7 +133,7 @@ public class DollyBestillingService {
                                         .build());
                     }
 
-                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent()));
+                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent())).block();
                     dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()),
                             progress.getBestilling().getGruppe().getTags());
 
@@ -239,7 +239,7 @@ public class DollyBestillingService {
             }
 
         } else if (progress.isPdlf()) {
-            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent()));
+            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent())).block();
             dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
                     progress.getBestilling().getGruppe().getTags());
 

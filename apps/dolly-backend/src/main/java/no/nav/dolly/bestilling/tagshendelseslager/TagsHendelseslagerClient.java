@@ -13,11 +13,10 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import org.slf4j.MDC;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -31,6 +30,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 
 @Slf4j
 @Service
@@ -40,43 +41,27 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final DollyPersonCache dollyPersonCache;
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                .flatMap(isSync -> (isSync ?
+                        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                                .flatMap(identer -> sendTags(identer, dollyPerson.getTags())
+                                        .map(tagResp -> sendHendelser(identer)
+                                                .map(hendelseResp ->
+                                                        String.join(", ",
+                                                                Stream.of(tagResp, hendelseResp)
+                                                                        .filter(StringUtils::isNotBlank)
+                                                                        .toList())))
+                                        .flatMap(Mono::from)) :
 
-        if (!dollyPerson.getTags().isEmpty()) {
+                        Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager"))))
 
-            var test = personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isSync -> isSync ?
-                            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                                    .flatMap(identer -> tagsHendelseslagerConsumer.createTags(identer, dollyPerson.getTags())
-                                            .flatMapMany(response -> tagsHendelseslagerConsumer.publish(identer)
+                ).subscribe(log::info);
 
-                                                    tagsHendelseslagerConsumer.createTags(Stream.of(List.of(dollyPerson.getHovedperson()),
-                                                                            dollyPerson.getPartnere(), dollyPerson.getForeldre(), dollyPerson.getBarn(),
-                                                                            dollyPerson.getFullmektige(), dollyPerson.getVerger())
-                                                                    .flatMap(Collection::stream)
-                                                                    .toList(), dollyPerson.getTags())
-                                                            .collectList()
-                                                            .subscribe(response -> log.info("Lagt til tag(s) {} for ident {}",
-                                                                    dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
-                                                                    dollyPerson.getHovedperson()));
-        }
-
-        // Midlertidig ? publisering fra identhendelseslager
-        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-                .contextWrite(c -> {
-                    var mdcContext = MDC.getCopyOfContextMap();
-                    if (null != mdcContext) {
-                        return c.put("mdc", mdcContext);
-                    }
-                    return c;
-                })
-                .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}", dollyPerson.getHovedperson(), response));
         return Flux.just();
     }
 
@@ -84,7 +69,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     public void release(List<String> identer) {
 
         getPdlIdenter(identer)
-                .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
+                .flatMapMany(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
                 .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
     }
 
@@ -102,10 +87,14 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                 tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
                                 String.join(",", identer)) :
                         resultat.getMessage());
-//                .collectList()
-//                .subscribe(response -> log.info(""Lagt til tag(s) {} for ident {"}",
-//                        dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
-//                        dollyPerson.getHovedperson()));
+    }
+
+    private Mono<String> sendHendelser(List<String> identer) {
+
+        return tagsHendelseslagerConsumer.publish(identer)
+                .collectList()
+                .map(resultat -> String.format("Publish sendt til hendelselager for ident(er): %s med status: %s",
+                        String.join(",", identer), resultat));
     }
 
     private Mono<List<String>> getPdlIdenter(List<String> identer) {
