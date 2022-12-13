@@ -62,9 +62,12 @@ export const BestillingProgresjon = ({
 
 	const ferdigstillBestilling = () => {
 		onFinishBestilling(bestilling || bestillingStatus)
-		mutate(REGEX_BACKEND_GRUPPER)
-		mutate(REGEX_BACKEND_BESTILLINGER)
-		mutate(REGEX_BACKEND_ORGANISASJONER)
+		if (erOrganisasjon) {
+			mutate(REGEX_BACKEND_ORGANISASJONER)
+		} else {
+			mutate(REGEX_BACKEND_GRUPPER)
+			mutate(REGEX_BACKEND_BESTILLINGER)
+		}
 	}
 
 	const calculateStatus = () => {
