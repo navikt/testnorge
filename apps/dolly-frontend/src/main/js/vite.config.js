@@ -16,7 +16,6 @@ export default defineConfig({
 	base: '/',
 	build: {
 		manifest: true,
-		sourcemap: true,
 		outDir: 'build',
 	},
 	resolve: {
