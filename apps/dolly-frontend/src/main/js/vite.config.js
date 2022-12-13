@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import svgr from 'vite-plugin-svgr'
+import proxyRoutes from './proxy-routes.json'
 import { resolve } from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
 import react from '@vitejs/plugin-react'
@@ -14,12 +15,15 @@ const gitBranch = child.execSync('git branch --show-current').toString()
 export default defineConfig({
 	build: {
 		outDir: 'build',
-		assetsDir: '',
 	},
 	resolve: {
 		alias: {
 			'@': resolve(__dirname, './src'),
 		},
+	},
+	server: {
+		proxy: proxyRoutes,
+		port: 3000,
 	},
 	plugins: [
 		svgr(),

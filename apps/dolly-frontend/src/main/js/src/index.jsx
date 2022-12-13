@@ -1,3 +1,5 @@
+import React from 'react'
+
 // Import all CSS først
 import '@navikt/ds-css'
 import '@/styles/main.less'

@@ -18,7 +18,8 @@ jobs:
   
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@feature/dolly-vite-rammeverk
+    #    TODO: Endre til master
     with:
       working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
@@ -70,7 +71,7 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      
+  
   deploy-dev-unstable:
     name: Deploy dev unstable
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
