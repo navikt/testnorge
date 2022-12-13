@@ -17,7 +17,7 @@ export const PdlRelasjoner = ({ data }: PdlRelasjonerProps) => {
 		return null
 	}
 
-	const partnere = data.sivilstand?.filter((sivilstand: Sivilstand) => sivilstand.type !== 'UGIFT')
+	const partnere = data.sivilstand
 	const doedfoedtBarn = data.doedfoedtBarn
 	const foreldreBarn = data.forelderBarnRelasjon
 	const foreldreansvar = data.foreldreansvar
