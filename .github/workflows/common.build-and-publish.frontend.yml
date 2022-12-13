@@ -48,7 +48,7 @@ jobs:
         run: npm run build
         working-directory: ${{ inputs.working-directory }}/src/main/js
       - name: Move js build
-        run: mv build ../resources/static
+        run: mv build/* ../resources/static/
         working-directory: ${{ inputs.working-directory }}/src/main/js
       - uses: actions/setup-java@v3
         with:
