@@ -15,7 +15,6 @@ const gitBranch = child.execSync('git branch --show-current').toString()
 export default defineConfig({
 	base: '/',
 	build: {
-		manifest: true,
 		outDir: 'build',
 	},
 	resolve: {
