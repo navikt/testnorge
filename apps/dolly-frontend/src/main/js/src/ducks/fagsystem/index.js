@@ -323,19 +323,15 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 			if (status.detaljert) {
 				_get(status, 'detaljert', []).forEach((miljoe) => {
 					_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
-						if (miljoeIdent === ident) {
-							if (status.melding !== 'OK') {
-								totalStatus = 'Avvik'
-							}
+						if (miljoeIdent === ident && status.melding !== 'OK') {
+							totalStatus = 'Avvik'
 						}
 					})
 				})
 			} else {
 				_get(status, 'identer', []).forEach((miljoeIdent) => {
-					if (miljoeIdent === ident) {
-						if (status.melding !== 'OK') {
-							totalStatus = 'Avvik'
-						}
+					if (miljoeIdent === ident && status.melding !== 'OK') {
+						totalStatus = 'Avvik'
 					}
 				})
 			}
