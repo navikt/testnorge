@@ -1,6 +1,6 @@
 spring:
   application:
-    name: testnav-aareg-services-proxy
+    name: testnav-aareg-proxy
   security:
     oauth2:
       resourceserver:
@@ -11,7 +11,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-fss:dolly:testnav-aareg-services-proxy
+          accepted-audience: dev-fss:dolly:testnav-aareg-proxy
 
 management:
   endpoints:

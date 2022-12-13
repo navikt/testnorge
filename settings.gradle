@@ -49,7 +49,7 @@ includeBuild './proxies/synthdata-meldekort-proxy'
 includeBuild './proxies/kontoregister-person-proxy'
 includeBuild './proxies/inst-proxy'
 includeBuild './proxies/aaregister-proxy'
-includeBuild './proxies/aareg-services-proxy'
+includeBuild './proxies/aareg-proxy'
 
 includeBuild './libs/security-token-service'
 includeBuild './libs/data-transfer-objects'

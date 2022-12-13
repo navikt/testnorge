@@ -1,6 +1,6 @@
 spring:
   application:
-    name: testnav-aareg-services-proxy
+    name: testnav-aareg-proxy
   security:
     oauth2:
       resourceserver:

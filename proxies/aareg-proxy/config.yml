@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-aareg-services-proxy
+  name: testnav-aareg-proxy
   namespace: dolly
   labels:
     team: dolly
@@ -49,5 +49,5 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnav-aareg-services-proxy.dev.intern.nav.no"
-    - "https://testnav-aareg-services-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-aareg-proxy.dev.intern.nav.no"
+    - "https://testnav-aareg-proxy.dev-fss-pub.nais.io"
