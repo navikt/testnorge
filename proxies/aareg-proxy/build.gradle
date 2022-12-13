@@ -55,7 +55,6 @@ dependencies {
     implementation 'no.nav.testnav.libs:reactive-proxy'
     implementation 'no.nav.testnav.libs:reactive-security'
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:security-token-service'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
