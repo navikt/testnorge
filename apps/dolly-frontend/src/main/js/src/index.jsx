@@ -5,7 +5,6 @@ import * as ReactDOM from 'react-dom/client'
 import '@navikt/ds-css'
 import '@/styles/main.less'
 import '@/utils/FormatIso'
-import '@/polyfill'
 import { RootComponent } from '@/RootComponent'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))

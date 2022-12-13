@@ -13,7 +13,10 @@ const commitHash = child.execSync('git rev-parse --short HEAD').toString()
 const gitBranch = child.execSync('git branch --show-current').toString()
 
 export default defineConfig({
+	base: '/',
 	build: {
+		manifest: true,
+		sourcemap: true,
 		outDir: 'build',
 	},
 	resolve: {
