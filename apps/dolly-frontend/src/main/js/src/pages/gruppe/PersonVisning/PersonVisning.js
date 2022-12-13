@@ -130,14 +130,7 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const mountedRef = useRef(true)
 	const navigate = useNavigate()
-
-	useEffect(() => {
-		return () => {
-			mountedRef.current = false
-		}
-	}, [])
 
 	if (!data) {
 		return null

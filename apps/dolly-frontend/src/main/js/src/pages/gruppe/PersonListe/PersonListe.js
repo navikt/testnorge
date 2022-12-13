@@ -43,6 +43,7 @@ export default function PersonListe({
 	fetchPdlPersoner,
 	tmpPersoner,
 	sorting,
+	bestillingerById,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
@@ -73,7 +74,7 @@ export default function PersonListe({
 		}
 		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe, fagsystem)
-	}, [identListe, visPerson, bestillingStatuser])
+	}, [identListe, visPerson, bestillingerById])
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst

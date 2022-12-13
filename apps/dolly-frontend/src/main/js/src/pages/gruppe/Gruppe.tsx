@@ -185,6 +185,7 @@ export default ({
 					brukertype={brukertype}
 					gruppeInfo={gruppe}
 					identer={identer}
+					bestillingerById={bestillingerById}
 				/>
 			)}
 			{visning === VisningType.VISNING_BESTILLING && (
