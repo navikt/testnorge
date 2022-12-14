@@ -3,7 +3,7 @@ import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
 import Panel from '~/components/ui/panel/Panel'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import React from 'react'
+import React, { useContext } from 'react'
 import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
 import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
@@ -14,6 +14,8 @@ import styled from 'styled-components'
 import _has from 'lodash/has'
 import _get from 'lodash/get'
 import { add, isDate } from 'date-fns'
+import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
+import { validation } from '~/components/fagsystem/alderspensjon/form/validation'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -27,6 +29,9 @@ const StyledAlert = styled(Alert)`
 const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
 export const AlderspensjonForm = ({ formikBag }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const isLeggTil = opts?.is?.leggTil
+
 	const harAlder =
 		_has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
 		_has(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
@@ -44,13 +49,13 @@ export const AlderspensjonForm = ({ formikBag }) => {
 				iconType="pensjon"
 				startOpen={erForsteEllerTest(formikBag.values, [alderspensjonPath])}
 			>
-				{!harAlder && (
+				{!harAlder && !isLeggTil && (
 					<StyledAlert variant={'warning'} size={'small'}>
 						For å sikre at personen har rett på alderspensjon må alder velges på forrige side, og
 						settes til 62 år eller høyere.
 					</StyledAlert>
 				)}
-				{harUgyldigAlder && (
+				{harUgyldigAlder && !isLeggTil && (
 					<StyledAlert variant={'warning'} size={'small'}>
 						For å sikre at personen har rett på alderspensjon må alder settes til 62 år eller
 						høyere.
@@ -60,7 +65,6 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					<FormikDatepicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
 						label="Iverksettelsesdato"
-						// fastfield={false}
 					/>
 					<FormikTextInput
 						name={`${alderspensjonPath}.uttaksgrad`}
@@ -167,3 +171,5 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		</Vis>
 	)
 }
+
+AlderspensjonForm.validation = validation
