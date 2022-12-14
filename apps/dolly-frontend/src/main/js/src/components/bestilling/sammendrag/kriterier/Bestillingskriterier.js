@@ -54,7 +54,7 @@ const _renderBestillingsDetaljer = (data) => {
 										<div className={'flexbox--align-start flexbox--wrap'} key={idx}>
 											{row?.map((attributt, idy) => {
 												return attributt.expandableHeader ? (
-													<RenderExpandablePanel attributt={attributt} idy={idy} />
+													<RenderExpandablePanel attributt={attributt} key={idy} />
 												) : (
 													_renderStaticValue(attributt, idy)
 												)
@@ -86,7 +86,7 @@ const _renderStaticValue = (attributt, key) => {
 	)
 }
 
-const RenderExpandablePanel = ({ attributt, key }) => {
+const RenderExpandablePanel = (attributt, key) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
 	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) {
