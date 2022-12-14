@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "vite --open",
+    "start-testcafe": "vite --host --port 5678",
     "build": "vite build",
     "preview": "vite preview --port 5678",
     "lint": "eslint . --ext .ts,.tsx",

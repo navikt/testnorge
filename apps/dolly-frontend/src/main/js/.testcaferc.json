@@ -5,7 +5,7 @@
   "skipUncaughtErrors": true,
   "hostname": "localhost",
   "appCommand": "npm run preview",
-  "appInitDelay": 2000,
+  "appInitDelay": 5000,
   "port1": 54321,
   "developmentMode": true,
   "pageRequestTimeout": 30000,
