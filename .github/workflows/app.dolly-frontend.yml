@@ -25,18 +25,29 @@ jobs:
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   
-  cypress-run:
+  cypress-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          working-directory: 'apps/dolly-frontend/'
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+
+      - name: Npm install
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        working-directory: 'apps/dolly-frontend/src/main/js'
+        run: npm ci
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
-          working-directory: 'apps/dolly-frontend/'
+          working-directory: 'apps/dolly-frontend/src/main/js'
           browser: chrome
           build: npm run build
           start: npm start
