@@ -18,6 +18,7 @@ export default defineConfig({
 	base: '/',
 	build: {
 		outDir: 'build',
+		minify: 'terser',
 	},
 	resolve: {
 		alias: {
