@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-inst-proxy
-    desciption: Proxy for inst-testdata som legger på sikkerhet og redirecter.
+    description: Proxy for opphold-testdata som legger på sikkerhet og redirecter.
   security:
     oauth2:
       resourceserver:
@@ -16,6 +16,8 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
+    vault:
+      enabled: false
     gateway:
       httpclient:
         response-timeout: 180s

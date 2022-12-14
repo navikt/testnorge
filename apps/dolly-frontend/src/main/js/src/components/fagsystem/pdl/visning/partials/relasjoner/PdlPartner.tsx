@@ -16,15 +16,18 @@ type PdlPartnerProps = {
 }
 
 const Visning = ({ data, idx }: VisningProps) => {
+	const harPartner = data.type !== 'UGIFT'
 	return (
 		<div key={idx} className="person-visning_content">
 			<TitleValue
-				title="Forhold til partner (sivilstand)"
+				title={harPartner ? 'Forhold til partner (sivilstand)' : 'Sivilstand'}
 				kodeverk={PersoninformasjonKodeverk.Sivilstander}
 				value={data.type}
 				size="medium"
 			/>
-			<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
+			{harPartner && (
+				<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
+			)}
 			<TitleValue title="Sivilstand fra dato" value={Formatters.formatDate(data.gyldigFraOgMed)} />
 		</div>
 	)

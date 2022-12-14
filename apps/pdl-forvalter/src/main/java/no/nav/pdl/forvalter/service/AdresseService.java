@@ -216,6 +216,9 @@ public abstract class AdresseService<T extends AdresseDTO, R> implements BiValid
         if (adresser.isEmpty()) {
             return;
         }
+        adresser.stream()
+                .filter(adresse -> isNull(adresse.getGyldigFraOgMed()))
+                .forEach(adresse -> adresse.setGyldigFraOgMed(LocalDateTime.now()));
         adresser.sort(Comparator.comparing(AdresseDTO::getGyldigFraOgMed, Comparator.reverseOrder()));
         for (var i = adresser.size(); i > 0; i--) {
             adresser.get(i - 1).setId(adresser.size() - i + 1);

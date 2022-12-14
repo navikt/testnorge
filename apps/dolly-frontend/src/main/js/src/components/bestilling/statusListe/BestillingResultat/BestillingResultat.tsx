@@ -13,15 +13,10 @@ import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus
-	setNyeBestillinger: Function
 	lukkBestilling: Function
 }
 
-export default function BestillingResultat({
-	bestilling,
-	setNyeBestillinger,
-	lukkBestilling,
-}: ResultatProps) {
+export default function BestillingResultat({ bestilling, lukkBestilling }: ResultatProps) {
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
@@ -38,10 +33,7 @@ export default function BestillingResultat({
 						<Button
 							kind="remove-circle"
 							onClick={() => {
-								setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
-									nyeBestillinger.filter((best) => best.id !== bestilling.id)
-								)
-								lukkBestilling && lukkBestilling(bestilling.id)
+								lukkBestilling(bestilling.id)
 							}}
 						/>
 					</div>

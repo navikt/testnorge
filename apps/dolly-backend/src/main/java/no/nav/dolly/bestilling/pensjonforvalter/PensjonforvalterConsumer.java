@@ -7,11 +7,13 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreAlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
@@ -77,6 +79,13 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         opprettPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", opprettPersonRequest);
         return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
+    public Flux<PensjonforvalterResponse> lagreAlderspensjon(LagreAlderspensjonRequest request, AccessToken token) {
+
+        log.info("Pensjon lagre alderspensjon {}", request);
+        return new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreInntekt"})

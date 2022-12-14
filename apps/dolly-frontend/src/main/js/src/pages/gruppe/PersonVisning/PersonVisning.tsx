@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import Button from '@/components/ui/button/Button'
 import { TidligereBestillinger } from '@/pages/gruppe/PersonVisning/TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PersonMiljoeinfo'
@@ -130,14 +130,7 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const mountedRef = useRef(true)
 	const navigate = useNavigate()
-
-	useEffect(() => {
-		return () => {
-			mountedRef.current = false
-		}
-	}, [])
 
 	if (!data) {
 		return null

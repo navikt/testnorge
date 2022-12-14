@@ -19,8 +19,11 @@ export default function GjenopprettBestilling(props) {
 		erOrganisasjon
 			? await props.gjenopprettOrganisasjonBestilling(envsQuery)
 			: await props.gjenopprettBestilling(envsQuery)
-		mutate(REGEX_BACKEND_ORGANISASJONER)
-		mutate(REGEX_BACKEND_BESTILLINGER)
+		if (erOrganisasjon) {
+			mutate(REGEX_BACKEND_ORGANISASJONER)
+		} else {
+			mutate(REGEX_BACKEND_BESTILLINGER)
+		}
 		closeModal()
 	}
 
