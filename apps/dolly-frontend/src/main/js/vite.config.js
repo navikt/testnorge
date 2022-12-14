@@ -18,7 +18,12 @@ export default defineConfig({
 	base: '/',
 	build: {
 		outDir: 'build',
-		minify: 'terser',
+		lib: {
+			entry: resolve(__dirname, 'src/index.tsx'),
+			name: 'dolly',
+			formats: ['es'],
+			fileName: () => `bundle.js`,
+		},
 	},
 	resolve: {
 		alias: {
