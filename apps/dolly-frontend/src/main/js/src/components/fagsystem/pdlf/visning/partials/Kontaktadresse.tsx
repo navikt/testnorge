@@ -35,6 +35,11 @@ type KontaktadresseVisningTypes = {
 	erPdlVisning: boolean
 }
 
+type AdresseTypes = {
+	kontaktadresseData: any
+	idx: number
+}
+
 const Adressedatoer = ({ kontaktadresseData }: any) => (
 	<>
 		<TitleValue
@@ -48,7 +53,7 @@ const Adressedatoer = ({ kontaktadresseData }: any) => (
 	</>
 )
 
-export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
+export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 	if (!kontaktadresseData) {
 		return null
 	}
