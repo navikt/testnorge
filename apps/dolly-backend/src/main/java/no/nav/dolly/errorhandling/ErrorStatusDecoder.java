@@ -76,26 +76,12 @@ public class ErrorStatusDecoder {
                 .append(FEIL);
 
         if (isNull(errorMsg)) {
-
             builder.append(errorStatus);
 
         } else if (errorMsg.contains("{")) {
-
-            try {
-                builder.append(encodeStatus((String) objectMapper.readValue(errorMsg, Map.class).get("message")));
-
-            } catch (IOException e) {
-
-                builder.append(errorStatus.value())
-                        .append(" (")
-                        .append(encodeStatus(errorStatus.getReasonPhrase()))
-                        .append(')');
-
-                log.warn("Parsing av melding '{}' feilet", errorMsg, e);
-            }
+            builder.append(encodeStatus(getStatusMessage(errorMsg)));
 
         } else {
-
             builder.append(encodeStatus(errorMsg));
         }
 

@@ -90,6 +90,11 @@ consumers:
     namespace: dolly
     url: https://testnav-miljoer-service.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-norg2-proxy:
+    name: testnav-norg2-proxy
+    namespace: dolly
+    url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-generer-navn-service:
     name: generer-navn-service
     namespace: dolly

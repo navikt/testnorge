@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -32,6 +33,7 @@ import java.util.stream.Stream;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -47,7 +49,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                .flatMap(isSync -> (isSync ?
+                .flatMap(isSync -> isTrue(isSync) ?
                         getPdlIdenter(List.of(dollyPerson.getHovedperson()))
                                 .flatMap(identer -> sendTags(identer, dollyPerson.getTags())
                                         .map(tagResp -> sendHendelser(identer)
@@ -58,7 +60,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
                                                                         .toList())))
                                         .flatMap(Mono::from)) :
 
-                        Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager"))))
+                        Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager")))
 
                 ).subscribe(log::info);
 
@@ -82,11 +84,16 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private Mono<String> sendTags(List<String> identer, List<Tags> tags) {
 
         return tags.isEmpty() ? Mono.just("") : tagsHendelseslagerConsumer.createTags(identer, tags)
-                .map(resultat -> resultat.getStatus().is2xxSuccessful() ?
-                        String.format("Lagt til tag(s) %s for ident(er) %s",
-                                tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
-                                String.join(",", identer)) :
-                        resultat.getMessage());
+                .map(resultat -> getTagStatus(identer, tags, resultat));
+    }
+
+    private String getTagStatus(List<String> identer, List<Tags> tags, TagsOpprettingResponse resultat) {
+
+        return resultat.getStatus().is2xxSuccessful() ?
+                String.format("Lagt til tag(s) %s for ident(er) %s",
+                        tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
+                        String.join(",", identer)) :
+                resultat.getMessage();
     }
 
     private Mono<String> sendHendelser(List<String> identer) {

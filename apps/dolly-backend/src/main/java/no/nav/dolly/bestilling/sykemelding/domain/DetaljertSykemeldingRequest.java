@@ -3,9 +3,8 @@ package no.nav.dolly.bestilling.sykemelding.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +12,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -53,8 +51,7 @@ public class DetaljertSykemeldingRequest {
         INGEN, AVVENTENDE
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -66,8 +63,7 @@ public class DetaljertSykemeldingRequest {
         private String yrkesbetegnelse;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -79,8 +75,7 @@ public class DetaljertSykemeldingRequest {
         private String system;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -93,8 +88,7 @@ public class DetaljertSykemeldingRequest {
         private String tiltakNav;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -109,8 +103,7 @@ public class DetaljertSykemeldingRequest {
         private String samhandlerType;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -122,8 +115,7 @@ public class DetaljertSykemeldingRequest {
         private String orgNr;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -140,8 +132,7 @@ public class DetaljertSykemeldingRequest {
         private String telefon;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -153,8 +144,7 @@ public class DetaljertSykemeldingRequest {
         private LocalDate tom;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -168,8 +158,7 @@ public class DetaljertSykemeldingRequest {
 
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

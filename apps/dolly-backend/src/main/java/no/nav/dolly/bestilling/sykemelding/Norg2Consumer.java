@@ -3,10 +3,9 @@ package no.nav.dolly.bestilling.sykemelding;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.SykemeldingPostCommand;
-import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
-import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
-import no.nav.dolly.config.credentials.SykemeldingApiProxyProperties;
+import no.nav.dolly.bestilling.sykemelding.command.Norg2GetCommand;
+import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
+import no.nav.dolly.config.credentials.Norg2ProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -22,15 +21,15 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
 @Service
-public class SykemeldingConsumer implements ConsumerStatus {
+public class Norg2Consumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
 
-    public SykemeldingConsumer(
+    public Norg2Consumer(
             TokenExchange accessTokenService,
-            SykemeldingApiProxyProperties serverProperties,
+            Norg2ProxyProperties serverProperties,
             ObjectMapper objectMapper,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
@@ -44,12 +43,10 @@ public class SykemeldingConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
-    public Mono<SykemeldingResponse> postDetaljertSykemelding(DetaljertSykemeldingRequest detaljertSykemeldingRequest) {
-
-        log.info("Detaljert Sykemelding sendt {}", detaljertSykemeldingRequest);
+    public Mono<Norg2EnhetResponse> getNorgEnhet(String geografiskTilhoerighet) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new SykemeldingPostCommand(webClient, detaljertSykemeldingRequest,
+                .flatMap(token -> new Norg2GetCommand(webClient, geografiskTilhoerighet,
                         token.getTokenValue()).call());
     }
 
@@ -64,6 +61,6 @@ public class SykemeldingConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-sykemelding-api-proxy";
+        return "testnav-norg2-proxy";
     }
 }

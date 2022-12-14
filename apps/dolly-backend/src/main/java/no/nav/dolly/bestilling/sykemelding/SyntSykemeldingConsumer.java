@@ -3,23 +3,21 @@ package no.nav.dolly.bestilling.sykemelding;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.sykemelding.command.PostSyntSykemeldingCommand;
+import no.nav.dolly.bestilling.sykemelding.command.SyntSykemeldingPostCommand;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
+import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.dolly.config.credentials.SyntSykemeldingApiProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 import java.util.Map;
-import java.util.UUID;
 
-import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -45,20 +43,13 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-
     @Timed(name = "providers", tags = {"operation", "syntsykemelding_opprett"})
-    public ResponseEntity<String> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
+    public Mono<SykemeldingResponse> postSyntSykemelding(SyntSykemeldingRequest sykemeldingRequest) {
 
-        String callId = getNavCallId();
-        log.info("Synt Sykemelding sendt, callId: {}, consumerId: {}", callId, CONSUMER);
-
+        log.info("SyntSykemelding sendt {}", sykemeldingRequest);
         return tokenService.exchange(serviceProperties)
                 .flatMap(accessToken -> new
-                        PostSyntSykemeldingCommand(webClient, accessToken.getTokenValue(), sykemeldingRequest).call())
-                .block();
+                        SyntSykemeldingPostCommand(webClient, sykemeldingRequest, accessToken.getTokenValue()).call());
     }
 
     public Map<String, String> checkAlive() {

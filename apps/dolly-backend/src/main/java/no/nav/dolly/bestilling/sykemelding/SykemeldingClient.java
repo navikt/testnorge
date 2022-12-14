@@ -5,40 +5,44 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.sykemelding.domain.BestillingPersonWrapper;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
+import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
+import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
+import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsDetaljertSykemelding;
-import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding.RsSyntSykemelding;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -46,54 +50,58 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class SykemeldingClient implements ClientRegister {
 
-    private static final String STANDARD_ARBEIDSFORHOLD_ID = "1";
 
     private final SykemeldingConsumer sykemeldingConsumer;
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
+    private final PersonServiceConsumer personServiceConsumer;
+    private final TransactionHelperService transactionHelperService;
+    private final PdlPersonConsumer pdlPersonConsumer;
+    private final KodeverkConsumer kodeverkConsumer;
+    private final Norg2Consumer norg2Consumer;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getSykemelding())) {
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setSykemeldingStatus(encodeStatus(getVarsel("Sykemelding")));
-                return Flux.just();
-            }
-
-            try {
-                dollyPersonCache.fetchIfEmpty(dollyPerson);
-
-                if (!transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) || isOpprettEndre) {
-
-                    if (postSyntSykemelding(bestilling, dollyPerson)) {
-                        RsSyntSykemelding syntSykemelding = bestilling.getSykemelding().getSyntSykemelding();
-                        saveTransaksjonId(syntSykemelding.getOrgnummer(), syntSykemelding.getArbeidsforholdId(),
-                                progress.getBestilling().getId(), dollyPerson.getHovedperson());
-
-                    } else if (postDetaljertSykemelding(bestilling, dollyPerson)) {
-                        RsDetaljertSykemelding detaljertSykemelding = bestilling.getSykemelding().getDetaljertSykemelding();
-                        Optional<RsDetaljertSykemelding.Organisasjon> mottaker = Optional.ofNullable(detaljertSykemelding.getMottaker());
-                        saveTransaksjonId(mottaker
-                                        .orElse(RsDetaljertSykemelding.Organisasjon
-                                                .builder()
-                                                .orgNr("NA")
-                                                .build())
-                                        .getOrgNr(), null,
-                                progress.getBestilling().getId(),
-                                dollyPerson.getHovedperson());
-                    }
-                }
+            if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) && !isOpprettEndre) {
                 progress.setSykemeldingStatus("OK");
+                transactionHelperService.persister(progress);
 
-            } catch (RuntimeException e) {
+            } else {
+                progress.setSykemeldingStatus(encodeStatus(getInfoVenter("Sykemelding")));
+                transactionHelperService.persister(progress);
+                long bestillingId = progress.getBestilling().getId();
 
-                progress.setSykemeldingStatus(errorStatusDecoder.decodeThrowable(e));
+                personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                        .flatMap(isSync -> {
+                            if (isTrue(isSync)) {
+
+                                progress.setSykemeldingStatus("Info: Venter på generering av sykemelding ...");
+                                transactionHelperService.persister(progress);
+                                return getPerson(dollyPerson.getHovedperson())
+                                        .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
+                                                        getNorgenhet(persondata))
+                                                .flatMap(zip -> Flux.concat(postSyntSykemelding(bestilling, persondata),
+                                                                postDetaljertSykemelding(bestilling, persondata,
+                                                                        zip.getT1(), zip.getT2()))
+                                                        .filter(Objects::nonNull)
+                                                        .map(status -> saveTransaksjonId(status, bestillingId))
+                                                        .map(this::getStatus)
+                                                        .collect(Collectors.joining())))
+                                        .collect(Collectors.joining());
+                            } else {
+                                return Mono.just(encodeStatus(getVarselSlutt("Sykemelding")));
+                            }
+                        })
+                        .subscribe(status -> {
+                            progress.setSykemeldingStatus(status);
+                            transactionHelperService.persister(progress);
+                        });
             }
         }
         return Flux.just();
@@ -110,53 +118,116 @@ public class SykemeldingClient implements ClientRegister {
 
         return isNull(kriterier.getSykemelding()) ||
                 bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getSykemeldingStatus()));
+                        .allMatch(entry -> isNotBlank(entry.getSykemeldingStatus()) &&
+                                !entry.getSykemeldingStatus().contains(ErrorStatusDecoder.getVenterTekst()));
     }
 
-    private boolean postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+    private String getStatus(SykemeldingResponse status) {
+
+        return status.getStatus().is2xxSuccessful() ? "OK" :
+                errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
+    }
+
+    private Flux<PdlPersonBolk.Data> getPerson(String ident) {
+
+        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData);
+    }
+
+    private Mono<Norg2EnhetResponse> getNorgenhet(PdlPersonBolk.Data persondata) {
+
+        var geografiskOmrade = persondata.getHentGeografiskTilknytningBolk().stream()
+                .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
+                .map(geografiskTilknytning ->
+                        switch (geografiskTilknytning.getGtType()) {
+                            case "KOMMUNE" -> geografiskTilknytning.getGtKommune();
+                            case "BYDEL" -> geografiskTilknytning.getGtBydel();
+                            default -> null;
+                        })
+                .collect(Collectors.joining());
+
+        return isNotBlank(geografiskOmrade) ? norg2Consumer.getNorgEnhet(geografiskOmrade) : Mono.empty();
+    }
+
+    private Mono<SykemeldingResponse> postDetaljertSykemelding(RsDollyUtvidetBestilling bestilling,
+                                                               PdlPersonBolk.Data persondata,
+                                                               Map<String, String> postnummer,
+                                                               Norg2EnhetResponse norg2Enhet) {
 
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
-            Person pasient = dollyPerson.getPerson(dollyPerson.getHovedperson());
-            DetaljertSykemeldingRequest detaljertSykemeldingRequest = mapperFacade.map(BestillingPersonWrapper.builder()
-                            .person(pasient)
-                            .sykemelding(bestilling.getSykemelding().getDetaljertSykemelding())
-                            .build(),
+
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("persondata", persondata);
+            context.setProperty("postnummer", postnummer);
+            context.setProperty("norg2Enhet", norg2Enhet);
+            var detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(),
                     DetaljertSykemeldingRequest.class);
 
-            ResponseEntity<String> responseDetaljert = sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest);
-            return HttpStatus.OK.equals(responseDetaljert.getStatusCode());
+            return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest)
+                    .map(status -> {
+                        status.setDetaljertSykemeldingRequest(detaljertSykemeldingRequest);
+                        return status;
+                    });
+
+        } else {
+            return Mono.empty();
         }
-        return false;
     }
 
-    private boolean postSyntSykemelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+    private Mono<SykemeldingResponse> postSyntSykemelding(RsDollyUtvidetBestilling bestilling, PdlPersonBolk.Data persondata) {
 
         if (nonNull(bestilling.getSykemelding().getSyntSykemelding())) {
-            SyntSykemeldingRequest syntSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class);
-            syntSykemeldingRequest.setIdent(dollyPerson.getHovedperson());
-            if (isNull(syntSykemeldingRequest.getArbeidsforholdId())) {
-                syntSykemeldingRequest.setArbeidsforholdId(STANDARD_ARBEIDSFORHOLD_ID);
-            }
 
-            ResponseEntity<String> response = syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest);
-            return HttpStatus.OK.equals(response.getStatusCode());
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("persondata", persondata);
+            var syntSykemeldingRequest =
+                    mapperFacade.map(bestilling.getSykemelding().getSyntSykemelding(), SyntSykemeldingRequest.class, context);
+
+            return syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest)
+                    .map(status -> {
+                        status.setSyntSykemeldingRequest(syntSykemeldingRequest);
+                        return status;
+                    });
+
+        } else {
+            return Mono.empty();
         }
-        return false;
     }
 
-    private void saveTransaksjonId(String orgnr, String arbeidsforholdsId, Long bestillingId, String ident) {
+    private SykemeldingResponse saveTransaksjonId(SykemeldingResponse sykemelding, Long bestillingId) {
 
-        transaksjonMappingService.save(
-                TransaksjonMapping.builder()
-                        .ident(ident)
+        if (sykemelding.getStatus().is2xxSuccessful()) {
+            if (nonNull(sykemelding.getSyntSykemeldingRequest())) {
+
+                transaksjonMappingService.save(TransaksjonMapping.builder()
+                        .ident(sykemelding.getSyntSykemeldingRequest().getIdent())
                         .bestillingId(bestillingId)
                         .transaksjonId(toJson(SykemeldingTransaksjon.builder()
-                                .orgnummer(orgnr)
-                                .arbeidsforholdId(arbeidsforholdsId).build()))
+                                .orgnummer(Optional.of(sykemelding.getSyntSykemeldingRequest().getOrgnummer())
+                                        .orElse("NA"))
+                                .arbeidsforholdId(Optional.of(sykemelding.getSyntSykemeldingRequest().getArbeidsforholdId())
+                                        .orElse("1"))
+                                .build()))
                         .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())
                         .build());
+            } else {
+                transaksjonMappingService.save(TransaksjonMapping.builder()
+                        .ident(sykemelding.getDetaljertSykemeldingRequest().getPasient().getIdent())
+                        .bestillingId(bestillingId)
+                        .transaksjonId(toJson(Optional.of(sykemelding.getDetaljertSykemeldingRequest().getMottaker())
+                                .orElse(DetaljertSykemeldingRequest.Organisasjon.builder()
+                                        .orgNr("NA")
+                                        .build())
+                                .getOrgNr()))
+                        .system(SYKEMELDING.name())
+                        .build());
+            }
+        }
+        return sykemelding;
     }
+
 
     private String toJson(Object object) {
 
