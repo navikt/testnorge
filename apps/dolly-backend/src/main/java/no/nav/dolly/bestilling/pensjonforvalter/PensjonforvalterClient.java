@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -12,12 +14,14 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
+import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
@@ -26,15 +30,19 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -54,6 +62,8 @@ public class PensjonforvalterClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final TransaksjonMappingService transaksjonMappingService;
+    private final ObjectMapper objectMapper;
 
     public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
 
@@ -115,7 +125,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
                                                     Flux.just("")),
                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreAlderspensjon(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                    lagreAlderspensjon(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token, isOpprettEndre, progress.getBestilling().getId())
                                                             .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                                     Flux.just(""))
                                     )))
@@ -143,19 +153,61 @@ public class PensjonforvalterClient implements ClientRegister {
                         .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()));
     }
 
-    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
+    private Flux<PensjonforvalterResponse> lagreAlderspensjon(
+            PensjonData pensjonData,
+            DollyPerson dollyPerson,
+            Set<String> miljoer,
+            AccessToken token,
+            boolean isOpprettEndre,
+            Long bestillingId) {
 
         if (nonNull(pensjonData) && nonNull(pensjonData.getAlderspensjon())) {
-            LagreAlderspensjonRequest lagreAlderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(), LagreAlderspensjonRequest.class);
-            lagreAlderspensjonRequest.setPid(dollyPerson.getHovedperson());
-            lagreAlderspensjonRequest.setMiljoer(new ArrayList<>(miljoer));
-            lagreAlderspensjonRequest.setStatsborgerskap("NOR");
+            List<String> oppretIMiljoer = null;
 
-            return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token);
+            if (!isOpprettEndre) {
+                // da sjekker hvis den eksisterer ikke i transaskjonMapping per miljø
+                var miljoerUtenTransakjoner = miljoer.stream()
+                        .filter(miljo -> !transaksjonMappingService.existAlready(PEN_AP, dollyPerson.getHovedperson(), miljo))
+                        .toList();
+                oppretIMiljoer = miljoerUtenTransakjoner;
+            } else {
+                oppretIMiljoer = new ArrayList<>(miljoer);
+            }
 
-        } else {
-            return Flux.empty();
+            if (!oppretIMiljoer.isEmpty()) {
+                LagreAlderspensjonRequest lagreAlderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(), LagreAlderspensjonRequest.class);
+                lagreAlderspensjonRequest.setPid(dollyPerson.getHovedperson());
+                lagreAlderspensjonRequest.setMiljoer(oppretIMiljoer);
+                lagreAlderspensjonRequest.setStatsborgerskap("NOR");
+
+                return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token)
+                        .map(response -> {
+                            miljoer.stream().forEach(miljo ->
+                                    saveAPTransaksjonId(dollyPerson.getHovedperson(), miljo, bestillingId, pensjonData.getAlderspensjon()));
+
+                            return response;
+                        });
+            }
         }
+        return Flux.empty();
+    }
+
+    private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, PensjonData.Alderspensjon alderspensjon) {
+
+        var jsonData = Map.of(
+                "iverksettelsesdato", alderspensjon.getIverksettelsesdato().format(ISO_LOCAL_DATE),
+                "uttaksgrad", alderspensjon.getUttaksgrad()
+        );
+
+        transaksjonMappingService.save(
+                TransaksjonMapping.builder()
+                        .ident(ident)
+                        .bestillingId(bestillingId)
+                        .transaksjonId(toJson(jsonData))
+                        .datoEndret(LocalDateTime.now())
+                        .miljoe(miljoe)
+                        .system(PEN_AP.name())
+                        .build());
     }
 
     private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
@@ -212,5 +264,15 @@ public class PensjonforvalterClient implements ClientRegister {
                                         HttpStatus.valueOf(entry.getResponse().getHttpStatus().getStatus()),
                                         entry.getResponse().getMessage()))))
                 .collect(Collectors.joining(","));
+    }
+
+    private String toJson(Object object) {
+
+        try {
+            return objectMapper.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
+        }
+        return null;
     }
 }
