@@ -43,7 +43,7 @@ export const usePensjonEnvironments = () => {
 export const useArenaEnvironments = () => {
 	const { data, error } = useSWR<string[], Error>(
 		[getArenaMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
-		fetcher,
+		([url, headers]) => fetcher(url, headers),
 		{
 			fallbackData: prefetchedArenaMiljoer,
 		}
@@ -71,7 +71,7 @@ export const useInstEnvironments = () => {
 export const useDokarkivEnvironments = () => {
 	const { data, error } = useSWR<string[], Error>(
 		[getDokarkivMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
-		fetcher,
+		([url, headers]) => fetcher(url, headers),
 		{
 			fallbackData: prefetchedDokarkivMiljoer,
 		}

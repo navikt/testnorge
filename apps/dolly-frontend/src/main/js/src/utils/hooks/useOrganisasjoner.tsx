@@ -224,7 +224,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		multiFetcherFagsystemer,
+		([url, headers]) => multiFetcherFagsystemer(url, headers),
 		{ dedupingInterval: 30000 }
 	)
 

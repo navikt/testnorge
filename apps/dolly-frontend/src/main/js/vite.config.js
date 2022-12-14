@@ -4,7 +4,6 @@ import svgr from 'vite-plugin-svgr'
 import proxyRoutes from './proxy-routes.json'
 import { resolve } from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
-import createExternal from 'vite-plugin-external'
 import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
 
@@ -31,11 +30,6 @@ export default defineConfig({
 		react(),
 		svgr(),
 		viteTsconfigPaths(),
-		createExternal({
-			externals: {
-				react: 'React',
-			},
-		}),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
