@@ -30,10 +30,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          working-directory: 'apps/dolly-frontend/'
 
       - name: Cypress run
         uses: cypress-io/github-action@v4
         with:
+          working-directory: 'apps/dolly-frontend/'
           browser: chrome
           build: npm run build
           start: npm start
