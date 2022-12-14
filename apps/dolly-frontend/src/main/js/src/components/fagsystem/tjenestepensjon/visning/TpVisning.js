@@ -71,7 +71,7 @@ export const TpVisning = ({ data, loading, bestillingIdListe }) => {
 			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente tjenestepensjon-data på person
+					Fant ikke tjenestepensjon-data på person
 				</Alert>
 			) : (
 				<MiljoTabs

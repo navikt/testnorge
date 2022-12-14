@@ -157,7 +157,7 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
-					Kunne ikke hente arbeidsforhold-data på person
+					Fant ikke arbeidsforhold-data på person
 				</Alert>
 			) : (
 				<ErrorBoundary>
