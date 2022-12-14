@@ -56,7 +56,7 @@ export const InstVisning = ({ data, loading, bestillingIdListe }) => {
 			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente institusjonsopphold-data på person
+					Fant ikke institusjonsopphold-data på person
 				</Alert>
 			) : (
 				<MiljoTabs
