@@ -318,7 +318,7 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 	if (!bestillingStatus) {
 		return totalStatus
 	}
-	bestillingStatus?.status.forEach((fagsystem) => {
+	bestillingStatus?.status?.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {
 			if (status.detaljert) {
 				_get(status, 'detaljert', []).forEach((miljoe) => {
