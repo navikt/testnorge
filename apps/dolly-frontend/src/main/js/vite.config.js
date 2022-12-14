@@ -4,6 +4,7 @@ import svgr from 'vite-plugin-svgr'
 import proxyRoutes from './proxy-routes.json'
 import { resolve } from 'path'
 import EnvironmentPlugin from 'vite-plugin-environment'
+import createExternal from 'vite-plugin-external'
 import react from '@vitejs/plugin-react'
 import * as child from 'child_process'
 
@@ -16,12 +17,6 @@ export default defineConfig({
 	base: '/',
 	build: {
 		outDir: 'build',
-		lib: {
-			entry: resolve(__dirname, 'src/index.tsx'),
-			name: 'dolly',
-			formats: ['es'],
-			fileName: () => `bundle.js`,
-		},
 	},
 	resolve: {
 		alias: {
@@ -33,9 +28,14 @@ export default defineConfig({
 		port: 3000,
 	},
 	plugins: [
-		svgr(),
 		react(),
+		svgr(),
 		viteTsconfigPaths(),
+		createExternal({
+			externals: {
+				react: 'React',
+			},
+		}),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
