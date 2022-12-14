@@ -21,7 +21,7 @@ export const SigrunstubForm = ({ formikBag }) => (
 )
 
 const mapTjeneste = (tjeneste) => {
-	var mapped = tjeneste.toUpperCase()
+	let mapped = tjeneste.toUpperCase()
 	return mapped.replace(' ', '_')
 }
 
