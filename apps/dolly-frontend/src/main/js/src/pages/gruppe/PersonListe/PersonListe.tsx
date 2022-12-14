@@ -17,7 +17,7 @@ import * as _ from 'lodash-es'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
+import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
