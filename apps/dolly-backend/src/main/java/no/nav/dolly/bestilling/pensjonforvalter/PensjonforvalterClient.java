@@ -125,7 +125,13 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
                                                     Flux.just("")),
                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreAlderspensjon(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token, isOpprettEndre, progress.getBestilling().getId())
+                                                    lagreAlderspensjon(
+                                                            bestilling.getPensjonforvalter(),
+                                                            dollyPerson,
+                                                            bestilteMiljoer,
+                                                            token,
+                                                            isOpprettEndre,
+                                                            progress.getBestilling() != null ? progress.getBestilling().getId() : null)
                                                             .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                                     Flux.just(""))
                                     )))
