@@ -2,7 +2,7 @@
 
 describe('Minside testing', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:3000/minside')
+		cy.visit('http://localhost:5678/minside')
 
 		cy.get('input').type('mal')
 	})

@@ -12,7 +12,7 @@ import * as child from 'child_process'
 const commitHash = child.execSync('git rev-parse --short HEAD').toString()
 const gitBranch = child.execSync('git branch --show-current').toString()
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
@@ -22,7 +22,7 @@ export default defineConfig({
 			'@': resolve(__dirname, './src'),
 		},
 	},
-	server: {
+	server: mode === 'local-dev' && {
 		proxy: proxyRoutes,
 		port: 3000,
 	},
@@ -36,4 +36,4 @@ export default defineConfig({
 			APP_VERSION: process.env.npm_package_version || '',
 		}),
 	],
-})
+}))

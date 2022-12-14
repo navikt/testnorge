@@ -2,7 +2,7 @@
 
 describe('Gruppe testing', () => {
 	it('passes', () => {
-		cy.visit('http://localhost:3000/gruppe')
+		cy.visit('http://localhost:5678/gruppe')
 
 		cy.get('button').contains('Ny').click()
 		cy.get('input[id=navn]').type('Testing med Cypress')
