@@ -48,21 +48,7 @@ public class SecurityConfig {
 
         return http.cors()
                 .and().csrf().disable()
-                .authorizeExchange()
-                .pathMatchers(
-                        "/internal/isReady",
-                        "/internal/isAlive",
-                        "/internal/metrics",
-                        "/oauth2/callback",
-                        "/favicon.ico",
-                        LOGIN,
-                        LOGOUT,
-                        "/oauth2/logout",
-                        "/*.css",
-                        "/*.js",
-                        "/*.png"
-                ).permitAll()
-                .anyExchange().authenticated()
+                .authorizeExchange().anyExchange().permitAll()
                 .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationManager(authenticationManger)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
