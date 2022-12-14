@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Import;
 @Import(CoreConfig.class)
 @SpringBootApplication
 @EnableConfigurationProperties
-public class AaregServicesProxyApplication {
+public class AaregProxyApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(AaregServicesProxyApplication.class, args);
+        SpringApplication.run(AaregProxyApplication.class, args);
     }
 
 }
