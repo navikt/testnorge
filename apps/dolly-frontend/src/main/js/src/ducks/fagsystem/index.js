@@ -244,7 +244,7 @@ export const fetchTpsfPersoner = (identer) => (dispatch) => {
 	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
 }
 
-export const fetchPdlPersoner = (identer, fagsystem) => (dispatch) => {
+export const fetchPdlPersoner = (identer) => (dispatch) => {
 	const pdlIdenter = identer.map((person) => {
 		return person.ident
 	})
@@ -315,17 +315,26 @@ export const sokSelector = (items, searchStr) => {
 const hentPersonStatus = (ident, bestillingStatus) => {
 	let totalStatus = 'Ferdig'
 
-	if (!bestillingStatus) return totalStatus
-
+	if (!bestillingStatus) {
+		return totalStatus
+	}
 	bestillingStatus?.status.forEach((fagsystem) => {
 		_get(fagsystem, 'statuser', []).forEach((status) => {
-			_get(status, 'detaljert', []).forEach((miljoe) => {
-				_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
-					if (miljoeIdent === ident) {
-						if (status.melding !== 'OK') totalStatus = 'Avvik'
+			if (status.detaljert) {
+				_get(status, 'detaljert', []).forEach((miljoe) => {
+					_get(miljoe, 'identer', []).forEach((miljoeIdent) => {
+						if (miljoeIdent === ident && status.melding !== 'OK') {
+							totalStatus = 'Avvik'
+						}
+					})
+				})
+			} else {
+				_get(status, 'identer', []).forEach((miljoeIdent) => {
+					if (miljoeIdent === ident && status.melding !== 'OK') {
+						totalStatus = 'Avvik'
 					}
 				})
-			})
+			}
 		})
 	})
 	return totalStatus
@@ -381,7 +390,7 @@ const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent, pdlfIdent) => {
 			tpsfIdent.alder,
 			tpsfIdent.doedsdato ? tpsfIdent.doedsdato : getPdlDoedsdato(pdlfIdent)
 		),
-		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
 
@@ -389,7 +398,6 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 	if (!pdlIdent) {
 		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
 	}
-
 	const pdlFornavn = pdlIdent?.navn?.[0]?.fornavn || ''
 	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
 		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
@@ -415,7 +423,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
 			getPdlDoedsdato(pdlIdent)
 		),
-		status: hentPersonStatus(ident?.ident, bestillingStatuser?.byId?.[ident?.bestillingId?.[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
 
@@ -444,7 +452,7 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
 		kjonn: Formatters.kjonn(kjonn, alder),
 		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
-		status: hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]]),
+		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
 
@@ -461,7 +469,7 @@ const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
 		alder: '',
 		status:
 			ident?.bestillingId && bestillingStatuser
-				? hentPersonStatus(ident.ident, bestillingStatuser?.byId[ident.bestillingId[0]])
+				? hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]])
 				: '',
 	}
 }

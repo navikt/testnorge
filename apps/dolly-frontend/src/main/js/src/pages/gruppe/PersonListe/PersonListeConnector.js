@@ -11,7 +11,6 @@ const loadingSelector = createLoadingSelector([
 
 const mapStateToProps = (state) => ({
 	search: state.search,
-	bestillingStatuser: state.bestillingStatuser,
 	fagsystem: state.fagsystem,
 	isFetching: loadingSelector(state),
 	sidetall: state.finnPerson.sidetall,
