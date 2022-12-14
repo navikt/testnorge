@@ -1,6 +1,7 @@
 import { defineConfig } from 'cypress'
 
 export default defineConfig({
+	pageLoadTimeout: 120000,
 	defaultCommandTimeout: 25000,
 	env: {
 		'cypress-react-selector': {
