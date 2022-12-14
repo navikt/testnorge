@@ -50,6 +50,7 @@ import {
 	harPoppBestilling,
 	harTpBestilling,
 } from '~/utils/SjekkBestillingFagsystem'
+import { AlderspensjonVisning } from '~/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -297,6 +298,12 @@ export const PersonVisning = ({
 					bestillingIdListe={bestillingIdListe}
 				/>
 				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
+				{harApBestilling(bestillingerFagsystemer) && (
+					<AlderspensjonVisning
+						// data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
+						data={bestillingListe}
+					/>
+				)}
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

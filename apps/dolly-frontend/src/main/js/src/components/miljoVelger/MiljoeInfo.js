@@ -73,7 +73,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{(pensjonforvalter?.inntekt || pensjonforvalter?.tp || pensjonforvalter.alderspensjon) && (
+				{(pensjonforvalter?.inntekt || pensjonforvalter?.tp || pensjonforvalter?.alderspensjon) && (
 					<li>
 						Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
 						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}

@@ -20,7 +20,7 @@ import { TjenestepensjonForm } from '~/components/fagsystem/tjenestepensjon/form
 import { ifPresent } from '~/utils/YupValidations'
 import { Alert } from '@navikt/ds-react'
 import { useFormikContext } from 'formik'
-import { AlderspensjonForm } from '~/components/fagsystem/alderspensjon/Form'
+import { AlderspensjonForm } from '~/components/fagsystem/alderspensjon/form/Form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
