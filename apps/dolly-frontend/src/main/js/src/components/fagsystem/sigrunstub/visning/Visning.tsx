@@ -74,7 +74,7 @@ export const SigrunstubVisning = ({ data, loading, visTittel = true }) => {
 			)}
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente skatteoppgjør-data på person
+					Fant ikke skatteoppgjør-data på person
 				</Alert>
 			) : (
 				<ErrorBoundary>

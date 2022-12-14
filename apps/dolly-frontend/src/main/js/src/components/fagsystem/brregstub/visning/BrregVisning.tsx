@@ -32,7 +32,7 @@ export const BrregVisning = ({ data, loading }) => {
 			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente Brreg-data på person
+					Fant ikke Brreg-data på person
 				</Alert>
 			) : (
 				<div className="person-visning_content">

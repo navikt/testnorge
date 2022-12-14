@@ -54,7 +54,7 @@ const _renderBestillingsDetaljer = (data) => {
 										<div className={'flexbox--align-start flexbox--wrap'} key={idx}>
 											{row?.map((attributt, idy) => {
 												return attributt.expandableHeader ? (
-													<RenderExpandablePanel attributt={attributt} idy={idy} />
+													<RenderExpandablePanel attributt={attributt} key={idy} />
 												) : (
 													_renderStaticValue(attributt, idy)
 												)
@@ -71,13 +71,13 @@ const _renderBestillingsDetaljer = (data) => {
 	})
 }
 
-const _renderStaticValue = (attributt, key) => {
+const _renderStaticValue = (attributt, idx) => {
 	if (!attributt.value) {
 		return null
 	}
 	return (
 		<TitleValue
-			key={key}
+			key={idx}
 			title={attributt.label}
 			value={attributt.value}
 			kodeverk={attributt.apiKodeverkId}
@@ -86,7 +86,7 @@ const _renderStaticValue = (attributt, key) => {
 	)
 }
 
-const RenderExpandablePanel = ({ attributt, key }) => {
+const RenderExpandablePanel = ({ attributt }) => {
 	const [visPersonValg, setVisPersonValg, setSkjulPersonValg] = useBoolean(false)
 
 	if (!attributt.vis || !attributt.objects || attributt.objects.length < 1) {
@@ -94,7 +94,7 @@ const RenderExpandablePanel = ({ attributt, key }) => {
 	}
 
 	return (
-		<div className="flexbox--full-width" key={key}>
+		<div className="flexbox--full-width">
 			<Button
 				onClick={visPersonValg ? setSkjulPersonValg : setVisPersonValg}
 				kind={visPersonValg ? 'collapse' : 'expand'}
@@ -103,11 +103,7 @@ const RenderExpandablePanel = ({ attributt, key }) => {
 				{attributt.expandableHeader}
 			</Button>
 			{visPersonValg && (
-				<div
-					className={'flexbox--align-start flexbox--wrap'}
-					style={{ margin: '10px 0 10px 0' }}
-					key={key}
-				>
+				<div className={'flexbox--align-start flexbox--wrap'} style={{ margin: '10px 0 10px 0' }}>
 					{attributt.objects.map((attr, idx) => _renderStaticValue(attr, idx))}
 				</div>
 			)}

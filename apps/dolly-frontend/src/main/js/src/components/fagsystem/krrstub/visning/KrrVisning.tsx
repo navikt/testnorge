@@ -178,7 +178,7 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 				/>
 				{manglerFagsystemdata ? (
 					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-						Kunne ikke hente KRR-data på person
+						Fant ikke KRR-data på person
 					</Alert>
 				) : (
 					<div className="person-visning_content">
