@@ -18,8 +18,7 @@ jobs:
   
   build:
     name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@feature/dolly-vite-rammeverk
-    #    TODO: Endre til master
+    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
     with:
       working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
