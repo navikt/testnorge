@@ -25,32 +25,23 @@ jobs:
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   
-  testcafe:
-    name: Run Testcafe tests
+  cypress-run:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: 'Setup Node'
-        uses: actions/setup-node@v3
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v4
         with:
-          node-version: 16.x
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-
-      - name: Npm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        working-directory: 'apps/dolly-frontend/src/main/js'
-        run: npm ci
-
-      - name: Run tests
-        working-directory: 'apps/dolly-frontend/src/main/js'
-        run: npm run test:testcafe
+          browser: chrome
+          build: npm run build
+          start: npm start
   
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: [ build, testcafe ]
+    needs: [ build, cypress-run ]
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/dolly-frontend/config.yml'
@@ -66,6 +57,18 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-dev') }}
     with:
       resource: 'apps/dolly-frontend/config.dev.yml'
+      app-name: 'testnav-dolly-frontend'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+  
+  deploy-dev-unstable:
+    name: Deploy dev unstable
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: build
+    if: ${{ contains(github.event.head_commit.message, '#deploy-frontend-unstable') }}
+    with:
+      resource: 'apps/dolly-frontend/config.dev-unstable.yml'
       app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
     secrets:
