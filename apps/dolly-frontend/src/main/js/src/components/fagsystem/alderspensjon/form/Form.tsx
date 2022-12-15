@@ -76,7 +76,8 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					<FormikSelect
 						name={`${alderspensjonPath}.sivilstand`}
 						label="Sivilstand"
-						options={Options('sivilstandType')}
+						options={Options('apSivilstand')}
+						size="large"
 						isClearable={false}
 					/>
 					<FormikDatepicker

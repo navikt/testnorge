@@ -504,6 +504,23 @@ const selectOptions: SelectOptions = {
 		{ value: 40, label: '40%' },
 		{ value: 20, label: '20%' },
 	],
+
+	apSivilstand: [
+		{ value: 'ENKE', label: 'Enke/-mann' },
+		{ value: 'GIFT', label: 'Gift' },
+		{ value: 'GJES', label: 'Gjenlevende etter samlivsbrudd' },
+		{ value: 'GJPA', label: 'Gjenlevende partner' },
+		{ value: 'GJSA', label: 'Gjenlevende samboer' },
+		{ value: 'GLAD', label: 'Gift, lever adskilt' },
+		{ value: 'PLAD', label: 'Registrert partner, lever adskilt' },
+		{ value: 'REPA', label: 'Registrert partner' },
+		{ value: 'SAMB', label: 'Samboer' },
+		{ value: 'SEPA', label: 'Separert partner' },
+		{ value: 'SEPR', label: 'Separert' },
+		{ value: 'SKIL', label: 'Skilt' },
+		{ value: 'SKPA', label: 'Skilt partner' },
+		{ value: 'UGIF', label: 'Ugift' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId: keyof SelectOptions) => selectOptions[attributeId]
