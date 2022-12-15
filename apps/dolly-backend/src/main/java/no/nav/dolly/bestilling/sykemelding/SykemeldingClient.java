@@ -82,7 +82,7 @@ public class SykemeldingClient implements ClientRegister {
                             if (isTrue(isSync)) {
                                 setProgress(progress, "Info: Venter på oppretting i AAREG ...");
                                 syncAareg(bestilling, progress);
-                               setProgress(progress, "Info: Venter på generering av sykemelding ...");
+                                setProgress(progress, "Info: Venter på generering av sykemelding ...");
                                 return getPerson(dollyPerson.getHovedperson())
                                         .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
                                                         getNorgenhet(persondata))
@@ -185,12 +185,16 @@ public class SykemeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getSykemelding().getDetaljertSykemelding())) {
 
+            var detaljertSykemeldingRequest =
+                    mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(),
+                            DetaljertSykemeldingRequest.class);
+
             var context = new MappingContext.Factory().getContext();
-            context.setProperty("persondata", persondata);
             context.setProperty("postnummer", postnummer);
             context.setProperty("norg2Enhet", norg2Enhet);
-            var detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(),
-                    DetaljertSykemeldingRequest.class, context);
+
+            detaljertSykemeldingRequest.setPasient(mapperFacade.map(persondata,
+                    DetaljertSykemeldingRequest.Pasient.class, context));
 
             return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest)
                     .map(status -> {
@@ -249,6 +253,7 @@ public class SykemeldingClient implements ClientRegister {
                                         .orgNr("NA")
                                         .build())
                                 .getOrgNr()))
+                        .datoEndret(LocalDateTime.now())
                         .system(SYKEMELDING.name())
                         .build());
             }

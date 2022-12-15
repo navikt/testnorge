@@ -29,7 +29,7 @@ public enum SystemTyper {
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
     TPS_MESSAGING("Meldinger til TPS"),
-    SYKEMELDING("Testnorge Sykemelding"),
+    SYKEMELDING("Testnav Sykemelding"),
     TPSIMPORT("Import av identer (MINI-NORGE)"),
     PDLIMPORT("Import av identer (TESTNORGE)"),
     SKJERMINGSREGISTER("Skjermingsregisteret"),

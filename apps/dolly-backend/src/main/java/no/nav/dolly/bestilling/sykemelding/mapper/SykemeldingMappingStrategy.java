@@ -63,9 +63,6 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDetaljertSykemelding rsSykemelding, DetaljertSykemeldingRequest request, MappingContext context) {
 
-                        request.setPasient(mapperFacade.map(
-                                (PdlPersonBolk.Data) context.getProperty("persondata"), Pasient.class, context));
-
                         request.setSender(nonNull(request.getSender()) ?
                                 request.getSender() :
                                 Organisasjon.builder()
@@ -86,6 +83,7 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
+                .byDefault()
                 .register();
 
         factory.classMap(PdlPersonBolk.Data.class, Pasient.class)
@@ -117,7 +115,6 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                         pasient.setNavKontor(nonNull(norg2enhet) ? norg2enhet.getEnhetNr() : null);
                     }
                 })
-                .byDefault()
                 .register();
 
         factory.classMap(BostedadresseDTO.class, Adresse.class)
