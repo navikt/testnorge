@@ -189,6 +189,7 @@ public class PensjonforvalterClient implements ClientRegister {
                 return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token)
                         .map(response -> {
                             response.getStatus().stream().forEach(status -> {
+                                log.info("Mottatt status for {} fra miljø {} fra Pensjon-Testdata-Facade: {}", dollyPerson.getHovedperson(), status.getMiljo(), status.getResponse());
                                 if (status.getResponse().isResponse2xx()) {
                                     saveAPTransaksjonId(dollyPerson.getHovedperson(), status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
                                 }
@@ -201,7 +202,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, PensjonData.Alderspensjon alderspensjon) {
-
+        log.info("lagrer transaskjon for {} i {} ", ident, miljoe);
         var jsonData = Map.of(
                 "iverksettelsesdato", alderspensjon.getIverksettelsesdato().format(ISO_LOCAL_DATE),
                 "uttaksgrad", alderspensjon.getUttaksgrad()
