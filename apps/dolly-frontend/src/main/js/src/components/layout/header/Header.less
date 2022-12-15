@@ -37,6 +37,47 @@ header.app-header {
       color: white;
     }
   }
+  .profil-toggle{
+    margin: 0 !important;
+    padding: 10px 10px 10px 0;
+    border: none;
+    background-color: @color-nav-black;
+
+    &:hover {
+      cursor: pointer;
+      background-color: @headerHoverColor;
+    }
+
+    .profil-area {
+      border-left: 2px solid #88b1d6;
+      line-height: 2px;
+      padding-left: 10px;
+      margin: 0 10px 0 20px;
+      display: flex;
+      align-items: center;
+
+      img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 2px solid white;
+        margin: 0 7px 0 0;
+      }
+
+      h1 {
+        display: inline-block;
+        margin: 0;
+        padding-left: 10px;
+        font-size: 1.6rem;
+        color: white;
+      }
+
+      //&.active {
+      //  font-weight: bold;
+      //  background-color: lighten(@color-nav-black, 10%);
+      //}
+    }
+  }
 
   .menu-links {
     display: flex;
@@ -61,52 +102,7 @@ header.app-header {
     }
   }
 
-  .profil-area {
-    margin-left: 20px;
-    border-left: 2px solid #88b1d6;
 
-    a {
-      color: white;
-      height: 100%;
-      text-decoration: none;
-      font-weight: normal;
-      padding: 13px 10px;
-      margin: 0 10px;
-      display: flex;
-      align-items: center;
-
-      &.active {
-        font-weight: bold;
-        background-color: lighten(@color-nav-black, 10%);
-      }
-
-      &:hover {
-        background-color: @headerHoverColor;
-      }
-
-      img {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        border: 2px solid white;
-        margin-right: 7px;
-      }
-
-      .profil-navn {
-        p {
-          margin: 0;
-        }
-
-        .min-side {
-          font-size: 10pt;
-          font-weight: lighter;
-          margin-bottom: 1px;
-        }
-      }
-    }
-
-    max-height: 30px;
-  }
 }
 
 .svg-icon-logout {

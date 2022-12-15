@@ -1,20 +1,16 @@
 import React from 'react'
 import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
-import Button from '~/components/ui/button/Button'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
 // @ts-ignore
 import dolly from '~/assets/favicon.ico'
 import './Header.less'
-import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { getDefaultImage } from '~/pages/minSide/Profil'
+import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import Loading from '~/components/ui/loading/Loading'
+import HeaderDropDown from '~/components/layout/header/HeaderDropDown'
 
 export default () => {
-	const { brukerProfil } = useBrukerProfil()
-	const { brukerBilde } = useBrukerProfilBilde()
 	const { currentBruker, loading } = useCurrentBruker()
 
 	if (loading) {
@@ -39,18 +35,7 @@ export default () => {
 				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
 				<NavLink to="/dokumentasjon">Dokumentasjon</NavLink>
 			</div>
-			<div className="flexbox--all-center">
-				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker()} />
-				<div className="profil-area flexbox--all-center">
-					<NavLink to="/minside" key={'naviger-minside'}>
-						<img alt="Profilbilde" src={brukerBilde || getDefaultImage()} />
-						<div className="profil-navn">
-							<p className="min-side">MIN SIDE</p>
-							<p>{brukerProfil?.visningsNavn}</p>
-						</div>
-					</NavLink>
-				</div>
-			</div>
+			<HeaderDropDown />
 		</header>
 	)
 }
