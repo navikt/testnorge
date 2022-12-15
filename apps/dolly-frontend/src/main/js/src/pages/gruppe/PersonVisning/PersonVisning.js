@@ -300,8 +300,7 @@ export const PersonVisning = ({
 				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
 				{harApBestilling(bestillingerFagsystemer) && (
 					<AlderspensjonVisning
-						// data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
-						data={bestillingListe}
+						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
 					/>
 				)}
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />

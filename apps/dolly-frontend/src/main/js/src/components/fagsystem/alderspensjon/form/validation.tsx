@@ -20,7 +20,7 @@ export const validation = {
 					samboerFraDato: requiredDate,
 					dodsdato: Yup.date().nullable(),
 					varigAdskilt: Yup.boolean(),
-					fnr: Yup.string(),
+					fnr: Yup.string().nullable(),
 					samlivsbruddDato: Yup.date().nullable(),
 					harVaertGift: Yup.boolean(),
 					harFellesBarn: Yup.boolean(),

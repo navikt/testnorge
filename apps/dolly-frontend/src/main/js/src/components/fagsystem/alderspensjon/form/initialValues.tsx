@@ -1,7 +1,8 @@
+import { setDate } from 'date-fns'
+
 export const initialAlderspensjon = {
-	iverksettelsesdato: new Date(),
+	iverksettelsesdato: setDate(new Date(), 1),
 	uttaksgrad: 100,
-	// statsborgerskap: null,
 	sivilstand: null,
 	sivilstatusDatoFom: null,
 	relasjonListe: [],

@@ -16,6 +16,7 @@ import _get from 'lodash/get'
 import { add, isDate } from 'date-fns'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { validation } from '~/components/fagsystem/alderspensjon/form/validation'
+import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -62,22 +63,19 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					</StyledAlert>
 				)}
 				<div className="flexbox--flex-wrap">
-					<FormikDatepicker
+					<Monthpicker
 						name={`${alderspensjonPath}.iverksettelsesdato`}
-						label="Iverksettelsesdato"
+						label="Iverksettelsesmåned"
+						date={_get(formikBag.values, `${alderspensjonPath}.iverksettelsesdato`)}
+						handleDateChange={(dato: string) =>
+							formikBag.setFieldValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
+						}
 					/>
 					<FormikTextInput
 						name={`${alderspensjonPath}.uttaksgrad`}
 						label="Uttaksgrad"
 						type="number"
 					/>
-					{/*<FormikSelect*/}
-					{/*	name={`${alderspensjonPath}.statsborgerskap`}*/}
-					{/*	label="Statsborgerskap"*/}
-					{/*	kodeverk={AdresseKodeverk.StatsborgerskapLand}*/}
-					{/*	size="large"*/}
-					{/*	isClearable={false}*/}
-					{/*/>*/}
 					<FormikSelect
 						name={`${alderspensjonPath}.sivilstand`}
 						label="Sivilstand"
@@ -87,27 +85,22 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					<FormikDatepicker
 						name={`${alderspensjonPath}.sivilstatusDatoFom`}
 						label="Sivilstand f.o.m. dato"
-						// fastfield={false}
 					/>
-					<FormikCheckbox
-						name={`${alderspensjonPath}.flyktning`}
-						label="Er flyktning"
-						size="small"
-						// TODO: Fix x-small
-						// checkboxMargin
-					/>
-					<FormikCheckbox
-						name={`${alderspensjonPath}.utvandret`}
-						label="Er utvandret"
-						size="small"
-						// TODO: Fix x-small
-						// checkboxMargin
-					/>
-					{/*	TODO: relasjonListe*/}
+					<div className="flexbox--flex-wrap">
+						<FormikCheckbox
+							name={`${alderspensjonPath}.flyktning`}
+							label="Er flyktning"
+							size="small"
+						/>
+						<FormikCheckbox
+							name={`${alderspensjonPath}.utvandret`}
+							label="Er utvandret"
+							size="small"
+						/>
+					</div>
 					<FormikDollyFieldArray
 						name={`${alderspensjonPath}.relasjonListe`}
 						header="Relasjoner"
-						// hjelpetekst={infotekst}
 						newEntry={initialRelasjon}
 						buttonText="Relasjon"
 						nested
@@ -118,38 +111,29 @@ export const AlderspensjonForm = ({ formikBag }) => {
 									<FormikDatepicker
 										name={`${relasjonPath}.samboerFraDato`}
 										label="Samboer f.o.m. dato"
-										// fastfield={false}
 									/>
-									<FormikDatepicker
-										name={`${relasjonPath}.dodsdato`}
-										label="Dødsdato"
-										// fastfield={false}
-									/>
+									<FormikDatepicker name={`${relasjonPath}.dodsdato`} label="Dødsdato" />
 									<FormikCheckbox
 										name={`${relasjonPath}.varigAdskilt`}
 										label="Er varig adskilt"
 										size="small"
-										// TODO: Fix x-small
 										checkboxMargin
 									/>
 									<FormikTextInput name={`${relasjonPath}.fnr`} label="Fnr" type="number" />
 									<FormikDatepicker
 										name={`${relasjonPath}.samlivsbruddDato`}
 										label="Dato for samlivsbrudd"
-										// fastfield={false}
 									/>
 									<FormikCheckbox
 										name={`${relasjonPath}.harVaertGift`}
 										label="Har vært gift"
 										size="small"
-										// TODO: Fix x-small
 										checkboxMargin
 									/>
 									<FormikCheckbox
 										name={`${relasjonPath}.harFellesBarn`}
 										label="Har felles barn"
 										size="small"
-										// TODO: Fix x-small
 										checkboxMargin
 									/>
 									<FormikTextInput
