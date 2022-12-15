@@ -4,10 +4,10 @@
 @borderColor: lighten(@color-nav-black, 40%);
 @side-padding: 128px; // temp?
 
-@import "~@navikt/ds-css-internal";
-@import "@navikt/ds-css";
-
 header.app-header {
+  @import "~@navikt/ds-css-internal";
+  @import "@navikt/ds-css";
+
   font-size: 1rem;
   background-color: @color-nav-black;
   display: flex;
@@ -105,11 +105,22 @@ header.app-header {
   }
 }
 
-.svg-icon-logout {
+.svg-icon-logout{
   g {
-    stroke: white !important;
+    stroke: @color-lightblue;
     stroke-width: 2;
   }
+  margin-right: 10px;
+}
+
+.svg-icon-person{
+  g {
+    path, ellipse{
+      stroke: @color-lightblue;
+      stroke-width: 2;
+    }
+  }
+  margin-right: 10px;
 }
 
 .dollysheep {

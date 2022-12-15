@@ -9,6 +9,7 @@ import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 import { getDefaultImage } from '~/pages/minSide/Profil'
 import { Dropdown } from '@navikt/ds-react-internal'
+import Icon from '~/components/ui/icon/Icon'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()
@@ -31,9 +32,11 @@ export default () => {
 				<Dropdown.Menu>
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item onClick={() => navigate('/minside')}>
+							<Icon kind="person" size={16} />
 							Min side
 						</Dropdown.Menu.List.Item>
 						<Dropdown.Menu.List.Item onClick={() => logoutBruker()}>
+							<Icon kind="logout" size={16} />
 							Logg ut
 						</Dropdown.Menu.List.Item>
 					</Dropdown.Menu.List>
