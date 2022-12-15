@@ -6,38 +6,7 @@ import { PersoninformasjonKodeverk } from '~/config/kodeverk'
 import Formatters from '~/utils/DataFormatter'
 import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
 
-const RelasjonVisning = ({ relasjon, idx }) => {
-	return (
-		<div className="person-visning_content" key={idx}>
-			<TitleValue
-				title="Samboer f.o.m. dato"
-				value={Formatters.formatDate(relasjon.samboerFraDato)}
-			/>
-			<TitleValue title="Dødsdato" value={Formatters.formatDate(relasjon.dodsdato)} />
-			<TitleValue
-				title="Er varig adskilt"
-				value={Formatters.oversettBoolean(relasjon.varigAdskilt)}
-			/>
-			<TitleValue title="FNR" value={relasjon.fnr} />
-			<TitleValue
-				title="Dato for samlivsbrudd"
-				value={Formatters.formatDate(relasjon.samlivsbruddDato)}
-			/>
-			<TitleValue title="Har vært gift" value={Formatters.oversettBoolean(relasjon.harVaertGift)} />
-			<TitleValue
-				title="Har felles barn"
-				value={Formatters.oversettBoolean(relasjon.harFellesBarn)}
-			/>
-			<TitleValue title="Sum pensjonsinntekt" value={relasjon.sumAvForvArbKapPenInntekt} />
-			<TitleValue
-				title="Relasjonstype"
-				kodeverk={PersoninformasjonKodeverk.Sivilstander}
-				value={relasjon.relasjonType}
-			/>
-		</div>
-	)
-}
-const DataVisning = ({ apBestilling, isArray = false }) => {
+const DataVisning = ({ apBestilling }) => {
 	return (
 		<>
 			<div className="person-visning_content">
@@ -56,16 +25,6 @@ const DataVisning = ({ apBestilling, isArray = false }) => {
 					value={Formatters.formatDate(apBestilling.sivilstatusDatoFom)}
 				/>
 			</div>
-			{apBestilling.relasjonListe.length > 0 && (
-				<>
-					<h4>Relasjoner</h4>
-					<div className="person-visning_content">
-						<DollyFieldArray data={apBestilling.relasjonListe} nested whiteBackground={isArray}>
-							{(relasjon, idx) => <RelasjonVisning relasjon={relasjon} idx={idx} />}
-						</DollyFieldArray>
-					</div>
-				</>
-			)}
 		</>
 	)
 }
@@ -91,7 +50,7 @@ export const AlderspensjonVisning = ({ data }) => {
 			) : (
 				<DollyFieldArray data={bestillingerFiltrert} nested>
 					{(bestilling) => (
-						<DataVisning apBestilling={bestilling.data?.pensjonforvalter?.alderspensjon} isArray />
+						<DataVisning apBestilling={bestilling.data?.pensjonforvalter?.alderspensjon} />
 					)}
 				</DollyFieldArray>
 			)}

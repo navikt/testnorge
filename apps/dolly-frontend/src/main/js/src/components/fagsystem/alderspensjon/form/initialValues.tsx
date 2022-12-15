@@ -5,17 +5,4 @@ export const initialAlderspensjon = {
 	uttaksgrad: 100,
 	sivilstand: null,
 	sivilstatusDatoFom: null,
-	relasjonListe: [],
-}
-
-export const initialRelasjon = {
-	samboerFraDato: new Date(),
-	dodsdato: null,
-	varigAdskilt: false,
-	fnr: null,
-	samlivsbruddDato: null,
-	harVaertGift: false,
-	harFellesBarn: false,
-	sumAvForvArbKapPenInntekt: null,
-	relasjonType: null,
 }

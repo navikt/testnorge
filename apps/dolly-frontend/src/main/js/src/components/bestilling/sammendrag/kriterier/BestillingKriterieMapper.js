@@ -1744,23 +1744,7 @@ const mapPensjon = (bestillingData, data) => {
 					obj('Sivilstand', ap.sivilstand, PersoninformasjonKodeverk.Sivilstander),
 					obj('Sivilstand f.o.m. dato', Formatters.formatDate(ap.sivilstatusDatoFom)),
 				],
-				itemRows: [],
 			}
-
-			ap.relasjonListe?.forEach((relasjon, idx) => {
-				pensjonforvalterAlderspensjon.itemRows.push([
-					{ numberHeader: `Relasjon ${idx + 1}` },
-					obj('Samboer f.o.m. dato', Formatters.formatDate(relasjon.samboerFraDato)),
-					obj('Dødsdato', Formatters.formatDate(relasjon.dodsdato)),
-					obj('Er varig adskilt', Formatters.oversettBoolean(relasjon.varigAdskilt)),
-					obj('FNR', relasjon.fnr),
-					obj('Dato for samlivsbrudd', Formatters.formatDate(relasjon.samlivsbruddDato)),
-					obj('Har vært gift', Formatters.oversettBoolean(relasjon.harVaertGift)),
-					obj('Har felles barn', Formatters.oversettBoolean(relasjon.harFellesBarn)),
-					obj('Sum pensjonsinntekt', relasjon.sumAvForvArbKapPenInntekt),
-					obj('Relasjonstype', relasjon.relasjonType, PersoninformasjonKodeverk.Sivilstander),
-				])
-			})
 			data.push(pensjonforvalterAlderspensjon)
 		}
 	}

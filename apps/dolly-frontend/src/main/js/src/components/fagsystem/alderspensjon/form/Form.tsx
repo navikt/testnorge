@@ -4,11 +4,7 @@ import Panel from '~/components/ui/panel/Panel'
 import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 import React, { useContext } from 'react'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
 import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { initialRelasjon } from '~/components/fagsystem/alderspensjon/form/initialValues'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import _has from 'lodash/has'
@@ -87,58 +83,6 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						name={`${alderspensjonPath}.sivilstatusDatoFom`}
 						label="Sivilstand f.o.m. dato"
 					/>
-					<FormikDollyFieldArray
-						name={`${alderspensjonPath}.relasjonListe`}
-						header="Relasjoner"
-						newEntry={initialRelasjon}
-						buttonText="Relasjon"
-						nested
-					>
-						{(relasjonPath, idx) => {
-							return (
-								<div key={idx} className="flexbox--flex-wrap">
-									<FormikDatepicker
-										name={`${relasjonPath}.samboerFraDato`}
-										label="Samboer f.o.m. dato"
-									/>
-									<FormikDatepicker name={`${relasjonPath}.dodsdato`} label="Dødsdato" />
-									<FormikCheckbox
-										name={`${relasjonPath}.varigAdskilt`}
-										label="Er varig adskilt"
-										size="small"
-										checkboxMargin
-									/>
-									<FormikTextInput name={`${relasjonPath}.fnr`} label="Fnr" type="number" />
-									<FormikDatepicker
-										name={`${relasjonPath}.samlivsbruddDato`}
-										label="Dato for samlivsbrudd"
-									/>
-									<FormikCheckbox
-										name={`${relasjonPath}.harVaertGift`}
-										label="Har vært gift"
-										size="small"
-										checkboxMargin
-									/>
-									<FormikCheckbox
-										name={`${relasjonPath}.harFellesBarn`}
-										label="Har felles barn"
-										size="small"
-										checkboxMargin
-									/>
-									<FormikTextInput
-										name={`${relasjonPath}.sumAvForvArbKapPenInntekt`}
-										label="Sum pensjonsinntekt"
-										type="number"
-									/>
-									<FormikSelect
-										name={`${relasjonPath}.relasjonType`}
-										label="Relasjonstype"
-										options={Options('sivilstandType')}
-									/>
-								</div>
-							)
-						}}
-					</FormikDollyFieldArray>
 				</div>
 			</Panel>
 		</Vis>
