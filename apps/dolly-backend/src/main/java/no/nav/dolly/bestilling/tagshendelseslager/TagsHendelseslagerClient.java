@@ -56,17 +56,6 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getHovedperson()));
         }
 
-        // Midlertidig ? publisering fra identhendelseslager
-//        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-//                .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-//                .contextWrite(c -> {
-//                    var mdcContext = MDC.getCopyOfContextMap();
-//                    if (null != mdcContext) {
-//                        return c.put("mdc", mdcContext);
-//                    }
-//                    return c;
-//                })
-//                .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}", dollyPerson.getHovedperson(), response));
         return Flux.just();
     }
 
