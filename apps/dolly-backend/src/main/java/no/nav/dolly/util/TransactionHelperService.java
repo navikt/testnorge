@@ -78,6 +78,6 @@ public class TransactionHelperService {
     public BestillingProgress getProgress(Long id) {
 
         return transactionTemplate.execute(status ->
-            entityManager.find(BestillingProgress.class, id));
+                entityManager.find(BestillingProgress.class, id));
     }
 }

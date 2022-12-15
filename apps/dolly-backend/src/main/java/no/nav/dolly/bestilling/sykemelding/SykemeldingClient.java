@@ -42,7 +42,6 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -80,8 +79,6 @@ public class SykemeldingClient implements ClientRegister {
                 personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                         .flatMap(isSync -> {
                             if (isTrue(isSync)) {
-                                setProgress(progress, "Info: Venter på oppretting i AAREG ...");
-                                syncAareg(bestilling, progress);
                                 setProgress(progress, "Info: Venter på generering av sykemelding ...");
                                 return getPerson(dollyPerson.getHovedperson())
                                         .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
@@ -119,34 +116,9 @@ public class SykemeldingClient implements ClientRegister {
                                 !entry.getSykemeldingStatus().contains(ErrorStatusDecoder.getVenterTekst()));
     }
 
-    public void syncAareg(RsDollyUtvidetBestilling kriterier, BestillingProgress progress) {
-
-        if (isNull(kriterier.getAareg())) {
-            return;
-        }
-        log.info("Start venting på AAREG ...");
-        var entry = Optional.of(transactionHelperService.getProgress(progress.getId()))
-                .orElse(new BestillingProgress());
-
-        int count = 0;
-        while (count < MAX_AAREG_DELAY && isNotBlank(entry.getAaregStatus()) &&
-                !entry.getAaregStatus().contains(getVenterTekst())) {
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-
-            entry = Optional.of(transactionHelperService.getProgress(progress.getId()))
-                    .orElse(new BestillingProgress());
-            count++;
-        }
-        log.info("Ferdig venting på AAREG ...");
-    }
-
     private String getStatus(SykemeldingResponse status) {
 
+        log.info("Sykemelding response for {} mottatt, status: {}", status.getIdent(), status.getStatus());
         return status.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
     }
@@ -200,6 +172,7 @@ public class SykemeldingClient implements ClientRegister {
             return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest)
                     .map(status -> {
                         status.setDetaljertSykemeldingRequest(detaljertSykemeldingRequest);
+                        status.setIdent(detaljertSykemeldingRequest.getPasient().getIdent());
                         return status;
                     });
 
@@ -220,6 +193,7 @@ public class SykemeldingClient implements ClientRegister {
             return syntSykemeldingConsumer.postSyntSykemelding(syntSykemeldingRequest)
                     .map(status -> {
                         status.setSyntSykemeldingRequest(syntSykemeldingRequest);
+                        status.setIdent(syntSykemeldingRequest.getIdent());
                         return status;
                     });
 

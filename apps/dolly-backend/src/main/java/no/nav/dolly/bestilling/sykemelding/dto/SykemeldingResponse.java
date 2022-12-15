@@ -18,4 +18,5 @@ public class SykemeldingResponse {
     private String avvik;
     private SyntSykemeldingRequest syntSykemeldingRequest;
     private DetaljertSykemeldingRequest detaljertSykemeldingRequest;
+    private String ident;
 }

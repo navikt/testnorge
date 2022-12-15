@@ -4,7 +4,8 @@ metadata:
   name: testnav-synt-sykemelding-api
   namespace: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "1200"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
   labels:
     team: dolly
 spec:
