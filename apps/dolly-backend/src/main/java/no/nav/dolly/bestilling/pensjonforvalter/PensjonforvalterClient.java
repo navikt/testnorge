@@ -168,29 +168,31 @@ public class PensjonforvalterClient implements ClientRegister {
             Long bestillingId) {
 
         if (nonNull(pensjonData) && nonNull(pensjonData.getAlderspensjon())) {
-            List<String> oppretIMiljoer = null;
+            List<String> opprettIMiljoer = null;
 
             if (!isOpprettEndre) {
                 // da sjekker hvis den eksisterer ikke i transaskjonMapping per miljø
                 var miljoerUtenTransakjoner = miljoer.stream()
                         .filter(miljo -> !transaksjonMappingService.existAlready(PEN_AP, dollyPerson.getHovedperson(), miljo))
                         .toList();
-                oppretIMiljoer = miljoerUtenTransakjoner;
+                opprettIMiljoer = miljoerUtenTransakjoner;
             } else {
-                oppretIMiljoer = new ArrayList<>(miljoer);
+                opprettIMiljoer = new ArrayList<>(miljoer);
             }
 
-            if (!oppretIMiljoer.isEmpty()) {
+            if (!opprettIMiljoer.isEmpty()) {
                 LagreAlderspensjonRequest lagreAlderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(), LagreAlderspensjonRequest.class);
                 lagreAlderspensjonRequest.setPid(dollyPerson.getHovedperson());
-                lagreAlderspensjonRequest.setMiljoer(oppretIMiljoer);
+                lagreAlderspensjonRequest.setMiljoer(opprettIMiljoer);
                 lagreAlderspensjonRequest.setStatsborgerskap("NOR");
 
                 return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token)
                         .map(response -> {
-                            miljoer.stream().forEach(miljo ->
-                                    saveAPTransaksjonId(dollyPerson.getHovedperson(), miljo, bestillingId, pensjonData.getAlderspensjon()));
-
+                            response.getStatus().stream().forEach(status -> {
+                                if (status.getResponse().isResponse2xx()) {
+                                    saveAPTransaksjonId(dollyPerson.getHovedperson(), status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
+                                }
+                            });
                             return response;
                         });
             }
