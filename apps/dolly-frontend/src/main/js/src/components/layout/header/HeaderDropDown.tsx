@@ -29,7 +29,6 @@ export default () => {
 					</div>
 				</Dropdown.Toggle>
 				<Dropdown.Menu>
-					<Dropdown.Menu.Divider />
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item onClick={() => navigate('/minside')}>
 							Min side

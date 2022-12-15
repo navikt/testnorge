@@ -4,10 +4,12 @@
 @borderColor: lighten(@color-nav-black, 40%);
 @side-padding: 128px; // temp?
 
+@import "~@navikt/ds-css-internal";
+@import "@navikt/ds-css";
+
 header.app-header {
   font-size: 1rem;
   background-color: @color-nav-black;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -55,6 +57,7 @@ header.app-header {
       margin: 0 10px 0 20px;
       display: flex;
       align-items: center;
+      color: white;
 
       img {
         width: 35px;
@@ -63,20 +66,12 @@ header.app-header {
         border: 2px solid white;
         margin: 0 7px 0 0;
       }
-
-      h1 {
-        display: inline-block;
-        margin: 0;
-        padding-left: 10px;
-        font-size: 1.6rem;
-        color: white;
-      }
-
-      //&.active {
-      //  font-weight: bold;
-      //  background-color: lighten(@color-nav-black, 10%);
-      //}
     }
+
+    //&.active {
+    //  font-weight: bold;
+    //  background-color: lighten(@color-nav-black, 10%);
+    //}
   }
 
   .menu-links {
@@ -101,8 +96,13 @@ header.app-header {
       }
     }
   }
-
-
+  .navdsi-dropdown__item{
+    color: @color-lightblue;
+    padding: 10px 0 10px 15px;
+    &:hover {
+      background-color: @color-faded-blue;
+    }
+  }
 }
 
 .svg-icon-logout {
