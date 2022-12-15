@@ -6,8 +6,6 @@ export const initialAlderspensjon = {
 	sivilstand: null,
 	sivilstatusDatoFom: null,
 	relasjonListe: [],
-	flyktning: false,
-	utvandret: false,
 }
 
 export const initialRelasjon = {

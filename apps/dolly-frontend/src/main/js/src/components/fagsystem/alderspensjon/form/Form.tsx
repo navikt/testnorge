@@ -87,18 +87,6 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						name={`${alderspensjonPath}.sivilstatusDatoFom`}
 						label="Sivilstand f.o.m. dato"
 					/>
-					<div className="flexbox--flex-wrap">
-						<FormikCheckbox
-							name={`${alderspensjonPath}.flyktning`}
-							label="Er flyktning"
-							size="small"
-						/>
-						<FormikCheckbox
-							name={`${alderspensjonPath}.utvandret`}
-							label="Er utvandret"
-							size="small"
-						/>
-					</div>
 					<FormikDollyFieldArray
 						name={`${alderspensjonPath}.relasjonListe`}
 						header="Relasjoner"

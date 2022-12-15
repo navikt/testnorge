@@ -55,14 +55,6 @@ const DataVisning = ({ apBestilling, isArray = false }) => {
 					title="Sivilstand f.o.m. dato"
 					value={Formatters.formatDate(apBestilling.sivilstatusDatoFom)}
 				/>
-				<TitleValue
-					title="Er flyktning"
-					value={Formatters.oversettBoolean(apBestilling.flyktning)}
-				/>
-				<TitleValue
-					title="Iverksettelsesdato"
-					value={Formatters.oversettBoolean(apBestilling.utvandret)}
-				/>
 			</div>
 			{apBestilling.relasjonListe.length > 0 && (
 				<>

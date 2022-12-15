@@ -30,8 +30,6 @@ export const validation = {
 					relasjonType: Yup.string().nullable(),
 				})
 			),
-			flyktning: Yup.boolean(),
-			utvandret: Yup.boolean(),
 		})
 	),
 }

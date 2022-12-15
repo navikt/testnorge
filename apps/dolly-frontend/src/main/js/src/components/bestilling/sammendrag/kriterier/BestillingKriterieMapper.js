@@ -1743,8 +1743,6 @@ const mapPensjon = (bestillingData, data) => {
 					obj('Uttaksgrad', ap.uttaksgrad),
 					obj('Sivilstand', ap.sivilstand, PersoninformasjonKodeverk.Sivilstander),
 					obj('Sivilstand f.o.m. dato', Formatters.formatDate(ap.sivilstatusDatoFom)),
-					obj('Er flyktning', Formatters.oversettBoolean(ap.flyktning)),
-					obj('Er utvandret', Formatters.oversettBoolean(ap.utvandret)),
 				],
 				itemRows: [],
 			}
