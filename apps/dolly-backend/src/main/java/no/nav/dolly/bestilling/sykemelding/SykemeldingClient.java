@@ -124,7 +124,7 @@ public class SykemeldingClient implements ClientRegister {
         if (isNull(kriterier.getAareg())) {
             return;
         }
-
+        log.info("Start venting på AAREG ...");
         var entry = Optional.of(transactionHelperService.getProgress(progress.getId()))
                 .orElse(new BestillingProgress());
 
@@ -142,6 +142,7 @@ public class SykemeldingClient implements ClientRegister {
                     .orElse(new BestillingProgress());
             count++;
         }
+        log.info("Ferdig venting på AAREG ...");
     }
 
     private String getStatus(SykemeldingResponse status) {

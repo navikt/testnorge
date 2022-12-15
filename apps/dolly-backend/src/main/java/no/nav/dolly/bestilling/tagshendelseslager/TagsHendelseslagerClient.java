@@ -17,7 +17,6 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -48,22 +47,16 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                .flatMap(isSync -> isTrue(isSync) ?
-                        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                                .flatMap(identer -> sendTags(identer, dollyPerson.getTags())
-                                        .map(tagResp -> sendHendelser(identer)
-                                                .map(hendelseResp ->
-                                                        String.join(", ",
-                                                                Stream.of(tagResp, hendelseResp)
-                                                                        .filter(StringUtils::isNotBlank)
-                                                                        .toList())))
-                                        .flatMap(Mono::from)) :
+        if (!dollyPerson.getTags().isEmpty()) {
+            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                    .flatMap(isSync -> isTrue(isSync) ?
+                            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                                    .flatMap(identer -> sendTags(identer, dollyPerson.getTags())) :
 
-                        Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager")))
+                            Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager")))
 
-                ).subscribe(log::info);
-
+                    ).subscribe(log::info);
+        }
         return Flux.just();
     }
 
@@ -83,7 +76,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
     private Mono<String> sendTags(List<String> identer, List<Tags> tags) {
 
-        return tags.isEmpty() ? Mono.just("") : tagsHendelseslagerConsumer.createTags(identer, tags)
+        return tagsHendelseslagerConsumer.createTags(identer, tags)
                 .map(resultat -> getTagStatus(identer, tags, resultat));
     }
 
@@ -94,14 +87,6 @@ public class TagsHendelseslagerClient implements ClientRegister {
                         tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
                         String.join(",", identer)) :
                 resultat.getMessage();
-    }
-
-    private Mono<String> sendHendelser(List<String> identer) {
-
-        return tagsHendelseslagerConsumer.publish(identer)
-                .collectList()
-                .map(resultat -> String.format("Publish sendt til hendelselager for ident(er): %s med status: %s",
-                        String.join(",", identer), resultat));
     }
 
     private Mono<List<String>> getPdlIdenter(List<String> identer) {
