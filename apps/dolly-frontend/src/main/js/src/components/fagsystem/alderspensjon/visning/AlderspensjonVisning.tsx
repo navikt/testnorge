@@ -79,7 +79,7 @@ const DataVisning = ({ apBestilling, isArray = false }) => {
 }
 
 export const AlderspensjonVisning = ({ data }) => {
-	// Det er ikke mulig a hente tilbake AP-data, derfor viser vi kun bestillingsdata pa person
+	// Det er ikke mulig aa hente tilbake AP-data, derfor viser vi kun bestillingsdata paa person
 	if (!data || data.length < 1) {
 		return null
 	}
