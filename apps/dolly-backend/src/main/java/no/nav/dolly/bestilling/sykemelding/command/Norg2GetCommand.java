@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.sykemelding.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -11,8 +10,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.concurrent.Callable;
-
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
@@ -30,7 +27,6 @@ public class Norg2GetCommand implements Callable<Mono<Norg2EnhetResponse>> {
                         .path(NAVKONTOR_URL)
                         .build(geografiskOmraade))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToMono(Norg2EnhetResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)

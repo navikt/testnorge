@@ -42,6 +42,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -50,6 +51,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class SykemeldingClient implements ClientRegister {
 
+    private static final int MAX_AAREG_DELAY = 10;
 
     private final SykemeldingConsumer sykemeldingConsumer;
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
@@ -69,20 +71,18 @@ public class SykemeldingClient implements ClientRegister {
         if (nonNull(bestilling.getSykemelding())) {
 
             if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) && !isOpprettEndre) {
-                progress.setSykemeldingStatus("OK");
-                transactionHelperService.persister(progress);
+                setProgress(progress, "OK");
 
             } else {
-                progress.setSykemeldingStatus(encodeStatus(getInfoVenter("Sykemelding")));
-                transactionHelperService.persister(progress);
+                setProgress(progress, encodeStatus(getInfoVenter("Sykemelding")));
                 long bestillingId = progress.getBestilling().getId();
 
                 personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                         .flatMap(isSync -> {
                             if (isTrue(isSync)) {
-
-                                progress.setSykemeldingStatus("Info: Venter på generering av sykemelding ...");
-                                transactionHelperService.persister(progress);
+                                setProgress(progress, "Info: Venter på oppretting i AAREG ...");
+                                syncAareg(bestilling, progress);
+                               setProgress(progress, "Info: Venter på generering av sykemelding ...");
                                 return getPerson(dollyPerson.getHovedperson())
                                         .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
                                                         getNorgenhet(persondata))
@@ -98,10 +98,7 @@ public class SykemeldingClient implements ClientRegister {
                                 return Mono.just(encodeStatus(getVarselSlutt("Sykemelding")));
                             }
                         })
-                        .subscribe(status -> {
-                            progress.setSykemeldingStatus(status);
-                            transactionHelperService.persister(progress);
-                        });
+                        .subscribe(status -> setProgress(progress, status));
             }
         }
         return Flux.just();
@@ -122,10 +119,41 @@ public class SykemeldingClient implements ClientRegister {
                                 !entry.getSykemeldingStatus().contains(ErrorStatusDecoder.getVenterTekst()));
     }
 
+    public void syncAareg(RsDollyUtvidetBestilling kriterier, BestillingProgress progress) {
+
+        if (isNull(kriterier.getAareg())) {
+            return;
+        }
+
+        var entry = Optional.of(transactionHelperService.getProgress(progress.getId()))
+                .orElse(new BestillingProgress());
+
+        int count = 0;
+        while (count < MAX_AAREG_DELAY && isNotBlank(entry.getAaregStatus()) &&
+                !entry.getAaregStatus().contains(getVenterTekst())) {
+
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+
+            entry = Optional.of(transactionHelperService.getProgress(progress.getId()))
+                    .orElse(new BestillingProgress());
+            count++;
+        }
+    }
+
     private String getStatus(SykemeldingResponse status) {
 
         return status.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(status.getStatus(), status.getAvvik());
+    }
+
+    private void setProgress(BestillingProgress progress, String status) {
+
+        progress.setSykemeldingStatus(status);
+        transactionHelperService.persister(progress);
     }
 
     private Flux<PdlPersonBolk.Data> getPerson(String ident) {
@@ -162,7 +190,7 @@ public class SykemeldingClient implements ClientRegister {
             context.setProperty("postnummer", postnummer);
             context.setProperty("norg2Enhet", norg2Enhet);
             var detaljertSykemeldingRequest = mapperFacade.map(bestilling.getSykemelding().getDetaljertSykemelding(),
-                    DetaljertSykemeldingRequest.class);
+                    DetaljertSykemeldingRequest.class, context);
 
             return sykemeldingConsumer.postDetaljertSykemelding(detaljertSykemeldingRequest)
                     .map(status -> {

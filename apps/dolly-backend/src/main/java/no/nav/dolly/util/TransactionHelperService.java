@@ -74,4 +74,10 @@ public class TransactionHelperService {
             requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
     }
+
+    public BestillingProgress getProgress(Long id) {
+
+        return transactionTemplate.execute(status ->
+            entityManager.find(BestillingProgress.class, id));
+    }
 }

@@ -86,7 +86,6 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                         }
                     }
                 })
-                .byDefault()
                 .register();
 
         factory.classMap(PdlPersonBolk.Data.class, Pasient.class)
@@ -101,6 +100,7 @@ public class SykemeldingMappingStrategy implements MappingStrategy {
                                         .person(new PdlPerson.Person())
                                         .build());
 
+                        pasient.setIdent(person.getIdent());
                         mapperFacade.map(person.getPerson().getNavn().stream()
                                 .findFirst().orElse(new PdlPerson.Navn()), pasient);
                         pasient.setAdresse(mapperFacade.map(person.getPerson().getBostedsadresse().stream()
