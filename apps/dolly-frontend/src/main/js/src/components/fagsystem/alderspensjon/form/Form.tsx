@@ -71,10 +71,11 @@ export const AlderspensjonForm = ({ formikBag }) => {
 							formikBag.setFieldValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
 						}
 					/>
-					<FormikTextInput
+					<FormikSelect
 						name={`${alderspensjonPath}.uttaksgrad`}
 						label="Uttaksgrad"
-						type="number"
+						options={Options('apUttaksgrad')}
+						isClearable={false}
 					/>
 					<FormikSelect
 						name={`${alderspensjonPath}.sivilstand`}
