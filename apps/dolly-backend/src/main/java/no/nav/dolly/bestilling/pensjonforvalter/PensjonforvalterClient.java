@@ -202,7 +202,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     private void saveAPTransaksjonId(String ident, String miljoe, Long bestillingId, PensjonData.Alderspensjon alderspensjon) {
-        log.info("lagrer transaskjon for {} i {} ", ident, miljoe);
+        log.info("lagrer transaksjon for {} i {} ", ident, miljoe);
         var jsonData = Map.of(
                 "iverksettelsesdato", alderspensjon.getIverksettelsesdato().format(ISO_LOCAL_DATE),
                 "uttaksgrad", alderspensjon.getUttaksgrad()
