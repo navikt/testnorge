@@ -50,8 +50,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class SykemeldingClient implements ClientRegister {
 
-    private static final int MAX_AAREG_DELAY = 10;
-
     private final SykemeldingConsumer sykemeldingConsumer;
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -140,12 +138,12 @@ public class SykemeldingClient implements ClientRegister {
 
         var geografiskOmrade = persondata.getHentGeografiskTilknytningBolk().stream()
                 .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
-                .map(geografiskTilknytning ->
+                .map(geografiskTilknytning -> isNotBlank(geografiskTilknytning.getGtType()) ?
                         switch (geografiskTilknytning.getGtType()) {
                             case "KOMMUNE" -> geografiskTilknytning.getGtKommune();
                             case "BYDEL" -> geografiskTilknytning.getGtBydel();
                             default -> null;
-                        })
+                        } : null)
                 .collect(Collectors.joining());
 
         return isNotBlank(geografiskOmrade) ? norg2Consumer.getNorgEnhet(geografiskOmrade) : Mono.empty();
@@ -235,7 +233,6 @@ public class SykemeldingClient implements ClientRegister {
         }
         return sykemelding;
     }
-
 
     private String toJson(Object object) {
 

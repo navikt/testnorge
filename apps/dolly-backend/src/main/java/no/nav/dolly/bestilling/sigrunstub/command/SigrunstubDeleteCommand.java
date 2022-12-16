@@ -2,12 +2,12 @@ package no.nav.dolly.bestilling.sigrunstub.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -20,7 +20,7 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class SigrunstubSlettCommand implements Callable<Flux<String>> {
+public class SigrunstubDeleteCommand implements Callable<Mono<SigrunstubResponse>> {
 
     private static final String CONSUMER = "Dolly";
     private static final String SIGRUNSTUB_DELETE_URL = "/api/v1/slett";
@@ -29,7 +29,7 @@ public class SigrunstubSlettCommand implements Callable<Flux<String>> {
     private final String ident;
     private final String token;
 
-    public Flux<String> call() {
+    public Mono<SigrunstubResponse> call() {
 
         return webClient.delete().uri(uriBuilder -> uriBuilder
                         .path(SIGRUNSTUB_DELETE_URL)
@@ -40,10 +40,17 @@ public class SigrunstubSlettCommand implements Callable<Flux<String>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header("personidentifikator", ident)
                 .retrieve()
-                .bodyToFlux(String.class)
+                .toBodilessEntity()
+                .map(resultat -> SigrunstubResponse.builder()
+                        .ident(ident)
+                        .status(resultat.getStatusCode())
+                        .build())
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Flux.empty())
+                .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()
+                                .ident(ident)
+                                .status(WebClientFilter.getStatus(error))
+                                .melding(WebClientFilter.getMessage(error))
+                        .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

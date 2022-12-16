@@ -27,6 +27,8 @@ public class SigrunstubDataMapper implements MappingStrategy {
                     @Override
                     public void mapAtoB(OpprettSkattegrunnlag kilde, OpprettSkattegrunnlag destinasjon, MappingContext context) {
 
+                        destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
+
                         if (destinasjon.getTjeneste() == BEREGNET_SKATT) {
                             addOppgjoersdato(destinasjon.getGrunnlag(), destinasjon.getInntektsaar());
                             addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), destinasjon.getInntektsaar());
