@@ -28,6 +28,16 @@ type KontaktadresseTypes = {
 type KontaktadresseVisningTypes = {
 	kontaktadresseData: any
 	idx: number
+	data: any
+	tmpData: any
+	tmpPersoner: Array<KontaktadresseData>
+	ident: number
+	erPdlVisning: boolean
+}
+
+type AdresseTypes = {
+	kontaktadresseData: any
+	idx: number
 }
 
 const Adressedatoer = ({ kontaktadresseData }: any) => (
@@ -43,7 +53,7 @@ const Adressedatoer = ({ kontaktadresseData }: any) => (
 	</>
 )
 
-export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
+export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 	if (!kontaktadresseData) {
 		return null
 	}
@@ -155,6 +165,54 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 	)
 }
 
+const KontaktadresseVisning = ({
+	kontaktadresseData,
+	idx,
+	data,
+	tmpData,
+	tmpPersoner,
+	ident,
+	erPdlVisning,
+}: KontaktadresseVisningTypes) => {
+	const initKontaktadresse = Object.assign(
+		_cloneDeep(initialKontaktadresse),
+		data?.[idx] || tmpData?.[idx]
+	)
+	const initialValues = { kontaktadresse: initKontaktadresse }
+
+	const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
+		(a: KontaktadresseData) => a.id === kontaktadresseData.id
+	)
+	const slettetKontaktadressePdlf =
+		tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
+	if (slettetKontaktadressePdlf) {
+		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	}
+
+	const kontaktadresseValues = redigertKontaktadressePdlf
+		? redigertKontaktadressePdlf
+		: kontaktadresseData
+	const redigertKontaktadresseValues = redigertKontaktadressePdlf
+		? {
+				kontaktadresse: Object.assign(
+					_cloneDeep(initialKontaktadresse),
+					redigertKontaktadressePdlf
+				),
+		  }
+		: null
+	return erPdlVisning ? (
+		<Adresse kontaktadresseData={kontaktadresseData} idx={idx} />
+	) : (
+		<VisningRedigerbarConnector
+			dataVisning={<Adresse kontaktadresseData={kontaktadresseValues} idx={idx} />}
+			initialValues={initialValues}
+			redigertAttributt={redigertKontaktadresseValues}
+			path="kontaktadresse"
+			ident={ident}
+		/>
+	)
+}
+
 export const Kontaktadresse = ({
 	data,
 	tmpPersoner,
@@ -170,46 +228,6 @@ export const Kontaktadresse = ({
 		return null
 	}
 
-	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
-		const initKontaktadresse = Object.assign(
-			_cloneDeep(initialKontaktadresse),
-			data?.[idx] || tmpData?.[idx]
-		)
-		const initialValues = { kontaktadresse: initKontaktadresse }
-
-		const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
-			(a: KontaktadresseData) => a.id === kontaktadresseData.id
-		)
-		const slettetKontaktadressePdlf =
-			tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
-		if (slettetKontaktadressePdlf) {
-			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
-		}
-
-		const kontaktadresseValues = redigertKontaktadressePdlf
-			? redigertKontaktadressePdlf
-			: kontaktadresseData
-		const redigertKontaktadresseValues = redigertKontaktadressePdlf
-			? {
-					kontaktadresse: Object.assign(
-						_cloneDeep(initialKontaktadresse),
-						redigertKontaktadressePdlf
-					),
-			  }
-			: null
-		return erPdlVisning ? (
-			<Adresse kontaktadresseData={kontaktadresseData} idx={idx} />
-		) : (
-			<VisningRedigerbarConnector
-				dataVisning={<Adresse kontaktadresseData={kontaktadresseValues} idx={idx} />}
-				initialValues={initialValues}
-				redigertAttributt={redigertKontaktadresseValues}
-				path="kontaktadresse"
-				ident={ident}
-			/>
-		)
-	}
-
 	return (
 		<>
 			<SubOverskrift label="Kontaktadresse" iconKind="postadresse" />
@@ -217,7 +235,15 @@ export const Kontaktadresse = ({
 				<ErrorBoundary>
 					<DollyFieldArray data={data || tmpData} header="" nested>
 						{(adresse: any, idx: number) => (
-							<KontaktadresseVisning kontaktadresseData={adresse} idx={idx} />
+							<KontaktadresseVisning
+								kontaktadresseData={adresse}
+								idx={idx}
+								data={data}
+								tmpData={tmpData}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+								tmpPersoner={tmpPersoner}
+							/>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
