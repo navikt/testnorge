@@ -1,8 +1,4 @@
 import React, { useContext } from 'react'
-// @ts-ignore
-import logo from '~/assets/img/nav-logo-hvit.png'
-// @ts-ignore
-import dolly from '~/assets/favicon.ico'
 import { useNavigate } from 'react-router-dom'
 import './Header.less'
 import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'

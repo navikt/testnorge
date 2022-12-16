@@ -3,8 +3,6 @@ import { NavLink } from 'react-router-dom'
 import Icon from '~/components/ui/icon/Icon'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
-// @ts-ignore
-import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import Loading from '~/components/ui/loading/Loading'
