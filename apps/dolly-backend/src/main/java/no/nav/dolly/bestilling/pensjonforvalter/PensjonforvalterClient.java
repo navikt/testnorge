@@ -127,7 +127,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
                                                     lagreAlderspensjon(
                                                             bestilling.getPensjonforvalter(),
-                                                            dollyPerson,
+                                                            dollyPerson.getHovedperson(),
                                                             bestilteMiljoer,
                                                             token,
                                                             isOpprettEndre,
@@ -161,7 +161,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(
             PensjonData pensjonData,
-            DollyPerson dollyPerson,
+            String ident,
             Set<String> miljoer,
             AccessToken token,
             boolean isOpprettEndre,
@@ -173,7 +173,7 @@ public class PensjonforvalterClient implements ClientRegister {
             if (!isOpprettEndre) {
                 // da sjekker hvis den eksisterer ikke i transaskjonMapping per miljø
                 var miljoerUtenTransakjoner = miljoer.stream()
-                        .filter(miljo -> !transaksjonMappingService.existAlready(PEN_AP, dollyPerson.getHovedperson(), miljo))
+                        .filter(miljo -> !transaksjonMappingService.existAlready(PEN_AP, ident, miljo))
                         .toList();
                 opprettIMiljoer = miljoerUtenTransakjoner;
             } else {
@@ -182,16 +182,16 @@ public class PensjonforvalterClient implements ClientRegister {
 
             if (!opprettIMiljoer.isEmpty()) {
                 LagreAlderspensjonRequest lagreAlderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(), LagreAlderspensjonRequest.class);
-                lagreAlderspensjonRequest.setPid(dollyPerson.getHovedperson());
+                lagreAlderspensjonRequest.setPid(ident);
                 lagreAlderspensjonRequest.setMiljoer(opprettIMiljoer);
                 lagreAlderspensjonRequest.setStatsborgerskap("NOR");
 
                 return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token)
                         .map(response -> {
                             response.getStatus().stream().forEach(status -> {
-                                log.info("Mottatt status for {} fra miljø {} fra Pensjon-Testdata-Facade: {}", dollyPerson.getHovedperson(), status.getMiljo(), status.getResponse());
+                                log.info("Mottatt status for {} fra miljø {} fra Pensjon-Testdata-Facade: {}", ident, status.getMiljo(), status.getResponse());
                                 if (status.getResponse().isResponse2xx()) {
-                                    saveAPTransaksjonId(dollyPerson.getHovedperson(), status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
+                                    saveAPTransaksjonId(ident, status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
                                 }
                             });
                             return response;
