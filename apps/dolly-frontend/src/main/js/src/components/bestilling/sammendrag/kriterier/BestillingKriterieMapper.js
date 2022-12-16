@@ -1737,7 +1737,7 @@ const mapPensjon = (bestillingData, data) => {
 		if (pensjonKriterier.alderspensjon) {
 			const ap = pensjonKriterier.alderspensjon
 			const pensjonforvalterAlderspensjon = {
-				header: 'Alderspensjon (PESYS)',
+				header: 'Alderspensjon',
 				items: [
 					obj('Iverksettelsesdato', Formatters.formatDate(ap.iverksettelsesdato)),
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),

@@ -14,7 +14,7 @@ const DataVisning = ({ apBestilling }) => {
 					title="Iverksettelsesdato"
 					value={Formatters.formatDate(apBestilling.iverksettelsesdato)}
 				/>
-				<TitleValue title="Uttaksgrad" value={apBestilling.uttaksgrad} />
+				<TitleValue title="Uttaksgrad" value={`${apBestilling.uttaksgrad}%`} />
 				<TitleValue
 					title="Sivilstand"
 					kodeverk={PersoninformasjonKodeverk.Sivilstander}
@@ -42,7 +42,7 @@ export const AlderspensjonVisning = ({ data }) => {
 
 	return (
 		<>
-			<SubOverskrift label="Alderspensjon (PESYS)" iconKind="pensjon" />
+			<SubOverskrift label="Alderspensjon" iconKind="pensjon" />
 			{bestillingerFiltrert?.length === 1 ? (
 				<DataVisning
 					apBestilling={bestillingerFiltrert[0]?.data?.pensjonforvalter?.alderspensjon}
