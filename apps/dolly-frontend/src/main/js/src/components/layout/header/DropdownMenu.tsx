@@ -32,7 +32,7 @@ const DropdownToggle = () => {
 	)
 }
 
-export default () => {
+export const DropdownMenu = () => {
 	const navigate = useNavigate()
 	return (
 		<header className="app-header">
