@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 // @ts-ignore
 import logo from '~/assets/img/nav-logo-hvit.png'
 // @ts-ignore
@@ -8,27 +8,36 @@ import './Header.less'
 import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
 import logoutBruker from '~/components/utlogging/logoutBruker'
 import { getDefaultImage } from '~/pages/minSide/Profil'
-import { Dropdown } from '@navikt/ds-react-internal'
+import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
 import Icon from '~/components/ui/icon/Icon'
 
-export default () => {
+const DropdownToggle = () => {
 	const { brukerProfil } = useBrukerProfil()
 	const { brukerBilde } = useBrukerProfilBilde()
 
+	const context = useContext(DropdownContext)
+	const { isOpen } = context
+
+	return (
+		<Dropdown.Toggle className={isOpen ? 'profil-toggle active' : 'profil-toggle'}>
+			<div className="profil-area flexbox--all-center">
+				<div className="img-logo">
+					<img alt="Profilbilde" src={brukerBilde || getDefaultImage()} />
+				</div>
+				<div className="profil-navn">
+					<p>{brukerProfil?.visningsNavn}</p>
+				</div>
+			</div>
+		</Dropdown.Toggle>
+	)
+}
+
+export default () => {
 	const navigate = useNavigate()
 	return (
 		<header className="app-header">
 			<Dropdown>
-				<Dropdown.Toggle className="profil-toggle">
-					<div className="profil-area flexbox--all-center">
-						<div className="img-logo">
-							<img alt="Profilbilde" src={brukerBilde || getDefaultImage()} />
-						</div>
-						<div className="profil-navn">
-							<p>{brukerProfil?.visningsNavn}</p>
-						</div>
-					</div>
-				</Dropdown.Toggle>
+				<DropdownToggle />
 				<Dropdown.Menu style={{ position: 'absolute', right: '0', top: '61px', width: '150px' }}>
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item onClick={() => navigate('/minside')}>

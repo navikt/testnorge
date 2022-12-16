@@ -41,9 +41,13 @@ header.app-header {
   }
   .profil-toggle{
     margin: 0 !important;
-    padding: 10px 10px 10px 0;
+    padding: 12px 10px 11px 0;
     border: none;
     background-color: @color-nav-black;
+
+    &.active{
+      background-color: lighten(@color-nav-black, 10%);
+    }
 
     &:hover {
       cursor: pointer;
@@ -67,11 +71,6 @@ header.app-header {
         margin: 0 7px 0 0;
       }
     }
-
-    //&.active {
-    //  font-weight: bold;
-    //  background-color: lighten(@color-nav-black, 10%);
-    //}
   }
 
   .menu-links {
