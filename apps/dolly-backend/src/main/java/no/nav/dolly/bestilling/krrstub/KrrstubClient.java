@@ -89,10 +89,10 @@ public class KrrstubClient implements ClientRegister {
 
         return !opprettEndre ? krrstubConsumer.deleteKontaktdataPerson(ident)
                 .map(status -> {
-                    log.info("Slettet ident {} status {} ", ident, status.getStatus());
+                    log.info("Kontaktdata slettet ident {} status {} ", ident, status.getStatus());
                     return status;
                 }) :
-                Mono.empty();
+                Mono.just(new DigitalKontaktdataResponse());
     }
 
     private String getStatus(DigitalKontaktdataResponse response) {

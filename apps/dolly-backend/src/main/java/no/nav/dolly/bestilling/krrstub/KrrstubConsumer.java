@@ -49,6 +49,7 @@ public class KrrstubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "krrstub_createKontaktdata"})
     public Mono<DigitalKontaktdataResponse> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
 
+        log.info("Kontaktdata opprett {}", digitalKontaktdata);
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new KontaktdataPostCommand(webClient, digitalKontaktdata, token.getTokenValue()).call());
     }
