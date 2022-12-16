@@ -10,8 +10,11 @@ const DropdownToggle = () => {
 	const { isOpen } = context
 
 	return (
-		<Dropdown.Toggle className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}>
-			<div>Dokumentasjon</div>
+		<Dropdown.Toggle
+			className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}
+			style={{ margin: '0 10px', padding: '20px 10px' }}
+		>
+			Dokumentasjon
 		</Dropdown.Toggle>
 	)
 }
