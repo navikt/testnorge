@@ -29,7 +29,7 @@ export default () => {
 						</div>
 					</div>
 				</Dropdown.Toggle>
-				<Dropdown.Menu>
+				<Dropdown.Menu style={{ position: 'absolute', right: '0', top: '61px' }}>
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item onClick={() => navigate('/minside')}>
 							<Icon kind="person" size={16} />

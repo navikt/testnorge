@@ -8,7 +8,7 @@ import dolly from '~/assets/favicon.ico'
 import './Header.less'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import Loading from '~/components/ui/loading/Loading'
-import HeaderDropDown from '~/components/layout/header/HeaderDropDown'
+import DropdownMenu from '~/components/layout/header/DropdownMenu'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -35,7 +35,7 @@ export default () => {
 				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
 				<NavLink to="/dokumentasjon">Dokumentasjon</NavLink>
 			</div>
-			<HeaderDropDown />
+			<DropdownMenu />
 		</header>
 	)
 }
