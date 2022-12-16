@@ -79,7 +79,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					</StyledAlert>
 				)}
 				{!harNorskBankkonto && (
-					// TODO: Sjekk norsk adresse også
+					// TODO: Sjekk norsk adresse ogsaa
 					<StyledAlert variant={'warning'} size={'small'}>
 						Personen må ha norsk bankkonto og adresse for at det skal fattes vedtak og for at
 						vedtaksbrev skal kunne opprettes automatisk.
