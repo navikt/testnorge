@@ -131,7 +131,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                             bestilteMiljoer,
                                                             token,
                                                             isOpprettEndre,
-                                                            progress.getBestilling() != null ? progress.getBestilling().getId() : null)
+                                                            progress.getBestilling().getId())
                                                             .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                                     Flux.just(""))
                                     )))
