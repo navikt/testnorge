@@ -9,7 +9,7 @@ import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import _has from 'lodash/has'
 import _get from 'lodash/get'
-import { add, isDate } from 'date-fns'
+import { add, addMonths, isDate, setDate } from 'date-fns'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { validation } from '~/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
@@ -66,6 +66,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						handleDateChange={(dato: string) =>
 							formikBag.setFieldValue(`${alderspensjonPath}.iverksettelsesdato`, dato)
 						}
+						minDate={setDate(addMonths(new Date(), 1), 1)}
 					/>
 					<FormikSelect
 						name={`${alderspensjonPath}.uttaksgrad`}
