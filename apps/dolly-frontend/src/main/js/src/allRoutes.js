@@ -11,7 +11,6 @@ const MinSide = lazy(() => import('./pages/minSide/MinSide'))
 const UI = lazy(() => import('./pages/ui/index'))
 const TestnorgePage = lazy(() => import('./pages/testnorgePage/index'))
 const Endringsmelding = lazy(() => import('./pages/endringsmelding/Endringsmelding'))
-const Dokumentasjon = lazy(() => import('./pages/dokumentasjon/Dokumentasjon'))
 
 const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId}</span>
 
@@ -51,11 +50,6 @@ const allRoutes = [
 		path: '/endringsmelding',
 		breadcrumb: 'Endringsmelding',
 		element: () => <Endringsmelding />,
-	},
-	{
-		path: '/dokumentasjon',
-		breadcrumb: 'Dokumentasjon',
-		element: () => <Dokumentasjon />,
 	},
 ]
 

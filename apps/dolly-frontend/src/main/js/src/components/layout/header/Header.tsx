@@ -31,7 +31,6 @@ export default () => {
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<NavLink to="/testnorge">Test-Norge</NavLink>
 				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
-				<NavLink to="/dokumentasjon">Dokumentasjon</NavLink>
 			</div>
 			<DropdownMenu />
 		</header>
