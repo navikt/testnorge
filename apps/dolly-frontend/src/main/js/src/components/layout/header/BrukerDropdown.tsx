@@ -33,7 +33,7 @@ export const BrukerDropdown = () => {
 	return (
 		<Dropdown>
 			<DropdownToggle />
-			<Dropdown.Menu style={{ position: 'absolute', right: '0', top: '61px' }}>
+			<Dropdown.Menu style={{ position: 'absolute', right: '0', top: '61px', width: '150px' }}>
 				<Dropdown.Menu.List>
 					<Dropdown.Menu.List.Item onClick={() => navigate('/minside')}>
 						<Icon kind="person" size={16} />
