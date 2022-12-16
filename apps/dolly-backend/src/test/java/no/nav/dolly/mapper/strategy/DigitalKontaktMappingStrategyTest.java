@@ -1,6 +1,9 @@
 package no.nav.dolly.mapper.strategy;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.krrstub.mapper.DigitalKontaktMappingStrategy;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
@@ -16,7 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class DigitalKontaktMappingStrategyTest {
+class DigitalKontaktMappingStrategyTest {
 
     private static final String EPOST = "test@nav.no";
     private static final String MOBIL = "99990000";
@@ -27,18 +30,23 @@ public class DigitalKontaktMappingStrategyTest {
 
     private MapperFacade mapperFacade;
 
+    private MappingContext context;
+
     @BeforeEach
     public void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new DigitalKontaktMappingStrategy());
+
+        context = new MappingContext.Factory().getContext();
+        context.setProperty("bestilling", new RsDollyUtvidetBestilling());
     }
 
     @Test
-    public void mapReservert_OK() {
+    void mapReservert_OK() {
 
-        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        var result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .reservert(RESERVERT)
                 .gyldigFra(GYLDIG_FRA)
-                .build(), DigitalKontaktdata.class);
+                .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.isReservert(), is(equalTo(RESERVERT)));
         assertThat(result.getEpost(), is(nullValue()));
@@ -51,12 +59,12 @@ public class DigitalKontaktMappingStrategyTest {
     }
 
     @Test
-    public void mapMobil_OK() {
+    void mapMobil_OK() {
 
-        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        var result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .gyldigFra(GYLDIG_FRA)
                 .mobil(MOBIL)
-                .build(), DigitalKontaktdata.class);
+                .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getMobil(), is(equalTo(MOBIL)));
         assertThat(result.getMobilOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
@@ -64,12 +72,12 @@ public class DigitalKontaktMappingStrategyTest {
     }
 
     @Test
-    public void mapEpost_OK() {
+    void mapEpost_OK() {
 
-        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        var result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .gyldigFra(GYLDIG_FRA)
                 .epost(EPOST)
-                .build(), DigitalKontaktdata.class);
+                .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getEpost(), is(equalTo(EPOST)));
         assertThat(result.getEpostOppdatert(), is(equalTo(Z_GYLDIG_FRA)));
@@ -77,12 +85,12 @@ public class DigitalKontaktMappingStrategyTest {
     }
 
     @Test
-    public void mapSpraak_OK() {
+    void mapSpraak_OK() {
 
-        DigitalKontaktdata result = mapperFacade.map(RsDigitalKontaktdata.builder()
+        var result = mapperFacade.map(RsDigitalKontaktdata.builder()
                 .gyldigFra(GYLDIG_FRA)
                 .spraak(SPRAAK)
-                .build(), DigitalKontaktdata.class);
+                .build(), DigitalKontaktdata.class, context);
 
         assertThat(result.getSpraak(), is(equalTo(SPRAAK)));
         assertThat(result.getSpraakOppdatert(), is(equalTo(Z_GYLDIG_FRA)));

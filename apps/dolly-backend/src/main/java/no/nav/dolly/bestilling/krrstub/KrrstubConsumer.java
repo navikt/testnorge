@@ -3,43 +3,30 @@ package no.nav.dolly.bestilling.krrstub;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataCommand;
-import no.nav.dolly.bestilling.krrstub.command.DeleteKontaktadataPersonCommand;
-import no.nav.dolly.bestilling.krrstub.command.GetKontaktdataCommand;
+import no.nav.dolly.bestilling.krrstub.command.KontaktadataDeleteCommand;
+import no.nav.dolly.bestilling.krrstub.command.KontaktdataPostCommand;
+import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.config.credentials.KrrstubProxyProperties;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
-import static java.lang.String.format;
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
 public class KrrstubConsumer implements ConsumerStatus {
-
-    private static final String DIGITAL_KONTAKT_URL = "/api/v2/kontaktinformasjon";
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
@@ -59,54 +46,27 @@ public class KrrstubConsumer implements ConsumerStatus {
                 .build();
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-
     @Timed(name = "providers", tags = {"operation", "krrstub_createKontaktdata"})
-    public ResponseEntity<Object> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
+    public Mono<DigitalKontaktdataResponse> createDigitalKontaktdata(DigitalKontaktdata digitalKontaktdata) {
 
-        return webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(DIGITAL_KONTAKT_URL)
-                        .build())
-                .contentType(MediaType.APPLICATION_JSON)
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .bodyValue(digitalKontaktdata)
-                .retrieve()
-                .toEntity(Object.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new KontaktdataPostCommand(webClient, digitalKontaktdata, token.getTokenValue()).call());
     }
 
-    public Mono<List<String>> deleteKontaktdata(List<String> identer) {
+    @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
+    public Flux<DigitalKontaktdataResponse> deleteKontaktdata(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(100))
-                        .map(idx -> new GetKontaktdataCommand(webClient, identer.get(idx), token.getTokenValue()).call())
-                        .flatMap(Flux::from)
-                        .filter(resp -> nonNull(resp.getId()))
-                        .map(resp -> {
-                            new DeleteKontaktadataCommand(webClient, resp.getId(), token.getTokenValue());
-                            return format("Slettet ident med id=%d", resp.getId());
-                        })
-                ).collectList();
+                        .flatMap(idx -> new KontaktadataDeleteCommand(webClient, identer.get(idx),
+                                token.getTokenValue()).call()));
     }
 
-    public Mono<List<String>> deleteKontaktdataPerson(List<String> identer) {
+    public Mono<DigitalKontaktdataResponse> deleteKontaktdataPerson(String ident) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token ->
-                    Flux.fromStream(identer.stream())
-                            .map(ident -> new DeleteKontaktadataPersonCommand(webClient, ident, token.getTokenValue()).call())
-                            .flatMap(Flux::from)
-                            .map(httpStatus -> "ident slettet")
-                ).collectList();
+                .flatMap(token -> new KontaktadataDeleteCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     public Map<String, String> checkAlive() {

@@ -3,7 +3,9 @@ package no.nav.dolly.bestilling.krrstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
@@ -12,20 +14,17 @@ import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.ResponseHandler;
+import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
@@ -34,9 +33,9 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 public class KrrstubClient implements ClientRegister {
 
     private final KrrstubConsumer krrstubConsumer;
-    private final ResponseHandler responseHandler;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final TransactionHelperService transactionHelperService;
 
     private static boolean isKrrMaalform(String spraak) {
 
@@ -50,35 +49,32 @@ public class KrrstubClient implements ClientRegister {
                 (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) ||
                 (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode()))) {
 
-            try {
-                DigitalKontaktdata digitalKontaktdata = mapperFacade.map(
-                        nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
-                        DigitalKontaktdata.class);
-                digitalKontaktdata.setPersonident(dollyPerson.getHovedperson());
+            var context = new MappingContext.Factory().getContext();
+            context.setProperty("ident", dollyPerson.getHovedperson());
+            context.setProperty("bestilling", bestilling);
 
-                kobleMaalformTilSpraak(bestilling, digitalKontaktdata);
+            var digitalKontaktdataRequest = mapperFacade.map(
+                    nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
+                    DigitalKontaktdata.class, context);
 
-                if (!isOpprettEndre) {
-                    krrstubConsumer.deleteKontaktdataPerson(List.of(dollyPerson.getHovedperson())).block();
-                }
-
-                ResponseEntity<Object> krrstubResponse = krrstubConsumer.createDigitalKontaktdata(digitalKontaktdata);
-                progress.setKrrstubStatus(responseHandler.extractResponse(krrstubResponse));
-
-            } catch (RuntimeException e) {
-
-                progress.setKrrstubStatus(errorStatusDecoder.decodeThrowable(e));
-                log.error("Kall til KrrStub feilet: {}", e.getMessage(), e);
-            }
+            deleteKontaktdataPerson(dollyPerson.getHovedperson(), isOpprettEndre)
+                    .flatMap(slettetStatus -> krrstubConsumer.createDigitalKontaktdata(digitalKontaktdataRequest))
+                    .map(this::getStatus)
+                    .subscribe(status -> {
+                        progress.setKrrstubStatus(status);
+                        transactionHelperService.persister(progress);
+                    });
         }
+
         return Flux.just();
     }
 
     @Override
     public void release(List<String> identer) {
 
-            krrstubConsumer.deleteKontaktdataPerson(identer)
-                    .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
+        krrstubConsumer.deleteKontaktdata(identer)
+                .collectList()
+                .subscribe(resp -> log.info("Slettet antall {} identer fra Krrstub", resp.size()));
     }
 
     @Override
@@ -89,22 +85,19 @@ public class KrrstubClient implements ClientRegister {
                         .allMatch(entry -> StringUtils.isNotBlank(entry.getKrrstubStatus()));
     }
 
-    private void kobleMaalformTilSpraak(RsDollyUtvidetBestilling bestilling, DigitalKontaktdata digitalKontaktdata) {
+    private Mono<DigitalKontaktdataResponse> deleteKontaktdataPerson(String ident, boolean opprettEndre) {
 
-        String maalform = null;
+        return !opprettEndre ? krrstubConsumer.deleteKontaktdataPerson(ident)
+                .map(status -> {
+                    log.info("Slettet ident {} status {} ", ident, status.getStatus());
+                    return status;
+                }) :
+                Mono.empty();
+    }
 
-        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) {
-            maalform = bestilling.getTpsf().getSprakKode();
+    private String getStatus(DigitalKontaktdataResponse response) {
 
-        } else if (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode())) {
-            maalform = bestilling.getTpsMessaging().getSpraakKode();
-        }
-
-        if (isNotBlank(maalform) && isBlank(digitalKontaktdata.getSpraak())) {
-
-            digitalKontaktdata.setSpraak(isNotBlank(maalform) ? maalform.toLowerCase() : maalform); //NOSONAR
-            digitalKontaktdata.setSpraakOppdatert(ZonedDateTime.now());
-            digitalKontaktdata.setRegistrert(true);
-        }
+        return response.getStatus().is2xxSuccessful() ? "OK" :
+                errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
     }
 }
