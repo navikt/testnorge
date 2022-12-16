@@ -6,7 +6,8 @@ import logo from '~/assets/img/nav-logo-hvit.png'
 import './Header.less'
 import { useCurrentBruker } from '~/utils/hooks/useBruker'
 import Loading from '~/components/ui/loading/Loading'
-import { DropdownMenu } from '~/components/layout/header/DropdownMenu'
+import { BrukerDropdown } from '~/components/layout/header/BrukerDropdown'
+import { DokumentasjonDropdown } from '~/components/layout/header/DokumentasjonDropdown'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()
@@ -31,8 +32,9 @@ export default () => {
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<NavLink to="/testnorge">Test-Norge</NavLink>
 				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
+				<DokumentasjonDropdown />
 			</div>
-			<DropdownMenu />
+			<BrukerDropdown />
 		</header>
 	)
 }

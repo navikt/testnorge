@@ -32,6 +32,8 @@ import FileChecklistLight from '~/assets/icons/nav-ikoner/line/SVG/17-files/file
 import FileRefresh from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-refresh.svg'
 import Copy from '~/assets/icons/nav-ikoner/line/SVG/17-files/copy-1.svg'
 import NewFile from '~/assets/icons/nav-ikoner/filled/SVG/17-files/file-add.svg'
+import NewFile2 from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-new-2.svg'
+import FileCode from '~/assets/icons/nav-ikoner/line/SVG/17-files/file-code.svg'
 import Files from '~/assets/icons/nav-ikoner/line/SVG/17-files/files-3.svg'
 import Synchronize from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/synchronize-3.svg'
 import Kryss from '~/assets/icons/nav-ikoner/filled/SVG/19-interface/kryss.svg'
@@ -181,6 +183,8 @@ export const icons = {
 	foreldreansvar: Group2,
 	grav: RIP,
 	flytt: Flytt,
+	fileNew2: NewFile2,
+	fileCode: FileCode,
 }
 
 const px = (v: number) => `${v}px`
