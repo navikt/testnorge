@@ -5,11 +5,9 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Contact;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;
-import io.swagger.v3.oas.models.parameters.Parameter;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
-import org.springdoc.core.customizers.OperationCustomizer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +17,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Arrays;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-
 @Configuration
 public class OpenApiConfig implements WebMvcConfigurer {
-
-    private static final String HEADER = "header";
 
     @Value("${dolly.api.v1.name}")
     private String apiV1Name;
@@ -35,12 +28,6 @@ public class OpenApiConfig implements WebMvcConfigurer {
 
     @Value("${dolly.api.v1.version}")
     private String appVersion;
-
-    @Value("${dolly.api.v1.header.nav-consumer-id}")
-    private String apiV1ConsumerIdDescription;
-
-    @Value("${dolly.api.v1.header.nav-call-id}")
-    private String apiV1CallIdDescription;
 
     @Bean
     public OpenAPI openApi() {
@@ -85,23 +72,6 @@ public class OpenApiConfig implements WebMvcConfigurer {
                                                 .scheme("bearer")
                                                 .bearerFormat("JWT"))
                 );
-    }
-
-    @Bean
-    public OperationCustomizer customize() {
-        return (operation, handlerMethod) -> operation
-                .addParametersItem(new Parameter()
-                        .in(HEADER)
-                        .required(true)
-                        .description(apiV1ConsumerIdDescription)
-                        .name(HEADER_NAV_CONSUMER_ID)
-                        .example("MinApp"))
-                .addParametersItem(new Parameter()
-                        .in(HEADER)
-                        .required(true)
-                        .description(apiV1CallIdDescription)
-                        .name(HEADER_NAV_CALL_ID)
-                        .example("123e4567-e89b-12d3-a456-426614174000"));
     }
 
     @Override

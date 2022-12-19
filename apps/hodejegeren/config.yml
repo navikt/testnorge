@@ -42,6 +42,12 @@ spec:
           cluster: dev-fss
         - application: mn-synt-arbeidsforhold-service
           cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: tps-forvalteren-proxy
+          cluster: dev-fss
   azure:
     application:
       enabled: true

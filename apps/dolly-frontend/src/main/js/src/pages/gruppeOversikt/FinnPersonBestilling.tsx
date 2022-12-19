@@ -174,20 +174,26 @@ const FinnPersonBestilling = ({
 
 		const personer: Array<Option> = []
 
-		if (tpsfValues?.status === 'fulfilled') {
-			const tpsfPersoner = tpsfValues.value?.data
-			mapToPersoner(tpsfPersoner, personer)
-			setTpsfIdenter(tpsfPersoner)
-		} else {
-			setError(tpsfValues?.reason?.message)
-		}
-
+		let pdlfPersoner = []
 		if (pdlfValues?.status === 'fulfilled') {
-			const pdlfPersoner = pdlfValues.value?.data
+			pdlfPersoner = pdlfValues.value?.data
 			mapToPersoner(pdlfPersoner, personer)
 			setPdlfIdenter(pdlfPersoner)
 		} else {
 			setError(pdlfValues?.reason?.message)
+		}
+
+		if (tpsfValues?.status === 'fulfilled') {
+			let tpsfPersoner = tpsfValues.value?.data
+			if (Array.isArray(tpsfPersoner) && Array.isArray(pdlfPersoner)) {
+				tpsfPersoner = tpsfPersoner.filter(
+					(person: Person) => !pdlfPersoner.map((p: Person) => p.ident).includes(person.ident)
+				)
+			}
+			mapToPersoner(tpsfPersoner, personer)
+			setTpsfIdenter(tpsfPersoner)
+		} else {
+			setError(tpsfValues?.reason?.message)
 		}
 
 		if (pdlValues?.status === 'fulfilled') {

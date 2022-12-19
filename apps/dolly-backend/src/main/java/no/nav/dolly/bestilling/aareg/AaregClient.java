@@ -20,6 +20,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
 import java.util.List;
@@ -63,16 +64,13 @@ public class AaregClient implements ClientRegister {
 
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
 
-            if (bestilling.getAareg().stream()
+            progress.setAaregStatus((bestilling.getAareg().stream()
                     .map(RsAareg::getAmelding)
-                    .anyMatch(amelding -> !amelding.isEmpty())) {
+                    .anyMatch(amelding -> !amelding.isEmpty()) ?
 
-                progress.setAaregStatus(ameldingService.sendAmelding(bestilling, dollyPerson, progress.getBestilling().getId(), miljoer));
-
-            } else {
-
-                progress.setAaregStatus(sendArbeidsforhold(bestilling, dollyPerson, miljoer));
-            }
+                    ameldingService.sendAmelding(bestilling, dollyPerson, miljoer) :
+                    sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre)
+            ).block());
         }
         return Flux.just();
     }
@@ -91,27 +89,27 @@ public class AaregClient implements ClientRegister {
                         .allMatch(entry -> isNotBlank(entry.getAaregStatus()));
     }
 
-    private String sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, List<String> miljoer) {
+    private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
+                                            List<String> miljoer, boolean isOpprettEndre) {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getHovedperson());
         var arbeidsforholdRequest = mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context);
 
         return aaregConsumer.getAccessToken()
-                        .flatMapMany(token -> Flux.fromIterable(miljoer)
-                                .parallel()
-                                .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), miljoe, token)
-                                        .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token))))
-                .collect(Collectors.joining(","))
-                .block();
+                .flatMapMany(token -> Flux.fromIterable(miljoer)
+                        .parallel()
+                        .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), miljoe, token)
+                                .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token, isOpprettEndre))))
+                .collect(Collectors.joining(","));
     }
 
     private Flux<String> doInsertOrUpdate(ArbeidsforholdRespons response, List<Arbeidsforhold> request,
-                                          String miljoe, AccessToken token) {
+                                          String miljoe, AccessToken token, boolean isOpprettEndre) {
 
         var arbforholdId = new AtomicInteger(response.getEksisterendeArbeidsforhold().size());
 
-        var eksistens = doEksistenssjekk(response,  mapperFacade.mapAsList(request, Arbeidsforhold.class));
+        var eksistens = doEksistenssjekk(response, mapperFacade.mapAsList(request, Arbeidsforhold.class), isOpprettEndre);
         return Flux.merge(Flux.fromIterable(eksistens.getNyeArbeidsforhold())
                                 .flatMap(entry -> {
                                     if (isBlank(entry.getArbeidsforholdId())) {

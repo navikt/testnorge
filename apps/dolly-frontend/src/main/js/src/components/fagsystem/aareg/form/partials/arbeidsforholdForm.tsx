@@ -246,12 +246,14 @@ export const ArbeidsforholdForm = ({
 		<React.Fragment>
 			<div className="flexbox--flex-wrap">
 				{arbeidsgiverType === ArbeidsgiverTyper.egen && (
-					<EgneOrganisasjoner
-						path={`${path}.arbeidsgiver.orgnummer`}
-						handleChange={onChangeLenket('arbeidsgiver.orgnummer')}
-						warningMessage={warningMessage}
-						filterValidEnhetstyper={true}
-					/>
+					<div className="flex-box">
+						<EgneOrganisasjoner
+							path={`${path}.arbeidsgiver.orgnummer`}
+							handleChange={onChangeLenket('arbeidsgiver.orgnummer')}
+							warningMessage={warningMessage}
+							filterValidEnhetstyper={true}
+						/>
+					</div>
 				)}
 				{arbeidsgiverType === ArbeidsgiverTyper.felles && (
 					<OrganisasjonMedArbeidsforholdSelect

@@ -10,8 +10,4 @@ spring:
   main:
     banner-mode: off
 
-testnorges.ida.credential.tpsf:
-  username: ${TESTNORGE_IDA_CREDENTIAL_TPSF_USERNAME}
-  password: ${TESTNORGE_IDA_CREDENTIAL_TPSF_PASSWORD}
-
 cache.avspillergrupper: ${CACHE_AVSPILLERGRUPPER}

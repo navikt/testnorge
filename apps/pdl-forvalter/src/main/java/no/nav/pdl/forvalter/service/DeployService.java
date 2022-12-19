@@ -15,8 +15,6 @@ import reactor.core.publisher.Flux;
 import java.util.Comparator;
 import java.util.List;
 
-import static java.util.Collections.emptyList;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -24,16 +22,9 @@ public class DeployService {
 
     private final PdlTestdataConsumer pdlTestdataConsumer;
 
-    public List<Ordre> createOrdre(PdlArtifact type, String ident, DbVersjonDTO artifact) {
+    public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter) {
 
-        return createOrdre(type, ident, List.of(artifact), false);
-    }
-
-    public List<Ordre> createOrdre(PdlArtifact type, String ident, List<? extends DbVersjonDTO> artifacter, boolean flere) {
-
-        return flere && artifacter.size() > 1 || !flere && artifacter.size() < 2 ?
-
-                artifacter.stream()
+                return artifacter.stream()
                         .sorted(Comparator.comparing(DbVersjonDTO::getId))
                         .map(element -> ArtifactValue.builder()
                                 .artifact(type)
@@ -49,8 +40,7 @@ public class DeployService {
                                                 .infoElement(type)
                                                 .hendelser(hendelser)
                                                 .build()))
-                        .toList() :
-                emptyList();
+                        .toList();
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> sendOrders(OrdreRequest ordres) {

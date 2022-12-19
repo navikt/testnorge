@@ -99,7 +99,7 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente inntekt-data på person
+					Fant ikke inntekt-data på person
 				</Alert>
 			) : (
 				<ErrorBoundary>

@@ -10,18 +10,13 @@ import no.nav.pdl.forvalter.dto.PdlVergemaal;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Omfang;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.Personnavn;
 import no.nav.pdl.forvalter.dto.PdlVergemaal.VergemaalType;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalMandattype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalSakstype;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-
 import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 
 @Component
 @RequiredArgsConstructor
@@ -79,11 +74,6 @@ public class VergemaalMappingStrategy implements MappingStrategy {
         }
     }
 
-    private static LocalDate toDate(LocalDateTime timestamp) {
-
-        return nonNull(timestamp) ? timestamp.toLocalDate() : null;
-    }
-
     @Override
     public void register(MapperFactory factory) {
 
@@ -94,11 +84,6 @@ public class VergemaalMappingStrategy implements MappingStrategy {
 
                         destinasjon.setEmbete(geografiskeKodeverkConsumer.getEmbeteNavn(kilde.getVergemaalEmbete().name()));
                         destinasjon.setType(getSakstype(kilde.getSakType()));
-                        destinasjon.setFolkeregistermetadata(FolkeregistermetadataDTO.builder()
-                                .ajourholdstidspunkt(LocalDate.now())
-                                .gyldighetstidspunkt(toDate(kilde.getGyldigFraOgMed()))
-                                .opphoerstidspunkt(toDate(kilde.getGyldigTilOgMed()))
-                                .build());
 
                         var person = personRepository.findByIdent(kilde.getVergeIdent());
                         NavnDTO personnavn = new NavnDTO();

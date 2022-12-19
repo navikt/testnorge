@@ -4,7 +4,6 @@ import { Organisasjon, OrganisasjonFasteData } from '~/service/services/organisa
 import { Bestillingsinformasjon } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import _isArray from 'lodash/isArray'
 
 type MiljoDataListe = {
 	miljo: string
@@ -24,6 +23,9 @@ const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
 	`/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=DOLLY${
 		kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 	}`
+
+const getFasteDataOrganisasjon = (orgnummer: string) =>
+	orgnummer ? `/testnav-organisasjon-faste-data-service/api/v1/organisasjoner/${orgnummer}` : null
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
@@ -112,6 +114,26 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 
 	return {
 		organisasjoner: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useFasteDataOrganisasjon = (orgnummer: string) => {
+	const { data, error } = useSWR<OrganisasjonFasteData, Error>(
+		getFasteDataOrganisasjon(orgnummer),
+		fetcher
+	)
+
+	if (!orgnummer) {
+		return {
+			loading: false,
+			error: 'Organisasjonsnummer mangler!',
+		}
+	}
+
+	return {
+		organisasjon: data,
 		loading: !error && !data,
 		error: error,
 	}

@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Stream;
 
 import static java.lang.String.format;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -75,6 +77,9 @@ public class MergeService {
         } else {
             requestElement.setId(dbId.incrementAndGet());
             requestElement.setIsNew(true);
+            if (isNull(requestElement.getFolkeregistermetadata())) {
+                requestElement.setFolkeregistermetadata(new FolkeregistermetadataDTO());
+            }
             infoElementDbPerson.add(0, mapperFacade.map(requestElement, requestElement.getClass()));
         }
     }

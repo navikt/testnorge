@@ -5,7 +5,7 @@ import no.nav.registre.testnorge.personsearchservice.domain.IdentSearch;
 import no.nav.testnav.libs.dto.personsearchservice.v1.search.PersonSearch;
 import org.apache.lucene.search.join.ScoreMode;
 import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.core.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.functionscore.RandomScoreFunctionBuilder;

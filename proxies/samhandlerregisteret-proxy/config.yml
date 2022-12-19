@@ -1,4 +1,17 @@
-﻿apiVersion: "nais.io/v1alpha1"
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-samhandlerregisteret-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-samhandlerregisteret-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnav-samhandlerregisteret-proxy
@@ -44,5 +57,8 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-samhandlerregisteret-proxy-trygdeetaten
   ingresses:
     - "https://testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-samhandlerregisteret-proxy.dev.intern.nav.no"

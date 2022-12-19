@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var serviceStatus = checkConsumerStatus(
-                "https://inst-testdata.dev.adeo.no/internal/health/liveness",
-                "https://inst-testdata.dev.adeo.no/internal/health/readiness",
+                "https://opphold-testdata.dev.adeo.no/internal/health/liveness",
+                "https://opphold-testdata.dev.adeo.no/internal/health/readiness",
                 statusWebClient);
         serviceStatus.put("team", TEAM_ROCKET);
 

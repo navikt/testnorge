@@ -14,6 +14,5 @@ Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.dev.
 ## Lokal utvikling
 
 ```
--Dspring.cloud.vault.token={VAULT_TOKEN} -Dspring.profiles.active=dev -DELASTIC_USERNAME={USERNMAE} -DELASTIC_PASSWORD={PASSWORD} -DELASTIC_HOST={HOST} -DELASTIC_PORT={PORT}
-Se teamdolly-elastic secret i kubernetes
+-Dspring.cloud.vault.token={VAULT_TOKEN} -Dspring.profiles.active=dev
 ```

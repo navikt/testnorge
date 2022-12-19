@@ -8,19 +8,17 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
-import no.nav.pdl.forvalter.utils.FoedselsdatoUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO.Sivilstand;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -53,34 +51,34 @@ public class CreatePersonService {
     private static PersonDTO buildPerson(PersonRequestDTO request) {
 
         return PersonDTO.builder()
-                .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn()).build()))
-                .foedsel(List.of(FoedselDTO.builder().build()))
+                .kjoenn(List.of(KjoennDTO.builder().kjoenn(request.getKjoenn())
+                        .folkeregistermetadata(new FolkeregistermetadataDTO())
+                        .build()))
+                .foedsel(List.of(FoedselDTO.builder()
+                        .folkeregistermetadata(new FolkeregistermetadataDTO())
+                        .build()))
                 .navn(List.of(nonNull(request.getNyttNavn()) ?
-                        NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHasMellomnavn()).build() :
+                        NavnDTO.builder().hasMellomnavn(request.getNyttNavn().isHasMellomnavn())
+                                .folkeregistermetadata(new FolkeregistermetadataDTO())
+                                .build() :
                         new NavnDTO()))
                 .bostedsadresse(List.of(
                         BostedadresseDTO.builder()
-                                .vegadresse(new VegadresseDTO())
+                                .folkeregistermetadata(new FolkeregistermetadataDTO())
                                 .build()))
                 .statsborgerskap(List.of(StatsborgerskapDTO.builder()
                         .landkode(request.getStatsborgerskapLandkode())
+                        .folkeregistermetadata(new FolkeregistermetadataDTO())
                         .build()))
-                .adressebeskyttelse(nonNull(request.getGradering()) ? List.of(AdressebeskyttelseDTO.builder()
-                        .gradering(request.getGradering())
-                        .build()) : null)
+                .adressebeskyttelse(nonNull(request.getGradering()) ?
+                        List.of(AdressebeskyttelseDTO.builder()
+                                .gradering(request.getGradering())
+                                .folkeregistermetadata(new FolkeregistermetadataDTO())
+                                .build()) : null)
                 .folkeregisterPersonstatus(
-                        List.of(FolkeregisterPersonstatusDTO.builder().build()))
-                .build();
-    }
-
-    private static SivilstandDTO getUgift() {
-
-        return SivilstandDTO.builder()
-                .type(Sivilstand.UGIFT)
-                .isNew(true)
-                .id(1)
-                .master(FREG)
-                .kilde("Dolly")
+                        List.of(FolkeregisterPersonstatusDTO.builder()
+                                .folkeregistermetadata(new FolkeregistermetadataDTO())
+                                .build()))
                 .build();
     }
 
@@ -103,7 +101,7 @@ public class CreatePersonService {
                 .filter(list -> list.stream().anyMatch(IdentDTO.class::isInstance))
                 .flatMap(Collection::stream)
                 .map(IdentDTO.class::cast)
-                .findFirst().get().getIdent());
+                .findFirst().orElseGet(IdentDTO::new).getIdent());
 
         Stream.of(
                         Flux.just(bostedAdresseService.convert(mergedPerson, null)),
@@ -115,10 +113,13 @@ public class CreatePersonService {
                 .collectList()
                 .block();
 
-        if (FoedselsdatoUtility.isMyndig(mergedPerson)) {
-            mergedPerson.getSivilstand().add(getUgift());
-        }
-
+        mergedPerson.getSivilstand().add(SivilstandDTO.builder()
+                .type(SivilstandDTO.Sivilstand.UGIFT)
+                .isNew(true)
+                .id(1)
+                .master(FREG)
+                .kilde("Dolly")
+                .build());
         folkeregisterPersonstatusService.convert(mergedPerson);
 
         log.info("Oppretting av ident {} tok {} ms", mergedPerson.getIdent(), currentTimeMillis() - startTime);

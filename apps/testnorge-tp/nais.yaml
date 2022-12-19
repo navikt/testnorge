@@ -32,3 +32,23 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnorge-tp.dev.intern.nav.no"
+  webproxy: true
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnorge-statisk-data-forvalter
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: testnorge-hodejegeren
+        - application: pensjon-testdata-server-q1
+          namespace: pensjontestdata
+        - application: pensjon-testdata-server-q2
+          namespace: pensjontestdata

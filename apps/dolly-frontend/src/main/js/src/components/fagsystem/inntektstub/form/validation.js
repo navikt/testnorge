@@ -155,8 +155,7 @@ export const validation = {
 					.min(1, 'Antall måneder må være et positivt tall')
 					.nullable(),
 				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
-				// virksomhet: requiredString.typeError(messages.required),
-				opplysningspliktig: requiredString,
+				opplysningspliktig: requiredString.nullable(),
 				inntektsliste: inntektsliste,
 				fradragsliste: fradragsliste,
 				forskuddstrekksliste: forskuddstrekksliste,

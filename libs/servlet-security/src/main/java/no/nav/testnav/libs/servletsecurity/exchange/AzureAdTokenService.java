@@ -1,6 +1,15 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
+import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.Token;
+import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
+import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
+import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
+import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.HttpHeaders;
@@ -13,16 +22,6 @@ import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.ProxyProvider;
 
 import java.net.URI;
-
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.Token;
-import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
-import no.nav.testnav.libs.securitycore.domain.azuread.ClientCredential;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
-import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
 
 @Slf4j
 @Service
@@ -48,15 +47,14 @@ public class AzureAdTokenService implements TokenService {
         if (proxyHost != null) {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
-
-            HttpClient httpClient = HttpClient
+            builder.clientConnector(new ReactorClientHttpConnector(
+                HttpClient
                     .create()
-                    .tcpConfiguration(tcpClient -> tcpClient.proxy(proxy -> proxy
-                            .type(ProxyProvider.Proxy.HTTP)
-                            .host(uri.getHost())
-                            .port(uri.getPort())
-                    ));
-            builder.clientConnector(new ReactorClientHttpConnector(httpClient));
+                    .proxy(proxy -> proxy
+                        .type(ProxyProvider.Proxy.HTTP)
+                        .host(uri.getHost())
+                        .port(uri.getPort()))
+            ));
         }
         this.webClient = builder.build();
         this.clientCredential = clientCredential;

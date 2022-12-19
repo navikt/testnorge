@@ -26,6 +26,9 @@ public class PensjonData {
     @Schema(description = "Data for tjenestepensjon (TP)")
     private List<TpOrdning> tp;
 
+    @Schema(description = "Data for alderspensjon (AP)")
+    private Alderspensjon alderspensjon;
+
     public List<TpOrdning> getTp() {
         if (isNull(tp)) {
             tp = new ArrayList<>();
@@ -104,5 +107,49 @@ public class PensjonData {
 
         @Schema(description = "Dato iverksatt tom")
         private LocalDate datoYtelseIverksattTom;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Alderspensjon {
+        @Schema(required = true)
+        private LocalDate iverksettelsesdato;
+
+        @Schema(required = true)
+        private Integer uttaksgrad;
+
+        @Schema(required = true)
+        private String sivilstand;
+
+        @Schema
+        private LocalDate sivilstatusDatoFom;
+
+        @Schema
+        private List<SkjemaRelasjon> relasjonListe;
+
+        @Schema
+        private Boolean flyktning;
+
+        @Schema
+        private Boolean utvandret;
+    }
+
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SkjemaRelasjon {
+        @Schema(required = true)
+        private LocalDate samboerFraDato;
+        private LocalDate dodsdato;
+        private Boolean varigAdskilt;
+        private String fnr;
+        private LocalDate samlivsbruddDato;
+        private Boolean harVaertGift;
+        private Boolean harFellesBarn;
+        private Integer sumAvForvArbKapPenInntekt;
+        private String relasjonType;
     }
 }

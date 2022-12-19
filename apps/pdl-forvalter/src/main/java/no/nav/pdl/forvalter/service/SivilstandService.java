@@ -122,6 +122,7 @@ public class SivilstandService implements Validation<SivilstandDTO> {
                                     .build());
 
                     fellesAdresse.setGyldigFraOgMed(sivilstand.getSivilstandsdato());
+                    fellesAdresse.setAngittFlyttedato(sivilstand.getSivilstandsdato());
                     fellesAdresse.setId(relatertPerson.getBostedsadresse().stream()
                             .map(BostedadresseDTO::getId).findFirst()
                             .orElse(0) + 1);

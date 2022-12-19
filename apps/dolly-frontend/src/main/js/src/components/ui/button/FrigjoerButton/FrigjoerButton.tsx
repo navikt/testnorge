@@ -74,11 +74,12 @@ export const FrigjoerButton = ({
 							onClick={() => {
 								closeModal()
 								if (importerteRelatertePersoner) {
-									slettPersonOgRelatertePersoner(importerteRelatertePersoner)
+									slettPersonOgRelatertePersoner(importerteRelatertePersoner).then(() =>
+										mutate(REGEX_BACKEND_GRUPPER)
+									)
 								} else {
-									slettPerson()
+									slettPerson().then(() => mutate(REGEX_BACKEND_GRUPPER))
 								}
-								return mutate(REGEX_BACKEND_GRUPPER)
 							}}
 							variant={'primary'}
 						>

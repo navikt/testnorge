@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import Button from '~/components/ui/button/Button'
 import { TidligereBestillinger } from './TidligereBestillinger/TidligereBestillinger'
 import { PersonMiljoeinfo } from './PersonMiljoeinfo/PersonMiljoeinfo'
@@ -50,7 +50,7 @@ import {
 	harTpBestilling,
 } from '~/utils/SjekkBestillingFagsystem'
 
-const StyledAlert = styled(Alert)`
+export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
 
 	.navds-alert__wrapper {
@@ -130,14 +130,7 @@ export const PersonVisning = ({
 
 	const gruppeIdenter = getGruppeIdenter().value?.data?.identer?.map((person) => person.ident)
 
-	const mountedRef = useRef(true)
 	const navigate = useNavigate()
-
-	useEffect(() => {
-		return () => {
-			mountedRef.current = false
-		}
-	}, [])
 
 	if (!data) {
 		return null
@@ -269,7 +262,7 @@ export const PersonVisning = ({
 				{manglerFagsystemdata() && (
 					<StyledAlert variant={'info'} size={'small'}>
 						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
-						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med team Dolly
+						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med Team Dolly
 						dersom problemet vedvarer.
 					</StyledAlert>
 				)}

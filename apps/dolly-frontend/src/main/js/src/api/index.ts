@@ -32,6 +32,16 @@ export const multiFetcherAll = (urlListe, headers = null) => {
 	)
 }
 
+export const multiFetcherBatchData = (url, dataListe) => {
+	return Promise.all(
+		dataListe.map((data) =>
+			fetchJson(url, { method: 'POST' }, data).then((result) => {
+				return result
+			})
+		)
+	)
+}
+
 export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>

@@ -5,7 +5,7 @@ import no.nav.registre.testnorge.mn.syntarbeidsforholdservice.config.credentials
 import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonCommand;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;

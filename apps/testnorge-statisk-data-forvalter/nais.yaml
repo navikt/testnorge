@@ -44,3 +44,32 @@ spec:
     pool: nav-dev
   ingresses:
     - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-statisk-data-forvalter-proxy
+          cluster: dev-fss
+    outbound:
+      rules:
+        - application: testnorge-hodejegeren
+          cluster: dev-fss
+        - application: testnorge-tp
+          cluster: dev-fss
+        - application: testnav-person-service
+          cluster: dev-gcp
+        - application: generer-navn-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-faste-data-service
+          cluster: dev-gcp
+        - application: testnav-person-faste-data-service
+          cluster: dev-gcp
+        - application: tps-forvalteren-proxy
+          cluster: dev-fss
+        - application: krr-stub
+        - application: synthdata-aareg
+          cluster: dev-fss
+        - application: kodeverk
+        - application: testnav-aaregister-proxy
+          cluster: dev-fss

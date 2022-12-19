@@ -18,6 +18,7 @@ import _get from 'lodash/get'
 import DollyTooltip from '~/components/ui/button/DollyTooltip'
 import { setSorting } from '~/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
+import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -34,7 +35,6 @@ export default function PersonListe({
 	sidetall,
 	sideStoerrelse,
 	fagsystem,
-	bestillingStatuser,
 	brukertype,
 	visPerson,
 	hovedperson,
@@ -43,11 +43,13 @@ export default function PersonListe({
 	fetchPdlPersoner,
 	tmpPersoner,
 	sorting,
+	bestillingerById,
 }) {
 	const [isKommentarModalOpen, openKommentarModal, closeKommentarModal] = useBoolean(false)
 	const [selectedIdent, setSelectedIdent] = useState(null)
 	const [identListe, setIdentListe] = useState([])
 	const dispatch = useDispatch()
+	const { bestillingerById: bestillingStatuser } = useBestillingerGruppe(gruppeInfo.id)
 
 	const personListe = useMemo(
 		() => sokSelector(selectPersonListe(identer, bestillingStatuser, fagsystem), search),
@@ -72,8 +74,8 @@ export default function PersonListe({
 			return
 		}
 		fetchTpsfPersoner(identListe)
-		fetchPdlPersoner(identListe, fagsystem)
-	}, [identListe, visPerson, bestillingStatuser])
+		fetchPdlPersoner(identListe)
+	}, [identListe, visPerson, bestillingerById])
 
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst

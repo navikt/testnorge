@@ -55,7 +55,7 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 	}
 
 	const mapBankkontoNummer = (nummer: string) => {
-		if (!nummer || nummer?.length < 11) {
+		if (!nummer || nummer?.length !== 11) {
 			return nummer
 		} else {
 			return nummer.slice(0, 4) + '.' + nummer.slice(4, 6) + '.' + nummer.slice(6)
