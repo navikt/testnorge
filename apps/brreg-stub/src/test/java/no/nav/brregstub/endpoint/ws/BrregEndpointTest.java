@@ -1,27 +1,22 @@
 package no.nav.brregstub.endpoint.ws;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
+import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
+import no.nav.common.cxf.CXFClient;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
-import no.nav.common.cxf.CXFClient;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @Disabled
-public class BrregEndpointTest {
+class BrregEndpointTest {
 
     @LocalServerPort
     private int randomServerPort;
@@ -30,26 +25,28 @@ public class BrregEndpointTest {
 
     @BeforeAll
     void onSetup() {
-        client = (ErFr) new CXFClient(ErFr.class)
+        client = new CXFClient<>(ErFr.class)
                 .address("http://localhost:" + randomServerPort + "/ws")
                 .build();
     }
 
     @Test
-    @Disabled
+    @Disabled("Hvorfor er denne disabled?") // TODO: Hvorfor er denne disabled?
     @DisplayName("Soap-klient kaller hentRolleutskrift-endepunktet til brreg-stub")
-    public void skalKalleHentRolleutskriftEndpoint() {
+    void skalKalleHentRolleutskriftEndpoint() {
         var rolleUtskrift = client.hentRolleutskrift("bruker", "pwd", "123");
-        assertThat(rolleUtskrift).contains("tjeneste=\"hentRolleutskrift\">");
-        assertThat(rolleUtskrift).contains("<fodselsnr>123</fodselsnr>");
+        assertThat(rolleUtskrift)
+                .contains("tjeneste=\"hentRolleutskrift\">")
+                .contains("<fodselsnr>123</fodselsnr>");
     }
 
     @Test
-    @Disabled
+    @Disabled("Hvorfor er denne disabled?") // TODO: Hvorfor er denne disabled?
     @DisplayName("Soap-klient kaller hentRoller-endepunktet til brreg-stub")
-    public void skalKalleHentRolleEndpoint() {
+    void skalKalleHentRolleEndpoint() {
         var rolleUtskrift = client.hentRoller("bruker", "pwd", "321");
-        assertThat(rolleUtskrift).contains("tjeneste=\"hentRoller\">");
-        assertThat(rolleUtskrift).contains("<orgnr>321</orgnr>");
+        assertThat(rolleUtskrift)
+                .contains("tjeneste=\"hentRoller\">")
+                .contains("<orgnr>321</orgnr>");
     }
 }
