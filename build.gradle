@@ -1,11 +1,11 @@
-task build {
+tasks.register('build') {
     dependsOn gradle.includedBuilds*.task(':build')
 }
 
-task assemble {
+tasks.register('assemble') {
     dependsOn gradle.includedBuilds*.task(':assemble')
 }
 
-task sonarqube {
+tasks.register('sonarqube') {
     dependsOn gradle.includedBuilds*.task(':sonarqube')
 }
