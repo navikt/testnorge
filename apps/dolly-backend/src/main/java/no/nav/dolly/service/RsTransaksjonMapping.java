@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 
@@ -27,5 +28,7 @@ public class RsTransaksjonMapping {
         private String dokumentInfoId;
         private String orgnummer;
         private String arbeidsforholdId;
+        private LocalDate iverksettelsesdato;
+        private Integer uttaksgrad;
     }
 }
