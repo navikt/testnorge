@@ -211,3 +211,8 @@ consumers:
     namespace: dolly
     url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  popp-testdata:
+    name: popp-testdata
+    namespace: pensjonopptjening
+    url: https://popp-testdata.dev.intern.nav.no
+    cluster: dev-gcp

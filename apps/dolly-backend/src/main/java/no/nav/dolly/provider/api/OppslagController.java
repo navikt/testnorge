@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.PoppTestdataConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
@@ -65,6 +66,7 @@ public class OppslagController {
     private final InntektstubConsumer inntektstubConsumer;
     private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
+    private final PoppTestdataConsumer poppTestdataConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
     private final ProfilApiConsumer profilApiConsumer;
@@ -180,7 +182,7 @@ public class OppslagController {
     @GetMapping("/popp/miljoe")
     @Operation(description = "Hent tilgjengelige miljøer for POPP-register")
     public Set<String> getPoppMiljoer() {
-        return pensjonforvalterConsumer.getMiljoer();
+        return poppTestdataConsumer.getMiljoer();
     }
 
     @GetMapping("/tp/forhold/{ident}/{miljoe}")
