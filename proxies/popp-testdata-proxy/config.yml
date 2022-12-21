@@ -68,5 +68,5 @@ spec:
   envFrom:
     - secret: azure-trygdeetaten-testnav-popp-testdata-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-kontoregister-person-proxy.dev.intern.nav.no"
-    - "https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-popp-testdata-proxy.dev.intern.nav.no"
+    - "https://testnav-popp-testdata-proxy.dev-fss-pub.nais.io"
