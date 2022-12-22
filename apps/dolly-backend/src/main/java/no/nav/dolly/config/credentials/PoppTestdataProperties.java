@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.popp-testdata")
+@ConfigurationProperties(prefix = "consumers.testnav-popp-testdata-proxy")
 public class PoppTestdataProperties extends NaisServerProperties {
 }

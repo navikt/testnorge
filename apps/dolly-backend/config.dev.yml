@@ -40,8 +40,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
-        - application: popp-testdata
-          namespace: pensjonopptjening
+        - application: testnav-popp-testdata-proxy
       external:
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io

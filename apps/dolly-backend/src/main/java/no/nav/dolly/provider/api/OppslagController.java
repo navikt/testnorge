@@ -176,7 +176,7 @@ public class OppslagController {
     @GetMapping("/popp/inntekt/{ident}/{miljoe}")
     @Operation(description = "Hent inntekter fra POPP-register")
     public JsonNode getPoppInntekter(@PathVariable String ident, @PathVariable String miljoe) {
-        return pensjonforvalterConsumer.getInntekter(ident, miljoe);
+        return poppTestdataConsumer.getInntekter(ident, miljoe);
     }
 
     @GetMapping("/popp/miljoe")

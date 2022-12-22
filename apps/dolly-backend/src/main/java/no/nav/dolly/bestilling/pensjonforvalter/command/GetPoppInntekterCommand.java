@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -38,7 +39,7 @@ public class GetPoppInntekterCommand implements Callable<Mono<JsonNode>> {
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(FNR_HEADER, ident)
-                .header(MILJO_HEADER, miljoe)
+                .header(MILJO_HEADER, StringUtils.upperCase(miljoe))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
                 .doOnError(WebClientFilter::logErrorMessage)

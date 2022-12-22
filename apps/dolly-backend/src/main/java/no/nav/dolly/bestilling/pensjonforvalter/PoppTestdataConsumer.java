@@ -1,8 +1,10 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
+import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppMiljoerCommand;
 import no.nav.dolly.config.credentials.PoppTestdataProperties;
 import no.nav.dolly.metrics.Timed;
@@ -43,6 +45,14 @@ public class PoppTestdataConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new GetPoppMiljoerCommand(webClient, token.getTokenValue()).call())
+                .block();
+    }
+
+    @Timed(name = "providers", tags = {"operation", "popp_getInntekter"})
+    public JsonNode getInntekter(String ident, String miljoe) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new GetPoppInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .block();
     }
 
