@@ -6,13 +6,19 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppMiljoerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagrePoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PoppTestdataProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
@@ -40,6 +46,11 @@ public class PoppTestdataConsumer implements ConsumerStatus {
                 .build();
     }
 
+    public Mono<AccessToken> getAccessToken() {
+
+        return tokenService.exchange(serviceProperties);
+    }
+
     @Timed(name = "providers", tags = {"operation", "popp_getMiljoer"})
     public Set<String> getMiljoer() {
 
@@ -56,13 +67,20 @@ public class PoppTestdataConsumer implements ConsumerStatus {
                 .block();
     }
 
+    @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
+    public Flux<PensjonforvalterResponse> lagreInntekt(LagrePoppInntektRequest lagreInntektRequest, AccessToken token, String miljoe) {
+
+        log.info("Popp lagre inntekt {}", lagreInntektRequest);
+        return new LagrePoppInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest, miljoe).call();
+    }
+
     @Override
     public String serviceUrl() {
-        return null;
+        return serviceProperties.getUrl();
     }
 
     @Override
     public String consumerName() {
-        return null;
+        return "testnav-popp-testdata-proxy";
     }
 }
