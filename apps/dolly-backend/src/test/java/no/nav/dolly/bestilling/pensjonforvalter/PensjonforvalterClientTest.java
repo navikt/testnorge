@@ -56,6 +56,8 @@ public class PensjonforvalterClientTest {
     @Mock
     private PensjonforvalterConsumer pensjonforvalterConsumer;
     @Mock
+    private PoppTestdataConsumer poppTestdataConsumer;
+    @Mock
     private DollyPersonCache dollyPersonCache;
     @Mock
     private MapperFacade mapperFacade;
