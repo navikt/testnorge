@@ -1,18 +1,28 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
+import {multiFetcherDokarkiv, multiFetcherFagsystemer, multiFetcherPoppFagsystemer} from '~/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
 	usePensjonEnvironments,
+	usePoppEnvironments,
 } from '~/utils/hooks/useEnvironments'
 
 import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
-	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
-		miljo: miljo,
-	}))
+	miljoer?.map((miljo) => {
+		return {
+				url: `/testnav-popp-testdata-proxy/inntekt`,
+				miljo: miljo,
+				headers:{
+					environment: miljo.toUpperCase(),
+					fnr: ident,
+					'Nav-Call-Id': 'dolly',
+					'Nav-Consumer-Id': 'dolly',
+					Authorization: 'dolly'
+				}
+		}
+	})
 
 const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -39,7 +49,7 @@ const journalpostUrl = (transaksjonsid, miljoer) =>
 	})
 
 export const usePoppData = (ident, harPoppBestilling) => {
-	const { pensjonEnvironments } = usePensjonEnvironments()
+	const { poppEnvironments } = usePoppEnvironments()
 
 	if (!harPoppBestilling) {
 		return {
@@ -48,12 +58,8 @@ export const usePoppData = (ident, harPoppBestilling) => {
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		[
-			poppUrl(ident, pensjonEnvironments),
-			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
-			'inntekter',
-		],
-		multiFetcherFagsystemer
+		[ poppUrl(ident, poppEnvironments) ],
+		multiFetcherPoppFagsystemer
 	)
 
 	return {

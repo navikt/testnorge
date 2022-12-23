@@ -4,12 +4,14 @@ import useSWR from 'swr'
 
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
 const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
+const getPoppMiljoerUrl = '/testnav-popp-testdata-proxy/environment'
 const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-inst-service/api/v1/miljoer'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/internal/miljoe'
 
 const prefetchedMiljoer = ['t0', 't1', 't3', 't4', 't5', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
+const prefetchedPoppMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = ['q1', 'q2']
 const prefetchedDokarkivMiljoer = ['q1', 'q2', 'q4', 'q5', 't0', 't4']
@@ -35,6 +37,18 @@ export const usePensjonEnvironments = () => {
 
 	return {
 		pensjonEnvironments: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const usePoppEnvironments = () => {
+	const { data, error } = useSWR<string[], Error>(getPoppMiljoerUrl, fetcher, {
+		fallbackData: prefetchedPoppMiljoer,
+	})
+
+	return {
+		poppEnvironments: data?.length && data.map(d => d.toLowerCase()),
 		loading: !error && !data,
 		error: error,
 	}

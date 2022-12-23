@@ -136,6 +136,11 @@ module.exports = (env) =>
 					changeOrigin: true,
 					secure: false,
 				},
+				'/testnav-popp-testdata-proxy/': {
+					target: env.backend,
+					changeOrigin: true,
+					secure: false
+				},
 				'/dolly-backend/api': {
 					target: env.backend,
 					changeOrigin: true,

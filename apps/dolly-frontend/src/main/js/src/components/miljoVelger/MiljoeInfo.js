@@ -4,6 +4,7 @@ import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
 	usePensjonEnvironments,
+	usePoppEnvironments,
 	useInstEnvironments,
 	useDokarkivEnvironments,
 } from '~/utils/hooks/useEnvironments'
@@ -16,6 +17,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		loading: loadingPensjon,
 		error: errorPensjon,
 	} = usePensjonEnvironments()
+	const { poppEnvironments, loading: loadingPopp, error: errorPopp } = usePoppEnvironments()
 	const { instEnvironments, loading: loadingInst, error: errorInst } = useInstEnvironments()
 	const { dokarkivEnvironments, loading: loadingDokarkiv } = useDokarkivEnvironments()
 	const { instdata, pdldata, arenaforvalter, pensjonforvalter, sykemelding, dokarkiv } =
@@ -73,12 +75,16 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 					</li>
 				)}
 
-				{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) && (
+				{pensjonforvalter?.inntekt && (
 					<li>
-						Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
-						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
-						{pensjonforvalter?.tp && 'TP'}
-						):&nbsp;
+						Pensjon (POPP):&nbsp;
+						<span>{getMiljoer(poppEnvironments, loadingPopp, errorPopp)}</span>
+					</li>
+				)}
+
+				{pensjonforvalter?.tp && (
+					<li>
+						Pensjon (TP):&nbsp;
 						<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 					</li>
 				)}

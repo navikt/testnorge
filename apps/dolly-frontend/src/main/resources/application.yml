@@ -101,6 +101,11 @@ consumers:
     namespace: dolly
     name: testnav-pensjon-testdata-facade-proxy
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+  testnav-popp-testdata-proxy:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-popp-testdata-proxy
+    url: https://testnav-popp-testdata-proxy.dev.intern.nav.no
   dolly-backend:
     cluster: dev-gcp
     namespace: dolly
