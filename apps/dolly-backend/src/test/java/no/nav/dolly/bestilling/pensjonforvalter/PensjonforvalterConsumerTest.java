@@ -26,6 +26,7 @@ import java.util.Set;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.when;
@@ -88,7 +89,7 @@ class PensjonforvalterConsumerTest {
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
-                    .willReturn(ok()
+                    .willReturn(serverError()
                             .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from GET https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/000000/forhold\",\"path\":\"/tp/forhold\",\"timestamp\":\"2022-06-30T09:14:08.831669924Z\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
