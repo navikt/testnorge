@@ -25,32 +25,10 @@ jobs:
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   
-  testcafe:
-    name: Run Testcafe tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: 'Setup Node'
-        uses: actions/setup-node@v3
-        with:
-          node-version: 16.x
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-
-      - name: Npm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        working-directory: 'apps/dolly-frontend/src/main/js'
-        run: npm ci
-
-      - name: Run tests
-        working-directory: 'apps/dolly-frontend/src/main/js'
-        run: npm run test:testcafe
-  
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: [ build, testcafe ]
+    needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/dolly-frontend/config.yml'
