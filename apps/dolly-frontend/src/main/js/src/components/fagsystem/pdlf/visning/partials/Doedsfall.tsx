@@ -18,49 +18,65 @@ type DoedsfallTypes = {
 type DoedsfallVisningTypes = {
 	doedsfall: DoedsfallData
 	idx: number
+	data: Array<DoedsfallData>
+	tmpPersoner: Array<DoedsfallData>
+	ident: string
+	erPdlVisning: boolean
+}
+
+type DoedsfallLesTypes = {
+	doedsfall: DoedsfallData
+	idx: number
+}
+
+const DoedsfallLes = ({ doedsfall, idx }: DoedsfallLesTypes) => {
+	return (
+		<div className="person-visning_content" key={idx}>
+			<TitleValue title="Dødsdato" value={Formatters.formatDate(doedsfall.doedsdato)} />
+		</div>
+	)
+}
+
+const DoedsfallVisning = ({
+	doedsfall,
+	idx,
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning,
+}: DoedsfallVisningTypes) => {
+	const initDoedsfall = Object.assign(_.cloneDeep(initialDoedsfall), data[idx])
+	const initialValues = { doedsfall: initDoedsfall }
+
+	const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
+		(a: Person) => a.id === doedsfall.id
+	)
+	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
+	if (slettetDoedsfallPdlf) {
+		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	}
+
+	const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
+	const redigertDoedsfallValues = redigertDoedsfallPdlf
+		? { doedsfall: Object.assign(_.cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
+		: null
+
+	return erPdlVisning ? (
+		<DoedsfallLes doedsfall={doedsfall} idx={idx} />
+	) : (
+		<VisningRedigerbarConnector
+			dataVisning={<DoedsfallLes doedsfall={doedsfallValues} idx={idx} />}
+			initialValues={initialValues}
+			redigertAttributt={redigertDoedsfallValues}
+			path="doedsfall"
+			ident={ident}
+		/>
+	)
 }
 
 export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: DoedsfallTypes) => {
 	if (!data || data.length === 0) {
 		return null
-	}
-
-	const DoedsfallLes = ({ doedsfall, idx }: DoedsfallVisningTypes) => {
-		return (
-			<div className="person-visning_content" key={idx}>
-				<TitleValue title="Dødsdato" value={Formatters.formatDate(doedsfall.doedsdato)} />
-			</div>
-		)
-	}
-
-	const DoedsfallVisning = ({ doedsfall, idx }: DoedsfallVisningTypes) => {
-		const initDoedsfall = Object.assign(_.cloneDeep(initialDoedsfall), data[idx])
-		const initialValues = { doedsfall: initDoedsfall }
-
-		const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
-			(a: Person) => a.id === doedsfall.id
-		)
-		const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
-		if (slettetDoedsfallPdlf) {
-			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
-		}
-
-		const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
-		const redigertDoedsfallValues = redigertDoedsfallPdlf
-			? { doedsfall: Object.assign(_.cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
-			: null
-
-		return erPdlVisning ? (
-			<DoedsfallLes doedsfall={doedsfall} idx={idx} />
-		) : (
-			<VisningRedigerbarConnector
-				dataVisning={<DoedsfallLes doedsfall={doedsfallValues} idx={idx} />}
-				initialValues={initialValues}
-				redigertAttributt={redigertDoedsfallValues}
-				path="doedsfall"
-				ident={ident}
-			/>
-		)
 	}
 
 	return (
@@ -69,7 +85,16 @@ export const Doedsfall = ({ data, tmpPersoner, ident, erPdlVisning = false }: Do
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<DollyFieldArray data={data} header="" nested>
-						{(item: DoedsfallData, idx: number) => <DoedsfallVisning doedsfall={item} idx={idx} />}
+						{(item: DoedsfallData, idx: number) => (
+							<DoedsfallVisning
+								doedsfall={item}
+								idx={idx}
+								data={data}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+							/>
+						)}
 					</DollyFieldArray>
 				</ErrorBoundary>
 			</div>

@@ -22,10 +22,20 @@ type InnvandringTypes = {
 	erPdlVisning?: boolean
 }
 
+type InnvandringLesTypes = {
+	innvandringData: InnvandringValues
+	idx: number
+}
+
 type InnvandringVisningTypes = {
 	innvandringData: InnvandringValues
 	idx: number
 	sisteDato?: Date
+	data: Array<InnvandringValues>
+	tmpPersoner: Array<PersonData>
+	ident: string
+	erPdlVisning: boolean
+	utflyttingData: Array<UtvandringValues>
 }
 
 export const getSisteDatoInnUtvandring = (
@@ -50,6 +60,74 @@ export const getSisteDatoInnUtvandring = (
 	return sisteInnflytting > sisteUtflytting ? sisteInnflytting : sisteUtflytting
 }
 
+const InnvandringLes = ({ innvandringData, idx }: InnvandringLesTypes) => {
+	if (!innvandringData) {
+		return null
+	}
+	return (
+		<div className="person-visning_redigerbar" key={idx}>
+			<TitleValue
+				title="Fraflyttingsland"
+				value={innvandringData.fraflyttingsland}
+				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
+			/>
+			<TitleValue title="Fraflyttingssted" value={innvandringData.fraflyttingsstedIUtlandet} />
+			<TitleValue
+				title="Innflyttingsdato"
+				value={Formatters.formatDate(innvandringData.innflyttingsdato)}
+			/>
+		</div>
+	)
+}
+
+const InnvandringVisning = ({
+	innvandringData,
+	idx,
+	sisteDato,
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning,
+	utflyttingData,
+}: InnvandringVisningTypes) => {
+	const initInnvandring = Object.assign(_.cloneDeep(initialInnvandring), data[idx])
+	const initialValues = { innflytting: initInnvandring }
+
+	const redigertInnvandringPdlf = _.get(tmpPersoner, `${ident}.person.innflytting`)?.find(
+		(a: InnvandringValues) => a.id === innvandringData.id
+	)
+	const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
+	if (slettetInnvandringPdlf) {
+		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	}
+
+	const innvandringValues = redigertInnvandringPdlf ? redigertInnvandringPdlf : innvandringData
+	const redigertInnvandringValues = redigertInnvandringPdlf
+		? {
+				innflytting: Object.assign(_.cloneDeep(initialInnvandring), redigertInnvandringPdlf),
+		  }
+		: null
+	return erPdlVisning ? (
+		<InnvandringLes innvandringData={innvandringData} idx={idx} />
+	) : (
+		<VisningRedigerbarConnector
+			dataVisning={<InnvandringLes innvandringData={innvandringValues} idx={idx} />}
+			initialValues={initialValues}
+			redigertAttributt={redigertInnvandringValues}
+			path="innflytting"
+			ident={ident}
+			disableSlett={new Date(innvandringData.innflyttingsdato) < sisteDato}
+			personFoerLeggTil={{
+				pdldata: {
+					person: {
+						utflytting: utflyttingData,
+					},
+				},
+			}}
+		/>
+	)
+}
+
 export const Innvandring = ({
 	data,
 	utflyttingData,
@@ -71,71 +149,21 @@ export const Innvandring = ({
 		return null
 	}
 
-	const InnvandringLes = ({ innvandringData, idx }: InnvandringVisningTypes) => {
-		if (!innvandringData) {
-			return null
-		}
-		return (
-			<div className="person-visning_redigerbar" key={idx}>
-				<TitleValue
-					title="Fraflyttingsland"
-					value={innvandringData.fraflyttingsland}
-					kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
-				/>
-				<TitleValue title="Fraflyttingssted" value={innvandringData.fraflyttingsstedIUtlandet} />
-				<TitleValue
-					title="Innflyttingsdato"
-					value={Formatters.formatDate(innvandringData.innflyttingsdato)}
-				/>
-			</div>
-		)
-	}
-
-	const InnvandringVisning = ({ innvandringData, idx, sisteDato }: InnvandringVisningTypes) => {
-		const initInnvandring = Object.assign(_.cloneDeep(initialInnvandring), data[idx])
-		const initialValues = { innflytting: initInnvandring }
-
-		const redigertInnvandringPdlf = _.get(tmpPersoner, `${ident}.person.innflytting`)?.find(
-			(a: InnvandringValues) => a.id === innvandringData.id
-		)
-		const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
-		if (slettetInnvandringPdlf) {
-			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
-		}
-
-		const innvandringValues = redigertInnvandringPdlf ? redigertInnvandringPdlf : innvandringData
-		const redigertInnvandringValues = redigertInnvandringPdlf
-			? {
-					innflytting: Object.assign(_.cloneDeep(initialInnvandring), redigertInnvandringPdlf),
-			  }
-			: null
-		return erPdlVisning ? (
-			<InnvandringLes innvandringData={innvandringData} idx={idx} />
-		) : (
-			<VisningRedigerbarConnector
-				dataVisning={<InnvandringLes innvandringData={innvandringValues} idx={idx} />}
-				initialValues={initialValues}
-				redigertAttributt={redigertInnvandringValues}
-				path="innflytting"
-				ident={ident}
-				disableSlett={new Date(innvandringData.innflyttingsdato) < sisteDato}
-				personFoerLeggTil={{
-					pdldata: {
-						person: {
-							utflytting: utflyttingData,
-						},
-					},
-				}}
-			/>
-		)
-	}
-
 	return (
 		<div className="person-visning_content" style={{ marginTop: '-20px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Innvandret" nested>
 					{(innvandring: InnvandringValues, idx: number) => (
-						<InnvandringVisning innvandringData={innvandring} idx={idx} sisteDato={sisteDato} />
+						<InnvandringVisning
+							innvandringData={innvandring}
+							idx={idx}
+							sisteDato={sisteDato}
+							data={data}
+							utflyttingData={utflyttingData}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+							erPdlVisning={erPdlVisning}
+						/>
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>

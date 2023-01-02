@@ -16,7 +16,6 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -24,7 +23,6 @@ import reactor.core.publisher.Flux;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -58,17 +56,6 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getHovedperson()));
         }
 
-        // Midlertidig ? publisering fra identhendelseslager
-        getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                .flatMap(idents -> tagsHendelseslagerConsumer.publish(idents))
-                .contextWrite(c -> {
-                    var mdcContext = MDC.getCopyOfContextMap();
-                    if (null != mdcContext) {
-                        return c.put("mdc", mdcContext);
-                    }
-                    return c;
-                })
-                .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}", dollyPerson.getHovedperson(), response));
         return Flux.just();
     }
 
