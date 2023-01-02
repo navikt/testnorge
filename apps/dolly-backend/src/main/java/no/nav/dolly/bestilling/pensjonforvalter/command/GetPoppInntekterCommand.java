@@ -12,7 +12,9 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -22,7 +24,7 @@ public class GetPoppInntekterCommand implements Callable<Mono<JsonNode>> {
 
     private static final String FNR_HEADER = "fnr";
     private static final String MILJO_HEADER = "environment";
-    private static final String POPP_INNTEKT_URL = "/inntekt";
+    private static final String POPP_INNTEKT_URL = "/api/v1/inntekt";
 
     private final WebClient webClient;
     private final String token;

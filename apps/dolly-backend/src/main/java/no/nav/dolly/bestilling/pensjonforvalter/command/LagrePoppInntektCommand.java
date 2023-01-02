@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagrePoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -24,11 +26,11 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @RequiredArgsConstructor
 public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
     private static final String MILJO_HEADER = "environment";
-    private static final String POPP_INNTEKT_URL = "/inntekt";
+    private static final String POPP_INNTEKT_URL = "/api/v1/inntekt";
 
     private final WebClient webClient;
     private final String token;
-    private final LagrePoppInntektRequest lagreInntektRequest;
+    private final LagreInntektRequest lagreInntektRequest;
     private final String miljoe;
 
     public Flux<PensjonforvalterResponse> call() {

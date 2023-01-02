@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreAlderspensjonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagrePoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
@@ -59,7 +59,6 @@ public class PensjonforvalterClient implements ClientRegister {
     private static final String PEN_ALDERSPENSJON = "AP#";
 
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
-    private final PoppTestdataConsumer poppTestdataConsumer;
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -97,8 +96,6 @@ public class PensjonforvalterClient implements ClientRegister {
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
         var bestiltePoppMiljoer = new HashSet<>(bestilling.getEnvironments().stream().map(String::toUpperCase).toList());
-        var poppMiljoer = poppTestdataConsumer.getMiljoer();
-        bestiltePoppMiljoer.retainAll(poppMiljoer);
 
         if (!dollyPerson.isOpprettetIPDL()) {
             progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
@@ -139,7 +136,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     Flux.just("")),
 
                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestiltePoppMiljoer)
+                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestiltePoppMiljoer, token)
                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
                                                     Flux.just(""))
 
@@ -229,15 +226,14 @@ public class PensjonforvalterClient implements ClientRegister {
                         .build());
     }
 
-    private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer) {
+    private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson,
+                                                        Set<String> miljoer, AccessToken token) {
 
         if (nonNull(pensjonData) && nonNull(pensjonData.getInntekt())) {
-            LagrePoppInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagrePoppInntektRequest.class);
+            var lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(dollyPerson.getHovedperson());
 
-            return poppTestdataConsumer.getAccessToken()
-                    .flatMapMany(token -> Flux.fromStream(miljoer.stream().map(miljoe -> poppTestdataConsumer.lagreInntekt(lagreInntektRequest, token, miljoe)))
-                            .flatMap(Flux::from));
+            return pensjonforvalterConsumer.lagreInntekter(lagreInntektRequest, miljoer, token);
 
         } else {
             return Flux.empty();
