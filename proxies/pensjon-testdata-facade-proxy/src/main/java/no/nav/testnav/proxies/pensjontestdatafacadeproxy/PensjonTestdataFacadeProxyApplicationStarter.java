@@ -39,15 +39,15 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
 
         return builder.routes()
                 .route(spec -> spec
+                        .path("/api/v1/inntekt/**")
+                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
+                        .uri(properties.getUrl()))
+                .route(spec -> spec
                         .path("/api/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
                                 .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                         ) //Auth header er required men sjekkes ikke utover det
                         .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
-                .route(spec -> spec
-                        .path("/inntekt/**")
-                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri(properties.getUrl()))
                 .build();
     }
 }
