@@ -70,6 +70,8 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  envFrom:
+    - secret: azure-testnav-pensjon-testdata-facade-proxy-trygdeetaten
   ingresses:
     - "https://testnav-pensjon-testdata-facade-proxy.dev.intern.nav.no"
     - "https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io"
