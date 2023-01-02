@@ -221,7 +221,7 @@ export const Kontaktadresse = ({
 		return null
 	}
 
-	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
 	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}

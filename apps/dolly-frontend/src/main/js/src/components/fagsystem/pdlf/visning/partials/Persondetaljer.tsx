@@ -85,7 +85,7 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
+	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
 	const initPerson = {
 		navn: [data?.navn?.[0] || initialNavn],
