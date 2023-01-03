@@ -9,7 +9,7 @@ import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import _has from 'lodash/has'
 import _get from 'lodash/get'
-import { add, addMonths, isDate, setDate } from 'date-fns'
+import { add, addMonths, isAfter, isDate, setDate } from 'date-fns'
 import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
 import { validation } from '~/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
@@ -50,6 +50,47 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		_has(formikBag.values, 'bankkonto.norskBankkonto') ||
 		_has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
 
+	const adressetyper = {
+		norge: 'NORGE',
+		utland: 'UTLAND',
+	}
+	const valgtAdresseType = () => {
+		const adresseUtenTilDato = _get(formikBag.values, 'pdldata.person.bostedsadresse')?.find(
+			(adresse) => adresse.gyldigFraOgMed && !adresse.gyldigTilOgMed
+		)
+		const gjeldendeAdresse =
+			adresseUtenTilDato ||
+			_get(formikBag.values, 'pdldata.person.bostedsadresse')?.reduce((prev, curr) => {
+				if (!prev.gyldigTilOgMed || !curr.gyldigTilOgMed) return null
+				return isAfter(prev.gyldigTilOgMed, curr.gyldigTilOgMed) ? prev : curr
+			})
+		return !gjeldendeAdresse || !gjeldendeAdresse?.adressetype
+			? null
+			: gjeldendeAdresse?.adressetype === 'UTENLANDSK_ADRESSE'
+			? adressetyper.utland
+			: adressetyper.norge
+	}
+
+	const harNorskAdresse = () => {
+		if (opts?.personFoerLeggTil) {
+			return (
+				_get(opts.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
+				valgtAdresseType() === adressetyper.norge
+			)
+		}
+
+		if (opts?.importPersoner) {
+			const personerMedNorskAdresse = opts?.importPersoner.filter((person) => {
+				return person.data?.hentPerson?.bostedsadresse?.some(
+					(adresse) => adresse.vegadresse && !adresse.metadata?.historisk
+				)
+			})
+			return personerMedNorskAdresse?.length > 0
+		}
+
+		return opts?.identtype === 'FNR' && valgtAdresseType() !== adressetyper.utland
+	}
+
 	return (
 		<Vis attributt={alderspensjonPath}>
 			<Panel
@@ -78,8 +119,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						til å ta ut alderspensjon før 67 år. Opptjening kan legges inn i POPP.
 					</StyledAlert>
 				)}
-				{!harNorskBankkonto && (
-					// TODO: Sjekk norsk adresse ogsaa
+				{(!harNorskBankkonto || !harNorskAdresse()) && (
 					<StyledAlert variant={'warning'} size={'small'}>
 						Personen må ha norsk bankkonto og adresse for at det skal fattes vedtak og for at
 						vedtaksbrev skal kunne opprettes automatisk.
