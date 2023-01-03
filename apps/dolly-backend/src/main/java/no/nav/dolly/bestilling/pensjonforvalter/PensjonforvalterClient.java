@@ -95,8 +95,6 @@ public class PensjonforvalterClient implements ClientRegister {
         var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
-        var bestiltePoppMiljoer = new HashSet<>(bestilling.getEnvironments().stream().map(String::toUpperCase).toList());
-
         if (!dollyPerson.isOpprettetIPDL()) {
             progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
                     tilgjengeligeMiljoer.stream()
@@ -136,7 +134,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     Flux.just("")),
 
                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestiltePoppMiljoer, token)
+                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
                                                     Flux.just(""))
 
