@@ -1,8 +1,8 @@
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
-import { fetcher, imageFetcher } from '~/api'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { runningTestcafe } from '~/service/services/Request'
+import { fetcher, imageFetcher } from '@/api'
+import logoutBruker from '@/components/utlogging/logoutBruker'
+import { runningTestcafe } from '@/service/services/Request'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`

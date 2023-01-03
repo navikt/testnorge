@@ -1,9 +1,8 @@
-import React from 'react'
 import Maler from './maler/Maloversikt'
 import Profil from './Profil'
 
 import './MinSide.less'
-import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()

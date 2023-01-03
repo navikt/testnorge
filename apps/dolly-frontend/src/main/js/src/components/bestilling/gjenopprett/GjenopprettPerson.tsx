@@ -1,9 +1,8 @@
-import React from 'react'
-import DollyService from '~/service/services/dolly/DollyService'
-import Button from '~/components/ui/button/Button'
+import DollyService from '@/service/services/dolly/DollyService'
+import Button from '@/components/ui/button/Button'
 import { useBoolean } from 'react-use'
-import Loading from '~/components/ui/loading/Loading'
-import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '~/utils/hooks/useMutate'
+import Loading from '@/components/ui/loading/Loading'
+import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 export const GjenopprettPerson = ({ ident }: { ident: number }) => {
 	const [loading, setLoading] = useBoolean(false)

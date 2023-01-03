@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import { useBoolean } from 'react-use'
-import _get from 'lodash/get'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { TpsfApi } from '~/service/Api'
+import * as _ from 'lodash-es'
+import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { TpsfApi } from '@/service/Api'
 import { useFormikContext } from 'formik'
 
 type ArbeidsgiverIdentProps = {
@@ -15,7 +15,7 @@ type ArbeidsgiverIdentProps = {
 export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) => {
 	const formikBag = useFormikContext()
 	const [error, setError] = useState(null)
-	const [personnummer, setPersonnummer] = useState(_get(formikBag.values, path))
+	const [personnummer, setPersonnummer] = useState(_.get(formikBag.values, path))
 	const [success, setSuccess] = useBoolean(false)
 	const [loading, setLoading] = useBoolean(false)
 	const [miljoer, setMiljoer] = useState(null)

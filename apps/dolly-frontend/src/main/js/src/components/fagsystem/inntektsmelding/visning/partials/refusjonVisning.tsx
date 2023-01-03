@@ -1,20 +1,19 @@
-import React from 'react'
-import _isEmpty from 'lodash/isEmpty'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
+import * as _ from 'lodash-es'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
 import {
 	EndringIRefusjon,
 	Refusjon,
-} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface RefusjonVisning {
 	data?: Refusjon
 }
 
 export default ({ data }: RefusjonVisning) => {
-	if (!data || _isEmpty(data)) {
+	if (!data || _.isEmpty(data)) {
 		return null
 	}
 	return (

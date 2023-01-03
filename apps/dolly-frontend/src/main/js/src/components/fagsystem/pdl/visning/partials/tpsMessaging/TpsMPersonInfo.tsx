@@ -1,6 +1,5 @@
-import React from 'react'
-import Loading from '~/components/ui/loading/Loading'
-import { TpsMSpraak } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMSpraak'
+import Loading from '@/components/ui/loading/Loading'
+import { TpsMSpraak } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMSpraak'
 
 type TpsMProps = {
 	data: any

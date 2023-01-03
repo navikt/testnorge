@@ -1,7 +1,7 @@
 import * as React from 'react'
-import Formatters from '~/utils/DataFormatter'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { SykemeldingSynt } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import Formatters from '@/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { SykemeldingSynt } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 export const SyntSykemelding = ({ sykemelding, idx }: SykemeldingSynt) => (
 	<div key={idx} className="person-visning_content">

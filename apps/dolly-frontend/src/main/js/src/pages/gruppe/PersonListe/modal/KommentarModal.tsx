@@ -1,7 +1,7 @@
-import DollyModal from '~/components/ui/modal/DollyModal'
-import React from 'react'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import BeskrivelseConnector from '~/components/beskrivelse/BeskrivelseConnector'
+import DollyModal from '@/components/ui/modal/DollyModal'
+
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import BeskrivelseConnector from '@/components/beskrivelse/BeskrivelseConnector'
 
 export const KommentarModal = ({ ident, closeModal }) => {
 	return (

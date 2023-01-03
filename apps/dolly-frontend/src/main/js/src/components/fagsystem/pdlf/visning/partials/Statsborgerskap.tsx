@@ -1,14 +1,13 @@
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import React from 'react'
-import _cloneDeep from 'lodash/cloneDeep'
-import { initialStatsborgerskap } from '~/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
-import { PersonData, StatsborgerskapData } from '~/components/fagsystem/pdlf/PdlTypes'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import Formatters from '~/utils/DataFormatter'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+
+import * as _ from 'lodash-es'
+import { initialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
+import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/PdlTypes'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import Formatters from '@/utils/DataFormatter'
 
 type StatsborgerskapTypes = {
 	data: Array<StatsborgerskapData>
@@ -62,10 +61,10 @@ const StatsborgerskapVisning = ({
 	ident,
 	erPdlVisning,
 }: StatsborgerskapVisningTypes) => {
-	const initStatsborgerskap = Object.assign(_cloneDeep(initialStatsborgerskap), data[idx])
+	const initStatsborgerskap = Object.assign(_.cloneDeep(initialStatsborgerskap), data[idx])
 	const initialValues = { statsborgerskap: initStatsborgerskap }
 
-	const redigertStatsborgerskapPdlf = _get(tmpPersoner, `${ident}.person.statsborgerskap`)?.find(
+	const redigertStatsborgerskapPdlf = _.get(tmpPersoner, `${ident}.person.statsborgerskap`)?.find(
 		(a: StatsborgerskapData) => a.id === statsborgerskapData.id
 	)
 	const slettetStatsborgerskapPdlf =
@@ -80,7 +79,7 @@ const StatsborgerskapVisning = ({
 	const redigertStatsborgerskapValues = redigertStatsborgerskapPdlf
 		? {
 				statsborgerskap: Object.assign(
-					_cloneDeep(initialStatsborgerskap),
+					_.cloneDeep(initialStatsborgerskap),
 					redigertStatsborgerskapPdlf
 				),
 		  }

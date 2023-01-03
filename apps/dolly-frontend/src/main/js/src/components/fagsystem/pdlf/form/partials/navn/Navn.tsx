@@ -1,11 +1,10 @@
-import React from 'react'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { initialNavn } from '~/components/fagsystem/pdlf/form/initialValues'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import _get from 'lodash/get'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { initialNavn } from '@/components/fagsystem/pdlf/form/initialValues'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 
 type NavnTypes = {
@@ -14,7 +13,7 @@ type NavnTypes = {
 }
 
 export const NavnForm = ({ formikBag, path }: NavnTypes) => {
-	if (!_get(formikBag?.values, path)) {
+	if (!_.get(formikBag?.values, path)) {
 		return null
 	}
 
@@ -23,7 +22,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	const mellomnavnOptions = SelectOptionsOppslag.formatOptions('mellomnavn', navnInfo)
 	const etternavnOptions = SelectOptionsOppslag.formatOptions('etternavn', navnInfo)
 
-	const { fornavn, mellomnavn, etternavn } = _get(formikBag?.values, path)
+	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, path)
 
 	return (
 		<>
@@ -38,7 +37,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 				placeholder={mellomnavn || 'Velg...'}
 				label="Mellomnavn"
 				options={mellomnavnOptions}
-				isDisabled={_get(formikBag?.values, `${path}.hasMellomnavn`)}
+				isDisabled={_.get(formikBag?.values, `${path}.hasMellomnavn`)}
 			/>
 			<FormikSelect
 				name={`${path}.etternavn`}

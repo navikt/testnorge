@@ -1,5 +1,4 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 
 export const OrganisasjonDetaljerPanel = ({ stateModifier }: any) => {

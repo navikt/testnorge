@@ -1,9 +1,9 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import Loading from '~/components/ui/loading/Loading'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import Loading from '@/components/ui/loading/Loading'
 
-import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import React from 'react'
 
 type BeskrivelseProps = {
 	ident: { beskrivelse: string; ident: number }

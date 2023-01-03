@@ -1,6 +1,5 @@
-import React from 'react'
 import { Button } from '@navikt/ds-react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 const CloseButton = ({ ...props }) => (
 	<Button

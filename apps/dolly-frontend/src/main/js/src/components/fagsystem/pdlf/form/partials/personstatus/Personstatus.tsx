@@ -1,9 +1,8 @@
-import React from 'react'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 
 type PersonstatusTypes = {
 	path: string

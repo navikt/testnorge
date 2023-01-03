@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
-import { DollyApi } from '~/service/Api'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
+import { DollyApi } from '@/service/Api'
 
 const paths = {
 	statsborgerskap: 'nasjonalitet.statsborgerskap',

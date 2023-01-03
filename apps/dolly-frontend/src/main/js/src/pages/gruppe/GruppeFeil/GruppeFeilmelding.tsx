@@ -1,6 +1,5 @@
-import React from 'react'
 import './GruppeFeilmelding.less'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 type Props = {
 	feil: GruppeFeil

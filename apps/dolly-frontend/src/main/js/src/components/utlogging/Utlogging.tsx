@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 
 import './Utlogging.less'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import Api from '~/api'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import Api from '@/api'
 import { WarningFilled } from '@navikt/ds-icons'
 import logoutBruker from './logoutBruker'
 import ProgressBar from '@navikt/fremdriftslinje'

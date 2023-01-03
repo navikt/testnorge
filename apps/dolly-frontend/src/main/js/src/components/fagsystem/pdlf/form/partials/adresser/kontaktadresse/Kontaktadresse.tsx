@@ -1,29 +1,27 @@
 import React, { useEffect } from 'react'
-import _get from 'lodash/get'
-import _cloneDeep from 'lodash/cloneDeep'
-import _set from 'lodash/set'
+import * as _ from 'lodash-es'
 import {
 	initialKontaktadresse,
 	initialPostboksadresse,
 	initialUtenlandskAdresse,
 	initialVegadresse,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import {
 	VegadresseVelger,
 	UtenlandskAdresse,
 	Postboksadresse,
-} from '~/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+} from '@/components/fagsystem/pdlf/form/partials/adresser/adressetyper'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikProps } from 'formik'
-import { Adressetype } from '~/components/fagsystem/pdlf/PdlTypes'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { getPlaceholder, setNavn } from '~/components/fagsystem/pdlf/form/partials/utils'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Adressetype } from '@/components/fagsystem/pdlf/PdlTypes'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { getPlaceholder, setNavn } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 
 interface KontaktadresseValues {
 	formikBag: FormikProps<{}>
@@ -43,51 +41,51 @@ type Target = {
 export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormValues) => {
 	useEffect(() => {
 		formikBag.setFieldValue(`${path}.adresseIdentifikatorFraMatrikkelen`, undefined)
-		const kontaktadresse = _get(formikBag.values, path)
-		if (_get(kontaktadresse, 'vegadresse') && _get(kontaktadresse, 'vegadresse') !== null) {
+		const kontaktadresse = _.get(formikBag.values, path)
+		if (_.get(kontaktadresse, 'vegadresse') && _.get(kontaktadresse, 'vegadresse') !== null) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Veg)
 		} else if (
-			_get(kontaktadresse, 'utenlandskAdresse') &&
-			_get(kontaktadresse, 'utenlandskAdresse') !== null
+			_.get(kontaktadresse, 'utenlandskAdresse') &&
+			_.get(kontaktadresse, 'utenlandskAdresse') !== null
 		) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Utenlandsk)
 		} else if (
-			_get(kontaktadresse, 'postboksadresse') &&
-			_get(kontaktadresse, 'postboksadresse') !== null
+			_.get(kontaktadresse, 'postboksadresse') &&
+			_.get(kontaktadresse, 'postboksadresse') !== null
 		) {
 			formikBag.setFieldValue(`${path}.adressetype`, Adressetype.Postboks)
 		}
 	}, [])
 
-	const valgtAdressetype = _get(formikBag.values, `${path}.adressetype`)
+	const valgtAdressetype = _.get(formikBag.values, `${path}.adressetype`)
 
 	const handleChangeAdressetype = (target: Target, path: string) => {
-		const adresse = _get(formikBag.values, path)
-		const adresseClone = _cloneDeep(adresse)
+		const adresse = _.get(formikBag.values, path)
+		const adresseClone = _.cloneDeep(adresse)
 
-		_set(adresseClone, 'adressetype', target?.value || null)
+		_.set(adresseClone, 'adressetype', target?.value || null)
 
 		if (!target) {
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
-			_set(adresseClone, 'postboksadresse', undefined)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'postboksadresse', undefined)
 		}
 		if (target?.value === 'VEGADRESSE') {
-			_set(adresseClone, 'vegadresse', initialVegadresse)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
-			_set(adresseClone, 'postboksadresse', undefined)
-			_set(adresseClone, 'master', 'PDL')
+			_.set(adresseClone, 'vegadresse', initialVegadresse)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'postboksadresse', undefined)
+			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
-			_set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'postboksadresse', undefined)
-			_set(adresseClone, 'master', 'PDL')
+			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'postboksadresse', undefined)
+			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'POSTBOKSADRESSE') {
-			_set(adresseClone, 'postboksadresse', initialPostboksadresse)
-			_set(adresseClone, 'vegadresse', undefined)
-			_set(adresseClone, 'utenlandskAdresse', undefined)
+			_.set(adresseClone, 'postboksadresse', initialPostboksadresse)
+			_.set(adresseClone, 'vegadresse', undefined)
+			_.set(adresseClone, 'utenlandskAdresse', undefined)
 		}
 
 		formikBag.setFieldValue(path, adresseClone)
@@ -131,7 +129,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					onChange={(navn: Target) =>
 						setNavn(navn, `${path}.opprettCoAdresseNavn`, formikBag.setFieldValue)
 					}
-					value={_get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
+					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
 			<AvansertForm

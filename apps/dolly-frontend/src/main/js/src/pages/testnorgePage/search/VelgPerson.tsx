@@ -1,8 +1,8 @@
-import React from 'react'
-import { Checkbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
-import { PdlData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Checkbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { ImportPerson } from '@/pages/testnorgePage/search/SearchView'
+import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import styled from 'styled-components'
+import React from 'react'
 
 interface VelgPersonProps {
 	ident: string

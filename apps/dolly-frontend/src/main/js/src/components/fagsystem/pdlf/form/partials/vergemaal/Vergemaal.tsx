@@ -1,16 +1,15 @@
-import React from 'react'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { initialVergemaal } from '~/components/fagsystem/pdlf/form/initialValues'
-import { VergemaalKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import _get from 'lodash/get'
-import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
+import { VergemaalKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import * as _ from 'lodash-es'
+import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
 import { FormikProps } from 'formik'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { Option } from '~/service/SelectOptionsOppslag'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 interface VergemaalFormTypes {
 	formikBag: FormikProps<{}>
@@ -56,8 +55,8 @@ export const VergemaalForm = ({
 				label={'VERGE'}
 				formikBag={formikBag}
 				isExpanded={
-					!isEmpty(_get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
-					_get(formikBag.values, `${path}.vergeIdent`) !== null
+					!isEmpty(_.get(formikBag.values, `${path}.nyVergeIdent`), ['syntetisk']) ||
+					_.get(formikBag.values, `${path}.vergeIdent`) !== null
 				}
 			/>
 			<AvansertForm path={path} kanVelgeMaster={false} />

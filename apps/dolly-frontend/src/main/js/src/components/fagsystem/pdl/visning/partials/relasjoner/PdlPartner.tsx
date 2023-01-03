@@ -1,11 +1,10 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import { Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { getSortedSivilstand } from '@/components/fagsystem/pdl/visning/partials/utils'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 
 type VisningProps = {
 	data: Sivilstand

@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import useBoolean from '~/utils/hooks/useBoolean'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import Button from '~/components/ui/button/Button'
-import Loading from '~/components/ui/loading/Loading'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import useBoolean from '@/utils/hooks/useBoolean'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import Button from '@/components/ui/button/Button'
+import Loading from '@/components/ui/loading/Loading'
 
 import './TagsButton.less'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Alert } from '@navikt/ds-react'
 
 type Props = {

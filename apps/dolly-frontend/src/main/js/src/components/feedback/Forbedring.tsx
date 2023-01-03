@@ -1,10 +1,10 @@
 import * as React from 'react'
 // @ts-ignore
 import './Forbedring.less'
-import { ForbedringModal } from '~/components/feedback/ForbedringModal'
-import useBoolean from '~/utils/hooks/useBoolean'
-import Icon from '~/components/ui/icon/Icon'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ForbedringModal } from '@/components/feedback/ForbedringModal'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Icon from '@/components/ui/icon/Icon'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const Forbedring = () => {
 	const [isForbedringModalOpen, openForbedringModal, closeForbedringModal] = useBoolean(false)
