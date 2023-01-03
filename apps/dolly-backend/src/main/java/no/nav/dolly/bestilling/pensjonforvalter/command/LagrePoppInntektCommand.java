@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,7 +41,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(MILJO_HEADER, StringUtils.upperCase(miljoe))
+                .header(MILJO_HEADER, miljoe.toUpperCase())
                 .bodyValue(lagreInntektRequest)
                 .retrieve()
                 .bodyToFlux(String.class)

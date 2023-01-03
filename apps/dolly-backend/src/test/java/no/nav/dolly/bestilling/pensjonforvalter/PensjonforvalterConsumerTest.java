@@ -65,7 +65,15 @@ class PensjonforvalterConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubPostOppretPerson(boolean withError) {
+    private void stubGetPoppEnvironment() {
+
+        stubFor(get(urlPathMatching("(.*)/environment"))
+                .willReturn(ok()
+                        .withBody("[\"tx\",\"q1\",\"q2\",\"q4\"]")
+                        .withHeader("Content-Type", "application/json")));
+    }
+
+    private void stubPostOpprettPerson(boolean withError) {
 
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/person"))
@@ -81,6 +89,8 @@ class PensjonforvalterConsumerTest {
     }
 
     private void stubPostLagreInntekt(boolean withError) {
+
+        stubGetPoppEnvironment();
 
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
@@ -154,7 +164,7 @@ class PensjonforvalterConsumerTest {
 
     @Test
     void testOpprettPerson_ok() {
-        stubPostOppretPerson(false);
+        stubPostOpprettPerson(false);
 
         var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
                         .collectList()
@@ -168,7 +178,7 @@ class PensjonforvalterConsumerTest {
 
     @Test
     void testOppretPerson_error() {
-        stubPostOppretPerson(true);
+        stubPostOpprettPerson(true);
 
         var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
                         .collectList()

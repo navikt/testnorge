@@ -180,7 +180,7 @@ public class OppslagController {
     @GetMapping("/popp/miljoe")
     @Operation(description = "Hent tilgjengelige miljøer for POPP-register")
     public Set<String> getPoppMiljoer() {
-        return pensjonforvalterConsumer.getMiljoer();
+        return pensjonforvalterConsumer.getPoppMiljoer();
     }
 
     @GetMapping("/tp/forhold/{ident}/{miljoe}")
