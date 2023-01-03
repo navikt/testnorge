@@ -8,5 +8,6 @@ describe('Gruppe testing', () => {
 		cy.get('input[id=navn]').type('Testing med Cypress')
 		cy.get('input[id=hensikt]').type('Masse testing med Cypress')
 		cy.get('button').contains('Opprett').click()
+		cy.url().should('include', '/gruppe/2') // => true
 	})
 })
