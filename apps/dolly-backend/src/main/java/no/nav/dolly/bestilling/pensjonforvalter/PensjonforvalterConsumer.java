@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppInntekterCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppMiljoerCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
@@ -68,14 +67,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_getPoppMiljoer"})
-    public Set<String> getPoppMiljoer() {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetPoppMiljoerCommand(webClient, token.getTokenValue()).call())
-                .block();
-    }
-
     public Mono<AccessToken> getAccessToken() {
 
         return tokenService.exchange(serviceProperties);
@@ -86,11 +77,10 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                                                          Set<String> miljoer, AccessToken token) {
 
         log.info("Popp lagre inntekt {}", lagreInntektRequest);
-        return new GetPoppMiljoerCommand(webClient, token.getTokenValue()).call()
-                .flatMapMany(environments -> Flux.fromIterable(miljoer)
-                        .filter(environments::contains)
-                        .flatMap(miljoe -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
-                                lagreInntektRequest, miljoe).call()));
+        return Flux.fromIterable(miljoer)
+                .filter(miljo -> !"q4".equals(miljo))
+                .flatMap(miljoe -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
+                        lagreInntektRequest, miljoe).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})

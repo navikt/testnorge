@@ -65,14 +65,6 @@ class PensjonforvalterConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubGetPoppEnvironment() {
-
-        stubFor(get(urlPathMatching("(.*)/environment"))
-                .willReturn(ok()
-                        .withBody("[\"tx\",\"q1\",\"q2\",\"q4\"]")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
     private void stubPostOpprettPerson(boolean withError) {
 
         if (!withError) {
@@ -89,8 +81,6 @@ class PensjonforvalterConsumerTest {
     }
 
     private void stubPostLagreInntekt(boolean withError) {
-
-        stubGetPoppEnvironment();
 
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
@@ -159,7 +149,6 @@ class PensjonforvalterConsumerTest {
         assertThat("There are some environments", !miljoer.isEmpty());
         assertThat("There are q1 environment", miljoer.contains("q1"));
         assertThat("There are q2 environment", miljoer.contains("q2"));
-        assertThat("There are q4 environment", miljoer.contains("q4"));
     }
 
     @Test
