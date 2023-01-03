@@ -34,7 +34,6 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -76,9 +75,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
     public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest, Set<String> miljoer, AccessToken token) {
 
-        opprettPersonRequest.setMiljoer(miljoer.stream()
-                .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
-                .collect(Collectors.toSet()));
+        opprettPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", opprettPersonRequest);
         return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
     }

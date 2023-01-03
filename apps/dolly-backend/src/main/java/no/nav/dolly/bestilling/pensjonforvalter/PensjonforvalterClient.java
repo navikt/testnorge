@@ -68,7 +68,9 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
+        var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments()).stream()
+                .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
+                .collect(Collectors.toSet());
         var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
