@@ -1,12 +1,12 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
+import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '@/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
 	usePensjonEnvironments,
-} from '~/utils/hooks/useEnvironments'
+} from '@/utils/hooks/useEnvironments'
 
-import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
+import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
@@ -53,7 +53,7 @@ export const usePoppData = (ident, harPoppBestilling) => {
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 			'inntekter',
 		],
-		multiFetcherFagsystemer
+		([url, headers, path]) => multiFetcherFagsystemer(url, headers, path)
 	)
 
 	return {
@@ -77,7 +77,7 @@ export const useTpData = (ident, harTpBestilling) => {
 			tpUrl(ident, pensjonEnvironments),
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
-		multiFetcherFagsystemer
+		([url, headers]) => multiFetcherFagsystemer(url, headers)
 	)
 
 	return {

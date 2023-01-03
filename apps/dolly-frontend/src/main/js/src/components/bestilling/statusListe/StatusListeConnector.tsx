@@ -1,6 +1,6 @@
 import { connect, RootStateOrAny } from 'react-redux'
-import { createLoadingSelector } from '~/ducks/loading'
-import { cancelBestilling } from '~/ducks/bestillingStatus'
+import { createLoadingSelector } from '@/ducks/loading'
+import { cancelBestilling } from '@/ducks/bestillingStatus'
 import StatusListe from './StatusListe'
 import { Dispatch } from 'redux'
 

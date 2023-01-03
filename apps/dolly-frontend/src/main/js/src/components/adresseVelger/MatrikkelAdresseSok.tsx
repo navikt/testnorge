@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 // @ts-ignore
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
 import { Search } from '@navikt/ds-react'
 

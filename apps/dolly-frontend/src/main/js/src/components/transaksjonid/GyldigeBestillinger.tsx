@@ -1,5 +1,5 @@
 import { useAsync } from 'react-use'
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 
 type Bestilling = {
 	data: Array<BestillingData>

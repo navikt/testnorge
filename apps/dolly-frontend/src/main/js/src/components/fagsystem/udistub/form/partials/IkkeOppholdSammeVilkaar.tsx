@@ -1,6 +1,5 @@
-import React from 'react'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikProps } from 'formik'
 
 interface Formik {

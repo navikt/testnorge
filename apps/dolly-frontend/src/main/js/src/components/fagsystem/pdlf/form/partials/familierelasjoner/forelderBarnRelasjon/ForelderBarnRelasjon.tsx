@@ -1,24 +1,22 @@
 import * as React from 'react'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialBarn,
 	initialForelder,
 	initialPdlBiPerson,
 	initialPdlPerson,
-} from '~/components/fagsystem/pdlf/form/initialValues'
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { BarnRelasjon } from '~/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
-import _cloneDeep from 'lodash/cloneDeep'
-import _set from 'lodash/set'
-import { TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
-import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
-import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
-import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import * as _ from 'lodash-es'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { BarnRelasjon } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/BarnRelasjon'
+import { TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
+import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
+import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { ToggleGroup } from '@navikt/ds-react'
 
 interface ForelderForm {
@@ -40,29 +38,29 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 		'relatertPersonUtenFolkeregisteridentifikator'
 
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
-		const forelderBarnRelasjon = _get(formikBag.values, path)
-		const forelderBarnClone = _cloneDeep(forelderBarnRelasjon)
+		const forelderBarnRelasjon = _.get(formikBag.values, path)
+		const forelderBarnClone = _.cloneDeep(forelderBarnRelasjon)
 
-		_set(forelderBarnClone, 'typeForelderBarn', target?.value || null)
+		_.set(forelderBarnClone, 'typeForelderBarn', target?.value || null)
 		if (!target) {
-			_set(forelderBarnClone, relatertPerson, undefined)
-			_set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, undefined)
-			_set(forelderBarnClone, nyRelatertPerson, undefined)
+			_.set(forelderBarnClone, relatertPerson, undefined)
+			_.set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, undefined)
+			_.set(forelderBarnClone, nyRelatertPerson, undefined)
 		}
 		if (target?.value === TypeAnsvarlig.EKSISTERENDE) {
-			_set(forelderBarnClone, relatertPerson, null)
-			_set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, undefined)
-			_set(forelderBarnClone, nyRelatertPerson, undefined)
+			_.set(forelderBarnClone, relatertPerson, null)
+			_.set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, undefined)
+			_.set(forelderBarnClone, nyRelatertPerson, undefined)
 		}
 		if (target?.value === TypeAnsvarlig.UTEN_ID) {
-			_set(forelderBarnClone, relatertPerson, undefined)
-			_set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, initialPdlBiPerson)
-			_set(forelderBarnClone, nyRelatertPerson, undefined)
+			_.set(forelderBarnClone, relatertPerson, undefined)
+			_.set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, initialPdlBiPerson)
+			_.set(forelderBarnClone, nyRelatertPerson, undefined)
 		}
 		if (target?.value === TypeAnsvarlig.NY) {
-			_set(forelderBarnClone, relatertPerson, undefined)
-			_set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, undefined)
-			_set(forelderBarnClone, nyRelatertPerson, initialPdlPerson)
+			_.set(forelderBarnClone, relatertPerson, undefined)
+			_.set(forelderBarnClone, relatertPersonUtenFolkeregisteridentifikator, undefined)
+			_.set(forelderBarnClone, nyRelatertPerson, initialPdlPerson)
 		}
 
 		formikBag.setFieldValue(path, forelderBarnClone)
@@ -76,8 +74,8 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
-				const erBarn = _get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
-				const forelderBarnType = _get(formikBag.values, `${path}.typeForelderBarn`)
+				const erBarn = _.get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
+				const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
 
 				return (
 					<div className="flexbox--flex-wrap">
@@ -144,7 +142,7 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 
 						<AvansertForm
 							path={path}
-							kanVelgeMaster={_get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+							kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
 						/>
 					</div>
 				)

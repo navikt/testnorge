@@ -1,12 +1,12 @@
-import DollyModal from '~/components/ui/modal/DollyModal'
+import DollyModal from '@/components/ui/modal/DollyModal'
 import { Formik } from 'formik'
-import { filterMiljoe } from '~/components/miljoVelger/MiljoeInfo'
+import { filterMiljoe } from '@/components/miljoVelger/MiljoeInfo'
 import React, { Fragment } from 'react'
-import { MiljoVelger } from '~/components/miljoVelger/MiljoVelger'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 type GjenopprettModalProps = {
 	gjenopprettHeader: any

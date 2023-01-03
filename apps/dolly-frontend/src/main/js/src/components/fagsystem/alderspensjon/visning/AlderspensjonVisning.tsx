@@ -1,10 +1,10 @@
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import Formatters from '~/utils/DataFormatter'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import Formatters from '@/utils/DataFormatter'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 const DataVisning = ({ apBestilling }) => {
 	return (

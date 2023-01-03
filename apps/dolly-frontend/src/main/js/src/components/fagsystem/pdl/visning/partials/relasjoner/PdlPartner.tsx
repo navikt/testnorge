@@ -1,11 +1,10 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { getSortedSivilstand } from '~/components/fagsystem/pdl/visning/partials/utils'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import { Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { getSortedSivilstand } from '@/components/fagsystem/pdl/visning/partials/utils'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 
 type VisningProps = {
 	data: Sivilstand
@@ -17,15 +16,18 @@ type PdlPartnerProps = {
 }
 
 const Visning = ({ data, idx }: VisningProps) => {
+	const harPartner = data.type !== 'UGIFT'
 	return (
 		<div key={idx} className="person-visning_content">
 			<TitleValue
-				title="Forhold til partner (sivilstand)"
+				title={harPartner ? 'Forhold til partner (sivilstand)' : 'Sivilstand'}
 				kodeverk={PersoninformasjonKodeverk.Sivilstander}
 				value={data.type}
 				size="medium"
 			/>
-			<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
+			{harPartner && (
+				<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
+			)}
 			<TitleValue title="Sivilstand fra dato" value={Formatters.formatDate(data.gyldigFraOgMed)} />
 		</div>
 	)

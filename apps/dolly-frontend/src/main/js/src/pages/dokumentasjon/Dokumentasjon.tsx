@@ -1,8 +1,7 @@
-import React from 'react'
-import Title from '~/components/Title'
+import Title from '@/components/Title'
 import './Dokumentasjon.less'
 import { LinkPanel } from '@navikt/ds-react'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 export default () => {
 	const {

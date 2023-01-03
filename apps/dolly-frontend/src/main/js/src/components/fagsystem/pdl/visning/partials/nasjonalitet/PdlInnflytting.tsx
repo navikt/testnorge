@@ -1,9 +1,8 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { InnflyttingTilNorge } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import Formatters from '~/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { InnflyttingTilNorge } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import Formatters from '@/utils/DataFormatter'
 
 type InnflyttingProps = {
 	data: InnflyttingTilNorge

@@ -1,12 +1,16 @@
 import * as React from 'react'
 import { BaseSyntheticEvent, useState } from 'react'
-import Logger from '../../logger'
-import { Rating } from '~/logger/types'
 // @ts-ignore
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 import NavButton from '../ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 import './ThumbsRating.less'
+import { Logger } from '@/logger/Logger'
+
+enum Rating {
+	Positive = 'POSITIVE',
+	Negative = 'NEGATIVE',
+}
 
 interface ThumbsRatingProps {
 	label: string

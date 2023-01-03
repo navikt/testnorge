@@ -1,9 +1,8 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Formatters from '~/utils/DataFormatter'
-import { Ident } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Formatters from '@/utils/DataFormatter'
+import { Ident } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type Data = {
 	pdlResponse: {

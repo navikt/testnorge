@@ -1,8 +1,8 @@
 import { connect, RootStateOrAny } from 'react-redux'
 import { Action } from 'redux-actions'
-import { actions } from '~/ducks/gruppe'
-import { createLoadingSelector } from '~/ducks/loading'
-import OrganisasjonHeader from '~/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeader'
+import { actions } from '@/ducks/gruppe'
+import { createLoadingSelector } from '@/ducks/loading'
+import OrganisasjonHeader from '@/pages/organisasjoner/OrgansisasjonHeader/OrganisasjonHeader'
 
 const loadingSelectorGetExcel = createLoadingSelector(actions.getOrgExcelFil)
 

@@ -1,16 +1,16 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { InntektVisning } from './partials/InntektVisning'
 import { FradragVisning } from './partials/FradragVisning'
 import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
 import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Formatters from '~/utils/DataFormatter'
-import Panel from '~/components/ui/panel/Panel'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Formatters from '@/utils/DataFormatter'
+import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
+import React from 'react'
 
 type InntekstubVisning = {
 	liste?: Array<Inntektsinformasjon>
@@ -99,7 +99,7 @@ export const InntektstubVisning = ({ liste, loading }: InntekstubVisning) => {
 			/>
 			{manglerFagsystemdata ? (
 				<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-					Kunne ikke hente inntekt-data på person
+					Fant ikke inntekt-data på person
 				</Alert>
 			) : (
 				<ErrorBoundary>

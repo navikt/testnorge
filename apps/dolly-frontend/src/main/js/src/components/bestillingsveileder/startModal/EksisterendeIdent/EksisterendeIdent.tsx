@@ -1,11 +1,11 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
 import { useAsyncFn } from 'react-use'
-import _get from 'lodash/get'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { PdlforvalterApi } from '~/service/Api'
-import Loading from '~/components/ui/loading/Loading'
-import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
-import Icon from '~/components/ui/icon/Icon'
+import * as _ from 'lodash-es'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { PdlforvalterApi } from '@/service/Api'
+import Loading from '@/components/ui/loading/Loading'
+import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
+import Icon from '@/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
 import { Alert, Table, Textarea } from '@navikt/ds-react'
@@ -31,7 +31,7 @@ export const EksisterendeIdent = ({
 				.map((v: { ident: any }) => v.ident),
 		})
 
-	const statuser = _get(state, 'value', [])
+	const statuser = _.get(state, 'value', [])
 	const finnesUgyldige = statuser.some((v) => !v.available)
 	const finnesGyldige = statuser.some((v) => v.available)
 

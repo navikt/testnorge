@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import MatrikkelAdresseSok from './MatrikkelAdresseSok'
 import styled from 'styled-components'
-import AdresseService, { MatrikkelAdresse } from '~/service/services/AdresseService'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { NotFoundError } from '~/error'
+import AdresseService, { MatrikkelAdresse } from '@/service/services/AdresseService'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { NotFoundError } from '@/error'
 import { Alert } from '@navikt/ds-react'
 
 const StyledAdresseVelger = styled.div`

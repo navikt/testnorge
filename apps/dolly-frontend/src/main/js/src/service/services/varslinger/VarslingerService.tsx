@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const varslingerlUrl = '/testnav-varslinger-service/api/v1/varslinger'
 

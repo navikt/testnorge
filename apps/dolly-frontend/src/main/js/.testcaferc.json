@@ -1,15 +1,13 @@
 {
   "compilerOptions": {
-    "typescript": {
-      "configPath": "tsconfig.json"
-    }
   },
   "skipJsErrors": true,
   "skipUncaughtErrors": true,
   "hostname": "localhost",
+  "appCommand": "npm run preview",
+  "appInitDelay": 5000,
   "port1": 54321,
   "developmentMode": true,
   "pageRequestTimeout": 30000,
-  "pageLoadTimeout": 6000,
-  "appInitDelay": 60000
+  "pageLoadTimeout": 30000
 }

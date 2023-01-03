@@ -1,10 +1,10 @@
 import * as React from 'react'
-import Formatters from '~/utils/DataFormatter'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { Bidiagnoser } from './Bidiagnoser'
 import { Perioder } from './Perioder'
-import { ArbeidKodeverk } from '~/config/kodeverk'
-import { SykemeldingDetaljert } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import { ArbeidKodeverk } from '@/config/kodeverk'
+import { SykemeldingDetaljert } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert) => (
 	<div key={idx} className="person-visning_content">

@@ -1,8 +1,7 @@
-import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
-import { Miljostatus, Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import { Miljostatus, Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 
 const FagsystemStatus = ({ bestilling }: Miljostatus) => {
 	const IconTypes = {

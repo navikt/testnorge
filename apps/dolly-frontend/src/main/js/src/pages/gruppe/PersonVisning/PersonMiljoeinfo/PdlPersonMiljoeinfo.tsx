@@ -1,8 +1,7 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Ident } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { Ident } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 interface PdlMiljoeValues {
 	ident: Ident

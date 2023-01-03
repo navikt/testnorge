@@ -1,11 +1,10 @@
-import React from 'react'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { PdlForeldreBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreBarn'
-import { PdlPartner } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlPartner'
-import { Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
-import { PdlForeldreansvar } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreansvar'
-import { PdlDoedfoedtBarn } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlDoedfoedtBarn'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { HentPerson } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlForeldreBarn } from '@/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreBarn'
+import { PdlPartner } from '@/components/fagsystem/pdl/visning/partials/relasjoner/PdlPartner'
+import { Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
+import { PdlForeldreansvar } from '@/components/fagsystem/pdl/visning/partials/relasjoner/PdlForeldreansvar'
+import { PdlDoedfoedtBarn } from '@/components/fagsystem/pdl/visning/partials/relasjoner/PdlDoedfoedtBarn'
 
 type PdlRelasjonerProps = {
 	data: HentPerson
@@ -17,7 +16,7 @@ export const PdlRelasjoner = ({ data }: PdlRelasjonerProps) => {
 		return null
 	}
 
-	const partnere = data.sivilstand?.filter((sivilstand: Sivilstand) => sivilstand.type !== 'UGIFT')
+	const partnere = data.sivilstand
 	const doedfoedtBarn = data.doedfoedtBarn
 	const foreldreBarn = data.forelderBarnRelasjon
 	const foreldreansvar = data.foreldreansvar

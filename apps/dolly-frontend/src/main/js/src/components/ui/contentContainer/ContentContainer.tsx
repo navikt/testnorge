@@ -1,6 +1,5 @@
-import React from 'react'
-
 import './ContentContainer.less'
+import React from 'react'
 
 type Props = {
 	children: React.PropsWithChildren<any>

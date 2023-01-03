@@ -19,7 +19,7 @@ public class StatusController {
     public Map<String, Map<String, String>> getStatus() {
         var statusWebClient = WebClient.builder().build();
 
-        return Stream.of("q1", "q2", "q4", "q5", "t0", "t1", "t3", "t4", "t5")
+        return Stream.of("q1", "q2")
                 .parallel()
                 .map(miljo -> {
                     var miljoStatus = checkConsumerStatus(

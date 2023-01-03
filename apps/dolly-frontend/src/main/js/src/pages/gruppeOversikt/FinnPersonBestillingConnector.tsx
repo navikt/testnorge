@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { Action } from 'redux-actions'
-import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '~/ducks/finnPerson'
-import FinnPersonBestilling from '~/pages/gruppeOversikt/FinnPersonBestilling'
+import { navigerTilBestilling, navigerTilPerson, resetFeilmelding } from '@/ducks/finnPerson'
+import FinnPersonBestilling from '@/pages/gruppeOversikt/FinnPersonBestilling'
 
 const mapStateToProps = (state: {
 	finnPerson: { feilmelding: string; navigerTilGruppe: number }

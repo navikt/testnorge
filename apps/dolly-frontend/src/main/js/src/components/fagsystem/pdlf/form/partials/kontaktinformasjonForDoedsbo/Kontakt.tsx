@@ -1,22 +1,19 @@
-import React from 'react'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { getPlaceholder, setNavn } from '../utils'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	initialNyPerson,
 	initialOrganisasjon,
 	initialPerson,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { OrganisasjonSelect } from '~/components/organisasjonSelect'
-import _cloneDeep from 'lodash/cloneDeep'
-import _set from 'lodash/set'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { OrganisasjonSelect } from '@/components/organisasjonSelect'
 import { FormikProps } from 'formik'
-import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 
 interface KontaktValues {
 	formikBag: FormikProps<any>
@@ -38,34 +35,34 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
 
-	const kontaktType = _get(formikBag.values, `${path}.kontaktType`)
+	const kontaktType = _.get(formikBag.values, `${path}.kontaktType`)
 
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
 	const handleAfterChange = (type: TypeValues) => {
 		const { value } = type
-		const kontaktinfo = _get(formikBag.values, path)
-		const kontaktinfoClone = _cloneDeep(kontaktinfo)
+		const kontaktinfo = _.get(formikBag.values, path)
+		const kontaktinfoClone = _.cloneDeep(kontaktinfo)
 
 		if (value !== kontaktType) {
-			_set(kontaktinfoClone, 'kontaktType', value)
+			_.set(kontaktinfoClone, 'kontaktType', value)
 			if (value === 'ADVOKAT') {
-				_set(kontaktinfoClone, 'advokatSomKontakt', initialOrganisasjon)
-				_set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
-				_set(kontaktinfoClone, 'personSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'advokatSomKontakt', initialOrganisasjon)
+				_.set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'personSomKontakt', undefined)
 			} else if (value === 'ORGANISASJON') {
-				_set(kontaktinfoClone, 'organisasjonSomKontakt', initialOrganisasjon)
-				_set(kontaktinfoClone, 'advokatSomKontakt', undefined)
-				_set(kontaktinfoClone, 'personSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'organisasjonSomKontakt', initialOrganisasjon)
+				_.set(kontaktinfoClone, 'advokatSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'personSomKontakt', undefined)
 			} else if (value === 'PERSON_FDATO') {
-				_set(kontaktinfoClone, 'personSomKontakt', initialPerson)
-				_set(kontaktinfoClone, 'advokatSomKontakt', undefined)
-				_set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'personSomKontakt', initialPerson)
+				_.set(kontaktinfoClone, 'advokatSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
 			} else if (value === 'NY_PERSON') {
-				_set(kontaktinfoClone, 'personSomKontakt', initialNyPerson)
-				_set(kontaktinfoClone, 'advokatSomKontakt', undefined)
-				_set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'personSomKontakt', initialNyPerson)
+				_.set(kontaktinfoClone, 'advokatSomKontakt', undefined)
+				_.set(kontaktinfoClone, 'organisasjonSomKontakt', undefined)
 			}
 		}
 		formikBag.setFieldValue(path, kontaktinfoClone)
@@ -77,10 +74,10 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 	}
 
 	const disableIdent =
-		_get(formikBag.values, `${personPath}.foedselsdato`) ||
-		_get(formikBag.values, `${personPath}.navn.fornavn`)
+		_.get(formikBag.values, `${personPath}.foedselsdato`) ||
+		_.get(formikBag.values, `${personPath}.navn.fornavn`)
 
-	const disablePersoninfo = _get(formikBag.values, `${personPath}.identifikasjonsnummer`)
+	const disablePersoninfo = _.get(formikBag.values, `${personPath}.identifikasjonsnummer`)
 
 	return (
 		<Kategori title="Kontakt">
@@ -110,7 +107,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						onChange={(navn: string) =>
 							setNavn(navn, `${advokatPath}.kontaktperson`, formikBag.setFieldValue)
 						}
-						value={_get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
+						value={_.get(formikBag.values, `${advokatPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -131,7 +128,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						onChange={(navn: string) =>
 							setNavn(navn, `${organisasjonPath}.kontaktperson`, formikBag.setFieldValue)
 						}
-						value={_get(formikBag.values, `${organisasjonPath}.kontaktperson.fornavn`)}
+						value={_.get(formikBag.values, `${organisasjonPath}.kontaktperson.fornavn`)}
 					/>
 				</div>
 			)}
@@ -160,7 +157,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						onChange={(navn: string) =>
 							setNavn(navn, `${personPath}.navn`, formikBag.setFieldValue)
 						}
-						value={_get(formikBag.values, `${personPath}.navn.fornavn`)}
+						value={_.get(formikBag.values, `${personPath}.navn.fornavn`)}
 						isDisabled={disablePersoninfo}
 					/>
 				</div>

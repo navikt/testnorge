@@ -1,18 +1,17 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import Loading from '~/components/ui/loading/Loading'
-import { KrrApi } from '~/service/Api'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import LoadableComponent from '~/components/ui/loading/LoadableComponent'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import Button from '~/components/ui/button/Button'
-import Icon from '~/components/ui/icon/Icon'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import Loading from '@/components/ui/loading/Loading'
+import { KrrApi } from '@/service/Api'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import LoadableComponent from '@/components/ui/loading/LoadableComponent'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import Button from '@/components/ui/button/Button'
+import Icon from '@/components/ui/icon/Icon'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
-import useBoolean from '~/utils/hooks/useBoolean'
+import useBoolean from '@/utils/hooks/useBoolean'
 import { Alert } from '@navikt/ds-react'
 
 const EditDeleteKnapper = styled.div`
@@ -179,7 +178,7 @@ export const KrrVisning = ({ data, loading }: KrrVisningProps) => {
 				/>
 				{manglerFagsystemdata ? (
 					<Alert variant={'warning'} size={'small'} inline style={{ marginBottom: '20px' }}>
-						Kunne ikke hente KRR-data på person
+						Fant ikke KRR-data på person
 					</Alert>
 				) : (
 					<div className="person-visning_content">

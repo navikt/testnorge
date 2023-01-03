@@ -1,9 +1,8 @@
-import React from 'react'
-import { TextEditor } from '~/components/ui/form/inputs/textEditor/TextEditor'
-import _get from 'lodash/get'
+import { TextEditor } from '@/components/ui/form/inputs/textEditor/TextEditor'
+import * as _ from 'lodash-es'
 
 export const OppsummeringKommentarForm = ({ formikBag }) => {
-	const eksisterendeBeskrivelse = _get(formikBag.values, 'beskrivelse')
+	const eksisterendeBeskrivelse = _.get(formikBag.values, 'beskrivelse')
 	return (
 		<div className="input-oppsummering">
 			<h2>Send med kommentar</h2>

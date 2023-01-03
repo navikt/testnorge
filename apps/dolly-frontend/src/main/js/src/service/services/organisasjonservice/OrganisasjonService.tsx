@@ -1,5 +1,5 @@
-import Request from '~/service/services/Request'
-import { OrgInfoResponse } from '~/service/services/organisasjonservice/types'
+import Request from '@/service/services/Request'
+import { OrgInfoResponse } from '@/service/services/organisasjonservice/types'
 
 const orgServiceUrl = '/testnav-organisasjon-service/api/v1/organisasjoner'
 

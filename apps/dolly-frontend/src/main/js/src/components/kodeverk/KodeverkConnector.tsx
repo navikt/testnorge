@@ -1,0 +1,12 @@
+import { connect } from 'react-redux'
+import { fetchKodeverk, getKodeverkSelector } from '@/ducks/kodeverk'
+import { KodeverkWrapper } from '@/components/kodeverk/Kodeverk'
+
+// Koble til kodeverk
+const mapStateToProps = (state, ownProps) => ({
+	kodeverk: getKodeverkSelector(state, ownProps.navn),
+})
+
+const mapDispatchToProps = { fetchKodeverk }
+
+export default connect(mapStateToProps, mapDispatchToProps)(KodeverkWrapper)

@@ -4,7 +4,7 @@ import {
 	requiredDate,
 	requiredNumber,
 	requiredString,
-} from '~/utils/YupValidations'
+} from '@/utils/YupValidations'
 import * as Yup from 'yup'
 
 export const validation = {

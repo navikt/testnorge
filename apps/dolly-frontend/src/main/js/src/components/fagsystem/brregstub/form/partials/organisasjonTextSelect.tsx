@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
+import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import { useBoolean } from 'react-use'
-import { OrgserviceApi } from '~/service/Api'
-import { OrgInfoAdresse } from '~/service/services/organisasjonservice/types'
+import { OrgserviceApi } from '@/service/Api'
+import { OrgInfoAdresse } from '@/service/services/organisasjonservice/types'
 
 interface OrgnanisasjonTextSelectProps {
 	path: string

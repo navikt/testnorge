@@ -1,10 +1,10 @@
 import React, { ReactElement, useState } from 'react'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { AmeldingForm } from './ameldingForm'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialAaregOrg,
 	initialAaregPers,
@@ -12,9 +12,9 @@ import {
 	initialArbeidsforholdPers,
 	initialValues,
 } from '../initialValues'
-import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import { useFormikContext } from 'formik'
-import { useDollyFasteDataOrganisasjoner } from '~/utils/hooks/useOrganisasjoner'
+import { useDollyFasteDataOrganisasjoner } from '@/utils/hooks/useOrganisasjoner'
 
 const ToggleArbeidsgiver = styled(ToggleGroup)`
 	display: grid;
@@ -29,13 +29,13 @@ export const ArbeidsforholdToggle = (): ReactElement => {
 	const { organisasjoner } = useDollyFasteDataOrganisasjoner(true)
 
 	const getArbeidsgiverType = () => {
-		const orgnummer = _get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
+		const orgnummer = _.get(formikBag.values, 'aareg[0].arbeidsgiver.orgnummer')
 		if (
-			_get(formikBag.values, 'aareg[0].amelding[0]') ||
-			_get(formikBag.values, 'aareg[0].arbeidsforhold')
+			_.get(formikBag.values, 'aareg[0].amelding[0]') ||
+			_.get(formikBag.values, 'aareg[0].arbeidsforhold')
 		) {
 			return ArbeidsgiverTyper.egen
-		} else if (_get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
+		} else if (_.get(formikBag.values, 'aareg[0].arbeidsgiver.aktoertype') === 'PERS') {
 			return ArbeidsgiverTyper.privat
 		} else if (
 			!orgnummer ||

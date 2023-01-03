@@ -1,11 +1,10 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { initialStatsborgerskap } from '~/components/fagsystem/pdlf/form/initialValues'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { initialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 type StatsborgerskapTypes = {
 	path: string
