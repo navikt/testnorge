@@ -47,10 +47,6 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                                 .setRequestHeader("Nav-Consumer-Id", "Dolly"))
                         .uri(properties.getUrl()))
                 .route(spec -> spec
-                        .path("/environment/**")
-                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
-                        .uri(properties.getUrl()))
-                .route(spec -> spec
                         .path("/api/**")
                         .filters(gatewayFilterSpec -> gatewayFilterSpec
                                 .addRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")

@@ -24,7 +24,8 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 @Slf4j
 @RequiredArgsConstructor
 public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
-    private static final String MILJO_HEADER = "environment";
+
+    private static final String MILJO_HEADER = "miljo";
     private static final String POPP_INNTEKT_URL = "/api/v1/inntekt";
 
     private final WebClient webClient;
