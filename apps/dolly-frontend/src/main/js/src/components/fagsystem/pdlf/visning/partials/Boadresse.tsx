@@ -1,16 +1,14 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
-import { Matrikkeladresse } from '~/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { UkjentBosted } from '~/components/fagsystem/pdlf/visning/partials/UkjentBosted'
-import _cloneDeep from 'lodash/cloneDeep'
-import { initialBostedsadresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { BostedData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
+import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
+import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
+import * as _ from 'lodash-es'
+import { initialBostedsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { BostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type BoadresseTypes = {
 	data: Array<any>
@@ -58,10 +56,10 @@ const BoadresseVisning = ({
 	identtype,
 	erPdlVisning,
 }: BoadresseVisningTypes) => {
-	const initBoadresse = Object.assign(_cloneDeep(initialBostedsadresse), data[idx])
+	const initBoadresse = Object.assign(_.cloneDeep(initialBostedsadresse), data[idx])
 	const initialValues = { bostedsadresse: initBoadresse }
 
-	const redigertBoadressePdlf = _get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
+	const redigertBoadressePdlf = _.get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
 		(a: BostedData) => a.id === boadresseData.id
 	)
 	const slettetBoadressePdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBoadressePdlf
@@ -72,7 +70,7 @@ const BoadresseVisning = ({
 	const boadresseValues = redigertBoadressePdlf ? redigertBoadressePdlf : boadresseData
 	const redigertBoadresseValues = redigertBoadressePdlf
 		? {
-				bostedsadresse: Object.assign(_cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
+				bostedsadresse: Object.assign(_.cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
 		  }
 		: null
 

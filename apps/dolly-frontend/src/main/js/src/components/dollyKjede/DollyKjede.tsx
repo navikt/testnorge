@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import KjedePagination from '~/components/dollyKjede/KjedePagination'
+import KjedePagination from '@/components/dollyKjede/KjedePagination'
 
 export interface DollyKjedeProps {
 	objectList: string[]

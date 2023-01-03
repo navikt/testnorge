@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { OrganisasjonLoader } from '~/components/organisasjonSelect/OrganisasjonLoader'
+import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 
 export type OrganisasjonSelectProps = {
 	path: string

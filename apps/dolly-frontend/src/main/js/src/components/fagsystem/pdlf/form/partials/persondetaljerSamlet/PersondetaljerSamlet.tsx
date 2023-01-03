@@ -1,10 +1,9 @@
-import React from 'react'
-import { NavnForm } from '~/components/fagsystem/pdlf/form/partials/navn/Navn'
-import { KjoennForm } from '~/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
-import { PersonstatusForm } from '~/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
+import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
+import { KjoennForm } from '@/components/fagsystem/pdlf/form/partials/kjoenn/Kjoenn'
+import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/personstatus/Personstatus'
 import { FormikProps } from 'formik'
 import { Alert } from '@navikt/ds-react'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 type PersondetaljerSamletTypes = {
 	formikBag: FormikProps<{}>

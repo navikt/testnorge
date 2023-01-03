@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import Loading from '~/components/ui/loading/Loading'
+import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
+import Loading from '@/components/ui/loading/Loading'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
-import { BestillingProgresjon } from '~/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
-import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
+import { BestillingProgresjon } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
+import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 
 type StatusProps = {
 	gruppeId: string

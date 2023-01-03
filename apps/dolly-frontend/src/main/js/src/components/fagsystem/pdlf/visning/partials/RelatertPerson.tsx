@@ -1,9 +1,8 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
-import { PdlDataVisning } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import styled from 'styled-components'
 
 const StyledPdlData = styled.div`

@@ -1,10 +1,9 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
-import { TilrettelagtKommunikasjonData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
+import { TilrettelagtKommunikasjonData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type DataListe = {
 	data: Array<TilrettelagtKommunikasjonData>

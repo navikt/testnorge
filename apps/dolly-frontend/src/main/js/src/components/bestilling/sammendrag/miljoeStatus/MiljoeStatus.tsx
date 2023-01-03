@@ -1,9 +1,8 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import FagsystemStatus from './fagsystemStatus/FagsystemStatus'
-import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
-import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
-import { isEqual } from 'lodash'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
+import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
+import * as _ from 'lodash-es'
 
 export type Miljostatus = {
 	bestilling: {
@@ -90,7 +89,9 @@ const mergeIdentiskeStatusmeldinger = (statuser: Status[]) => {
 			melding: status.melding,
 			navn: status.navn,
 		}))
-		?.filter((value, index, self) => index === self?.findIndex((status) => isEqual(status, value)))
+		?.filter(
+			(value, index, self) => index === self?.findIndex((status) => _.isEqual(status, value))
+		)
 
 	return [...unikeStatusMeldingerPerSystem]?.map((statusMelding) =>
 		statuser

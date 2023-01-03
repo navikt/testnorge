@@ -1,13 +1,12 @@
-import React from 'react'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
 import {
 	DelvisFravaer,
 	Fravaer,
 	Omsorgspenger,
-} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface OmsorgspengerVisning {
 	data?: Omsorgspenger

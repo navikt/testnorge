@@ -1,13 +1,11 @@
-import React from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import Formatters from '~/utils/DataFormatter'
+import * as _ from 'lodash-es'
+import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import Formatters from '@/utils/DataFormatter'
 import { FormikProps } from 'formik'
-import { Tema, Ytelser } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { Tema, Ytelser } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
 	path: string
@@ -29,7 +27,7 @@ export default ({
 	const ytelsePath = `${path}.ytelse`
 
 	const feil = (feilmelding: Feilmelding) => {
-		if (_has(formikBag.touched, ytelsePath) && _get(formikBag.values, ytelsePath) === '') {
+		if (_.has(formikBag.touched, ytelsePath) && _.get(formikBag.values, ytelsePath) === '') {
 			return { feilmelding: 'Feltet er påkrevd' }
 		} else {
 			return feilmelding
@@ -55,7 +53,7 @@ export default ({
 						options={data}
 						type="text"
 						size={size}
-						value={_get(formikBag.values, ytelsePath)}
+						value={_.get(formikBag.values, ytelsePath)}
 						onChange={(e: Option) => setYtelseOgTema(e, formikBag, path, idx)}
 						feil={feil(feilmelding)}
 						isClearable={false}
@@ -85,7 +83,7 @@ const setYtelseOgTema = (value: Option, formikBag: FormikProps<{}>, path: string
 		pleiepengerPerioder,
 		omsorgspenger,
 		...rest
-	} = _get(formikBag.values, path)
+	} = _.get(formikBag.values, path)
 
 	if (value.value === Ytelser.Omsorgspenger) {
 		formikBag.setFieldValue(path, {

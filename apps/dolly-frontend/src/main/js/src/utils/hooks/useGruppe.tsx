@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher } from '@/api'
 
 const getGrupperUrl = (pageNo, pageSize, brukerId) =>
 	`/dolly-backend/api/v1/gruppe?pageNo=${pageNo}&pageSize=${pageSize}${

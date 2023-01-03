@@ -28,15 +28,15 @@ export const kodeverkMock = {
 export const brukerMalerMock = [
 	{
 		id: 1,
-		malNavn: 'beast maskinlæring',
+		malNavn: 'Teste litt av hvert',
 	},
 	{
 		id: 2,
-		malNavn: 'the cake is a lie',
+		malNavn: 'Fikse Betsy-bugs',
 	},
 	{
 		id: 3,
-		malNavn: 'bugspedition',
+		malNavn: 'Fremprovosere godt gjemte Stian-bugs',
 	},
 ]
 

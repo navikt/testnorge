@@ -1,6 +1,5 @@
-import React from 'react'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikProps } from 'formik'
 
 interface UkjentBostedValues {

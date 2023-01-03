@@ -1,11 +1,10 @@
-import React from 'react'
-import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
-import Icon from '~/components/ui/icon/Icon'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
+import Icon from '@/components/ui/icon/Icon'
 
 import './FagsystemStatus.less'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { Status } from '~/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
-import IdentList from '~/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
+import IdentList from '@/components/bestilling/sammendrag/miljoeStatus/fagsystemStatus/IdentList'
 
 export default function FagsystemStatus({ statusrapport }: { statusrapport: Status[] }) {
 	if (statusrapport.length <= 0) {

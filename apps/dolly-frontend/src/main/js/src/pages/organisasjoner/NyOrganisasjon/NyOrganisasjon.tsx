@@ -2,18 +2,18 @@ import React, { useState } from 'react'
 import { Formik, FormikProps } from 'formik'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
-import Button from '~/components/ui/button/Button'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
+import Button from '@/components/ui/button/Button'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 
 import styled from 'styled-components'
-import { useDollyOrganisasjonMaler } from '~/utils/hooks/useMaler'
+import { useDollyOrganisasjonMaler } from '@/utils/hooks/useMaler'
 import {
 	getBrukerOptions,
 	getMalOptions,
 	NyBestillingProps,
-} from '~/components/bestillingsveileder/startModal/NyIdent/NyIdent'
+} from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 
 const initialValues = {
 	mal: null as string,

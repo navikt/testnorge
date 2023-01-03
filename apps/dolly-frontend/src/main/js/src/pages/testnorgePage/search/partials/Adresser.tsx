@@ -1,11 +1,10 @@
-import React from 'react'
-import _get from 'lodash/get'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk, GtKodeverk } from '~/config/kodeverk'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
+import * as _ from 'lodash-es'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AdresseKodeverk, GtKodeverk } from '@/config/kodeverk'
+import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
 import { FormikProps } from 'formik'
-import { yesNoOptions } from '~/pages/testnorgePage/utils'
-import { AdvancedOptions } from '~/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
+import { yesNoOptions } from '@/pages/testnorgePage/utils'
+import { AdvancedOptions } from '@/pages/testnorgePage/search/advancedOptions/AdvancedOptions'
 
 type AdresserProps = {
 	formikBag: FormikProps<{}>
@@ -38,9 +37,9 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 			value: 'N',
 			label: 'Nei',
 			disabled:
-				_get(formikBag.values, paths.kommunenummer) ||
-				_get(formikBag.values, paths.postnummer) ||
-				_get(formikBag.values, paths.bydelsnummer),
+				_.get(formikBag.values, paths.kommunenummer) ||
+				_.get(formikBag.values, paths.postnummer) ||
+				_.get(formikBag.values, paths.bydelsnummer),
 		},
 	]
 	return (
@@ -63,7 +62,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={paths.postnummer}
 				label="Postnummer"
 				kodeverk={AdresseKodeverk.Postnummer}
-				isDisabled={_get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -71,7 +70,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={paths.bydelsnummer}
 				label="Bydel"
 				kodeverk={GtKodeverk.BYDEL}
-				isDisabled={_get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>
@@ -79,7 +78,7 @@ export const Adresser = ({ formikBag }: AdresserProps) => {
 				name={paths.kommunenummer}
 				label="Kommunenummer"
 				kodeverk={AdresseKodeverk.Kommunenummer}
-				isDisabled={_get(formikBag.values, paths.borINorge) === 'N'}
+				isDisabled={_.get(formikBag.values, paths.borINorge) === 'N'}
 				optionHeight={50}
 				size="medium"
 			/>

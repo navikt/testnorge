@@ -1,20 +1,19 @@
-import React from 'react'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
 import { SelectOptionsDiagnoser } from './SelectOptionsDiagnoser'
 import HelsepersonellSelect from './HelsepersonellSelect'
-import { ArbeidKodeverk } from '~/config/kodeverk'
+import { ArbeidKodeverk } from '@/config/kodeverk'
 import {
 	Arbeidsgiver,
 	Helsepersonell,
 	SykemeldingForm,
-} from '~/components/fagsystem/sykdom/SykemeldingTypes'
+} from '@/components/fagsystem/sykdom/SykemeldingTypes'
 
 type DiagnoseSelect = {
 	diagnoseNavn: string

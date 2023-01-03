@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import Gruppe, { VisningType } from './Gruppe'
 import { FormikProps } from 'formik'
 import { Dispatch } from 'redux'
-import { setVisning } from '~/ducks/finnPerson'
+import { setVisning } from '@/ducks/finnPerson'
 
 const mapStateToProps = (
 	state: {

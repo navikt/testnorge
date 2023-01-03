@@ -1,17 +1,17 @@
 import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import * as Yup from 'yup'
-import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import Panel from '~/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
+import { ifPresent, requiredString } from '@/utils/YupValidations'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import Panel from '@/components/ui/panel/Panel'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import styled from 'styled-components'
-import _get from 'lodash/get'
-import { Digitalinnsending } from '~/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
-import { DokumentInfoListe } from '~/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
+import * as _ from 'lodash-es'
+import { Digitalinnsending } from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
+import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 import FileUpload from '@navikt/filopplasting'
 import { v4 as uuid } from 'uuid'
 
@@ -66,10 +66,10 @@ enum Kodeverk {
 export const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
-	const sessionDokumenter = _get(formikBag.values, 'dokarkiv.vedlegg')
-	const digitalInnsending = _get(formikBag.values, 'dokarkiv.avsenderMottaker')
+	const sessionDokumenter = _.get(formikBag.values, 'dokarkiv.vedlegg')
+	const digitalInnsending = _.get(formikBag.values, 'dokarkiv.avsenderMottaker')
 	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
-	const [skjemaValues, setSkjemaValues] = useState(_get(formikBag.values, 'dokarkiv.skjema'))
+	const [skjemaValues, setSkjemaValues] = useState(_.get(formikBag.values, 'dokarkiv.skjema'))
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
@@ -160,8 +160,8 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 							)
 						}}
 						feil={
-							_get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
-								? { feilmelding: _get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
+							_.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
+								? { feilmelding: _.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
 								: null
 						}
 						name="dokarkiv.journalfoerendeEnhet"
@@ -229,7 +229,7 @@ DokarkivForm.validation = {
 						'Feltet er påkrevd',
 						function validBrevkode() {
 							const values = this.options.context
-							const brevkode = _get(values, 'dokarkiv.dokumenter[0].brevkode')
+							const brevkode = _.get(values, 'dokarkiv.dokumenter[0].brevkode')
 							return brevkode !== ''
 						}
 					),

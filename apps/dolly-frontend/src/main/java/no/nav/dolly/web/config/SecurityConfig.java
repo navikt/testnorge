@@ -52,14 +52,16 @@ public class SecurityConfig {
                 .pathMatchers(
                         "/internal/isReady",
                         "/internal/isAlive",
+                        "/assets/*",
                         "/internal/metrics",
                         "/oauth2/callback",
                         "/favicon.ico",
                         LOGIN,
                         LOGOUT,
-                        "/main.*.css",
-                        "/bundle.*.js",
                         "/oauth2/logout",
+                        "/*.css",
+                        "/*.js",
+                        "/*.mjs",
                         "/*.png"
                 ).permitAll()
                 .anyExchange().authenticated()

@@ -1,16 +1,15 @@
-import React from 'react'
-import Button from '~/components/ui/button/Button'
-import { Feedback } from '~/components/feedback'
-import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
+import Button from '@/components/ui/button/Button'
+import { Feedback } from '@/components/feedback'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import FagsystemStatus from './FagsystemStatus/FagsystemStatus'
-import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
+import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
+import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 
 import './BestillingResultat.less'
-import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
-import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
+import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus

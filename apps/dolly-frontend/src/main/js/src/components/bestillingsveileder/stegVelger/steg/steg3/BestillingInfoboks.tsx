@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Bestillingsdata } from '~/components/bestillingsveileder/bestillingTypes'
+import { Bestillingsdata } from '@/components/bestillingsveileder/bestillingTypes'
 import { Alert } from '@navikt/ds-react'
 
 type BestillingInfoboksProps = {

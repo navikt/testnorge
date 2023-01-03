@@ -1,8 +1,8 @@
 import React, { Fragment } from 'react'
-import { EksporterExcel } from '~/pages/gruppe/EksporterExcel/EksporterExcel'
-import { Header } from '~/components/ui/header/Header'
+import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
+import { Header } from '@/components/ui/header/Header'
 import './OrganisasjonHeader.less'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 type OrgHeaderProps = {
 	antallOrganisasjoner: number

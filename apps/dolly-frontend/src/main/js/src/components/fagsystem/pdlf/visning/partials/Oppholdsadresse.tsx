@@ -1,17 +1,15 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
-import { Matrikkeladresse } from '~/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import _cloneDeep from 'lodash/cloneDeep'
-import { initialOppholdsadresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
-import { OppholdsadresseData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
+import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import * as _ from 'lodash-es'
+import { initialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type OppholdsadresseTypes = {
 	data: Array<any>
@@ -68,10 +66,10 @@ const OppholdsadresseVisning = ({
 	ident,
 	erPdlVisning,
 }: OppholdsadresseVisningTypes) => {
-	const initOppholdsadresse = Object.assign(_cloneDeep(initialOppholdsadresse), data[idx])
+	const initOppholdsadresse = Object.assign(_.cloneDeep(initialOppholdsadresse), data[idx])
 	const initialValues = { oppholdsadresse: initOppholdsadresse }
 
-	const redigertOppholdsadressePdlf = _get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
+	const redigertOppholdsadressePdlf = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
 		(a: OppholdsadresseData) => a.id === oppholdsadresseData.id
 	)
 	const slettetOppholdsadressePdlf =
@@ -86,7 +84,7 @@ const OppholdsadresseVisning = ({
 	const redigertOppholdsadresseValues = redigertOppholdsadressePdlf
 		? {
 				oppholdsadresse: Object.assign(
-					_cloneDeep(initialOppholdsadresse),
+					_.cloneDeep(initialOppholdsadresse),
 					redigertOppholdsadressePdlf
 				),
 		  }

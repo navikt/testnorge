@@ -1,7 +1,6 @@
-import React from 'react'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { FormikField } from '~/components/ui/form/FormikField'
-import { SyntEvent } from '~/components/ui/form/formUtils'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { FormikField } from '@/components/ui/form/FormikField'
+import { SyntEvent } from '@/components/ui/form/formUtils'
 import { Checkbox as NavCheckbox, Switch } from '@navikt/ds-react'
 
 import './Checkbox.less'
@@ -65,7 +64,7 @@ export const FormikCheckbox = ({
 }) => (
 	<FormikField name={props.name} fastfield={fastfield}>
 		{({ field, _form, _meta }) => {
-			const handleChange = (event) => {
+			const handleChange = (event: { target: { checked: any } }) => {
 				field.onChange(SyntEvent(field.name, event.target.checked))
 				if (afterChange) afterChange(event.target.checked)
 			}
