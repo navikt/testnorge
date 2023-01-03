@@ -1,22 +1,21 @@
 import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
 	KontaktadresseData,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { initialKontaktadresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import _cloneDeep from 'lodash/cloneDeep'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import Formatters from '~/utils/DataFormatter'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import Formatters from '@/utils/DataFormatter'
 
 type KontaktadresseTypes = {
 	data: Array<any>

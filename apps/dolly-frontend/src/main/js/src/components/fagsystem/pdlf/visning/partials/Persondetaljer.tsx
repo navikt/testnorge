@@ -1,19 +1,19 @@
 import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Formatters from '~/utils/DataFormatter'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Formatters from '@/utils/DataFormatter'
 import _get from 'lodash/get'
 import {
 	initialKjoenn,
 	initialNavn,
 	initialPersonstatus,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
-import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
-import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
-import { SkjermingVisning } from '~/components/fagsystem/skjermingsregister/visning/Visning'
-import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
+import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
+import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
+import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type PersondetaljerTypes = {
 	data: any
