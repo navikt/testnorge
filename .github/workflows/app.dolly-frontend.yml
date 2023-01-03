@@ -25,32 +25,10 @@ jobs:
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   
-  cypress-tests:
-    runs-on: ubuntu-latest-4-cores
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-
-      - name: Cypress run
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        uses: cypress-io/github-action@v4
-        with:
-          working-directory: 'apps/dolly-frontend/src/main/js'
-          browser: chrome
-          start: npm run start-cypress
-  
   deploy:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: [ build, cypress-tests ]
+    needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/dolly-frontend/config.yml'

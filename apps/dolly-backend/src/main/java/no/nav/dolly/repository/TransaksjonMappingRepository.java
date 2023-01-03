@@ -17,7 +17,7 @@ public interface TransaksjonMappingRepository extends CrudRepository<Transaksjon
             "t.bestillingId is null or " +
             "(t.bestillingId is not null and t.bestillingId=:bestillingId)) and " +
             "t.ident=:ident")
-    Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(Long bestillingId, String ident);
+    Optional<List<TransaksjonMapping>> findAllByBestillingIdAndIdent(@Param("bestillingId") Long bestillingId, @Param("ident") String ident);
 
     @Modifying
     int deleteAllByIdent(String ident);
