@@ -16,6 +16,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 
+import java.util.UUID;
+
 @Import({
         CoreConfig.class,
         DevConfig.class,
@@ -40,7 +42,9 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
         return builder.routes()
                 .route(spec -> spec
                         .path("/api/v1/inntekt/**")
-                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
+                        .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter)
+                                .setRequestHeader("Nav-Call-Id","Dolly " + UUID.randomUUID())
+                                .setRequestHeader("Nav-Consumer-Id", "Dolly"))
                         .uri(properties.getUrl()))
                 .route(spec -> spec
                         .path("/environment/**")
