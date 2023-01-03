@@ -43,7 +43,7 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                         .uri(properties.getUrl()))
                 .route(spec -> spec
-                        .path("/api/v1/environment/**")
+                        .path("/environment/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                         .uri(properties.getUrl()))
                 .route(spec -> spec
