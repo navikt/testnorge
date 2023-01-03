@@ -52,6 +52,16 @@ export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = nu
 	)
 }
 
+export const multiFetcherPensjon = (miljoUrlListe, headers = null as any, path = null) => {
+	return Promise.all(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, { Miljoe: obj.miljo, ...headers }).then((result) => {
+				return { miljo: obj.miljo, data: path ? result[path] : result }
+			})
+		)
+	)
+}
+
 export const multiFetcherDokarkiv = (miljoUrlListe) => {
 	return Promise.all(
 		miljoUrlListe?.map((obj) =>
