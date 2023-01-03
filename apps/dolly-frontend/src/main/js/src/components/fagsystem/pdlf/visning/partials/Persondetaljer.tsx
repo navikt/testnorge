@@ -95,8 +95,8 @@ export const Persondetaljer = ({
 		skjermingsregister: skjermingData,
 	}
 
-	const redigertPersonPdlf = _get(tmpPersoner?.pdlforvalter, `${ident}.person`)
-	const redigertSkjerming = _get(tmpPersoner?.skjermingsregister, `${ident}`)
+	const redigertPersonPdlf = _.get(tmpPersoner?.pdlforvalter, `${ident}.person`)
+	const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
 	const redigertPdlfPersonValues = redigertPersonPdlf

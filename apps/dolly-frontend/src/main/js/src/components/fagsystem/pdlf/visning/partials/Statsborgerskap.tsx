@@ -62,10 +62,10 @@ const StatsborgerskapVisning = ({
 	ident,
 	erPdlVisning,
 }: StatsborgerskapVisningTypes) => {
-	const initStatsborgerskap = Object.assign(_cloneDeep(initialStatsborgerskap), data[idx])
+	const initStatsborgerskap = Object.assign(_.cloneDeep(initialStatsborgerskap), data[idx])
 	const initialValues = { statsborgerskap: initStatsborgerskap }
 
-	const redigertStatsborgerskapPdlf = _get(tmpPersoner, `${ident}.person.statsborgerskap`)?.find(
+	const redigertStatsborgerskapPdlf = _.get(tmpPersoner, `${ident}.person.statsborgerskap`)?.find(
 		(a: StatsborgerskapData) => a.id === statsborgerskapData.id
 	)
 	const slettetStatsborgerskapPdlf =
@@ -80,7 +80,7 @@ const StatsborgerskapVisning = ({
 	const redigertStatsborgerskapValues = redigertStatsborgerskapPdlf
 		? {
 				statsborgerskap: Object.assign(
-					_cloneDeep(initialStatsborgerskap),
+					_.cloneDeep(initialStatsborgerskap),
 					redigertStatsborgerskapPdlf
 				),
 		  }

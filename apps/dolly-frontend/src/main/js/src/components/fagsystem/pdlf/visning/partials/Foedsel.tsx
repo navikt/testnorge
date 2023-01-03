@@ -69,10 +69,10 @@ const FoedselVisning = ({
 	erPdlVisning,
 	ident,
 }: FoedselVisningTypes) => {
-	const initFoedsel = Object.assign(_cloneDeep(initialFoedsel), data[idx])
+	const initFoedsel = Object.assign(_.cloneDeep(initialFoedsel), data[idx])
 	const initialValues = { foedsel: initFoedsel }
 
-	const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
+	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.foedsel`)?.find(
 		(a: Person) => a.id === foedsel.id
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
@@ -82,7 +82,7 @@ const FoedselVisning = ({
 
 	const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
 	const redigertFoedselValues = redigertFoedselPdlf
-		? { foedsel: Object.assign(_cloneDeep(initialFoedsel), redigertFoedselPdlf) }
+		? { foedsel: Object.assign(_.cloneDeep(initialFoedsel), redigertFoedselPdlf) }
 		: null
 
 	return erPdlVisning ? (

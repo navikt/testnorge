@@ -69,10 +69,10 @@ const UtvandringVisning = ({
 	ident,
 	erPdlVisning,
 }: UtvandringVisningTypes) => {
-	const initUtvandring = Object.assign(_cloneDeep(initialUtvandring), data[idx])
+	const initUtvandring = Object.assign(_.cloneDeep(initialUtvandring), data[idx])
 	const initialValues = { utflytting: initUtvandring }
 
-	const redigertUtvandringPdlf = _get(tmpPersoner, `${ident}.person.utflytting`)?.find(
+	const redigertUtvandringPdlf = _.get(tmpPersoner, `${ident}.person.utflytting`)?.find(
 		(a: UtvandringValues) => a.id === utvandringData.id
 	)
 	const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
@@ -83,7 +83,7 @@ const UtvandringVisning = ({
 	const utvandringValues = redigertUtvandringPdlf ? redigertUtvandringPdlf : utvandringData
 	const redigertUtvandringValues = redigertUtvandringPdlf
 		? {
-				utflytting: Object.assign(_cloneDeep(initialUtvandring), redigertUtvandringPdlf),
+				utflytting: Object.assign(_.cloneDeep(initialUtvandring), redigertUtvandringPdlf),
 		  }
 		: null
 	return erPdlVisning ? (

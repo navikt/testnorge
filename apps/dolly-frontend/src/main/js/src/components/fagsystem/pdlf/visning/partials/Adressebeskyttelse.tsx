@@ -55,10 +55,10 @@ const AdressebeskyttelseVisning = ({
 	identtype,
 	erPdlVisning,
 }: AdressebeskyttelseVisningTypes) => {
-	const initAdressebeskyttelse = Object.assign(_cloneDeep(initialAdressebeskyttelse), data[idx])
+	const initAdressebeskyttelse = Object.assign(_.cloneDeep(initialAdressebeskyttelse), data[idx])
 	const initialValues = { adressebeskyttelse: initAdressebeskyttelse }
 
-	const redigertAdressebeskyttelsePdlf = _get(
+	const redigertAdressebeskyttelsePdlf = _.get(
 		tmpPersoner,
 		`${ident}.person.adressebeskyttelse`
 	)?.find((a: Person) => a.id === adressebeskyttelse.id)
@@ -74,7 +74,7 @@ const AdressebeskyttelseVisning = ({
 	const redigertAdressebeskyttelseValues = redigertAdressebeskyttelsePdlf
 		? {
 				adressebeskyttelse: Object.assign(
-					_cloneDeep(initialAdressebeskyttelse),
+					_.cloneDeep(initialAdressebeskyttelse),
 					redigertAdressebeskyttelsePdlf
 				),
 		  }

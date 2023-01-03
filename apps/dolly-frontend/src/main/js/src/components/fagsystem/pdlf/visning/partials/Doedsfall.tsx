@@ -47,10 +47,10 @@ const DoedsfallVisning = ({
 	ident,
 	erPdlVisning,
 }: DoedsfallVisningTypes) => {
-	const initDoedsfall = Object.assign(_cloneDeep(initialDoedsfall), data[idx])
+	const initDoedsfall = Object.assign(_.cloneDeep(initialDoedsfall), data[idx])
 	const initialValues = { doedsfall: initDoedsfall }
 
-	const redigertDoedsfallPdlf = _get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
+	const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
 		(a: Person) => a.id === doedsfall.id
 	)
 	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
@@ -60,7 +60,7 @@ const DoedsfallVisning = ({
 
 	const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
 	const redigertDoedsfallValues = redigertDoedsfallPdlf
-		? { doedsfall: Object.assign(_cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
+		? { doedsfall: Object.assign(_.cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
 		: null
 
 	return erPdlVisning ? (

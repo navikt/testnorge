@@ -68,10 +68,10 @@ const OppholdsadresseVisning = ({
 	ident,
 	erPdlVisning,
 }: OppholdsadresseVisningTypes) => {
-	const initOppholdsadresse = Object.assign(_cloneDeep(initialOppholdsadresse), data[idx])
+	const initOppholdsadresse = Object.assign(_.cloneDeep(initialOppholdsadresse), data[idx])
 	const initialValues = { oppholdsadresse: initOppholdsadresse }
 
-	const redigertOppholdsadressePdlf = _get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
+	const redigertOppholdsadressePdlf = _.get(tmpPersoner, `${ident}.person.oppholdsadresse`)?.find(
 		(a: OppholdsadresseData) => a.id === oppholdsadresseData.id
 	)
 	const slettetOppholdsadressePdlf =
@@ -86,7 +86,7 @@ const OppholdsadresseVisning = ({
 	const redigertOppholdsadresseValues = redigertOppholdsadressePdlf
 		? {
 				oppholdsadresse: Object.assign(
-					_cloneDeep(initialOppholdsadresse),
+					_.cloneDeep(initialOppholdsadresse),
 					redigertOppholdsadressePdlf
 				),
 		  }

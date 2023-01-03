@@ -58,10 +58,10 @@ const BoadresseVisning = ({
 	identtype,
 	erPdlVisning,
 }: BoadresseVisningTypes) => {
-	const initBoadresse = Object.assign(_cloneDeep(initialBostedsadresse), data[idx])
+	const initBoadresse = Object.assign(_.cloneDeep(initialBostedsadresse), data[idx])
 	const initialValues = { bostedsadresse: initBoadresse }
 
-	const redigertBoadressePdlf = _get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
+	const redigertBoadressePdlf = _.get(tmpPersoner, `${ident}.person.bostedsadresse`)?.find(
 		(a: BostedData) => a.id === boadresseData.id
 	)
 	const slettetBoadressePdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBoadressePdlf
@@ -72,7 +72,7 @@ const BoadresseVisning = ({
 	const boadresseValues = redigertBoadressePdlf ? redigertBoadressePdlf : boadresseData
 	const redigertBoadresseValues = redigertBoadressePdlf
 		? {
-				bostedsadresse: Object.assign(_cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
+				bostedsadresse: Object.assign(_.cloneDeep(initialBostedsadresse), redigertBoadressePdlf),
 		  }
 		: null
 

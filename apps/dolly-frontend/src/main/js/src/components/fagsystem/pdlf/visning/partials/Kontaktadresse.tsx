@@ -175,12 +175,12 @@ const KontaktadresseVisning = ({
 	erPdlVisning,
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
-		_cloneDeep(initialKontaktadresse),
+		_.cloneDeep(initialKontaktadresse),
 		data?.[idx] || tmpData?.[idx]
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
 
-	const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
+	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
 		(a: KontaktadresseData) => a.id === kontaktadresseData.id
 	)
 	const slettetKontaktadressePdlf =
@@ -195,7 +195,7 @@ const KontaktadresseVisning = ({
 	const redigertKontaktadresseValues = redigertKontaktadressePdlf
 		? {
 				kontaktadresse: Object.assign(
-					_cloneDeep(initialKontaktadresse),
+					_.cloneDeep(initialKontaktadresse),
 					redigertKontaktadressePdlf
 				),
 		  }
