@@ -42,7 +42,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(MILJO_HEADER, miljoe.toUpperCase())
+                .header(MILJO_HEADER, miljoe)
                 .bodyValue(lagreInntektRequest)
                 .retrieve()
                 .bodyToFlux(String.class)

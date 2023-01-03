@@ -64,6 +64,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
+                .filter(miljoer -> miljoer.removeAll(Set.of("q4")))
                 .block();
     }
 
@@ -78,7 +79,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         log.info("Popp lagre inntekt {}", lagreInntektRequest);
         return Flux.fromIterable(miljoer)
-                .filter(miljo -> !"q4".equals(miljo))
                 .flatMap(miljoe -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
                         lagreInntektRequest, miljoe).call());
     }
