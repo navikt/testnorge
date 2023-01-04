@@ -56,16 +56,6 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
 						</li>
 					)}
-
-					{pdldata?.person?.fullmakt && <li>Fullmakt: Q2</li>}
-					{pdldata?.person?.falskIdentitet && <li>Falsk identitet: Q2</li>}
-					{pdldata?.person?.utenlandskIdentifikasjonsnummer && (
-						<li>Utenlandsk identifikasjonsnummer: Q2</li>
-					)}
-					{pdldata?.person?.kontaktinformasjonForDoedsbo && (
-						<li>Kontaktinformasjon for dødsbo: Q2</li>
-					)}
-
 					{arenaforvalter && (
 						<li>
 							Arena:&nbsp;
