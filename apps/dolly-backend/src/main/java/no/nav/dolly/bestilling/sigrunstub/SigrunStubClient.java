@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.sigrunstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -13,6 +12,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -38,7 +38,7 @@ public class SigrunStubClient implements ClientRegister {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
 
-            var context = new MappingContext.Factory().getContext();
+            var context = MappingContextUtils.getMappingContext();
             context.setProperty("ident", dollyPerson.getHovedperson());
 
             var skattegrunnlag =
