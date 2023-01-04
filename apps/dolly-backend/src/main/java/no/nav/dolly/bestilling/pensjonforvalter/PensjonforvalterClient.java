@@ -65,33 +65,12 @@ public class PensjonforvalterClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
 
-    public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
-
-        var status = new HashMap<String, PensjonforvalterResponse.Response>();
-        responser.stream()
-                .forEach(respons -> respons.getStatus().stream()
-                        .forEach(detalj -> {
-                            if (detalj.getResponse().isResponse2xx()) {
-                                status.putIfAbsent(detalj.getMiljo(), detalj.getResponse());
-                            } else {
-                                status.put(detalj.getMiljo(), detalj.getResponse());
-                            }
-                        }));
-
-        return PensjonforvalterResponse.builder()
-                .status(status.entrySet().stream()
-                        .map(detalj -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo(detalj.getKey())
-                                .response(detalj.getValue())
-                                .build())
-                        .toList())
-                .build();
-    }
-
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
+        var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments()).stream()
+                .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
+                .collect(Collectors.toSet());
         var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
@@ -112,31 +91,31 @@ public class PensjonforvalterClient implements ClientRegister {
         } else {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
             progress.setPensjonforvalterStatus(pensjonforvalterConsumer.getAccessToken()
-                            .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
-                                    .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
-                                                    .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
-                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
-                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                    .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
+                            .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
+                                            .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
+                                            .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
+                                    (dollyPerson.getHovedperson().equals(person.getIdent()) ?
                                             lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
                                                     .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just("")),
-                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                            Flux.just("")),
+                                    (dollyPerson.getHovedperson().equals(person.getIdent()) ?
                                             lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
                                                     .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just("")),
-                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreAlderspensjon(
-                                                            bestilling.getPensjonforvalter(),
-                                                            dollyPerson.getHovedperson(),
-                                                            bestilteMiljoer,
-                                                            token,
-                                                            isOpprettEndre,
-                                                            progress.getBestilling().getId())
-                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just(""))
-                                    )))
-                            .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining("$"))
+                                            Flux.just("")),
+                                    (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                            lagreAlderspensjon(
+                                                    bestilling.getPensjonforvalter(),
+                                                    dollyPerson.getHovedperson(),
+                                                    bestilteMiljoer,
+                                                    token,
+                                                    isOpprettEndre,
+                                                    progress.getBestilling().getId())
+                                                    .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
+                                            Flux.just(""))
+                            )))
+                    .filter(StringUtils::isNotBlank)
+                    .collect(Collectors.joining("$"))
                     .block());
         }
 
@@ -159,6 +138,29 @@ public class PensjonforvalterClient implements ClientRegister {
                         .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()));
     }
 
+    public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
+
+        var status = new HashMap<String, PensjonforvalterResponse.Response>();
+        responser
+                .forEach(respons -> respons.getStatus()
+                        .forEach(detalj -> {
+                            if (detalj.getResponse().isResponse2xx()) {
+                                status.putIfAbsent(detalj.getMiljo(), detalj.getResponse());
+                            } else {
+                                status.put(detalj.getMiljo(), detalj.getResponse());
+                            }
+                        }));
+
+        return PensjonforvalterResponse.builder()
+                .status(status.entrySet().stream()
+                        .map(detalj -> PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo(detalj.getKey())
+                                .response(detalj.getValue())
+                                .build())
+                        .toList())
+                .build();
+    }
+
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(
             PensjonData pensjonData,
             String ident,
@@ -171,11 +173,9 @@ public class PensjonforvalterClient implements ClientRegister {
             List<String> opprettIMiljoer = null;
 
             if (!isOpprettEndre) {
-                // da sjekker hvis den eksisterer ikke i transaskjonMapping per miljø
-                var miljoerUtenTransakjoner = miljoer.stream()
+                opprettIMiljoer = miljoer.stream()
                         .filter(miljo -> !transaksjonMappingService.existAlready(PEN_AP, ident, miljo))
                         .toList();
-                opprettIMiljoer = miljoerUtenTransakjoner;
             } else {
                 opprettIMiljoer = new ArrayList<>(miljoer);
             }
@@ -188,7 +188,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                 return pensjonforvalterConsumer.lagreAlderspensjon(lagreAlderspensjonRequest, token)
                         .map(response -> {
-                            response.getStatus().stream().forEach(status -> {
+                            response.getStatus().forEach(status -> {
                                 log.info("Mottatt status for {} fra miljø {} fra Pensjon-Testdata-Facade: {}", ident, status.getMiljo(), status.getResponse());
                                 if (status.getResponse().isResponse2xx()) {
                                     saveAPTransaksjonId(ident, status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
@@ -237,27 +237,27 @@ public class PensjonforvalterClient implements ClientRegister {
     private Mono<PensjonforvalterResponse> lagreTpForhold(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
 
         return nonNull(pensjonData) && !pensjonData.getTp().isEmpty() ?
-                                Flux.fromIterable(pensjonData.getTp())
-                                        .map(tp -> {
-                                            var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
-                                            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
-                                            lagreTpForholdRequest.setMiljoer(miljoer);
-                                            return pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest, token)
-                                                    .flatMap(forholdSvar ->
-                                                        Flux.fromIterable(tp.getYtelser())
-                                                                .flatMap(ytelse -> {
-                                                                    LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
-                                                                    lagreTpYtelseRequest.setYtelseType(ytelse.getType());
-                                                                    lagreTpYtelseRequest.setOrdning(tp.getOrdning());
-                                                                    lagreTpYtelseRequest.setFnr(dollyPerson.getHovedperson());
-                                                                    lagreTpYtelseRequest.setMiljoer(miljoer);
-                                                                    return pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest, token);
-                                                                })
-                                                    );
-                                        })
-                                        .flatMap(Flux::from)
-                                        .collectList()
-                                        .map(PensjonforvalterClient::mergePensjonforvalterResponses)
+                Flux.fromIterable(pensjonData.getTp())
+                        .map(tp -> {
+                            var lagreTpForholdRequest = mapperFacade.map(tp, LagreTpForholdRequest.class);
+                            lagreTpForholdRequest.setFnr(dollyPerson.getHovedperson());
+                            lagreTpForholdRequest.setMiljoer(miljoer);
+                            return pensjonforvalterConsumer.lagreTpForhold(lagreTpForholdRequest, token)
+                                    .flatMap(forholdSvar ->
+                                            Flux.fromIterable(tp.getYtelser())
+                                                    .flatMap(ytelse -> {
+                                                        LagreTpYtelseRequest lagreTpYtelseRequest = mapperFacade.map(ytelse, LagreTpYtelseRequest.class);
+                                                        lagreTpYtelseRequest.setYtelseType(ytelse.getType());
+                                                        lagreTpYtelseRequest.setOrdning(tp.getOrdning());
+                                                        lagreTpYtelseRequest.setFnr(dollyPerson.getHovedperson());
+                                                        lagreTpYtelseRequest.setMiljoer(miljoer);
+                                                        return pensjonforvalterConsumer.lagreTpYtelse(lagreTpYtelseRequest, token);
+                                                    })
+                                    );
+                        })
+                        .flatMap(Flux::from)
+                        .collectList()
+                        .map(PensjonforvalterClient::mergePensjonforvalterResponses)
                 :
                 Mono.empty();
 
