@@ -16,7 +16,7 @@ const poppUrl = (ident, miljoer) =>
 
 const tpUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/tp/forhold?fnr=${ident}&miljo=${miljo}`,
 		miljo: miljo,
 	}))
 
