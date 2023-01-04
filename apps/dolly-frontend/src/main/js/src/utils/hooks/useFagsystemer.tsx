@@ -51,9 +51,8 @@ export const usePoppData = (ident, harPoppBestilling) => {
 		[
 			poppUrl(ident, pensjonEnvironments),
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
-			'inntekter',
 		],
-		([url, headers, path]) => multiFetcherPensjon(url, headers, path)
+		([url, headers]) => multiFetcherPensjon(url, headers)
 	)
 
 	return {
