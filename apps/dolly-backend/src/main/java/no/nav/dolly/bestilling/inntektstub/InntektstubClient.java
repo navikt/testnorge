@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.inntektstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
@@ -13,6 +12,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.mapper.MappingContextUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class InntektstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-            var context = new MappingContext.Factory().getContext();
+            var context = MappingContextUtils.getMappingContext();
             context.setProperty("ident", dollyPerson.getHovedperson());
 
             var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
