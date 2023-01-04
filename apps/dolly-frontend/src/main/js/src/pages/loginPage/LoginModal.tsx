@@ -1,8 +1,8 @@
-import React from 'react'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import { Alert } from '@navikt/ds-react'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { top } from '@popperjs/core'
+import React from 'react'
 
 const brukerveiledning = (
 	<a

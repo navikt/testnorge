@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher } from '@/api'
 
-import { DollyInfoAlert } from '~/components/infostripe/DollyInfoAlert'
-import Button from '~/components/ui/button/Button'
-import Icon from '~/components/ui/icon/Icon'
+import { DollyInfoAlert } from '@/components/infostripe/DollyInfoAlert'
+import Button from '@/components/ui/button/Button'
+import Icon from '@/components/ui/icon/Icon'
 
 import './InfoStripe.less'
 

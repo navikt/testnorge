@@ -13,8 +13,8 @@ import { UdiPanel } from './paneler/Udi'
 import { BrregPanel } from './paneler/Brreg'
 import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { PensjonPanel } from '~/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {

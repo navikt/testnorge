@@ -1,8 +1,8 @@
-import React from 'react'
-import _get from 'lodash/get'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import * as _ from 'lodash-es'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikProps } from 'formik'
+import React from 'react'
 
 interface AlderForm {
 	formikBag: FormikProps<{}>
@@ -16,11 +16,11 @@ export const Alder = ({ formikBag }: AlderForm) => {
 	}
 
 	const disableAlder =
-		_get(formikBag.values, paths.foedtEtter) != null ||
-		_get(formikBag.values, paths.foedtFoer) != null
+		_.get(formikBag.values, paths.foedtEtter) != null ||
+		_.get(formikBag.values, paths.foedtFoer) != null
 
 	const disableFoedtDato =
-		_get(formikBag.values, paths.alder) !== '' && _get(formikBag.values, paths.alder) !== null
+		_.get(formikBag.values, paths.alder) !== '' && _.get(formikBag.values, paths.alder) !== null
 
 	const onlyNumberKeyPressHandler = (event: React.KeyboardEvent<any>) =>
 		!/\d/.test(event.key) && event.preventDefault()

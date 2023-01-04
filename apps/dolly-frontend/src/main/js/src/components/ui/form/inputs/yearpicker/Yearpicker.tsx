@@ -1,10 +1,9 @@
-import React from 'react'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { Label } from '~/components/ui/form/inputs/label/Label'
+import * as _ from 'lodash-es'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { Label } from '@/components/ui/form/inputs/label/Label'
 import ReactDatepicker from 'react-datepicker'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 interface YearpickerProps {
 	formikBag: FormikProps<any>
@@ -26,7 +25,7 @@ export const Yearpicker = ({
 	disabled = false,
 }: YearpickerProps) => {
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
-		const feilmelding = _get(formikProps.errors, formikPath)
+		const feilmelding = _.get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 

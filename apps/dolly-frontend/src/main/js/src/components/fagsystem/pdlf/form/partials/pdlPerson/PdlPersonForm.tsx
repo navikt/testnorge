@@ -1,12 +1,11 @@
-import React from 'react'
 import { FormikProps } from 'formik'
-import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
-import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
+import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
 import { useParams } from 'react-router-dom'
-import { DollyApi } from '~/service/Api'
+import { DollyApi } from '@/service/Api'
 import { useAsync } from 'react-use'
-import { Option } from '~/service/SelectOptionsOppslag'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 interface PdlPersonValues {
 	nyPersonPath: string

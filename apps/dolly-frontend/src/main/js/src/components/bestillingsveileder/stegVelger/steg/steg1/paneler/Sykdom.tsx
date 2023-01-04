@@ -1,8 +1,7 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { sykdomAttributt } from '~/components/fagsystem/sykdom/form/Form'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { sykdomAttributt } from '@/components/fagsystem/sykdom/form/Form'
 
 export const SykdomPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(SykdomPanel.initialValues)

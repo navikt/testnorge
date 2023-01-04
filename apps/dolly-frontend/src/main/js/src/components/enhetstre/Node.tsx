@@ -1,6 +1,6 @@
 import * as React from 'react'
 import './Enhetstre.less'
-import { OrgTree } from '~/components/enhetstre/OrgTree'
+import { OrgTree } from '@/components/enhetstre/OrgTree'
 
 type NodeProps<T> = {
 	enhet: OrgTree<T>

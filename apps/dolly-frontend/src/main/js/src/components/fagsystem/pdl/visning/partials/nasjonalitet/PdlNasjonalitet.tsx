@@ -1,9 +1,8 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { HentPerson } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { PdlStatsborgerskap } from '~/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlStatsborgerskap'
-import { PdlInnflytting } from '~/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlInnflytting'
-import { PdlUtflytting } from '~/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlUtflytting'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { HentPerson } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { PdlStatsborgerskap } from '@/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlStatsborgerskap'
+import { PdlInnflytting } from '@/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlInnflytting'
+import { PdlUtflytting } from '@/components/fagsystem/pdl/visning/partials/nasjonalitet/PdlUtflytting'
 
 type NasjonalitetProps = {
 	data: HentPerson

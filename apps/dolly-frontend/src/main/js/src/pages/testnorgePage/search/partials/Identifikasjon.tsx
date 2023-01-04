@@ -1,7 +1,7 @@
-import React from 'react'
 import { FormikProps } from 'formik'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { RadioGroupOptions } from '~/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { RadioGroupOptions } from '@/pages/testnorgePage/search/radioGroupOptions/RadioGroupOptions'
+import React from 'react'
 
 interface IdentifikasjonProps {
 	formikBag: FormikProps<{}>

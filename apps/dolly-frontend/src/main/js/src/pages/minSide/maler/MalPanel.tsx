@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Panel from '~/components/ui/panel/Panel'
-import Button from '~/components/ui/button/Button'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Panel from '@/components/ui/panel/Panel'
+import Button from '@/components/ui/button/Button'
 
 import { Alert, Table } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { Mal } from '~/utils/hooks/useMaler'
-import Icon from '~/components/ui/icon/Icon'
-import { DollyApi } from '~/service/Api'
+import { Mal } from '@/utils/hooks/useMaler'
+import Icon from '@/components/ui/icon/Icon'
+import { DollyApi } from '@/service/Api'
 import { EndreMalnavn } from './EndreMalnavn'
 
 type Props = {

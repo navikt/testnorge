@@ -1,9 +1,8 @@
-import React from 'react'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { Periode } from '~/components/fagsystem/sykdom/SykemeldingTypes'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { Periode } from '@/components/fagsystem/sykdom/SykemeldingTypes'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 type PerioderProps = {
 	data: Array<Periode>

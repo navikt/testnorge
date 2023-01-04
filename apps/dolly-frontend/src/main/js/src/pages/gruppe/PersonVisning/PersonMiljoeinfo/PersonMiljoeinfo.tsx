@@ -1,10 +1,9 @@
-import React from 'react'
 import { useAsync } from 'react-use'
-import Loading from '~/components/ui/loading/Loading'
+import Loading from '@/components/ui/loading/Loading'
 import { TpsDataVisning } from './TpsDataVisning'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TpsMessagingApi, BankkontoApi } from '~/service/Api'
-import { KontoregisterData } from '~/service/services/kontoregister/KontoregisterService'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TpsMessagingApi, BankkontoApi } from '@/service/Api'
+import { KontoregisterData } from '@/service/services/kontoregister/KontoregisterService'
 
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean

@@ -1,16 +1,16 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherFagsystemer } from '~/api'
+import { multiFetcherDokarkiv, multiFetcherFagsystemer, multiFetcherPensjon } from '@/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
 	usePensjonEnvironments,
-} from '~/utils/hooks/useEnvironments'
+} from '@/utils/hooks/useEnvironments'
 
-import { useTransaksjonsid } from '~/utils/hooks/useTransaksjonsid'
+import { useTransaksjonsid } from '@/utils/hooks/useTransaksjonsid'
 
 const poppUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}&miljo=${miljo}`,
+		url: `/testnav-pensjon-testdata-facade-proxy/api/v1/inntekt?fnr=${ident}`,
 		miljo: miljo,
 	}))
 
@@ -53,7 +53,7 @@ export const usePoppData = (ident, harPoppBestilling) => {
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 			'inntekter',
 		],
-		multiFetcherFagsystemer
+		([url, headers, path]) => multiFetcherPensjon(url, headers, path)
 	)
 
 	return {
@@ -77,7 +77,7 @@ export const useTpData = (ident, harTpBestilling) => {
 			tpUrl(ident, pensjonEnvironments),
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
-		multiFetcherFagsystemer
+		([url, headers]) => multiFetcherPensjon(url, headers)
 	)
 
 	return {

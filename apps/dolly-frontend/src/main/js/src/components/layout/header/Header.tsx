@@ -1,16 +1,15 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
-import Icon from '~/components/ui/icon/Icon'
-import Button from '~/components/ui/button/Button'
+import Icon from '@/components/ui/icon/Icon'
+import Button from '@/components/ui/button/Button'
 // @ts-ignore
-import logo from '~/assets/img/nav-logo-hvit.png'
+import logo from '@/assets/img/nav-logo-hvit.png'
 // @ts-ignore
-import dolly from '~/assets/favicon.ico'
+import dolly from '@/favicon.ico'
 import './Header.less'
-import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '~/utils/hooks/useBruker'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { getDefaultImage } from '~/pages/minSide/Profil'
-import Loading from '~/components/ui/loading/Loading'
+import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
+import logoutBruker from '@/components/utlogging/logoutBruker'
+import { getDefaultImage } from '@/pages/minSide/Profil'
+import Loading from '@/components/ui/loading/Loading'
 
 export default () => {
 	const { brukerProfil } = useBrukerProfil()

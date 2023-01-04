@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import Loading from '~/components/ui/loading/Loading'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
-import _get from 'lodash/get'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { identFraTestnorge } from '~/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import Loading from '@/components/ui/loading/Loading'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import * as _ from 'lodash-es'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { identFraTestnorge } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Steg1Person'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { useBoolean } from 'react-use'
 import { FormikProps } from 'formik'
-import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '~/components/fagsystem/pdlf/PdlTypes'
+import { ForeldreBarnRelasjon, NyIdent, Sivilstand } from '@/components/fagsystem/pdlf/PdlTypes'
 import { Alert } from '@navikt/ds-react'
 import { useParams } from 'react-router-dom'
 
@@ -56,7 +56,7 @@ export const PdlEksisterendePerson = ({
 
 	const harForeldreansvarForValgteBarn = (foreldreansvar: Array<string>) => {
 		let harEksisterendeAnsvar = false
-		const valgteBarn = _get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
+		const valgteBarn = _.get(formikBag?.values, 'pdldata.person.forelderBarnRelasjon')
 			?.filter((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN')
 			?.map((relasjon: ForeldreBarnRelasjon) => relasjon.relatertPerson)
 
@@ -70,11 +70,11 @@ export const PdlEksisterendePerson = ({
 
 	const getAntallForeldre = (eksisterendeForeldre: Array<string>) => {
 		const partnerErForelder = () =>
-			_get(formikBag?.values, 'pdldata.person.sivilstand')?.find(
+			_.get(formikBag?.values, 'pdldata.person.sivilstand')?.find(
 				(partner: Sivilstand) =>
 					partner.type && !gyldigeSivilstanderForPartner.includes(partner.type)
 			) &&
-			!_get(formikBag?.values, `pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
+			!_.get(formikBag?.values, `pdldata.person.forelderBarnRelasjon[${idx}].partnerErIkkeForelder`)
 		const antallEksisterendeForeldre = eksisterendeForeldre.length
 		const antallNyeForeldre = parseInt(antall) + (partnerErForelder() ? parseInt(antall) : 0)
 		return antallEksisterendeForeldre + antallNyeForeldre
@@ -92,14 +92,14 @@ export const PdlEksisterendePerson = ({
 			return person.alder > 17
 		} else if (
 			eksisterendePersonPath?.includes('forelderBarnRelasjon') &&
-			_get(
+			_.get(
 				formikBag?.values,
 				`pdldata.person.forelderBarnRelasjon[${idx}].relatertPersonsRolle`
 			) === 'BARN'
 		) {
 			return (
 				getAntallForeldre(person.foreldre) < 3 &&
-				!_get(formikBag.values, 'pdldata.person.forelderBarnRelasjon').some(
+				!_.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon').some(
 					(relasjon: ForeldreBarnRelasjon, relasjonId: number) =>
 						relasjon.relatertPerson === person.value && relasjonId !== idx
 				)
@@ -147,7 +147,7 @@ export const PdlEksisterendePerson = ({
 
 	const hasNyPersonValues = nyIdentValg
 		? !isEmpty(nyIdentValg, ['syntetisk'])
-		: nyPersonPath && !isEmpty(_get(formikBag?.values, nyPersonPath), ['syntetisk'])
+		: nyPersonPath && !isEmpty(_.get(formikBag?.values, nyPersonPath), ['syntetisk'])
 
 	const bestillingFlerePersoner = parseInt(antall) > 1 && (harSivilstand || harNyIdent)
 

@@ -1,4 +1,3 @@
-import React from 'react'
 import { Button, ButtonProps } from '@navikt/ds-react'
 
 const NavButton = ({ variant = 'primary', children, ...restProps }: ButtonProps) => (

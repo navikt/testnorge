@@ -1,7 +1,3 @@
-interface SelectOptions {
-	[name: string]: Array<{ value: boolean | string; label: string }>
-}
-
 const adresser = {
 	vegadresse: 'Vegadresse',
 	matrikkeladresse: 'Matrikkeladresse',
@@ -19,7 +15,7 @@ const relasjoner = {
 const ingenInfo = 'Ingen informasjon'
 const tjenesteytingEllerEtablering = 'Tjenesteyting eller etablering'
 
-const selectOptions: SelectOptions = {
+const selectOptions = {
 	identtype: [
 		{ value: 'FNR', label: 'FNR' },
 		{ value: 'DNR', label: 'DNR' },
@@ -496,4 +492,4 @@ const selectOptions: SelectOptions = {
 	],
 }
 
-export const SelectOptionsManager = (attributeId: keyof SelectOptions) => selectOptions[attributeId]
+export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]

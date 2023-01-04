@@ -1,6 +1,5 @@
-import React from 'react'
 import styled from 'styled-components'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 export interface Props {
 	left: boolean

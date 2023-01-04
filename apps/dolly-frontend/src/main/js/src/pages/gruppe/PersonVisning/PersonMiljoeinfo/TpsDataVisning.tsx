@@ -1,11 +1,10 @@
-import React from 'react'
 import './DataVisning.less'
 // @ts-ignore
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import { TpsfVisning } from '~/components/fagsystem'
-import DollyTooltip from '~/components/ui/button/DollyTooltip'
-import { ApiFeilmelding } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import { TpsfVisning } from '@/components/fagsystem'
+import DollyTooltip from '@/components/ui/button/DollyTooltip'
+import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 
 type TpsData = {
 	data: Array<Data>

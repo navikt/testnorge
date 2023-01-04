@@ -1,4 +1,3 @@
-import React from 'react'
 import { FormikProps } from 'formik'
 import { InntektForm } from './inntektForm'
 import { FradragForm } from './fradragForm'

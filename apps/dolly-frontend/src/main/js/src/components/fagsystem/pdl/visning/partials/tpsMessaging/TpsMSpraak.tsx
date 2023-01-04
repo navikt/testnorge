@@ -1,6 +1,5 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 
 type TpsMSpraakProps = {
 	data: Spraak

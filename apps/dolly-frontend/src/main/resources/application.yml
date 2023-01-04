@@ -1,6 +1,11 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+IDPORTEN_ISSUER_URI: https://oidc.difi.no/idporten-oidc-provider/
+POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.dev.intern.nav.no/login
 
 spring:
+  cloud:
+    vault:
+      enabled: false
   application:
     name: dolly-frontend
   main:
@@ -32,8 +37,6 @@ spring:
           idporten:
             issuer-uri: ${IDPORTEN_ISSUER_URI}
 
-POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.dev.intern.nav.no/login
-IDPORTEN_ISSUER_URI: https://oidc.difi.no/idporten-oidc-provider/
 
 consumers:
   testnav-tps-messaging-service:

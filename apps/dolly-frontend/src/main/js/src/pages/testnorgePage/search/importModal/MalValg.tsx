@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { useDollyMaler } from '~/utils/hooks/useMaler'
-import { useBrukerProfil } from '~/utils/hooks/useBruker'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { useDollyMaler } from '@/utils/hooks/useMaler'
+import { useBrukerProfil } from '@/utils/hooks/useBruker'
 
 type Props = {
 	valgtMal: (mal: any) => void

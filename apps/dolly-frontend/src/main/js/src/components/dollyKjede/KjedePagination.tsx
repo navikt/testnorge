@@ -1,7 +1,6 @@
-import React from 'react'
 import styled from 'styled-components'
-import KjedeItem from '~/components/dollyKjede/KjedeItem'
-import ArrowButton from '~/components/dollyKjede/ArrowButton'
+import KjedeItem from '@/components/dollyKjede/KjedeItem'
+import ArrowButton from '@/components/dollyKjede/ArrowButton'
 import './DollyKjede.less'
 
 export interface Props {

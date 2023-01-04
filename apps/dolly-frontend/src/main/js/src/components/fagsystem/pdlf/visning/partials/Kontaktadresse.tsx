@@ -1,22 +1,20 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
 	KontaktadresseData,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { initialKontaktadresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import _cloneDeep from 'lodash/cloneDeep'
-import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import Formatters from '~/utils/DataFormatter'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import * as _ from 'lodash-es'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import Formatters from '@/utils/DataFormatter'
 
 type KontaktadresseTypes = {
 	data: Array<any>
@@ -175,12 +173,12 @@ const KontaktadresseVisning = ({
 	erPdlVisning,
 }: KontaktadresseVisningTypes) => {
 	const initKontaktadresse = Object.assign(
-		_cloneDeep(initialKontaktadresse),
+		_.cloneDeep(initialKontaktadresse),
 		data?.[idx] || tmpData?.[idx]
 	)
 	const initialValues = { kontaktadresse: initKontaktadresse }
 
-	const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
+	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
 		(a: KontaktadresseData) => a.id === kontaktadresseData.id
 	)
 	const slettetKontaktadressePdlf =
@@ -195,7 +193,7 @@ const KontaktadresseVisning = ({
 	const redigertKontaktadresseValues = redigertKontaktadressePdlf
 		? {
 				kontaktadresse: Object.assign(
-					_cloneDeep(initialKontaktadresse),
+					_.cloneDeep(initialKontaktadresse),
 					redigertKontaktadressePdlf
 				),
 		  }
@@ -223,7 +221,7 @@ export const Kontaktadresse = ({
 		return null
 	}
 
-	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
 	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}

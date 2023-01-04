@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { generateValidKontoOptions } from '~/utils/GenererGyldigNorskBankkonto'
-import _get from 'lodash/get'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { generateValidKontoOptions } from '@/utils/GenererGyldigNorskBankkonto'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) => {
 	const [validKontoOptions, setValidKontoOptions] = useState([])
@@ -15,8 +15,8 @@ export const NorskBankkonto = ({ formikBag }: { formikBag: FormikProps<{}> }) =>
 	}, [])
 
 	const path = 'bankkonto.norskBankkonto'
-	const harTilfeldig = _get(formikBag?.values, `${path}.tilfeldigKontonummer`)
-	const kontonummer = _get(formikBag?.values, `${path}.kontonummer`)
+	const harTilfeldig = _.get(formikBag?.values, `${path}.tilfeldigKontonummer`)
+	const kontonummer = _.get(formikBag?.values, `${path}.kontonummer`)
 
 	return (
 		<Vis attributt={path} formik>

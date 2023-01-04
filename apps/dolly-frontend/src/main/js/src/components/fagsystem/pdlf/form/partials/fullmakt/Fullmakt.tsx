@@ -1,14 +1,14 @@
 import * as React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { initialFullmakt } from '~/components/fagsystem/pdlf/form/initialValues'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
+import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
-import _get from 'lodash/get'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import * as _ from 'lodash-es'
 
 interface FullmaktForm {
 	formikBag: FormikProps<{}>
@@ -47,8 +47,8 @@ export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 							label={'FULLMEKTIG'}
 							formikBag={formikBag}
 							isExpanded={
-								!isEmpty(_get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
-								_get(formikBag.values, `${path}.motpartsPersonident`) !== null
+								!isEmpty(_.get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
+								_.get(formikBag.values, `${path}.motpartsPersonident`) !== null
 							}
 						/>
 						<AvansertForm path={path} kanVelgeMaster={false} />

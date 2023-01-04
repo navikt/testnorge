@@ -1,16 +1,16 @@
 import * as React from 'react'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { PdlPersonExpander } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { initialPdlPerson, initialSivilstand } from '~/components/fagsystem/pdlf/form/initialValues'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { PdlPersonExpander } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonExpander'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import _get from 'lodash/get'
-import { isEmpty } from '~/components/fagsystem/pdlf/form/partials/utils'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import * as _ from 'lodash-es'
+import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 interface SivilstandForm {
 	formikBag: FormikProps<{}>
@@ -43,7 +43,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 		>
 			{(path: string) => {
 				const kanHaRelatertPerson = gyldigeSivilstander.includes(
-					_get(formikBag.values, `${path}.type`)
+					_.get(formikBag.values, `${path}.type`)
 				)
 				return (
 					<div className="flexbox--flex-wrap">
@@ -54,7 +54,7 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 							onChange={(selected: any) => handleTypeChange(selected, path)}
 							isClearable={false}
 						/>
-						{_get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
+						{_.get(formikBag.values, `${path}.type`) === 'SAMBOER' && (
 							<div style={{ marginLeft: '-20px', marginRight: '20px', paddingTop: '27px' }}>
 								<Hjelpetekst>
 									Samboer eksisterer verken i PDL eller TPS. Personer med denne typen sisvilstand
@@ -65,15 +65,15 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 						<FormikDatepicker
 							name={`${path}.sivilstandsdato`}
 							label="Gyldig fra og med"
-							disabled={_get(formikBag.values, `${path}.bekreftelsesdato`) != null}
+							disabled={_.get(formikBag.values, `${path}.bekreftelsesdato`) != null}
 							fastfield={false}
 						/>
 						<FormikDatepicker
 							name={`${path}.bekreftelsesdato`}
 							label="Bekreftelsesdato"
 							disabled={
-								_get(formikBag.values, `${path}.sivilstandsdato`) != null ||
-								_get(formikBag.values, `${path}.master`) !== 'PDL'
+								_.get(formikBag.values, `${path}.sivilstandsdato`) != null ||
+								_.get(formikBag.values, `${path}.master`) !== 'PDL'
 							}
 							fastfield={false}
 						/>
@@ -90,14 +90,14 @@ export const Sivilstand = ({ formikBag }: SivilstandForm) => {
 								label={'PERSON RELATERT TIL'}
 								formikBag={formikBag}
 								isExpanded={
-									!isEmpty(_get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
-									_get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
+									!isEmpty(_.get(formikBag.values, `${path}.nyRelatertPerson`), ['syntetisk']) ||
+									_.get(formikBag.values, `${path}.relatertVedSivilstand`) !== null
 								}
 							/>
 						)}
 						<AvansertForm
 							path={path}
-							kanVelgeMaster={_get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+							kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
 						/>
 					</div>
 				)

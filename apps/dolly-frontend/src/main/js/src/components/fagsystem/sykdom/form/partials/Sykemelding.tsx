@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import { get as _get } from 'lodash'
+import * as _ from 'lodash-es'
 import { SyntSykemelding } from './SyntSykemelding'
 import { DetaljertSykemelding } from './DetaljertSykemelding'
-import { Diagnose, SykemeldingForm } from '~/components/fagsystem/sykdom/SykemeldingTypes'
+import { Diagnose, SykemeldingForm } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { ToggleGroup } from '@navikt/ds-react'
 
 const initialValuesSyntSykemelding = {
@@ -75,7 +75,7 @@ enum SykemeldingTyper {
 
 export const Sykemelding = ({ formikBag }: SykemeldingForm) => {
 	const [typeSykemelding, setTypeSykemelding] = useState(
-		_get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
+		_.get(formikBag.values, 'sykemelding').hasOwnProperty('detaljertSykemelding')
 			? SykemeldingTyper.detaljert
 			: SykemeldingTyper.synt
 	)

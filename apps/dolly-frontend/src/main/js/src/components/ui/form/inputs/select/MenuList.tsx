@@ -1,4 +1,3 @@
-import React from 'react'
 import { FixedSizeList as List } from 'react-window'
 
 const OPTION_HEIGHT = 40
