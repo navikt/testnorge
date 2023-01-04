@@ -91,31 +91,35 @@ public class PensjonforvalterClient implements ClientRegister {
         } else {
             dollyPersonCache.fetchIfEmpty(dollyPerson);
             progress.setPensjonforvalterStatus(pensjonforvalterConsumer.getAccessToken()
-                    .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
-                            .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
-                                            .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
-                                            .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
-                                    (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                            lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                    .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
-                                            Flux.just("")),
-                                    (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                            lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                    .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
-                                            Flux.just("")),
-                                    (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                            lagreAlderspensjon(
-                                                    bestilling.getPensjonforvalter(),
-                                                    dollyPerson.getHovedperson(),
-                                                    bestilteMiljoer,
-                                                    token,
-                                                    isOpprettEndre,
-                                                    progress.getBestilling().getId())
-                                                    .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
-                                            Flux.just(""))
-                            )))
-                    .filter(StringUtils::isNotBlank)
-                    .collect(Collectors.joining("$"))
+                            .flatMapMany(token -> Flux.fromIterable(dollyPerson.getPersondetaljer())
+                                    .flatMap(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(mapperFacade.map(person, OpprettPersonRequest.class), tilgjengeligeMiljoer, token)
+                                                    .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
+                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
+
+                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                            .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
+                                                    Flux.just("")),
+
+                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                    lagreAlderspensjon(
+                                                            bestilling.getPensjonforvalter(),
+                                                            dollyPerson.getHovedperson(),
+                                                            bestilteMiljoer,
+                                                            token,
+                                                            isOpprettEndre,
+                                                            progress.getBestilling().getId())
+                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
+                                                    Flux.just("")),
+
+                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
+                                                    Flux.just(""))
+
+                                    )))
+                            .filter(StringUtils::isNotBlank)
+                            .collect(Collectors.joining("$"))
                     .block());
         }
 
@@ -220,14 +224,14 @@ public class PensjonforvalterClient implements ClientRegister {
                         .build());
     }
 
-    private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson, Set<String> miljoer, AccessToken token) {
+    private Flux<PensjonforvalterResponse> lagreInntekt(PensjonData pensjonData, DollyPerson dollyPerson,
+                                                        Set<String> miljoer, AccessToken token) {
 
         if (nonNull(pensjonData) && nonNull(pensjonData.getInntekt())) {
-            LagreInntektRequest lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
+            var lagreInntektRequest = mapperFacade.map(pensjonData.getInntekt(), LagreInntektRequest.class);
             lagreInntektRequest.setFnr(dollyPerson.getHovedperson());
-            lagreInntektRequest.setMiljoer(new ArrayList<>(miljoer));
 
-            return pensjonforvalterConsumer.lagreInntekt(lagreInntektRequest, token);
+            return pensjonforvalterConsumer.lagreInntekter(lagreInntektRequest, miljoer, token);
 
         } else {
             return Flux.empty();

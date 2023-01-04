@@ -4,11 +4,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
-import no.nav.dolly.bestilling.pensjonforvalter.command.GetInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetMiljoerCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.GetPoppInntekterCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.GetTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreAlderspensjonCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.command.LagreInntektCommand;
+import no.nav.dolly.bestilling.pensjonforvalter.command.LagrePoppInntektCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
@@ -64,6 +64,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
+                .filter(miljoer -> miljoer.removeAll(Set.of("q4")))
                 .block();
     }
 
@@ -72,8 +73,19 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties);
     }
 
+    @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
+    public Flux<PensjonforvalterResponse> lagreInntekter(LagreInntektRequest lagreInntektRequest,
+                                                         Set<String> miljoer, AccessToken token) {
+
+        log.info("Popp lagre inntekt {}", lagreInntektRequest);
+        return Flux.fromIterable(miljoer)
+                .flatMap(miljoe -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
+                        lagreInntektRequest, miljoe).call());
+    }
+
     @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
-    public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest, Set<String> miljoer, AccessToken token) {
+    public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest,
+                                                        Set<String> miljoer, AccessToken token) {
 
         opprettPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", opprettPersonRequest);
@@ -87,18 +99,11 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_lagreInntekt" })
-    public Flux<PensjonforvalterResponse> lagreInntekt(LagreInntektRequest lagreInntektRequest, AccessToken token) {
-
-        log.info("Pensjon lagre inntekt {}", lagreInntektRequest);
-        return new LagreInntektCommand(webClient, token.getTokenValue(), lagreInntektRequest).call();
-    }
-
     @Timed(name = "providers", tags = { "operation", "pen_getInntekter" })
     public JsonNode getInntekter(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
+                .flatMap(token -> new GetPoppInntekterCommand(webClient, token.getTokenValue(), ident, miljoe).call())
                 .block();
     }
 
