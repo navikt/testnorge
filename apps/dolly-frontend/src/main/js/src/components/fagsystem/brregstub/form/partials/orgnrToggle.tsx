@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
-import { OrganisasjonTextSelect } from '~/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
+import { OrganisasjonTextSelect } from '@/components/fagsystem/brregstub/form/partials/organisasjonTextSelect'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
-} from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import { OrganisasjonLoader } from '~/components/organisasjonSelect/OrganisasjonLoader'
+} from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import { OrganisasjonLoader } from '@/components/organisasjonSelect/OrganisasjonLoader'
 
 interface OrgnrToggleProps {
 	path: string
@@ -32,7 +32,7 @@ export const OrgnrToggle = ({
 	}
 
 	const clearEnhetsinfo = () => {
-		const oldValues = _get(formikBag.values, path) || {}
+		const oldValues = _.get(formikBag.values, path) || {}
 		if (oldValues.hasOwnProperty('foretaksNavn')) {
 			delete oldValues['foretaksNavn']
 		}
@@ -57,9 +57,9 @@ export const OrgnrToggle = ({
 				<OrganisasjonLoader
 					path={`${path}.orgNr`}
 					handleChange={handleChange}
-					value={_get(formikBag.values, `${path}.orgNr`)}
+					value={_.get(formikBag.values, `${path}.orgNr`)}
 					feil={
-						_get(formikBag.values, path) === '' && {
+						_.get(formikBag.values, path) === '' && {
 							feilmelding: 'Feltet er påkrevd',
 						}
 					}

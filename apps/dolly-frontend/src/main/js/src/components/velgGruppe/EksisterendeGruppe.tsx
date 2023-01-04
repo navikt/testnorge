@@ -1,8 +1,8 @@
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import Loading from '@/components/ui/loading/Loading'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { Gruppe, useEgneGrupper } from '@/utils/hooks/useGruppe'
 import React from 'react'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import Loading from '~/components/ui/loading/Loading'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { Gruppe, useEgneGrupper } from '~/utils/hooks/useGruppe'
 
 interface EksisterendeGruppe {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>

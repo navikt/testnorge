@@ -1,8 +1,7 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { Adresse } from '~/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
-import { KontaktadresseData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { Adresse } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
+import { KontaktadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
 type PdlKontaktadresseProps = {
 	data: Array<KontaktadresseData>

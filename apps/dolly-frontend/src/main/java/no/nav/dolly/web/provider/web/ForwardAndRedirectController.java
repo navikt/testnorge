@@ -18,7 +18,7 @@ public class ForwardAndRedirectController {
 
     @Bean
     public RouterFunction<ServerResponse> htmlRouter(@Value("classpath:/static/index.html") Resource html) {
-        HandlerFunction<ServerResponse> indexHandler = request -> ok().contentType(MediaType.TEXT_HTML).syncBody(html);
+        HandlerFunction<ServerResponse> indexHandler = request -> ok().contentType(MediaType.TEXT_HTML).bodyValue(html);
         return RouterFunctions
                 .route(RequestPredicates.GET("/gruppe/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/minside/**"), indexHandler)
@@ -30,5 +30,4 @@ public class ForwardAndRedirectController {
                 .andRoute(RequestPredicates.GET("/bruker/**"), indexHandler)
                 .andRoute(RequestPredicates.GET("/team/**"), indexHandler);
     }
-
 }

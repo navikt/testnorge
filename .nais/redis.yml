@@ -29,6 +29,7 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
         - application: dolly-dev-redis-session-redisexporter
 ---
 apiVersion: "nais.io/v1alpha1"

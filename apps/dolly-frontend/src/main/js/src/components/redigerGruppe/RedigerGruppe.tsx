@@ -1,9 +1,9 @@
 import React, { Fragment } from 'react'
 import { Form, Formik, getIn } from 'formik'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
-import Loading from '~/components/ui/loading/Loading'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import Loading from '@/components/ui/loading/Loading'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 import './RedigerGruppe.less'
 import { useNavigate } from 'react-router-dom'

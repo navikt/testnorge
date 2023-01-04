@@ -96,7 +96,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 person.setBostedsadresse(null);
                 return;
 
-            } else if (!person.getUtflytting().isEmpty() &&
+            } else if (!person.getUtflytting().isEmpty() && bostedadresse.countAdresser() == 0 &&
                     person.getInnflytting().stream()
                             .noneMatch(innflytting -> person.getUtflytting().stream()
                                     .anyMatch(utflytting -> innflytting.getInnflyttingsdato()

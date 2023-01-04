@@ -1,28 +1,28 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
 import { Formik, FormikProps } from 'formik'
-import { FoedselForm } from '~/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import { FoedselForm } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
-import Button from '~/components/ui/button/Button'
-import _get from 'lodash/get'
-import { DollyApi, PdlforvalterApi } from '~/service/Api'
-import Icon from '~/components/ui/icon/Icon'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { StatsborgerskapForm } from '~/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
-import { DoedsfallForm } from '~/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
-import { RedigerInnvandringForm } from '~/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
-import { RedigerUtvandringForm } from '~/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
-import { BostedsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
-import { OppholdsadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
-import { KontaktadresseForm } from '~/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
-import { VergemaalForm } from '~/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import Button from '@/components/ui/button/Button'
+import * as _ from 'lodash-es'
+import { DollyApi, PdlforvalterApi } from '@/service/Api'
+import Icon from '@/components/ui/icon/Icon'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { StatsborgerskapForm } from '@/components/fagsystem/pdlf/form/partials/statsborgerskap/Statsborgerskap'
+import { DoedsfallForm } from '@/components/fagsystem/pdlf/form/partials/doedsfall/Doedsfall'
+import { RedigerInnvandringForm } from '@/components/fagsystem/pdlf/form/partials/innvandring/Innvandring'
+import { RedigerUtvandringForm } from '@/components/fagsystem/pdlf/form/partials/utvandring/Utvandring'
+import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/bostedsadresse/Bostedsadresse'
+import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
+import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
+import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import {
 	AdressebeskyttelseForm,
 	getIdenttype,
-} from '~/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { doedsfall } from '~/components/fagsystem/pdlf/form/validation/validation'
+} from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
+import { doedsfall } from '@/components/fagsystem/pdlf/form/validation/validation'
 import {
 	innflytting,
 	statsborgerskap,
@@ -32,13 +32,13 @@ import {
 	kontaktadresse,
 	oppholdsadresse,
 	vergemaal,
-} from '~/components/fagsystem/pdlf/form/validation/partials'
-import { ifPresent, validate } from '~/utils/YupValidations'
+} from '@/components/fagsystem/pdlf/form/validation/partials'
+import { ifPresent, validate } from '@/utils/YupValidations'
 import {
 	RedigerLoading,
 	Modus,
-} from '~/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
-import { Option } from '~/service/SelectOptionsOppslag'
+} from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -128,8 +128,8 @@ export const VisningRedigerbar = ({
 
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
-			const id = _get(data, `${path}.id`)
-			const itemData = _get(data, path)
+			const id = _.get(data, `${path}.id`)
+			const itemData = _.get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
 				.catch((error: Error) => {
@@ -157,7 +157,7 @@ export const VisningRedigerbar = ({
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
-			const id = _get(initialValues, `${path}.id`)
+			const id = _.get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.deleteAttributt(ident, path, id)
 				.catch((error: Error) => {

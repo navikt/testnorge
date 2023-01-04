@@ -1,16 +1,15 @@
-import React from 'react'
 import * as Yup from 'yup'
-import { ifPresent, requiredBoolean } from '~/utils/YupValidations'
-import _get from 'lodash/get'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import Panel from '~/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { ifPresent, requiredBoolean } from '@/utils/YupValidations'
+import * as _ from 'lodash-es'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import Panel from '@/components/ui/panel/Panel'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { FormikProps } from 'formik'
 
 type KrrstubFormProps = {
@@ -27,7 +26,7 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 	const leverandoerer = SelectOptionsOppslag.hentKrrLeverandoerer()
 	//@ts-ignore
 	const leverandoerOptions = SelectOptionsOppslag.formatOptions('sdpLeverandoer', leverandoerer)
-	const registrert = _get(formikBag, 'values.krrstub.registrert')
+	const registrert = _.get(formikBag, 'values.krrstub.registrert')
 
 	const handleRegistrertChange = (newRegistrert: Change) => {
 		if (!newRegistrert.value) {

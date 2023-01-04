@@ -1,8 +1,8 @@
 import React, { useContext } from 'react'
 import './Header.less'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
 
 const DropdownToggle = () => {

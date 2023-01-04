@@ -1,6 +1,5 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
 
 export type AvslagEllerBortfall = {
 	avslagEllerBortfall: {

@@ -1,5 +1,4 @@
-import React from 'react'
-import { dollySlack } from '~/components/dollySlack/dollySlack'
+import { dollySlack } from '@/components/dollySlack/dollySlack'
 
 type VarslingId = {
 	varslingId: string

@@ -1,13 +1,13 @@
-import React from 'react'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import useBoolean from '~/utils/hooks/useBoolean'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import Button from '~/components/ui/button/Button'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import useBoolean from '@/utils/hooks/useBoolean'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import Button from '@/components/ui/button/Button'
+import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
 
 import './FrigjoerModal.less'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import React from 'react'
 
 type RelatertPersonProps = {
 	type: string

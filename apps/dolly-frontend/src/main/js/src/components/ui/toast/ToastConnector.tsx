@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import { applicationErrorSelector, clearAllErrors } from '~/ducks/errors'
-import { Toast } from '~/components/ui/toast/Toast'
+import { applicationErrorSelector, clearAllErrors } from '@/ducks/errors'
+import { Toast } from '@/components/ui/toast/Toast'
 import { Dispatch } from 'redux'
 
 const mapStateToProps = (state: {}) => ({

@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { OrgserviceApi } from '~/service/Api'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { OrgserviceApi } from '@/service/Api'
 import { useBoolean } from 'react-use'
-import { OrganisasjonMedMiljoeSelect } from '~/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
+import { OrganisasjonMedMiljoeSelect } from '@/components/organisasjonSelect/OrganisasjonMedMiljoeSelect'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
-} from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
+} from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
 import { FormikProps } from 'formik'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import { useFasteDataOrganisasjon } from '~/utils/hooks/useOrganisasjoner'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import { useFasteDataOrganisasjon } from '@/utils/hooks/useOrganisasjoner'
 
 export const ORGANISASJONSTYPE_TOGGLE = 'ORGANISASJONSTYPE_TOGGLE'
 

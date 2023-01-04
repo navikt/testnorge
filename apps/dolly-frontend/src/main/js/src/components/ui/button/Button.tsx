@@ -2,9 +2,9 @@ import * as React from 'react'
 // @ts-ignore
 import cn from 'classnames'
 // @ts-ignore
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 // @ts-ignore
-import Loading from '~/components/ui/loading/Loading'
+import Loading from '@/components/ui/loading/Loading'
 import './Button.less'
 
 interface Button extends React.ButtonHTMLAttributes<HTMLButtonElement> {

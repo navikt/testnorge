@@ -1,13 +1,12 @@
-import React from 'react'
 import { NavLink } from 'react-router-dom'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 // @ts-ignore
-import logo from '~/assets/img/nav-logo-hvit.png'
+import logo from '@/assets/img/nav-logo-hvit.png'
 import './Header.less'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import Loading from '~/components/ui/loading/Loading'
-import { BrukerDropdown } from '~/components/layout/header/BrukerDropdown'
-import { DokumentasjonDropdown } from '~/components/layout/header/DokumentasjonDropdown'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import Loading from '@/components/ui/loading/Loading'
+import { BrukerDropdown } from '@/components/layout/header/BrukerDropdown'
+import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonDropdown'
 
 export default () => {
 	const { currentBruker, loading } = useCurrentBruker()

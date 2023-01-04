@@ -1,4 +1,3 @@
-import React from 'react'
 import {
 	DoedfoedtBarn,
 	FoedselData,
@@ -6,7 +5,7 @@ import {
 	ForeldreBarnRelasjon,
 	Metadata,
 	Sivilstand,
-} from '~/components/fagsystem/pdlf/PdlTypes'
+} from '@/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
 	data: {

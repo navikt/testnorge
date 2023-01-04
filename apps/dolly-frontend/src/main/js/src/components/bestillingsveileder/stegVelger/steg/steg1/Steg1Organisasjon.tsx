@@ -1,4 +1,3 @@
-import React from 'react'
 import { AttributtVelger } from './attributtVelger/AttributtVelger'
 import { OrganisasjonDetaljerPanel } from './paneler/OrganisasjonDetaljer'
 

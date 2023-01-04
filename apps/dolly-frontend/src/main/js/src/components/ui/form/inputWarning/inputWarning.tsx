@@ -1,5 +1,4 @@
-import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 import cn from 'classnames'
 import './inputWarning.less'
 

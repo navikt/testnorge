@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const orgForvalterUrl = '/testnav-organisasjon-forvalter/api/v2/organisasjoner'
 

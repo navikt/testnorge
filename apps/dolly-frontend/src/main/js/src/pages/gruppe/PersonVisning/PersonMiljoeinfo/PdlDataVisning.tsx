@@ -2,11 +2,11 @@ import React, { useState } from 'react'
 import './DataVisning.less'
 import 'rc-tooltip/assets/bootstrap_white.css'
 import { useBoolean } from 'react-use'
-import { DollyApi } from '~/service/Api'
-import Icon from '~/components/ui/icon/Icon'
-import { PdlVisning } from '~/components/fagsystem/pdl/visning/PdlVisning'
-import { Ident, PdlDataWrapper } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import DollyTooltip from '~/components/ui/button/DollyTooltip'
+import { DollyApi } from '@/service/Api'
+import Icon from '@/components/ui/icon/Icon'
+import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
+import { Ident, PdlDataWrapper } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import DollyTooltip from '@/components/ui/button/DollyTooltip'
 
 type PdlDataVisningProps = {
 	ident: Ident

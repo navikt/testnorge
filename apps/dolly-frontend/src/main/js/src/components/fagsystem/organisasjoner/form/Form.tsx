@@ -1,13 +1,12 @@
-import React from 'react'
 import * as Yup from 'yup'
-import { ifPresent, requiredString } from '~/utils/YupValidations'
+import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Detaljer } from './partials/Detaljer'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { adressePaths, kontaktPaths, organisasjonPaths } from './paths'
-import Panel from '~/components/ui/panel/Panel'
-import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
+import Panel from '@/components/ui/panel/Panel'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
+import { EnhetBestilling } from '@/components/fagsystem/organisasjoner/types'
 
 type OrganisasjonFormProps = {
 	formikBag: FormikProps<{ organisasjon: EnhetBestilling }>

@@ -1,22 +1,20 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
-import { UtenlandskAdresse } from '~/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
+import { UtenlandskAdresse } from '@/components/fagsystem/pdlf/visning/partials/UtenlandskAdresse'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
 	KontaktadresseData,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { initialKontaktadresse } from '~/components/fagsystem/pdlf/form/initialValues'
-import _cloneDeep from 'lodash/cloneDeep'
-import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import Formatters from '~/utils/DataFormatter'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
+import * as _ from 'lodash-es'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import Formatters from '@/utils/DataFormatter'
 
 type KontaktadresseTypes = {
 	data: Array<any>
@@ -26,6 +24,16 @@ type KontaktadresseTypes = {
 }
 
 type KontaktadresseVisningTypes = {
+	kontaktadresseData: any
+	idx: number
+	data: any
+	tmpData: any
+	tmpPersoner: Array<KontaktadresseData>
+	ident: number
+	erPdlVisning: boolean
+}
+
+type AdresseTypes = {
 	kontaktadresseData: any
 	idx: number
 }
@@ -43,7 +51,7 @@ const Adressedatoer = ({ kontaktadresseData }: any) => (
 	</>
 )
 
-export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
+export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 	if (!kontaktadresseData) {
 		return null
 	}
@@ -155,6 +163,54 @@ export const Adresse = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes)
 	)
 }
 
+const KontaktadresseVisning = ({
+	kontaktadresseData,
+	idx,
+	data,
+	tmpData,
+	tmpPersoner,
+	ident,
+	erPdlVisning,
+}: KontaktadresseVisningTypes) => {
+	const initKontaktadresse = Object.assign(
+		_.cloneDeep(initialKontaktadresse),
+		data?.[idx] || tmpData?.[idx]
+	)
+	const initialValues = { kontaktadresse: initKontaktadresse }
+
+	const redigertKontaktadressePdlf = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
+		(a: KontaktadresseData) => a.id === kontaktadresseData.id
+	)
+	const slettetKontaktadressePdlf =
+		tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
+	if (slettetKontaktadressePdlf) {
+		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	}
+
+	const kontaktadresseValues = redigertKontaktadressePdlf
+		? redigertKontaktadressePdlf
+		: kontaktadresseData
+	const redigertKontaktadresseValues = redigertKontaktadressePdlf
+		? {
+				kontaktadresse: Object.assign(
+					_.cloneDeep(initialKontaktadresse),
+					redigertKontaktadressePdlf
+				),
+		  }
+		: null
+	return erPdlVisning ? (
+		<Adresse kontaktadresseData={kontaktadresseData} idx={idx} />
+	) : (
+		<VisningRedigerbarConnector
+			dataVisning={<Adresse kontaktadresseData={kontaktadresseValues} idx={idx} />}
+			initialValues={initialValues}
+			redigertAttributt={redigertKontaktadresseValues}
+			path="kontaktadresse"
+			ident={ident}
+		/>
+	)
+}
+
 export const Kontaktadresse = ({
 	data,
 	tmpPersoner,
@@ -165,49 +221,9 @@ export const Kontaktadresse = ({
 		return null
 	}
 
-	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
 	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
-	}
-
-	const KontaktadresseVisning = ({ kontaktadresseData, idx }: KontaktadresseVisningTypes) => {
-		const initKontaktadresse = Object.assign(
-			_cloneDeep(initialKontaktadresse),
-			data?.[idx] || tmpData?.[idx]
-		)
-		const initialValues = { kontaktadresse: initKontaktadresse }
-
-		const redigertKontaktadressePdlf = _get(tmpPersoner, `${ident}.person.kontaktadresse`)?.find(
-			(a: KontaktadresseData) => a.id === kontaktadresseData.id
-		)
-		const slettetKontaktadressePdlf =
-			tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
-		if (slettetKontaktadressePdlf) {
-			return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
-		}
-
-		const kontaktadresseValues = redigertKontaktadressePdlf
-			? redigertKontaktadressePdlf
-			: kontaktadresseData
-		const redigertKontaktadresseValues = redigertKontaktadressePdlf
-			? {
-					kontaktadresse: Object.assign(
-						_cloneDeep(initialKontaktadresse),
-						redigertKontaktadressePdlf
-					),
-			  }
-			: null
-		return erPdlVisning ? (
-			<Adresse kontaktadresseData={kontaktadresseData} idx={idx} />
-		) : (
-			<VisningRedigerbarConnector
-				dataVisning={<Adresse kontaktadresseData={kontaktadresseValues} idx={idx} />}
-				initialValues={initialValues}
-				redigertAttributt={redigertKontaktadresseValues}
-				path="kontaktadresse"
-				ident={ident}
-			/>
-		)
 	}
 
 	return (
@@ -217,7 +233,15 @@ export const Kontaktadresse = ({
 				<ErrorBoundary>
 					<DollyFieldArray data={data || tmpData} header="" nested>
 						{(adresse: any, idx: number) => (
-							<KontaktadresseVisning kontaktadresseData={adresse} idx={idx} />
+							<KontaktadresseVisning
+								kontaktadresseData={adresse}
+								idx={idx}
+								data={data}
+								tmpData={tmpData}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+								tmpPersoner={tmpPersoner}
+							/>
 						)}
 					</DollyFieldArray>
 				</ErrorBoundary>

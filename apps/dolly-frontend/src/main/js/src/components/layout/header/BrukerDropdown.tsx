@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './Header.less'
-import { useBrukerProfil, useBrukerProfilBilde } from '~/utils/hooks/useBruker'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { getDefaultImage } from '~/pages/minSide/Profil'
+import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
+import logoutBruker from '@/components/utlogging/logoutBruker'
+import { getDefaultImage } from '@/pages/minSide/Profil'
 import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 
 const DropdownToggle = () => {
 	const { brukerProfil } = useBrukerProfil()

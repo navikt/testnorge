@@ -1,20 +1,20 @@
 import React, { useContext } from 'react'
 // @ts-ignore
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { DatepickerWrapper } from '~/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { Utflytting } from '~/components/fagsystem/pdlf/PdlTypes'
-import { getSisteDato } from '~/components/bestillingsveileder/utils'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { Utflytting } from '@/components/fagsystem/pdlf/PdlTypes'
+import { getSisteDato } from '@/components/bestillingsveileder/utils'
 import { FormikProps } from 'formik'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	getFirstDateAfter,
 	getLastDateBefore,
-} from '~/components/fagsystem/pdlf/form/partials/utvandring/utils'
+} from '@/components/fagsystem/pdlf/form/partials/utvandring/utils'
 
 type InnvandringTypes = {
 	path: string
@@ -28,7 +28,7 @@ type RedigerTypes = {
 }
 
 export const RedigerInnvandringForm = ({ formikBag, path, personFoerLeggTil }: RedigerTypes) => {
-	const hoveddato = new Date(_get(formikBag.values, path)?.innflyttingsdato)
+	const hoveddato = new Date(_.get(formikBag.values, path)?.innflyttingsdato)
 	const datoer = personFoerLeggTil?.pdldata?.person?.utflytting?.map(
 		(utflytting: any) => new Date(utflytting.utflyttingsdato)
 	)

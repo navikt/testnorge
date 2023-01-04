@@ -8,6 +8,7 @@
 
 # production
 /build
+/dist
 
 # Generated style sheets for less to css
 /src/**/*.css

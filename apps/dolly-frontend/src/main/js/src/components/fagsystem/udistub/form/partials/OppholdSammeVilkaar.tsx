@@ -1,9 +1,9 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikProps } from 'formik'
-import { Option } from '~/service/SelectOptionsOppslag'
+import { Option } from '@/service/SelectOptionsOppslag'
+import React from 'react'
 
 const pdlBasePath = 'pdldata.person.opphold'
 

@@ -1,20 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import _set from 'lodash/set'
-import _cloneDeep from 'lodash/cloneDeep'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { TimeloennetForm } from './timeloennetForm'
 import { PermisjonForm } from './permisjonForm'
 import { PermitteringForm } from './permitteringForm'
 import { UtenlandsoppholdForm } from './utenlandsoppholdForm'
 import { ArbeidsavtaleForm } from './arbeidsavtaleForm'
 import { MaritimtArbeidsforholdForm } from './maritimtArbeidsforholdForm'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { ArbeidKodeverk } from '~/config/kodeverk'
-import { ArbeidsgiverTyper } from '~/components/fagsystem/aareg/AaregTypes'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { ArbeidKodeverk } from '@/config/kodeverk'
+import { ArbeidsgiverTyper } from '@/components/fagsystem/aareg/AaregTypes'
 import {
 	initialArbeidsforholdOrg,
 	initialArbeidsforholdPers,
@@ -22,14 +18,13 @@ import {
 	initialForenkletOppgjoersordningOrg,
 	initialForenkletOppgjoersordningPers,
 } from '../initialValues'
-import { ArbeidsgiverIdent } from '~/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
+import { ArbeidsgiverIdent } from '@/components/fagsystem/aareg/form/partials/arbeidsgiverIdent'
 import { isDate } from 'date-fns'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import _isEmpty from 'lodash/isEmpty'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { FormikErrors, FormikTouched, FormikValues, useFormikContext } from 'formik'
-import _, { isEqual } from 'lodash'
-import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
+import * as _ from 'lodash-es'
+import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 
 type Arbeidsforhold = {
 	isOppdatering?: boolean
@@ -66,14 +61,14 @@ export const ArbeidsforholdForm = ({
 	warningMessage,
 }) => {
 	const hentUnikeAaregBestillinger = (bestillinger) => {
-		if (_isEmpty(bestillinger) || ameldingIndex) {
+		if (_.isEmpty(bestillinger) || ameldingIndex) {
 			return null
 		}
 
 		const aaregBestillinger = bestillinger
 			?.filter((bestilling) => bestilling?.data?.aareg)
 			?.flatMap((bestilling) => bestilling.data.aareg)
-			?.filter((bestilling) => _isEmpty(bestilling?.amelding))
+			?.filter((bestilling) => _.isEmpty(bestilling?.amelding))
 
 		return _.uniqWith(
 			aaregBestillinger,
@@ -86,7 +81,7 @@ export const ArbeidsforholdForm = ({
 		if (formValues.length > 1) {
 			return true
 		}
-		return !isEqual(values.aareg, [initialArbeidsforholdOrg])
+		return !_.isEqual(values.aareg, [initialArbeidsforholdOrg])
 	}
 
 	const {
@@ -109,7 +104,7 @@ export const ArbeidsforholdForm = ({
 		arbeidsforholdIndex < tidligereAaregBestillinger?.length
 
 	useEffect(() => {
-		if (_isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
+		if (_.isEmpty(tidligereAaregBestillinger) || harGjortFormEndringer(values.aareg)) {
 			return
 		}
 		setFieldValue(
@@ -121,12 +116,12 @@ export const ArbeidsforholdForm = ({
 		)
 	}, [values.aareg])
 
-	const gjeldendeArbeidsgiver = _get(values, `${path}.arbeidsgiver`)
+	const gjeldendeArbeidsgiver = _.get(values, `${path}.arbeidsgiver`)
 
 	const arbeidsforholdstype =
 		typeof ameldingIndex !== 'undefined'
-			? _get(values, 'aareg[0].arbeidsforholdstype')
-			: _get(values, `${path}.arbeidsforholdstype`)
+			? _.get(values, 'aareg[0].arbeidsforholdstype')
+			: _.get(values, `${path}.arbeidsforholdstype`)
 	const onChangeLenket = (fieldPath: string) => {
 		if (arbeidsgiverType !== ArbeidsgiverTyper.egen) {
 			return (field) => {
@@ -136,16 +131,16 @@ export const ArbeidsforholdForm = ({
 		} else {
 			return (field) => {
 				const value = isDate(field) ? field : field?.value || field?.target?.value || null
-				const amelding = _get(values, 'aareg[0].amelding') || []
+				const amelding = _.get(values, 'aareg[0].amelding') || []
 				amelding.forEach((_maaned, idx) => {
 					if (!erLenket && idx < ameldingIndex) {
 						return null
 					} else {
-						const arbeidsforholdClone = _cloneDeep(
+						const arbeidsforholdClone = _.cloneDeep(
 							amelding[idx].arbeidsforhold[arbeidsforholdIndex]
 						)
-						_set(arbeidsforholdClone, fieldPath, value)
-						_set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
+						_.set(arbeidsforholdClone, fieldPath, value)
+						_.set(amelding[idx], `arbeidsforhold[${arbeidsforholdIndex}]`, arbeidsforholdClone)
 					}
 				})
 				setFieldValue('aareg[0].amelding', amelding)
@@ -216,11 +211,11 @@ export const ArbeidsforholdForm = ({
 
 	const feilmelding = () => {
 		if (
-			!_get(values, `${path}.arbeidsforholdstype`) &&
-			_has(touched, `${path}.arbeidsforholdstype`)
+			!_.get(values, `${path}.arbeidsforholdstype`) &&
+			_.has(touched, `${path}.arbeidsforholdstype`)
 		) {
 			return {
-				feilmelding: _get(errors, `${path}.arbeidsforholdstype`),
+				feilmelding: _.get(errors, `${path}.arbeidsforholdstype`),
 			}
 		}
 	}
@@ -234,8 +229,8 @@ export const ArbeidsforholdForm = ({
 		})
 		const dupliserteAktiveArbeidsforhold = aktiveArbeidsforhold
 			.filter((arbeidsforhold, index) => index !== aktiveArbeidsforhold.indexOf(arbeidsforhold))
-			.filter((arbeidsforhold) => !_isEmpty(arbeidsforhold))
-		return _isEmpty(dupliserteAktiveArbeidsforhold)
+			.filter((arbeidsforhold) => !_.isEmpty(arbeidsforhold))
+		return _.isEmpty(dupliserteAktiveArbeidsforhold)
 			? null
 			: {
 					feilmelding: `Identen har allerede pågående arbeidsforhold i org: ${dupliserteAktiveArbeidsforhold.toString()}`,
@@ -309,7 +304,7 @@ export const ArbeidsforholdForm = ({
 					kodeverk={ArbeidKodeverk.SluttaarsakAareg}
 					size="xlarge"
 					onChange={onChangeLenket('ansettelsesPeriode.sluttaarsak')}
-					isDisabled={!_get(values, `${path}.ansettelsesPeriode.tom`)}
+					isDisabled={!_.get(values, `${path}.ansettelsesPeriode.tom`)}
 				/>
 				<Monthpicker
 					name={`${path}.navArbeidsforholdPeriode`}

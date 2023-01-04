@@ -1,6 +1,5 @@
-import React from 'react'
 import Tooltip from 'rc-tooltip'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import './CopyButton.less'

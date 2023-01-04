@@ -1,11 +1,11 @@
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import React from 'react'
-import { ForeldreBarnRelasjon } from '~/components/fagsystem/pdlf/PdlTypes'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import Formatters from '~/utils/DataFormatter'
-import { RelatertPersonUtenId } from '~/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+
+import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import Formatters from '@/utils/DataFormatter'
+import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
 
 type VisningProps = {
 	relasjon: ForeldreBarnRelasjon
