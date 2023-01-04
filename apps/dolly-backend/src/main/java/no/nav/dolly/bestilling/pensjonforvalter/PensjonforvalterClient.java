@@ -72,7 +72,7 @@ public class PensjonforvalterClient implements ClientRegister {
         var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments()).stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet());
-        var tilgjengeligeMiljoer = Optional.of(pensjonforvalterConsumer.getMiljoer())
+        var tilgjengeligeMiljoer = Optional.ofNullable(pensjonforvalterConsumer.getMiljoer())
                 .orElse(Set.of("q1", "q2"));
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
 
