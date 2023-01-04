@@ -1,10 +1,10 @@
 import { createActions } from 'redux-actions'
 import { DollyApi } from '@/service/Api'
 import * as _ from 'lodash-es'
+import _set from 'lodash/fp/set'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
-import { rootPaths } from '@/components/bestillingsveileder/utils'
+import { getLeggTilIdent, rootPaths } from '@/components/bestillingsveileder/utils'
 import { v4 as uuid } from 'uuid'
-import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 import { Logger } from '@/logger/Logger'
 
 export const actions = createActions(
@@ -54,16 +54,16 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
 	} else if (opts.is.opprettFraIdenter) {
-		values = _.set('opprettFraIdenter', opts.opprettFraIdenter, values)
+		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)
 	} else if (opts.is.importTestnorge) {
-		values = _.set(
+		values = _set(
 			'identer',
 			opts.importPersoner.map((person) => person.ident),
 			values
 		)
 		if (!values.environments) {
-			values = _.set('environments', [], values)
+			values = _set('environments', [], values)
 		}
 		bestillingAction = actions.postTestnorgeBestilling(values.gruppeId, values)
 	} else if (values.organisasjon) {
