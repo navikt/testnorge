@@ -2,7 +2,7 @@ export const gjeldendeProfilMock = {
 	visningsNavn: 'BeASt, BugTerminator',
 	epost: 'BeASt@bugexterminator.no',
 	avdeling: '1234 Testytest',
-	organisasjon: 'TESTCAFE',
+	organisasjon: 'CYPRESS',
 	type: 'Testbruker',
 }
 
@@ -25,18 +25,29 @@ export const kodeverkMock = {
 	],
 }
 
+const malBestilling = {
+	antallIdenter: 1,
+	pdldata: {
+		opprettNyPerson: {
+			identtype: 'FNR',
+			foedtEtter: null,
+			foedtFoer: null,
+			alder: null,
+			syntetisk: true,
+		},
+		person: null,
+	},
+	tpsMessaging: {},
+	skjerming: {
+		egenAnsattDatoFom: '2022-09-06T10:24:03',
+	},
+}
 export const brukerMalerMock = [
 	{
 		id: 1,
-		malNavn: 'Teste litt av hvert',
-	},
-	{
-		id: 2,
-		malNavn: 'Fikse Betsy-bugs',
-	},
-	{
-		id: 3,
-		malNavn: 'Fremprovosere godt gjemte Stian-bugs',
+		malNavn: 'Teste Cypress',
+		bestilling: malBestilling,
+		bruker: gjeldendeBrukerMock,
 	},
 ]
 
@@ -435,7 +446,7 @@ export const varslingerVelkommenResponseMock = [
 
 export const varslingerRequestMock = ['VELKOMMEN_TIL_DOLLY']
 
-export const malerMock = { malbestillinger: ['Cafe, Test', []] }
+export const malerMock = { malbestillinger: ['Cypress, Testytest', []] }
 
 export const backendBestillingerMock = [
 	{
@@ -1210,8 +1221,8 @@ export const testidentMock = {
 
 export const nyGruppeMock = {
 	id: 2,
-	navn: 'Testcafe testing',
-	hensikt: 'Saftig testing med testcafe..',
+	navn: 'Cypress testing',
+	hensikt: 'Saftig testing med cypress..',
 	opprettetAv: gjeldendeBrukerMock,
 	sistEndretAv: gjeldendeBrukerMock,
 	datoEndret: '1990-01-12',

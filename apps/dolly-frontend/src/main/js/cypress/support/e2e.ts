@@ -8,6 +8,7 @@ import {
 	brregstubMock,
 	brukerMalerMock,
 	brukerOrganisasjonMalerMock,
+	eksisterendeGruppeMock,
 	gjeldendeBrukerMock,
 	gjeldendeProfilMock,
 	instMock,
@@ -16,8 +17,10 @@ import {
 	kodeverkMock,
 	kontoregisterMock,
 	krrstubMock,
+	malerMock,
 	miljoeMock,
 	nyGruppeMock,
+	paginerteGrupperMock,
 	pensjonMock,
 	pensjonTpMock,
 	sigrunstubMock,
@@ -25,7 +28,6 @@ import {
 	tpsMessagingMock,
 	udistubMock,
 } from '../mocks/BasicMocks'
-import { eksisterendeGruppeMock, paginerteGrupperMock } from '../../tests/util/TestcafeMocks'
 import { pdlBulkpersonerMock, pdlForvalterMock, pdlPersonEnkeltMock } from '../mocks/PdlMocks'
 
 const miljoer = new RegExp(/\/miljoer/)
@@ -54,7 +56,8 @@ const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2\/sdp/)
 const udistub = new RegExp(/dolly-backend\/api\/v1\/udistub/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\/bruker\?/)
+const alleMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling$/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\/bruker/)
 const brukerOrganisasjonMaler = new RegExp(
 	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\/bruker\?/
 )
@@ -83,6 +86,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: tags }, { statusCode: 200, body: {} })
 	cy.intercept({ method: 'GET', url: backendTransaksjon }, backendTransaksjonMock)
 	cy.intercept({ method: 'GET', url: brukerMaler }, brukerMalerMock)
+	cy.intercept({ method: 'GET', url: alleMaler }, malerMock)
 	cy.intercept({ method: 'GET', url: brukerOrganisasjonMaler }, brukerOrganisasjonMalerMock)
 	cy.intercept({ method: 'GET', url: brregstub }, brregstubMock)
 	cy.intercept({ method: 'GET', url: joarkDokJournalpost }, joarkJournalpostMock)
