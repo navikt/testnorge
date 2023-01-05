@@ -38,15 +38,6 @@ jobs:
           registry-url: https://npm.pkg.github.com/
           scope: "@navikt"
 
-      - name: Npm install
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        working-directory: 'apps/dolly-frontend/src/main/js'
-        run: npm ci
-      - name: Build code
-        run: npm run build
-        working-directory: 'apps/dolly-frontend/src/main/js'
-
       - name: Cypress run
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
@@ -54,7 +45,7 @@ jobs:
         with:
           working-directory: 'apps/dolly-frontend/src/main/js'
           browser: chrome
-          start: npm run preview
+          start: npm run preview-with-build
   
   
   deploy:
