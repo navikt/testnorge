@@ -11,7 +11,7 @@
     "preview-with-build": "npm run build && vite preview --port 5678",
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
-    "test:cy": "cypress run",
+    "test:cy": "cypress run --browser chrome",
     "test:run-cypress": "start-server-and-test preview http://localhost:5678 test:cy"
   },
   "author": "",
