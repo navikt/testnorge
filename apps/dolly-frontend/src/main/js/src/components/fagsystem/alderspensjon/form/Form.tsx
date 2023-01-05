@@ -74,7 +74,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 	const harNorskAdresse = () => {
 		if (opts?.personFoerLeggTil) {
 			return (
-				_get(opts.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
+				_get(opts?.personFoerLeggTil, 'pdl.hentGeografiskTilknytning.gtType') !== 'UTLAND' ||
 				valgtAdresseType() === adressetyper.norge
 			)
 		}
