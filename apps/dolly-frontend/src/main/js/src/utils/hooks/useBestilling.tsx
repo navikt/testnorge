@@ -128,7 +128,7 @@ export const useBestilteMiljoer = (bestillingIdListe: Array<string>, fagsystem: 
 	}
 
 	const { data, error } = useSWR<Array<Bestilling>, Error>(
-		[getMultipleBestillingByIdUrl(bestillingIdListe)],
+		getMultipleBestillingByIdUrl(bestillingIdListe),
 		multiFetcherAll
 	)
 

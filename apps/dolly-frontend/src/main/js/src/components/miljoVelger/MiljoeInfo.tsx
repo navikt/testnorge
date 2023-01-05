@@ -2,9 +2,9 @@ import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
 import {
 	useArenaEnvironments,
-	usePensjonEnvironments,
-	useInstEnvironments,
 	useDokarkivEnvironments,
+	useInstEnvironments,
+	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
 import Formatters from '@/utils/DataFormatter'
 
@@ -45,57 +45,55 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	}
 
 	return (
-		<Alert variant={'info'}>
-			Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
-			egenskaper må derfor ett eller flere av miljøene under velges:
-			<ul>
-				{instdata && (
-					<li>
-						Institusjonsopphold:&nbsp;
-						<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
-					</li>
-				)}
+		<>
+			<Alert variant={'info'}>
+				Du har valgt egenskaper som ikke blir distribuert til alle miljøer. For hver av følgende
+				egenskaper må derfor ett eller flere av miljøene under velges:
+				<ul>
+					{instdata && (
+						<li>
+							Institusjonsopphold:&nbsp;
+							<span>{getMiljoer(instEnvironments, loadingInst, errorInst)}</span>
+						</li>
+					)}
+					{arenaforvalter && (
+						<li>
+							Arena:&nbsp;
+							<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
+						</li>
+					)}
 
-				{pdldata?.person?.fullmakt && <li>Fullmakt: Q2</li>}
-				{pdldata?.person?.falskIdentitet && <li>Falsk identitet: Q2</li>}
-				{pdldata?.person?.utenlandskIdentifikasjonsnummer && (
-					<li>Utenlandsk identifikasjonsnummer: Q2</li>
-				)}
-				{pdldata?.person?.kontaktinformasjonForDoedsbo && (
-					<li>Kontaktinformasjon for dødsbo: Q2</li>
-				)}
+					{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) && (
+						<li>
+							Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
+							{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
+							{pensjonforvalter?.tp && 'TP'}
+							):&nbsp;
+							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
+						</li>
+					)}
 
-				{arenaforvalter && (
-					<li>
-						Arena:&nbsp;
-						<span>{getMiljoer(arenaEnvironments, loadingArena, errorArena)}</span>
-					</li>
-				)}
+					{sykemelding && <li>Sykemelding: Q1 må velges</li>}
 
-				{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) && (
-					<li>
-						Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
-						{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
-						{pensjonforvalter?.tp && 'TP'}
-						):&nbsp;
-						<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
-					</li>
-				)}
-
-				{sykemelding && <li>Sykemelding: Q1 må velges</li>}
-
-				{dokarkiv && (
-					<li>
-						Dokarkiv:&nbsp;
-						<span>
-							{loadingDokarkiv
-								? 'Laster tilgjengelige miljøer..'
-								: Formatters.arrayToString(dokarkivEnvironments)}
-						</span>
-					</li>
-				)}
-			</ul>
-		</Alert>
+					{dokarkiv && (
+						<li>
+							Dokarkiv:&nbsp;
+							<span>
+								{loadingDokarkiv
+									? 'Laster tilgjengelige miljøer..'
+									: Formatters.arrayToString(dokarkivEnvironments)}
+							</span>
+						</li>
+					)}
+				</ul>
+			</Alert>
+			{pensjonforvalter && bestillingsdata?.environments?.includes('q4') && (
+				<Alert variant={'info'} style={{ marginTop: 20 }}>
+					Innsending av testdata til pensjon er for øyeblikket ikke støttet i Q4, bestillingen vil
+					bli sendt til Q1 <br />
+				</Alert>
+			)}
+		</>
 	)
 }
 
