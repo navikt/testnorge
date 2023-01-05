@@ -26,6 +26,7 @@ jobs:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
   
   cypress-run:
+    name: Cypress E2E Testing
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
