@@ -11,7 +11,7 @@
     "lint": "eslint . --ext .ts,.tsx",
     "prettier": "prettier --write '**/*.{ts,tsx,js,css,html}'",
     "test:cy": "cypress run",
-    "test:run-cypress": "start-server-and-test start-cypress http://localhost:5678 test:cy"
+    "test:run-cypress": "start-server-and-test preview http://localhost:5678 test:cy"
   },
   "author": "",
   "license": "ISC",
