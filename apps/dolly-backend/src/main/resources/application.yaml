@@ -140,11 +140,11 @@ consumers:
     namespace: dolly
     url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-inst-service:
-    name: testnav-inst-service
+  testnav-inst-proxy:
+    name: testnav-inst-proxy
     namespace: dolly
-    url: https://testnav-inst-service.dev.intern.nav.no
-    cluster: dev-gcp
+    url: https://testnav-inst-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-statisk-data-forvalter-proxy:
     name: testnav-statisk-data-forvalter-proxy
     namespace: dolly

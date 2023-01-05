@@ -1,8 +1,8 @@
 package no.nav.dolly.bestilling.instdata.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
-import no.nav.dolly.util.TokenXUtil;
+import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -14,41 +14,45 @@ import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+
 @RequiredArgsConstructor
-public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
+public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
 
     private static final String INSTDATA_URL = "/api/v1/institusjonsopphold/person";
-
     private static final String ENVIRONMENTS = "environments";
-    private static final String INST_IDENT = "norskident";
 
     private final WebClient webClient;
-    private final String ident;
-    private final List<String> environments;
+    private final Instdata instdata;
+    private final String miljoe;
     private final String token;
 
     @Override
-    public Mono<DeleteResponse> call() {
+    public Mono<InstdataResponse> call() {
 
-        return webClient.delete()
+        return webClient.post()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTDATA_URL)
-                        .queryParam(ENVIRONMENTS, environments)
+                        .queryParam(ENVIRONMENTS, miljoe)
                         .build())
-                .header(INST_IDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
-                .header(UserConstant.USER_HEADER_JWT, TokenXUtil.getUserJwt())
+                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                .bodyValue(instdata)
                 .retrieve()
                 .toBodilessEntity()
-                .map(resultat -> DeleteResponse.builder()
-                        .ident(ident)
+                .map(resultat -> InstdataResponse.builder()
+                        .personident(instdata.getNorskident())
+                        .instdata(instdata)
                         .status(resultat.getStatusCode())
+                        .environments(List.of(miljoe))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(DeleteResponse.builder()
-                        .ident(ident)
+                .onErrorResume(error -> Mono.just(InstdataResponse.builder()
+                        .personident(instdata.getNorskident())
+                        .instdata(instdata)
                         .status(WebClientFilter.getStatus(error))
-                        .error(WebClientFilter.getMessage(error))
+                        .feilmelding(WebClientFilter.getMessage(error))
+                        .environments(List.of(miljoe))
                         .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

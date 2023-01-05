@@ -27,6 +27,9 @@ public class InstdataMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsInstdata rsInstdata, Instdata instdata, MappingContext context) {
 
+                        instdata.setNorskident((String) context.getProperty("ident"));
+                        instdata.setRegistrertAv("Dolly");
+
                         if (nonNull(rsInstdata.getForventetSluttdato())) {
                             instdata.setSluttdato(rsInstdata.getForventetSluttdato().toLocalDate());
                         }

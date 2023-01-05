@@ -18,6 +18,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-fss
         - application: testnav-inst-service

@@ -24,8 +24,6 @@ spring:
 #    url: http://testnorge-profil-api.dolly.svc.cluster.local
 #  testnav-person-service:
 #    url: http://testnav-person-service.dolly.svc.cluster.local
-#  testnav-inst-service:
-#    url: http://testnav-inst-service.dolly.svc.cluster.local
 #  testnav-pdl-forvalter:
 #    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
 #  testnav-arbeidsforhold-service:

@@ -1,57 +1,43 @@
 package no.nav.dolly.bestilling.instdata;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
+import no.nav.dolly.bestilling.instdata.command.InstdataGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
-import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
+import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
+import no.nav.dolly.bestilling.instdata.command.InstdataTestGetCommand;
+import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
+import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
 import no.nav.dolly.config.credentials.InstServiceProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
-import static java.lang.String.format;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @Service
 public class InstdataConsumer implements ConsumerStatus {
 
-    private static final String INSTDATA_URL = "/api/v1/ident";
-    private static final String DELETE_POST_FMT_BLD = INSTDATA_URL + "/batch";
-
-    private static final String INST_IDENTER_QUERY = "identer";
-    private static final String INST_MILJOE_QUERY = "miljoe";
-
-    private static final int BLOCK_SIZE = 10;
-
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
+    private final ObjectMapper objectMapper;
 
     public InstdataConsumer(TokenExchange tokenService,
                             InstServiceProperties serverProperties,
@@ -65,86 +51,49 @@ public class InstdataConsumer implements ConsumerStatus {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .filter(metricsWebClientFilterFunction)
                 .build();
-    }
-
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
+        this.objectMapper = objectMapper;
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_getMiljoer"})
-    public List<String> getMiljoer() {
+    public Mono<List<String>> getMiljoer() {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call())
-                .collectList()
-                .block();
+                .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
-    public ResponseEntity<List<Instdata>> getInstdata(String ident, String environment) {
-        return
-                webClient.get()
-                        .uri(uriBuilder -> uriBuilder
-                                .path(INSTDATA_URL)
-                                .queryParam(INST_IDENTER_QUERY, ident)
-                                .queryParam(INST_MILJOE_QUERY, environment)
-                                .build())
-                        .header(HEADER_NAV_CALL_ID, getNavCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                        .retrieve().toEntityList(Instdata.class)
-                        .block();
+    public Mono<InstitusjonsoppholdRespons> getInstdata(String ident, String environment) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new InstdataGetCommand(webClient, ident, environment, token.getTokenValue()).call());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
+    public Mono<ResponseEntity<JsonNode>> getInstdataTest(String ident, String environment) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new InstdataTestGetCommand(webClient, ident, environment, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
-    public Mono<List<DeleteResponseDTO>> deleteInstdata(List<String> identer) {
+    public Mono<List<DeleteResponse>> deleteInstdata(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
-                        .map(miljoe -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
-                                .map(index -> new InstdataDeleteCommand(webClient,
-                                        identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                        miljoe, token.getTokenValue()).call()
-                                        .map(response -> DeleteResponseDTO.builder()
-                                                .ident(response.getPersonident())
-                                                .status(response.getStatus())
-                                                .environment(miljoe)
-                                                .build()
-                                        ))
-                                .flatMap(Flux::from))
-                        .flatMap(Flux::from))
-                .collectList();
+                .flatMap(token -> new InstdataGetMiljoerCommand(webClient, token.getTokenValue()).call()
+                        .flatMap(miljoer -> Flux.fromIterable(identer)
+                                .flatMap(ident -> new InstdataDeleteCommand(webClient,
+                                        ident, miljoer, token.getTokenValue()).call())
+                                .collectList()));
     }
-
-    @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})
-    public List<InstdataResponse> deleteInstdata(String ident, String env) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new InstdataDeleteCommand(webClient, List.of(ident), env, token.getTokenValue()).call())
-                .collectList()
-                .block();
-    }
-
 
     @Timed(name = "providers", tags = {"operation", "inst_postInstdata"})
-    public ResponseEntity<List<InstdataResponse>> postInstdata(List<Instdata> instdata, String environment) {
+    public Flux<InstdataResponse> postInstdata(List<Instdata> instdata, String environment) {
 
-        return webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(DELETE_POST_FMT_BLD)
-                        .queryParam(INST_MILJOE_QUERY, environment)
-                        .build())
-                .bodyValue(instdata)
-                .header(HEADER_NAV_CALL_ID, getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntityList(InstdataResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
-                .block();
+        log.info("Instdata opprett til {}: {}", environment, instdata);
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> Flux.fromIterable(instdata)
+                        .flatMap(opphold -> new InstdataPostCommand(webClient, opphold, environment,
+                                token.getTokenValue()).call()));
     }
 
     public Map<String, String> checkAlive() {

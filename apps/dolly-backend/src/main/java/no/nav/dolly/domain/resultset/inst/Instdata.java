@@ -3,17 +3,14 @@ package no.nav.dolly.domain.resultset.inst;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 
-@Getter
-@Setter
+@Data
 @Builder
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -34,4 +31,7 @@ public class Instdata {
     private String norskident;
     private LocalDate startdato;
     private String tssEksternId;
+
+    private String oppholdstype;
+    private String registrertAv;
 }

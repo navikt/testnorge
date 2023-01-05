@@ -13,6 +13,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
@@ -35,6 +36,7 @@ public class InntektstubClient implements ClientRegister {
     private final InntektstubConsumer inntektstubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
+    private final TransactionHelperService transactionHelperService;
 
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -47,29 +49,32 @@ public class InntektstubClient implements ClientRegister {
             var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
                     InntektsinformasjonWrapper.class, context);
 
-            progress.setInntektstubStatus(
-                    inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
+
+            inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
+                    .collectList()
+                    .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
+                            .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
+                                    entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
                             .collectList()
-                            .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
-                                    .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
-                                            entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
-                                    .collectList()
-                                    .map(inntekter -> inntektstubConsumer.postInntekter(inntekter)
-                                            .collectList())
-                                    .flatMap(Mono::from))
-                            .flatMap(Mono::from)
-                            .map(inntekter -> {
-                                log.info("Inntektstub respons {}", inntekter);
-                                return inntekter.stream()
+                            .map(inntekter -> inntektstubConsumer.postInntekter(inntekter)
+                                    .collectList())
+                            .flatMap(Mono::from))
+                    .flatMap(Mono::from)
+                    .map(inntekter -> {
+                        log.info("Inntektstub respons {}", inntekter);
+                        return inntekter.stream()
+                                .map(Inntektsinformasjon::getFeilmelding)
+                                .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                "Feil= " + inntekter.stream()
                                         .map(Inntektsinformasjon::getFeilmelding)
-                                        .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                                        "Feil= " + inntekter.stream()
-                                                .map(Inntektsinformasjon::getFeilmelding)
-                                                .filter(StringUtils::isNotBlank)
-                                                .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
-                                                .collect(Collectors.joining(","));
-                            })
-                            .block());
+                                        .filter(StringUtils::isNotBlank)
+                                        .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
+                                        .collect(Collectors.joining(","));
+                    })
+                    .subscribe(resultat -> {
+                        progress.setInntektstubStatus(resultat);
+                        transactionHelperService.persister(progress);
+                    });
         }
         return Flux.just();
     }
