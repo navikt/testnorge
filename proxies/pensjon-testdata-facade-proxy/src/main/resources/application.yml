@@ -15,3 +15,10 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
+
+consumers:
+  popp-testdata:
+    name: popp-testdata
+    namespace: pensjonopptjening
+    url: https://popp-testdata.dev.intern.nav.no
+    cluster: dev-gcp

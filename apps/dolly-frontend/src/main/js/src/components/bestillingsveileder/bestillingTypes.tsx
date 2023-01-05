@@ -8,6 +8,7 @@ export type Bestillingsdata = {
 		spesreg?: string
 		relasjoner?: Relasjoner
 	}
+	pensjonforvalter?: any
 	// TODO: Lage types for alle fagsystemer
 }
 

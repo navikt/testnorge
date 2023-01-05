@@ -177,12 +177,6 @@ public class OppslagController {
         return pensjonforvalterConsumer.getInntekter(ident, miljoe);
     }
 
-    @GetMapping("/popp/miljoe")
-    @Operation(description = "Hent tilgjengelige miljøer for POPP-register")
-    public Set<String> getPoppMiljoer() {
-        return pensjonforvalterConsumer.getMiljoer();
-    }
-
     @GetMapping("/tp/forhold/{ident}/{miljoe}")
     @Operation(description = "Hent ordning fra TP-register")
     public JsonNode getTpForhold(@PathVariable String ident, @PathVariable String miljoe) {
