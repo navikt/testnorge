@@ -24,7 +24,7 @@ export const PensjonForm = ({ formikBag }) => (
 			startOpen={erForsteEllerTest(formikBag.values, [pensjonPath])}
 			informasjonstekst={hjelpetekst}
 		>
-			// @ts-ignore
+			{/*// @ts-ignore*/}
 			<Kategori title="Pensjonsgivende inntekt" vis={pensjonPath}>
 				<div className="flexbox--flex-wrap">
 					<FormikSelect
