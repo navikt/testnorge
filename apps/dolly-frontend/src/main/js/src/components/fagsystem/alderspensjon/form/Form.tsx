@@ -50,11 +50,9 @@ export const AlderspensjonForm = ({ formikBag }) => {
 		_has(formikBag.values, 'bankkonto.norskBankkonto') ||
 		_has(opts, 'personFoerLeggTil.kontoregister.aktivKonto')
 
-	console.log('opts: ', opts) //TODO - SLETT MEG
 	const harPopp =
 		_has(formikBag.values, 'pensjonforvalter.inntekt') ||
-		opts?.tidligereBestillinger.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
-	console.log('harPopp: ', harPopp) //TODO - SLETT MEG
+		opts?.tidligereBestillinger?.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
 
 	const adressetyper = {
 		norge: 'NORGE',
@@ -119,13 +117,14 @@ export const AlderspensjonForm = ({ formikBag }) => {
 				)}
 				{((nyBestilling && alderNyPerson > 61 && alderNyPerson < 67) ||
 					(leggTil && alderLeggTilPerson > 61 && alderLeggTilPerson < 67) ||
-					(importTestnorge && alderImportertPerson?.some((alder) => alder > 61 && alder < 67))) && (
-					<StyledAlert variant={'info'} size={'small'}>
-						Personer med alder fra 62 til 66 år vil kun få AP-vedtak om de har høy nok opptjening
-						til å ta ut alderspensjon før 67 år. Opptjening kan legges inn på pensjonsgivende
-						inntekt (POPP) ved å huke av for dette valget på forrige side.
-					</StyledAlert>
-				)}
+					(importTestnorge && alderImportertPerson?.some((alder) => alder > 61 && alder < 67))) &&
+					!harPopp && (
+						<StyledAlert variant={'info'} size={'small'}>
+							Personer med alder fra 62 til 66 år vil kun få AP-vedtak om de har høy nok opptjening
+							til å ta ut alderspensjon før 67 år. Opptjening kan legges inn på pensjonsgivende
+							inntekt (POPP) ved å huke av for dette valget på forrige side.
+						</StyledAlert>
+					)}
 				{!harNorskBankkonto && (
 					<StyledAlert variant={'warning'} size={'small'}>
 						Personen må ha norsk bankkonto for at det skal fattes vedtak og for at vedtaksbrev skal
