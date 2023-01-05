@@ -19,3 +19,16 @@ describe('Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
 		cy.get('button').contains('Videre').click()
 	})
 })
+
+describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
+	it('passes', () => {
+		cy.visit('http://localhost:5678/gruppe')
+
+		cy.get('div').contains('Testytest').click()
+		cy.get('div').contains('12345678912').click()
+		cy.wait(1500)
+
+		cy.get('div').contains('Q1').click()
+		cy.wait(2000)
+	})
+})

@@ -149,6 +149,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 }
 
 export const getBrukerOptions = (malbestillinger: [string, Mal[]]) =>
+	malbestillinger &&
 	Object.keys(malbestillinger)?.map((ident) => ({
 		value: ident,
 		label: ident,

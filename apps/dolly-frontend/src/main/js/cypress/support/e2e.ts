@@ -20,6 +20,8 @@ import {
 	malerMock,
 	miljoeMock,
 	nyGruppeMock,
+	organisasjonerForBrukerMock,
+	organisasjonFraMiljoeMock,
 	paginerteGrupperMock,
 	pensjonMock,
 	pensjonTpMock,
@@ -46,13 +48,14 @@ const kontoregister = new RegExp(/testnav-kontoregister-person-proxy\/api/)
 const backendTransaksjon = new RegExp(/dolly-backend\/api\/v1\/transaksjonid/)
 const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/\/v1\/kodeverk\//)
+const dokarkiv = new RegExp(/testnav-dokarkiv-proxy\/internal\/miljoe/)
 const aareg = new RegExp(/testnav-aaregister-proxy\/q1\/api\/v1\/arbeidstaker/)
 const inst = new RegExp(/testnav-inst-service\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
 const pensjon = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/inntekt/)
 const pensjonMiljoer = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/miljo/)
 const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp(.*?)q1/)
-const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2\/sdp/)
+const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/dolly-backend\/api\/v1\/udistub/)
 const brregstub = new RegExp(/testnav-brregstub/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
@@ -63,6 +66,10 @@ const brukerOrganisasjonMaler = new RegExp(
 )
 const joarkDokJournalpost = new RegExp(/testnav-joark-dokument-service\/api\/v2\/journalpost/)
 const joarkDokDokument = new RegExp(/dokumentType=ORIGINAL/)
+const organisasjonFraMiljoe = new RegExp(
+	/testnav-organisasjon-forvalter\/api\/v2\/organisasjoner\/framiljoe/
+)
+const organisasjonerForBruker = new RegExp(/dolly-backend\/api\/v1\/organisasjon\?brukerId/)
 
 const remainingCallsResponseOk = new RegExp(/api\/v1/)
 
@@ -102,4 +109,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: sigrunstub }, sigrunstubMock)
 	cy.intercept({ method: 'GET', url: udistub }, udistubMock)
 	cy.intercept({ method: 'GET', url: kodeverk }, kodeverkMock)
+	cy.intercept({ method: 'GET', url: dokarkiv }, [])
+	cy.intercept({ method: 'GET', url: organisasjonFraMiljoe }, organisasjonFraMiljoeMock)
+	cy.intercept({ method: 'GET', url: organisasjonerForBruker }, organisasjonerForBrukerMock)
 })

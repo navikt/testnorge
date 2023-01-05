@@ -66,12 +66,159 @@ export const brukerOrganisasjonMalerMock = [
 	},
 ]
 
-export const krrstubMock = {
-	id: 1,
-	navn: 'Digipost',
-	adresse: '984661185',
-	x509Sertifikat: 'SuperSecretSertifikat',
+export const organisasjonerForBrukerMock = [
+	{
+		id: 1,
+		organisasjonsnummer: '123456789',
+		enhetstype: 'AS',
+		naeringskode: '66.110',
+		sektorkode: '3200',
+		formaal: 'Teste',
+		organisasjonsnavn: 'Lojal Logaritme',
+		stiftelsesdato: '2022-12-27',
+		telefon: '12345678',
+		epost: 'test@test.com',
+		nettside: 'testytest.com',
+		maalform: 'B',
+		adresser: [
+			{
+				id: 2,
+				adressetype: 'PADR',
+				adresselinjer: ['Hollendergata 10'],
+				postnr: '4616',
+				poststed: 'KRISTIANSAND S',
+				kommunenr: '4204',
+				landkode: 'NO',
+				vegadresseId: '219118707',
+			},
+			{
+				id: 3,
+				adressetype: 'FADR',
+				adresselinjer: ['Bjødnatunvegen 5'],
+				postnr: '5784',
+				poststed: 'ØVRE EIDFJORD',
+				kommunenr: '4619',
+				landkode: 'NO',
+				vegadresseId: '138078915',
+			},
+		],
+		underenheter: [
+			{
+				id: 1,
+				organisasjonsnummer: '123456789',
+				enhetstype: 'BEDR',
+				naeringskode: '66.110',
+				formaal: 'Testytest',
+				organisasjonsnavn: 'Horisontal Feil',
+				stiftelsesdato: '2022-12-26',
+				telefon: '12345678',
+				epost: 'testy@test.com',
+				nettside: 'testytest.com',
+				maalform: 'B',
+				adresser: [
+					{
+						id: 2,
+						adressetype: 'PADR',
+						adresselinjer: ['Olaus Fjørtofts vei 71'],
+						postnr: '0982',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: '285747353',
+					},
+					{
+						id: 3,
+						adressetype: 'FADR',
+						adresselinjer: ['Bjerkebakken 78'],
+						postnr: '0757',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: '285818674',
+					},
+				],
+			},
+		],
+	},
+]
+export const organisasjonFraMiljoeMock = {
+	q2: {
+		organisasjonsnummer: '123456789',
+		enhetstype: 'AS',
+		organisasjonsnavn: 'LOJAL LOGARITME',
+		adresser: [
+			{
+				id: null,
+				adressetype: 'PADR',
+				adresselinjer: ['HOLLENDERGATA 10'],
+				postnr: '4616',
+				poststed: 'KRISTIANSAND S',
+				kommunenr: '4204',
+				landkode: 'NO',
+				vegadresseId: null,
+			},
+			{
+				id: null,
+				adressetype: 'FADR',
+				adresselinjer: ['BJØDNATUNVEGEN 5'],
+				postnr: '5784',
+				poststed: 'ØVRE EIDFJORD',
+				kommunenr: '4619',
+				landkode: 'NO',
+				vegadresseId: null,
+			},
+		],
+		underenheter: [
+			{
+				organisasjonsnummer: '123456789',
+				enhetstype: 'BEDR',
+				organisasjonsnavn: 'HORISONTAL FEIL',
+				adresser: [
+					{
+						id: null,
+						adressetype: 'PADR',
+						adresselinjer: ['OLAUS FJØRTOFTS VEI 71'],
+						postnr: '0982',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: null,
+					},
+					{
+						id: null,
+						adressetype: 'FADR',
+						adresselinjer: ['BJERKEBAKKEN 78'],
+						postnr: '0757',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: null,
+					},
+				],
+			},
+		],
+	},
 }
+
+export const krrstubMock = [
+	{
+		id: 1,
+		gyldigFra: '2023-01-05T15:40:41.696445+01:00',
+		personident: '25518548649',
+		reservert: false,
+		mobil: '',
+		mobilOppdatert: '2023-01-05T15:40:41.696458+01:00',
+		mobilVerifisert: '2023-01-05T15:40:41.696462+01:00',
+		epost: 'daw',
+		epostOppdatert: '2023-01-05T15:40:41.696465+01:00',
+		epostVerifisert: '2023-01-05T15:40:41.696468+01:00',
+		sdpAdresse: '',
+		sdpLeverandoer: null,
+		registrert: true,
+		spraak: '',
+		spraakOppdatert: '2023-01-05T15:40:41.696471+01:00',
+	},
+]
 
 export const backendTransaksjonMock = [
 	{

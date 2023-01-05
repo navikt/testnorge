@@ -3,7 +3,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Formatters from '@/utils/DataFormatter'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import {
 	initialKjoenn,
 	initialNavn,
@@ -86,7 +86,7 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
+	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
 	const initPerson = {
 		navn: [data?.navn?.[0] || initialNavn],
