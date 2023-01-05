@@ -45,7 +45,7 @@ jobs:
         with:
           working-directory: 'apps/dolly-frontend/src/main/js'
           browser: chrome
-          start: npm run start-cypress
+          start: npm run preview
   
   
   deploy:
