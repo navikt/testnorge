@@ -273,6 +273,10 @@ public class PensjonforvalterClient implements ClientRegister {
 
         log.info("Mottatt status på {} fra Pensjon-Testdata-Facade: {}", ident, response);
 
+        if (response.getStatus().isEmpty()) {
+            return "NA:EMPTY_RESPONSE";
+        }
+
         return response.getStatus().stream()
                 .map(entry -> String.format("%s:%s", entry.getMiljo(),
                         entry.getResponse().getHttpStatus().getStatus() == 200 ? "OK" :

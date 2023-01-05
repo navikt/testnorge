@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.resultset.SystemTyper.*;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_FORVALTER;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_INNTEKT;
+import static no.nav.dolly.domain.resultset.SystemTyper.TP_FORVALTER;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -34,8 +37,8 @@ public final class BestillingPensjonforvalterStatusMapper {
             if (isNotBlank(progress.getPensjonforvalterStatus()) && progress.getPensjonforvalterStatus().split("#").length > 1) {
                 List.of(progress.getPensjonforvalterStatus()
                         .split("\\$")).forEach(meldingMiljoStatus -> {
-                    String melding = meldingMiljoStatus.split("\\#")[0];
-                    List.of(meldingMiljoStatus.split("\\#")[1].split(",")).forEach(miljostatus -> {
+                    String melding = meldingMiljoStatus.split("#")[0];
+                    List.of(meldingMiljoStatus.split("#")[1].split(",")).forEach(miljostatus -> {
                         String[] miljoStatuser = miljostatus.split(":");
                         String miljoe = miljoStatuser.length > 1 ? miljoStatuser[0] : null;
                         if (nonNull(miljoe)) {
