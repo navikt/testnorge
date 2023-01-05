@@ -47,7 +47,6 @@ jobs:
           browser: chrome
           build: npm run build
           start: npm run preview
-          wait-on: 'http://localhost:5678'
   
   
   deploy:
