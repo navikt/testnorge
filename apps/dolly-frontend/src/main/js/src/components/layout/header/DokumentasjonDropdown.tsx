@@ -20,13 +20,16 @@ const DropdownToggle = () => {
 }
 
 const StyledA = styled.a`
-	color: #0067c5 !important;
+	color: #212529 !important;
 	text-decoration: none;
 	font-size: 1em !important;
 	&:hover {
 		background-color: #ebfcff !important;
 	}
 	padding: 0 !important;
+	&&& {
+		margin: 0;
+	}
 `
 
 export const DokumentasjonDropdown = () => {
@@ -35,33 +38,32 @@ export const DokumentasjonDropdown = () => {
 	} = useCurrentBruker()
 
 	return (
-		<div style={{ color: 'white', fontSize: '1.2em' }}>
+		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
 			<Dropdown>
 				<DropdownToggle />
-				<Dropdown.Menu>
+				<Dropdown.Menu placement="bottom-end">
 					<Dropdown.Menu.List>
-						<Dropdown.Menu.List.Item>
+						<Dropdown.Menu.List.Item
+							onClick={() =>
+								window.open('https://navikt.github.io/testnorge/applications/dolly/', '_blank')
+							}
+						>
 							<Icon kind="fileNew2" size={16} />
-							<StyledA
-								target="_blank"
-								href="https://navikt.github.io/testnorge/applications/dolly/"
-							>
-								Brukerdokumentasjon
-							</StyledA>
+							<StyledA>Brukerdokumentasjon</StyledA>
 						</Dropdown.Menu.List.Item>
 						{brukertype === 'AZURE' && (
-							<Dropdown.Menu.List.Item>
-								<Icon kind="fileCode" size={16} />
-								<StyledA
-									target="_blank"
-									href={
+							<Dropdown.Menu.List.Item
+								onClick={() =>
+									window.open(
 										window.location.hostname.includes('frontend')
 											? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
-											: 'https://dolly-backend.dev.intern.nav.no/swagger'
-									}
-								>
-									API-dokumentasjon
-								</StyledA>
+											: 'https://dolly-backend.dev.intern.nav.no/swagger',
+										'_blank'
+									)
+								}
+							>
+								<Icon kind="fileCode" size={16} />
+								<StyledA>API-dokumentasjon</StyledA>
 							</Dropdown.Menu.List.Item>
 						)}
 					</Dropdown.Menu.List>

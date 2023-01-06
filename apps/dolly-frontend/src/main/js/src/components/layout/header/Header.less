@@ -41,9 +41,11 @@ header.app-header {
   }
   .dropdown-toggle{
     margin: 0 !important;
-    padding: 12px 10px 11px 0;
+    padding: 15px 0;
     border: none;
     background-color: @color-nav-black;
+    height: 100%;
+    display: flex;
 
     &.active{
       background-color: lighten(@color-nav-black, 10%);
@@ -59,8 +61,6 @@ header.app-header {
       color: white;
       text-decoration: none;
       font-weight: normal;
-      //padding: 20px 10px;
-      //margin: 0 10px;
       font-size: 1.2em;
 
       &.active {
@@ -81,6 +81,8 @@ header.app-header {
       display: flex;
       align-items: center;
       color: white;
+      text-align: left;
+      max-height: 35px;
 
       img {
         width: 35px;
@@ -88,6 +90,11 @@ header.app-header {
         border-radius: 50%;
         border: 2px solid white;
         margin: 0 7px 0 0;
+      }
+
+      .profil-navn {
+        line-height: normal;
+        min-width: 130px;
       }
     }
   }
@@ -125,25 +132,15 @@ header.app-header {
 
 .svg-icon-logout{
   g {
-    stroke: @color-lightblue;
+    stroke: #212529;
     stroke-width: 2;
-  }
-  margin-right: 10px;
-}
-
-.svg-icon-person{
-  g {
-    path, ellipse{
-      stroke: @color-lightblue;
-      stroke-width: 2;
-    }
   }
   margin-right: 10px;
 }
 
 .svg-icon-fileCode, .svg-icon-fileNew2{
   g {
-    stroke: @color-lightblue;
+    stroke: #212529;
     stroke-width: 2;
   }
   margin: 0 10px 0 0;
