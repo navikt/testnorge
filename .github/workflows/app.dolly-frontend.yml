@@ -48,15 +48,6 @@ jobs:
           browser: chrome
           build: npm run build
           start: npm run preview
-
-      - name: Send data to Slack
-        id: slack
-        uses: slackapi/slack-github-action@v1.23.0
-        with:
-          payload-file-path: "apps/dolly-frontend/src/main/js/cypress/videos/Gruppe.cy.ts.mp4"
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-  
   
   deploy:
     name: Deploy
