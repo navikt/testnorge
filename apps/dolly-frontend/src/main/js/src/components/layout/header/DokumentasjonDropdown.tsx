@@ -45,7 +45,11 @@ export const DokumentasjonDropdown = () => {
 					<Dropdown.Menu.List>
 						<Dropdown.Menu.List.Item
 							onClick={() =>
-								window.open('https://navikt.github.io/testnorge/applications/dolly/', '_blank')
+								window.open(
+									'https://navikt.github.io/testnorge/applications/dolly/',
+									'_blank',
+									'noopener'
+								)
 							}
 						>
 							<Icon kind="fileNew2" size={16} />
@@ -58,7 +62,8 @@ export const DokumentasjonDropdown = () => {
 										window.location.hostname.includes('frontend')
 											? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
 											: 'https://dolly-backend.dev.intern.nav.no/swagger',
-										'_blank'
+										'_blank',
+										'noopener'
 									)
 								}
 							>
