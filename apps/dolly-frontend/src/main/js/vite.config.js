@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import svgr from 'vite-plugin-svgr'
 import proxyRoutes from './proxy-routes.json'
@@ -16,6 +16,22 @@ export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
+		cssCodeSplit: false,
+		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					if (id.includes('node_modules')) {
+						if (id.includes('pdf')) {
+							return 'vendor_pdf'
+						} else if (id.includes('react')) {
+							return 'vendor_react'
+						}
+
+						return 'vendor' // all other package goes here
+					}
+				},
+			},
+		},
 	},
 	resolve: {
 		alias: {
@@ -30,6 +46,7 @@ export default defineConfig(({ mode }) => ({
 		react(),
 		svgr(),
 		viteTsconfigPaths(),
+		splitVendorChunkPlugin(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
