@@ -73,7 +73,6 @@ public class InstdataClientTest {
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder().build()));
         when(instdataConsumer.getInstdata(IDENT, ENVIRONMENT)).thenReturn(Mono.just(InstitusjonsoppholdRespons.builder()
                 .institusjonsopphold(Map.of("q2", List.of(new Instdata())))
-                .status(HttpStatus.OK)
                 .build()));
         var instdataResponse = List.of(InstdataResponse.builder().status(HttpStatus.CREATED).build());
         when(instdataConsumer.postInstdata(anyList(), anyString())).thenReturn(Flux.just(InstdataResponse.builder()

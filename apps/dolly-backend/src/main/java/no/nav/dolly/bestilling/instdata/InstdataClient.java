@@ -41,14 +41,6 @@ public class InstdataClient implements ClientRegister {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
-            try {
-                var test = instdataConsumer.getInstdataTest(dollyPerson.getHovedperson(), "q2").block();
-                log.info(test.getBody().textValue());
-
-            } catch (RuntimeException e) {
-                log.error("En feil oppsto {}", e.getMessage(), e);
-            }
-
             var context = MappingContextUtils.getMappingContext();
             context.setProperty("ident", dollyPerson.getHovedperson());
             var instdata = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class, context);
@@ -88,7 +80,8 @@ public class InstdataClient implements ClientRegister {
                     log.info("Instdata hentet data fra {}: {}", miljoe, eksisterende.getInstitusjonsopphold());
                     return instdataRequest.stream()
                             .filter(request -> eksisterende.getInstitusjonsopphold()
-                                    .getOrDefault(miljoe, emptyList()).stream()
+                                    .getOrDefault(miljoe, emptyList())
+                                    .stream()
                                     .noneMatch(opphold -> request.equals(opphold)))
                             .toList();
                 });

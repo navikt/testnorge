@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.instdata;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
@@ -8,7 +7,6 @@ import no.nav.dolly.bestilling.instdata.command.InstdataDeleteCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataGetMiljoerCommand;
 import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
-import no.nav.dolly.bestilling.instdata.command.InstdataTestGetCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
@@ -18,7 +16,6 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -66,13 +63,6 @@ public class InstdataConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new InstdataGetCommand(webClient, ident, environment, token.getTokenValue()).call());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "inst_getInstdata"})
-    public Mono<ResponseEntity<JsonNode>> getInstdataTest(String ident, String environment) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new InstdataTestGetCommand(webClient, ident, environment, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_deleteInstdata"})

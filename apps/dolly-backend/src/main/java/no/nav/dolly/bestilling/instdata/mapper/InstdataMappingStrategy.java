@@ -6,7 +6,6 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.inst.InstdataInstitusjonstype;
 import no.nav.dolly.domain.resultset.inst.InstdataKategori;
-import no.nav.dolly.domain.resultset.inst.InstdataKilde;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -36,10 +35,10 @@ public class InstdataMappingStrategy implements MappingStrategy {
                         if (nonNull(rsInstdata.getFaktiskSluttdato())) {
                             instdata.setSluttdato(rsInstdata.getFaktiskSluttdato().toLocalDate());
                         }
-                        instdata.setKategori(nullcheckSetDefaultValue(instdata.getKategori(), decideKategori(instdata.getInstitusjonstype())));
-                        instdata.setKilde(nullcheckSetDefaultValue(instdata.getKilde(), decideKilde(instdata.getInstitusjonstype())));
-                        instdata.setOverfoert(nullcheckSetDefaultValue(instdata.getOverfoert(), false));
-                        instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(), decideTssEksternId(instdata.getInstitusjonstype())));
+                        instdata.setOppholdstype(nullcheckSetDefaultValue(rsInstdata.getKategori(),
+                                decideKategori(instdata.getInstitusjonstype())).name());
+                        instdata.setTssEksternId(nullcheckSetDefaultValue(instdata.getTssEksternId(),
+                                decideTssEksternId(instdata.getInstitusjonstype())));
                     }
 
                     private InstdataKategori decideKategori(InstdataInstitusjonstype type) {
@@ -48,15 +47,6 @@ public class InstdataMappingStrategy implements MappingStrategy {
                             case AS -> InstdataKategori.A;
                             case FO -> InstdataKategori.S;
                             default -> InstdataKategori.R;
-                        };
-                    }
-
-                    private InstdataKilde decideKilde(InstdataInstitusjonstype type) {
-
-                        return switch (type) {
-                            case AS -> InstdataKilde.PP01;
-                            case FO -> InstdataKilde.IT;
-                            default -> InstdataKilde.INST;
                         };
                     }
 
