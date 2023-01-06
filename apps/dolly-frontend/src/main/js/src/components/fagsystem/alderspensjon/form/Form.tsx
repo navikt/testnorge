@@ -126,9 +126,9 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						</StyledAlert>
 					)}
 				{!harNorskBankkonto && (
-					<StyledAlert variant={'warning'} size={'small'}>
-						Personen må ha norsk bankkonto for at det skal fattes vedtak og for at vedtaksbrev skal
-						kunne opprettes automatisk.
+					<StyledAlert variant={'info'} size={'small'}>
+						Personen må ha norsk bankkontonummer for at det skal fattes vedtak og for at vedtaksbrev
+						skal kunne opprettes automatisk.
 					</StyledAlert>
 				)}
 				{!harNorskAdresse() && (
