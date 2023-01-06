@@ -17,21 +17,6 @@ export default defineConfig(({ mode }) => ({
 	build: {
 		outDir: 'build',
 		cssCodeSplit: false,
-		rollupOptions: {
-			output: {
-				manualChunks: (id) => {
-					if (id.includes('node_modules')) {
-						if (id.includes('pdf')) {
-							return 'vendor_pdf'
-						} else if (id.includes('react')) {
-							return 'vendor_react'
-						}
-
-						return 'vendor' // all other package goes here
-					}
-				},
-			},
-		},
 	},
 	resolve: {
 		alias: {
