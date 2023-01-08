@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
@@ -48,14 +49,14 @@ public class BrregstubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBrregstub())) {
 
             progress.setBrregstubStatus(encodeStatus(getInfoVenter("BRREG")));
             transactionHelperService.persister(progress);
 
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isReady -> (isReady ?
 
                             getPersonData(dollyPerson.getHovedperson())
@@ -68,13 +69,9 @@ public class BrregstubClient implements ClientRegister {
 
                             Mono.just(encodeStatus(getVarselSlutt("BRREG"))))
                     )
-                    .subscribe(resultat -> {
-                        progress.setBrregstubStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
-
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
     }
 
     @Override
@@ -116,5 +113,14 @@ public class BrregstubClient implements ClientRegister {
         log.info("BRREGSTUB sender rolleoversikt for {} {}", rolleoversiktTo.getFnr(), rolleoversiktTo);
         return brregstubConsumer.postRolleoversikt(rolleoversiktTo)
                 .map(status -> isBlank(status.getError()) ? OK_STATUS : FEIL_STATUS + encodeStatus(status.getError()));
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setBrregstubStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 }

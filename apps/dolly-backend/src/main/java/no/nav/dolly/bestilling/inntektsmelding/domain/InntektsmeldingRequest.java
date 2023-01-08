@@ -1,10 +1,6 @@
 package no.nav.dolly.bestilling.inntektsmelding.domain;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +11,10 @@ import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilUtsettelseType
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakVedEndringType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.BegrunnelseForReduksjonEllerIkkeUtbetaltType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter

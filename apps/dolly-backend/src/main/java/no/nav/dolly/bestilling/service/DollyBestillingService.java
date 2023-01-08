@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
@@ -34,6 +35,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Flux;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.lang.String.format;
@@ -205,10 +207,12 @@ public class DollyBestillingService {
 
         counterCustomRegistry.invoke(bestKriterier);
         Flux.fromIterable(clientRegisters)
-                .parallel()
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
-                .subscribe(resultat -> log.info("Asynkron bestilling startet ..."));
+                .filter(Objects::nonNull)
+                .map(ClientFuture::get)
+                .collectList()
+                .subscribe(resultat -> log.info("Asynkron bestilling ferdig ..."));
     }
 
     protected void oppdaterBestillingFerdig(Bestilling bestilling) {

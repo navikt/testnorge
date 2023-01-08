@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -41,17 +42,16 @@ public class KontoregisterClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
-
 
             progress.setKontoregisterStatus(encodeStatus(getInfoVenter(SYSTEM)));
             transactionHelperService.persister(progress);
 
             var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
             if (nonNull(request)) {
-                personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                         .flatMap(isPresent -> {
                             if (isPresent) {
                                 return kontoregisterConsumer.postKontonummerRegister(request);
@@ -59,13 +59,19 @@ public class KontoregisterClient implements ClientRegister {
                                 return Mono.just(encodeStatus(getVarselSlutt(SYSTEM)));
                             }
                         })
-                        .subscribe(respons -> {
-                            progress.setKontoregisterStatus(respons);
-                            transactionHelperService.persister(progress);
-                        });
+                        .map(status -> futurePersist(progress, status)));
             }
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setKontoregisterStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     private OppdaterKontoRequestDTO prepareRequest(RsDollyUtvidetBestilling bestilling, String ident) {

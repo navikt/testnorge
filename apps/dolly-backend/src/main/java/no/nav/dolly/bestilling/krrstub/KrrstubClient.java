@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -43,7 +44,7 @@ public class KrrstubClient implements ClientRegister {
     }
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub()) ||
                 (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) ||
@@ -57,16 +58,22 @@ public class KrrstubClient implements ClientRegister {
                     nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
                     DigitalKontaktdata.class, context);
 
-            deleteKontaktdataPerson(dollyPerson.getHovedperson(), isOpprettEndre)
+            return Flux.from(deleteKontaktdataPerson(dollyPerson.getHovedperson(), isOpprettEndre)
                     .flatMap(slettetStatus -> krrstubConsumer.createDigitalKontaktdata(digitalKontaktdataRequest))
                     .map(this::getStatus)
-                    .subscribe(status -> {
-                        progress.setKrrstubStatus(status);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
 
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setKrrstubStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.personservice;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -9,12 +10,10 @@ import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.core.annotation.Order;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Map;
 
 import static java.time.LocalDateTime.now;
 
@@ -31,7 +30,7 @@ public class PersonServiceClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var count = 0;
 
@@ -61,7 +60,7 @@ public class PersonServiceClient implements ClientRegister {
             log.error("Synkronisering mot PersonService (isPerson) gitt opp etter {} ms.",
                     ChronoUnit.MILLIS.between(startTime, now()));
         }
-        return Flux.just();
+        return Flux.empty();
     }
 
     @Override

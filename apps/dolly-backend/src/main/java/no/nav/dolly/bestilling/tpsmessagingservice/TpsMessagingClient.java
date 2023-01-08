@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.tpsmessagingservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil;
@@ -79,7 +80,7 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         progress.setTpsMessagingStatus(tpsMiljoerConsumer.getTpsMiljoer()
                 .map(miljoer -> miljoer.stream()
@@ -88,10 +89,10 @@ public class TpsMessagingClient implements ClientRegister {
                 .block());
         transactionHelperService.persister(progress);
 
-        personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+        return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
                     if (isPresent) {
-                       return getIdenterHovedpersonOgPartner(dollyPerson.getHovedperson())
+                        return getIdenterHovedpersonOgPartner(dollyPerson.getHovedperson())
                                 .map(this::getPersonData)
                                 .flatMap(Flux::from)
                                 .collectList()
@@ -129,17 +130,22 @@ public class TpsMessagingClient implements ClientRegister {
                                 .flatMap(Mono::from);
 
                     } else {
-                        return Mono.just(tpsMiljoerConsumer.getTpsMiljoer()
+                        return tpsMiljoerConsumer.getTpsMiljoer()
                                 .map(miljoer -> miljoer.stream()
                                         .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt(TPS_MESSAGING))))
-                                        .collect(Collectors.joining(","))));
+                                        .collect(Collectors.joining(",")));
                     }
-                }).subscribe(respons -> {
-                    progress.setTpsMessagingStatus(respons.toString());
-                    transactionHelperService.persister(progress);
-                });
+                })
+                .map(status -> futurePersist(progress, status)));
+    }
 
-        return Flux.just();
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setTpsMessagingStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
@@ -15,6 +15,7 @@ import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
@@ -48,7 +49,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektsmelding())) {
 
@@ -57,12 +58,12 @@ public class InntektsmeldingClient implements ClientRegister {
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
-            var context = new MappingContext.Factory().getContext();
+            var context = MappingContextUtils.getMappingContext();
             context.setProperty("ident", dollyPerson.getHovedperson());
 
-            InntektsmeldingRequest inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
+            var inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
 
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isReady -> (isReady ?
                             Flux.fromIterable(bestilling.getEnvironments())
                                     .flatMap(environment -> {
@@ -79,12 +80,18 @@ public class InntektsmeldingClient implements ClientRegister {
                                     .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("JOARK"))))
                                     .collect(Collectors.joining(","))))
                     )
-                    .subscribe(response -> {
-                        progress.setInntektsmeldingStatus(response);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setInntektsmeldingStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

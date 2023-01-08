@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.inntektstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
@@ -39,7 +40,7 @@ public class InntektstubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
@@ -50,7 +51,7 @@ public class InntektstubClient implements ClientRegister {
                     InntektsinformasjonWrapper.class, context);
 
 
-            inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
+            return Flux.from(inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
                     .collectList()
                     .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                             .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
@@ -71,12 +72,18 @@ public class InntektstubClient implements ClientRegister {
                                         .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
                                         .collect(Collectors.joining(","));
                     })
-                    .subscribe(resultat -> {
-                        progress.setInntektstubStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setBrregstubStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

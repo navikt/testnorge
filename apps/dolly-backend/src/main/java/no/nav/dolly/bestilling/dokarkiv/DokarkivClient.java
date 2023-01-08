@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
@@ -56,7 +57,7 @@ public class DokarkivClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getDokarkiv())) {
 
@@ -66,7 +67,7 @@ public class DokarkivClient implements ClientRegister {
             transactionHelperService.persister(progress);
 
             var bestillingId = progress.getBestilling().getId();
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isReady -> (isReady ?
                             getPersonData(List.of(dollyPerson.getHovedperson()))
                                     .map(person -> buildRequest(bestilling.getDokarkiv(), person))
@@ -83,13 +84,19 @@ public class DokarkivClient implements ClientRegister {
                                     .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("JOARK"))))
                                     .collect(Collectors.joining(",")))))
 
-                    .subscribe(resultat -> {
-                        progress.setDokarkivStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
 
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setDokarkivStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     private String getStatus(String ident, Long bestillingId, DokarkivResponse response) {

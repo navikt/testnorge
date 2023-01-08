@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.tagshendelseslager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
@@ -45,7 +46,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!dollyPerson.getTags().isEmpty()) {
             personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
@@ -57,7 +58,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
                     ).subscribe(log::info);
         }
-        return Flux.just();
+        return Flux.empty();
     }
 
     @Override

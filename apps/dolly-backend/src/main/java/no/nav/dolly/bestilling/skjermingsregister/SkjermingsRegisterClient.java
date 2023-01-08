@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingBestilling;
@@ -52,15 +53,14 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
-
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
 
             progress.setSkjermingsregisterStatus(encodeStatus(getInfoVenter("Skjermingsregisteret")));
             transactionHelperService.persister(progress);
 
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isReady -> (isReady ?
 
                             getPersonData(dollyPerson.getHovedperson())
@@ -71,12 +71,18 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
                             Mono.just(encodeStatus(getVarselSlutt("Skjermingsregisteret"))))
                     )
-                    .subscribe(resultat -> {
-                        progress.setSkjermingsregisterStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setSkjermingsregisterStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
@@ -58,7 +59,7 @@ public class AaregClient implements ClientRegister {
     private final PersonServiceConsumer personServiceConsumer;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
@@ -69,7 +70,7 @@ public class AaregClient implements ClientRegister {
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isPresent -> {
                                 if (isPresent) {
                                     if (bestilling.getAareg().stream()
@@ -86,12 +87,19 @@ public class AaregClient implements ClientRegister {
                                             .collect(Collectors.joining(",")));
                                 }
                             }
-                    ).subscribe(response -> {
-                        progress.setAaregStatus(response);
-                        transactionHelperService.persister(progress);
-                    });
+                    )
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setAaregStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

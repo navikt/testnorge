@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.pdldata;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -14,9 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -34,7 +33,7 @@ public class PdlDataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         try {
             if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
@@ -54,7 +53,7 @@ public class PdlDataClient implements ClientRegister {
 
             progress.setPdlDataStatus(errorStatusDecoder.decodeThrowable(e));
         }
-        return Flux.just();
+        return Flux.empty();
     }
 
     @Override

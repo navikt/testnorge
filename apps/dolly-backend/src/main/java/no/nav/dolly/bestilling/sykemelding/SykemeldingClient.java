@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
@@ -63,7 +64,7 @@ public class SykemeldingClient implements ClientRegister {
     private final Norg2Consumer norg2Consumer;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getSykemelding())) {
 
@@ -74,7 +75,7 @@ public class SykemeldingClient implements ClientRegister {
                 setProgress(progress, encodeStatus(getInfoVenter("Sykemelding")));
                 long bestillingId = progress.getBestilling().getId();
 
-                personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+                return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                         .flatMap(isSync -> {
                             if (isTrue(isSync)) {
                                 setProgress(progress, "Info: Venter på generering av sykemelding ...");
@@ -93,10 +94,19 @@ public class SykemeldingClient implements ClientRegister {
                                 return Mono.just(encodeStatus(getVarselSlutt("Sykemelding")));
                             }
                         })
-                        .subscribe(status -> setProgress(progress, status));
+                        .map(status -> futurePersist(progress, status)));
             }
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setSykemeldingStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

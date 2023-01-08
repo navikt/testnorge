@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
@@ -88,7 +89,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments());
         var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer();
@@ -100,7 +101,7 @@ public class PensjonforvalterClient implements ClientRegister {
                         .collect(Collectors.joining(",")));
         transactionHelperService.persister(progress);
 
-        personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+        return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
                     if (isPresent) {
                         return pensjonforvalterConsumer.getAccessToken()
@@ -128,12 +129,16 @@ public class PensjonforvalterClient implements ClientRegister {
                                 .collect(Collectors.joining(",")));
                     }
                 })
-                .subscribe(response -> {
-                    progress.setPensjonforvalterStatus(response);
-                    transactionHelperService.persister(progress);
-                });
+                .map(status -> futurePersist(progress, status)));
+    }
 
-        return Flux.just();
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setPensjonforvalterStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     private Flux<List<String>> getIdenterFamilie(String ident) {

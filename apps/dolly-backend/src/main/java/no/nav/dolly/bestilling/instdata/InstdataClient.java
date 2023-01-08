@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.instdata;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -37,7 +38,7 @@ public class InstdataClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
@@ -45,17 +46,23 @@ public class InstdataClient implements ClientRegister {
             context.setProperty("ident", dollyPerson.getHovedperson());
             var instdata = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class, context);
 
-            instdataConsumer.getMiljoer()
+            return Flux.from(instdataConsumer.getMiljoer()
                     .flatMap(miljoer -> Flux.fromIterable(miljoer)
                             .filter(miljoe -> bestilling.getEnvironments().contains(miljoe))
                             .flatMap(miljoe -> postInstdata(isOpprettEndre, instdata, miljoe))
                             .collect(Collectors.joining(",")))
-                    .subscribe(resultat -> {
-                        progress.setInstdataStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setInstdataStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

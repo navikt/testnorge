@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
@@ -71,7 +72,7 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
@@ -80,7 +81,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isPresent -> (isPresent ?
                             getIdenterFamilie(dollyPerson.getHovedperson())
                                     .flatMap(personServiceConsumer::getPdlSyncReady)
@@ -105,13 +106,19 @@ public class ArenaForvalterClient implements ClientRegister {
                                     .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
                                     .collect(Collectors.joining(","))))
                     )
-                    .subscribe(respons -> {
-                        progress.setArenaforvalterStatus(respons);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
 
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setArenaforvalterStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

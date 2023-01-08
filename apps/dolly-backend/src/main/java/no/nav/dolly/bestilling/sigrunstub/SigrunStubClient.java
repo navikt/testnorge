@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.sigrunstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -34,7 +35,7 @@ public class SigrunStubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getSigrunstub().isEmpty()) {
 
@@ -44,15 +45,21 @@ public class SigrunStubClient implements ClientRegister {
             var skattegrunnlag =
                     mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class, context);
 
-            deleteSkattegrunnlag(dollyPerson.getHovedperson(), isOpprettEndre)
+            return Flux.from(deleteSkattegrunnlag(dollyPerson.getHovedperson(), isOpprettEndre)
                     .flatMap(deletedStatus -> sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag))
                     .map(this::getStatus)
-                    .subscribe(resultat -> {
-                        progress.setSigrunstubStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(resultat -> futurePersist(progress, resultat)));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setSigrunstubStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 
     @Override

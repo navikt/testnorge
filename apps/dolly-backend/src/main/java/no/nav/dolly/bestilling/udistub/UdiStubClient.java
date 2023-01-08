@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.udistub;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
@@ -45,14 +46,14 @@ public class UdiStubClient implements ClientRegister {
     private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getUdistub())) {
 
             progress.setUdistubStatus(encodeStatus(getInfoVenter("UdiStub")));
             transactionHelperService.persister(progress);
 
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
+            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isReady -> (isReady ?
                             getPersonData(List.of(dollyPerson.getHovedperson()))
                                     .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
@@ -64,12 +65,9 @@ public class UdiStubClient implements ClientRegister {
 
                             Mono.just(encodeStatus(getVarselSlutt("UdiStub")))
                     ))
-                    .subscribe(resultat -> {
-                        progress.setUdistubStatus(resultat);
-                        transactionHelperService.persister(progress);
-                    });
+                    .map(status -> futurePersist(progress, status)));
         }
-        return Flux.just();
+        return Flux.empty();
     }
 
     @Override
@@ -111,5 +109,14 @@ public class UdiStubClient implements ClientRegister {
                 "Opprettet" : "Oppdatert", response);
         return response.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getReason());
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            progress.setUdistubStatus(status);
+            transactionHelperService.persister(progress);
+            return progress;
+        };
     }
 }
