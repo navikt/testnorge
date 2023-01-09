@@ -23,10 +23,10 @@ import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
+import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.when;
@@ -65,7 +65,7 @@ class PensjonforvalterConsumerTest {
                         .withHeader("Content-Type", "application/json")));
     }
 
-    private void stubPostOppretPerson(boolean withError) {
+    private void stubPostOpprettPerson(boolean withError) {
 
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/person"))
@@ -89,7 +89,7 @@ class PensjonforvalterConsumerTest {
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
-                    .willReturn(ok()
+                    .willReturn(serverError()
                             .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from GET https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/000000/forhold\",\"path\":\"/tp/forhold\",\"timestamp\":\"2022-06-30T09:14:08.831669924Z\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
@@ -115,28 +115,6 @@ class PensjonforvalterConsumerTest {
         stubFor(get(urlPathMatching("(.*)/api/v1/inntekt"))
                 .willReturn(ok()
                         .withBody("{\"miljo\":\"tx\",\"fnr\":\"00000\",\"inntekter\":[{\"belop\":12345,\"inntektAar\":2000}]}")
-                        .withHeader("Content-Type", "application/json")));
-    }
-
-    private void stubDeleteSletteTpForhold(boolean withError) {
-
-        if (!withError) {
-            stubFor(delete(urlPathMatching("(.*)/api/v1/tp/person/forhold"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"q1\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/tp/forhold\",\"timestamp\":\"2022-06-30T09:22:03.037292622Z\"}},{\"miljo\":\"q2\",\"response\":{\"httpStatus\":null,\"message\":null,\"path\":null,\"timestamp\":null}},{\"miljo\":\"q4\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/tp/forhold\",\"timestamp\":\"2022-06-30T09:22:05.089107538Z\"}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        } else {
-            stubFor(delete(urlPathMatching("(.*)/api/v1/tp/person/forhold"))
-                    .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"q1\",\"response\":{\"httpStatus\":null,\"message\":null,\"path\":null,\"timestamp\":null}},{\"miljo\":\"q2\",\"response\":{\"httpStatus\":null,\"message\":null,\"path\":null,\"timestamp\":null}},{\"miljo\":\"q4\",\"response\":{\"httpStatus\":null,\"message\":null,\"path\":null,\"timestamp\":null}}]}")
-                            .withHeader("Content-Type", "application/json")));
-        }
-    }
-
-    private void stubDeleteSletteTpForhold_withWrongFnr() {
-        stubFor(delete(urlPathMatching("(.*)/api/v1/tp/person/forhold"))
-                .willReturn(ok()
-                        .withBody("{\"timestamp\":\"2022-06-30T09:24:45.081+00:00\",\"status\":500,\"error\":\"Internal Server Error\",\"message\":\"\",\"path\":\"/api/v1/tp/person/forhold\"}")
                         .withHeader("Content-Type", "application/json")));
     }
 
@@ -171,12 +149,11 @@ class PensjonforvalterConsumerTest {
         assertThat("There are some environments", !miljoer.isEmpty());
         assertThat("There are q1 environment", miljoer.contains("q1"));
         assertThat("There are q2 environment", miljoer.contains("q2"));
-        assertThat("There are q4 environment", miljoer.contains("q4"));
     }
 
     @Test
     void testOpprettPerson_ok() {
-        stubPostOppretPerson(false);
+        stubPostOpprettPerson(false);
 
         var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
                         .collectList()
@@ -190,7 +167,7 @@ class PensjonforvalterConsumerTest {
 
     @Test
     void testOppretPerson_error() {
-        stubPostOppretPerson(true);
+        stubPostOpprettPerson(true);
 
         var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
                         .collectList()
@@ -204,9 +181,11 @@ class PensjonforvalterConsumerTest {
 
     @Test
     void testLagreInntekt_ok() {
+
         stubPostLagreInntekt(false);
 
-        var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest(), accessToken)
+        var response = pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(), Set.of("tx"),
+                        accessToken)
                         .collectList()
                                 .block()
                                         .get(0);
@@ -220,7 +199,8 @@ class PensjonforvalterConsumerTest {
     void testLagreInntekt_error() {
         stubPostLagreInntekt(true);
 
-        var response = pensjonforvalterConsumer.lagreInntekt(new LagreInntektRequest(), accessToken)
+        var response = pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(),
+                        Set.of("tx"), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);

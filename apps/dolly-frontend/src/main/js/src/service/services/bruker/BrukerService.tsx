@@ -1,6 +1,6 @@
 import api from '@/api'
-import { Bruker } from '~/pages/brukerPage/types'
-import { NotFoundError } from '~/error'
+import { Bruker } from '@/pages/brukerPage/types'
+import { NotFoundError } from '@/error'
 
 const brukerServiceUrl = '/testnav-bruker-service/api/v1/brukere'
 

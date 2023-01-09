@@ -1,6 +1,5 @@
-import React from 'react'
 import { ToggleGroup } from '@navikt/ds-react'
-import { ORGANISASJONSTYPE_TOGGLE } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
+import { ORGANISASJONSTYPE_TOGGLE } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 
 interface OrganisasjonToogleGruppeProps {
 	inputType: string

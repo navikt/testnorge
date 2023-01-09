@@ -1,13 +1,12 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FullmaktKodeverk } from '~/config/kodeverk'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FullmaktKodeverk } from '@/config/kodeverk'
 import styled from 'styled-components'
-import { FullmaktData, Relasjon } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import { FullmaktData, Relasjon } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
 type Data = {
 	data: FullmaktData

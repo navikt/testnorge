@@ -1,7 +1,7 @@
-import Button from '~/components/ui/button/Button'
+import Button from '@/components/ui/button/Button'
 import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { FlyttPersonModal } from '~/components/ui/button/FlyttPersonButton/FlyttPersonModal'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { FlyttPersonModal } from '@/components/ui/button/FlyttPersonButton/FlyttPersonModal'
 
 export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	const [modalIsOpen, openModal, closeModal] = useBoolean(false)

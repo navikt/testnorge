@@ -1,9 +1,8 @@
-import React from 'react'
 import { useAsync } from 'react-use'
-import { OrgforvalterApi } from '~/service/Api'
-import Loading from '~/components/ui/loading/Loading'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { OrganisasjonDataVisning } from '~/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonDataVisning'
+import { OrgforvalterApi } from '@/service/Api'
+import Loading from '@/components/ui/loading/Loading'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { OrganisasjonDataVisning } from '@/components/fagsystem/organisasjoner/visning/miljoevisning/OrganisasjonDataVisning'
 
 export const OrganisasjonMiljoeinfo = (props: { orgnummer: string }) => {
 	const state = useAsync(async () => {

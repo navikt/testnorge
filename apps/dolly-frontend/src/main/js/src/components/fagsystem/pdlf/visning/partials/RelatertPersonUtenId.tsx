@@ -1,8 +1,8 @@
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import React from 'react'
-import { PersonUtenIdData } from '~/components/fagsystem/pdlf/PdlTypes'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { AdresseKodeverk } from '@/config/kodeverk'
+
+import { PersonUtenIdData } from '@/components/fagsystem/pdlf/PdlTypes'
 
 type RelatertPersonUtenIdData = {
 	data: PersonUtenIdData

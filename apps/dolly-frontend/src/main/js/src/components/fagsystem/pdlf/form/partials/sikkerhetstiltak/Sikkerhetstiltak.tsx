@@ -1,22 +1,22 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 import { FormikProps } from 'formik'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import _get from 'lodash/get'
-import { BestillingsveilederContext } from '~/components/bestillingsveileder/Bestillingsveileder'
-import { genererTilfeldigeNavPersonidenter } from '~/utils/GenererTilfeldigeNavPersonidenter'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import * as _ from 'lodash-es'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialSikkerhetstiltak,
 	initialTpsSikkerhetstiltak,
-} from '~/components/fagsystem/pdlf/form/initialValues'
+} from '@/components/fagsystem/pdlf/form/initialValues'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string
@@ -43,8 +43,8 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		tpsMessagingRootPath: 'tpsMessaging.sikkerhetstiltak',
 	}
 
-	const sikkerhetstiltakListe = _get(formikBag.values, paths.rootPath)
-	const sikkerhetstiltakListeTps = _get(formikBag.values, paths.tpsMessagingRootPath)
+	const sikkerhetstiltakListe = _.get(formikBag.values, paths.rootPath)
+	const sikkerhetstiltakListeTps = _.get(formikBag.values, paths.tpsMessagingRootPath)
 
 	if (!sikkerhetstiltakListe) {
 		return null
@@ -96,7 +96,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 					handleRemoveEntry={handleRemoveEntry}
 				>
 					{(path: string, idx: number) => {
-						const personident = _get(formikBag.values, `${path}.kontaktperson.personident`)
+						const personident = _.get(formikBag.values, `${path}.kontaktperson.personident`)
 						return (
 							<>
 								<DollySelect
@@ -111,10 +111,10 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 									}
 									size="large"
 									onChange={(option: Option) => handleSikkerhetstiltakChange(option, idx)}
-									value={_get(formikBag.values, `${path}.tiltakstype`)}
+									value={_.get(formikBag.values, `${path}.tiltakstype`)}
 									isClearable={false}
 									feil={
-										_get(formikBag.values, `${path}.tiltakstype`) === '' && {
+										_.get(formikBag.values, `${path}.tiltakstype`) === '' && {
 											feilmelding: 'Feltet er påkrevd',
 										}
 									}
@@ -136,7 +136,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 								<InputWarning
 									visWarning={
 										!isToday(
-											_get(
+											_.get(
 												formikBag.values,
 												`pdldata.person.sikkerhetstiltak[${idx}].gyldigFraOgMed`
 											)

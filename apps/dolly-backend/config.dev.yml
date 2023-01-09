@@ -18,6 +18,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
+          cluster: dev-gcp
         - application: testnav-batch-bestilling-service
           cluster: dev-gcp
         - application: team-dolly-lokal-app
@@ -40,6 +42,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
+        - application: testnav-popp-testdata-proxy
       external:
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io

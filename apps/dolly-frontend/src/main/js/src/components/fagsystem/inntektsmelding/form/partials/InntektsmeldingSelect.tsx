@@ -1,9 +1,8 @@
-import React from 'react'
-import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { Option, SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import Formatters from '~/utils/DataFormatter'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import Formatters from '@/utils/DataFormatter'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
 	path: string

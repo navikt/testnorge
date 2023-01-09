@@ -1,4 +1,4 @@
-import Request from '~/service/services/Request'
+import Request from '@/service/services/Request'
 
 const personOrgTilgangServiceUrl =
 	'/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner'

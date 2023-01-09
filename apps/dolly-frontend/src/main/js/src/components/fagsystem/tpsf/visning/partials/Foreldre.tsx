@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { TpsfApi } from '~/service/Api'
-import { Adressevisning } from './Boadresse'
-import { PostadresseVisning } from './Postadresse'
-import { Historikk } from '~/components/ui/historikk/Historikk'
-import { PersoninformasjonKodeverk } from '~/config/kodeverk'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { TpsfApi } from '@/service/Api'
+import { Adressevisning } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
+import { PostadresseVisning } from '@/components/fagsystem/tpsf/visning/partials/Postadresse'
+import { Historikk } from '@/components/ui/historikk/Historikk'
+import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 
 type Data = {
 	person: Person

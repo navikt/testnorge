@@ -1,4 +1,17 @@
-﻿apiVersion: "nais.io/v1alpha1"
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-pensjon-testdata-facade-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-testnav-pensjon-testdata-facade-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnav-pensjon-testdata-facade-proxy
@@ -57,6 +70,8 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  envFrom:
+    - secret: azure-testnav-pensjon-testdata-facade-proxy-trygdeetaten
   ingresses:
     - "https://testnav-pensjon-testdata-facade-proxy.dev.intern.nav.no"
     - "https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io"

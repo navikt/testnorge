@@ -1,8 +1,7 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { addDays, isBefore } from 'date-fns'
-import Formatters from '~/utils/DataFormatter'
-import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
+import Formatters from '@/utils/DataFormatter'
+import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type SkjermingProps = {
 	data: Skjerming

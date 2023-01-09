@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { multiFetcherAll, multiFetcherBatchData } from '~/api'
+import { multiFetcherAll, multiFetcherBatchData } from '@/api'
 
 const sliceGruppe = (gruppe, maxAntall, url) => {
 	let urlListe = []

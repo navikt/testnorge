@@ -1,8 +1,7 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { RelatertPerson } from '~/components/fagsystem/pdlf/visning/partials/RelatertPerson'
-import { Relasjon } from '~/components/fagsystem/pdlf/PdlTypes'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import { Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 
 type IdenthistorikkData = {
 	relasjoner: Array<Relasjon>

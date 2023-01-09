@@ -1,13 +1,13 @@
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import React from 'react'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+
 import { useDispatch } from 'react-redux'
-import { GjenopprettModal } from '~/components/bestilling/gjenopprett/GjenopprettModal'
-import { DollyApi } from '~/service/Api'
-import { useCurrentBruker } from '~/utils/hooks/useBruker'
-import { useBestillingerGruppe } from '~/utils/hooks/useBestilling'
-import { Gruppe } from '~/utils/hooks/useGruppe'
-import { setUpdateNow } from '~/ducks/finnPerson'
+import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
+import { DollyApi } from '@/service/Api'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
+import { Gruppe } from '@/utils/hooks/useGruppe'
+import { setUpdateNow } from '@/ducks/finnPerson'
 
 type GjenopprettGruppeProps = {
 	onClose: any

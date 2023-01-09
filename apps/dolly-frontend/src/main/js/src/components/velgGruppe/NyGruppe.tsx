@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { Form, Formik } from 'formik'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { DollyApi } from '~/service/Api'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyApi } from '@/service/Api'
 import styled from 'styled-components'
 
 interface NyGruppe {

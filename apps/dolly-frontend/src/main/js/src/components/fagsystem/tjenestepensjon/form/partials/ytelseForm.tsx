@@ -1,8 +1,8 @@
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
 
 export const YtelseForm = ({ path, header, initialYtelser }: any) => {
 	return (

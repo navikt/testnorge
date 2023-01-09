@@ -1,8 +1,7 @@
-import React from 'react'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { GtKodeverk } from '~/config/kodeverk'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import _get from 'lodash/get'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { GtKodeverk } from '@/config/kodeverk'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 
 interface UtenlandskAdresseForm {
@@ -12,11 +11,11 @@ interface UtenlandskAdresseForm {
 
 export const UtenlandskAdresse = ({ formikBag, path }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
-		_get(formikBag.values, `${path}.adressenavnNummer`) !== '' &&
-		_get(formikBag.values, `${path}.adressenavnNummer`) !== null
+		_.get(formikBag.values, `${path}.adressenavnNummer`) !== '' &&
+		_.get(formikBag.values, `${path}.adressenavnNummer`) !== null
 	const harPostboksnummer =
-		_get(formikBag.values, `${path}.postboksNummerNavn`) !== '' &&
-		_get(formikBag.values, `${path}.postboksNummerNavn`) !== null
+		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== '' &&
+		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== null
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput
