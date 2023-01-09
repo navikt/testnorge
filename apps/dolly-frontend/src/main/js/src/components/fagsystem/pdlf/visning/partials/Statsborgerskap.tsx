@@ -1,6 +1,6 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-
+import React from 'react'
 import * as _ from 'lodash-es'
 import { initialStatsborgerskap } from '@/components/fagsystem/pdlf/form/initialValues'
 import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/PdlTypes'

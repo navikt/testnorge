@@ -7,6 +7,7 @@ import { EnkeltinntektForm } from './enkeltinntektForm'
 import Formatters from '@/utils/DataFormatter'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import React from 'react'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 const initialValues = {
 	inntektsaar: new Date().getFullYear(),
@@ -28,64 +29,65 @@ export const InntektsaarForm = ({ formikBag }) => {
 	}
 
 	return (
-		<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
-			{(path) => (
-				<React.Fragment>
+		<ErrorBoundary>
+			<FormikDollyFieldArray name="sigrunstub" header="Inntekt" newEntry={initialValues}>
+				{(path) => (
 					<React.Fragment>
-						<div className="flexbox--flex-wrap">
-							<FormikSelect
-								name={`${path}.inntektsaar`}
-								label="År"
-								options={Formatters.getYearRangeOptions(
-									1968,
-									subYears(new Date(), -5).getFullYear()
-								)}
-								isClearable={false}
-							/>
-							<FormikSelect
-								name={`${path}.tjeneste`}
-								label="Tjeneste"
-								options={Options('tjeneste')}
-								isDisabled={_.get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
-								fastfield={false}
-								isClearable={false}
-								size="large"
-								onChange={(target) => handleTjenesteChange(target, path)}
-							/>
-						</div>
-						{tjenesteErValgt(formikBag, path) && (
-							<EnkeltinntektForm
-								path={`${path}.grunnlag`}
-								header="Grunnlag fra Fastlands-Norge"
-								initialGrunnlag={initialGrunnlag}
-								tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
-								formikBag={formikBag}
-							/>
-						)}
-						{_.get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
-							<EnkeltinntektForm
-								path={`${path}.svalbardGrunnlag`}
-								header="Grunnlag fra Svalbard"
-								initialGrunnlag={initialGrunnlag}
-								tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
-								formikBag={formikBag}
-							/>
-						)}
-
-						<div style={{ marginTop: '20px' }}>
-							{/* TODO: Vise feilmelding uten at den drunker i annen tekst */}
-							{_.isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
-								<ErrorMessageWithFocus
-									name={`${path}.grunnlag`}
-									className="error-message"
-									component="div"
+						<React.Fragment>
+							<div className="flexbox--flex-wrap">
+								<FormikSelect
+									name={`${path}.inntektsaar`}
+									label="År"
+									options={Formatters.getYearRangeOptions(
+										1968,
+										subYears(new Date(), -5).getFullYear()
+									)}
+									isClearable={false}
+								/>
+								<FormikSelect
+									name={`${path}.tjeneste`}
+									label="Tjeneste"
+									options={Options('tjeneste')}
+									isDisabled={_.get(formikBag.values, `${path}.svalbardGrunnlag`, []).length > 0}
+									fastfield={false}
+									isClearable={false}
+									size="large"
+									onChange={(target) => handleTjenesteChange(target, path)}
+								/>
+							</div>
+							{tjenesteErValgt(formikBag, path) && (
+								<EnkeltinntektForm
+									path={`${path}.grunnlag`}
+									header="Grunnlag fra Fastlands-Norge"
+									initialGrunnlag={initialGrunnlag}
+									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
+									formikBag={formikBag}
 								/>
 							)}
-						</div>
+							{_.get(formikBag.values, `${path}.tjeneste`) === 'SUMMERT_SKATTEGRUNNLAG' && (
+								<EnkeltinntektForm
+									path={`${path}.svalbardGrunnlag`}
+									header="Grunnlag fra Svalbard"
+									initialGrunnlag={initialGrunnlag}
+									tjeneste={_.get(formikBag.values, `${path}.tjeneste`)}
+									formikBag={formikBag}
+								/>
+							)}
+
+							<div style={{ marginTop: '20px' }}>
+								{_.isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
+									<ErrorMessageWithFocus
+										name={`${path}.grunnlag`}
+										className="error-message"
+										component="div"
+									/>
+								)}
+							</div>
+						</React.Fragment>
 					</React.Fragment>
-				</React.Fragment>
-			)}
-		</FormikDollyFieldArray>
+				)}
+			</FormikDollyFieldArray>
+		</ErrorBoundary>
 	)
 }
 
