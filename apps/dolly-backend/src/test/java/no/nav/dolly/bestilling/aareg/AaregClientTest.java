@@ -2,6 +2,7 @@ package no.nav.dolly.bestilling.aareg;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -17,7 +18,6 @@ import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,11 +25,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,7 +35,6 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class AaregClientTest {
 
@@ -110,10 +107,10 @@ class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singletonList(ENV));
         aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), new BestillingProgress(), false);
-
-        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken));
+                        DollyPerson.builder().hovedperson(IDENT)
+                                .opprettetIPDL(true).build(), new BestillingProgress(), false)
+                .subscribe(resultat ->
+                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
 
     @Test
@@ -130,9 +127,10 @@ class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singletonList(ENV));
         aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), new BestillingProgress(), false);
-        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken));
+                        DollyPerson.builder().hovedperson(IDENT)
+                                .opprettetIPDL(true).build(), new BestillingProgress(), false)
+                .subscribe(resultat ->
+                        verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
 
     @Test
@@ -160,11 +158,14 @@ class AaregClientTest {
 
         var progress = new BestillingProgress();
 
-        aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), progress, false);
-
-        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
+        StepVerifier.create(aaregClient.gjenopprett(request,
+                                DollyPerson.builder().hovedperson(IDENT)
+                                        .opprettetIPDL(true).build(), progress, false)
+                        .map(ClientFuture::get))
+                .expectNext(BestillingProgress.builder()
+                        .aaregStatus("u2: arbforhold=1$OK")
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -193,9 +194,12 @@ class AaregClientTest {
 
         var progress = new BestillingProgress();
 
-        aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
-
-        assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
+        StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                                .opprettetIPDL(true).build(), progress, false)
+                        .map(ClientFuture::get))
+                .expectNext(BestillingProgress.builder()
+                        .aaregStatus("u2: arbforhold=1$OK")
+                        .build())
+                .verifyComplete();
     }
 }

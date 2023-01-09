@@ -41,6 +41,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -82,34 +83,42 @@ public class ArenaForvalterClient implements ClientRegister {
             transactionHelperService.persister(progress);
 
             return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isPresent -> (isPresent ?
-                            getIdenterFamilie(dollyPerson.getHovedperson())
-                                    .flatMap(personServiceConsumer::getPdlSyncReady)
-                                    .collectList()
-                                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
-                                    .map(isFamilyPresent -> (isFamilyPresent ? arenaForvalterConsumer.getToken()
-                                            .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                                                    .filter(miljo -> bestilling.getEnvironments().contains(miljo))
-                                                    .parallel()
-                                                    .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
-                                                            sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
-                                                            sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
-                                            .filter(StringUtils::isNotBlank)
-                                            .collect(Collectors.joining(",")) :
+                            .flatMap(isPdlReady -> (isTrue(isPdlReady) ?
+                                    getIdenterFamilie(dollyPerson.getHovedperson())
+                                            .flatMap(personServiceConsumer::getPdlSyncReady)
+                                            .collectList()
+                                            .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
+                                            .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, bestilling, dollyPerson))
+                                            .flatMap(Mono::from) :
 
-                                            Mono.just(bestilling.getEnvironments().stream()
-                                                    .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
-                                                    .collect(Collectors.joining(",")))))
-                                    .flatMap(Mono::from) :
-
-                            Mono.just(bestilling.getEnvironments().stream()
-                                    .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
-                                    .collect(Collectors.joining(","))))
-                    )
+                                    doFeilmelding(bestilling))
+                            )
                     .map(status -> futurePersist(progress, status)));
 
         }
         return Flux.empty();
+    }
+
+    private Mono<String> doFeilmelding(RsDollyUtvidetBestilling bestilling) {
+        return Mono.just(bestilling.getEnvironments().stream()
+                .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
+                .collect(Collectors.joining(",")));
+    }
+
+    private Mono<String> doArenaOpprett(Boolean isPdlReady, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
+        return isTrue(isPdlReady) ?
+                arenaForvalterConsumer.getToken()
+                        .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                                .filter(miljo -> bestilling.getEnvironments().contains(miljo))
+                                .parallel()
+                                .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
+                                        sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
+                                        sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+                        .filter(StringUtils::isNotBlank)
+                        .collect(Collectors.joining(",")) :
+
+                doFeilmelding(bestilling);
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -211,10 +220,9 @@ public class ArenaForvalterClient implements ClientRegister {
                             response.getNyeDagp().stream()
                                     .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
                                     .filter(Objects::nonNull)
-                                    .map(dagp -> new StringBuilder().append(miljoe).append('$')
-                                            .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
-                                                    errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))
-                                            .toString())
+                                    .map(dagp -> String.format("%s$%s", miljoe,
+                                            ("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
+                                                    errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))))
                                     .collect(Collectors.joining(",")) +
 
                             response.getNyeDagp().stream()

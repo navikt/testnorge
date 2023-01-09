@@ -3,14 +3,13 @@ package no.nav.dolly.bestilling.sigrunstub;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
+import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.config.credentials.SigrunstubProxyProperties;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
@@ -18,12 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -37,7 +37,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -77,23 +76,29 @@ public class SigrunStubConsumerTest {
                 .build();
     }
 
-//    @Test
-//    public void createSkattegrunnlag() {
-//
-//        stubOpprettSkattegrunnlagOK();
-//
-//        var response = sigrunStubConsumer.createSkattegrunnlag(singletonList(this.skattegrunnlag));
-//
-//        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
-//    }
+    @Test
+    public void createSkattegrunnlag() {
+
+        stubOpprettSkattegrunnlagOK();
+
+        StepVerifier.create(sigrunStubConsumer.createSkattegrunnlag(singletonList(this.skattegrunnlag)))
+                        .expectNext(SigrunstubResponse.builder()
+                                .status(HttpStatus.OK)
+                                .build())
+                                .verifyComplete();
+    }
 
     @Test
     public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() throws Exception {
 
         stubOpprettSkattegrunnlagMedBadRequest();
 
-        Assertions.assertThrows(WebClientResponseException.class, () ->
-                sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag)));
+        StepVerifier.create(sigrunStubConsumer.createSkattegrunnlag(singletonList(skattegrunnlag)))
+                .expectNext(SigrunstubResponse.builder()
+                        .status(HttpStatus.BAD_REQUEST)
+                        .melding("[{\"grunnlag\":[],\"inntektsaar\":\"1978\",\"svalbardGrunnlag\":[]}]")
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -101,7 +106,12 @@ public class SigrunStubConsumerTest {
 
         stubDeleteSkattegrunnlagOK();
 
-        sigrunStubConsumer.deleteSkattegrunnlag(List.of(IDENT));
+        StepVerifier.create(sigrunStubConsumer.deleteSkattegrunnlag(List.of(IDENT)))
+                .expectNext(SigrunstubResponse.builder()
+                        .status(HttpStatus.OK)
+                        .ident(IDENT)
+                        .build())
+                .verifyComplete();
     }
 
     private void stubOpprettSkattegrunnlagOK() {
