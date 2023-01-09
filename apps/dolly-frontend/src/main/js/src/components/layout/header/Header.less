@@ -5,9 +5,11 @@
 @side-padding: 128px; // temp?
 
 header.app-header {
+  @import "@navikt/ds-css-internal";
+  @import "@navikt/ds-css";
+
   font-size: 1rem;
   background-color: @color-nav-black;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -37,6 +39,65 @@ header.app-header {
       color: white;
     }
   }
+  .dropdown-toggle{
+    margin: 0 !important;
+    padding: 15px 0;
+    border: none;
+    background-color: @color-nav-black;
+    height: 100%;
+    display: flex;
+
+    &.active{
+      background-color: lighten(@color-nav-black, 10%);
+    }
+
+    &:hover {
+      cursor: pointer;
+      background-color: @headerHoverColor;
+    }
+
+
+    a {
+      color: white;
+      text-decoration: none;
+      font-weight: normal;
+      font-size: 1.2em;
+
+      &.active {
+        font-weight: bold;
+        background-color: lighten(@color-nav-black, 10%);
+      }
+
+      &:hover {
+        background-color: @headerHoverColor;
+      }
+    }
+
+    .profil-area {
+      border-left: 2px solid #88b1d6;
+      line-height: 2px;
+      padding-left: 15px;
+      margin: 0 10px 0 10px;
+      display: flex;
+      align-items: center;
+      color: white;
+      text-align: left;
+      max-height: 35px;
+
+      img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        border: 2px solid white;
+        margin: 0 7px 0 0;
+      }
+
+      .profil-navn {
+        line-height: normal;
+        min-width: 130px;
+      }
+    }
+  }
 
   .menu-links {
     display: flex;
@@ -60,60 +121,29 @@ header.app-header {
       }
     }
   }
-
-  .profil-area {
-    margin-left: 20px;
-    border-left: 2px solid #88b1d6;
-
-    a {
-      color: white;
-      height: 100%;
-      text-decoration: none;
-      font-weight: normal;
-      padding: 13px 10px;
-      margin: 0 10px;
-      display: flex;
-      align-items: center;
-
-      &.active {
-        font-weight: bold;
-        background-color: lighten(@color-nav-black, 10%);
-      }
-
-      &:hover {
-        background-color: @headerHoverColor;
-      }
-
-      img {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-        border: 2px solid white;
-        margin-right: 7px;
-      }
-
-      .profil-navn {
-        p {
-          margin: 0;
-        }
-
-        .min-side {
-          font-size: 10pt;
-          font-weight: lighter;
-          margin-bottom: 1px;
-        }
-      }
+  .navdsi-dropdown__item{
+    color: @color-lightblue;
+    padding: 10px 0 10px 15px;
+    &:hover {
+      background-color: #ebfcff;
     }
-
-    max-height: 30px;
   }
 }
 
-.svg-icon-logout {
+.svg-icon-logout{
   g {
-    stroke: white !important;
+    stroke: #212529;
     stroke-width: 2;
   }
+  margin-right: 10px;
+}
+
+.svg-icon-fileCode, .svg-icon-fileNew2{
+  g {
+    stroke: #212529;
+    stroke-width: 2;
+  }
+  margin: 0 10px 0 0;
 }
 
 .dollysheep {
