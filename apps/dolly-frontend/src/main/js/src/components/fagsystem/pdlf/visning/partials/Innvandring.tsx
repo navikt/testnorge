@@ -10,7 +10,6 @@ import {
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { initialInnvandring } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
-import _get from 'lodash/get'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
@@ -47,8 +46,10 @@ export const getSisteDatoInnUtvandring = (
 ) => {
 	const tmpPerson = tmpPersoner?.hasOwnProperty(ident)
 
-	const innflytting = tmpPerson ? _get(tmpPersoner, `${ident}.person.innflytting`) : innflyttingData
-	const utflytting = tmpPerson ? _get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
+	const innflytting = tmpPerson
+		? _.get(tmpPersoner, `${ident}.person.innflytting`)
+		: innflyttingData
+	const utflytting = tmpPerson ? _.get(tmpPersoner, `${ident}.person.utflytting`) : utflyttingData
 
 	let sisteInnflytting = getSisteDato(
 		innflytting?.map((val: InnvandringValues) => new Date(val.innflyttingsdato))

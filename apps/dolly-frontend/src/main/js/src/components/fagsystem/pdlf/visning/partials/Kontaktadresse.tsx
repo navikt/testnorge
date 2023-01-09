@@ -11,9 +11,9 @@ import {
 	KodeverkValues,
 	KontaktadresseData,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import Formatters from '@/utils/DataFormatter'
 
@@ -222,7 +222,7 @@ export const Kontaktadresse = ({
 		return null
 	}
 
-	const tmpData = _get(tmpPersoner, `${ident}.person.kontaktadresse`)
+	const tmpData = _.get(tmpPersoner, `${ident}.person.kontaktadresse`)
 	if ((!data || data.length === 0) && (!tmpData || tmpData.length < 1)) {
 		return null
 	}

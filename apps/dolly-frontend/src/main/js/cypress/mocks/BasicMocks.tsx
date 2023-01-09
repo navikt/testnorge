@@ -477,40 +477,36 @@ export const brregstubMock = {
 	understatuser: [0],
 }
 
-export const pensjonMock = {
-	miljo: 'q1',
-	fnr: '12345678912',
-	inntekter: [
-		{
-			belop: 11843,
-			inntektAar: 2018,
-		},
-		{
-			belop: 11532,
-			inntektAar: 2017,
-		},
-		{
-			belop: 11341,
-			inntektAar: 2016,
-		},
-		{
-			belop: 11065,
-			inntektAar: 2015,
-		},
-		{
-			belop: 10796,
-			inntektAar: 2014,
-		},
-		{
-			belop: 10410,
-			inntektAar: 2013,
-		},
-		{
-			belop: 10033,
-			inntektAar: 2012,
-		},
-	],
-}
+export const pensjonMock = [
+	{
+		inntektAar: 2012,
+		belop: 10457,
+	},
+	{
+		inntektAar: 2013,
+		belop: 10850,
+	},
+	{
+		inntektAar: 2014,
+		belop: 11253,
+	},
+	{
+		inntektAar: 2015,
+		belop: 11533,
+	},
+	{
+		inntektAar: 2016,
+		belop: 11821,
+	},
+	{
+		inntektAar: 2017,
+		belop: 12020,
+	},
+	{
+		inntektAar: 2018,
+		belop: 12345,
+	},
+]
 
 export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
@@ -590,8 +586,6 @@ export const joarkDokumentMock =
 export const varslingerVelkommenResponseMock = [
 	{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null },
 ]
-
-export const varslingerRequestMock = ['VELKOMMEN_TIL_DOLLY']
 
 export const malerMock = { malbestillinger: ['Cypress, Testytest', []] }
 
