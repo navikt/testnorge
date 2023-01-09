@@ -101,29 +101,6 @@ public class PensjonforvalterClient implements ClientRegister {
                 .build();
     }
 
-    public static PensjonforvalterResponse mergePensjonforvalterResponses(List<PensjonforvalterResponse> responser) {
-
-        var status = new HashMap<String, PensjonforvalterResponse.Response>();
-        responser
-                .forEach(respons -> respons.getStatus()
-                        .forEach(detalj -> {
-                            if (detalj.getResponse().isResponse2xx()) {
-                                status.putIfAbsent(detalj.getMiljo(), detalj.getResponse());
-                            } else {
-                                status.put(detalj.getMiljo(), detalj.getResponse());
-                            }
-                        }));
-
-        return PensjonforvalterResponse.builder()
-                .status(status.entrySet().stream()
-                        .map(detalj -> PensjonforvalterResponse.ResponseEnvironment.builder()
-                                .miljo(detalj.getKey())
-                                .response(detalj.getValue())
-                                .build())
-                        .toList())
-                .build();
-    }
-
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -163,7 +140,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                 bestilteMiljoer,
                                                                 token,
                                                                 isOpprettEndre,
-                                                                bestillingId,
+                                                                bestillingId)
                                                                 .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                                         Flux.just("")),
 
