@@ -4,7 +4,7 @@ import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
 import logoutBruker from '@/components/utlogging/logoutBruker'
-import { runningTestcafe } from '@/service/services/Request'
+import { runningCypressE2E } from '@/service/services/Request'
 import * as _ from 'lodash-es'
 
 const fetchRetry = fetch_retry(originalFetch)
@@ -81,7 +81,7 @@ export const fetcher = (url, headers) =>
 			return res.data
 		})
 		.catch((reason) => {
-			if (runningTestcafe()) {
+			if (runningCypressE2E()) {
 				return null
 			}
 			if (reason.status === 401 || reason.status === 403) {
@@ -110,7 +110,7 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, _error, response) => {
-			if (!response.ok && !runningTestcafe()) {
+			if (!response.ok && !runningCypressE2E()) {
 				if (response.status === 401) {
 					console.error('Auth feilet, reloader siden for å få ny auth client.')
 					window.location.reload()
@@ -133,7 +133,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		if (response.redirected) {
 			window.location.href = response.url
 		}
-		if (!response.ok && !runningTestcafe()) {
+		if (!response.ok && !runningCypressE2E()) {
 			if (response.status === 401) {
 				console.error('Auth feilet, reloader siden for å få ny auth client.')
 				window.location.reload()

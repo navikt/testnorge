@@ -3,8 +3,8 @@ import { Logger } from '@/logger/Logger'
 
 export const REQUEST_ERROR = 'REQUEST_ERROR'
 
-export const runningTestcafe = () => {
-	return window?.hasOwnProperty('%testCafeAutomation%')
+export const runningCypressE2E = () => {
+	return window?.hasOwnProperty('Cypress')
 }
 
 export default class Request {

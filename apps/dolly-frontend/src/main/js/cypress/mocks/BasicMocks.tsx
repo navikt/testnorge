@@ -2,7 +2,7 @@ export const gjeldendeProfilMock = {
 	visningsNavn: 'BeASt, BugTerminator',
 	epost: 'BeASt@bugexterminator.no',
 	avdeling: '1234 Testytest',
-	organisasjon: 'TESTCAFE',
+	organisasjon: 'CYPRESS',
 	type: 'Testbruker',
 }
 
@@ -25,18 +25,29 @@ export const kodeverkMock = {
 	],
 }
 
+const malBestilling = {
+	antallIdenter: 1,
+	pdldata: {
+		opprettNyPerson: {
+			identtype: 'FNR',
+			foedtEtter: null,
+			foedtFoer: null,
+			alder: null,
+			syntetisk: true,
+		},
+		person: null,
+	},
+	tpsMessaging: {},
+	skjerming: {
+		egenAnsattDatoFom: '2022-09-06T10:24:03',
+	},
+}
 export const brukerMalerMock = [
 	{
 		id: 1,
-		malNavn: 'Teste litt av hvert',
-	},
-	{
-		id: 2,
-		malNavn: 'Fikse Betsy-bugs',
-	},
-	{
-		id: 3,
-		malNavn: 'Fremprovosere godt gjemte Stian-bugs',
+		malNavn: 'Teste Cypress',
+		bestilling: malBestilling,
+		bruker: gjeldendeBrukerMock,
 	},
 ]
 
@@ -55,12 +66,159 @@ export const brukerOrganisasjonMalerMock = [
 	},
 ]
 
-export const krrstubMock = {
-	id: 1,
-	navn: 'Digipost',
-	adresse: '984661185',
-	x509Sertifikat: 'SuperSecretSertifikat',
+export const organisasjonerForBrukerMock = [
+	{
+		id: 1,
+		organisasjonsnummer: '123456789',
+		enhetstype: 'AS',
+		naeringskode: '66.110',
+		sektorkode: '3200',
+		formaal: 'Teste',
+		organisasjonsnavn: 'Lojal Logaritme',
+		stiftelsesdato: '2022-12-27',
+		telefon: '12345678',
+		epost: 'test@test.com',
+		nettside: 'testytest.com',
+		maalform: 'B',
+		adresser: [
+			{
+				id: 2,
+				adressetype: 'PADR',
+				adresselinjer: ['Hollendergata 10'],
+				postnr: '4616',
+				poststed: 'KRISTIANSAND S',
+				kommunenr: '4204',
+				landkode: 'NO',
+				vegadresseId: '219118707',
+			},
+			{
+				id: 3,
+				adressetype: 'FADR',
+				adresselinjer: ['Bjødnatunvegen 5'],
+				postnr: '5784',
+				poststed: 'ØVRE EIDFJORD',
+				kommunenr: '4619',
+				landkode: 'NO',
+				vegadresseId: '138078915',
+			},
+		],
+		underenheter: [
+			{
+				id: 1,
+				organisasjonsnummer: '123456789',
+				enhetstype: 'BEDR',
+				naeringskode: '66.110',
+				formaal: 'Testytest',
+				organisasjonsnavn: 'Horisontal Feil',
+				stiftelsesdato: '2022-12-26',
+				telefon: '12345678',
+				epost: 'testy@test.com',
+				nettside: 'testytest.com',
+				maalform: 'B',
+				adresser: [
+					{
+						id: 2,
+						adressetype: 'PADR',
+						adresselinjer: ['Olaus Fjørtofts vei 71'],
+						postnr: '0982',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: '285747353',
+					},
+					{
+						id: 3,
+						adressetype: 'FADR',
+						adresselinjer: ['Bjerkebakken 78'],
+						postnr: '0757',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: '285818674',
+					},
+				],
+			},
+		],
+	},
+]
+export const organisasjonFraMiljoeMock = {
+	q2: {
+		organisasjonsnummer: '123456789',
+		enhetstype: 'AS',
+		organisasjonsnavn: 'LOJAL LOGARITME',
+		adresser: [
+			{
+				id: null,
+				adressetype: 'PADR',
+				adresselinjer: ['HOLLENDERGATA 10'],
+				postnr: '4616',
+				poststed: 'KRISTIANSAND S',
+				kommunenr: '4204',
+				landkode: 'NO',
+				vegadresseId: null,
+			},
+			{
+				id: null,
+				adressetype: 'FADR',
+				adresselinjer: ['BJØDNATUNVEGEN 5'],
+				postnr: '5784',
+				poststed: 'ØVRE EIDFJORD',
+				kommunenr: '4619',
+				landkode: 'NO',
+				vegadresseId: null,
+			},
+		],
+		underenheter: [
+			{
+				organisasjonsnummer: '123456789',
+				enhetstype: 'BEDR',
+				organisasjonsnavn: 'HORISONTAL FEIL',
+				adresser: [
+					{
+						id: null,
+						adressetype: 'PADR',
+						adresselinjer: ['OLAUS FJØRTOFTS VEI 71'],
+						postnr: '0982',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: null,
+					},
+					{
+						id: null,
+						adressetype: 'FADR',
+						adresselinjer: ['BJERKEBAKKEN 78'],
+						postnr: '0757',
+						poststed: 'OSLO',
+						kommunenr: '0301',
+						landkode: 'NO',
+						vegadresseId: null,
+					},
+				],
+			},
+		],
+	},
 }
+
+export const krrstubMock = [
+	{
+		id: 1,
+		gyldigFra: '2023-01-05T15:40:41.696445+01:00',
+		personident: '25518548649',
+		reservert: false,
+		mobil: '',
+		mobilOppdatert: '2023-01-05T15:40:41.696458+01:00',
+		mobilVerifisert: '2023-01-05T15:40:41.696462+01:00',
+		epost: 'daw',
+		epostOppdatert: '2023-01-05T15:40:41.696465+01:00',
+		epostVerifisert: '2023-01-05T15:40:41.696468+01:00',
+		sdpAdresse: '',
+		sdpLeverandoer: null,
+		registrert: true,
+		spraak: '',
+		spraakOppdatert: '2023-01-05T15:40:41.696471+01:00',
+	},
+]
 
 export const backendTransaksjonMock = [
 	{
@@ -319,40 +477,36 @@ export const brregstubMock = {
 	understatuser: [0],
 }
 
-export const pensjonMock = {
-	miljo: 'q1',
-	fnr: '12345678912',
-	inntekter: [
-		{
-			belop: 11843,
-			inntektAar: 2018,
-		},
-		{
-			belop: 11532,
-			inntektAar: 2017,
-		},
-		{
-			belop: 11341,
-			inntektAar: 2016,
-		},
-		{
-			belop: 11065,
-			inntektAar: 2015,
-		},
-		{
-			belop: 10796,
-			inntektAar: 2014,
-		},
-		{
-			belop: 10410,
-			inntektAar: 2013,
-		},
-		{
-			belop: 10033,
-			inntektAar: 2012,
-		},
-	],
-}
+export const pensjonMock = [
+	{
+		inntektAar: 2012,
+		belop: 10457,
+	},
+	{
+		inntektAar: 2013,
+		belop: 10850,
+	},
+	{
+		inntektAar: 2014,
+		belop: 11253,
+	},
+	{
+		inntektAar: 2015,
+		belop: 11533,
+	},
+	{
+		inntektAar: 2016,
+		belop: 11821,
+	},
+	{
+		inntektAar: 2017,
+		belop: 12020,
+	},
+	{
+		inntektAar: 2018,
+		belop: 12345,
+	},
+]
 
 export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
@@ -433,9 +587,7 @@ export const varslingerVelkommenResponseMock = [
 	{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null },
 ]
 
-export const varslingerRequestMock = ['VELKOMMEN_TIL_DOLLY']
-
-export const malerMock = { malbestillinger: ['Cafe, Test', []] }
+export const malerMock = { malbestillinger: ['Cypress, Testytest', []] }
 
 export const backendBestillingerMock = [
 	{
@@ -1210,8 +1362,8 @@ export const testidentMock = {
 
 export const nyGruppeMock = {
 	id: 2,
-	navn: 'Testcafe testing',
-	hensikt: 'Saftig testing med testcafe..',
+	navn: 'Cypress testing',
+	hensikt: 'Saftig testing med cypress..',
 	opprettetAv: gjeldendeBrukerMock,
 	sistEndretAv: gjeldendeBrukerMock,
 	datoEndret: '1990-01-12',
