@@ -75,6 +75,7 @@ public class PensjonforvalterClient implements ClientRegister {
         var tilgjengeligeMiljoer = Optional.ofNullable(pensjonforvalterConsumer.getMiljoer())
                 .orElse(Set.of("q1", "q2"));
         bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
+        var bestillingId = progress.getBestilling().getId();
 
         if (!dollyPerson.isOpprettetIPDL()) {
             progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
@@ -110,7 +111,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     bestilteMiljoer,
                                                     token,
                                                     isOpprettEndre,
-                                                    progress.getBestilling().getId())
+                                                    bestillingId,
                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                             Flux.just("")),
 
