@@ -111,7 +111,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     bestilteMiljoer,
                                                     token,
                                                     isOpprettEndre,
-                                                    bestillingId,
+                                                    bestillingId)
                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                             Flux.just("")),
 
