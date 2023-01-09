@@ -74,7 +74,7 @@ export const InntektsaarForm = ({ formikBag }) => {
 
 						<div style={{ marginTop: '20px' }}>
 							{/* TODO: Vise feilmelding uten at den drunker i annen tekst */}
-							{_isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
+							{_.isString(_.get(formikBag.errors, `${path}.grunnlag`)) && (
 								<ErrorMessageWithFocus
 									name={`${path}.grunnlag`}
 									className="error-message"

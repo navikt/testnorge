@@ -18,6 +18,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/preset-flow": "^7.18.6",
+    "@navikt/ds-css-internal": "^2.0.8",
+    "@navikt/ds-react-internal": "^2.0.8",
     "@navikt/filopplasting": "^3.0.4",
     "@navikt/fnrvalidator": "^1.3.0",
     "@navikt/fremdriftslinje": "^3.0.3",

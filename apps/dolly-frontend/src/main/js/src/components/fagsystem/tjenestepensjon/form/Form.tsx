@@ -50,7 +50,7 @@ export const TjenestepensjonForm = ({ formikBag }) => {
 				startOpen={erForsteEllerTest(formikBag.values, [tpPath])}
 				informasjonstekst={hjelpetekst}
 			>
-				// @ts-ignore
+				{/*// @ts-ignore*/}
 				<FormikDollyFieldArray name={tpPath} header="Ordning" newEntry={initialOrdning}>
 					{(formPath, idx) => (
 						<React.Fragment key={idx}>

@@ -1,19 +1,14 @@
 import { NavLink } from 'react-router-dom'
 import Icon from '@/components/ui/icon/Icon'
-import Button from '@/components/ui/button/Button'
 // @ts-ignore
 import logo from '@/assets/img/nav-logo-hvit.png'
-// @ts-ignore
-import dolly from '@/favicon.ico'
 import './Header.less'
-import { useBrukerProfil, useBrukerProfilBilde, useCurrentBruker } from '@/utils/hooks/useBruker'
-import logoutBruker from '@/components/utlogging/logoutBruker'
-import { getDefaultImage } from '@/pages/minSide/Profil'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import Loading from '@/components/ui/loading/Loading'
+import { BrukerDropdown } from '@/components/layout/header/BrukerDropdown'
+import { DokumentasjonDropdown } from '@/components/layout/header/DokumentasjonDropdown'
 
 export default () => {
-	const { brukerProfil } = useBrukerProfil()
-	const { brukerBilde } = useBrukerProfilBilde()
 	const { currentBruker, loading } = useCurrentBruker()
 
 	if (loading) {
@@ -36,20 +31,9 @@ export default () => {
 				<NavLink to="/organisasjoner">Organisasjoner</NavLink>
 				<NavLink to="/testnorge">Test-Norge</NavLink>
 				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
-				<NavLink to="/dokumentasjon">Dokumentasjon</NavLink>
+				<DokumentasjonDropdown />
 			</div>
-			<div className="flexbox--all-center">
-				<Button kind="logout" title="Logg ut" onClick={() => logoutBruker()} />
-				<div className="profil-area flexbox--all-center">
-					<NavLink to="/minside" key={'naviger-minside'}>
-						<img alt="Profilbilde" src={brukerBilde || getDefaultImage()} />
-						<div className="profil-navn">
-							<p className="min-side">MIN SIDE</p>
-							<p>{brukerProfil?.visningsNavn}</p>
-						</div>
-					</NavLink>
-				</div>
-			</div>
+			<BrukerDropdown />
 		</header>
 	)
 }
