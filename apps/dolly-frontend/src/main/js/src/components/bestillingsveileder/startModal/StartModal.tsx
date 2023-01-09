@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import DollyModal from '~/components/ui/modal/DollyModal'
+import DollyModal from '@/components/ui/modal/DollyModal'
 import { NyBestillingProps, NyIdent } from './NyIdent/NyIdent'
 import { EksisterendeIdent } from './EksisterendeIdent/EksisterendeIdent'
 import styled from 'styled-components'

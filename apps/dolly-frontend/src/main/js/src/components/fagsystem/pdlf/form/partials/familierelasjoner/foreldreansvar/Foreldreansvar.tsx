@@ -4,19 +4,17 @@ import {
 	initialForeldreansvar,
 	initialPdlBiPerson,
 	initialPdlPerson,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import _get from 'lodash/get'
-import _cloneDeep from 'lodash/cloneDeep'
-import _set from 'lodash/set'
-import { ForeldreBarnRelasjon, TypeAnsvarlig } from '~/components/fagsystem/pdlf/PdlTypes'
-import { PdlEksisterendePerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
-import { PdlNyPerson } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { PdlPersonUtenIdentifikator } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import * as _ from 'lodash-es'
+import { ForeldreBarnRelasjon, TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
+import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
+import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
 
 interface ForeldreansvarForm {
@@ -35,51 +33,51 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	const typeAnsvarlig = 'typeAnsvarlig'
 
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
-		const foreldreansvar = _get(formikBag.values, path)
-		const foreldreansvarClone = _cloneDeep(foreldreansvar)
+		const foreldreansvar = _.get(formikBag.values, path)
+		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
-		_set(foreldreansvarClone, typeAnsvarlig, target?.value || null)
+		_.set(foreldreansvarClone, typeAnsvarlig, target?.value || null)
 		if (!target) {
-			_set(foreldreansvarClone, ansvarlig, undefined)
-			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
-			_set(foreldreansvarClone, nyAnsvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_.set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 		if (target?.value === TypeAnsvarlig.EKSISTERENDE) {
-			_set(foreldreansvarClone, ansvarlig, null)
-			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
-			_set(foreldreansvarClone, nyAnsvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarlig, null)
+			_.set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_.set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 		if (target?.value === TypeAnsvarlig.UTEN_ID) {
-			_set(foreldreansvarClone, ansvarlig, undefined)
-			_set(foreldreansvarClone, ansvarligUtenIdentifikator, initialPdlBiPerson)
-			_set(foreldreansvarClone, nyAnsvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarligUtenIdentifikator, initialPdlBiPerson)
+			_.set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 		if (target?.value === TypeAnsvarlig.NY) {
-			_set(foreldreansvarClone, ansvarlig, undefined)
-			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
-			_set(foreldreansvarClone, nyAnsvarlig, initialPdlPerson)
+			_.set(foreldreansvarClone, ansvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_.set(foreldreansvarClone, nyAnsvarlig, initialPdlPerson)
 		}
 
 		formikBag.setFieldValue(path, foreldreansvarClone)
 	}
 
 	const handleChangeAnsvar = (target: Target, path: string) => {
-		const foreldreansvar = _get(formikBag.values, path)
-		const foreldreansvarClone = _cloneDeep(foreldreansvar)
+		const foreldreansvar = _.get(formikBag.values, path)
+		const foreldreansvarClone = _.cloneDeep(foreldreansvar)
 
-		_set(foreldreansvarClone, 'ansvar', target?.value || null)
+		_.set(foreldreansvarClone, 'ansvar', target?.value || null)
 		if (target?.value !== 'ANDRE') {
-			_set(foreldreansvarClone, typeAnsvarlig, undefined)
-			_set(foreldreansvarClone, ansvarlig, undefined)
-			_set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
-			_set(foreldreansvarClone, nyAnsvarlig, undefined)
+			_.set(foreldreansvarClone, typeAnsvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarlig, undefined)
+			_.set(foreldreansvarClone, ansvarligUtenIdentifikator, undefined)
+			_.set(foreldreansvarClone, nyAnsvarlig, undefined)
 		}
 
 		formikBag.setFieldValue(path, foreldreansvarClone)
 	}
 
 	const harBarn = () => {
-		const relasjoner = _get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+		const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
 		return relasjoner?.some(
 			(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
 		)
@@ -101,8 +99,8 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 				canBeEmpty={false}
 			>
 				{(path: string, _idx: number) => {
-					const typeAnsvarlig = _get(formikBag.values, `${path}.typeAnsvarlig`)
-					const ansvar = _get(formikBag.values, `${path}.ansvar`)
+					const typeAnsvarlig = _.get(formikBag.values, `${path}.typeAnsvarlig`)
+					const ansvar = _.get(formikBag.values, `${path}.ansvar`)
 
 					return (
 						<div className="flexbox--flex-wrap">

@@ -1,22 +1,21 @@
-import React from 'react'
-import _isEmpty from 'lodash/isEmpty'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import * as _ from 'lodash-es'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import {
 	Bestilling,
 	BestillingData,
 	Inntekt,
 	TransaksjonId,
-} from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+} from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { EnkelInntektsmeldingVisning } from './partials/enkelInntektsmeldingVisning'
-import { DollyApi } from '~/service/Api'
-import { erGyldig } from '~/components/transaksjonid/GyldigeBestillinger'
+import { DollyApi } from '@/service/Api'
+import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
 import JoarkDokumentService, {
 	Dokument,
 	Journalpost,
-} from '~/service/services/JoarkDokumentService'
-import LoadableComponentWithRetry from '~/components/ui/loading/LoadableComponentWithRetry'
-import Panel from '~/components/ui/panel/Panel'
+} from '@/service/services/JoarkDokumentService'
+import LoadableComponentWithRetry from '@/components/ui/loading/LoadableComponentWithRetry'
+import Panel from '@/components/ui/panel/Panel'
 
 interface InntektsmeldingVisningProps {
 	liste: Array<BestillingData>
@@ -132,6 +131,6 @@ InntektsmeldingVisning.filterValues = (bestillinger: Array<Bestilling>, ident: s
 }
 
 const tomBestilling = (inntekter: Array<Inntekt>) => {
-	const inntekterMedInnhold = inntekter.filter((inntekt) => !_isEmpty(inntekt))
+	const inntekterMedInnhold = inntekter.filter((inntekt) => !_.isEmpty(inntekt))
 	return inntekterMedInnhold.length < 1
 }

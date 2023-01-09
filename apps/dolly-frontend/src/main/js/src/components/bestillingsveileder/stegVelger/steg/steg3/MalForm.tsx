@@ -1,8 +1,8 @@
 import React, { BaseSyntheticEvent, useState } from 'react'
-import { ifPresent, requiredString } from '~/utils/YupValidations'
-import { Mal, useDollyMalerBrukerOgMalnavn } from '~/utils/hooks/useMaler'
-import Loading from '~/components/ui/loading/Loading'
-import { MalOppsummering } from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
+import { ifPresent, requiredString } from '@/utils/YupValidations'
+import { Mal, useDollyMalerBrukerOgMalnavn } from '@/utils/hooks/useMaler'
+import Loading from '@/components/ui/loading/Loading'
+import { MalOppsummering } from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalOppsummering'
 
 export type MalerFormProps = {
 	brukerId: string

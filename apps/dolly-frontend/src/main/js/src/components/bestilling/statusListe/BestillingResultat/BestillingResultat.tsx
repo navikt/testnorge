@@ -1,28 +1,22 @@
-import React from 'react'
-import Button from '~/components/ui/button/Button'
-import { Feedback } from '~/components/feedback'
-import ApiFeilmelding from '~/components/ui/apiFeilmelding/ApiFeilmelding'
+import Button from '@/components/ui/button/Button'
+import { Feedback } from '@/components/feedback'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import FagsystemStatus from './FagsystemStatus/FagsystemStatus'
-import antallIdenterOpprettet from '~/components/bestilling/utils/antallIdenterOpprettet'
-import { BestillingSammendragModal } from '~/components/bestilling/sammendrag/BestillingSammendragModal'
+import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
+import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 
 import './BestillingResultat.less'
-import GjenopprettConnector from '~/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
-import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
+import GjenopprettConnector from '@/components/bestilling/gjenopprett/GjenopprettBestillingConnector'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus
-	setNyeBestillinger: Function
 	lukkBestilling: Function
 }
 
-export default function BestillingResultat({
-	bestilling,
-	setNyeBestillinger,
-	lukkBestilling,
-}: ResultatProps) {
+export default function BestillingResultat({ bestilling, lukkBestilling }: ResultatProps) {
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
@@ -39,10 +33,7 @@ export default function BestillingResultat({
 						<Button
 							kind="remove-circle"
 							onClick={() => {
-								setNyeBestillinger((nyeBestillinger: Bestillingsstatus[]) =>
-									nyeBestillinger.filter((best) => best.id !== bestilling.id)
-								)
-								lukkBestilling && lukkBestilling(bestilling.id)
+								lukkBestilling(bestilling.id)
 							}}
 						/>
 					</div>

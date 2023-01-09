@@ -1,11 +1,11 @@
-import React from 'react'
 import cn from 'classnames'
-import { Label } from '~/components/ui/form/inputs/label/Label'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import Icon from '~/components/ui/icon/Icon'
-import FormikFieldInput from '~/components/ui/form/inputs/textInput/FormikFieldInput'
+import { Label } from '@/components/ui/form/inputs/label/Label'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import Icon from '@/components/ui/icon/Icon'
+import FormikFieldInput from '@/components/ui/form/inputs/textInput/FormikFieldInput'
 import styled from 'styled-components'
+import React from 'react'
 
 const StyledIcon = styled(Icon)`
 	position: absolute;

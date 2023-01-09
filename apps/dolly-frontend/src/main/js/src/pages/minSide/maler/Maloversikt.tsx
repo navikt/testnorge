@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import Loading from '~/components/ui/loading/Loading'
-import { SearchField } from '~/components/searchField/SearchField'
+import Loading from '@/components/ui/loading/Loading'
+import { SearchField } from '@/components/searchField/SearchField'
 import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
-} from '~/utils/hooks/useMaler'
+} from '@/utils/hooks/useMaler'
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
-import { MalPanel } from '~/pages/minSide/maler/MalPanel'
+import { MalPanel } from '@/pages/minSide/maler/MalPanel'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 5px;

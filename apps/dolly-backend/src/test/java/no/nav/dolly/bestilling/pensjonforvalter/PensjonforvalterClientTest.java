@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
@@ -241,6 +242,7 @@ public class PensjonforvalterClientTest {
                 .build();
 
         BestillingProgress progress = new BestillingProgress();
+        progress.setBestilling(new Bestilling());
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
 
@@ -298,6 +300,7 @@ public class PensjonforvalterClientTest {
                 .build();
 
         BestillingProgress progress = new BestillingProgress();
+        progress.setBestilling(new Bestilling());
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
 
@@ -361,6 +364,7 @@ public class PensjonforvalterClientTest {
                 .build();
 
         BestillingProgress progress = new BestillingProgress();
+        progress.setBestilling(new Bestilling());
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
 

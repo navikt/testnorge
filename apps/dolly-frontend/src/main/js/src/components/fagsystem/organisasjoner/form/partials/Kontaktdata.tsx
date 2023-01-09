@@ -1,6 +1,5 @@
-import React from 'react'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { kontaktPaths } from '../paths'
 
 type KontaktdataProps = {

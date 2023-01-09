@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { FormikProps } from 'formik'
-import { OrganisasjonMedArbeidsforholdSelect } from '~/components/organisasjonSelect'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import { OrganisasjonMedArbeidsforholdSelect } from '@/components/organisasjonSelect'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	inputValg,
 	OrganisasjonToogleGruppe,
-} from '~/components/organisasjonSelect/OrganisasjonToogleGruppe'
-import { EgneOrganisasjoner } from '~/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
+} from '@/components/organisasjonSelect/OrganisasjonToogleGruppe'
+import { EgneOrganisasjoner } from '@/components/fagsystem/brregstub/form/partials/EgneOrganisasjoner'
 
 interface OrgnrToggleProps {
 	path: string

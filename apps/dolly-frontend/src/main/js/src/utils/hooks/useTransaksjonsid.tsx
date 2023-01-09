@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher } from '@/api'
 
 const getTransaksjonsidUrl = (system, ident, bestillingsid) =>
 	bestillingsid

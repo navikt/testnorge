@@ -1,11 +1,10 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import { VergemaalKodeverk } from '~/config/kodeverk'
-import { ArrayHistorikk } from '~/components/ui/historikk/ArrayHistorikk'
-import { VergemaalData } from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import { VergemaalKodeverk } from '@/config/kodeverk'
+import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
+import { VergemaalData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { Verge } from './Verge'
 
 type VergemaalProps = {

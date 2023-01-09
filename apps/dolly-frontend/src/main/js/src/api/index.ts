@@ -1,11 +1,11 @@
-import { NotFoundError } from '~/error'
+import { NotFoundError } from '@/error'
 import { Argument } from 'classnames'
 import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { runningTestcafe } from '~/service/services/Request'
-import _isEmpty from 'lodash/isEmpty'
+import logoutBruker from '@/components/utlogging/logoutBruker'
+import { runningTestcafe } from '@/service/services/Request'
+import * as _ from 'lodash-es'
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -13,7 +13,7 @@ export const multiFetcherAny = (urlListe, headers) => {
 	return Promise.any(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
-				if (_isEmpty(result)) {
+				if (_.isEmpty(result)) {
 					throw new Error('Returnerte ingen verdi, prøver neste promise..')
 				}
 				return [result]
@@ -32,11 +32,31 @@ export const multiFetcherAll = (urlListe, headers = null) => {
 	)
 }
 
+export const multiFetcherBatchData = (url, dataListe) => {
+	return Promise.all(
+		dataListe.map((data) =>
+			fetchJson(url, { method: 'POST' }, data).then((result) => {
+				return result
+			})
+		)
+	)
+}
+
 export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
 				return { miljo: obj.miljo, data: path ? result[path] : result }
+			})
+		)
+	)
+}
+
+export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
+	return Promise.all(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, { miljo: obj.miljo, ...headers }).then((result) => {
+				return { miljo: obj.miljo, data: result }
 			})
 		)
 	)
@@ -54,7 +74,7 @@ export const multiFetcherDokarkiv = (miljoUrlListe) => {
 	)
 }
 
-export const fetcher = (url, headers: Record<string, string>) =>
+export const fetcher = (url, headers) =>
 	axios
 		.get(url, { headers: headers })
 		.then((res) => {
@@ -126,7 +146,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		return response
 	})
 
-const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
+const fetchJson = (url: string, config: Config, body?: object): Promise =>
 	_fetch(
 		url,
 		{

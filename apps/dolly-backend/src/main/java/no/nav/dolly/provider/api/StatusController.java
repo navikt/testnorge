@@ -44,6 +44,8 @@ public class StatusController {;
         consumerNavnMapping.put("ArenaForvalterConsumer", "Arena fagsystem");
     }
 
+    private static final List<String> excludeConsumers = Arrays.asList("PdlPersonConsumer");
+
     private static String getConsumerNavn(String classNavn) {
         var consumerNavn = classNavn.split("\\$\\$")[0];
         if (consumerNavnMapping.containsKey(consumerNavn)) {
@@ -52,10 +54,16 @@ public class StatusController {;
         return consumerNavn.replace("Consumer", "");
     }
 
+    public static boolean isNotExcluded(ConsumerStatus consumer) {
+        var consumerNavn = consumer.getClass().getSimpleName().split("\\$\\$")[0];
+        return !excludeConsumers.contains(consumerNavn);
+    }
+
     @GetMapping()
     @Operation(description = "Hent status for Dolly forbrukere")
     public Object clientsStatus() {
         return consumerRegister.parallelStream()
+                .filter(StatusController::isNotExcluded)
                 .map(client -> Arrays.asList(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus()))
                 .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
     }

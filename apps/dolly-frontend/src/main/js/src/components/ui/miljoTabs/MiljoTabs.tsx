@@ -1,6 +1,6 @@
-import React from 'react'
 import { Alert, Tabs } from '@navikt/ds-react'
 import styled from 'styled-components'
+import React from 'react'
 
 const StyledTabs = styled(Tabs)`
 	margin-top: -10px;

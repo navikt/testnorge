@@ -1,6 +1,5 @@
-import React from 'react'
 import cn from 'classnames'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 
 interface BekreftAvbrytKnapper {
 	submitknapp: string

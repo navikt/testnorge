@@ -1,7 +1,6 @@
-import React from 'react'
-import { Adresse } from '~/components/fagsystem/organisasjoner/types'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { Adresse } from '@/components/fagsystem/organisasjoner/types'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 
 type Props = {
 	adresse: Adresse

@@ -1,10 +1,11 @@
 import useSWR from 'swr'
-import { fetcher } from '~/api'
+import { fetcher } from '@/api'
 
 const getGrupperUrl = (pageNo, pageSize, brukerId) =>
 	`/dolly-backend/api/v1/gruppe?pageNo=${pageNo}&pageSize=${pageSize}${
 		brukerId ? '&brukerId=' + brukerId : ''
 	}`
+
 const getEgneGrupperUrl = (brukerId) => `/dolly-backend/api/v1/gruppe?brukerId=${brukerId}`
 
 const getPaginertGruppeUrl = (
@@ -18,6 +19,8 @@ const getPaginertGruppeUrl = (
 		sortKolonne && sortRetning ? `&sortRetning=${sortRetning}&sortKolonne=${sortKolonne}` : ''
 	return `/dolly-backend/api/v1/gruppe/${gruppeId}/page/${pageNo}?pageSize=${pageSize}${sorting}`
 }
+
+const getHelGruppeUrl = (gruppeId: string) => `/dolly-backend/api/v1/gruppe/${gruppeId}`
 
 export type PaginertGruppe = {
 	antallElementer: number
@@ -72,6 +75,21 @@ export const useGruppeById = (
 		}, {}),
 		gruppeId: data?.id,
 		gruppe: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useGruppeIdenter = (gruppeId) => {
+	const { data, error } = useSWR<Gruppe, Error>(getHelGruppeUrl(gruppeId), fetcher)
+
+	return {
+		identer: data?.identer?.map((person) => {
+			return {
+				ident: person.ident,
+				master: person.master,
+			}
+		}),
 		loading: !error && !data,
 		error: error,
 	}

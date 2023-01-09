@@ -1,10 +1,9 @@
-import React from 'react'
 import ReactDatepicker from 'react-datepicker'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikProps, useFormikContext } from 'formik'
-import { Label } from '~/components/ui/form/inputs/label/Label'
-import { TextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
+import { Label } from '@/components/ui/form/inputs/label/Label'
+import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
 
 interface MonthpickerProps {
 	name: string
@@ -30,7 +29,7 @@ export const Monthpicker = ({
 }: MonthpickerProps) => {
 	const formikBag = useFormikContext()
 	const getFeilmelding = (formikProps: FormikProps<any>, formikPath: string) => {
-		const feilmelding = _get(formikProps.errors, formikPath)
+		const feilmelding = _.get(formikProps.errors, formikPath)
 		return feilmelding ? { feilmelding: feilmelding } : null
 	}
 	const formattedDate = date instanceof Date || date === null ? date : new Date(date)

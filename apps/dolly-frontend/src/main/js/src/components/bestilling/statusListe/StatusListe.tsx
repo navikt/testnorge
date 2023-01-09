@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import ContentContainer from '~/components/ui/contentContainer/ContentContainer'
-import Loading from '~/components/ui/loading/Loading'
+import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
+import Loading from '@/components/ui/loading/Loading'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
-import { BestillingProgresjon } from '~/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
-import { Bestillingsstatus } from '~/utils/hooks/useOrganisasjoner'
+import { BestillingProgresjon } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
+import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 
 type StatusProps = {
 	gruppeId: string
@@ -28,17 +28,13 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 	const onFinishBestilling = (bestilling) => {
 		if (!ferdigBestillinger.find((b) => b.id === bestilling.id) && bestilling?.ferdig) {
 			setFerdigBestillinger(ferdigBestillinger.concat([bestilling]))
-
-			const nyenye = nyeBestillinger.filter(
-				(nye) => !ferdigBestillinger.find((b) => b.id === nye.id)
-			)
-			setNyeBestillinger(nyenye)
+			setNyeBestillinger(nyeBestillinger.filter((nye) => bestilling.id !== nye.id))
 		}
 	}
 
 	const lukkBestilling = (id) => {
-		setNyeBestillinger(nyeBestillinger.filter((nye) => !id === nye.id))
-		setFerdigBestillinger(ferdigBestillinger.filter((ferdig) => ferdig.id !== id))
+		setNyeBestillinger(nyeBestillinger.filter((nye) => id !== nye.id))
+		setFerdigBestillinger(ferdigBestillinger.filter((ferdig) => id !== ferdig.id))
 	}
 
 	useEffect(() => {
@@ -64,12 +60,7 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 	))
 
 	const ferdig = ferdigBestillinger.map((ferdig) => (
-		<BestillingResultat
-			key={ferdig.id}
-			bestilling={ferdig}
-			setNyeBestillinger={() => {}}
-			lukkBestilling={(id) => lukkBestilling(id)}
-		/>
+		<BestillingResultat key={ferdig.id} bestilling={ferdig} lukkBestilling={lukkBestilling} />
 	))
 
 	return ikkeFerdig.concat(...ferdig)

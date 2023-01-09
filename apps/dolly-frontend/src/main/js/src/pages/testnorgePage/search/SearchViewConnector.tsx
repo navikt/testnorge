@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
-import SearchView, { ImportPerson } from '~/pages/testnorgePage/search/SearchView'
-import { Gruppe } from '~/utils/hooks/useGruppe'
+import SearchView, { ImportPerson } from '@/pages/testnorgePage/search/SearchView'
+import { Gruppe } from '@/utils/hooks/useGruppe'
 
 const mapStateToProps = (state: any, ownProps: any) => ({
 	items: ownProps.items,

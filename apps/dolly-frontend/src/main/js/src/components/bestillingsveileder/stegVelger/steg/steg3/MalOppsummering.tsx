@@ -1,14 +1,14 @@
-import React from 'react'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { Mal } from '~/utils/hooks/useMaler'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { Mal } from '@/utils/hooks/useMaler'
 import { Switch, ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
 import {
 	getMalOptions,
 	MalTyper,
 	toggleMalValues,
-} from '~/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
+} from '@/components/bestillingsveileder/stegVelger/steg/steg3/MalForm'
+import React from 'react'
 
 type Props = {
 	onChange: (value: React.BaseSyntheticEvent) => void

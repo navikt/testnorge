@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import _get from 'lodash/get'
+import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { OrgnummerToggle } from '~/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partials/orgnummerToggle'
 import { ToggleGroup } from '@navikt/ds-react'
 
 type InntektstubVirksomhetToggleProps = {
@@ -24,8 +24,8 @@ export const InntektstubVirksomhetToggle = ({
 	const orgnummerLength = 9
 
 	const [inputType, setInputType] = useState(
-		_get(formikBag.values, virksomhetPath)
-			? _get(formikBag.values, virksomhetPath).length === orgnummerLength
+		_.get(formikBag.values, virksomhetPath)
+			? _.get(formikBag.values, virksomhetPath).length === orgnummerLength
 				? ToggleValg.ORGANISASJON
 				: ToggleValg.PRIVAT
 			: ToggleValg.ORGANISASJON

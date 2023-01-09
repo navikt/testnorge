@@ -1,7 +1,6 @@
-import React from 'react'
-import Icon from '~/components/ui/icon/Icon'
+import Icon from '@/components/ui/icon/Icon'
 // @ts-ignore
-import logo from '~/assets/img/nav-logo-hvit.png'
+import logo from '@/assets/img/nav-logo-hvit.png'
 import './BlankHeader.less'
 
 export default () => {

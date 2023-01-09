@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { BankkontoApi, TpsMessagingApi } from '~/service/Api'
-import Button from '~/components/ui/button/Button'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import Icon from '~/components/ui/icon/Icon'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import useBoolean from '@/utils/hooks/useBoolean'
+import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
+import Button from '@/components/ui/button/Button'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import Icon from '@/components/ui/icon/Icon'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
 
 type Data = {
@@ -55,7 +55,7 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 	}
 
 	const mapBankkontoNummer = (nummer: string) => {
-		if (!nummer || nummer?.length < 11) {
+		if (!nummer || nummer?.length !== 11) {
 			return nummer
 		} else {
 			return nummer.slice(0, 4) + '.' + nummer.slice(4, 6) + '.' + nummer.slice(6)

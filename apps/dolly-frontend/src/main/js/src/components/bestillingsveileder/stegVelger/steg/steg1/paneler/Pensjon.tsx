@@ -1,13 +1,12 @@
-import React from 'react'
-import Panel from '~/components/ui/panel/Panel'
+import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import {
 	fetchTpOrdninger,
 	initialOrdning,
 	tpPath,
-} from '~/components/fagsystem/tjenestepensjon/form/Form'
-import { harValgtAttributt } from '~/components/ui/form/formUtils'
-import { pensjonPath } from '~/components/fagsystem/pensjon/form/Form'
+} from '@/components/fagsystem/tjenestepensjon/form/Form'
+import { harValgtAttributt } from '@/components/ui/form/formUtils'
+import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)

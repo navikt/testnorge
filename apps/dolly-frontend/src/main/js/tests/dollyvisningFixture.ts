@@ -127,15 +127,15 @@ const cookieMock = RequestMock()
 	.onRequestTo(remainingCallsResponseOk)
 	.respond([], 200)
 
-fixture`Visning`.page`http://localhost:3000`.requestHooks(cookieMock).beforeEach(async () => {
+fixture`Visning`.page`localhost:5678`.requestHooks(cookieMock).beforeEach(async () => {
 	await waitForReact()
 })
 
 test('Naviger til min side og test mal funksjonalitet', async (testController) => {
 	await testController
-		.click(ReactSelector('NavLink').withKey('naviger-minside'))
+		.navigateTo('/minside')
 		.wait(1000)
-		.typeText(ReactSelector('SearchField'), 'org')
+		.typeText(ReactSelector('SearchField').withText('mal'), 'org')
 
 	await testController
 		.expect(ReactSelector('AppError').exists)

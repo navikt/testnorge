@@ -4,14 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class LagreInntektRequest {
-
-    private List<String> miljoer;
 
     private String fnr;
     private Integer tomAar;

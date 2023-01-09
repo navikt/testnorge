@@ -1,6 +1,5 @@
-import React from 'react'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 const personstatusPath = 'personstatus.status'
 

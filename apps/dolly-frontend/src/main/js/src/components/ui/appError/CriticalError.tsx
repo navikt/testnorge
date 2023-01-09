@@ -1,5 +1,4 @@
-import React from 'react'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const CriticalError = (props: { error: string }) => {
 	const generateCriticalErrorMessage = (stackTrace: string) => {
