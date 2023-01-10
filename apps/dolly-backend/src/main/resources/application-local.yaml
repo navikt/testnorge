@@ -1,5 +1,5 @@
-azure.app.client.id: ${3cbdd4cb-d048-420f-889e-2b32b7add652}
-azure.app.client.secret: ${jte8Q~nB3vm9qf-GUZnw_A9zc_z8prvSUtsq0auN}
+azure.app.client.id: ${local.client.id}
+azure.app.client.secret: ${local.client.secret}
 
 spring:
   application:

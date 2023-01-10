@@ -95,7 +95,7 @@ public class PensjonforvalterClientTest {
         when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
         when(mapperFacade.map(any(Person.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), Mono.just(anySet()), eq(accessToken)))
+        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), eq(accessToken)))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
     }
 
