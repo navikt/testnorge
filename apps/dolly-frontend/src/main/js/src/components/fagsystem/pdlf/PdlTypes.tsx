@@ -87,7 +87,7 @@ export type AdressebeskyttelseData = {
 	id?: number
 }
 
-export type Sivilstand = {
+export type SivilstandData = {
 	type: string
 	gyldigFraOgMed?: string
 	relatertVedSivilstand: string

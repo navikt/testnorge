@@ -64,6 +64,7 @@ enum Attributt {
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
 	Adressebeskyttelse = 'adressebeskyttelse',
+	Sivilstand = 'sivilstand',
 }
 
 const FieldArrayEdit = styled.div`
