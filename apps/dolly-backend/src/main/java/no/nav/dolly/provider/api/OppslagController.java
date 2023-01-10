@@ -186,7 +186,7 @@ public class OppslagController {
     @GetMapping("/tp/miljoe")
     @Operation(description = "Hent tilgjengelige miljøer for TP-register")
     public Set<String> getTpMiljoer() {
-        return pensjonforvalterConsumer.getMiljoer();
+        return pensjonforvalterConsumer.getMiljoer().block();
     }
 
     @GetMapping("/personnavn")

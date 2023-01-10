@@ -43,7 +43,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -107,16 +106,20 @@ public class PensjonforvalterClient implements ClientRegister {
         var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments()).stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet());
-        var tilgjengeligeMiljoer = Optional.ofNullable(pensjonforvalterConsumer.getMiljoer())
-                .orElse(Set.of("q1", "q2"));
-        bestilteMiljoer.retainAll(tilgjengeligeMiljoer);
+
         var bestillingId = progress.getBestilling().getId();
 
-        progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
-                tilgjengeligeMiljoer.stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
-                        .collect(Collectors.joining(",")));
-        transactionHelperService.persister(progress);
+        var tilgjengeligeMiljoer = pensjonforvalterConsumer.getMiljoer()
+                        .map(miljoer -> {
+                            progress.setPensjonforvalterStatus(PENSJON_FORVALTER +
+                                    miljoer.stream()
+                                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
+                                            .collect(Collectors.joining(",")));
+                            transactionHelperService.persister(progress);
+                            return bestilteMiljoer.stream()
+                                    .filter(miljoer::contains)
+                                    .collect(Collectors.toSet());
+                        });
 
         return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
@@ -152,9 +155,10 @@ public class PensjonforvalterClient implements ClientRegister {
                                 .filter(StringUtils::isNotBlank)
                                 .collect(Collectors.joining("$"));
                     } else {
-                        return Mono.just(tilgjengeligeMiljoer.stream()
-                                .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
-                                .collect(Collectors.joining(",")));
+                        return tilgjengeligeMiljoer
+                                .flatMapMany(Flux::fromIterable)
+                                .map(miljoe -> String.format("%s:%s", miljoe, encodeStatus(getVarselSlutt(SYSTEM))))
+                                .collect(Collectors.joining(","));
                     }
                 })
                 .map(status -> futurePersist(progress, status)));

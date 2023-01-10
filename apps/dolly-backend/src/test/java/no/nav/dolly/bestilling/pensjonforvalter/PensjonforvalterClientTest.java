@@ -1,11 +1,15 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -29,6 +33,7 @@ import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +50,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -70,7 +76,16 @@ public class PensjonforvalterClientTest {
     private TransactionHelperService transactionHelperService;
 
     @Mock
+    private PersonServiceConsumer personServiceConsumer;
+
+    @Mock
+    private PdlPersonConsumer pdlPersonConsumer;
+
+    @Mock
     private ErrorStatusDecoder errorStatusDecoder;
+
+    @Mock
+    private PdlPersonBolk pdlPersonBolk;
 
     @InjectMocks
     private PensjonforvalterClient pensjonforvalterClient;
@@ -80,7 +95,7 @@ public class PensjonforvalterClientTest {
         when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
         when(mapperFacade.map(any(Person.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), eq(accessToken)))
+        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), Mono.just(anySet()), eq(accessToken)))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
     }
 
@@ -89,6 +104,7 @@ public class PensjonforvalterClientTest {
     // empty new response list to none empty previous list
     @Test
     public void testMergePensjonforvalterResponses_withEmptyList() {
+
         var response1 = new PensjonforvalterResponse();
         response1.setStatus(new ArrayList<>());
 
@@ -219,13 +235,14 @@ public class PensjonforvalterClientTest {
 
     @Test
     public void testLagreTpForhold_withOkResult() {
-        PensjonData.TpOrdning tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
-        PensjonData.TpOrdning tp2 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
+
+        var tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
+        var tp2 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
 
         PensjonData pensjonData = new PensjonData();
         pensjonData.setTp(Arrays.asList(tp1, tp2));
 
-        RsDollyUtvidetBestilling bestilling = new RsDollyUtvidetBestilling();
+        var bestilling = new RsDollyUtvidetBestilling();
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
@@ -238,17 +255,18 @@ public class PensjonforvalterClientTest {
                 .opprettetIPDL(true)
                 .build();
 
-        BestillingProgress progress = new BestillingProgress();
-        progress.setBestilling(new Bestilling());
+        var progress = new BestillingProgress();
+        var dbBestilling = Bestilling.builder().id(1L).build();
+        progress.setBestilling(dbBestilling);
 
-        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
+        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
         var test1EnvResponse = new PensjonforvalterResponse.Response();
         test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
         var test2EnvResponse = new PensjonforvalterResponse.Response();
         test2EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
 
-        PensjonforvalterResponse lagreTpForholdResponse = new PensjonforvalterResponse();
+        var lagreTpForholdResponse = new PensjonforvalterResponse();
         lagreTpForholdResponse.setStatus(List.of(
                 new ResponseEnvironment("TEST1", test1EnvResponse),
                 new ResponseEnvironment("TEST2", test2EnvResponse)
@@ -257,7 +275,7 @@ public class PensjonforvalterClientTest {
         when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpForholdResponse));
 
-        PensjonforvalterResponse lagreTpYtelseResponse = new PensjonforvalterResponse();
+        var lagreTpYtelseResponse = new PensjonforvalterResponse();
         lagreTpYtelseResponse.setStatus(List.of(
                 new ResponseEnvironment("TEST1", test1EnvResponse),
                 new ResponseEnvironment("TEST2", test2EnvResponse)
@@ -267,12 +285,20 @@ public class PensjonforvalterClientTest {
 
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
-        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
+        StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
+                        .map(ClientFuture::get))
+                .expectNext(BestillingProgress.builder()
+                        .bestilling(dbBestilling)
+                        .pensjonforvalterStatus("TEST1:OK$TEST2:OK")
+                        .build())
+                .verifyComplete();
 
-        assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
-        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
-        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST2:OK"));
+//        assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
+//        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
+//        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST2:OK"));
     }
 
     @Test
@@ -299,7 +325,7 @@ public class PensjonforvalterClientTest {
         BestillingProgress progress = new BestillingProgress();
         progress.setBestilling(new Bestilling());
 
-        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
+        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
         var test1EnvResponse = new PensjonforvalterResponse.Response();
         test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
@@ -363,7 +389,7 @@ public class PensjonforvalterClientTest {
         BestillingProgress progress = new BestillingProgress();
         progress.setBestilling(new Bestilling());
 
-        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Set.of("TEST1", "TEST2"));
+        when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
         var test1EnvResponse = new PensjonforvalterResponse.Response();
         test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
@@ -401,6 +427,7 @@ public class PensjonforvalterClientTest {
     }
 
     public static class PensjonforvalterClientTestUtil {
+
         public static PensjonData.TpOrdning getTpOrdning(String ordning) {
             PensjonData.TpOrdning tp = new PensjonData.TpOrdning();
             tp.setOrdning(ordning);
@@ -415,6 +442,7 @@ public class PensjonforvalterClientTest {
         }
 
         public static PensjonforvalterResponse getPensjonforvalterResponse(int httpStatusCode, String... miljoe) {
+
             var response = new PensjonforvalterResponse();
             var status = new ArrayList<ResponseEnvironment>();
 

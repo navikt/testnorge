@@ -4,6 +4,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -20,13 +21,16 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
 import static com.github.tomakehurst.wiremock.client.WireMock.post;
-import static com.github.tomakehurst.wiremock.client.WireMock.serverError;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.mockito.Mockito.when;
@@ -61,7 +65,7 @@ class PensjonforvalterConsumerTest {
 
         stubFor(get(urlPathMatching("(.*)/api/v1/miljo"))
                 .willReturn(ok()
-                        .withBody("[\"q1\",\"q2\",\"q4\"]")
+                        .withBody("[\"q1\",\"q2\"]")
                         .withHeader("Content-Type", "application/json")));
     }
 
@@ -85,12 +89,12 @@ class PensjonforvalterConsumerTest {
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/inntekt\",\"timestamp\":\"2022-06-29T00:00:00.311057793Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/inntekt\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/inntekt"))
-                    .willReturn(serverError()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from GET https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/000000/forhold\",\"path\":\"/tp/forhold\",\"timestamp\":\"2022-06-30T09:14:08.831669924Z\"}}]}")
+                    .willReturn(badRequest()
+                            .withBody("Feil i POPP-inntekt")
                             .withHeader("Content-Type", "application/json")));
         }
     }
@@ -100,12 +104,12 @@ class PensjonforvalterConsumerTest {
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"No Content\"},\"message\":null,\"path\":\"/tp/forhold\",\"timestamp\":\"2022-06-30T09:16:28.094766320Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/forhold\",\"timestamp\":\"2022-06-30T09:16:00\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/forhold"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/inntekt\",\"timestamp\":\"2022-06-29T13:00:00.838672829Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"POST Request failed with msg: 400 Bad Request\",\"path\":\"/api/v1/tp/forhold\",\"timestamp\":\"2022-06-29T13:00:00.838672829Z\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
     }
@@ -130,53 +134,70 @@ class PensjonforvalterConsumerTest {
         if (!withError) {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"No Content\"},\"message\":null,\"path\":\"/tp/ytelse\",\"timestamp\":\"2022-06-30T09:46:31.755107085Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":200,\"reasonPhrase\":\"OK\"},\"message\":null,\"path\":\"/api/v1/tp/ytelse\",\"timestamp\":\"2022-06-30T09:46:00\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         } else {
             stubFor(post(urlPathMatching("(.*)/api/v1/tp/ytelse"))
                     .willReturn(ok()
-                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/tp/ytelse\",\"timestamp\":\"2022-06-30T09:47:24.835903086Z\"}}]}")
+                            .withBody("{\"status\":[{\"miljo\":\"tx\",\"response\":{\"httpStatus\":{\"status\":500,\"reasonPhrase\":\"Internal Server Error\"},\"message\":\"404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse\",\"path\":\"/api/v1/tp/ytelse\",\"timestamp\":\"2022-06-30T09:47:00\"}}]}")
                             .withHeader("Content-Type", "application/json")));
         }
     }
 
     @Test
     void testGetMiljoer() {
+
         stubGetMiljo();
 
-        var miljoer = pensjonforvalterConsumer.getMiljoer();
-
-        assertThat("There are some environments", !miljoer.isEmpty());
-        assertThat("There are q1 environment", miljoer.contains("q1"));
-        assertThat("There are q2 environment", miljoer.contains("q2"));
+        StepVerifier.create(pensjonforvalterConsumer.getMiljoer())
+                .expectNext(Set.of("q1", "q2"))
+                .verifyComplete();
     }
 
     @Test
     void testOpprettPerson_ok() {
+
         stubPostOpprettPerson(false);
 
-        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 200", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(200));
+        StepVerifier.create(pensjonforvalterConsumer
+                        .opprettPerson(new OpprettPersonRequest(), Mono.just(Set.of("tx")), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .reasonPhrase("OK")
+                                                .build())
+                                        .path("/person")
+                                        .timestamp(LocalDateTime.of(2022, 6, 29, 00, 00))
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
-    void testOppretPerson_error() {
+    void testOpprettPerson_error() {
+
         stubPostOpprettPerson(true);
 
-        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 500", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(500));
+        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Mono.just(Set.of("q1")), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(500)
+                                                .reasonPhrase("Internal Server Error")
+                                                .build())
+                                        .path("/person")
+                                        .message("POST Request failed with msg: 400 Bad Request: [{\"message\":\"error message\"}]")
+                                        .timestamp(LocalDateTime.of(2022, 6, 29, 13, 00))
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -184,34 +205,47 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(false);
 
-        var response = pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(), Set.of("tx"),
-                        accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 200", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(200));
+        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(), Set.of("tx"), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .reasonPhrase("OK")
+                                                .build())
+                                        .path("/api/v1/inntekt")
+                                        .build())
+                                .build()))
+                        .build())
+                        .verifyComplete();
     }
 
     @Test
     void testLagreInntekt_error() {
+
         stubPostLagreInntekt(true);
 
-        var response = pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(),
-                        Set.of("tx"), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 500", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(500));
+        StepVerifier.create(pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(), Set.of("tx"), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(400)
+                                                .reasonPhrase("Bad Request")
+                                                .build())
+                                        .path("/api/v1/inntekt")
+                                        .message("Feil i POPP-inntekt")
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
     void testGetInntekter() {
+
         stubGetGetInntekter();
 
         var response = pensjonforvalterConsumer.getInntekter(null, null);
@@ -226,30 +260,47 @@ class PensjonforvalterConsumerTest {
 
     @Test
     void testLagreTpForhold_ok() {
+
         stubPostLagreTpForhold(false);
 
-        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 200", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(200));
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .reasonPhrase("OK")
+                                                .build())
+                                        .path("/api/v1/tp/forhold")
+                                        .timestamp(LocalDateTime.of(2022,6,30,9,16))
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
     void testLagreTpForhold_error() {
+
         stubPostLagreTpForhold(true);
 
-        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 500", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(500));
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(500)
+                                                .reasonPhrase("Internal Server Error")
+                                                .build())
+                                        .path("/api/v1/tp/forhold")
+                                        .message("POST Request failed with msg: 400 Bad Request")
+                                        .timestamp(LocalDateTime.of(2022,6,29,13, 0))
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -268,29 +319,46 @@ class PensjonforvalterConsumerTest {
 
     @Test
     void testLagreTpYtelse_ok() {
+
         stubPostLagreTpYtelse(false);
 
-        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 200", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(200));
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .reasonPhrase("OK")
+                                                .build())
+                                        .path("/api/v1/tp/ytelse")
+                                        .timestamp(LocalDateTime.of(2022,6,30,9,46))
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 
     @Test
     void testLagreTpYtelse_error() {
+
         stubPostLagreTpYtelse(true);
 
-        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken)
-                        .collectList()
-                                .block()
-                                        .get(0);
-
-        assertThat("There is status for 1 environment", response.getStatus().size() == 1);
-        assertThat("Environment is 'tx'", response.getStatus().get(0).getMiljo().equals("tx"));
-        assertThat("Http status is 500", response.getStatus().get(0).getResponse().getHttpStatus().getStatus().equals(500));
+        StepVerifier.create(pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken))
+                .expectNext(PensjonforvalterResponse.builder()
+                        .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
+                                .miljo("tx")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(500)
+                                                .reasonPhrase("Internal Server Error")
+                                                .build())
+                                        .path("/api/v1/tp/ytelse")
+                                        .message("404 Not Found from POST https://tp-q4.dev.intern.nav.no/api/tjenestepensjon/08525803725/forhold/3200/ytelse")
+                                        .timestamp(LocalDateTime.of(2022,6,30,9,47))
+                                        .build())
+                                .build()))
+                        .build())
+                .verifyComplete();
     }
 }

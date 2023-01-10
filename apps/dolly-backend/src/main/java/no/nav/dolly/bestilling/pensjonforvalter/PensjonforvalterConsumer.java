@@ -60,12 +60,10 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
-    public Set<String> getMiljoer() {
+    public Mono<Set<String>> getMiljoer() {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
-                .filter(miljoer -> miljoer.removeAll(Set.of("q4")))
-                .block();
+                .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
     public Mono<AccessToken> getAccessToken() {
@@ -85,11 +83,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
     @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
     public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest,
-                                                        Set<String> miljoer, AccessToken token) {
+                                                       Mono<Set<String>> miljoer, AccessToken token) {
 
-        opprettPersonRequest.setMiljoer(miljoer);
-        log.info("Pensjon opprett person {}", opprettPersonRequest);
-        return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
+        return miljoer
+                .flatMapMany(envs -> {
+                    opprettPersonRequest.setMiljoer(envs);
+                    log.info("Pensjon opprett person {}", opprettPersonRequest);
+                    return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
+                });
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_lagreAlderspensjon" })
