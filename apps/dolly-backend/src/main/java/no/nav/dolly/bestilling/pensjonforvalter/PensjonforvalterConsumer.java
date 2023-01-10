@@ -87,7 +87,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         opprettPersonRequest.setMiljoer(miljoer);
         log.info("Pensjon opprett person {}", opprettPersonRequest);
-
         return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
     }
 

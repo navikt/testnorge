@@ -160,7 +160,7 @@ class PensjonforvalterConsumerTest {
         stubPostOpprettPerson(false);
 
         StepVerifier.create(pensjonforvalterConsumer
-                        .opprettPerson(new OpprettPersonRequest(), Mono.just(Set.of("tx")), accessToken))
+                        .opprettPerson(new OpprettPersonRequest(), Set.of("tx"), accessToken))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
@@ -182,7 +182,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostOpprettPerson(true);
 
-        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Mono.just(Set.of("q1")), accessToken))
+        StepVerifier.create(pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken))
                 .expectNext(PensjonforvalterResponse.builder()
                         .status(List.of(PensjonforvalterResponse.ResponseEnvironment.builder()
                                 .miljo("tx")
