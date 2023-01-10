@@ -18,7 +18,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: mn-organisasjon-api
           cluster: dev-fss
         - application: testnorge-statisk-data-forvalter

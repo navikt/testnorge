@@ -13,7 +13,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
   tokenx:
