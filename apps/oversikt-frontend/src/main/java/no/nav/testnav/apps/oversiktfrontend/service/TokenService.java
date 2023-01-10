@@ -36,7 +36,7 @@ public class TokenService {
                     return tokenExchange.exchange(ServerProperties
                                     .builder()
                                     .name("team-dolly-lokal-app")
-                                    .cluster("dev-fss")
+                                    .cluster("dev-gcp")
                                     .namespace("dolly")
                                     .build(),
                             exchange

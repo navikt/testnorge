@@ -13,7 +13,7 @@ export default () => (
 	<Page>
 		<Content>
 			<FetchAccessToken
-				scope="dev-fss.dolly.team-dolly-lokal-app"
+				scope="dev-gcp.dolly.team-dolly-lokal-app"
 				labels={{
 					header: 'Magic Token',
 					subHeader: 'Generer lokalt utviklingstoken',

@@ -27,7 +27,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: endringsmelding-frontend
           cluster: dev-gcp
         - application: dolly-backend
