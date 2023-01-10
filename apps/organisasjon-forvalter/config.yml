@@ -34,7 +34,7 @@ spec:
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
         - application: testnav-pdl-forvalter-dev
