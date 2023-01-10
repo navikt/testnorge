@@ -1,5 +1,5 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+azure.app.client.id: ${local.client.id}
+azure.app.client.secret: ${local.client.secret}
 
 spring:
   session:
