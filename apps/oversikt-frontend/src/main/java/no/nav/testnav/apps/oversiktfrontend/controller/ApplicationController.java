@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.TimeUnit;
@@ -27,8 +28,8 @@ public class ApplicationController {
     }
 
     @GetMapping
-    public ResponseEntity<Flux<ApplicationDTO>> getApplications() {
-        var applications = applicationService.getApplications().map(Application::toDTO);
+    public ResponseEntity<Flux<ApplicationDTO>> getApplications(ServerWebExchange exchange) {
+        var applications = applicationService.getApplications(exchange).map(Application::toDTO);
         return ResponseEntity
                 .ok()
                 .cacheControl(cacheControl)
