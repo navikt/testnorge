@@ -34,14 +34,3 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  deploy-wonderwall:
-    name: Deploy wonderwall
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-oversikt-wonderwall') }}
-    with:
-      resource: 'apps/oversikt-frontend/config-wonderwall.yml'
-      app-name: 'oversikt-frontend'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
