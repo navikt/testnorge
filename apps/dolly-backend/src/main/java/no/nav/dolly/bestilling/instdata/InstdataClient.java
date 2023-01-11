@@ -6,9 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -24,8 +22,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.isNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -70,14 +66,6 @@ public class InstdataClient implements ClientRegister {
 
         instdataConsumer.deleteInstdata(identer)
                 .subscribe(response -> log.info("Slettet antall {} identer fra Instdata", response.size()));
-    }
-
-    @Override
-    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
-
-        return isNull(kriterier.getInstdata()) ||
-                bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getInstdataStatus()));
     }
 
     private Mono<List<Instdata>> filterInstdata(List<Instdata> instdataRequest, String miljoe) {

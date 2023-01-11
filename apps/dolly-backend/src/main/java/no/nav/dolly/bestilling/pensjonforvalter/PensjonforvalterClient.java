@@ -18,10 +18,8 @@ import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -54,8 +52,6 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVenterTekst;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -208,14 +204,6 @@ public class PensjonforvalterClient implements ClientRegister {
         // Pensjonforvalter / POPP støtter pt ikke sletting
 
         pensjonforvalterConsumer.sletteTpForhold(identer);
-    }
-
-    @Override
-    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
-
-        return bestilling.getProgresser().stream()
-                .allMatch(entry -> isNotBlank(entry.getPensjonforvalterStatus()) &&
-                        !entry.getPensjonforvalterStatus().contains(getVenterTekst()));
     }
 
     private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, String ident,
