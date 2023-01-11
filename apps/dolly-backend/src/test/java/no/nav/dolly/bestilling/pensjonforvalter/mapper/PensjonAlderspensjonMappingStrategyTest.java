@@ -35,12 +35,10 @@ class PensjonAlderspensjonMappingStrategyTest {
     void mapAlderspensjon_OK() {
 
         var pensjon = PensjonData.Alderspensjon.builder()
-                .flyktning(true)
                 .iverksettelsesdato(LocalDate.of(2023,1,11))
                 .sivilstand("GIFT")
                 .sivilstatusDatoFom(LocalDate.of(1988,1,2))
                 .uttaksgrad(100)
-                .utvandret(false)
                 .build();
         var context = MappingContextUtils.getMappingContext();
         context.setProperty("ident", "123");
@@ -48,12 +46,10 @@ class PensjonAlderspensjonMappingStrategyTest {
 
         var target = mapperFacade.map(pensjon, AlderspensjonRequest.class, context);
 
-        assertThat(target.getFlyktning(), is(equalTo(true)));
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023,1,11))));
         assertThat(target.getSivilstand(), is(equalTo("GIFT")));
         assertThat(target.getSivilstatusDatoFom(), is(equalTo(LocalDate.of(1988,1,2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
-        assertThat(target.getUtvandret(), is(equalTo(false)));
 
         assertThat(target.getPid(), is(equalTo("123")));
         assertThat(target.getMiljoer(), hasItem("q2"));

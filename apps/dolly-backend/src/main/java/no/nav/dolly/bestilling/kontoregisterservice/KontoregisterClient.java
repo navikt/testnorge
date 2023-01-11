@@ -24,6 +24,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -48,7 +49,7 @@ public class KontoregisterClient implements ClientRegister {
             if (nonNull(request)) {
                 return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                         .flatMap(isPresent -> {
-                            if (isPresent) {
+                            if (isTrue(isPresent)) {
                                 return kontoregisterConsumer.postKontonummerRegister(request);
                             } else {
                                 return Mono.just(encodeStatus(getVarselSlutt(SYSTEM)));

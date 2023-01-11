@@ -21,8 +21,6 @@ public class AlderspensjonRequest {
     private String statsborgerskap;
     private String sivilstand;
     private LocalDate sivilstatusDatoFom;
-    private Boolean flyktning;
-    private Boolean utvandret;
 
     private List<AlderspensjonRequest.SkjemaRelasjon> relasjonListe;
 

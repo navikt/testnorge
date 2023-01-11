@@ -30,6 +30,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
@@ -98,7 +99,11 @@ public class DokarkivClient implements ClientRegister {
 
     private String getStatus(String ident, Long bestillingId, DokarkivResponse response) {
 
-        if (nonNull(response) && isBlank(response.getFeilmelding())) {
+        if (isNull(response)) {
+            return null;
+        }
+
+        if (isBlank(response.getFeilmelding())) {
 
             saveTransaksjonId(response, ident, bestillingId, response.getMiljoe());
             return response.getMiljoe() + ":OK";

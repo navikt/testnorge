@@ -38,11 +38,11 @@ import reactor.core.publisher.Mono;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -101,9 +101,9 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments()).stream()
+        var bestilteMiljoer = new AtomicReference<>(bestilling.getEnvironments().stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toSet()));
 
         var bestillingId = progress.getBestilling().getId();
 
@@ -111,6 +111,9 @@ public class PensjonforvalterClient implements ClientRegister {
                 .flatMap(tilgjengeligeMiljoer -> {
                     progress.setPensjonforvalterStatus(prepPdLStatus(tilgjengeligeMiljoer, false));
                     transactionHelperService.persister(progress);
+                    bestilteMiljoer.set(bestilteMiljoer.get().stream()
+                            .filter(tilgjengeligeMiljoer::contains)
+                            .collect(Collectors.toSet()));
 
                     return personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                             .flatMap(isPresent -> {
@@ -125,14 +128,14 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                     .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
                                                                     .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
                                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
                                                                             .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
                                                                     Flux.just("")),
                                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
                                                                     lagreAlderspensjon(
                                                                             bestilling.getPensjonforvalter(),
                                                                             dollyPerson.getHovedperson(),
-                                                                            bestilteMiljoer,
+                                                                            bestilteMiljoer.get(),
                                                                             token,
                                                                             isOpprettEndre,
                                                                             bestillingId)
@@ -140,7 +143,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                     Flux.just("")),
 
                                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
+                                                                    lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
                                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
                                                                     Flux.just(""))))
                                                     .flatMap(Flux::from))

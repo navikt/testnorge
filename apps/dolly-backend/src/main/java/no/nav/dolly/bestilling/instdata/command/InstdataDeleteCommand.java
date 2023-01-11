@@ -24,7 +24,7 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
 
     private final WebClient webClient;
     private final String ident;
-    private final List<String> environments;
+    private final List<String> miljoer;
     private final String token;
 
     @Override
@@ -33,7 +33,7 @@ public class InstdataDeleteCommand implements Callable<Mono<DeleteResponse>> {
         return webClient.delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(INSTDATA_URL)
-                        .queryParam(ENVIRONMENTS, environments)
+                        .queryParam(ENVIRONMENTS, miljoer)
                         .build())
                 .header(INST_IDENT, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
