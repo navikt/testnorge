@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LagreAlderspensjonRequest {
+public class AlderspensjonRequest {
 
     private List<String> miljoer;
 
@@ -24,7 +24,7 @@ public class LagreAlderspensjonRequest {
     private Boolean flyktning;
     private Boolean utvandret;
 
-    private List<LagreAlderspensjonRequest.SkjemaRelasjon> relasjonListe;
+    private List<AlderspensjonRequest.SkjemaRelasjon> relasjonListe;
 
     @Data
     @NoArgsConstructor

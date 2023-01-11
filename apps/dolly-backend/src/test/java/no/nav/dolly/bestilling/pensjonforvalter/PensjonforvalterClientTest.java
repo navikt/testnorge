@@ -3,9 +3,9 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
@@ -93,10 +93,10 @@ public class PensjonforvalterClientTest {
 
     @BeforeEach
     public void setup() {
-        when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
+        when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
         when(accessToken.getTokenValue()).thenReturn("123");
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), eq(accessToken)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), eq(accessToken)))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
 
         var pdlPersonBolk = PdlPersonBolk.builder()
@@ -270,7 +270,7 @@ public class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                 .miljo("TEST1")
@@ -282,7 +282,7 @@ public class PensjonforvalterClientTest {
                                 .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -293,7 +293,7 @@ public class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -304,10 +304,10 @@ public class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class), any(MappingContext.class)))
-                .thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class), any(MappingContext.class)))
-                .thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpYtelseRequest());
         when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
@@ -342,7 +342,7 @@ public class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                         .miljo("TEST1")
@@ -362,7 +362,7 @@ public class PensjonforvalterClientTest {
                                         .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -373,7 +373,7 @@ public class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -385,10 +385,10 @@ public class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class), any(MappingContext.class)))
-                .thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class), any(MappingContext.class)))
-                .thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpYtelseRequest());
         when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
                 .thenReturn("Feil= ytelse2 feil on TEST2");
@@ -423,7 +423,7 @@ public class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), any(AccessToken.class)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), any(AccessToken.class)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(ResponseEnvironment.builder()
                                         .miljo("TEST1")
@@ -443,7 +443,7 @@ public class PensjonforvalterClientTest {
                                         .build()))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -455,7 +455,7 @@ public class PensjonforvalterClientTest {
                         ))
                         .build()));
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(PensjonforvalterResponse.builder()
                         .status(List.of(
                                 new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
@@ -467,10 +467,10 @@ public class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class), any(MappingContext.class)))
-                .thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class), any(MappingContext.class)))
-                .thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpYtelseRequest());
         when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.INTERNAL_SERVER_ERROR), anyString()))
                 .thenReturn("Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon)");

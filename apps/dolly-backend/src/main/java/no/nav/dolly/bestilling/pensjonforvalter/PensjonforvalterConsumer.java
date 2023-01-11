@@ -13,11 +13,11 @@ import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpForholdCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.LagreTpYtelseCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.OpprettPersonCommand;
 import no.nav.dolly.bestilling.pensjonforvalter.command.SletteTpForholdCommand;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreAlderspensjonRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.dolly.metrics.Timed;
@@ -72,26 +72,26 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
-    public Flux<PensjonforvalterResponse> lagreInntekter(LagreInntektRequest lagreInntektRequest,
+    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest,
                                                          Set<String> miljoer, AccessToken token) {
 
-        log.info("Popp lagre inntekt {}", lagreInntektRequest);
+        log.info("Popp lagre inntekt {}", pensjonPoppInntektRequest);
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
-                        lagreInntektRequest, miljoe).call());
+                        pensjonPoppInntektRequest, miljoe).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
-    public Flux<PensjonforvalterResponse> opprettPerson(OpprettPersonRequest opprettPersonRequest,
+    public Flux<PensjonforvalterResponse> opprettPerson(PensjonPersonRequest pensjonPersonRequest,
                                                         Set<String> miljoer, AccessToken token) {
 
-        opprettPersonRequest.setMiljoer(miljoer);
-        log.info("Pensjon opprett person {}", opprettPersonRequest);
-        return new OpprettPersonCommand(webClient, token.getTokenValue(), opprettPersonRequest).call();
+        pensjonPersonRequest.setMiljoer(miljoer);
+        log.info("Pensjon opprett person {}", pensjonPersonRequest);
+        return new OpprettPersonCommand(webClient, token.getTokenValue(), pensjonPersonRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
-    public Flux<PensjonforvalterResponse> lagreAlderspensjon(LagreAlderspensjonRequest request, AccessToken token) {
+    public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request, AccessToken token) {
 
         log.info("Pensjon lagre alderspensjon {}", request);
         return new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call();
@@ -106,7 +106,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
-    public Flux<PensjonforvalterResponse> lagreTpForhold(LagreTpForholdRequest lagreTpForholdRequest, AccessToken token) {
+    public Flux<PensjonforvalterResponse> lagreTpForhold(PensjonTpForholdRequest lagreTpForholdRequest, AccessToken token) {
 
         log.info("Pensjon lagre TP-forhold {}", lagreTpForholdRequest);
         return new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call();
@@ -133,10 +133,10 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
-    public Flux<PensjonforvalterResponse> lagreTpYtelse(LagreTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
+    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest pensjonTpYtelseRequest, AccessToken token) {
 
-        log.info("Pensjon lagre TP-ytelse {}", lagreTpYtelseRequest);
-        return new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call();
+        log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
+        return new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call();
     }
 
     public Map<String, String> checkAlive() {

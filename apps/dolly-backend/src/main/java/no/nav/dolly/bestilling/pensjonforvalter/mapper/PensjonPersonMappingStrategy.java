@@ -3,7 +3,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -35,18 +35,18 @@ public class PensjonPersonMappingStrategy implements MappingStrategy {
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(PdlPersonBolk.PersonBolk.class, OpprettPersonRequest.class)
+        factory.classMap(PdlPersonBolk.PersonBolk.class, PensjonPersonRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(PdlPersonBolk.PersonBolk person, OpprettPersonRequest opprettPersonRequest, MappingContext context) {
+                    public void mapAtoB(PdlPersonBolk.PersonBolk person, PensjonPersonRequest pensjonPersonRequest, MappingContext context) {
 
-                        opprettPersonRequest.setFnr(person.getIdent());
+                        pensjonPersonRequest.setFnr(person.getIdent());
 
-                        opprettPersonRequest.setFodselsDato(getFoedselsdato(person.getPerson().getFoedsel().stream()
+                        pensjonPersonRequest.setFodselsDato(getFoedselsdato(person.getPerson().getFoedsel().stream()
                                 .map(PdlPerson.Foedsel::getFoedselsdato)
-                                .findFirst().orElse(null), opprettPersonRequest.getFnr()));
+                                .findFirst().orElse(null), pensjonPersonRequest.getFnr()));
 
-                        opprettPersonRequest.setDodsDato(convertDato(person.getPerson().getDoedsfall().stream()
+                        pensjonPersonRequest.setDodsDato(convertDato(person.getPerson().getDoedsfall().stream()
                                 .map(PdlPerson.Doedsfall::getDoedsdato)
                                 .findFirst().orElse(null)));
 
@@ -55,11 +55,11 @@ public class PensjonPersonMappingStrategy implements MappingStrategy {
                                                             .anyMatch(innflytting -> innflytting.getInnflyttingsdato()
                                                                     .isAfter(utflytting.getUtflyttingsdato())))) {
 
-                            opprettPersonRequest.setBostedsland(person.getPerson().getUtflyttingFraNorge().stream()
+                            pensjonPersonRequest.setBostedsland(person.getPerson().getUtflyttingFraNorge().stream()
                                     .map(PdlPerson.UtflyttingFraNorge::getTilflyttingsland)
                                     .findFirst().orElse("NOR"));
 
-                            opprettPersonRequest.setUtvandringsDato(
+                            pensjonPersonRequest.setUtvandringsDato(
                                     convertDato(person.getPerson().getUtflyttingFraNorge().stream()
                                             .map(PdlPerson.UtflyttingFraNorge::getUtflyttingsdato)
                                             .filter(Objects::nonNull)
@@ -67,7 +67,7 @@ public class PensjonPersonMappingStrategy implements MappingStrategy {
                                             .findFirst().orElse(null)));
                         } else {
 
-                            opprettPersonRequest.setBostedsland("NOR");
+                            pensjonPersonRequest.setBostedsland("NOR");
                         }
                     }
                 })

@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import org.springframework.http.HttpStatus;
@@ -29,7 +29,7 @@ public class LagrePoppInntektCommand implements Callable<Mono<PensjonforvalterRe
 
     private final WebClient webClient;
     private final String token;
-    private final LagreInntektRequest lagreInntektRequest;
+    private final PensjonPoppInntektRequest pensjonPoppInntektRequest;
     private final String miljoe;
 
     public Mono<PensjonforvalterResponse> call() {
@@ -42,7 +42,7 @@ public class LagrePoppInntektCommand implements Callable<Mono<PensjonforvalterRe
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(MILJO_HEADER, miljoe)
-                .bodyValue(lagreInntektRequest)
+                .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> pensjonforvalterResponse(miljoe, response.getStatusCode()))

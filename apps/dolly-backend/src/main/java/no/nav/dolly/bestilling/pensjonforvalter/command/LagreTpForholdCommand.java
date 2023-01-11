@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -32,7 +32,7 @@ public class LagreTpForholdCommand implements Callable<Flux<PensjonforvalterResp
 
     private final String token;
 
-    private final LagreTpForholdRequest lagreTpForholdRequest;
+    private final PensjonTpForholdRequest lagreTpForholdRequest;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient

@@ -5,9 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -47,9 +45,8 @@ public class PensjonData {
         UKJENT
     }
 
-    @Getter
-    @Setter
-    @NoArgsConstructor
+    @Data
+    @Builder
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PoppInntekt {
@@ -111,8 +108,8 @@ public class PensjonData {
         private LocalDate datoYtelseIverksattTom;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Alderspensjon {
@@ -138,8 +135,8 @@ public class PensjonData {
         private Boolean utvandret;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjemaRelasjon {

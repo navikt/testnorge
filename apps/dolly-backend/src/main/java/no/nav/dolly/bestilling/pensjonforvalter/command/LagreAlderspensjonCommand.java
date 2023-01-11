@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreAlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +30,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
 
     private final String token;
 
-    private final LagreAlderspensjonRequest lagreAlderspensjonRequest;
+    private final AlderspensjonRequest alderspensjonRequest;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -41,7 +41,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreAlderspensjonRequest)
+                .bodyValue(alderspensjonRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)
@@ -49,7 +49,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(error ->
                         Mono.just(PensjonforvalterResponse.builder()
-                                .status(lagreAlderspensjonRequest.getMiljoer().stream()
+                                .status(alderspensjonRequest.getMiljoer().stream()
                                         .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()

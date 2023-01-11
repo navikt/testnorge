@@ -2,8 +2,8 @@ package no.nav.dolly.bestilling.pensjonforvalter.mapper;
 
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.mapper.strategy.LocalDateCustomMapping;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
@@ -40,7 +40,7 @@ class PensjonTpMappingStrategyTest {
         context.setProperty("ident", "123");
         context.setProperty("miljoer", Set.of("q2"));
 
-        var target = mapperFacade.map(tpOrdning, LagreTpForholdRequest.class, context);
+        var target = mapperFacade.map(tpOrdning, PensjonTpForholdRequest.class, context);
 
         assertThat(target.getOrdning(), is(equalTo("Denne ordningen")));
         assertThat(target.getFnr(), is(equalTo("123")));
@@ -61,7 +61,7 @@ class PensjonTpMappingStrategyTest {
         context.setProperty("miljoer", Set.of("q2"));
         context.setProperty("ordning", "Denne ordningen");
 
-        var target = mapperFacade.map(tpOrdning, LagreTpYtelseRequest.class, context);
+        var target = mapperFacade.map(tpOrdning, PensjonTpYtelseRequest.class, context);
 
         assertThat(target.getOrdning(), is(equalTo("Denne ordningen")));
         assertThat(target.getFnr(), is(equalTo("123")));
