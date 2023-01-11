@@ -1,7 +1,7 @@
 import React, { BaseSyntheticEvent } from 'react'
 import { Field, FieldArray, FormikProps } from 'formik'
-import Button from '~/components/ui/button/Button'
-import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
+import Button from '@/components/ui/button/Button'
+import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 
 interface IdentSearchProps {
 	formikBag: FormikProps<{}>

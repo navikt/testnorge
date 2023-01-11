@@ -1,23 +1,22 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import Panel from '~/components/ui/panel/Panel'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { erForsteEllerTest, panelError } from '~/components/ui/form/formUtils'
-import { Kategori } from '~/components/ui/form/kategori/Kategori'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '~/components/ui/form/inputs/datepicker/Datepicker'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { FormikCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
+import * as _ from 'lodash-es'
+import Panel from '@/components/ui/panel/Panel'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
+import { Kategori } from '@/components/ui/form/kategori/Kategori'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import {
 	ifPresent,
 	messages,
 	requiredDate,
 	requiredNumber,
 	requiredString,
-} from '~/utils/YupValidations'
+} from '@/utils/YupValidations'
 import { FormikProps } from 'formik'
 import { Inntekt, Kodeverk, Ytelser } from '../InntektsmeldingTypes'
 import InntektsmeldingSelect from './partials/InntektsmeldingSelect'
@@ -28,10 +27,10 @@ import PleiepengerForm from './partials/pleiepengerForm'
 import RefusjonForm from './partials/refusjonForm'
 import ArbeidsforholdForm from './partials/arbeidsforholdForm'
 import NaturalytelseForm from './partials/naturalytelseForm'
-import { AlertAaregRequired } from '~/components/ui/brukerAlert/AlertAaregRequired'
-import { InputWarning } from '~/components/ui/form/inputWarning/inputWarning'
-import { OrgnrToggle } from '~/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
-import { testDatoFom, testDatoTom } from '~/components/fagsystem/utils'
+import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequired'
+import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
+import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
+import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
@@ -79,7 +78,7 @@ const informasjonstekst = 'Personen må ha et arbeidsforhold knyttet til den val
 
 export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => {
 	const [typeArbeidsgiver, setTypeArbeidsgiver] = useState(
-		_get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
+		_.get(formikBag.values, 'inntektsmelding.inntekter[0].arbeidsgiverPrivat')
 			? TypeArbeidsgiver.PRIVATPERSON
 			: TypeArbeidsgiver.VIRKSOMHET
 	)
@@ -87,7 +86,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
-		_get(formikBag.values, 'inntektsmelding.inntekter').forEach(
+		_.get(formikBag.values, 'inntektsmelding.inntekter').forEach(
 			(_inntekt: Inntekt, idx: number) => {
 				if (type === TypeArbeidsgiver.VIRKSOMHET) {
 					formikBag.setFieldValue(
@@ -116,7 +115,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
 			>
-				{!_has(formikBag.values, 'aareg') && (
+				{!_.has(formikBag.values, 'aareg') && (
 					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
 				)}
 
@@ -139,7 +138,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 					canBeEmpty={false}
 				>
 					{(path: string, idx: number) => {
-						const ytelse = _get(formikBag.values, `${path}.ytelse`)
+						const ytelse = _.get(formikBag.values, `${path}.ytelse`)
 						return (
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
@@ -195,7 +194,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 								{ytelse === Ytelser.Foreldrepenger && (
 									<Kategori title="Foreldrepenger">
 										<InputWarning
-											visWarning={!_get(formikBag.values, `${path}.startdatoForeldrepengeperiode`)}
+											visWarning={!_.get(formikBag.values, `${path}.startdatoForeldrepengeperiode`)}
 											warningText="For automatisk behandling av inntektsmelding må dette feltet fylles ut"
 										>
 											<FormikDatepicker

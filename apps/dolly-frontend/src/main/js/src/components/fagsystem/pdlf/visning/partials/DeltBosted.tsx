@@ -1,10 +1,9 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { Vegadresse } from '~/components/fagsystem/pdlf/visning/partials/Vegadresse'
-import { Matrikkeladresse } from '~/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
-import { UkjentBosted } from '~/components/fagsystem/pdlf/visning/partials/UkjentBosted'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
+import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
+import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
 
 type Data = {
 	data: Array<any>

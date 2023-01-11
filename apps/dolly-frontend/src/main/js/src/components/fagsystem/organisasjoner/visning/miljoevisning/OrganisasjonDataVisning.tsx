@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/DataVisning.less'
+import '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/DataVisning.less'
 // @ts-ignore
 import Tooltip from 'rc-tooltip'
 import 'rc-tooltip/assets/bootstrap_white.css'
-import { Detaljer } from '~/components/fagsystem/organisasjoner/visning/Detaljer'
-import { Enhetstre, OrgTree } from '~/components/enhetstre'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import DollyTooltip from '~/components/ui/button/DollyTooltip'
+import { Detaljer } from '@/components/fagsystem/organisasjoner/visning/Detaljer'
+import { Enhetstre, OrgTree } from '@/components/enhetstre'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import DollyTooltip from '@/components/ui/button/DollyTooltip'
 
 // @ts-ignore
 const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {

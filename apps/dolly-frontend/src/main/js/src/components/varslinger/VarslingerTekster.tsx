@@ -1,5 +1,4 @@
-import React from 'react'
-import { dollySlack } from '~/components/dollySlack/dollySlack'
+import { dollySlack } from '@/components/dollySlack/dollySlack'
 
 type VarslingId = {
 	varslingId: string
@@ -64,13 +63,13 @@ export const VarslingerTekster = ({ varslingId }: VarslingId) => {
 					</ul>
 					<p>
 						Du kan lese mer om retningslinjer for bruk av testdata i NAV {retningslinjer}, eller
-						under Dokumentasjon i menyen.
+						under Brukerdokumentasjon i menyen.
 					</p>
 
 					<h2>Hjelp til å bruke Dolly</h2>
 					<p>
 						Om dette er første gang du bruker Dolly, vil du sikkert ta en titt på brukerveiledningen
-						vår. Den finner du {brukerveiledning}, eller under Dokumentasjon i menyen.
+						vår. Den finner du {brukerveiledning}, eller under Brukerdokumentasjon i menyen.
 					</p>
 					<p>
 						Kontakt oss gjerne på {dollySlack} dersom det er noe du lurer på eller trenger hjelp

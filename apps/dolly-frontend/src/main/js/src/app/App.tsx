@@ -1,26 +1,26 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { Route, Routes } from 'react-router-dom'
-import Header from '~/components/layout/header/Header'
-import Loading from '~/components/ui/loading/Loading'
-import allRoutes from '~/allRoutes'
-import { VarslingerModal } from '~/components/varslinger/VarslingerModal'
+import Header from '@/components/layout/header/Header'
+import Loading from '@/components/ui/loading/Loading'
+import allRoutes from '@/allRoutes'
+import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
-import { Forbedring } from '~/components/feedback/Forbedring'
-import Utlogging from '~/components/utlogging'
-import ToastConnector from '~/components/ui/toast/ToastConnector'
-import { Breadcrumbs } from '~/components/layout/breadcrumb/Breadcrumb'
-import { InfoStripe } from '~/components/infostripe/InfoStripe'
-import { useBrukerProfil, useCurrentBruker } from '~/utils/hooks/useBruker'
-import { useDollyEnvironments } from '~/utils/hooks/useEnvironments'
-import logoutBruker from '~/components/utlogging/logoutBruker'
+import { Forbedring } from '@/components/feedback/Forbedring'
+import Utlogging from '@/components/utlogging'
+import ToastConnector from '@/components/ui/toast/ToastConnector'
+import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
+import { InfoStripe } from '@/components/infostripe/InfoStripe'
+import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
+import logoutBruker from '@/components/utlogging/logoutBruker'
 import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
-} from '~/utils/hooks/useMaler'
-import { runningTestcafe } from '~/service/services/Request'
+} from '@/utils/hooks/useMaler'
+import { runningCypressE2E } from '@/service/services/Request'
 
 const logout = (feilmelding: string) => {
-	if (!runningTestcafe()) {
+	if (!runningCypressE2E()) {
 		logoutBruker(feilmelding)
 	}
 }
@@ -43,7 +43,7 @@ export const App = () => {
 	}, [userError])
 
 	useEffect(() => {
-		if (criticalError && !runningTestcafe()) {
+		if (criticalError && !runningCypressE2E()) {
 			logout(criticalError.stack)
 		}
 	}, [criticalError])

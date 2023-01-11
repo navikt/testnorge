@@ -1,8 +1,8 @@
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
 import React from 'react'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
 
 interface OrgProps {
 	path: string

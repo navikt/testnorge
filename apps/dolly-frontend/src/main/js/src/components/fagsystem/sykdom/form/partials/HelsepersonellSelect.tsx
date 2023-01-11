@@ -1,8 +1,7 @@
-import React from 'react'
-import LoadableComponent, { Feilmelding } from '~/components/ui/loading/LoadableComponent'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { SelectOptionsOppslag } from '~/service/SelectOptionsOppslag'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface HelsepersonellSelect {
 	name: string

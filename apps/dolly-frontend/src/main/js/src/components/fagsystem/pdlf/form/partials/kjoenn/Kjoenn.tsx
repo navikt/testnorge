@@ -1,9 +1,8 @@
-import React from 'react'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { initialKjoenn } from '~/components/fagsystem/pdlf/form/initialValues'
-import { FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { AvansertForm } from '~/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { initialKjoenn } from '@/components/fagsystem/pdlf/form/initialValues'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 type KjoennTypes = {
 	path: string

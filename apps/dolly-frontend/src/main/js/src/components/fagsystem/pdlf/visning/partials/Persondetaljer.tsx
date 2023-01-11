@@ -1,19 +1,19 @@
 import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import Formatters from '~/utils/DataFormatter'
-import _get from 'lodash/get'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import Formatters from '@/utils/DataFormatter'
+import * as _ from 'lodash-es'
 import {
 	initialKjoenn,
 	initialNavn,
 	initialPersonstatus,
-} from '~/components/fagsystem/pdlf/form/initialValues'
-import VisningRedigerbarPersondetaljerConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
-import { TpsMPersonInfo } from '~/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
-import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
-import { SkjermingVisning } from '~/components/fagsystem/skjermingsregister/visning/Visning'
-import { Skjerming } from '~/components/fagsystem/skjermingsregister/SkjermingTypes'
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarPersondetaljerConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarPersondetaljerConnector'
+import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
+import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
+import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type PersondetaljerTypes = {
 	data: any
@@ -86,7 +86,7 @@ export const Persondetaljer = ({
 	if (!data) {
 		return null
 	}
-	const redigertPerson = _get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
+	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
 	const initPerson = {
 		navn: [data?.navn?.[0] || initialNavn],
@@ -95,8 +95,8 @@ export const Persondetaljer = ({
 		skjermingsregister: skjermingData,
 	}
 
-	const redigertPersonPdlf = _get(tmpPersoner?.pdlforvalter, `${ident}.person`)
-	const redigertSkjerming = _get(tmpPersoner?.skjermingsregister, `${ident}`)
+	const redigertPersonPdlf = _.get(tmpPersoner?.pdlforvalter, `${ident}.person`)
+	const redigertSkjerming = _.get(tmpPersoner?.skjermingsregister, `${ident}`)
 
 	const personValues = redigertPersonPdlf ? redigertPersonPdlf : data
 	const redigertPdlfPersonValues = redigertPersonPdlf

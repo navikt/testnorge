@@ -1,11 +1,10 @@
-import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type AdresseData = {
 	adresse: {

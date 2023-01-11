@@ -1,6 +1,5 @@
-import React from 'react'
 import { EnhetData } from '../types'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 
 type Detaljer = {
 	data: EnhetData

@@ -1,32 +1,28 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import useBoolean from '~/utils/hooks/useBoolean'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import _set from 'lodash/set'
-import _cloneDeep from 'lodash/cloneDeep'
+import useBoolean from '@/utils/hooks/useBoolean'
+import * as _ from 'lodash-es'
 import { add, eachMonthOfInterval, format } from 'date-fns'
-import { DollySelect } from '~/components/ui/form/inputs/select/Select'
-import { ArbeidKodeverk } from '~/config/kodeverk'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import Button from '~/components/ui/button/Button'
-import { FormikDollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
+import { DollySelect } from '@/components/ui/form/inputs/select/Select'
+import { ArbeidKodeverk } from '@/config/kodeverk'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import Button from '@/components/ui/button/Button'
+import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import {
 	initialArbeidsforholdOrg,
 	initialFartoy,
 	initialForenkletOppgjoersordningOrg,
 } from '../initialValues'
 import { ArbeidsforholdForm } from './arbeidsforholdForm'
-import { Monthpicker } from '~/components/ui/form/inputs/monthpicker/Monthpicker'
-import DollyKjede from '~/components/dollyKjede/DollyKjede'
-import KjedeIcon from '~/components/dollyKjede/KjedeIcon'
+import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
+import DollyKjede from '@/components/dollyKjede/DollyKjede'
+import KjedeIcon from '@/components/dollyKjede/KjedeIcon'
 import { useFormikContext } from 'formik'
-import { Amelding, KodeverkValue } from '~/components/fagsystem/aareg/AaregTypes'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
-import { ReactComponent } from 'testcafe-react-selectors'
+import { Amelding, KodeverkValue } from '@/components/fagsystem/aareg/AaregTypes'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 
 interface AmeldingFormProps {
-	warningMessage?: ReactComponent<any>
+	warningMessage?: any
 }
 
 const KjedeContainer = styled.div`
@@ -52,12 +48,12 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		amelding: 'aareg[0].amelding',
 	}
 
-	const arbeidsforholdstype = _get(formikBag.values, paths.arbeidsforholdstype)
+	const arbeidsforholdstype = _.get(formikBag.values, paths.arbeidsforholdstype)
 
-	const fom = _get(formikBag.values, 'aareg[0].genererPeriode.fom')
-	const tom = _get(formikBag.values, 'aareg[0].genererPeriode.tom')
-	const periode = _get(formikBag.values, paths.periode)
-	const ameldinger = _get(formikBag.values, paths.amelding)
+	const fom = _.get(formikBag.values, 'aareg[0].genererPeriode.fom')
+	const tom = _.get(formikBag.values, 'aareg[0].genererPeriode.tom')
+	const periode = _.get(formikBag.values, paths.periode)
+	const ameldinger = _.get(formikBag.values, paths.amelding)
 
 	const [erLenket, setErLenket, setErIkkeLenket] = useBoolean(true)
 	const [selectedIndex, setSelectedIndex] = useState(0)
@@ -66,7 +62,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 		formikBag.setFieldValue(`aareg[0].genererPeriode.${type}`, dato)
 
 		if ((type === 'tom' && fom) || (type === 'fom' && tom)) {
-			const maanederPrev: Array<Amelding> = _get(formikBag.values, paths.amelding)
+			const maanederPrev: Array<Amelding> = _.get(formikBag.values, paths.amelding)
 			const maaneder: Array<string> = []
 			const maanederTmp = eachMonthOfInterval({
 				start: new Date(type === 'fom' ? dato : fom),
@@ -82,7 +78,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 				formikBag.setFieldValue(paths.amelding, maanederFiltered)
 			} else {
 				maaneder.forEach((mnd, idx) => {
-					const currMaaned = _get(formikBag.values, paths.amelding).find(
+					const currMaaned = _.get(formikBag.values, paths.amelding).find(
 						(element: Amelding) => element.maaned === mnd
 					)
 					formikBag.setFieldValue(`${paths.amelding}[${idx}]`, {
@@ -105,25 +101,25 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 	}
 
 	const handleArbeidsforholdstypeChange = (event: KodeverkValue) => {
-		const amelding = _get(formikBag.values, paths.amelding)
-		const ameldingClone = _cloneDeep(amelding)
+		const amelding = _.get(formikBag.values, paths.amelding)
+		const ameldingClone = _.cloneDeep(amelding)
 
 		if (event.value === 'forenkletOppgjoersordning') {
 			ameldingClone.forEach((_maaned: string, idx: number) => {
-				_set(ameldingClone[idx], 'arbeidsforhold', [initialForenkletOppgjoersordningOrg])
+				_.set(ameldingClone[idx], 'arbeidsforhold', [initialForenkletOppgjoersordningOrg])
 			})
 		} else {
 			ameldingClone.forEach((maaned: any, idx: number) => {
 				if (arbeidsforholdstype === 'forenkletOppgjoersordning' || arbeidsforholdstype === '') {
-					_set(ameldingClone[idx], 'arbeidsforhold', [initialArbeidsforholdOrg])
+					_.set(ameldingClone[idx], 'arbeidsforhold', [initialArbeidsforholdOrg])
 				}
 				if (event.value === 'maritimtArbeidsforhold') {
 					maaned.arbeidsforhold.forEach((_arbforh: Object, id: number) => {
-						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, initialFartoy)
+						_.set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, initialFartoy)
 					})
 				} else {
 					maaned.arbeidsforhold.forEach((_arbforh: Object, id: number) => {
-						_set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, undefined)
+						_.set(ameldingClone[idx], `arbeidsforhold[${id}].fartoy`, undefined)
 					})
 				}
 			})
@@ -137,7 +133,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			if (!erLenket && idMaaned !== selectedIndex) {
 				return
 			}
-			const currArbeidsforhold = _get(
+			const currArbeidsforhold = _.get(
 				formikBag.values,
 				`${paths.amelding}[${idMaaned}].arbeidsforhold`
 			)
@@ -159,7 +155,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 			if (!erLenket && idMaaned !== selectedIndex) {
 				return
 			}
-			const currArbeidsforhold = _get(
+			const currArbeidsforhold = _.get(
 				formikBag.values,
 				`${paths.amelding}[${idMaaned}].arbeidsforhold`
 			)
@@ -169,7 +165,7 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 	}
 
 	const handleFjernMaaned = () => {
-		const currAmelding = _get(formikBag.values, paths.amelding)
+		const currAmelding = _.get(formikBag.values, paths.amelding)
 		currAmelding.splice(selectedIndex, 1)
 		formikBag.setFieldValue(paths.amelding, currAmelding)
 
@@ -188,11 +184,11 @@ export const AmeldingForm = ({ warningMessage }: AmeldingFormProps): JSX.Element
 
 	const feilmelding = () => {
 		if (
-			!_get(formikBag.values, paths.arbeidsforholdstype) &&
-			_has(formikBag.touched, paths.arbeidsforholdstype)
+			!_.get(formikBag.values, paths.arbeidsforholdstype) &&
+			_.has(formikBag.touched, paths.arbeidsforholdstype)
 		) {
 			return {
-				feilmelding: _get(formikBag.errors, paths.arbeidsforholdstype),
+				feilmelding: _.get(formikBag.errors, paths.arbeidsforholdstype),
 			}
 		}
 	}

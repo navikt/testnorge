@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
-import { Enhetstre, OrgTree } from '~/components/enhetstre'
+import { Enhetstre, OrgTree } from '@/components/enhetstre'
 import { mapBestillingData } from './BestillingKriterieMapper'
-import { EnhetBestilling } from '~/components/fagsystem/organisasjoner/types'
+import { EnhetBestilling } from '@/components/fagsystem/organisasjoner/types'
 
 type OrganisasjonKriterierProps = {
 	data: EnhetBestilling

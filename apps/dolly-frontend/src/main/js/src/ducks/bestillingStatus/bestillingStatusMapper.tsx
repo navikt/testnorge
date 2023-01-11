@@ -10,8 +10,8 @@
  * - Pre-mappe verdier for liste
  */
 
-import Formatters from '~/utils/DataFormatter'
-import { Bestilling } from '~/utils/hooks/useBestilling'
+import Formatters from '@/utils/DataFormatter'
+import { Bestilling } from '@/utils/hooks/useBestilling'
 
 export type System = {
 	id: string

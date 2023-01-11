@@ -39,21 +39,19 @@ repositories {
 }
 
 dependencies {
-    implementation ('no.nav.testnav.libs:security-core') {
+    implementation('no.nav.testnav.libs:security-core') {
         exclude group: 'org.springframework.session', module: 'spring-session-data-redis'
     }
+
 
     implementation 'no.nav.testnav.libs:reactive-core'
 
-    implementation ('no.nav.testnav.libs:reactive-session-security') {
-        exclude group: 'org.springframework.session', module: 'spring-session-data-redis'
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-data-redis'
-    }
-
     implementation 'no.nav.testnav.libs:reactive-frontend'
+    implementation 'no.nav.testnav.libs:reactive-security'
+    implementation 'no.nav.common:token-client:2.2023.01.10_13.49-81ddc732df3a'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-gateway'

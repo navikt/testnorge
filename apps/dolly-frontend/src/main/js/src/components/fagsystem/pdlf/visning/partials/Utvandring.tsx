@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import Formatters from '~/utils/DataFormatter'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import Formatters from '@/utils/DataFormatter'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	InnvandringValues,
 	UtvandringValues,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { PersonData } from '~/components/fagsystem/pdlf/PdlTypes'
-import _cloneDeep from 'lodash/cloneDeep'
-import { initialUtvandring } from '~/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { getSisteDatoInnUtvandring } from '~/components/fagsystem/pdlf/visning/partials/Innvandring'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import * as _ from 'lodash-es'
+import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { getSisteDatoInnUtvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
 
 type UtvandringTypes = {
 	data: Array<UtvandringValues>
@@ -69,10 +68,10 @@ const UtvandringVisning = ({
 	ident,
 	erPdlVisning,
 }: UtvandringVisningTypes) => {
-	const initUtvandring = Object.assign(_cloneDeep(initialUtvandring), data[idx])
+	const initUtvandring = Object.assign(_.cloneDeep(initialUtvandring), data[idx])
 	const initialValues = { utflytting: initUtvandring }
 
-	const redigertUtvandringPdlf = _get(tmpPersoner, `${ident}.person.utflytting`)?.find(
+	const redigertUtvandringPdlf = _.get(tmpPersoner, `${ident}.person.utflytting`)?.find(
 		(a: UtvandringValues) => a.id === utvandringData.id
 	)
 	const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
@@ -83,7 +82,7 @@ const UtvandringVisning = ({
 	const utvandringValues = redigertUtvandringPdlf ? redigertUtvandringPdlf : utvandringData
 	const redigertUtvandringValues = redigertUtvandringPdlf
 		? {
-				utflytting: Object.assign(_cloneDeep(initialUtvandring), redigertUtvandringPdlf),
+				utflytting: Object.assign(_.cloneDeep(initialUtvandring), redigertUtvandringPdlf),
 		  }
 		: null
 	return erPdlVisning ? (

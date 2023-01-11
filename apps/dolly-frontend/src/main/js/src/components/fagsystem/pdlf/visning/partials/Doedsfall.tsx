@@ -1,14 +1,13 @@
 import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
-import { DoedsfallData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
-import _cloneDeep from 'lodash/cloneDeep'
-import { initialDoedsfall, initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import Formatters from '@/utils/DataFormatter'
+import * as _ from 'lodash-es'
+import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
+import { initialDoedsfall, initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type DoedsfallTypes = {
 	data: Array<DoedsfallData>
@@ -47,10 +46,10 @@ const DoedsfallVisning = ({
 	ident,
 	erPdlVisning,
 }: DoedsfallVisningTypes) => {
-	const initDoedsfall = Object.assign(_cloneDeep(initialDoedsfall), data[idx])
+	const initDoedsfall = Object.assign(_.cloneDeep(initialDoedsfall), data[idx])
 	const initialValues = { doedsfall: initDoedsfall }
 
-	const redigertDoedsfallPdlf = _get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
+	const redigertDoedsfallPdlf = _.get(tmpPersoner, `${ident}.person.doedsfall`)?.find(
 		(a: Person) => a.id === doedsfall.id
 	)
 	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
@@ -60,7 +59,7 @@ const DoedsfallVisning = ({
 
 	const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall
 	const redigertDoedsfallValues = redigertDoedsfallPdlf
-		? { doedsfall: Object.assign(_cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
+		? { doedsfall: Object.assign(_.cloneDeep(initialFoedsel), redigertDoedsfallPdlf) }
 		: null
 
 	return erPdlVisning ? (

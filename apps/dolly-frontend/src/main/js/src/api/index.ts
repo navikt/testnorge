@@ -1,11 +1,11 @@
-import { NotFoundError } from '~/error'
+import { NotFoundError } from '@/error'
 import { Argument } from 'classnames'
 import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
-import logoutBruker from '~/components/utlogging/logoutBruker'
-import { runningTestcafe } from '~/service/services/Request'
-import _isEmpty from 'lodash/isEmpty'
+import logoutBruker from '@/components/utlogging/logoutBruker'
+import { runningCypressE2E } from '@/service/services/Request'
+import * as _ from 'lodash-es'
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -13,7 +13,7 @@ export const multiFetcherAny = (urlListe, headers) => {
 	return Promise.any(
 		urlListe.map((url) =>
 			fetcher(url, headers).then((result) => {
-				if (_isEmpty(result)) {
+				if (_.isEmpty(result)) {
 					throw new Error('Returnerte ingen verdi, prøver neste promise..')
 				}
 				return [result]
@@ -52,6 +52,16 @@ export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = nu
 	)
 }
 
+export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
+	return Promise.all(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, { miljo: obj.miljo, ...headers }).then((result) => {
+				return { miljo: obj.miljo, data: result }
+			})
+		)
+	)
+}
+
 export const multiFetcherDokarkiv = (miljoUrlListe) => {
 	return Promise.all(
 		miljoUrlListe?.map((obj) =>
@@ -64,14 +74,14 @@ export const multiFetcherDokarkiv = (miljoUrlListe) => {
 	)
 }
 
-export const fetcher = (url, headers: Record<string, string>) =>
+export const fetcher = (url, headers) =>
 	axios
 		.get(url, { headers: headers })
 		.then((res) => {
 			return res.data
 		})
 		.catch((reason) => {
-			if (runningTestcafe()) {
+			if (runningCypressE2E()) {
 				return null
 			}
 			if (reason.status === 401 || reason.status === 403) {
@@ -100,7 +110,7 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, _error, response) => {
-			if (!response.ok && !runningTestcafe()) {
+			if (!response.ok && !runningCypressE2E()) {
 				if (response.status === 401) {
 					console.error('Auth feilet, reloader siden for å få ny auth client.')
 					window.location.reload()
@@ -123,7 +133,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		if (response.redirected) {
 			window.location.href = response.url
 		}
-		if (!response.ok && !runningTestcafe()) {
+		if (!response.ok && !runningCypressE2E()) {
 			if (response.status === 401) {
 				console.error('Auth feilet, reloader siden for å få ny auth client.')
 				window.location.reload()
@@ -136,7 +146,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		return response
 	})
 
-const fetchJson = <T>(url: string, config: Config, body?: object): Promise<T> =>
+const fetchJson = (url: string, config: Config, body?: object): Promise =>
 	_fetch(
 		url,
 		{

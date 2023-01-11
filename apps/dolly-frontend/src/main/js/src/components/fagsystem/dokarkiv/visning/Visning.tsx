@@ -1,10 +1,9 @@
-import React from 'react'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import DokarkivVisning from './DokarkivVisning'
-import { MiljoTabs } from '~/components/ui/miljoTabs/MiljoTabs'
-import { useBestilteMiljoer } from '~/utils/hooks/useBestilling'
-import Loading from '~/components/ui/loading/Loading'
-import { Journalpost } from '~/service/services/JoarkDokumentService'
+import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
+import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import Loading from '@/components/ui/loading/Loading'
+import { Journalpost } from '@/service/services/JoarkDokumentService'
 
 interface Form {
 	data?: Array<MiljoDataListe>

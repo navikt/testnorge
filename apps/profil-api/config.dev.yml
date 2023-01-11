@@ -31,12 +31,14 @@ spec:
         - application: endringsmelding-frontend
           cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend-wonderwall
           cluster: dev-gcp
         - application: testnav-faste-data-frontend
           cluster: dev-gcp

@@ -1,23 +1,23 @@
 import React, { useCallback, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import Button from '~/components/ui/button/Button'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import { DollyApi } from '~/service/Api'
-import _get from 'lodash/get'
+import Button from '@/components/ui/button/Button'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import { DollyApi } from '@/service/Api'
+import * as _ from 'lodash-es'
 import { FieldArray, Formik, FormikProps } from 'formik'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import styled from 'styled-components'
-import { VelgGruppe } from '~/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
+import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { useNavigate } from 'react-router-dom'
-import { DollyTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { ErrorMessageWithFocus } from '~/utils/ErrorMessageWithFocus'
-import Loading from '~/components/ui/loading/Loading'
-import { Hjelpetekst } from '~/components/hjelpetekst/Hjelpetekst'
-import Icon from '~/components/ui/icon/Icon'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
+import Loading from '@/components/ui/loading/Loading'
+import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import Icon from '@/components/ui/icon/Icon'
 import { Alert } from '@navikt/ds-react'
-import { usePdlOptions, useTestnorgeOptions, useTpsOptions } from '~/utils/hooks/useSelectOptions'
-import { useGruppeIdenter } from '~/utils/hooks/useGruppe'
+import { usePdlOptions, useTestnorgeOptions, useTpsOptions } from '@/utils/hooks/useSelectOptions'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -335,16 +335,16 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 
 					<PersonKolonne>
 						<h2 style={{ marginLeft: '20px' }}>Valgte personer</h2>
-						{harRelatertePersoner(_get(formikBag.values, 'identer')) && (
+						{harRelatertePersoner(_.get(formikBag.values, 'identer')) && (
 							<Alert variant="info" size="small" inline>
 								Du har valgt én eller flere personer som har relaterte personer. Disse vil også
 								flyttes.
 							</Alert>
 						)}
 						<ValgtePersonerList>
-							{_get(formikBag.values, 'identer')?.length > 0 ? (
+							{_.get(formikBag.values, 'identer')?.length > 0 ? (
 								<ul>
-									{_get(formikBag.values, 'identer')?.map((ident: string) => (
+									{_.get(formikBag.values, 'identer')?.map((ident: string) => (
 										<li key={ident}>
 											{gruppeOptions?.find((person: Option) => person?.value === ident)?.label}
 										</li>

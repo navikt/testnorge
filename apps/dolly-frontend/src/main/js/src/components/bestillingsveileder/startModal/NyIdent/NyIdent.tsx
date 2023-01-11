@@ -3,19 +3,18 @@ import { Formik, FormikProps } from 'formik'
 import * as yup from 'yup'
 import { useToggle } from 'react-use'
 import { NavLink } from 'react-router-dom'
-import Button from '~/components/ui/button/Button'
-import { DollySelect, FormikSelect } from '~/components/ui/form/inputs/select/Select'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
-import { FormikTextInput } from '~/components/ui/form/inputs/textInput/TextInput'
-import { SelectOptionsManager as Options } from '~/service/SelectOptions'
+import Button from '@/components/ui/button/Button'
+import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Select'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert } from '@navikt/ds-react'
-import ModalActionKnapper from '~/components/ui/modal/ModalActionKnapper'
+import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 
 import styled from 'styled-components'
-import _get from 'lodash/get'
-import _has from 'lodash/has'
-import { tpsfAttributter } from '~/components/bestillingsveileder/utils'
-import { Mal, useDollyMaler } from '~/utils/hooks/useMaler'
+import * as _ from 'lodash-es'
+import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
+import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
 
 const initialValues = {
 	antall: 1,
@@ -71,9 +70,9 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 	return (
 		<Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={preSubmit}>
 			{(formikBag) => {
-				const valgtMal = malOptions.find((mal) => mal.value === _get(formikBag.values, 'mal'))
-				const valgtMalTpsfValues = _get(valgtMal, 'data.bestilling.tpsf')
-				const erTpsfMal = tpsfAttributter.some((a) => _has(valgtMalTpsfValues, a))
+				const valgtMal = malOptions.find((mal) => mal.value === _.get(formikBag.values, 'mal'))
+				const valgtMalTpsfValues = _.get(valgtMal, 'data.bestilling.tpsf')
+				const erTpsfMal = tpsfAttributter.some((a) => _.has(valgtMalTpsfValues, a))
 
 				return (
 					<div className="ny-bestilling-form">
@@ -150,7 +149,8 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 }
 
 export const getBrukerOptions = (malbestillinger: [string, Mal[]]) =>
-	Object.keys(malbestillinger).map((ident) => ({
+	malbestillinger &&
+	Object.keys(malbestillinger)?.map((ident) => ({
 		value: ident,
 		label: ident,
 	}))

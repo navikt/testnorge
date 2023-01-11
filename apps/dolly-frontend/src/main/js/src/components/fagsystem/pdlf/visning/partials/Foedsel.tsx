@@ -1,20 +1,19 @@
 import React from 'react'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '~/utils/DataFormatter'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import Formatters from '@/utils/DataFormatter'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
+import * as _ from 'lodash-es'
 import {
 	Kodeverk,
 	KodeverkValues,
-} from '~/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { AdresseKodeverk } from '~/config/kodeverk'
-import { FoedselData, Person } from '~/components/fagsystem/pdlf/PdlTypes'
-import { initialFoedsel } from '~/components/fagsystem/pdlf/form/initialValues'
-import _get from 'lodash/get'
-import _cloneDeep from 'lodash/cloneDeep'
-import VisningRedigerbarConnector from '~/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+} from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { AdresseKodeverk } from '@/config/kodeverk'
+import { FoedselData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
+import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type FoedselTypes = {
 	data: Array<FoedselData>
@@ -69,10 +68,10 @@ const FoedselVisning = ({
 	erPdlVisning,
 	ident,
 }: FoedselVisningTypes) => {
-	const initFoedsel = Object.assign(_cloneDeep(initialFoedsel), data[idx])
+	const initFoedsel = Object.assign(_.cloneDeep(initialFoedsel), data[idx])
 	const initialValues = { foedsel: initFoedsel }
 
-	const redigertFoedselPdlf = _get(tmpPersoner, `${ident}.person.foedsel`)?.find(
+	const redigertFoedselPdlf = _.get(tmpPersoner, `${ident}.person.foedsel`)?.find(
 		(a: Person) => a.id === foedsel.id
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
@@ -82,7 +81,7 @@ const FoedselVisning = ({
 
 	const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
 	const redigertFoedselValues = redigertFoedselPdlf
-		? { foedsel: Object.assign(_cloneDeep(initialFoedsel), redigertFoedselPdlf) }
+		? { foedsel: Object.assign(_.cloneDeep(initialFoedsel), redigertFoedselPdlf) }
 		: null
 
 	return erPdlVisning ? (

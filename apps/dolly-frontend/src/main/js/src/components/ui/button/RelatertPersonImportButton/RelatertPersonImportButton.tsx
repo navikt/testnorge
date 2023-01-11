@@ -1,17 +1,17 @@
 import React, { useState } from 'react'
-import NavButton from '~/components/ui/button/NavButton/NavButton'
-import useBoolean from '~/utils/hooks/useBoolean'
-import DollyModal from '~/components/ui/modal/DollyModal'
-import Button from '~/components/ui/button/Button'
-import Icon from '~/components/ui/icon/Icon'
-import Loading from '~/components/ui/loading/Loading'
-import { DollyApi } from '~/service/Api'
+import NavButton from '@/components/ui/button/NavButton/NavButton'
+import useBoolean from '@/utils/hooks/useBoolean'
+import DollyModal from '@/components/ui/modal/DollyModal'
+import Button from '@/components/ui/button/Button'
+import Icon from '@/components/ui/icon/Icon'
+import Loading from '@/components/ui/loading/Loading'
+import { DollyApi } from '@/service/Api'
 import './RelatertPersonImportButton.less'
-import { DollyCheckbox } from '~/components/ui/form/inputs/checbox/Checkbox'
+import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Formik, FieldArray } from 'formik'
-import Formatters from '~/utils/DataFormatter'
-import _lowerCase from 'lodash/lowerCase'
-import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '~/utils/hooks/useMutate'
+import Formatters from '@/utils/DataFormatter'
+import * as _ from 'lodash-es'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 type RelatertPersonProps = {
 	type: string
@@ -44,7 +44,7 @@ export const RelatertPersonImportButton = ({
 	const disabled =
 		!gruppeIdenter || relatertPersonIdenter?.every((ident) => gruppeIdenter?.includes(ident.id))
 
-	const foersteRelatertPersonType = _lowerCase(relatertPersonIdenter[0]?.type)
+	const foersteRelatertPersonType = _.lowerCase(relatertPersonIdenter[0]?.type)
 
 	const handleImport = async (identer = null as string[]) => {
 		setLoading(true)

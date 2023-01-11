@@ -1,11 +1,10 @@
-import React from 'react'
-import { hasNoValues } from '~/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
-import SubOverskrift from '~/components/ui/subOverskrift/SubOverskrift'
-import { ErrorBoundary } from '~/components/ui/appError/ErrorBoundary'
-import { DollyFieldArray } from '~/components/ui/form/fieldArray/DollyFieldArray'
-import { DoedfoedtBarn } from '~/components/fagsystem/pdlf/PdlTypes'
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Formatters from '~/utils/DataFormatter'
+import { hasNoValues } from '@/components/fagsystem/pdl/visning/partials/relasjoner/PdlRelasjoner'
+import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
+import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/PdlTypes'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Formatters from '@/utils/DataFormatter'
 
 type DataProps = {
 	data: DoedfoedtBarnProps[]

@@ -1,15 +1,14 @@
-import React from 'react'
 import { useField } from 'formik'
 import { createFilter, default as ReactSelect } from 'react-select'
 import cn from 'classnames'
-import { Vis } from '~/components/bestillingsveileder/VisAttributt'
-import { Label } from '~/components/ui/form/inputs/label/Label'
-import { InputWrapper } from '~/components/ui/form/inputWrapper/InputWrapper'
-import { fieldError, SyntEvent } from '~/components/ui/form/formUtils'
-import KodeverkConnector from '~/components/kodeverk/KodeverkConnector'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { Label } from '@/components/ui/form/inputs/label/Label'
+import { InputWrapper } from '@/components/ui/form/inputWrapper/InputWrapper'
+import { fieldError, SyntEvent } from '@/components/ui/form/formUtils'
+import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import './Select.less'
-import MenuList from '~/components/ui/form/inputs/select/MenuList'
-import Option from '~/components/ui/form/inputs/select/Option'
+import MenuList from '@/components/ui/form/inputs/select/MenuList'
+import Option from '@/components/ui/form/inputs/select/Option'
 
 type SelectProps = {
 	id?: string

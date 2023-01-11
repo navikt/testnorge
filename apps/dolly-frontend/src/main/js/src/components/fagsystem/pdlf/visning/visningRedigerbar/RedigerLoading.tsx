@@ -1,5 +1,4 @@
-import React from 'react'
-import Loading from '~/components/ui/loading/Loading'
+import Loading from '@/components/ui/loading/Loading'
 
 type LoadingProps = {
 	visningModus: string

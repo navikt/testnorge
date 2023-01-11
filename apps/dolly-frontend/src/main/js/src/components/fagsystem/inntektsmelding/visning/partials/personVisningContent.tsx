@@ -1,9 +1,9 @@
-import { TitleValue } from '~/components/ui/titleValue/TitleValue'
-import Button from '~/components/ui/button/Button'
-import { CodeView } from '~/components/codeView'
-import React from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import { Journalpost } from '~/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { TitleValue } from '@/components/ui/titleValue/TitleValue'
+import Button from '@/components/ui/button/Button'
+import { CodeView } from '@/components/codeView'
+
+import useBoolean from '@/utils/hooks/useBoolean'
+import { Journalpost } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 
 interface PersonVisningContentProps {
 	id: Journalpost

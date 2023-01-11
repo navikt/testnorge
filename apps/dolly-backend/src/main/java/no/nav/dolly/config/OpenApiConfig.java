@@ -52,23 +52,23 @@ public class OpenApiConfig implements WebMvcConfigurer {
                         ))
                 .addSecurityItem(
                         new SecurityRequirement()
-                                .addList(bearerAuth, Arrays.asList("read", "write"))
                                 .addList(userJwt, Arrays.asList("read", "write"))
+                                .addList(bearerAuth, Arrays.asList("read", "write"))
                 )
                 .components(
                         new Components()
-                                .addSecuritySchemes(userJwt,
-                                        new SecurityScheme()
-                                                .name(UserConstant.USER_HEADER_JWT)
-                                                .type(SecurityScheme.Type.APIKEY)
-                                                .in(SecurityScheme.In.HEADER)
-                                                .scheme("bearer")
-                                                .bearerFormat("JWT"))
                                 .addSecuritySchemes(bearerAuth,
                                         new SecurityScheme()
                                                 .description("Legg inn token kun, uten \"Bearer \"")
                                                 .name(bearerAuth)
                                                 .type(SecurityScheme.Type.HTTP)
+                                                .scheme("bearer")
+                                                .bearerFormat("JWT"))
+                                .addSecuritySchemes(userJwt,
+                                        new SecurityScheme()
+                                                .name(UserConstant.USER_HEADER_JWT)
+                                                .type(SecurityScheme.Type.APIKEY)
+                                                .in(SecurityScheme.In.HEADER)
                                                 .scheme("bearer")
                                                 .bearerFormat("JWT"))
                 );

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
-import useBoolean from '~/utils/hooks/useBoolean'
-import Button from '~/components/ui/button/Button'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
 import { FormikProps } from 'formik'
-import { PdlPersonForm } from '~/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
-import { NyIdent } from '~/components/fagsystem/pdlf/PdlTypes'
-import { Option } from '~/service/SelectOptionsOppslag'
+import { PdlPersonForm } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonForm'
+import { NyIdent } from '@/components/fagsystem/pdlf/PdlTypes'
+import { Option } from '@/service/SelectOptionsOppslag'
 
 interface PdlPersonValues {
 	nyPersonPath: string

@@ -1,5 +1,8 @@
 package no.nav.testnav.apps.oversiktfrontend.controller;
 
+import no.nav.testnav.apps.oversiktfrontend.domain.Application;
+import no.nav.testnav.apps.oversiktfrontend.dto.ApplicationDTO;
+import no.nav.testnav.apps.oversiktfrontend.service.ApplicationService;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,12 +12,6 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
 import java.util.concurrent.TimeUnit;
-
-import no.nav.testnav.apps.oversiktfrontend.consumer.AppTilgangAnalyseConsumer;
-import no.nav.testnav.apps.oversiktfrontend.domain.Application;
-import no.nav.testnav.apps.oversiktfrontend.dto.ApplicationDTO;
-import no.nav.testnav.apps.oversiktfrontend.service.ApplicationService;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 
 @RestController
 @RequestMapping("/api/v1/applications")
