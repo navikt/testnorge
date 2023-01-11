@@ -44,7 +44,9 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
+    private static final String STATUS_FMT = "%s$%s";
     private static final String SYSTEM = "Arena";
+
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -73,7 +75,7 @@ public class ArenaForvalterClient implements ClientRegister {
         if (nonNull(bestilling.getArenaforvalter())) {
 
             progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
+                    .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getInfoVenter(SYSTEM))))
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
@@ -96,7 +98,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private Mono<String> doFeilmelding(RsDollyUtvidetBestilling bestilling) {
         return Mono.just(bestilling.getEnvironments().stream()
-                .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
+                .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getVarselSlutt(SYSTEM))))
                 .collect(Collectors.joining(",")));
     }
 
@@ -176,7 +178,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     return respons.getArbeidsokerList().stream()
                             .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
                             .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
-                            .map(arbeidsoker -> String.format("%s$%s", arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
+                            .map(arbeidsoker -> String.format(STATUS_FMT, arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
                             .collect(Collectors.joining(","))
                             +
                             respons.getNyBrukerFeilList().stream()
@@ -206,7 +208,7 @@ public class ArenaForvalterClient implements ClientRegister {
                             response.getNyeDagp().stream()
                                     .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
                                     .filter(Objects::nonNull)
-                                    .map(dagp -> String.format("%s$%s", miljoe,
+                                    .map(dagp -> String.format(STATUS_FMT, miljoe,
                                             ("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
                                                     errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))))
                                     .collect(Collectors.joining(",")) +

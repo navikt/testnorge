@@ -77,7 +77,7 @@ public class InstdataClient implements ClientRegister {
                             .filter(request -> eksisterende.getInstitusjonsopphold()
                                     .getOrDefault(miljoe, emptyList())
                                     .stream()
-                                    .noneMatch(opphold -> request.equals(opphold)))
+                                    .noneMatch(request::equals))
                             .toList();
                 });
     }

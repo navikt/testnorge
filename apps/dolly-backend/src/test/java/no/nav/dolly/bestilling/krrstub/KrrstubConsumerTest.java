@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class KrrstubConsumerTest {
+class KrrstubConsumerTest {
 
     private static final String EPOST = "morro.pa@landet.no";
     private static final String MOBIL = "11111111";
@@ -62,13 +62,13 @@ public class KrrstubConsumerTest {
     private KrrstubConsumer krrStubConsumer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         when(tokenService.exchange(ArgumentMatchers.any(KrrstubProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
-    public void createDigitalKontaktdata_Ok() {
+    void createDigitalKontaktdata_Ok() {
 
         stubPostKrrData();
 
@@ -84,7 +84,7 @@ public class KrrstubConsumerTest {
     }
 
     @Test
-    public void deleteDigitalKontaktdata_Ok() {
+    void deleteDigitalKontaktdata_Ok() {
 
         stubDeleteKrrData();
 
@@ -110,7 +110,7 @@ public class KrrstubConsumerTest {
     }
 
     @Test
-    public void createDigitalKontaktdata_GenerateTokenFailed_NoAction() {
+    void createDigitalKontaktdata_GenerateTokenFailed_NoAction() {
 
         when(tokenService.exchange(any(KrrstubProxyProperties.class))).thenReturn(Mono.empty());
 

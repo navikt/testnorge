@@ -26,7 +26,7 @@ class PensjonTpMappingStrategyTest {
     private MapperFacade mapperFacade;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new PensjonTpMappingStrategy());
     }
 

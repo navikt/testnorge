@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class SigrunStubConsumerTest {
+class SigrunStubConsumerTest {
 
     private static final String IDENT = "111111111";
 
@@ -65,7 +65,7 @@ public class SigrunStubConsumerTest {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         WireMock.reset();
 
@@ -77,7 +77,7 @@ public class SigrunStubConsumerTest {
     }
 
     @Test
-    public void createSkattegrunnlag() {
+    void createSkattegrunnlag() {
 
         stubOpprettSkattegrunnlagOK();
 
@@ -89,7 +89,7 @@ public class SigrunStubConsumerTest {
     }
 
     @Test
-    public void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() throws Exception {
+    void createSkattegrunnlag_kasterSigrunExceptionHvisKallKasterClientException() throws Exception {
 
         stubOpprettSkattegrunnlagMedBadRequest();
 
@@ -102,7 +102,7 @@ public class SigrunStubConsumerTest {
     }
 
     @Test
-    public void deleteSkattegrunnlag_Ok() {
+    void deleteSkattegrunnlag_Ok() {
 
         stubDeleteSkattegrunnlagOK();
 

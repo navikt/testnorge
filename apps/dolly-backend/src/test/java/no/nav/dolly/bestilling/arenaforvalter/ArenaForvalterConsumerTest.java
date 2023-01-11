@@ -64,13 +64,13 @@ class ArenaForvalterConsumerTest {
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         when(tokenService.exchange(ArgumentMatchers.any(ArenaforvalterProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
-    public void deleteIdent() {
+    void deleteIdent() {
 
         stubDeleteArenaForvalterBruker();
 

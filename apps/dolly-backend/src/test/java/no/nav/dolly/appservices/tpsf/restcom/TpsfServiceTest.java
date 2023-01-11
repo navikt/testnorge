@@ -45,7 +45,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class TpsfServiceTest {
+class TpsfServiceTest {
 
     private static final TpsfBestilling STANDARD_TPSF_BESTILLING = TpsfBestilling.builder().identtype(FNR).build();
     private static final String STANDARD_IDENT = "123";
@@ -67,7 +67,7 @@ public class TpsfServiceTest {
     }
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         WireMock.reset();
 

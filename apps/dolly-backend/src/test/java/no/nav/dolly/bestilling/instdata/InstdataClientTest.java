@@ -33,7 +33,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InstdataClientTest {
+class InstdataClientTest {
 
     private static final String IDENT = "11111111111";
     private static final String ENVIRONMENT = "q2";
@@ -54,7 +54,7 @@ public class InstdataClientTest {
     private InstdataClient instdataClient;
 
     @Test
-    public void gjenopprettUtenInstdata_TomRetur() {
+    void gjenopprettUtenInstdata_TomRetur() {
 
         var dollyPerson = DollyPerson.builder().hovedperson(IDENT).build();
 
@@ -66,7 +66,7 @@ public class InstdataClientTest {
     }
 
     @Test
-    public void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
+    void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
         var progress = new BestillingProgress();
         var dollyPerson = DollyPerson.builder().hovedperson(IDENT).build();
@@ -92,7 +92,7 @@ public class InstdataClientTest {
     }
 
     @Test
-    public void gjenopprettNaarInstdataFinnesFraFoer_SkalGiOk() {
+    void gjenopprettNaarInstdataFinnesFraFoer_SkalGiOk() {
 
         var progress = new BestillingProgress();
         var dollyPerson = DollyPerson.builder().hovedperson(IDENT).build();

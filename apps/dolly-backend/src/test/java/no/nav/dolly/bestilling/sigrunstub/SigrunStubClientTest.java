@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SigrunStubClientTest {
+class SigrunStubClientTest {
 
     private static final String IDENT = "11111111";
 
@@ -51,7 +51,7 @@ public class SigrunStubClientTest {
     private SigrunStubClient sigrunStubClient;
 
     @Test
-    public void gjenopprett_ingendata() {
+    void gjenopprett_ingendata() {
 
         BestillingProgress progress = new BestillingProgress();
         sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(),
@@ -61,7 +61,7 @@ public class SigrunStubClientTest {
     }
 
     @Test
-    public void gjenopprett_sigrunstub_feiler() {
+    void gjenopprett_sigrunstub_feiler() {
 
         var progress = new BestillingProgress();
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(Mono.just(SigrunstubResponse.builder()
@@ -83,7 +83,7 @@ public class SigrunStubClientTest {
     }
 
     @Test
-    public void gjenopprett_sigrunstub_ok() {
+    void gjenopprett_sigrunstub_ok() {
 
         var request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
@@ -95,7 +95,7 @@ public class SigrunStubClientTest {
                 .status(HttpStatus.OK)
                 .build()));
 
-        when(sigrunStubConsumer.deleteSkattegrunnlag(eq(IDENT))).thenReturn(Mono.just(new SigrunstubResponse()));
+        when(sigrunStubConsumer.deleteSkattegrunnlag(IDENT)).thenReturn(Mono.just(new SigrunstubResponse()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(),
                                 new BestillingProgress(), true)

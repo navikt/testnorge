@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class InstdataConsumerTest {
+class InstdataConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final String ENVIRONMENT = "U2";
@@ -56,13 +56,13 @@ public class InstdataConsumerTest {
     private InstdataConsumer instdataConsumer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         when(tokenService.exchange(ArgumentMatchers.any(InstServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
-    public void deleteInstdata() {
+    void deleteInstdata() {
 
         stubDeleteInstData();
 
@@ -72,7 +72,7 @@ public class InstdataConsumerTest {
     }
 
     @Test
-    public void postInstdata() {
+    void postInstdata() {
 
         stubPostInstData();
 

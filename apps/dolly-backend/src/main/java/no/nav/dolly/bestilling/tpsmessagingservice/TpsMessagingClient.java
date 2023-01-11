@@ -48,6 +48,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
+    private static final String STATUS_FMT = "%s:%s";
     private static final String TPS_MESSAGING = "TPS-meldinger";
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
@@ -68,7 +69,7 @@ public class TpsMessagingClient implements ClientRegister {
 
                 String.format("%s#%s", melding,
                         statuser.stream()
-                                .map(respons -> String.format("%s:%s",
+                                .map(respons -> String.format(STATUS_FMT,
                                         respons.getMiljoe(),
                                         getResultat(respons)))
                                 .collect(Collectors.joining(","))) :
@@ -80,14 +81,14 @@ public class TpsMessagingClient implements ClientRegister {
 
         progress.setTpsMessagingStatus(tpsMiljoerConsumer.getTpsMiljoer()
                 .map(miljoer -> miljoer.stream()
-                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(TPS_MESSAGING))))
+                        .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getInfoVenter(TPS_MESSAGING))))
                         .collect(Collectors.joining(",")))
                 .block());
         transactionHelperService.persister(progress);
 
         return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                 .flatMap(isPresent -> {
-                    if (isPresent) {
+                    if (isTrue(isPresent)) {
                         return getIdenterHovedpersonOgPartner(dollyPerson.getHovedperson())
                                 .map(this::getPersonData)
                                 .flatMap(Flux::from)
@@ -128,7 +129,7 @@ public class TpsMessagingClient implements ClientRegister {
                     } else {
                         return tpsMiljoerConsumer.getTpsMiljoer()
                                 .map(miljoer -> miljoer.stream()
-                                        .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt(TPS_MESSAGING))))
+                                        .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getVarselSlutt(TPS_MESSAGING))))
                                         .collect(Collectors.joining(",")));
                     }
                 })

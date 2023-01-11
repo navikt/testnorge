@@ -34,7 +34,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class OrganisasjonClientTest {
+class OrganisasjonClientTest {
 
     private static final String ORG_NUMMER = "123456789";
     private static final Long BESTILLING_ID = 123L;
@@ -64,7 +64,7 @@ public class OrganisasjonClientTest {
     private RsOrganisasjonBestilling bestilling;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         DeployResponse deployResponse = DeployResponse.builder()
                 .build();
@@ -105,7 +105,7 @@ public class OrganisasjonClientTest {
     }
 
     @Test
-    public void should_run_deploy_organisasjon_exactly_one_time_for_one_hovedorganisasjon() {
+    void should_run_deploy_organisasjon_exactly_one_time_for_one_hovedorganisasjon() {
 
         organisasjonClient.opprett(bestilling, OrganisasjonBestilling.builder()
                 .id(BESTILLING_ID)
@@ -117,7 +117,7 @@ public class OrganisasjonClientTest {
     }
 
     @Test
-    public void should_set_bestillingfeil_for_invalid_orgnummer_response() {
+    void should_set_bestillingfeil_for_invalid_orgnummer_response() {
 
         when(organisasjonConsumer.postOrganisasjon(any())).thenReturn(new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR));
 

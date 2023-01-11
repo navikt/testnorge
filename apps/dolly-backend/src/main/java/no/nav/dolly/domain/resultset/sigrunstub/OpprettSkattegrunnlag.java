@@ -23,7 +23,7 @@ public class OpprettSkattegrunnlag {
     private List<KodeverknavnGrunnlag> grunnlag;
     private String inntektsaar;
     private String personidentifikator;
-//    private Boolean skjermet;
+    private Boolean skjermet;
     private List<KodeverknavnGrunnlag> svalbardGrunnlag;
     private String testdataEier;
     private Tjeneste tjeneste;

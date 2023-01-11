@@ -29,7 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KrrstubClientTest {
+class KrrstubClientTest {
 
     private static final String IDENT = "111111111";
     private static final Long BESTILLING_ID = 1L;
@@ -50,7 +50,7 @@ public class KrrstubClientTest {
     private KrrstubClient krrstubClient;
 
     @Test
-    public void gjenopprett_ingendata() {
+    void gjenopprett_ingendata() {
 
         krrstubClient.gjenopprett(new RsDollyBestillingRequest(),
                         DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false)
@@ -60,7 +60,7 @@ public class KrrstubClientTest {
     }
 
     @Test
-    public void gjenopprett_krrdata_ok() {
+    void gjenopprett_krrdata_ok() {
 
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class), any(MappingContext.class)))
                 .thenReturn(new DigitalKontaktdata());
@@ -80,7 +80,7 @@ public class KrrstubClientTest {
     }
 
     @Test
-    public void gjenopprett_krrdata_feil() {
+    void gjenopprett_krrdata_feil() {
 
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class), any(MappingContext.class)))
                 .thenReturn(new DigitalKontaktdata());

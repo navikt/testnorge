@@ -32,7 +32,7 @@ public class MiljoerGetCommand implements Callable<Mono<List<String>>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String[].class)
-                .map(resultat -> Arrays.asList(resultat))
+                .map(Arrays::asList)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

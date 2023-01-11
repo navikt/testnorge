@@ -52,6 +52,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -113,7 +114,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
                     return personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                             .flatMap(isPresent -> {
-                                if (isPresent) {
+                                if (isTrue(isPresent)) {
 
                                     return pensjonforvalterConsumer.getAccessToken()
                                             .flatMapMany(token -> getIdenterFamilie(dollyPerson.getHovedperson())

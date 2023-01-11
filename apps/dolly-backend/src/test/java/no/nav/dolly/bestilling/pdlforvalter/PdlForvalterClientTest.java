@@ -53,7 +53,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 @Disabled
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class PdlForvalterClientTest {
+class PdlForvalterClientTest {
 
     private static final String ENV = "q2";
     private static final String IDENT = "11111111111";
@@ -85,7 +85,7 @@ public class PdlForvalterClientTest {
     private PdlForvalterClient pdlForvalterClient;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         when(pdlForvalterConsumer.deleteIdent(eq(IDENT)))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_SLETTING)));
 
@@ -100,7 +100,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_kontaktinformasjonDoedsbo_OK() {
+    void gjenopprett_kontaktinformasjonDoedsbo_OK() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -125,7 +125,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_kontaktinformasjonDoedsbo_Feil() {
+    void gjenopprett_kontaktinformasjonDoedsbo_Feil() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -151,7 +151,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_utenlandsIdent_OK() {
+    void gjenopprett_utenlandsIdent_OK() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -176,7 +176,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_utenlandsIdent_Feil() {
+    void gjenopprett_utenlandsIdent_Feil() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -202,7 +202,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_falskidentitet_OK() {
+    void gjenopprett_falskidentitet_OK() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -227,7 +227,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_falskIdentitet_Feil() {
+    void gjenopprett_falskIdentitet_Feil() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 

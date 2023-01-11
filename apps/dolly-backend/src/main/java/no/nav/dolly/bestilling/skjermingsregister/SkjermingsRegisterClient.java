@@ -33,6 +33,7 @@ import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEge
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -56,7 +57,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
             transactionHelperService.persister(progress);
 
             return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isReady ?
+                    .flatMap(isReady -> (isTrue(isReady) ?
 
                             getPersonData(dollyPerson.getHovedperson())
                                     .map(person -> prepRequest(bestilling, person))

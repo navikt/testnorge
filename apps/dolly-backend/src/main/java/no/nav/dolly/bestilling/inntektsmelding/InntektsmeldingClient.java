@@ -30,12 +30,15 @@ import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class InntektsmeldingClient implements ClientRegister {
+
+    private static final String STATUS_FMT = "%s:%s";
 
     private final InntektsmeldingConsumer inntektsmeldingConsumer;
     private final MapperFacade mapperFacade;
@@ -50,7 +53,7 @@ public class InntektsmeldingClient implements ClientRegister {
         if (nonNull(bestilling.getInntektsmelding())) {
 
             progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter("JOARK"))))
+                    .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getInfoVenter("JOARK"))))
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
@@ -60,7 +63,7 @@ public class InntektsmeldingClient implements ClientRegister {
             var inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
 
             return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isReady ?
+                    .flatMap(isReady -> (isTrue(isReady) ?
                             Flux.fromIterable(bestilling.getEnvironments())
                                     .flatMap(environment -> {
 
@@ -73,7 +76,7 @@ public class InntektsmeldingClient implements ClientRegister {
                                     .collect(Collectors.joining(",")) :
 
                             Mono.just(bestilling.getEnvironments().stream()
-                                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("JOARK"))))
+                                    .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getVarselSlutt("JOARK"))))
                                     .collect(Collectors.joining(","))))
                     )
                     .map(status -> futurePersist(progress, status)));
@@ -122,7 +125,7 @@ public class InntektsmeldingClient implements ClientRegister {
                             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
                                     inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), response.getError());
 
-                            return String.format("%s:%s", inntektsmeldingRequest.getMiljoe(), encodeStatus(response.getError()));
+                            return String.format(STATUS_FMT, inntektsmeldingRequest.getMiljoe(), encodeStatus(response.getError()));
 
                         }
                     });

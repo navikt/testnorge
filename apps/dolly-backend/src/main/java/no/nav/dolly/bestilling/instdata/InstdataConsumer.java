@@ -34,7 +34,6 @@ public class InstdataConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final NaisServerProperties serviceProperties;
-    private final ObjectMapper objectMapper;
 
     public InstdataConsumer(TokenExchange tokenService,
                             InstServiceProperties serverProperties,
@@ -48,7 +47,6 @@ public class InstdataConsumer implements ConsumerStatus {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .filter(metricsWebClientFilterFunction)
                 .build();
-        this.objectMapper = objectMapper;
     }
 
     @Timed(name = "providers", tags = {"operation", "inst_getMiljoer"})

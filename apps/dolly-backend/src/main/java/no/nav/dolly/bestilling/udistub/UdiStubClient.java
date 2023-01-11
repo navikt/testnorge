@@ -27,6 +27,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -49,7 +50,7 @@ public class UdiStubClient implements ClientRegister {
             transactionHelperService.persister(progress);
 
             return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isReady ?
+                    .flatMap(isReady -> (isTrue(isReady) ?
                             getPersonData(List.of(dollyPerson.getHovedperson()))
                                     .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
                                             .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),

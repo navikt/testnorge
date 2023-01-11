@@ -35,6 +35,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -64,7 +65,7 @@ public class DokarkivClient implements ClientRegister {
 
             var bestillingId = progress.getBestilling().getId();
             return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isReady ?
+                    .flatMap(isReady -> (isTrue(isReady) ?
                             getPersonData(List.of(dollyPerson.getHovedperson()))
                                     .map(person -> buildRequest(bestilling.getDokarkiv(), person))
                                     .flatMap(request -> dokarkivConsumer.getEnvironments()

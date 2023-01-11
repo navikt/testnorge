@@ -106,7 +106,7 @@ class ArenaForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_FunksjonellFeil() {
+    void gjenopprett_FunksjonellFeil() {
 
         var progress = new BestillingProgress();
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
@@ -144,7 +144,7 @@ class ArenaForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_TekniskFeil() {
+    void gjenopprett_TekniskFeil() {
 
         var progress = new BestillingProgress();
 
@@ -158,7 +158,7 @@ class ArenaForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_EnvironmentForArenaNotSelected() {
+    void gjenopprett_EnvironmentForArenaNotSelected() {
 
         var progress = new BestillingProgress();
 
@@ -180,7 +180,7 @@ class ArenaForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_ArenaForvalterNotIncluded() {
+    void gjenopprett_ArenaForvalterNotIncluded() {
 
         var progress = new BestillingProgress();
 

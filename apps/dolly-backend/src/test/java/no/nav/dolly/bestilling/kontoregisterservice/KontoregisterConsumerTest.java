@@ -58,13 +58,13 @@ class KontoregisterConsumerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         when(tokenService.exchange(ArgumentMatchers.any(KontoregisterConsumerProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @AfterEach
-    public void cleanUp() {
+    void cleanUp() {
         WireMock.getAllServeEvents()
                 .stream().forEach(e -> WireMock.removeServeEvent(e.getId()));
     }

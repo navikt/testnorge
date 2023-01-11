@@ -36,6 +36,7 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforh
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -69,7 +70,7 @@ public class AaregClient implements ClientRegister {
 
             return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                     .flatMap(isPresent -> {
-                                if (isPresent) {
+                                if (isTrue(isPresent)) {
                                     if (bestilling.getAareg().stream()
                                             .map(RsAareg::getAmelding)
                                             .allMatch(List::isEmpty)) {
