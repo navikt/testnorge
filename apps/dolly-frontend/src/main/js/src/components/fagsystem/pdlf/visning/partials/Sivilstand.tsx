@@ -5,6 +5,9 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
+import * as _ from 'lodash-es'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -16,10 +19,14 @@ type VisningData = {
 	relasjoner: Array<Relasjon>
 }
 
-const SivilstandLes = ({ sivilstandData, idx }) => {
+const SivilstandLes = ({ sivilstandData, relasjoner, idx }) => {
 	if (!sivilstandData) {
 		return null
 	}
+
+	const relatertPersonIdent = sivilstandData.relatertVedSivilstand
+	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
+
 	return (
 		<div className="person-visning_redigerbar" key={idx}>
 			<ErrorBoundary>
@@ -54,42 +61,20 @@ const SivilstandLes = ({ sivilstandData, idx }) => {
 	)
 }
 
-export const SivilstandVisning = ({ data, relasjoner }: VisningData) => {
-	const relatertPersonIdent = data.relatertVedSivilstand
-	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
-
-	return
+export const SivilstandVisning = ({ data, relasjoner, idx, tmpPersoner, ident }: VisningData) => {
+	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
+	const initialValues = { sivilstand: initSivilstand }
+	//TODO fortsett her!
+	// const redigertSivilstandPdlf = _.get(tmpPersoner)
 
 	return (
-		<>
-			{/*<ErrorBoundary>*/}
-			{/*	<div className="person-visning_content">*/}
-			{/*		<TitleValue title="Type" value={Formatters.showLabel('sivilstandType', data.type)} />*/}
-			{/*		<TitleValue*/}
-			{/*			title="Gyldig fra og med"*/}
-			{/*			value={*/}
-			{/*				Formatters.formatDate(data.sivilstandsdato) ||*/}
-			{/*				Formatters.formatDate(data.gyldigFraOgMed)*/}
-			{/*			}*/}
-			{/*		/>*/}
-			{/*		<TitleValue*/}
-			{/*			title="Bekreftelsesdato"*/}
-			{/*			value={Formatters.formatDate(data.bekreftelsesdato)}*/}
-			{/*		/>*/}
-			{/*		{!relasjoner && <TitleValue title="Relatert person" value={data.relatertVedSivilstand} />}*/}
-			{/*	</div>*/}
-			{/*	{relasjon && (*/}
-			{/*		<RelatertPerson*/}
-			{/*			data={relasjon.relatertPerson}*/}
-			{/*			tittel={data.type === 'SAMBOER' ? 'Samboer' : 'Ektefelle/partner'}*/}
-			{/*		/>*/}
-			{/*	)}*/}
-			{/*</ErrorBoundary>*/}
-		</>
+		<VisningRedigerbarConnector
+			dataVisning={<SivilstandLes sivilstandData={data} relasjoner={relasjoner} idx={idx} />}
+		/>
 	)
 }
 
-export const Sivilstand = ({ data, relasjoner }: SivilstandTypes) => {
+export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandTypes) => {
 	if (!data || data.length < 1) {
 		return null
 	}
@@ -98,8 +83,15 @@ export const Sivilstand = ({ data, relasjoner }: SivilstandTypes) => {
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
 
 			<DollyFieldArray data={data} nested>
-				{(sivilstand: SivilstandData) => (
-					<SivilstandVisning key={sivilstand.id} data={sivilstand} relasjoner={relasjoner} />
+				{(sivilstand: SivilstandData, idx: number) => (
+					<SivilstandVisning
+						key={sivilstand.id}
+						data={sivilstand}
+						relasjoner={relasjoner}
+						idx={idx}
+						tmpPersoner={tmpPersoner}
+						ident={ident}
+					/>
 				)}
 			</DollyFieldArray>
 		</div>

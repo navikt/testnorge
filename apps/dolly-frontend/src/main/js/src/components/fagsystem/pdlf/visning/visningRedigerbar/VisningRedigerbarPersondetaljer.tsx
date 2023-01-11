@@ -144,9 +144,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
+								setVisningModus(Modus.Les)
 							})
 						})
 					}
@@ -209,7 +207,7 @@ export const VisningRedigerbarPersondetaljer = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current && (!skjerming.oppdatert || !skjerming.feil)) {
+								if (!skjerming.oppdatert || !skjerming.feil) {
 									setVisningModus(Modus.Les)
 								}
 							})

@@ -10,7 +10,7 @@ import { Boadresse } from '@/components/fagsystem/pdlf/visning/partials/Boadress
 import { Oppholdsadresse } from '@/components/fagsystem/pdlf/visning/partials/Oppholdsadresse'
 import { Kontaktadresse } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
-import { SivilstandVisning } from '@/components/fagsystem/pdlf/visning/partials/Sivilstand'
+import { Sivilstand } from '@/components/fagsystem/pdlf/visning/partials/Sivilstand'
 import { ForelderBarnRelasjonVisning } from '@/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
 import { DoedfoedtBarnVisning } from '@/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '@/components/fagsystem/pdlf/visning/partials/Foedsel'
@@ -162,7 +162,12 @@ export const PdlfVisning = ({ fagsystemData, bestillingListe, loading, tmpPerson
 
 				{master === 'PDLF' ? (
 					<>
-						<SivilstandVisning data={data?.person?.sivilstand} relasjoner={data?.relasjoner} />
+						<Sivilstand
+							data={data?.person?.sivilstand}
+							relasjoner={data?.relasjoner}
+							tmpPersoner={tmpPdlforvalter}
+							ident={ident}
+						/>
 						<ForelderBarnRelasjonVisning
 							data={data?.person?.forelderBarnRelasjon}
 							relasjoner={data?.relasjoner}

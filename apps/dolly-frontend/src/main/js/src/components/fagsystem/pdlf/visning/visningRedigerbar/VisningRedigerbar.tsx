@@ -141,9 +141,7 @@ export const VisningRedigerbar = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
+								setVisningModus(Modus.Les)
 							})
 						})
 					}
@@ -169,9 +167,7 @@ export const VisningRedigerbar = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
+								setVisningModus(Modus.Les)
 							})
 						})
 					}
