@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
@@ -9,6 +10,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -42,13 +44,10 @@ import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.mergePensjonforvalterResponses;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.not;
-import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
@@ -59,6 +58,8 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 public class PensjonforvalterClientTest {
+
+    private static final String IDENT = "11111111111";
 
     @Mock
     private PensjonforvalterConsumer pensjonforvalterConsumer;
@@ -92,11 +93,21 @@ public class PensjonforvalterClientTest {
 
     @BeforeEach
     public void setup() {
-        when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
-        when(mapperFacade.map(any(Person.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
+        when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+        when(accessToken.getTokenValue()).thenReturn("123");
         when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), eq(accessToken)))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
+
+        var pdlPersonBolk = PdlPersonBolk.builder()
+                .data(PdlPersonBolk.Data.builder()
+                        .hentPersonBolk(List.of(PdlPersonBolk.PersonBolk.builder()
+                                .ident(IDENT)
+                                .person(new PdlPerson.Person())
+                                .build()))
+                        .build())
+                .build();
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
     }
 
     // empty new response list to empty previous list
@@ -250,9 +261,7 @@ public class PensjonforvalterClientTest {
                 .ident("000")
                 .build();
         var dollyPerson = DollyPerson.builder()
-                .hovedperson("000")
-                .persondetaljer(List.of(person))
-                .opprettetIPDL(true)
+                .hovedperson(IDENT)
                 .build();
 
         var progress = new BestillingProgress();
@@ -261,169 +270,219 @@ public class PensjonforvalterClientTest {
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        var test1EnvResponse = new PensjonforvalterResponse.Response();
-        test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
-        var test2EnvResponse = new PensjonforvalterResponse.Response();
-        test2EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
-
-        var lagreTpForholdResponse = new PensjonforvalterResponse();
-        lagreTpForholdResponse.setStatus(List.of(
-                new ResponseEnvironment("TEST1", test1EnvResponse),
-                new ResponseEnvironment("TEST2", test2EnvResponse)
-        ));
+        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), any(AccessToken.class)))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(ResponseEnvironment.builder()
+                                .miljo("TEST1")
+                                .response(PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                .status(200)
+                                                .build())
+                                        .build())
+                                .build()))
+                        .build()));
 
         when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
-                .thenReturn(Flux.just(lagreTpForholdResponse));
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(
+                                new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build()),
+                                new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build())))
+                        .build()));
 
-        var lagreTpYtelseResponse = new PensjonforvalterResponse();
-        lagreTpYtelseResponse.setStatus(List.of(
-                new ResponseEnvironment("TEST1", test1EnvResponse),
-                new ResponseEnvironment("TEST2", test2EnvResponse)
-        ));
         when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
-                .thenReturn(Flux.just(lagreTpYtelseResponse));
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(
+                                new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build()),
+                                new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build())))
+                        .build()));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new LagreTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new LagreTpYtelseRequest());
         when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
-        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
                         .bestilling(dbBestilling)
-                        .pensjonforvalterStatus("TEST1:OK$TEST2:OK")
+                        .pensjonforvalterStatus("PensjonForvalter#TEST1:OK$TpForhold#TEST2:OK,TEST1:OK")
                         .build())
                 .verifyComplete();
-
-//        assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
-//        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
-//        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST2:OK"));
     }
 
     @Test
     public void testLagreTpForhold_withOneFailedResult() {
-        PensjonData.TpOrdning tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
-        PensjonData.TpOrdning tp2 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
 
-        PensjonData pensjonData = new PensjonData();
+        var tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
+        var tp2 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
+
+        var pensjonData = new PensjonData();
         pensjonData.setTp(Arrays.asList(tp1, tp2));
 
-        RsDollyUtvidetBestilling bestilling = new RsDollyUtvidetBestilling();
+        var bestilling = new RsDollyUtvidetBestilling();
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        var person = Person.builder()
-                .ident("000")
-                .build();
         var dollyPerson = DollyPerson.builder()
-                .hovedperson("000")
-                .persondetaljer(List.of(person))
-                .opprettetIPDL(true)
+                .hovedperson(IDENT)
                 .build();
 
-        BestillingProgress progress = new BestillingProgress();
-        progress.setBestilling(new Bestilling());
+        var progress = new BestillingProgress();
+        var dbBestilling = Bestilling.builder().id(1L).build();
+        progress.setBestilling(dbBestilling);
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        var test1EnvResponse = new PensjonforvalterResponse.Response();
-        test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
-        var test2EnvResponse = new PensjonforvalterResponse.Response();
-        test2EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
-
-        PensjonforvalterResponse lagreTpForholdResponse = new PensjonforvalterResponse();
-        lagreTpForholdResponse.setStatus(List.of(
-                new ResponseEnvironment("TEST1", test1EnvResponse),
-                new ResponseEnvironment("TEST2", test2EnvResponse)
-        ));
+        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), any(AccessToken.class)))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(ResponseEnvironment.builder()
+                                        .miljo("TEST1")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build(),
+                                ResponseEnvironment.builder()
+                                        .miljo("TEST2")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build()))
+                        .build()));
 
         when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
-                .thenReturn(Flux.just(lagreTpForholdResponse));
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(
+                                new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build()),
+                                new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build())))
+                        .build()));
 
-        var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
-        test2EnvYtelseResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 500));
-        test2EnvYtelseResponse.setMessage("ytelse2 feil on TEST2");
-
-        PensjonforvalterResponse lagreTpYtelseResponse = new PensjonforvalterResponse();
-        lagreTpYtelseResponse.setStatus(List.of(
-                new ResponseEnvironment("TEST1", test1EnvResponse),
-                new ResponseEnvironment("TEST2", test2EnvYtelseResponse)
-        ));
         when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
-                .thenReturn(Flux.just(lagreTpYtelseResponse));
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(
+                                new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build()),
+                                new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("Intern feil", 500))
+                                        .message("ytelse2 feil on TEST2")
+                                        .build())))
+                        .build()));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
-        when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn("Feil= " + test2EnvYtelseResponse.getMessage());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new LagreTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new LagreTpYtelseRequest());
+        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
+        when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
+                .thenReturn("Feil= ytelse2 feil on TEST2");
 
-        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
-
-        assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
-        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
-        assertThat(progress.getPensjonforvalterStatus(), containsString("TEST2:Feil= ytelse2 feil on TEST2"));
+        StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
+                        .map(ClientFuture::get))
+                .expectNext(BestillingProgress.builder()
+                        .bestilling(dbBestilling)
+                        .pensjonforvalterStatus("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")
+                        .build())
+                .verifyComplete();
     }
 
     @Test
     public void testLagreTpForhold_withException() {
 
-        PensjonData.TpOrdning tp1 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
-        PensjonData.TpOrdning tp2 = PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()));
-
-        PensjonData pensjonData = new PensjonData();
-        pensjonData.setTp(Arrays.asList(tp1, tp2));
-
-        RsDollyUtvidetBestilling bestilling = new RsDollyUtvidetBestilling();
+        var bestilling = new RsDollyUtvidetBestilling();
         bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
-        bestilling.setPensjonforvalter(pensjonData);
+        bestilling.setPensjonforvalter(PensjonData.builder()
+                .tp(List.of(PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse())),
+                        PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()))))
+                .build());
 
-        var person = Person.builder()
-                .ident("000")
-                .build();
         var dollyPerson = DollyPerson.builder()
-                .hovedperson("000")
-                .persondetaljer(List.of(person))
-                .opprettetIPDL(true)
+                .hovedperson(IDENT)
                 .build();
 
-        BestillingProgress progress = new BestillingProgress();
-        progress.setBestilling(new Bestilling());
+        var dbBestilling = Bestilling.builder().id(1L).build();
+        var progress = BestillingProgress.builder()
+                .bestilling(dbBestilling)
+                .build();
 
         when(pensjonforvalterConsumer.getMiljoer()).thenReturn(Mono.just(Set.of("TEST1", "TEST2")));
 
-        var test1EnvResponse = new PensjonforvalterResponse.Response();
-        test1EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
-        var test2EnvResponse = new PensjonforvalterResponse.Response();
-        test2EnvResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("", 200));
-
-        PensjonforvalterResponse lagreTpForholdResponse = new PensjonforvalterResponse();
-        lagreTpForholdResponse.setStatus(List.of(
-                new ResponseEnvironment("TEST1", test1EnvResponse),
-                new ResponseEnvironment("TEST2", test2EnvResponse)
-        ));
+        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), any(AccessToken.class)))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(ResponseEnvironment.builder()
+                                        .miljo("TEST1")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build(),
+                                ResponseEnvironment.builder()
+                                        .miljo("TEST2")
+                                        .response(PensjonforvalterResponse.Response.builder()
+                                                .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
+                                                        .status(200)
+                                                        .build())
+                                                .build())
+                                        .build()))
+                        .build()));
 
         when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
-                .thenReturn(Flux.just(lagreTpForholdResponse));
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(
+                                new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build()),
+                                new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("", 200))
+                                        .build())
+                        ))
+                        .build()));
 
-        var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
-        test2EnvYtelseResponse.setHttpStatus(new PensjonforvalterResponse.HttpStatus("Internal Server Error", 500));
-        test2EnvYtelseResponse.setMessage(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", "12345"));
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+                .thenReturn(Flux.just(PensjonforvalterResponse.builder()
+                        .status(List.of(
+                                new ResponseEnvironment("TEST1", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("OK", 200))
+                                        .build()),
+                                new ResponseEnvironment("TEST2", PensjonforvalterResponse.Response.builder()
+                                        .httpStatus(new PensjonforvalterResponse.HttpStatus("Internal Server Error", 500))
+                                        .message(String.format("Klarte ikke å få TP-ytelse respons for %s i PESYS (pensjon)", "12345"))
+                                        .build())))
+                        .build()));
 
-        var lagreTpYtelseResponse = PensjonforvalterResponse.builder()
-                .status(List.of(
-                        new ResponseEnvironment("TEST1", test1EnvResponse),
-                        new ResponseEnvironment("TEST2", test2EnvYtelseResponse)))
-                .build();
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new LagreTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new LagreTpYtelseRequest());
+        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
+        when(errorStatusDecoder.getErrorText(eq(HttpStatus.INTERNAL_SERVER_ERROR), anyString()))
+                .thenReturn("Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon)");
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken))).thenReturn(Flux.just(lagreTpYtelseResponse));
-
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
-        when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn(test2EnvYtelseResponse.getMessage());
-
-        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
-
-        assertThat(progress.getPensjonforvalterStatus(), containsString("Klarte ikke å få TP-ytelse respons"));
+        StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
+                        .map(ClientFuture::get))
+                .expectNext(BestillingProgress.builder()
+                        .bestilling(dbBestilling)
+                        .pensjonforvalterStatus("PensjonForvalter#TEST1:OK,TEST2:OK$" +
+                                "TpForhold#TEST2:Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon),TEST1:OK")
+                        .build())
+                .verifyComplete();
     }
 
     public static class PensjonforvalterClientTestUtil {

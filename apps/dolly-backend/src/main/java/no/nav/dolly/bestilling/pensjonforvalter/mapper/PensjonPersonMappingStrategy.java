@@ -19,7 +19,7 @@ import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.nonNull;
 
 @Component
-public class OpprettPersonMapper implements MappingStrategy {
+public class PensjonPersonMappingStrategy implements MappingStrategy {
 
     private static final DateTimeFormatter DATE_FMT = ofPattern("yyyy-MM-dd");
 

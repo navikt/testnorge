@@ -3,6 +3,8 @@ package no.nav.dolly.domain.resultset.pensjon;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,8 +15,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -34,6 +36,15 @@ public class PensjonData {
             tp = new ArrayList<>();
         }
         return tp;
+    }
+
+    public enum TpYtelseType {
+        ALDER,
+        UFORE,
+        GJENLEVENDE,
+        BARN,
+        AFP,
+        UKJENT
     }
 
     @Getter
@@ -59,8 +70,8 @@ public class PensjonData {
         private Boolean redusertMedGrunnbelop;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TpOrdning {
@@ -79,17 +90,8 @@ public class PensjonData {
         }
     }
 
-    public enum TpYtelseType {
-        ALDER,
-        UFORE,
-        GJENLEVENDE,
-        BARN,
-        AFP,
-        UKJENT
-    }
-
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TpYtelse {
