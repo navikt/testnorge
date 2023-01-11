@@ -6,7 +6,6 @@ import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetPersonOrganisasj
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetPersonOrganisasjonerTilgangCommand;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.oversiktfrontend.credentials.PersonOrganisasjonTilgangServiceProperties;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -24,16 +23,13 @@ import reactor.core.publisher.Mono;
 public class PersonOrganisasjonTilgangConsumer {
     private final WebClient webClient;
     private final PersonOrganisasjonTilgangServiceProperties serviceProperties;
-    private final TokenExchange tokenExchange;
 
     public PersonOrganisasjonTilgangConsumer(
             PersonOrganisasjonTilgangServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
             ObjectMapper objectMapper,
             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serviceProperties;
-        this.tokenExchange = tokenExchange;
         ExchangeStrategies jacksonStrategy = ExchangeStrategies.builder()
                 .codecs(config -> {
                     config.defaultCodecs()
@@ -50,13 +46,11 @@ public class PersonOrganisasjonTilgangConsumer {
     }
 
     public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
-                .flatMapMany(accessToken -> new GetPersonOrganisasjonerTilgangCommand(webClient, accessToken.getTokenValue()).call());
+        return new GetPersonOrganisasjonerTilgangCommand(webClient, "test").call(); //TODO: Fikse token
     }
 
     public Mono<Boolean> hasAccess(String organisasjonsnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
-                .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
+        return new GetPersonOrganisasjonTilgangCommand(webClient, "token", organisasjonsnummer).call() //TODO: Fikse token
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException,
                         throwable -> {
