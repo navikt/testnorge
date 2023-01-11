@@ -4,7 +4,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Panel from '@/components/ui/panel/Panel'
-import { runningTestcafe } from '@/service/services/Request'
+import { runningCypressE2E } from '@/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
@@ -24,7 +24,7 @@ const PensjonInntekt = ({ data }) => {
 	if (!data) return null
 
 	return (
-		<Panel startOpen={runningTestcafe()} heading={getTittel(data)}>
+		<Panel startOpen={runningCypressE2E()} heading={getTittel(data)}>
 			<DollyFieldArray data={data} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>

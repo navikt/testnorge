@@ -1,11 +1,11 @@
 // @ts-ignore
 import dolly from '@/favicon.ico'
-import testcafe from '@/assets/img/testcafe.png'
+import cypress from '@/assets/img/cypress.png'
 import { useBrukerProfil, useBrukerProfilBilde } from '@/utils/hooks/useBruker'
-import { runningTestcafe } from '@/service/services/Request'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const getDefaultImage = () => {
-	return runningTestcafe() ? testcafe : dolly
+	return runningCypressE2E() ? cypress : dolly
 }
 
 export default function Profil() {

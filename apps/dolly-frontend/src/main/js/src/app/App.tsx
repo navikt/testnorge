@@ -17,10 +17,10 @@ import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 } from '@/utils/hooks/useMaler'
-import { runningTestcafe } from '@/service/services/Request'
+import { runningCypressE2E } from '@/service/services/Request'
 
 const logout = (feilmelding: string) => {
-	if (!runningTestcafe()) {
+	if (!runningCypressE2E()) {
 		logoutBruker(feilmelding)
 	}
 }
@@ -43,7 +43,7 @@ export const App = () => {
 	}, [userError])
 
 	useEffect(() => {
-		if (criticalError && !runningTestcafe()) {
+		if (criticalError && !runningCypressE2E()) {
 			logout(criticalError.stack)
 		}
 	}, [criticalError])

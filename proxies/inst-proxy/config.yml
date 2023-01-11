@@ -27,7 +27,7 @@ spec:
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-inst-service
           cluster: dev-gcp
         - application: testnav-oversikt-frontend

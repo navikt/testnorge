@@ -37,3 +37,7 @@ stats.json
 
 # Code counter extension
 /.VSCodeCounter
+
+# Cypress
+/cypress/videos/
+/cypress/screenshots/
