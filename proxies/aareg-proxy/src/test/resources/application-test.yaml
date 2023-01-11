@@ -3,15 +3,5 @@ logging:
     root: WARN
     nav: INFO
 
-#spring.main.allow-bean-definition-overriding=true
-
-#spring.cloud.vault.token=dummy
-#azure.app.client.id=dummy
-#azure.app.client.secret=dummy
-
-AZURE_OPENID_CONFIG_ISSUER: dummy
-STS_PREPROD_PROVIDER_USERNAME: dummy
-STS_PREPROD_PROVIDER_PASSWORD: dummy
-STS_TEST_PROVIDER_USERNAME: dummy
-STS_TEST_PROVIDER_PASSWORD: dummy
-TOKEN_X_ISSUER: dummy
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token

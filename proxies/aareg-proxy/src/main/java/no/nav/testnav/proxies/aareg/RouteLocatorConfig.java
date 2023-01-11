@@ -63,11 +63,11 @@ public class RouteLocatorConfig {
 
     private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String env, GatewayFilter authentication) {
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidstaker/arbeidsforhold")
+                .path("/" + env + "/api/v1/arbeidsforhold")
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/(?<segment>.*)", "/api/v1/arbeidstaker/arbeidsforhold")
+                        .rewritePath("/" + env + "/(?<segment>.*)", "/aareg-services/api/v1/arbeidsforhold/")
                         .filter(authentication)
                 )
                 .uri("https://aareg-services-" + env + ".dev.intern.nav.no");
