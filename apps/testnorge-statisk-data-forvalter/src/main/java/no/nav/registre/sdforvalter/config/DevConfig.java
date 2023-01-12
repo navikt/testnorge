@@ -16,7 +16,7 @@ public class DevConfig  extends AbstractVaultConfiguration {
 
     @Override
     public VaultEndpoint vaultEndpoint() {
-        return VaultEndpoint.create("vault.adeo.no", 443);
+        return VaultEndpoint.create("vault.intern.nav.no", 443);
     }
 
     @Override
