@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   tokenx:
     enabled: true
@@ -49,6 +49,8 @@ spec:
       rules:
         - application: testnav-statisk-data-forvalter-proxy
           cluster: dev-fss
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
     outbound:
       rules:
         - application: testnorge-hodejegeren
