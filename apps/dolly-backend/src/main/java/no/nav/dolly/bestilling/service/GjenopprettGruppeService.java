@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -45,15 +44,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 public class GjenopprettGruppeService extends DollyBestillingService {
 
-    private final BestillingService bestillingService;
-    private final ErrorStatusDecoder errorStatusDecoder;
     private final ExecutorService dollyForkJoinPool;
-    private final List<ClientRegister> clientRegisters;
-    private final IdentService identService;
-    private final TransactionHelperService transactionHelperService;
 
-    public GjenopprettGruppeService(TpsfService tpsfService,
-                                    DollyPersonCache dollyPersonCache, IdentService identService,
+    public GjenopprettGruppeService(DollyPersonCache dollyPersonCache, IdentService identService,
                                     BestillingProgressService bestillingProgressService,
                                     BestillingService bestillingService, MapperFacade mapperFacade,
                                     CacheManager cacheManager, ObjectMapper objectMapper,
@@ -62,16 +55,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
                                     TransactionHelperService transactionHelperService) {
 
-        super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
+        super(dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
 
-        this.bestillingService = bestillingService;
-        this.errorStatusDecoder = errorStatusDecoder;
         this.dollyForkJoinPool = dollyForkJoinPool;
-        this.clientRegisters = clientRegisters;
-        this.identService = identService;
-        this.transactionHelperService = transactionHelperService;
     }
 
     @Async

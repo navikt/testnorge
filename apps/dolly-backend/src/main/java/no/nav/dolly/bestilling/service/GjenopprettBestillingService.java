@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -42,27 +41,19 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class GjenopprettBestillingService extends DollyBestillingService {
 
-    private final BestillingService bestillingService;
-    private final ErrorStatusDecoder errorStatusDecoder;
-    private final BestillingProgressService bestillingProgressService;
     private final ExecutorService dollyForkJoinPool;
-    private final TransactionHelperService transactionHelperService;
 
-    public GjenopprettBestillingService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
+    public GjenopprettBestillingService(DollyPersonCache dollyPersonCache,
                                         IdentService identService, BestillingProgressService bestillingProgressService,
                                         BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
                                         ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
-        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+        super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder);
+                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
 
-        this.bestillingService = bestillingService;
-        this.errorStatusDecoder = errorStatusDecoder;
-        this.bestillingProgressService = bestillingProgressService;
         this.dollyForkJoinPool = dollyForkJoinPool;
-        this.transactionHelperService = transactionHelperService;
     }
 
     @Async

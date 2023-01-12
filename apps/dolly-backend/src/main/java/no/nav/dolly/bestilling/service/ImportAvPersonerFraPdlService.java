@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -44,32 +43,21 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
-    private final DollyPersonCache dollyPersonCache;
-    private final ErrorStatusDecoder errorStatusDecoder;
     private final ExecutorService dollyForkJoinPool;
-    private final PdlPersonConsumer pdlPersonConsumer;
-    private final ObjectMapper objectMapper;
-    private final IdentService identService;
-    private final TransactionHelperService transactionHelperService;
 
-    public ImportAvPersonerFraPdlService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
+    public ImportAvPersonerFraPdlService(DollyPersonCache dollyPersonCache,
                                          IdentService identService, BestillingProgressService bestillingProgressService,
                                          BestillingService bestillingService, MapperFacade mapperFacade,
                                          CacheManager cacheManager, ObjectMapper objectMapper,
                                          List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                          ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
-        super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
+                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
+                                         TransactionHelperService transactionHelperService) {
+        super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder);
+                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
 
-        this.dollyPersonCache = dollyPersonCache;
-        this.errorStatusDecoder = errorStatusDecoder;
         this.dollyForkJoinPool = dollyForkJoinPool;
-        this.objectMapper = objectMapper;
-        this.pdlPersonConsumer = pdlPersonConsumer;
-        this.identService = identService;
-        this.transactionHelperService = transactionHelperService;
     }
 
     @Async

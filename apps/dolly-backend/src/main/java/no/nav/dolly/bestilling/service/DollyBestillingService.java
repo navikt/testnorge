@@ -8,7 +8,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -16,15 +15,14 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.slf4j.MDC;
@@ -56,19 +54,19 @@ public class DollyBestillingService {
     protected static final String SUCCESS = "OK";
     private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
 
-    private final TpsfService tpsfService;
-    private final DollyPersonCache dollyPersonCache;
-    private final IdentService identService;
-    private final BestillingProgressService bestillingProgressService;
-    private final BestillingService bestillingService;
-    private final MapperFacade mapperFacade;
-    private final CacheManager cacheManager;
-    private final ObjectMapper objectMapper;
-    private final List<ClientRegister> clientRegisters;
-    private final CounterCustomRegistry counterCustomRegistry;
-    private final PdlPersonConsumer pdlPersonConsumer;
-    private final PdlDataConsumer pdlDataConsumer;
-    private final ErrorStatusDecoder errorStatusDecoder;
+    protected final DollyPersonCache dollyPersonCache;
+    protected final IdentService identService;
+    protected final BestillingProgressService bestillingProgressService;
+    protected final BestillingService bestillingService;
+    protected final MapperFacade mapperFacade;
+    protected final CacheManager cacheManager;
+    protected final ObjectMapper objectMapper;
+    protected final List<ClientRegister> clientRegisters;
+    protected final CounterCustomRegistry counterCustomRegistry;
+    protected final PdlPersonConsumer pdlPersonConsumer;
+    protected final PdlDataConsumer pdlDataConsumer;
+    protected final ErrorStatusDecoder errorStatusDecoder;
+    protected final TransactionHelperService transactionHelperService;
 
     protected static Boolean isSyntetisk(String ident) {
 
@@ -118,15 +116,7 @@ public class DollyBestillingService {
             var originator = new OriginatorCommand(request, testident, mapperFacade).call();
 
             DollyPerson dollyPerson;
-            if (originator.isTpsf()) {
-                var oppdaterPersonResponse = tpsfService.endreLeggTilPaaPerson(bestilling.getIdent(), originator.getTpsfBestilling());
-
-                dollyPerson = dollyPersonCache.prepareTpsPerson(oppdaterPersonResponse.getIdentTupler().stream()
-                                .map(RsOppdaterPersonResponse.IdentTuple::getIdent)
-                                .findFirst().orElseThrow(() -> new NotFoundException("Ident ikke funnet i TPS: " + testident.getIdent())),
-                        progress.getBestilling().getGruppe().getTags());
-
-            } else if (originator.isPdlf()) {
+            if (originator.isPdlf()) {
                 try {
                     if (nonNull(originator.getPdlBestilling())) {
                         pdlDataConsumer.oppdaterPdl(testident.getIdent(),
@@ -234,14 +224,7 @@ public class DollyBestillingService {
     protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
 
         DollyPerson dollyPerson = null;
-        if (progress.isTpsf()) {
-            var personer = tpsfService.hentTestpersoner(List.of(progress.getIdent()));
-            if (!personer.isEmpty()) {
-                dollyPerson = dollyPersonCache.prepareTpsPersoner(personer.get(0),
-                        progress.getBestilling().getGruppe().getTags());
-            }
-
-        } else if (progress.isPdlf()) {
+        if (progress.isPdlf()) {
             var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent())).block();
             dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
                     progress.getBestilling().getGruppe().getTags());

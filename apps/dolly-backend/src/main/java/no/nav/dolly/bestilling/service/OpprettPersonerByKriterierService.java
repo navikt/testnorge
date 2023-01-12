@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -40,15 +39,7 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
-    private final BestillingService bestillingService;
-    private final ErrorStatusDecoder errorStatusDecoder;
-    private final MapperFacade mapperFacade;
-    private final IdentService identService;
-    private final PdlDataConsumer pdlDataConsumer;
-    private final TransactionHelperService transactionHelperService;
-
-    public OpprettPersonerByKriterierService(TpsfService tpsfService,
-                                             DollyPersonCache dollyPersonCache, IdentService identService,
+    public OpprettPersonerByKriterierService(DollyPersonCache dollyPersonCache, IdentService identService,
                                              BestillingProgressService bestillingProgressService,
                                              BestillingService bestillingService, MapperFacade mapperFacade,
                                              CacheManager cacheManager, ObjectMapper objectMapper,
@@ -56,16 +47,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              ErrorStatusDecoder errorStatusDecoder,
                                              PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
                                              TransactionHelperService transactionHelperService) {
-        super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
+        super(dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
-
-        this.bestillingService = bestillingService;
-        this.errorStatusDecoder = errorStatusDecoder;
-        this.mapperFacade = mapperFacade;
-        this.identService = identService;
-        this.pdlDataConsumer = pdlDataConsumer;
-        this.transactionHelperService = transactionHelperService;
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
     }
 
     @Async
