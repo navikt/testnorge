@@ -11,6 +11,7 @@ import no.nav.dolly.bestilling.pdldata.command.PdlDataOrdreCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataSlettUtenomCommand;
 import no.nav.dolly.bestilling.pdldata.command.PdlDataStanaloneCommand;
+import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.config.credentials.PdlDataForvalterProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
@@ -57,10 +58,11 @@ public class PdlDataConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
-    public String sendOrdre(String ident, boolean isTpsfMaster, boolean ekskluderEksternePersoner) {
+    public Flux<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
 
-        return new PdlDataOrdreCommand(webClient, ident, isTpsfMaster, ekskluderEksternePersoner,
-                serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataOrdreCommand(webClient, ident, ekskluderEksternePersoner,
+                        token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_delete" })
@@ -88,9 +90,10 @@ public class PdlDataConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_opprett" })
-    public String opprettPdl(BestillingRequestDTO request) {
+    public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
-        return new PdlDataOpprettingCommand(webClient, request, serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_oppdater" })

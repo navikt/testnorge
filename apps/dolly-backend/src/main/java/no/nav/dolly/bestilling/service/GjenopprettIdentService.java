@@ -120,7 +120,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                     Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                     if (dollyPerson.isPresent()) {
-                        gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+                        gjenopprettAlleKlienter(dollyPerson.get(), bestKriterier, progress, false);
 
                         coBestillinger.stream()
                                 .filter(gruppe -> gruppe.getIdent()

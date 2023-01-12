@@ -21,6 +21,7 @@ public class OpprettCommand implements Callable<String> {
 
         var opprettPdlPerson = mapperFacade.map(bestKriterier.getPdldata(), BestillingRequestDTO.class);
         opprettPdlPerson.setOpprettFraIdent(availStatus.getIdent());
-        return pdlDataConsumer.opprettPdl(opprettPdlPerson);
+//        return pdlDataConsumer.opprettPdl(opprettPdlPerson);
+        return null;
     }
 }

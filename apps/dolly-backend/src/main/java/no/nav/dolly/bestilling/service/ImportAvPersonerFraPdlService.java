@@ -85,9 +85,9 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
             var completableFuture =
                     Stream.of(bestilling.getPdlImport().split(","))
-                    .map(ident -> doBestilling(bestilling, bestKriterier, ident))
-                    .map(computeable -> supplyAsync(computeable, dollyForkJoinPool))
-                    .toList();
+                            .map(ident -> doBestilling(bestilling, bestKriterier, ident))
+                            .map(computeable -> supplyAsync(computeable, dollyForkJoinPool))
+                            .toList();
 
             completableFuture
                     .forEach(future -> {
@@ -131,7 +131,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     DollyPerson dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
                     identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
                             PDL, bestilling.getBeskrivelse());
-                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+                    gjenopprettAlleKlienter(dollyPerson, bestKriterier, progress, true);
                     progress.setPdlImportStatus(SUCCESS);
 
                 } catch (JsonProcessingException e) {

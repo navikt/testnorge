@@ -47,6 +47,7 @@ public class PensjonData {
 
     @Data
     @Builder
+    @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PoppInntekt {

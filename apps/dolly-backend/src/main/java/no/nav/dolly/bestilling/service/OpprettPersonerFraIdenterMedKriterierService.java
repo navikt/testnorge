@@ -146,7 +146,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 .tags(bestilling.getGruppe().getTags())
                                 .build();
 
-                        gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+                        gjenopprettAlleKlienter(dollyPerson, bestKriterier, progress, true);
                     } else {
                         progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getMessage());
                     }

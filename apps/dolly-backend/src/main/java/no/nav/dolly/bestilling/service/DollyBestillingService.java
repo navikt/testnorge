@@ -202,17 +202,16 @@ public class DollyBestillingService {
         }
     }
 
-    protected void gjenopprettNonTpsf(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
-                                      BestillingProgress progress, boolean isOpprettEndre) {
+    protected Flux<List<BestillingProgress>> gjenopprettAlleKlienter(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+                                                                     BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
-        Flux.fromIterable(clientRegisters)
+        return Flux.from(Flux.fromIterable(clientRegisters)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .filter(Objects::nonNull)
                 .map(ClientFuture::get)
-                .collectList()
-                .subscribe(resultat -> log.info("Asynkron bestilling ferdig ..."));
+                .collectList());
     }
 
     protected void oppdaterBestillingFerdig(Bestilling bestilling) {

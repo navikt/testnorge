@@ -2,14 +2,16 @@ package no.nav.dolly.bestilling.pdldata.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -19,7 +21,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataOpprettingCommand implements Callable<Mono<String>> {
+public class PdlDataOpprettingCommand implements Callable<Flux<PdlResponse>> {
 
     private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer";
 
@@ -27,18 +29,26 @@ public class PdlDataOpprettingCommand implements Callable<Mono<String>> {
     private final BestillingRequestDTO body;
     private final String token;
 
-    public Mono<String> call() {
+    public Flux<PdlResponse> call() {
 
         return webClient
                 .post()
                 .uri(PDL_FORVALTER_PERSONER_URL)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToFlux(String.class)
+                .map(resultat -> PdlResponse.builder()
+                        .ident(resultat)
+                        .status(HttpStatus.OK)
+                        .build())
                 .doOnError(WebClientFilter::logErrorMessage)
+                .onErrorResume(error -> Flux.just(PdlResponse.builder()
+                                .status(WebClientFilter.getStatus(error))
+                                .feilmelding(WebClientFilter.getMessage(error))
+                        .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

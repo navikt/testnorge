@@ -113,7 +113,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                     if (dollyPerson.isPresent()) {
-                        gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+                        gjenopprettAlleKlienter(dollyPerson.get(), bestKriterier, progress, false);
 
                         coBestillinger.stream()
                                 .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
@@ -121,7 +121,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                 .forEach(coBestilling -> clientRegisters.stream()
                                         .filter(register ->
                                                 !(register instanceof PdlForvalterClient ||
-                                                        register instanceof PdlDataClient ))
+                                                        register instanceof PdlDataClient))
                                         .forEach(register ->
                                                 register.gjenopprett(getDollyBestillingRequest(
                                                         Bestilling.builder()

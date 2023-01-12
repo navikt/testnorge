@@ -21,12 +21,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ErrorStatusDecoder {
 
-    private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
-            "Forsøk gjenopprett for å fikse dette!";
-
-    private static final String VENTER_TEKST = "Info: Venter";
-
-    private static final String INFO_VENTER = VENTER_TEKST + " på PDL før sending starter til %s ...";
+    private static final String INFO_VENTER = "Info: Venter på PDL før sending starter til %s ...";
 
     private static final String VARSEL_SLUTT = "Varsel: Sending til %s ble gitt opp da personen ikke kunne leses tilbake fra PDL. " +
             "Forsøk gjenopprett for å fikse dette!";
@@ -41,19 +36,9 @@ public class ErrorStatusDecoder {
 
     private final ObjectMapper objectMapper;
 
-    public static String getVarsel(String system) {
-
-        return String.format(VARSEL, system);
-    }
-
     public static String getInfoVenter(String system) {
 
         return String.format(INFO_VENTER, system);
-    }
-
-    public static String getVenterTekst() {
-
-        return VENTER_TEKST;
     }
 
     public static String getVarselSlutt(String system) {

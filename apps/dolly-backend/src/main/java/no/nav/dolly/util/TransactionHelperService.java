@@ -32,37 +32,38 @@ public class TransactionHelperService {
     }
 
     @SuppressWarnings("java:S1143")
-    public void oppdaterProgress(BestillingProgress progress) {
+    public BestillingProgress oppdaterProgress(BestillingProgress progress) {
 
-        transactionTemplate.execute(status -> {
+        return transactionTemplate.execute(status -> {
             var best = entityManager.find(Bestilling.class, progress.getBestilling().getId());
             entityManager.persist(progress);
             best.setSistOppdatert(now());
             entityManager.merge(best);
             clearCache();
-            return null;
+            return progress;
         });
     }
 
-    public void persister(BestillingProgress progress) {
+    public BestillingProgress persister(BestillingProgress progress) {
 
-        transactionTemplate.execute(status -> {
+        return transactionTemplate.execute(status -> {
             entityManager.merge(progress);
             clearCache();
-            return null;
+            return progress;
         });
     }
 
     @SuppressWarnings("java:S1143")
-    public void oppdaterBestillingFerdig(Bestilling bestilling) {
+    public Bestilling oppdaterBestillingFerdig(Bestilling bestilling) {
 
-        transactionTemplate.execute(status -> {
+        return transactionTemplate.execute(status -> {
             var best = entityManager.find(Bestilling.class, bestilling.getId());
             best.setSistOppdatert(now());
             best.setFerdig(true);
+            best.setFeil(bestilling.getFeil());
             entityManager.merge(best);
             clearCache();
-            return null;
+            return best;
         });
     }
 

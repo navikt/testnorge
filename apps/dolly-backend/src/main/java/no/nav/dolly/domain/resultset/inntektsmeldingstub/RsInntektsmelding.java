@@ -1,14 +1,14 @@
 package no.nav.dolly.domain.resultset.inntektsmeldingstub;
 
-import java.time.LocalDateTime;
-import java.util.List;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -60,7 +60,7 @@ public class RsInntektsmelding {
         private List<RsNaturalYtelseDetaljer> opphoerAvNaturalytelseListe;
         private List<RsPeriode> pleiepengerPerioder;
         private RsRefusjon refusjon;
-        private LocalDateTime startdatoForeldrepengeperiode;
+        private LocalDate startdatoForeldrepengeperiode;
         private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
         private YtelseType ytelse;
     }
@@ -86,7 +86,7 @@ public class RsInntektsmelding {
 
         private List<RsEndringIRefusjon> endringIRefusjonListe;
         private Double refusjonsbeloepPrMnd;
-        private LocalDateTime refusjonsopphoersdato;
+        private LocalDate refusjonsopphoersdato;
     }
 
     @Getter
@@ -96,7 +96,7 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsEndringIRefusjon {
 
-        private LocalDateTime endringsdato;
+        private LocalDate endringsdato;
         private Double refusjonsbeloepPrMnd;
     }
 
@@ -108,7 +108,7 @@ public class RsInntektsmelding {
     public static class RsNaturalYtelseDetaljer {
 
         private Double beloepPrMnd;
-        private LocalDateTime fom;
+        private LocalDate fom;
         private NaturalytelseType naturalytelseType;
     }
 
@@ -131,7 +131,7 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsDelvisFravaer {
 
-        private LocalDateTime dato;
+        private LocalDate dato;
         private Double timer;
     }
 
@@ -190,7 +190,7 @@ public class RsInntektsmelding {
         private String arbeidsforholdId;
         private List<RsPeriode> avtaltFerieListe;
         private RsAltinnInntekt beregnetInntekt;
-        private LocalDateTime foersteFravaersdag;
+        private LocalDate foersteFravaersdag;
         private List<RsGraderingIForeldrepenger> graderingIForeldrepengerListe;
         private List<RsUtsettelseAvForeldrepenger> utsettelseAvForeldrepengerListe;
     }
@@ -234,7 +234,7 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsPeriode {
 
-        private LocalDateTime fom;
-        private LocalDateTime tom;
+        private LocalDate fom;
+        private LocalDate tom;
     }
 }

@@ -126,7 +126,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
                     if (dollyPerson.isPresent()) {
 
-                        gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+                        gjenopprettAlleKlienter(dollyPerson.get(), bestKriterier, progress, false);
                     } else {
                         progress.setFeil("NA:Feil= Finner ikke personen i database");
                     }

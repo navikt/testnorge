@@ -16,11 +16,10 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class PersonServiceSyncCommand implements Callable<Mono<Boolean>> {
 
-   private final WebClient webClient;
-   private final String ident;
-   private final String token;
-
     private static final String PERSON_URL = "/api/v1/personer/{ident}/sync";
+    private final WebClient webClient;
+    private final String ident;
+    private final String token;
 
     @Override
     public Mono<Boolean> call() {
@@ -33,7 +32,7 @@ public class PersonServiceSyncCommand implements Callable<Mono<Boolean>> {
                 .retrieve()
                 .bodyToMono(Boolean.class)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error -> Mono.just(Boolean.FALSE))
+                .onErrorResume(Mono::error)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

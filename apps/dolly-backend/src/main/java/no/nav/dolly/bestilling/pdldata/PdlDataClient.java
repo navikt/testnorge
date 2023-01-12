@@ -16,7 +16,6 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -40,9 +39,9 @@ public class PdlDataClient implements ClientRegister {
             }
 
             if (!progress.isPdl()  && isBlank(progress.getPdlDataStatus())) {
-                progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(),
-                        progress.isTpsf(),
-                        isTrue(bestilling.getEkskluderEksternePersoner())));
+//                progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(),
+//                        progress.isTpsf(),
+//                        isTrue(bestilling.getEkskluderEksternePersoner())));
             }
 
         } catch (RuntimeException e) {

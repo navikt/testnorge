@@ -117,7 +117,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
             doFerdig(bestilling);
 
-        } else  {
+        } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             doFerdig(bestilling);
         }
@@ -137,7 +137,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(), testident.getMaster());
                 try {
                     DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
-                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
+                    gjenopprettAlleKlienter(dollyPerson, bestKriterier, progress, false);
 
                 } catch (JsonProcessingException e) {
                     progress.setFeil(errorStatusDecoder.decodeException(e));

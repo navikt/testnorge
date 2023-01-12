@@ -100,7 +100,7 @@ public class OrdreService {
 
     private String sendPdlData(Testident testident, BestillingProgress progress) {
 
-        progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(testident.getIdent(), testident.isTpsf(), false));
+//        progress.setPdlDataStatus(pdlDataConsumer.sendOrdre(testident.getIdent(), testident.isTpsf(), false));
 
         return progress.getTpsMessagingStatus();
     }
