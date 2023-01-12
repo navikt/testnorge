@@ -22,5 +22,5 @@ app:
 tps.statisk.avspillergruppeId: ${FAST_AVSPILLER_GRUPPE}
 
 ########## Brukes disse fremdeles?
-VAULT_URL: https://vault.intern.nav.no
+VAULT_URL: https://vault.adeo.no
 ##########
