@@ -78,8 +78,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                     .collectList()
                     .doOnError(throwable -> {
                         log.error("Feil oppsto ved utføring av bestilling #{}: {}",
-                                bestilling.getId(), WebClientFilter.getMessage(throwable), throwable);
-                        bestilling.setFeil("Feil: " + WebClientFilter.getMessage(throwable));
+                                bestilling.getId(), WebClientFilter.getMessage(throwable));
+                        bestilling.setFeil(errorStatusDecoder.getErrorText(
+                                WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable)));
                         doFerdig(bestilling);
                     })
                     .subscribe(done -> doFerdig(bestilling));

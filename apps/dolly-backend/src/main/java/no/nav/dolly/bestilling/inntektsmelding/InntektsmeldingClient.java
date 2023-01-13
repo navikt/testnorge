@@ -31,7 +31,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
 @Service
@@ -105,7 +105,7 @@ public class InntektsmeldingClient implements ClientRegister {
         if (isSendMelding) {
             return inntektsmeldingConsumer.postInntektsmelding(inntektsmeldingRequest)
                     .map(response -> {
-                        if (isNotBlank(response.getError())) {
+                        if (isBlank(response.getError())) {
 
                             transaksjonMappingService.saveAll(
                                     response.getDokumenter().stream()

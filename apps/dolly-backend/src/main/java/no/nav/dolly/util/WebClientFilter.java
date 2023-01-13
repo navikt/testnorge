@@ -13,8 +13,9 @@ public class WebClientFilter {
 
     public static boolean is5xxException(Throwable throwable) {
 
-        return throwable instanceof WebClientResponseException wce &&
-                wce.getStatusCode().is5xxServerError();
+        return (throwable instanceof WebClientResponseException wce &&
+                wce.getStatusCode().is5xxServerError()) ||
+                throwable.getMessage().contains("nested exception is java.net.SocketException");
     }
 
     public static String getMessage(Throwable throwable) {

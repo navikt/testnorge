@@ -123,8 +123,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                             .flatMapMany(token -> getIdenterFamilie(dollyPerson.getHovedperson())
                                                     .map(this::getPersonData)
                                                     .flatMap(Flux::from)
-                                                    .map(person -> Flux.concat(pensjonforvalterConsumer.opprettPerson(
-                                                                            mapperFacade.map(person, PensjonPersonRequest.class), tilgjengeligeMiljoer, token)
+                                                    .map(person -> Flux.concat(
+                                                            pensjonforvalterConsumer.opprettPerson(
+                                                                    mapperFacade.map(person, PensjonPersonRequest.class), tilgjengeligeMiljoer, token)
                                                                     .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
                                                                     .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
                                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
@@ -141,7 +142,6 @@ public class PensjonforvalterClient implements ClientRegister {
                                                                             bestillingId)
                                                                             .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
                                                                     Flux.just("")),
-
                                                             (dollyPerson.getHovedperson().equals(person.getIdent()) ?
                                                                     lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
                                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :

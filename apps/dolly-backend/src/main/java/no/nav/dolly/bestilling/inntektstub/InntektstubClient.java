@@ -46,7 +46,6 @@ public class InntektstubClient implements ClientRegister {
             var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
                     InntektsinformasjonWrapper.class, context);
 
-
             return Flux.from(inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
                     .collectList()
                     .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())

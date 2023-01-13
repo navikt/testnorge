@@ -36,7 +36,7 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                         .queryParam(IS_TPS_MASTER, false)
                         .queryParam(EXCLUDE_EKSTERNE_PERSONER, ekskluderEksternePersoner)
                         .build(ident))
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .retrieve()
