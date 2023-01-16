@@ -1,15 +1,21 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
-REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
 IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
 
 consumers:
-# Konsumenter for dev-miljø
+  # Konsumenter for dev-miljø
   tps-forvalteren-proxy:
     name: tps-forvalteren-dev-proxy
     url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io

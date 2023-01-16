@@ -11,18 +11,15 @@ metadata:
 spec:
   tokenx:
     enabled: true
-  idporten:
-    enabled: true
-    frontchannelLogoutPath: /oauth2/logout
-    redirectPath: /login/oauth2/code/idporten
-    postLogoutRedirectURIs:
-      - https://dolly-frontend-dev.dev.intern.nav.no/login
   azure:
+    sidecar:
+      enabled: true
+      autoLogin: true
     application:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - https://dolly-frontend-dev.dev.intern.nav.no/login/oauth2/code/aad
+        - https://dolly-frontend-dev-unstable.dev.intern.nav.no/login/oauth2/code/aad
         - http://localhost:8020/login/oauth2/code/aad
         - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:

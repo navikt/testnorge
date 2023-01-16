@@ -1,11 +1,17 @@
 # Prod config
 POST_LOGOUT_REDIRECT_URI: https://dolly.ekstern.dev.nav.no/login
-REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace

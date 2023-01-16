@@ -3,7 +3,7 @@ package no.nav.dolly.web.consumers;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.credentials.TestnorgeTilbakemeldingApiProperties;
 import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -11,7 +11,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -34,9 +33,9 @@ public class TilbakemeldingConsumer {
         this.tokenExchange = tokenExchange;
     }
 
-    public Mono<Void> send(TilbakemeldingDTO dto, ServerWebExchange exchange) {
+    public Mono<Void> send(TilbakemeldingDTO dto) {
         return tokenExchange
-                .exchange(testnorgeTilbakemeldingApiProperties, exchange)
+                .exchange(testnorgeTilbakemeldingApiProperties)
                 .flatMap(accessToken -> webClient
                         .post()
                         .uri("/api/v1/tilbakemelding")

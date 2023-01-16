@@ -22,7 +22,7 @@ public class LogService {
     public Mono<Void> log(LogEvent event, ServerWebExchange exchange) {
         logKibana(event, exchange);
         if (event.getMessage() != null && event.getLevel() == Level.INFO) {
-            return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO(), exchange);
+            return tilbakemeldingConsumer.send(event.toTilbakemeldingDTO());
         }
         return Mono.empty();
     }
