@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
@@ -36,6 +37,7 @@ public class KontoregisterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -50,7 +52,10 @@ public class KontoregisterClient implements ClientRegister {
                 return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
                         .flatMap(isPresent -> {
                             if (isTrue(isPresent)) {
-                                return kontoregisterConsumer.postKontonummerRegister(request);
+                                return kontoregisterConsumer.postKontonummerRegister(request)
+                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                                errorStatusDecoder.getErrorText(status.getStatus(),
+                                                        status.getFeilmelding()));
                             } else {
                                 return Mono.just(encodeStatus(getVarselSlutt(SYSTEM)));
                             }
@@ -106,6 +111,7 @@ public class KontoregisterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         kontoregisterConsumer.deleteKontonumre(identer)
+                .collectList()
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
     }
 }

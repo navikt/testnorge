@@ -136,7 +136,8 @@ public class SykemeldingClient implements ClientRegister {
 
         var geografiskOmrade = persondata.getHentGeografiskTilknytningBolk().stream()
                 .map(PdlPersonBolk.GeografiskTilknytningBolk::getGeografiskTilknytning)
-                .map(geografiskTilknytning -> isNotBlank(geografiskTilknytning.getGtType()) ?
+                .map(geografiskTilknytning -> nonNull(geografiskTilknytning) &&
+                        isNotBlank(geografiskTilknytning.getGtType()) ?
                         switch (geografiskTilknytning.getGtType()) {
                             case "KOMMUNE" -> geografiskTilknytning.getGtKommune();
                             case "BYDEL" -> geografiskTilknytning.getGtBydel();

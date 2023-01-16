@@ -10,6 +10,7 @@ import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -49,7 +50,7 @@ public class KontoregisterConsumer implements ConsumerStatus {
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_postBankkontoregister"})
 
-    public Mono<String> postKontonummerRegister(OppdaterKontoRequestDTO bankdetaljer) {
+    public Mono<KontoregisterResponseDTO> postKontonummerRegister(OppdaterKontoRequestDTO bankdetaljer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new KontoregisterPostCommand(webClient, bankdetaljer, token.getTokenValue()).call());
@@ -65,15 +66,15 @@ public class KontoregisterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_slettKonto"})
-    public Mono<List<Void>> deleteKontonumre(List<String> identer) {
+    public Flux<KontoregisterResponseDTO> deleteKontonumre(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
                         .delayElements(Duration.ofMillis(10))
                         .flatMap(index -> new KontoregisterDeleteCommand(
                                 webClient, identer.get(index), token.getTokenValue()
-                        ).call()))
-                .collectList();
+                        ).call()));
+
     }
 
     @Override

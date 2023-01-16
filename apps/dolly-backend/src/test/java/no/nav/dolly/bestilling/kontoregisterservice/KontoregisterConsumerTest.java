@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -17,11 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,7 +37,6 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.empty;
 import static org.mockito.Mockito.when;
 
 @ActiveProfiles("test")
@@ -99,10 +101,11 @@ class KontoregisterConsumerTest {
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
 
-        var response = kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO())
-                .block();
-
-        assertThat(response, is(equalTo("OK")));
+        StepVerifier.create(kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO()))
+                .expectNext(KontoregisterResponseDTO.builder()
+                        .status(HttpStatus.OK)
+                        .build())
+                        .verifyComplete();
     }
 
     @Test
@@ -114,10 +117,12 @@ class KontoregisterConsumerTest {
                                 .withBody("{\"feilmelding\":\"Noe galt har skjedd\"}")
                                 .withHeader("Content-Type", "application/json")));
 
-        var response = kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO())
-                .block();
-
-        assertThat(response, is(equalTo("Feil= Noe galt har skjedd")));
+        StepVerifier.create(kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO()))
+                .expectNext(KontoregisterResponseDTO.builder()
+                        .status(HttpStatus.BAD_REQUEST)
+                        .feilmelding("{\"feilmelding\":\"Noe galt har skjedd\"}")
+                        .build())
+                .verifyComplete();
     }
 
     @Test
@@ -129,10 +134,12 @@ class KontoregisterConsumerTest {
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
 
-        var response = kontoregisterConsumer.deleteKontonumre(List.of(IDENT))
-                .block();
-
-        assertThat(response, is(empty()));
+        StepVerifier.create(kontoregisterConsumer.deleteKontonumre(List.of(IDENT))
+                        .collectList())
+                .expectNext(List.of(KontoregisterResponseDTO.builder()
+                        .status(HttpStatus.OK)
+                        .build()))
+                .verifyComplete();
     }
 
     @Test

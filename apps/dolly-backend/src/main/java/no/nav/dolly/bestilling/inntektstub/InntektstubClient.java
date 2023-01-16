@@ -17,7 +17,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,26 +47,24 @@ public class InntektstubClient implements ClientRegister {
 
             return Flux.from(inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
                     .collectList()
-                    .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
+                    .flatMap(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                             .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
                                     entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
                             .collectList()
-                            .map(inntekter -> inntektstubConsumer.postInntekter(inntekter)
-                                    .collectList())
-                            .flatMap(Mono::from))
-                    .flatMap(Mono::from)
-                    .map(inntekter -> {
-                        log.info("Inntektstub respons {}", inntekter);
-                        return inntekter.stream()
-                                .map(Inntektsinformasjon::getFeilmelding)
-                                .noneMatch(StringUtils::isNotBlank) ? "OK" :
-                                "Feil= " + inntekter.stream()
+                            .flatMapMany(inntektstubConsumer::postInntekter)
+                            .collectList()
+                            .map(inntekter -> {
+                                log.info("Inntektstub respons {}", inntekter);
+                                return inntekter.stream()
                                         .map(Inntektsinformasjon::getFeilmelding)
-                                        .filter(StringUtils::isNotBlank)
-                                        .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
-                                        .collect(Collectors.joining(","));
-                    })
-                    .map(status -> futurePersist(progress, status)));
+                                        .noneMatch(StringUtils::isNotBlank) ? "OK" :
+                                        "Feil= " + inntekter.stream()
+                                                .map(Inntektsinformasjon::getFeilmelding)
+                                                .filter(StringUtils::isNotBlank)
+                                                .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
+                                                .collect(Collectors.joining(","));
+                            })
+                            .map(status -> futurePersist(progress, status))));
         }
         return Flux.empty();
     }
