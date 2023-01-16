@@ -8,6 +8,7 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
@@ -54,6 +55,13 @@ public class TagsHendelseslagerClient implements ClientRegister {
                     .subscribe(response -> log.info("Lagt til tag(s) {} for ident {}",
                             dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
                             dollyPerson.getHovedperson()));
+        }
+
+        if (dollyPerson.getMaster() == Testident.Master.PDL) {
+            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                    .flatMap(tagsHendelseslagerConsumer::publish)
+                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                            dollyPerson.getHovedperson(), response));
         }
 
         return Flux.just();
