@@ -18,6 +18,7 @@ import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/ad
 import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
 	getIdenttype,
@@ -226,6 +227,8 @@ export const VisningRedigerbar = ({
 						identtype={getIdenttype(formikBag, identtype)}
 					/>
 				)
+			case Attributt.Sivilstand:
+				return <SivilstandForm path={path} formikBag={formikBag} />
 		}
 	}
 

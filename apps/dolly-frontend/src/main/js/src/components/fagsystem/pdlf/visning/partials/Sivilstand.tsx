@@ -8,6 +8,7 @@ import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
+import React from 'react'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -61,15 +62,43 @@ const SivilstandLes = ({ sivilstandData, relasjoner, idx }) => {
 	)
 }
 
-export const SivilstandVisning = ({ data, relasjoner, idx, tmpPersoner, ident }: VisningData) => {
+export const SivilstandVisning = ({
+	sivilstandData,
+	idx,
+	data,
+	relasjoner,
+	tmpPersoner,
+	ident,
+}: VisningData) => {
 	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
 	const initialValues = { sivilstand: initSivilstand }
-	//TODO fortsett her!
-	// const redigertSivilstandPdlf = _.get(tmpPersoner)
+
+	const redigertSivilstandPdlf = _.get(tmpPersoner, `${ident}.person.sivilstand`)?.find(
+		(a) => a.id === sivilstandData.id
+	)
+	const slettetSivilstandPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertSivilstandPdlf
+	if (slettetSivilstandPdlf) {
+		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	}
+
+	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData
+	const redigertSivilstandValues = redigertSivilstandPdlf
+		? {
+				sivilstand: Object.assign(_.cloneDeep(initialSivilstand), redigertSivilstandPdlf),
+		  }
+		: null
 
 	return (
 		<VisningRedigerbarConnector
-			dataVisning={<SivilstandLes sivilstandData={data} relasjoner={relasjoner} idx={idx} />}
+			dataVisning={
+				<SivilstandLes sivilstandData={sivilstandValues} relasjoner={relasjoner} idx={idx} />
+			}
+			initialValues={initialValues}
+			redigertAttributt={redigertSivilstandValues}
+			path="sivilstand"
+			ident={ident}
+			// disableSlett={}
+			// personFoerLeggTil={}
 		/>
 	)
 }
@@ -78,6 +107,7 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 	if (!data || data.length < 1) {
 		return null
 	}
+
 	return (
 		<div>
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
@@ -85,10 +115,10 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 			<DollyFieldArray data={data} nested>
 				{(sivilstand: SivilstandData, idx: number) => (
 					<SivilstandVisning
-						key={sivilstand.id}
-						data={sivilstand}
-						relasjoner={relasjoner}
+						sivilstandData={sivilstand}
 						idx={idx}
+						data={data}
+						relasjoner={relasjoner}
 						tmpPersoner={tmpPersoner}
 						ident={ident}
 					/>
