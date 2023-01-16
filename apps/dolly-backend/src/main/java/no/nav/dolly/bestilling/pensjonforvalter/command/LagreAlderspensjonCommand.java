@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreAlderspensjonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -14,7 +14,9 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.*;
+import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
@@ -28,7 +30,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
 
     private final String token;
 
-    private final LagreAlderspensjonRequest lagreAlderspensjonRequest;
+    private final AlderspensjonRequest lagreAlderspensjonRequest;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient

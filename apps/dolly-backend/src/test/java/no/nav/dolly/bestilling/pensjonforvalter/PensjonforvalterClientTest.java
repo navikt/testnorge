@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -71,9 +71,9 @@ public class PensjonforvalterClientTest {
     @BeforeEach
     public void setup() {
         when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
-        when(mapperFacade.map(any(Person.class), eq(OpprettPersonRequest.class))).thenReturn(new OpprettPersonRequest());
+        when(mapperFacade.map(any(Person.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
-        when(pensjonforvalterConsumer.opprettPerson(any(OpprettPersonRequest.class), anySet(), eq(accessToken)))
+        when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), eq(accessToken)))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
     }
 
@@ -247,7 +247,7 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpForholdResponse));
 
         PensjonforvalterResponse lagreTpYtelseResponse = new PensjonforvalterResponse();
@@ -255,11 +255,11 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST1", test1EnvResponse),
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpYtelseResponse));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class))).thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class))).thenReturn(new PensjonTpYtelseRequest());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
 
@@ -305,7 +305,7 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpForholdResponse));
 
         var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
@@ -317,11 +317,11 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST1", test1EnvResponse),
                 new ResponseEnvironment("TEST2", test2EnvYtelseResponse)
         ));
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpYtelseResponse));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class))).thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class))).thenReturn(new PensjonTpYtelseRequest());
         when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn("Feil= " + test2EnvYtelseResponse.getMessage());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
@@ -369,7 +369,7 @@ public class PensjonforvalterClientTest {
                 new ResponseEnvironment("TEST2", test2EnvResponse)
         ));
 
-        when(pensjonforvalterConsumer.lagreTpForhold(any(LagreTpForholdRequest.class), eq(accessToken)))
+        when(pensjonforvalterConsumer.lagreTpForhold(any(PensjonTpForholdRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpForholdResponse));
 
         var test2EnvYtelseResponse = new PensjonforvalterResponse.Response();
@@ -382,10 +382,10 @@ public class PensjonforvalterClientTest {
                         new ResponseEnvironment("TEST2", test2EnvYtelseResponse)))
                 .build();
 
-        when(pensjonforvalterConsumer.lagreTpYtelse(any(LagreTpYtelseRequest.class), eq(accessToken))).thenReturn(Flux.just(lagreTpYtelseResponse));
+        when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken))).thenReturn(Flux.just(lagreTpYtelseResponse));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(LagreTpForholdRequest.class))).thenReturn(new LagreTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(LagreTpYtelseRequest.class))).thenReturn(new LagreTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class))).thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class))).thenReturn(new PensjonTpYtelseRequest());
         when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn(test2EnvYtelseResponse.getMessage());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);

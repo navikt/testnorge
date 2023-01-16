@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -30,7 +30,7 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
 
     private final WebClient webClient;
     private final String token;
-    private final LagreInntektRequest lagreInntektRequest;
+    private final PensjonPoppInntektRequest lagreInntektRequest;
     private final String miljoe;
 
     public Flux<PensjonforvalterResponse> call() {

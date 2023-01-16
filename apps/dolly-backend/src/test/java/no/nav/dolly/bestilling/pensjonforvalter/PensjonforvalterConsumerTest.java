@@ -1,9 +1,9 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpForholdRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.OpprettPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -155,7 +155,7 @@ class PensjonforvalterConsumerTest {
     void testOpprettPerson_ok() {
         stubPostOpprettPerson(false);
 
-        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
+        var response = pensjonforvalterConsumer.opprettPerson(new PensjonPersonRequest(), Set.of("q1"), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);
@@ -169,7 +169,7 @@ class PensjonforvalterConsumerTest {
     void testOppretPerson_error() {
         stubPostOpprettPerson(true);
 
-        var response = pensjonforvalterConsumer.opprettPerson(new OpprettPersonRequest(), Set.of("q1"), accessToken)
+        var response = pensjonforvalterConsumer.opprettPerson(new PensjonPersonRequest(), Set.of("q1"), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);
@@ -184,7 +184,7 @@ class PensjonforvalterConsumerTest {
 
         stubPostLagreInntekt(false);
 
-        var response = pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(), Set.of("tx"),
+        var response = pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(), Set.of("tx"),
                         accessToken)
                         .collectList()
                                 .block()
@@ -199,7 +199,7 @@ class PensjonforvalterConsumerTest {
     void testLagreInntekt_error() {
         stubPostLagreInntekt(true);
 
-        var response = pensjonforvalterConsumer.lagreInntekter(new LagreInntektRequest(),
+        var response = pensjonforvalterConsumer.lagreInntekter(new PensjonPoppInntektRequest(),
                         Set.of("tx"), accessToken)
                         .collectList()
                                 .block()
@@ -228,7 +228,7 @@ class PensjonforvalterConsumerTest {
     void testLagreTpForhold_ok() {
         stubPostLagreTpForhold(false);
 
-        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken)
+        var response = pensjonforvalterConsumer.lagreTpForhold(new PensjonTpForholdRequest(), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);
@@ -242,7 +242,7 @@ class PensjonforvalterConsumerTest {
     void testLagreTpForhold_error() {
         stubPostLagreTpForhold(true);
 
-        var response = pensjonforvalterConsumer.lagreTpForhold(new LagreTpForholdRequest(), accessToken)
+        var response = pensjonforvalterConsumer.lagreTpForhold(new PensjonTpForholdRequest(), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);
@@ -270,7 +270,7 @@ class PensjonforvalterConsumerTest {
     void testLagreTpYtelse_ok() {
         stubPostLagreTpYtelse(false);
 
-        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken)
+        var response = pensjonforvalterConsumer.lagreTpYtelse(new PensjonTpYtelseRequest(), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);
@@ -284,7 +284,7 @@ class PensjonforvalterConsumerTest {
     void testLagreTpYtelse_error() {
         stubPostLagreTpYtelse(true);
 
-        var response = pensjonforvalterConsumer.lagreTpYtelse(new LagreTpYtelseRequest(), accessToken)
+        var response = pensjonforvalterConsumer.lagreTpYtelse(new PensjonTpYtelseRequest(), accessToken)
                         .collectList()
                                 .block()
                                         .get(0);

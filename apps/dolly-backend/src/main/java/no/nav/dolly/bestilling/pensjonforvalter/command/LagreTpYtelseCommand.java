@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreTpYtelseRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -31,7 +31,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
 
     private final String token;
 
-    private final LagreTpYtelseRequest lagreTpYtelseRequest;
+    private final PensjonTpYtelseRequest lagreTpYtelseRequest;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient

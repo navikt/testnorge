@@ -127,13 +127,7 @@ public class PensjonData {
         private LocalDate sivilstatusDatoFom;
 
         @Schema
-        private List<SkjemaRelasjon> relasjonListe;
-
-        @Schema
-        private Boolean flyktning;
-
-        @Schema
-        private Boolean utvandret;
+        private List<SkjemaRelasjon> relasjoner;
     }
 
     @Getter
@@ -142,14 +136,6 @@ public class PensjonData {
     @AllArgsConstructor
     public static class SkjemaRelasjon {
         @Schema(required = true)
-        private LocalDate samboerFraDato;
-        private LocalDate dodsdato;
-        private Boolean varigAdskilt;
-        private String fnr;
-        private LocalDate samlivsbruddDato;
-        private Boolean harVaertGift;
-        private Boolean harFellesBarn;
         private Integer sumAvForvArbKapPenInntekt;
-        private String relasjonType;
     }
 }
