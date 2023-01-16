@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
+import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -39,6 +40,8 @@ import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 @Service
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
+    private final PersonServiceClient personServiceClient;
+
     public OpprettPersonerByKriterierService(DollyPersonCache dollyPersonCache, IdentService identService,
                                              BestillingProgressService bestillingProgressService,
                                              BestillingService bestillingService, MapperFacade mapperFacade,
@@ -46,10 +49,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                              ErrorStatusDecoder errorStatusDecoder,
                                              PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                             TransactionHelperService transactionHelperService) {
+                                             TransactionHelperService transactionHelperService,
+                                             PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
+
+        this.personServiceClient = personServiceClient;
     }
 
     @Async
@@ -73,8 +79,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                     .filter(Objects::nonNull)
                                     .flatMap(ident -> leggIdentTilGruppe(ident,
                                             progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
-                                            .flatMap(dollyPerson -> gjenopprettAlleKlienter(dollyPerson, bestKriterier,
-                                                    progress, true)))))
+                                            .flatMap(dollyPerson -> Flux.concat(
+                                                    personServiceClient.gjenopprett(null,
+                                                    dollyPerson, null, true),
+                                                    gjenopprettAlleKlienter(dollyPerson, bestKriterier,
+                                                    progress, true))))))
                     .collectList()
                     .doOnError(throwable -> {
                         log.error("Feil oppsto ved utføring av bestilling #{}: {}",

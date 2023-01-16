@@ -4,26 +4,30 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 import static java.time.LocalDateTime.now;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
-//@Service
+@Service
 @Order(5)
 @RequiredArgsConstructor
 public class PersonServiceClient implements ClientRegister {
 
     private static final int MAX_COUNT = 200;
-    private static final int TIMEOUT = 50;
-    private static final int ELAPSED = 10;
+    private static final int TIMEOUT = 200;
+    private static final int ELAPSED = 20;
 
     private final PersonServiceConsumer personServiceConsumer;
 
@@ -36,7 +40,7 @@ public class PersonServiceClient implements ClientRegister {
         boolean isPerson = false;
         try {
             while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED &&
-                    !(isPerson = personServiceConsumer.isPerson(dollyPerson.getHovedperson()))) {
+                    !(isPerson = personServiceConsumer.isPerson(dollyPerson.getHovedperson())) {
                 Thread.sleep(TIMEOUT);
             }
 
@@ -59,6 +63,16 @@ public class PersonServiceClient implements ClientRegister {
                     ChronoUnit.MILLIS.between(startTime, now()));
         }
         return Flux.empty();
+    }
+
+    private Flux<PersonServiceResponse> getPersonService(LocalTime time, PersonServiceResponse response, String ident) {
+
+        if (isTrue(response.getExists()) || LocalTime.now().isAfter(time) || !response.getStatus().is2xxSuccessful()) {
+            return Flux.just(response);
+        } else {
+            return personServiceConsumer.isPerson(ident)
+                    .flatMapMany(resultat -> getPersonService(time.plusNanos(1000L), resultat, ident));
+        }
     }
 
     @Override

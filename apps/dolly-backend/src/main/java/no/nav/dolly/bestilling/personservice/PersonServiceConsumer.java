@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.personservice;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceExistCommand;
 import no.nav.dolly.bestilling.personservice.command.PersonServiceSyncCommand;
+import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.config.credentials.PersonServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -41,11 +42,10 @@ public class PersonServiceConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "personService_isPerson"})
-    public Boolean isPerson(String ident) {
+    public Mono<PersonServiceResponse> isPerson(String ident) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new PersonServiceExistCommand(webClient, ident, token.getTokenValue()).call())
-                .block();
+                .flatMap(token -> new PersonServiceExistCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     public Map<String, String> checkAlive() {
