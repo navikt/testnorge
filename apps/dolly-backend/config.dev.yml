@@ -23,7 +23,7 @@ spec:
         - application: testnav-batch-bestilling-service
           cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp

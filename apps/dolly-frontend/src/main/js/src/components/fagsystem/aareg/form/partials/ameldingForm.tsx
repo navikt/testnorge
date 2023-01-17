@@ -20,10 +20,9 @@ import KjedeIcon from '@/components/dollyKjede/KjedeIcon'
 import { useFormikContext } from 'formik'
 import { Amelding, KodeverkValue } from '@/components/fagsystem/aareg/AaregTypes'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
-import { ReactComponent } from 'testcafe-react-selectors'
 
 interface AmeldingFormProps {
-	warningMessage?: ReactComponent<any>
+	warningMessage?: any
 }
 
 const KjedeContainer = styled.div`

@@ -33,7 +33,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 
 	const handleMalChange = (formikbag: FormikProps<any>) => {
 		toggleMalAktiv()
-		if (formikbag.values.mal) {
+		if (formikbag.values?.mal) {
 			formikbag.setFieldValue('mal', null)
 		}
 	}

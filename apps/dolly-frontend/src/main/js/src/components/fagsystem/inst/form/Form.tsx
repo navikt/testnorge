@@ -38,7 +38,7 @@ export const InstForm = ({ formikBag }) => {
 				iconType="institusjon"
 				startOpen={erForsteEllerTest(formikBag.values, [instAttributt])}
 			>
-				// @ts-ignore
+				{/*// @ts-ignore*/}
 				<FormikDollyFieldArray name="instdata" header="Opphold" newEntry={initialValues}>
 					{(path, idx) => (
 						<React.Fragment key={idx}>

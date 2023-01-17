@@ -23,7 +23,7 @@ spec:
         - application: jenkins-batch-status-service
           cluster: dev-fss
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: organisasjon-bestilling-service
           cluster: dev-fss
         - application: testnav-oversikt-frontend

@@ -1,3 +1,4 @@
+import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
@@ -10,9 +11,9 @@ import {
 	KodeverkValues,
 	KontaktadresseData,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
-import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import Formatters from '@/utils/DataFormatter'
 

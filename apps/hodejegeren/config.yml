@@ -33,7 +33,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnorge-tp
           cluster: dev-fss
         - application: testnorge-statisk-data-forvalter

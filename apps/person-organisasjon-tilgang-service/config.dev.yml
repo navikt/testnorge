@@ -8,6 +8,10 @@ metadata:
 spec:
   image: {{ image }}
   port: 8080
+  azure:
+    application:
+      enabled: true
+      tenant: nav.no
   tokenx:
     enabled: true
   maskinporten:
@@ -21,7 +25,7 @@ spec:
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-bruker-service-dev

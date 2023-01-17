@@ -1,5 +1,5 @@
 import * as _ from 'lodash-es'
-import { runningTestcafe } from '@/service/services/Request'
+import { runningCypressE2E } from '@/service/services/Request'
 
 export const fieldError = (meta) => {
 	return !!meta.touched && !!meta.error ? { feilmelding: meta.error } : null
@@ -90,7 +90,7 @@ const getValgteAttributter = (values) => {
 
 export const erForsteEllerTest = (values, attributter) => {
 	const valgteAttributter = getValgteAttributter(values)
-	return runningTestcafe() || attributter.includes(valgteAttributter[0])
+	return runningCypressE2E() || attributter.includes(valgteAttributter[0])
 }
 
 export const harValgtAttributt = (values, attributter) => {

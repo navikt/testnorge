@@ -7,6 +7,7 @@ import Button from '@/components/ui/button/Button'
 import Icon from '@/components/ui/icon/Icon'
 
 import './InfoStripe.less'
+import * as _ from 'lodash'
 
 const getInfoStripeUrl = `/dolly-backend/api/v1/infostripe`
 const HIDDEN_ALERTS = 'HIDDEN_ALERTS'
@@ -56,10 +57,12 @@ export const InfoStripe = () => {
 	}
 
 	const getVisibleAlerts = (alerts) => {
-		if (!alerts || !alerts.length) {
+		if (!alerts || !_.isArray(alerts)) {
 			return []
 		}
-		return alerts.filter((alert) => !alert.hide).filter((alert) => !hiddenAlerts.includes(alert.id))
+		return alerts
+			?.filter((alert) => !alert.hide)
+			?.filter((alert) => !hiddenAlerts?.includes(alert.id))
 	}
 
 	const invertVisAlleMeldinger = () => {

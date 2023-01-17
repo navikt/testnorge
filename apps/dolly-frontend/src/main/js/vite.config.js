@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, splitVendorChunkPlugin } from 'vite'
 import viteTsconfigPaths from 'vite-tsconfig-paths'
 import svgr from 'vite-plugin-svgr'
 import proxyRoutes from './proxy-routes.json'
@@ -12,17 +12,18 @@ import * as child from 'child_process'
 const commitHash = child.execSync('git rev-parse --short HEAD').toString()
 const gitBranch = child.execSync('git branch --show-current').toString()
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
 		outDir: 'build',
+		cssCodeSplit: false,
 	},
 	resolve: {
 		alias: {
 			'@': resolve(__dirname, './src'),
 		},
 	},
-	server: {
+	server: mode === 'local-dev' && {
 		proxy: proxyRoutes,
 		port: 3000,
 	},
@@ -30,10 +31,11 @@ export default defineConfig({
 		react(),
 		svgr(),
 		viteTsconfigPaths(),
+		splitVendorChunkPlugin(),
 		EnvironmentPlugin({
 			COMMIT_HASH: commitHash || '',
 			GIT_BRANCH: gitBranch || '',
 			APP_VERSION: process.env.npm_package_version || '',
 		}),
 	],
-})
+}))
