@@ -55,7 +55,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-frontend-dev-unstable.dev.intern.nav.no
+    - https://dolly-frontend-dev-unstable.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
