@@ -12,7 +12,6 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -38,7 +37,7 @@ public class HendelseslagerPublishCommand implements Callable<Flux<String>> {
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(PERSON_IDENTER, identer.stream().collect(Collectors.joining(",")))
+                .header(PERSON_IDENTER, String.join(",", identer))
                 .retrieve()
                 .bodyToFlux(String.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

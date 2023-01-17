@@ -55,79 +55,82 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
                             Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager")))
 
-            if (dollyPerson.getMaster() == Testident.Master.PDL) {
-                getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                        .flatMap(tagsHendelseslagerConsumer::publish)
-                        .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-                                dollyPerson.getHovedperson(), response));
-            }
-
-            return Flux.just();
+                    ).subscribe(log::info);
         }
 
-        @Override
-        public void release (List < String > identer) {
-
-            getPdlIdenter(identer)
-                    .flatMapMany(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
-                    .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
+        if (dollyPerson.getMaster() == Testident.Master.PDL) {
+            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                    .map(tagsHendelseslagerConsumer::publish)
+                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                            dollyPerson.getHovedperson(), response));
         }
 
-        private Mono<String> sendTags (List < String > identer, List < Tags > tags){
-
-            return tagsHendelseslagerConsumer.createTags(identer, tags)
-                    .map(resultat -> getTagStatus(identer, tags, resultat));
-        }
-
-        private String getTagStatus (List < String > identer, List < Tags > tags, TagsOpprettingResponse resultat){
-
-            return resultat.getStatus().is2xxSuccessful() ?
-                    String.format("Lagt til tag(s) %s for ident(er) %s",
-                            tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
-                            String.join(",", identer)) :
-                    resultat.getMessage();
-        }
-
-        private Mono<List<String>> getPdlIdenter (List < String > identer) {
-
-            return pdlPersonConsumer.getPdlPersoner(identer)
-                    .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                    .map(PdlPersonBolk::getData)
-                    .map(PdlPersonBolk.Data::getHentPersonBolk)
-                    .flatMap(Flux::fromIterable)
-                    .filter(personBolk -> nonNull(personBolk.getPerson()))
-                    .map(person -> Stream.of(List.of(person.getIdent()),
-                                    person.getPerson().getSivilstand().stream()
-                                            .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getForelderBarnRelasjon().stream()
-                                            .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getForeldreansvar().stream()
-                                            .map(ForeldreansvarDTO::getAnsvarlig)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getFullmakt().stream()
-                                            .map(FullmaktDTO::getMotpartsPersonident)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
-                                            .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                            .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                            .filter(Objects::nonNull)
-                                            .toList(),
-                                    person.getPerson().getKontaktinformasjonForDoedsbo().stream()
-                                            .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
-                                            .filter(Objects::nonNull)
-                                            .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                            .filter(Objects::nonNull)
-                                            .toList())
-                            .flatMap(Collection::stream)
-                            .distinct()
-                            .toList())
-                    .flatMap(Flux::fromIterable)
-                    .collectList();
-        }
+        return Flux.empty();
     }
+
+    @Override
+    public void release(List<String> identer) {
+
+        getPdlIdenter(identer)
+                .flatMapMany(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
+                .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
+    }
+
+    private Mono<String> sendTags(List<String> identer, List<Tags> tags) {
+
+        return tagsHendelseslagerConsumer.createTags(identer, tags)
+                .map(resultat -> getTagStatus(identer, tags, resultat));
+    }
+
+    private String getTagStatus(List<String> identer, List<Tags> tags, TagsOpprettingResponse resultat) {
+
+        return resultat.getStatus().is2xxSuccessful() ?
+                String.format("Lagt til tag(s) %s for ident(er) %s",
+                        tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
+                        String.join(",", identer)) :
+                resultat.getMessage();
+    }
+
+    private Mono<List<String>> getPdlIdenter(List<String> identer) {
+
+        return pdlPersonConsumer.getPdlPersoner(identer)
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(person -> Stream.of(List.of(person.getIdent()),
+                                person.getPerson().getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getForeldreansvar().stream()
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getFullmakt().stream()
+                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
+                                        .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
+                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getKontaktinformasjonForDoedsbo().stream()
+                                        .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
+                                        .filter(Objects::nonNull)
+                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .filter(Objects::nonNull)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList())
+                .flatMap(Flux::fromIterable)
+                .collectList();
+    }
+}
