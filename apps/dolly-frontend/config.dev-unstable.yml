@@ -15,6 +15,7 @@ spec:
     application:
       enabled: true
   idporten:
+    enabled: true
     sidecar:
       enabled: true
       autoLogin: true
