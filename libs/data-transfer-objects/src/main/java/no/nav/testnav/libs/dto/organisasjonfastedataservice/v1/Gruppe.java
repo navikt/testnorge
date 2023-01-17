@@ -9,5 +9,6 @@ public enum Gruppe {
     OTP,
     INTERNE,
     HJELPEGRUPPE,
-    WIP
+    WIP,
+    KUN_TIL_Q1
 }
