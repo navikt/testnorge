@@ -28,12 +28,12 @@ import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
 import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
 import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
+import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -52,14 +52,14 @@ import java.util.function.Function;
 @Import({
         CoreConfig.class,
         FrontendConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class,
+        OicdInMemorySessionConfiguration.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor
 public class DollyFrontendApplicationStarter {
 
-    private final TokenExchange tokenExchange;
-
+    private final AccessService accessService;
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
@@ -128,9 +128,7 @@ public class DollyFrontendApplicationStarter {
     private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
         return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
                 .apply(exchange -> {
-                    return tokenExchange
-                            .exchange(serverProperties)
-                            .map(AccessToken::getTokenValue);
+                    return accessService.getAccessToken(serverProperties, exchange);
                 });
     }
 
@@ -158,4 +156,5 @@ public class DollyFrontendApplicationStarter {
                         .filters(filter)
                 ).uri(host);
     }
+
 }
