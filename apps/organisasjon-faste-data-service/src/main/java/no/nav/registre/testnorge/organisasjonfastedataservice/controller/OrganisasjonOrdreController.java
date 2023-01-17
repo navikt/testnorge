@@ -66,9 +66,16 @@ public class OrganisasjonOrdreController {
             @RequestHeader String miljo,
             @RequestHeader Boolean update
     ) {
+
+        if (gruppe.equals(Gruppe.KUN_TIL_Q1) && !miljo.equals("q1")) {
+            log.error("Gruppe kan kun sendes til Q1 da den inneholder reelle orgnummer");
+            return ResponseEntity.badRequest().build();
+        }
+
         var ordreId = update != null && update
                 ? ordreService.change(gruppe, miljo)
                 : ordreService.create(gruppe, miljo);
+
 
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
