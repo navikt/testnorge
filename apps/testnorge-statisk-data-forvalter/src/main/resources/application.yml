@@ -39,7 +39,7 @@ kafka:
 
 consumers:
   person:
-    url: https://testnav-person-service.dev.adeo.no
+    url: https://testnav-person-service.dev.intern.nav.no
     threads: 5
     cluster: dev-gcp
     namespace: dolly
@@ -85,7 +85,7 @@ consumers:
   synthdata-aareg:
     url: https://nais-synthdata-aareg.dev.intern.nav.no
   kodeverk:
-    url: https://kodeverk.dev.adeo.no
+    url: https://kodeverk.dev.intern.nav.no
   testnav-aaregister-proxy:
     url: https://testnav-aaregister-proxy.dev.intern.nav.no
     name: testnav-aaregister-proxy
