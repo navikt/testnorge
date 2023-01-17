@@ -3,9 +3,9 @@ package no.nav.dolly.domain.resultset.pensjon;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -36,8 +36,8 @@ public class PensjonData {
         return tp;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -59,8 +59,8 @@ public class PensjonData {
         private Boolean redusertMedGrunnbelop;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TpOrdning {
@@ -88,8 +88,8 @@ public class PensjonData {
         UKJENT
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class TpYtelse {
@@ -109,8 +109,8 @@ public class PensjonData {
         private LocalDate datoYtelseIverksattTom;
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Alderspensjon {
@@ -120,18 +120,20 @@ public class PensjonData {
         @Schema(required = true)
         private Integer uttaksgrad;
 
-        @Schema(required = true)
-        private String sivilstand;
-
-        @Schema
-        private LocalDate sivilstatusDatoFom;
-
         @Schema
         private List<SkjemaRelasjon> relasjoner;
+
+        public List<SkjemaRelasjon> getRelasjoner() {
+
+            if (isNull(relasjoner)) {
+                relasjoner = new ArrayList<>();
+            }
+            return relasjoner;
+        }
     }
 
-    @Getter
-    @Setter
+    @Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjemaRelasjon {

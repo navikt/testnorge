@@ -1,11 +1,14 @@
 package no.nav.dolly.bestilling.pensjonforvalter;
 
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -44,6 +47,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 import static org.hamcrest.Matchers.nullValue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -55,12 +59,18 @@ public class PensjonforvalterClientTest {
 
     @Mock
     private PensjonforvalterConsumer pensjonforvalterConsumer;
+
     @Mock
     private DollyPersonCache dollyPersonCache;
+
     @Mock
     private MapperFacade mapperFacade;
+
     @Mock
     private AccessToken accessToken;
+
+    @Mock
+    private PdlPersonConsumer pdlPersonConsumer;
 
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
@@ -73,6 +83,7 @@ public class PensjonforvalterClientTest {
         when(errorStatusDecoder.decodeThrowable(any())).thenReturn("Teknisk feil. Se logg!");
         when(mapperFacade.map(any(Person.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+        when(accessToken.getTokenValue()).thenReturn("123");
         when(pensjonforvalterConsumer.opprettPerson(any(PensjonPersonRequest.class), anySet(), eq(accessToken)))
                 .thenReturn(Flux.just(new PensjonforvalterResponse()));
     }
@@ -258,8 +269,11 @@ public class PensjonforvalterClientTest {
         when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpYtelseResponse));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class))).thenReturn(new PensjonTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class))).thenReturn(new PensjonTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpYtelseRequest());
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(new PdlPersonBolk()));
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
 
@@ -320,8 +334,11 @@ public class PensjonforvalterClientTest {
         when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken)))
                 .thenReturn(Flux.just(lagreTpYtelseResponse));
 
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class))).thenReturn(new PensjonTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class))).thenReturn(new PensjonTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpYtelseRequest());
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(new PdlPersonBolk()));
         when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn("Feil= " + test2EnvYtelseResponse.getMessage());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
@@ -383,9 +400,11 @@ public class PensjonforvalterClientTest {
                 .build();
 
         when(pensjonforvalterConsumer.lagreTpYtelse(any(PensjonTpYtelseRequest.class), eq(accessToken))).thenReturn(Flux.just(lagreTpYtelseResponse));
-
-        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class))).thenReturn(new PensjonTpForholdRequest());
-        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class))).thenReturn(new PensjonTpYtelseRequest());
+        when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpForholdRequest());
+        when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
+                .thenReturn(new PensjonTpYtelseRequest());
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(new PdlPersonBolk()));
         when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn(test2EnvYtelseResponse.getMessage());
 
         pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
