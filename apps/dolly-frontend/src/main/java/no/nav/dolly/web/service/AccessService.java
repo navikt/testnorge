@@ -18,6 +18,7 @@ public class AccessService {
     private final TokenExchange tokenExchange;
 
     private final Environment environment;
+
     private final no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange localClientExchange;
 
     public Mono<String> getAccessToken(ServerProperties serverProperties, ServerWebExchange exchange) {
