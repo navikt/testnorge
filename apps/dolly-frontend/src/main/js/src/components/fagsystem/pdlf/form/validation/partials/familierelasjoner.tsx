@@ -9,14 +9,35 @@ const testForeldreansvar = (val) => {
 		let feilmelding = null
 		const values = this.options.context
 
-		const foreldrerelasjoner = _.get(values, 'pdldata.person.forelderBarnRelasjon')?.map(
-			(a) => a.minRolleForPerson
-		)
-		const sivilstander = _.get(values, 'pdldata.person.sivilstand')?.map((a) => a.type)
-		const barn = _.get(values, 'pdldata.person.forelderBarnRelasjon')?.filter(
-			(a) => a.relatertPersonsRolle === 'BARN'
-		)
-		const kjoennListe = _.get(values, 'pdldata.person.kjoenn')
+		const foreldrerelasjoner = []
+			.concat(
+				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
+				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon')
+			)
+			?.map((a) => a?.minRolleForPerson)
+			?.filter((a) => a)
+
+		const sivilstander = []
+			.concat(
+				_.get(values, 'pdldata.person.sivilstand'),
+				_.get(values, 'personFoerLeggTil.pdl.hentPerson.sivilstand')
+			)
+			?.map((a) => a?.type)
+			?.filter((a) => a)
+
+		const barn = []
+			.concat(
+				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
+				_.get(values, 'personFoerLeggTil.pdl.hentPerson.forelderBarnRelasjon')
+			)
+			?.filter((a) => a?.relatertPersonsRolle === 'BARN')
+
+		const kjoennListe = []
+			.concat(
+				_.get(values, 'pdldata.person.kjoenn'),
+				_.get(values, 'pdldata.person.personFoerLeggTil.pdl.hentPerson.kjoenn')
+			)
+			?.filter((a) => a)
 
 		const gyldigeSivilstander = ['GIFT', 'REGISTRERT_PARTNER', 'SEPARERT', 'SEPARERT_PARTNER']
 
