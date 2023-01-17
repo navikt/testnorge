@@ -2,7 +2,6 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
-import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import Formatters from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
@@ -16,13 +15,8 @@ const DataVisning = ({ apBestilling }) => {
 				/>
 				<TitleValue title="Uttaksgrad" value={`${apBestilling.uttaksgrad}%`} />
 				<TitleValue
-					title="Sivilstand"
-					kodeverk={PersoninformasjonKodeverk.Sivilstander}
-					value={apBestilling.sivilstand}
-				/>
-				<TitleValue
-					title="Sivilstand f.o.m. dato"
-					value={Formatters.formatDate(apBestilling.sivilstatusDatoFom)}
+					title="Ektefelle/partners inntekt"
+					value={apBestilling.relasjoner?.[0]?.sumAvForvArbKapPenInntekt}
 				/>
 			</div>
 		</>

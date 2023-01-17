@@ -1,10 +1,4 @@
-import {
-	ifPresent,
-	messages,
-	requiredDate,
-	requiredNumber,
-	requiredString,
-} from '@/utils/YupValidations'
+import { ifPresent, messages, requiredDate, requiredNumber } from '@/utils/YupValidations'
 import * as Yup from 'yup'
 
 export const validation = {
@@ -13,8 +7,13 @@ export const validation = {
 		Yup.object({
 			iverksettelsesdato: requiredDate,
 			uttaksgrad: requiredNumber.typeError(messages.required),
-			sivilstand: requiredString.nullable(),
-			sivilstatusDatoFom: Yup.date().nullable(),
+			relasjoner: Yup.array().of(
+				Yup.object({
+					sumAvForvArbKapPenInntekt: Yup.number()
+						.transform((i, j) => (j === '' ? null : i))
+						.nullable(),
+				})
+			),
 		})
 	),
 }

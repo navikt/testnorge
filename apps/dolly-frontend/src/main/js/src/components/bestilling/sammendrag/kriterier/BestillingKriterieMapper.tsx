@@ -1739,8 +1739,7 @@ const mapPensjon = (bestillingData, data) => {
 				items: [
 					obj('Iverksettelsesdato', Formatters.formatDate(ap.iverksettelsesdato)),
 					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
-					obj('Sivilstand', Formatters.showLabel('apSivilstand', ap.sivilstand)),
-					obj('Sivilstand f.o.m. dato', Formatters.formatDate(ap.sivilstatusDatoFom)),
+					obj('Ektefelle/partners inntekt', ap.relasjoner?.[0]?.sumAvForvArbKapPenInntekt),
 				],
 			}
 			data.push(pensjonforvalterAlderspensjon)

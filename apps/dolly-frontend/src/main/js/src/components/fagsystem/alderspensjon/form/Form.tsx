@@ -14,6 +14,7 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
 import { getAlder } from '@/ducks/fagsystem'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -154,16 +155,10 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						options={Options('apUttaksgrad')}
 						isClearable={false}
 					/>
-					<FormikSelect
-						name={`${alderspensjonPath}.sivilstand`}
-						label="Sivilstand"
-						options={Options('apSivilstand')}
-						size="large"
-						isClearable={false}
-					/>
-					<FormikDatepicker
-						name={`${alderspensjonPath}.sivilstatusDatoFom`}
-						label="Sivilstand f.o.m. dato"
+					<FormikTextInput
+						name={`${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`}
+						label="Ektefelle/partners inntekt"
+						type="number"
 					/>
 				</div>
 			</Panel>
