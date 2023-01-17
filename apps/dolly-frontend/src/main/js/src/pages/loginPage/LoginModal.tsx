@@ -40,6 +40,7 @@ const getAdvarsel: () => string = () => {
 export default () => {
 	const advarsel = getAdvarsel()
 	const modalHeight = advarsel ? 400 + ((advarsel.length + 70) / 88) * 20 : 350
+	const runningLocal = window.location.hostname.includes('localhost')
 
 	const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault()
@@ -64,7 +65,7 @@ export default () => {
 				<NavButton
 					className="login-modal_button-nav"
 					variant={'primary'}
-					onClick={redirectOnClick('/oauth2/authorization/aad')}
+					onClick={redirectOnClick(runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login')}
 				>
 					Logg inn med NAV epost
 				</NavButton>

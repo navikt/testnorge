@@ -1,4 +1,6 @@
 const logoutBruker = (feilmelding?: string) => {
+	const runningLocal = window.location.hostname.includes('localhost')
+
 	const extractFeilmelding = (stackTrace: string) => {
 		if (stackTrace?.includes('miljoer')) {
 			return 'miljoe_error'
@@ -9,8 +11,9 @@ const logoutBruker = (feilmelding?: string) => {
 		}
 	}
 
-	window.location.href =
-		'/logout' + (feilmelding ? '?state=' + extractFeilmelding(feilmelding) : '')
+	window.location.href = runningLocal
+		? '/logout' + (feilmelding ? '?state=' + extractFeilmelding(feilmelding) : '')
+		: '/oauth2/logout'
 	console.error(feilmelding)
 }
 export default logoutBruker
