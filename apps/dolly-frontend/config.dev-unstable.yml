@@ -12,16 +12,12 @@ spec:
   tokenx:
     enabled: true
   azure:
+    application:
+      enabled: true
+  idporten:
     sidecar:
       enabled: true
       autoLogin: true
-    application:
-      enabled: true
-      tenant: nav.no
-      replyURLs:
-        - https://dolly-frontend-dev-unstable.dev.intern.nav.no/login/oauth2/code/aad
-        - http://localhost:8020/login/oauth2/code/aad
-        - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:
     outbound:
       rules:
