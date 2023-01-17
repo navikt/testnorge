@@ -16,6 +16,9 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
+import { useContext } from 'react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import styled from 'styled-components'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
@@ -26,11 +29,22 @@ type Target = {
 	value: string
 }
 
+const StyledAlert = styled(Alert)`
+	margin-bottom: 20px;
+	&&& {
+		.navds-alert__wrapper {
+			max-width: 60rem;
+		}
+	}
+`
+
 export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	const ansvarlig = 'ansvarlig'
 	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
+
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
 
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
 		const foreldreansvar = _.get(formikBag.values, path)
@@ -78,19 +92,25 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 
 	const harBarn = () => {
 		const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
-		return relasjoner?.some(
-			(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+		const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
+		return (
+			relasjoner?.some(
+				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+			) ||
+			eksisterendeRelasjoner?.some(
+				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+			)
 		)
 	}
 
 	return (
 		<>
 			{!harBarn() && (
-				<Alert variant={'warning'} style={{ marginBottom: '20px' }}>
+				<StyledAlert variant={'warning'} size={'small'}>
 					For å sette foreldreansvar må personen også ha et barn. Det kan du legge til ved å huke av
 					for Har barn/foreldre under Familierelasjoner på forrige side, og sette en relasjon av
 					typen barn.
-				</Alert>
+				</StyledAlert>
 			)}
 			<FormikDollyFieldArray
 				name="pdldata.person.foreldreansvar"
