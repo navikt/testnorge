@@ -8,15 +8,16 @@ import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import static java.time.LocalDateTime.now;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -25,53 +26,59 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @RequiredArgsConstructor
 public class PersonServiceClient implements ClientRegister {
 
-    private static final int MAX_COUNT = 200;
-    private static final int TIMEOUT = 200;
-    private static final int ELAPSED = 20;
+    private static final int TIMEOUT = 100;
+    private static final int MAX_SEKUNDER = 30;
 
     private final PersonServiceConsumer personServiceConsumer;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        var count = 0;
-
-        var startTime = now();
-        boolean isPerson = false;
-        try {
-            while (count++ < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED &&
-                    !(isPerson = personServiceConsumer.isPerson(dollyPerson.getHovedperson())) {
-                Thread.sleep(TIMEOUT);
-            }
-
-        } catch (InterruptedException e) {
-            log.error("Sync mot PersonService (isPerson) ble avbrutt.", e);
-            Thread.currentThread().interrupt();
-
-        } catch (RuntimeException e) {
-            log.error("Feilet å sjekke om person finnes for ident {}.", dollyPerson.getHovedperson(), e);
-
-        } finally {
-
-            dollyPerson.setOpprettetIPDL(isPerson);
+        var startTime = System.currentTimeMillis();
+        return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER),
+                new PersonServiceResponse(), dollyPerson.getHovedperson())
+                .doOnNext(status -> logStatus(status, startTime))
+                .map(status -> futurePersist(progress, status));
         }
 
-        if (count < MAX_COUNT && ChronoUnit.SECONDS.between(startTime, now()) < ELAPSED) {
-            log.info("Synkronisering mot PersonService (isPerson) tok {} ms.", ChronoUnit.MILLIS.between(startTime, now()));
+    private ClientFuture futurePersist(BestillingProgress progress, PersonServiceResponse status) {
+
+        return () -> {
+            progress.setPersonStatus(
+            status.getStatus().is2xxSuccessful() ?
+                    Boolean.toString(isTrue(status.getExists())) :
+                    errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()));
+
+            return progress;
+        };
+    }
+
+    private static void logStatus(PersonServiceResponse status, long startTime) {
+
+        if (status.getStatus().is2xxSuccessful() && isTrue(status.getExists())) {
+            log.info("Synkronisering mot PersonService (isPerson) for {} tok {} ms.",
+                    status.getIdent(), System.currentTimeMillis() - startTime);
+
+        } else  if (status.getStatus().is2xxSuccessful() && isNotTrue(status.getExists())) {
+            log.error("Synkronisering mot PersonService (isPerson) for {} gitt opp etter {} ms.",
+                    status.getIdent(), System.currentTimeMillis() - startTime);
         } else {
-            log.error("Synkronisering mot PersonService (isPerson) gitt opp etter {} ms.",
-                    ChronoUnit.MILLIS.between(startTime, now()));
+            log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms.",
+                    status.getIdent(), System.currentTimeMillis() - startTime);
         }
-        return Flux.empty();
     }
 
     private Flux<PersonServiceResponse> getPersonService(LocalTime time, PersonServiceResponse response, String ident) {
 
-        if (isTrue(response.getExists()) || LocalTime.now().isAfter(time) || !response.getStatus().is2xxSuccessful()) {
+        if (isTrue(response.getExists()) || time.isAfter(LocalTime.now()) || !response.getStatus().is2xxSuccessful()) {
             return Flux.just(response);
+
         } else {
-            return personServiceConsumer.isPerson(ident)
-                    .flatMapMany(resultat -> getPersonService(time.plusNanos(1000L), resultat, ident));
+            return Flux.just(1)
+                    .delayElements(Duration.ofMillis(TIMEOUT))
+                    .flatMap(delayed -> personServiceConsumer.isPerson(ident)
+                            .flatMapMany(resultat -> getPersonService(LocalTime.now(), resultat, ident)));
         }
     }
 

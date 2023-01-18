@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public class PersonServiceResponse {
 
+    private String ident;
     private Boolean exists;
     private HttpStatus status;
     private String feilmelding;

@@ -19,6 +19,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.io.Serializable;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
@@ -112,6 +113,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "master")
     @Enumerated(EnumType.STRING)
     private Master master;
+
+    @Transient
+    private String personStatus;
 
     private String feil;
 

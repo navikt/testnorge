@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
@@ -13,6 +14,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
@@ -77,8 +79,17 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             .flatMap(progress -> opprettPerson(originator)
                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                     .filter(Objects::nonNull)
-                                    .flatMap(ident -> leggIdentTilGruppe(ident,
+                                    .doOnNext(ident -> leggIdentTilGruppe(ident,
                                             progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
+                                            .map(dollyPerson -> personServiceClient.gjenopprett(null,
+                                                            dollyPerson, null, true)
+                                                    .map(ClientFuture::get)
+                                                    .map(status -> {
+                                                        if (status.getPersonStatus().contains("OK:false")) {
+                                                            throw new DollyFunctionalException("Synkronisering mot PDL feilet");
+                                                        } else if
+
+                                                    })
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     personServiceClient.gjenopprett(null,
                                                     dollyPerson, null, true),
@@ -131,11 +142,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
     private Flux<PdlResponse> opprettPerson(OriginatorCommand.Originator originator) {
 
         return pdlDataConsumer.opprettPdl(originator.getPdlBestilling())
-                .map(response -> {
-
-                    log.info("Opprettet person med ident {} ", response);
-                    return response;
-                });
+                .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
     }
 
     private Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse response) {
