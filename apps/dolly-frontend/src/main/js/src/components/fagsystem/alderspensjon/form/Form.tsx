@@ -2,7 +2,6 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import Panel from '@/components/ui/panel/Panel'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import React, { useContext } from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Alert } from '@navikt/ds-react'
@@ -54,6 +53,25 @@ export const AlderspensjonForm = ({ formikBag }) => {
 	const harPopp =
 		_has(formikBag.values, 'pensjonforvalter.inntekt') ||
 		opts?.tidligereBestillinger?.some((bestilling) => bestilling.data?.pensjonforvalter?.inntekt)
+
+	const gyldigSivilstand = ['GIFT', 'SAMBOER', 'REGISTRERT_PARTNER']
+
+	const harPartner =
+		_get(formikBag.values, 'pdldata.person.sivilstand')?.some((siv) =>
+			gyldigSivilstand.includes(siv?.type)
+		) ||
+		_get(opts, 'personFoerLeggTil.pdl.hentPerson.sivilstand')?.some((siv) =>
+			gyldigSivilstand.includes(siv?.type)
+		)
+
+	const harPartnerImportertPerson = () => {
+		const personerMedPartner = opts?.importPersoner?.filter((person) => {
+			return person?.data?.hentPerson?.sivilstand?.some((siv) =>
+				gyldigSivilstand.includes(siv?.type)
+			)
+		})
+		return personerMedPartner?.length > 0
+	}
 
 	const adressetyper = {
 		norge: 'NORGE',
@@ -138,6 +156,14 @@ export const AlderspensjonForm = ({ formikBag }) => {
 						kunne opprettes automatisk.
 					</StyledAlert>
 				)}
+				{_get(formikBag.values, `${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`) &&
+					!harPartner &&
+					!harPartnerImportertPerson() && (
+						<StyledAlert variant={'info'} size={'small'}>
+							Personen må ha ektefelle/partner for at feltet "Ektefelle/partners inntekt" skal være
+							gyldig.
+						</StyledAlert>
+					)}
 
 				<div className="flexbox--flex-wrap">
 					<Monthpicker
