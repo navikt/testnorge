@@ -19,6 +19,8 @@ spec:
       rules:
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-frontend-idporten
+          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
           cluster: dev-gcp
         - application: testnav-bruker-service

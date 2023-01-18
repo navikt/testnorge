@@ -60,6 +60,18 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      
+  deploy-idporten:
+    name: Deploy Dolly Idporten
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    needs: [ build, cypress-run ]
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-idporten') }}
+    with:
+      resource: 'apps/dolly-frontend/config.idporten.yml'
+      app-name: 'testnav-dolly-frontend'
+      cluster: 'dev-gcp'
+    secrets:
+      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
   
   deploy-dev:
     name: Deploy dev
