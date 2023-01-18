@@ -19,7 +19,7 @@ import java.util.Arrays;
 
 @Slf4j
 @Configuration
-@Profile({ "prod", "dev" })
+@Profile({ "prod", "dev", "idporten" })
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
