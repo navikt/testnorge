@@ -14,7 +14,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
@@ -31,6 +30,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -73,36 +73,31 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
-            Flux.range(0, bestilling.getAntallIdenter())
+            var test = Flux.range(0, bestilling.getAntallIdenter())
                     .filter(index -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(index -> opprettProgress(bestilling, originator)
                             .flatMap(progress -> opprettPerson(originator)
                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                     .filter(Objects::nonNull)
-                                    .doOnNext(ident -> leggIdentTilGruppe(ident,
+                                    .flatMap(ident -> leggIdentTilGruppe(ident,
                                             progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
-                                            .map(dollyPerson -> personServiceClient.gjenopprett(null,
+                                            .flatMap(dollyPerson ->
+                                                    personServiceClient.gjenopprett(null,
                                                             dollyPerson, null, true)
                                                     .map(ClientFuture::get)
-                                                    .map(status -> {
-                                                        if (status.getPersonStatus().contains("OK:false")) {
-                                                            throw new DollyFunctionalException("Synkronisering mot PDL feilet");
-                                                        } else if
-
-                                                    })
-                                            .flatMap(dollyPerson -> Flux.concat(
-                                                    personServiceClient.gjenopprett(null,
-                                                    dollyPerson, null, true),
-                                                    gjenopprettAlleKlienter(dollyPerson, bestKriterier,
-                                                    progress, true))))))
+                                                    .map(BestillingProgress::isPdlSync)
+                                                    .flatMap(pdlSync -> pdlSync ?
+                                                            gjenopprettAlleKlienter(dollyPerson, bestKriterier,
+                                                                    progress, true) :
+                                                            Flux.just(Collections.emptyList())))
+                                            .doOnError(throwable -> {
+                                                var error = errorStatusDecoder.getErrorText(
+                                                        WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                                log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+                                                        progress.getId(), error);
+                                                bestilling.setFeil(error);
+                                            }))))
                     .collectList()
-                    .doOnError(throwable -> {
-                        log.error("Feil oppsto ved utføring av bestilling #{}: {}",
-                                bestilling.getId(), WebClientFilter.getMessage(throwable));
-                        bestilling.setFeil(errorStatusDecoder.getErrorText(
-                                WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable)));
-                        doFerdig(bestilling);
-                    })
                     .subscribe(done -> doFerdig(bestilling));
 
         } else {

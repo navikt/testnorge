@@ -115,7 +115,7 @@ public class BestillingProgress implements Serializable {
     private Master master;
 
     @Transient
-    private String personStatus;
+    private boolean isPdlSync;
 
     private String feil;
 

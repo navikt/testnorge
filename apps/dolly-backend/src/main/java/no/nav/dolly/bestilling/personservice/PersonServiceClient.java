@@ -9,6 +9,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -17,8 +18,10 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -31,6 +34,7 @@ public class PersonServiceClient implements ClientRegister {
 
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final TransactionHelperService transactionHelperService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -45,11 +49,10 @@ public class PersonServiceClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, PersonServiceResponse status) {
 
         return () -> {
-            progress.setPersonStatus(
-            status.getStatus().is2xxSuccessful() ?
-                    Boolean.toString(isTrue(status.getExists())) :
-                    errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()));
-
+            progress.setPdlSync(status.getStatus().is2xxSuccessful() && isTrue(status.getExists()));
+            progress.setFeil(isNotBlank(status.getFeilmelding()) ?
+                    errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()) : null);
+            transactionHelperService.persister(progress);
             return progress;
         };
     }
@@ -71,7 +74,8 @@ public class PersonServiceClient implements ClientRegister {
 
     private Flux<PersonServiceResponse> getPersonService(LocalTime time, PersonServiceResponse response, String ident) {
 
-        if (isTrue(response.getExists()) || time.isAfter(LocalTime.now()) || !response.getStatus().is2xxSuccessful()) {
+        if (isTrue(response.getExists()) || LocalTime.now().isAfter(time) ||
+                nonNull(response.getStatus()) && !response.getStatus().is2xxSuccessful()) {
             return Flux.just(response);
 
         } else {
