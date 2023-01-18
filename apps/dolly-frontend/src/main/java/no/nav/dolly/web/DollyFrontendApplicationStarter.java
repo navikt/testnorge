@@ -32,8 +32,12 @@ import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
+import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
+import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
+import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -45,7 +49,9 @@ import org.springframework.cloud.gateway.route.builder.PredicateSpec;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import reactor.core.publisher.Mono;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 @Slf4j
@@ -60,6 +66,7 @@ import java.util.function.Function;
 public class DollyFrontendApplicationStarter {
 
     private final AccessService accessService;
+    private final UserJwtExchange userJwtExchange;
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
@@ -75,6 +82,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
     private final DollyBackendProperties dollyBackendProperties;
     private final TestnorgeProfilApiProperties testnorgeProfilApiProperties;
+    private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavVarslingerServiceProperties testnavVarslingerServiceProperties;
     private final TestnavOrganisasjonForvalterProperties testnavOrganisasjonForvalterProperties;
     private final TestnavOrganisasjonServiceProperties testnavOrganisasjonServiceProperties;
@@ -99,6 +107,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnorgeProfilApiProperties))
                 .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
                 .route(createRoute(testnorgeProfilApiProperties, "testnorge-profil-api"))
+                .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
                 .route(createRoute(testnavMiljoerServiceProperties))
                 .route(createRoute(dollyBackendProperties, "dolly-backend"))
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
@@ -132,6 +141,16 @@ public class DollyFrontendApplicationStarter {
                 });
     }
 
+    private GatewayFilter addUserJwtHeaderFilter() {
+        return new AddUserJwtHeaderToRequestGatewayFilterFactory().apply(exchange -> {
+            return exchange.getSession()
+                    .flatMap(session -> Optional.ofNullable(session.getAttribute(UserSessionConstant.SESSION_USER_ID_KEY))
+                            .map(value -> Mono.just((String) value))
+                            .orElse(Mono.empty())
+                    ).flatMap(id -> userJwtExchange.generateJwt(id, exchange));
+        });
+    }
+
     private Function<PredicateSpec, Buildable<Route>> createRoute(ServerProperties serverProperties) {
         return createRoute(
                 serverProperties.getName(),
@@ -153,7 +172,7 @@ public class DollyFrontendApplicationStarter {
                 .path("/" + segment + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
-                        .filters(filter)
+                        .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
 
