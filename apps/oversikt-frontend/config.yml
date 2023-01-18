@@ -6,23 +6,20 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   tokenx:
     enabled: true
-  idporten:
-    enabled: true
-    frontchannelLogoutPath: /oauth2/logout
-    redirectPath: /login/oauth2/code/idporten
-    postLogoutRedirectURIs:
-      - https://testnav-oversikt.dev.intern.nav.no/login
   azure:
+    sidecar:
+      enabled: true
+      autoLogin: true
     application:
       enabled: true
       tenant: nav.no
       replyURLs:
-       - "https://testnav-oversikt.dev.intern.nav.no/login/oauth2/code/aad"
-       - "http://localhost:8080/login/oauth2/code/aad"
+        - "https://testnav-oversikt.dev.intern.nav.no/login/oauth2/code/aad"
+        - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
           - id: 9c7efec1-1599-4216-a67e-6fd53a6a951c
