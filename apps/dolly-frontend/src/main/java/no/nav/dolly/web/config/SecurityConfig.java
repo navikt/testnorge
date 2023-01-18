@@ -3,6 +3,7 @@ package no.nav.dolly.web.config;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -29,7 +30,7 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}")
     private String aadIssuer;
 
-    @Value("${spring.security.oauth2.resourceserver.idporten.issuer-uri}")
+    @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri}")
     private String idportenIssuer;
 
     @SneakyThrows
@@ -41,7 +42,10 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .anyExchange()
                 .permitAll()
-                .and().oauth2ResourceServer().jwt(jwt -> jwtDecoder());
+                .and().oauth2ResourceServer().jwt(jwt -> jwtDecoder()).and()
+                .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
+                        .authenticationSuccessHandler(new DollyAuthenticationSuccessHandler()))
+                .formLogin().loginPage("/login");
         return http.build();
     }
 
