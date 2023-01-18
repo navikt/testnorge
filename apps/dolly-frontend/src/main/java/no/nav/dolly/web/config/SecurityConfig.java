@@ -29,8 +29,8 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}")
     private String aadIssuer;
 
-    @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri}")
-    private String tokenxIssuer;
+    @Value("${spring.security.oauth2.resourceserver.idporten.issuer-uri}")
+    private String idportenIssuer;
 
     @SneakyThrows
     @Bean
@@ -47,6 +47,6 @@ public class SecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
-        return ReactiveJwtDecoders.fromOidcIssuerLocation(Arrays.asList(environment.getActiveProfiles()).contains("idporten") ? tokenxIssuer : aadIssuer);
+        return ReactiveJwtDecoders.fromOidcIssuerLocation(Arrays.asList(environment.getActiveProfiles()).contains("idporten") ? idportenIssuer : aadIssuer);
     }
 }
