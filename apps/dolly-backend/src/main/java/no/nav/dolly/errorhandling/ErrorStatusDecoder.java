@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -52,7 +53,7 @@ public class ErrorStatusDecoder {
         StringBuilder builder = new StringBuilder()
                 .append(FEIL);
 
-        if (isNotBlank(errorMsg)) {
+        if (isBlank(errorMsg)) {
 
             builder.append(errorStatus);
 

@@ -81,39 +81,42 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                             partner.set(sivilstand.getRelatertVedSivilstand());
                                         }));
 
-                        request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
-                        relasjoner.stream()
-                                .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
-                                .forEach(partnerPerson -> {
-                                    request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
-                                    partnerPerson.getPerson().getSivilstand().stream()
-                                            .max(Comparator.comparing(PdlPerson.Sivilstand::getGyldigFraOgMed))
-                                            .ifPresent(sivilstand -> {
-                                                request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
-                                                request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
-                                                request.getRelasjonListe().get(0).setHarVaertGift(isHarVaertGift(sivilstand.getType()));
-                                                request.getRelasjonListe().get(0).setVarigAdskilt(isVarigAdskilt(sivilstand.getType()));
-                                                request.getRelasjonListe().get(0).setSamlivsbruddDato(
-                                                        getSamlovsbruddDato(sivilstand.getType(), sivilstand.getGyldigFraOgMed()));
-                                            });
+                        if (relasjoner.stream().anyMatch(person -> person.getIdent().equals(partner.get()))) {
 
-                                    partnerPerson.getPerson().getDoedsfall().stream()
-                                            .findFirst()
-                                            .map(PdlPerson.Doedsfall::getDoedsdato)
-                                            .ifPresent(doedsdato -> request.getRelasjonListe().get(0).setDodsdato(doedsdato));
+                            request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
+                            relasjoner.stream()
+                                    .filter(personBolk -> personBolk.getIdent().equals(partner.get()))
+                                    .forEach(partnerPerson -> {
+                                        request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
+                                        partnerPerson.getPerson().getSivilstand().stream()
+                                                .max(Comparator.comparing(PdlPerson.Sivilstand::getGyldigFraOgMed))
+                                                .ifPresent(sivilstand -> {
+                                                    request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
+                                                    request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
+                                                    request.getRelasjonListe().get(0).setHarVaertGift(isHarVaertGift(sivilstand.getType()));
+                                                    request.getRelasjonListe().get(0).setVarigAdskilt(isVarigAdskilt(sivilstand.getType()));
+                                                    request.getRelasjonListe().get(0).setSamlivsbruddDato(
+                                                            getSamlovsbruddDato(sivilstand.getType(), sivilstand.getGyldigFraOgMed()));
+                                                });
 
-                                    request.getRelasjonListe().get(0).setHarFellesBarn(
-                                            partnerPerson.getPerson().getForelderBarnRelasjon().stream()
-                                                    .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
-                                                    .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                    .anyMatch(barnAvPartner -> relasjoner.stream()
-                                                            .filter(person -> hovedperson.equals(person.getIdent()))
-                                                            .map(PdlPersonBolk.PersonBolk::getPerson)
-                                                            .anyMatch(person -> person.getForelderBarnRelasjon().stream()
-                                                                    .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
-                                                                    .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                                                    .anyMatch(barnAvHovedperson -> barnAvHovedperson.equals(barnAvPartner)))));
-                                });
+                                        partnerPerson.getPerson().getDoedsfall().stream()
+                                                .findFirst()
+                                                .map(PdlPerson.Doedsfall::getDoedsdato)
+                                                .ifPresent(doedsdato -> request.getRelasjonListe().get(0).setDodsdato(doedsdato));
+
+                                        request.getRelasjonListe().get(0).setHarFellesBarn(
+                                                partnerPerson.getPerson().getForelderBarnRelasjon().stream()
+                                                        .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
+                                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                                        .anyMatch(barnAvPartner -> relasjoner.stream()
+                                                                .filter(person -> hovedperson.equals(person.getIdent()))
+                                                                .map(PdlPersonBolk.PersonBolk::getPerson)
+                                                                .anyMatch(person -> person.getForelderBarnRelasjon().stream()
+                                                                        .filter(PdlPerson.ForelderBarnRelasjon::isBarn)
+                                                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                                                        .anyMatch(barnAvHovedperson -> barnAvHovedperson.equals(barnAvPartner)))));
+                                    });
+                        }
                     }
                 })
                 .byDefault()
