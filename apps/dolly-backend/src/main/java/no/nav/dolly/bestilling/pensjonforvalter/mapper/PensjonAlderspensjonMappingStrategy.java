@@ -11,7 +11,6 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -74,14 +73,16 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         relasjoner.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
-                                        .max(Comparator.comparing(PdlPerson.Sivilstand::getGyldigFraOgMed))
+                                        .filter(PdlPerson.Sivilstand::isGift)
+                                        .findFirst()
                                         .ifPresent(sivilstand -> {
                                             request.setSivilstand(sivilstand.getType().name());
                                             request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
                                             partner.set(sivilstand.getRelatertVedSivilstand());
                                         }));
 
-                        if (relasjoner.stream().anyMatch(person -> person.getIdent().equals(partner.get()))) {
+                        if (relasjoner.stream().anyMatch(person -> person.getIdent().equals(partner.get())) &&
+                                !alderspensjon.getRelasjoner().isEmpty()) {
 
                             request.setRelasjonListe(mapperFacade.mapAsList(alderspensjon.getRelasjoner(), AlderspensjonRequest.SkjemaRelasjon.class));
                             relasjoner.stream()
@@ -89,7 +90,8 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                     .forEach(partnerPerson -> {
                                         request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                         partnerPerson.getPerson().getSivilstand().stream()
-                                                .max(Comparator.comparing(PdlPerson.Sivilstand::getGyldigFraOgMed))
+                                                .filter(PdlPerson.Sivilstand::isGift)
+                                                .findFirst()
                                                 .ifPresent(sivilstand -> {
                                                     request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                     request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
