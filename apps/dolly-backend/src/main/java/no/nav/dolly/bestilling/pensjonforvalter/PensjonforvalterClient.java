@@ -239,7 +239,6 @@ public class PensjonforvalterClient implements ClientRegister {
                 return pensjonforvalterConsumer.lagreAlderspensjon(alderspensjonRequest, token)
                         .map(response -> {
                             response.getStatus().forEach(status -> {
-                                log.info("Mottatt status for {} fra miljø {} fra Pensjon-Testdata-Facade: {}", ident, status.getMiljo(), status.getResponse());
                                 if (status.getResponse().isResponse2xx()) {
                                     saveAPTransaksjonId(ident, status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
                                 }
@@ -337,7 +336,7 @@ public class PensjonforvalterClient implements ClientRegister {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
+            log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
         }
         return null;
     }
