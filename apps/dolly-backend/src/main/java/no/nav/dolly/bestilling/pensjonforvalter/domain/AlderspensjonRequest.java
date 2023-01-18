@@ -20,7 +20,7 @@ public class AlderspensjonRequest {
     private Integer uttaksgrad;
     private String statsborgerskap;
     private String sivilstand;
-    private LocalDate sivilstatusDatoFom;
+    private LocalDate sivilstandDatoFom;
 
     private List<AlderspensjonRequest.SkjemaRelasjon> relasjonListe;
 

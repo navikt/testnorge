@@ -149,7 +149,8 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getHovedperson())),
 
                                             lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer, token)
-                                                    .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getHovedperson())))))
+                                                    .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getHovedperson()))
+                                    )))
                             .flatMap(Flux::from)
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining("$"))

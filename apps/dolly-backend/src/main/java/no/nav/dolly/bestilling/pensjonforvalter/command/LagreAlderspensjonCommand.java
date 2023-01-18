@@ -30,7 +30,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
 
     private final String token;
 
-    private final AlderspensjonRequest lagreAlderspensjonRequest;
+    private final AlderspensjonRequest alderspensjonRequest;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -41,7 +41,7 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreAlderspensjonRequest)
+                .bodyValue(alderspensjonRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)
@@ -49,14 +49,15 @@ public class LagreAlderspensjonCommand implements Callable<Flux<Pensjonforvalter
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(error ->
                         Mono.just(PensjonforvalterResponse.builder()
-                                .status(lagreAlderspensjonRequest.getMiljoer().stream()
+                                .status(alderspensjonRequest.getMiljoer().stream()
                                         .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .reasonPhrase(WebClientFilter.getMessage(error))
-                                                                .status(500)
+                                                                .status(WebClientFilter.getStatus(error).value())
+                                                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                                                 .build())
+                                                        .message(WebClientFilter.getMessage(error))
                                                         .timestamp(LocalDateTime.now())
                                                         .path(PENSJON_AP_URL)
                                                         .build())

@@ -31,7 +31,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
 
     private final String token;
 
-    private final PensjonTpYtelseRequest lagreTpYtelseRequest;
+    private final PensjonTpYtelseRequest pensjonTpYtelseRequest;
 
     public Flux<PensjonforvalterResponse> call() {
         return webClient
@@ -43,7 +43,7 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(lagreTpYtelseRequest)
+                .bodyValue(pensjonTpYtelseRequest)
                 .retrieve()
                 .bodyToFlux(PensjonforvalterResponse.class)
                 .doOnError(WebClientFilter::logErrorMessage)
@@ -51,14 +51,15 @@ public class LagreTpYtelseCommand implements Callable<Flux<PensjonforvalterRespo
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(error ->
                         Mono.just(PensjonforvalterResponse.builder()
-                                .status(lagreTpYtelseRequest.getMiljoer().stream()
+                                .status(pensjonTpYtelseRequest.getMiljoer().stream()
                                         .map(miljoe -> PensjonforvalterResponse.ResponseEnvironment.builder()
                                                 .miljo(miljoe)
                                                 .response(PensjonforvalterResponse.Response.builder()
                                                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                                                .reasonPhrase(WebClientFilter.getMessage(error))
-                                                                .status(500)
+                                                                .status(WebClientFilter.getStatus(error).value())
+                                                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                                                 .build())
+                                                        .message(WebClientFilter.getMessage(error))
                                                         .timestamp(LocalDateTime.now())
                                                         .path(PENSJON_TP_YTELSE_URL)
                                                         .build())

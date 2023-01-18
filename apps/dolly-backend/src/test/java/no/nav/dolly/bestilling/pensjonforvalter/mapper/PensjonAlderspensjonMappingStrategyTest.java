@@ -58,7 +58,7 @@ class PensjonAlderspensjonMappingStrategyTest {
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
         assertThat(target.getSivilstand(), is(equalTo("GIFT")));
-        assertThat(target.getSivilstatusDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
@@ -103,7 +103,7 @@ class PensjonAlderspensjonMappingStrategyTest {
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
         assertThat(target.getSivilstand(), is(equalTo("GIFT")));
-        assertThat(target.getSivilstatusDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));
@@ -157,7 +157,7 @@ class PensjonAlderspensjonMappingStrategyTest {
 
         assertThat(target.getIverksettelsesdato(), is(equalTo(LocalDate.of(2023, 1, 11))));
         assertThat(target.getSivilstand(), is(equalTo("GIFT")));
-        assertThat(target.getSivilstatusDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
+        assertThat(target.getSivilstandDatoFom(), is(equalTo(LocalDate.of(1988, 1, 2))));
         assertThat(target.getUttaksgrad(), is(equalTo(100)));
 
         assertThat(target.getFnr(), is(equalTo("123")));

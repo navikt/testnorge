@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.PdlPerson.Rolle.BARN;
 import static no.nav.dolly.domain.PdlPerson.Rolle.FAR;
 import static no.nav.dolly.domain.PdlPerson.Rolle.MEDMOR;
@@ -395,6 +396,12 @@ public class PdlPerson {
         private LocalDate gyldigFraOgMed;
         private String relatertVedSivilstand;
         private Metadata metadata;
+
+        public boolean isGift() {
+            return nonNull(type) &&
+                    type != SivilstandType.UOPPGITT &&
+                    type != SivilstandType.UGIFT;
+        }
     }
 
     @lombok.Data

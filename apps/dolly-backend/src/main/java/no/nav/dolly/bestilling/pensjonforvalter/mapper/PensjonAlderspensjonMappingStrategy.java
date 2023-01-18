@@ -11,6 +11,7 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -73,10 +74,10 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         relasjoner.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
-                                        .findFirst()
+                                        .max(Comparator.comparing(PdlPerson.Sivilstand::getGyldigFraOgMed))
                                         .ifPresent(sivilstand -> {
                                             request.setSivilstand(sivilstand.getType().name());
-                                            request.setSivilstatusDatoFom(sivilstand.getGyldigFraOgMed());
+                                            request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
                                             partner.set(sivilstand.getRelatertVedSivilstand());
                                         }));
 
@@ -86,7 +87,7 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                                 .forEach(partnerPerson -> {
                                     request.getRelasjonListe().get(0).setFnr(partnerPerson.getIdent());
                                     partnerPerson.getPerson().getSivilstand().stream()
-                                            .findFirst()
+                                            .max(Comparator.comparing(PdlPerson.Sivilstand::getGyldigFraOgMed))
                                             .ifPresent(sivilstand -> {
                                                 request.getRelasjonListe().get(0).setRelasjonType(getRelasjonType(sivilstand.getType()));
                                                 request.getRelasjonListe().get(0).setRelasjonFraDato(sivilstand.getGyldigFraOgMed());
