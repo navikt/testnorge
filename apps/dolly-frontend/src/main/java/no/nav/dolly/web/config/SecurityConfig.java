@@ -3,7 +3,6 @@ package no.nav.dolly.web.config;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.config.authentication.DollyAuthenticationSuccessHandler;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -42,10 +41,7 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .anyExchange()
                 .permitAll()
-                .and().oauth2ResourceServer().jwt(jwt -> jwtDecoder()).and()
-                .oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
-                        .authenticationSuccessHandler(new DollyAuthenticationSuccessHandler()))
-                .formLogin().loginPage("/login");
+                .and().oauth2ResourceServer().jwt(jwt -> jwtDecoder());
         return http.build();
     }
 
