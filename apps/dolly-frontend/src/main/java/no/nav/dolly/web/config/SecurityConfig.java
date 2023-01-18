@@ -30,7 +30,7 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}")
     private String aadIssuer;
 
-    @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri}")
+    @Value("${spring.security.oauth2.resourceserver.idporten.issuer-uri}")
     private String idportenIssuer;
 
     @SneakyThrows
