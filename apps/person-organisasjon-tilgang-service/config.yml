@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   azure:
     application:
@@ -18,6 +18,8 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev-unstable
           cluster: dev-gcp
         - application: testnav-bruker-service
           cluster: dev-gcp
