@@ -73,7 +73,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
-            var test = Flux.range(0, bestilling.getAntallIdenter())
+            Flux.range(0, bestilling.getAntallIdenter())
                     .filter(index -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(index -> opprettProgress(bestilling, originator)
                             .flatMap(progress -> opprettPerson(originator)
@@ -83,7 +83,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                             progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
                                             .flatMap(dollyPerson ->
                                                     personServiceClient.gjenopprett(null,
-                                                            dollyPerson, null, true)
+                                                            dollyPerson, progress, true)
                                                     .map(ClientFuture::get)
                                                     .map(BestillingProgress::isPdlSync)
                                                     .flatMap(pdlSync -> pdlSync ?
