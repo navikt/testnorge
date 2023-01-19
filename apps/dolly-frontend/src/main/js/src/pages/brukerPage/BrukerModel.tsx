@@ -7,7 +7,7 @@ import { Bruker, Organisasjon, OrgResponse } from '@/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
 import { NotFoundError } from '@/error'
 import { Navigate } from 'react-router-dom'
-import navigateToLogin from '@/components/utlogging/navigateToLogin'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
