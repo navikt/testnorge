@@ -11,6 +11,7 @@ import no.nav.dolly.bestilling.aareg.AaregClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
+import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -195,41 +196,36 @@ public class DollyBestillingService {
         }
     }
 
-    protected Flux<BestillingProgress> gjenopprettKlienterFase1(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
-                                                                BestillingProgress progress, boolean isOpprettEndre) {
+    public GjenopprettSteg fase1Klienter() {
 
-        counterCustomRegistry.invoke(bestKriterier);
-        return Flux.from(Flux.fromIterable(clientRegisters)
-                .filter(this::isFase1Klient)
-                .flatMap(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
-                .filter(Objects::nonNull)
-                .map(ClientFuture::get));
+        return (register) -> register instanceof TagsHendelseslagerClient;
     }
 
-    private boolean isFase1Klient(ClientRegister register) {
+    public GjenopprettSteg fase2Klienter() {
 
-        var klienterFase1 = List.of(
+        var klienter = List.of(
                 PensjonforvalterClient.class,
                 AaregClient.class,
                 InntektstubClient.class);
 
-        return klienterFase1.stream()
-                .anyMatch(client -> client.isInstance(register));
+        return (register) -> !fase1Klienter().apply(register) &&
+                klienter.stream()
+                        .anyMatch(client -> client.isInstance(register));
     }
 
-    private boolean isFase2Klient(ClientRegister register) {
+    public GjenopprettSteg fase3Klienter() {
 
-        return !isFase1Klient(register);
+        return (register) -> !fase1Klienter().apply(register) &&
+                !fase2Klienter().apply(register);
     }
 
-
-    protected Flux<BestillingProgress> gjenopprettKlienterFase2(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
-                                                                      BestillingProgress progress, boolean isOpprettEndre) {
+    protected Flux<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+                                                                GjenopprettSteg steg,
+                                                                BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
         return Flux.from(Flux.fromIterable(clientRegisters)
-                .filter(this::isFase2Klient)
+                .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .filter(Objects::nonNull)

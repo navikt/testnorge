@@ -81,19 +81,23 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                     .filter(Objects::nonNull)
                                     .flatMap(ident -> leggIdentTilGruppe(ident,
                                             progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
-                                            .flatMap(dollyPerson ->
+                                            .flatMap(dollyPerson -> Flux.concat(
+                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                            fase1Klienter(),
+                                                            progress, true),
                                                     personServiceClient.gjenopprett(null,
                                                                     dollyPerson, progress, true)
                                                             .map(ClientFuture::get)
                                                             .map(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> pdlSync ?
                                                                     Flux.concat(
-                                                                                    gjenopprettKlienterFase1(dollyPerson, bestKriterier,
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase2Klienter(),
                                                                                             progress, true),
-                                                                                    gjenopprettKlienterFase2(dollyPerson, bestKriterier,
-                                                                                            progress, true))
-                                                                            .collectList() :
-                                                                    Flux.just(Collections.emptyList())))
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase3Klienter(),
+                                                                                            progress, true)) :
+                                                                    Flux.just(Collections.emptyList()))))
                                             .doOnError(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

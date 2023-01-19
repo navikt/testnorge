@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.personservice;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
-import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -16,7 +15,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.LocalTime;
-import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -27,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @Order(5)
 @RequiredArgsConstructor
-public class PersonServiceClient implements ClientRegister {
+public class PersonServiceClient {
 
     private static final int TIMEOUT = 100;
     private static final int MAX_SEKUNDER = 30;
@@ -36,15 +34,14 @@ public class PersonServiceClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
 
-    @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var startTime = System.currentTimeMillis();
-        return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER),
+        return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
                 new PersonServiceResponse(), dollyPerson.getHovedperson())
                 .doOnNext(status -> logStatus(status, startTime))
                 .map(status -> futurePersist(progress, status));
-        }
+    }
 
     private ClientFuture futurePersist(BestillingProgress progress, PersonServiceResponse status) {
 
@@ -57,24 +54,26 @@ public class PersonServiceClient implements ClientRegister {
         };
     }
 
-    private static void logStatus(PersonServiceResponse status, long startTime) {
+    private void logStatus(PersonServiceResponse status, long startTime) {
 
         if (status.getStatus().is2xxSuccessful() && isTrue(status.getExists())) {
             log.info("Synkronisering mot PersonService (isPerson) for {} tok {} ms.",
                     status.getIdent(), System.currentTimeMillis() - startTime);
 
-        } else  if (status.getStatus().is2xxSuccessful() && isNotTrue(status.getExists())) {
+        } else if (status.getStatus().is2xxSuccessful() && isNotTrue(status.getExists())) {
             log.error("Synkronisering mot PersonService (isPerson) for {} gitt opp etter {} ms.",
                     status.getIdent(), System.currentTimeMillis() - startTime);
         } else {
-            log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms.",
-                    status.getIdent(), System.currentTimeMillis() - startTime);
+            log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms, feil {}.",
+                    status.getIdent(), System.currentTimeMillis() - startTime,
+                    errorStatusDecoder.getErrorText(status.getStatus(),
+                            status.getFeilmelding()));
         }
     }
 
-    private Flux<PersonServiceResponse> getPersonService(LocalTime time, PersonServiceResponse response, String ident) {
+    private Flux<PersonServiceResponse> getPersonService(LocalTime tidSlutt, LocalTime tidNo, PersonServiceResponse response, String ident) {
 
-        if (isTrue(response.getExists()) || LocalTime.now().isAfter(time) ||
+        if (isTrue(response.getExists()) || tidNo.isAfter(tidSlutt) ||
                 nonNull(response.getStatus()) && !response.getStatus().is2xxSuccessful()) {
             return Flux.just(response);
 
@@ -82,12 +81,7 @@ public class PersonServiceClient implements ClientRegister {
             return Flux.just(1)
                     .delayElements(Duration.ofMillis(TIMEOUT))
                     .flatMap(delayed -> personServiceConsumer.isPerson(ident)
-                            .flatMapMany(resultat -> getPersonService(LocalTime.now(), resultat, ident)));
+                            .flatMapMany(resultat -> getPersonService(tidSlutt, LocalTime.now(), resultat, ident)));
         }
-    }
-
-    @Override
-    public void release(List<String> identer) {
-        // Ikke relevant
     }
 }
