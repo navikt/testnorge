@@ -12,6 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Profile("local")
 @VaultPropertySource(value = "secret/.common/idporten/ver2", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "secret/.common/tokenx/dev/app-1", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
 public class LocalVaultConfig extends AbstractVaultConfiguration {
 
     @Override
