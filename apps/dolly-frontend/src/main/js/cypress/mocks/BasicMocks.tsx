@@ -1397,4 +1397,4 @@ export const paginerteGrupperMock = {
 	favoritter: [nyGruppeMock],
 }
 
-export const miljoeMock = '["q1","q2","q4","q5","qx","t0","t1","t13","t2","t3","t4","t5","t6","u5"]'
+export const miljoeMock = '["q1","q2","q4","q5","qx","t3","t13","u5"]'

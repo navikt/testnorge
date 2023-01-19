@@ -8,11 +8,11 @@ const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-inst-service/api/v1/miljoer'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/internal/miljoe'
 
-const prefetchedMiljoer = ['t0', 't1', 't3', 't4', 't5', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
+const prefetchedMiljoer = ['t3', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = ['q1', 'q2']
-const prefetchedDokarkivMiljoer = ['q1', 'q2', 'q4', 'q5', 't0', 't4']
+const prefetchedDokarkivMiljoer = ['q1', 'q2', 'q4', 'q5']
 
 export const useDollyEnvironments = () => {
 	const { data, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
