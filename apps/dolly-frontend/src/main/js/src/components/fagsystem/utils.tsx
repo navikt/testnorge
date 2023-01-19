@@ -1,5 +1,6 @@
 import * as _ from 'lodash-es'
 import { isAfter, isBefore, isEqual } from 'date-fns'
+import { Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 
 export const testDatoFom = (val, tomPath, feilmelding) => {
 	return val.test(
@@ -25,4 +26,19 @@ export const testDatoTom = (val, fomPath, feilmelding) => {
 			return isAfter(new Date(value), new Date(datoFom))
 		}
 	)
+}
+
+export const getEksisterendeNyPerson = (
+	relasjoner: Array<Relasjon>,
+	ident: String,
+	relasjonType: String
+) => {
+	const relasjon = relasjoner.find(
+		(relasjon) =>
+			relasjon?.relatertPerson?.ident === ident && relasjon?.relasjonType === relasjonType
+	)
+	return {
+		value: relasjon?.relatertPerson?.ident,
+		label: `${relasjon?.relatertPerson?.ident} - ${relasjon?.relatertPerson?.navn?.[0]?.fornavn} ${relasjon?.relatertPerson?.navn?.[0]?.etternavn}`,
+	}
 }

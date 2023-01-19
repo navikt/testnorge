@@ -9,6 +9,7 @@ import { VergemaalKodeverk } from '@/config/kodeverk'
 import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 
 type Vergemaal = {
 	vergemaalEmbete?: string
@@ -148,8 +149,8 @@ const VergemaalVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(redigertRelatertePersoner)
-		: getEksisterendeNyPerson(relasjoner)
+		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, 'VERGE')
+		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, 'VERGE')
 
 	return erPdlVisning ? (
 		<VergemaalLes vergemaalData={vergemaalData} relasjoner={relasjoner} idx={idx} />
@@ -170,13 +171,6 @@ const VergemaalVisning = ({
 			ident={ident}
 		/>
 	)
-}
-
-const getEksisterendeNyPerson = (relasjoner: Array<Relasjon>) => {
-	return {
-		value: relasjoner?.[0]?.relatertPerson?.ident,
-		label: `${relasjoner?.[0]?.relatertPerson?.ident} - ${relasjoner?.[0]?.relatertPerson?.navn?.[0]?.fornavn} ${relasjoner?.[0]?.relatertPerson?.navn?.[0]?.etternavn}`,
-	}
 }
 
 export const Vergemaal = ({

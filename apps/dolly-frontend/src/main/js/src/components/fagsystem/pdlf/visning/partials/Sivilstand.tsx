@@ -9,6 +9,7 @@ import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visn
 import { initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import React from 'react'
+import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -76,6 +77,8 @@ export const SivilstandVisning = ({
 	const redigertSivilstandPdlf = _.get(tmpPersoner, `${ident}.person.sivilstand`)?.find(
 		(a) => a.id === sivilstandData.id
 	)
+	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
+
 	const slettetSivilstandPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertSivilstandPdlf
 	if (slettetSivilstandPdlf) {
 		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
@@ -88,12 +91,25 @@ export const SivilstandVisning = ({
 		  }
 		: null
 
+	const eksisterendeNyPerson = redigertRelatertePersoner
+		? getEksisterendeNyPerson(
+				redigertRelatertePersoner,
+				sivilstandValues?.relatertVedSivilstand,
+				'EKTEFELLE_PARTNER'
+		  )
+		: getEksisterendeNyPerson(
+				relasjoner,
+				sivilstandValues?.relatertVedSivilstand,
+				'EKTEFELLE_PARTNER'
+		  )
+
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={
 				<SivilstandLes sivilstandData={sivilstandValues} relasjoner={relasjoner} idx={idx} />
 			}
 			initialValues={initialValues}
+			eksisterendeNyPerson={eksisterendeNyPerson}
 			redigertAttributt={redigertSivilstandValues}
 			path="sivilstand"
 			ident={ident}

@@ -24,7 +24,7 @@ const gyldigeSivilstander = [
 	'SAMBOER',
 ]
 
-export const SivilstandForm = ({ path, formikBag }) => {
+export const SivilstandForm = ({ path, formikBag, eksisterendeNyPerson = null }) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formikBag.setFieldValue(`${path}.type`, selected.value)
 		if (!gyldigeSivilstander.includes(selected.value)) {
@@ -78,6 +78,7 @@ export const SivilstandForm = ({ path, formikBag }) => {
 				<PdlPersonExpander
 					nyPersonPath={`${path}.nyRelatertPerson`}
 					eksisterendePersonPath={`${path}.relatertVedSivilstand`}
+					eksisterendeNyPerson={eksisterendeNyPerson}
 					label={'PERSON RELATERT TIL'}
 					formikBag={formikBag}
 					isExpanded={

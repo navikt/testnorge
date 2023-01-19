@@ -228,7 +228,13 @@ export const VisningRedigerbar = ({
 					/>
 				)
 			case Attributt.Sivilstand:
-				return <SivilstandForm path={path} formikBag={formikBag} />
+				return (
+					<SivilstandForm
+						path={path}
+						formikBag={formikBag}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 		}
 	}
 
