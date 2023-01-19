@@ -48,7 +48,23 @@ public class IdportenSecurityConfig {
 
         http.cors()
                 .and().csrf().disable()
-                .authorizeExchange().anyExchange().permitAll()
+                .authorizeExchange()
+                .pathMatchers(
+                        "/internal/isReady",
+                        "/internal/isAlive",
+                        "/assets/*",
+                        "/internal/metrics",
+                        "/oauth2/callback",
+                        "/favicon.ico",
+                        "/login",
+                        "/logout",
+                        "/oauth2/logout",
+                        "/*.css",
+                        "/*.js",
+                        "/*.mjs",
+                        "/*.png"
+                ).permitAll()
+                .anyExchange().authenticated()
                 .and().oauth2Login(oAuth2LoginSpec -> oAuth2LoginSpec
                         .authenticationManager(authenticationManger)
                         .authenticationSuccessHandler(authenticationSuccessHandler))
