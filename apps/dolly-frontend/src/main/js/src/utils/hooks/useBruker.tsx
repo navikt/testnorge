@@ -1,8 +1,8 @@
 import useSWR from 'swr'
 import useSWRImmutable from 'swr/immutable'
 import { fetcher, imageFetcher } from '@/api'
-import logoutBruker from '@/components/utlogging/logoutBruker'
 import { runningCypressE2E } from '@/service/services/Request'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
@@ -39,8 +39,8 @@ export const useCurrentBruker = () => {
 	const { data, error } = useSWR<BrukerType, Error>(getCurrentBrukerUrl, fetcher)
 
 	if (error && !runningCypressE2E()) {
-		console.error('Klarte ikke å hente aktiv bruker, logger ut..')
-		logoutBruker()
+		console.error('Klarte ikke å hente aktiv bruker, navigerer til login..')
+		navigateToLogin()
 	}
 
 	return {

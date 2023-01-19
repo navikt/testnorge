@@ -7,7 +7,7 @@ import { Bruker, Organisasjon, OrgResponse } from '@/pages/brukerPage/types'
 import { BrukerApi, PersonOrgTilgangApi, SessionApi } from '@/service/Api'
 import { NotFoundError } from '@/error'
 import { Navigate } from 'react-router-dom'
-import logoutBruker from '@/components/utlogging/logoutBruker'
+import navigateToLogin from '@/components/utlogging/navigateToLogin'
 
 const ORG_ERROR = 'organisation_error'
 const UNKNOWN_ERROR = 'unknown_error'
@@ -23,14 +23,14 @@ export default () => {
 		PersonOrgTilgangApi.getOrganisasjoner()
 			.then((response: OrgResponse) => {
 				if (response === null || response.data === null || response.data.length === 0) {
-					logoutBruker(UNKNOWN_ERROR)
+					navigateToLogin(UNKNOWN_ERROR)
 				}
 				setOrganisasjoner(response.data)
 				setModalHeight(310 + 55 * response.data.length)
 				setLoading(false)
 			})
-			.catch((_e: NotFoundError) => logoutBruker(ORG_ERROR))
-			.catch((_e: Error) => logoutBruker(UNKNOWN_ERROR))
+			.catch((_e: NotFoundError) => navigateToLogin(ORG_ERROR))
+			.catch((_e: Error) => navigateToLogin(UNKNOWN_ERROR))
 	}, [])
 
 	const selectOrganisasjon = (org: Organisasjon) => {
@@ -42,14 +42,14 @@ export default () => {
 				if (response !== null) {
 					addToSession(org.organisasjonsnummer)
 				} else {
-					logoutBruker(UNKNOWN_ERROR)
+					navigateToLogin(UNKNOWN_ERROR)
 				}
 			})
 			.catch((_e: NotFoundError) => {
 				setLoading(false)
 			})
 			.catch((_e: Error) => {
-				logoutBruker(UNKNOWN_ERROR)
+				navigateToLogin(UNKNOWN_ERROR)
 			})
 	}
 
@@ -72,7 +72,7 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton className="tilbake-button" onClick={() => logoutBruker()}>
+				<NavButton className="tilbake-button" onClick={() => navigateToLogin()}>
 					Tilbake til innlogging
 				</NavButton>
 			</div>
