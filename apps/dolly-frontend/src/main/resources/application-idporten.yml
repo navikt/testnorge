@@ -10,6 +10,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:dolly-frontend-idporten
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace

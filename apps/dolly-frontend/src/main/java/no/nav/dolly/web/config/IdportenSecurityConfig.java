@@ -3,6 +3,7 @@ package no.nav.dolly.web.config;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesecurity.manager.JwtReactiveAuthenticationManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,14 +17,15 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Slf4j
 @Configuration
-@Profile({ "prod", "dev" })
+@Profile("idporten")
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
-public class SecurityConfig {
+public class IdportenSecurityConfig {
 
+    private final JwtReactiveAuthenticationManager jwtReactiveAuthenticationManager;
 
-    @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}")
-    private String aadIssuer;
+    @Value("${spring.security.oauth2.resourceserver.idporten.issuer-uri}")
+    private String idportenIssuer;
 
     @SneakyThrows
     @Bean
@@ -34,12 +36,13 @@ public class SecurityConfig {
                 .authorizeExchange()
                 .anyExchange()
                 .permitAll()
-                .and().oauth2ResourceServer().jwt(jwt -> jwtDecoder());
+                .and().oauth2ResourceServer()
+                .jwt(spec -> spec.authenticationManager(jwtReactiveAuthenticationManager));
         return http.build();
     }
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
-        return ReactiveJwtDecoders.fromOidcIssuerLocation(aadIssuer);
+        return ReactiveJwtDecoders.fromOidcIssuerLocation(idportenIssuer);
     }
 }
