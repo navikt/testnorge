@@ -1,4 +1,5 @@
 # Prod config
+IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.intern.nav.no/login
 
 spring:
