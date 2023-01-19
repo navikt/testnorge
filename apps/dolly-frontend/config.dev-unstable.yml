@@ -14,7 +14,7 @@ spec:
   azure:
     sidecar:
       enabled: true
-      autoLogin: true
+      errorPath: /login
     application:
       enabled: true
       tenant: nav.no
