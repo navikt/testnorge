@@ -1,5 +1,5 @@
 # Prod config
-POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.nav.no/login
+POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.intern.nav.no/login
 
 spring:
   security:
