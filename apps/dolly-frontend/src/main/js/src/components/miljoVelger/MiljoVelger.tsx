@@ -59,7 +59,6 @@ export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeVa
 		if (erBankIdBruker) return bankIdMiljoer
 		const filtrerteMiljoer = { ...miljoer }
 		filtrerteMiljoer.Q = filtrerteMiljoer.Q.filter((env) => !env.id.includes('qx'))
-		filtrerteMiljoer.T = filtrerteMiljoer.T.filter((env) => !env.id.includes('t13'))
 		return filtrerteMiljoer
 	}
 
