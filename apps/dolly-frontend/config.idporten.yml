@@ -14,8 +14,6 @@ spec:
   azure:
     application:
       enabled: true
-  idporten:
-    enabled: true
   accessPolicy:
     outbound:
       rules:
