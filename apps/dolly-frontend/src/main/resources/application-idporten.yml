@@ -5,12 +5,20 @@ spring:
   security:
     oauth2:
       resourceserver:
-        idporten:
-          issuer-uri: ${IDPORTEN_ISSUER_URI}
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:dolly-frontend-idporten
+      client:
+        registration:
+          idporten:
+            client-id: ${IDPORTEN_CLIENT_ID}
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
+            scope: openid
+            client-authentication-method: private_key_jwt
+        provider:
+          idporten:
+            issuer-uri: ${IDPORTEN_ISSUER_URI}
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
