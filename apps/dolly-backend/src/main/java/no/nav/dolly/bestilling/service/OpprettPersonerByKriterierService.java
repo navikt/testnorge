@@ -83,13 +83,17 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                             progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
                                             .flatMap(dollyPerson ->
                                                     personServiceClient.gjenopprett(null,
-                                                            dollyPerson, progress, true)
-                                                    .map(ClientFuture::get)
-                                                    .map(BestillingProgress::isPdlSync)
-                                                    .flatMap(pdlSync -> pdlSync ?
-                                                            gjenopprettAlleKlienter(dollyPerson, bestKriterier,
-                                                                    progress, true) :
-                                                            Flux.just(Collections.emptyList())))
+                                                                    dollyPerson, progress, true)
+                                                            .map(ClientFuture::get)
+                                                            .map(BestillingProgress::isPdlSync)
+                                                            .flatMap(pdlSync -> pdlSync ?
+                                                                    Flux.concat(
+                                                                                    gjenopprettKlienterFase1(dollyPerson, bestKriterier,
+                                                                                            progress, true),
+                                                                                    gjenopprettKlienterFase2(dollyPerson, bestKriterier,
+                                                                                            progress, true))
+                                                                            .collectList() :
+                                                                    Flux.just(Collections.emptyList())))
                                             .doOnError(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

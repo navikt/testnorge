@@ -7,7 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.aareg.AaregClient;
+import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -190,6 +193,47 @@ public class DollyBestillingService {
             log.error("Feilet å lese JSON {}", e.getMessage(), e);
             return null;
         }
+    }
+
+    protected Flux<BestillingProgress> gjenopprettKlienterFase1(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+                                                                BestillingProgress progress, boolean isOpprettEndre) {
+
+        counterCustomRegistry.invoke(bestKriterier);
+        return Flux.from(Flux.fromIterable(clientRegisters)
+                .filter(this::isFase1Klient)
+                .flatMap(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                .filter(Objects::nonNull)
+                .map(ClientFuture::get));
+    }
+
+    private boolean isFase1Klient(ClientRegister register) {
+
+        var klienterFase1 = List.of(
+                PensjonforvalterClient.class,
+                AaregClient.class,
+                InntektstubClient.class);
+
+        return klienterFase1.stream()
+                .anyMatch(client -> client.isInstance(register));
+    }
+
+    private boolean isFase2Klient(ClientRegister register) {
+
+        return !isFase1Klient(register);
+    }
+
+
+    protected Flux<BestillingProgress> gjenopprettKlienterFase2(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+                                                                      BestillingProgress progress, boolean isOpprettEndre) {
+
+        counterCustomRegistry.invoke(bestKriterier);
+        return Flux.from(Flux.fromIterable(clientRegisters)
+                .filter(this::isFase2Klient)
+                .flatMap(clientRegister ->
+                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                .filter(Objects::nonNull)
+                .map(ClientFuture::get));
     }
 
     protected Flux<List<BestillingProgress>> gjenopprettAlleKlienter(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
