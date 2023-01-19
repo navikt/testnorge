@@ -54,6 +54,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:reactive-frontend'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
+    implementation 'redis.clients:jedis'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'
 

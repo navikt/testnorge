@@ -19,7 +19,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - https://dolly-frontend-dev-unstable.dev.nav.no/login/oauth2/code/aad
+        - https://dolly-frontend-dev-unstable.dev.intern.nav.no/login/oauth2/code/aad
         - http://localhost:8020/login/oauth2/code/aad
         - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:
@@ -58,7 +58,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-frontend-dev-unstable.dev.nav.no
+    - https://dolly-frontend-dev-unstable.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
