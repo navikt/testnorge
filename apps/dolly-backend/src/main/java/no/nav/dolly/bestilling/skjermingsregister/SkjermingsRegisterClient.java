@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingBestilling;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
 import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
@@ -19,7 +18,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,10 +28,7 @@ import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenan
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEgenansatt;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -46,28 +41,21 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final TransactionHelperService transactionHelperService;
-    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
 
-            progress.setSkjermingsregisterStatus(encodeStatus(getInfoVenter("Skjermingsregisteret")));
+            progress.setSkjermingsregisterStatus(getInfoVenter("Skjermingsregisteret"));
             transactionHelperService.persister(progress);
 
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isTrue(isReady) ?
-
-                            getPersonData(dollyPerson.getHovedperson())
-                                    .map(person -> prepRequest(bestilling, person))
-                                    .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
-                                            .map(this::getStatus))
-                                    .collect(Collectors.joining()) :
-
-                            Mono.just(encodeStatus(getVarselSlutt("Skjermingsregisteret"))))
-                    )
-                    .map(status -> futurePersist(progress, status)));
+            return Flux.from(getPersonData(dollyPerson.getHovedperson())
+                            .map(person -> prepRequest(bestilling, person))
+                            .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
+                                    .map(this::getStatus))
+                            .collect(Collectors.joining()))
+                    .map(status -> futurePersist(progress, status));
         }
         return Flux.empty();
     }

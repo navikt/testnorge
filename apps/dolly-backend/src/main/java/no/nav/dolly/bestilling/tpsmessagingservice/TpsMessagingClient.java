@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -54,7 +53,6 @@ public class TpsMessagingClient implements ClientRegister {
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final MapperFacade mapperFacade;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
     private final TpsMiljoerConsumer tpsMiljoerConsumer;
 
@@ -80,55 +78,47 @@ public class TpsMessagingClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
-                .flatMap(miljoer -> {
-                    progress.setTpsMessagingStatus(prepTpsMessagingStatus(miljoer, false));
-                    transactionHelperService.persister(progress);
+                        .flatMap(miljoer -> {
+                            progress.setTpsMessagingStatus(prepTpsMessagingStatus(miljoer, false));
+                            transactionHelperService.persister(progress);
 
-                    return personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                            .flatMap(isReady -> {
-                                if (isTrue(isReady)) {
-                                    return getIdenterHovedpersonOgPartner(dollyPerson.getHovedperson())
-                                            .flatMap(this::getPersonData)
-                                            .collectList()
-                                            .map(personer -> tpsMessagingConsumer.getToken()
-                                                    .flatMapMany(token -> Flux.concat(
-                                                            sendSpraakkode(bestilling, dollyPerson.getHovedperson(), token)
-                                                                    .map(respons -> Map.of("SpråkKode", respons)),
-                                                            sendBankkontonummerNorge(bestilling, dollyPerson.getHovedperson(), token)
-                                                                    .map(respons -> Map.of("NorskBankkonto", respons)),
-                                                            sendBankkontonummerUtenland(bestilling, dollyPerson.getHovedperson(), token)
-                                                                    .map(respons -> Map.of("UtenlandskBankkonto", respons)),
-                                                            sendEgenansattSlett(bestilling, dollyPerson.getHovedperson(), token)
-                                                                    .map(respons -> Map.of("Egenansatt_slett", respons)),
-                                                            sendEgenansatt(bestilling, dollyPerson.getHovedperson(), token)
-                                                                    .map(respons -> Map.of("Egenansatt_opprett", respons)),
-                                                            sendSikkerhetstiltakSlett(dollyPerson, token)
-                                                                    .map(respons -> Map.of("Sikkerhetstiltak_slett", respons)),
-                                                            sendSikkerhetstiltakOpprett(dollyPerson, token)
-                                                                    .map(respons -> Map.of("Sikkerhetstiltak_opprett", respons)),
-                                                            sendTelefonnumreSlett(dollyPerson, token)
-                                                                    .map(respons -> Map.of("Telefonnummer_slett", respons)),
-                                                            sendTelefonnumreOpprett(dollyPerson, token)
-                                                                    .map(respons -> Map.of("Telefonnummer_opprett", respons)),
-                                                            sendBostedsadresseUtland(personer, token)
-                                                                    .map(respons -> Map.of("BostedadresseUtland", respons)),
-                                                            sendKontaktadresseUtland(personer, token)
-                                                                    .map(respons -> Map.of("KontaktadresseUtland", respons))
-                                                    ))
-                                                    .map(respons -> respons.entrySet().stream()
-                                                            .map(entry -> getStatus(entry.getKey(), entry.getValue()))
-                                                            .toList())
-                                                    .flatMap(Flux::fromIterable)
-                                                    .filter(StringUtils::isNotBlank)
-                                                    .collect(Collectors.joining("$")))
-                                            .flatMap(Mono::from);
-
-                                } else {
-                                    return Mono.just(prepTpsMessagingStatus(miljoer, true));
-                                }
-                            });
-                })
-                .map(status -> futurePersist(progress, status)));
+                            return getIdenterHovedpersonOgPartner(dollyPerson.getHovedperson())
+                                    .flatMap(this::getPersonData)
+                                    .collectList()
+                                    .map(personer -> tpsMessagingConsumer.getToken()
+                                            .flatMapMany(token -> Flux.concat(
+                                                    sendSpraakkode(bestilling, dollyPerson.getHovedperson(), token)
+                                                            .map(respons -> Map.of("SpråkKode", respons)),
+                                                    sendBankkontonummerNorge(bestilling, dollyPerson.getHovedperson(), token)
+                                                            .map(respons -> Map.of("NorskBankkonto", respons)),
+                                                    sendBankkontonummerUtenland(bestilling, dollyPerson.getHovedperson(), token)
+                                                            .map(respons -> Map.of("UtenlandskBankkonto", respons)),
+                                                    sendEgenansattSlett(bestilling, dollyPerson.getHovedperson(), token)
+                                                            .map(respons -> Map.of("Egenansatt_slett", respons)),
+                                                    sendEgenansatt(bestilling, dollyPerson.getHovedperson(), token)
+                                                            .map(respons -> Map.of("Egenansatt_opprett", respons)),
+                                                    sendSikkerhetstiltakSlett(dollyPerson, token)
+                                                            .map(respons -> Map.of("Sikkerhetstiltak_slett", respons)),
+                                                    sendSikkerhetstiltakOpprett(dollyPerson, token)
+                                                            .map(respons -> Map.of("Sikkerhetstiltak_opprett", respons)),
+                                                    sendTelefonnumreSlett(dollyPerson, token)
+                                                            .map(respons -> Map.of("Telefonnummer_slett", respons)),
+                                                    sendTelefonnumreOpprett(dollyPerson, token)
+                                                            .map(respons -> Map.of("Telefonnummer_opprett", respons)),
+                                                    sendBostedsadresseUtland(personer, token)
+                                                            .map(respons -> Map.of("BostedadresseUtland", respons)),
+                                                    sendKontaktadresseUtland(personer, token)
+                                                            .map(respons -> Map.of("KontaktadresseUtland", respons))
+                                            ))
+                                            .map(respons -> respons.entrySet().stream()
+                                                    .map(entry -> getStatus(entry.getKey(), entry.getValue()))
+                                                    .toList())
+                                            .flatMap(Flux::fromIterable)
+                                            .filter(StringUtils::isNotBlank)
+                                            .collect(Collectors.joining("$")))
+                                    .flatMap(Mono::from);
+                        }))
+                .map(status -> futurePersist(progress, status));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

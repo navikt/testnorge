@@ -8,7 +8,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.DetaljertSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.domain.SykemeldingTransaksjon;
 import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
@@ -37,10 +36,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -54,7 +50,6 @@ public class SykemeldingClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final MapperFacade mapperFacade;
     private final ObjectMapper objectMapper;
-    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final KodeverkConsumer kodeverkConsumer;
@@ -69,29 +64,25 @@ public class SykemeldingClient implements ClientRegister {
                 setProgress(progress, "OK");
 
             } else {
-                setProgress(progress, encodeStatus(getInfoVenter("Sykemelding")));
+                setProgress(progress, getInfoVenter("Sykemelding"));
                 long bestillingId = progress.getBestilling().getId();
 
-                return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                        .flatMap(isSync -> {
-                            if (isTrue(isSync)) {
-                                setProgress(progress, "Info: Venter på generering av sykemelding ...");
-                                return getPerson(dollyPerson.getHovedperson())
-                                        .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
-                                                        getNorgenhet(persondata))
-                                                .flatMap(zip -> Flux.concat(postSyntSykemelding(bestilling, persondata),
-                                                                postDetaljertSykemelding(bestilling, persondata,
-                                                                        zip.getT1(), zip.getT2()))
-                                                        .filter(Objects::nonNull)
-                                                        .map(status -> saveTransaksjonId(status, bestillingId))
-                                                        .map(this::getStatus)
-                                                        .collect(Collectors.joining())))
-                                        .collect(Collectors.joining());
-                            } else {
-                                return Mono.just(encodeStatus(getVarselSlutt("Sykemelding")));
-                            }
+                return Flux.just(1)
+                        .flatMap(index -> {
+                            setProgress(progress, "Info: Venter på generering av sykemelding ...");
+                            return getPerson(dollyPerson.getHovedperson())
+                                    .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
+                                                    getNorgenhet(persondata))
+                                            .flatMap(zip -> Flux.concat(postSyntSykemelding(bestilling, persondata),
+                                                            postDetaljertSykemelding(bestilling, persondata,
+                                                                    zip.getT1(), zip.getT2()))
+                                                    .filter(Objects::nonNull)
+                                                    .map(status -> saveTransaksjonId(status, bestillingId))
+                                                    .map(this::getStatus)
+                                                    .collect(Collectors.joining())))
+                                    .collect(Collectors.joining());
                         })
-                        .map(status -> futurePersist(progress, status)));
+                        .map(status -> futurePersist(progress, status));
             }
         }
         return Flux.empty();

@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonWrapper.Status;
@@ -26,8 +25,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -37,7 +34,6 @@ public class UdiStubClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final UdiMergeService udiMergeService;
     private final UdiStubConsumer udiStubConsumer;
-    private final PersonServiceConsumer personServiceConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final TransactionHelperService transactionHelperService;
 
@@ -49,19 +45,14 @@ public class UdiStubClient implements ClientRegister {
             progress.setUdistubStatus(encodeStatus(getInfoVenter("UdiStub")));
             transactionHelperService.persister(progress);
 
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isTrue(isReady) ?
-                            getPersonData(List.of(dollyPerson.getHovedperson()))
-                                    .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
-                                            .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
-                                                    eksisterende, persondata))
-                                            .flatMap(this::sendUdiPerson)
-                                            .map(this::getStatus))
-                                    .collect(Collectors.joining()) :
-
-                            Mono.just(encodeStatus(getVarselSlutt("UdiStub")))
-                    ))
-                    .map(status -> futurePersist(progress, status)));
+            return Flux.from(getPersonData(List.of(dollyPerson.getHovedperson()))
+                            .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
+                                    .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
+                                            eksisterende, persondata))
+                                    .flatMap(this::sendUdiPerson)
+                                    .map(this::getStatus))
+                            .collect(Collectors.joining()))
+                    .map(status -> futurePersist(progress, status));
         }
         return Flux.empty();
     }

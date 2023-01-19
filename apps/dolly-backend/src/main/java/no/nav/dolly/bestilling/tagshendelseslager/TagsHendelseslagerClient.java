@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -30,9 +29,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -42,20 +38,15 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!dollyPerson.getTags().isEmpty()) {
-            personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isSync -> isTrue(isSync) ?
-                            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                                    .flatMap(identer -> sendTags(identer, dollyPerson.getTags())) :
 
-                            Mono.just(encodeStatus(getVarselSlutt("TagsHendelselager")))
-
-                    ).subscribe(log::info);
+            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                    .flatMap(identer -> sendTags(identer, dollyPerson.getTags()))
+                    .subscribe(log::info);
         }
 
         if (dollyPerson.getMaster() == Testident.Master.PDL) {

@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo;
 import no.nav.dolly.bestilling.brregstub.util.BrregstubMergeUtil;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -26,8 +25,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -40,7 +37,6 @@ public class BrregstubClient implements ClientRegister {
 
     private final BrregstubConsumer brregstubConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final PersonServiceConsumer personServiceConsumer;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
 
@@ -49,23 +45,17 @@ public class BrregstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getBrregstub())) {
 
-            progress.setBrregstubStatus(encodeStatus(getInfoVenter("BRREG")));
+            progress.setBrregstubStatus(getInfoVenter("BRREG"));
             transactionHelperService.persister(progress);
 
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isTrue(isReady) ?
-
-                            getPersonData(dollyPerson.getHovedperson())
-                                    .flatMap(personBolk -> mapRolleoversikt(bestilling.getBrregstub(), personBolk)
-                                            .map(nyRolleoversikt -> brregstubConsumer.getRolleoversikt(dollyPerson.getHovedperson())
-                                                    .map(eksisterendeRoller -> BrregstubMergeUtil.merge(nyRolleoversikt, eksisterendeRoller))
-                                                    .flatMap(this::postRolleutskrift)))
-                                    .flatMap(Flux::from)
-                                    .collect(Collectors.joining()) :
-
-                            Mono.just(encodeStatus(getVarselSlutt("BRREG"))))
-                    )
-                    .map(status -> futurePersist(progress, status)));
+            return Flux.from(getPersonData(dollyPerson.getHovedperson())
+                            .flatMap(personBolk -> mapRolleoversikt(bestilling.getBrregstub(), personBolk)
+                                    .map(nyRolleoversikt -> brregstubConsumer.getRolleoversikt(dollyPerson.getHovedperson())
+                                            .map(eksisterendeRoller -> BrregstubMergeUtil.merge(nyRolleoversikt, eksisterendeRoller))
+                                            .flatMap(this::postRolleutskrift)))
+                            .flatMap(Flux::from)
+                            .collect(Collectors.joining()))
+                    .map(status -> futurePersist(progress, status));
         }
         return Flux.empty();
     }

@@ -17,15 +17,11 @@ import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -44,23 +40,16 @@ public class KontoregisterClient implements ClientRegister {
 
         if (nonNull(bestilling.getBankkonto())) {
 
-            progress.setKontoregisterStatus(encodeStatus(getInfoVenter(SYSTEM)));
+            progress.setKontoregisterStatus(getInfoVenter(SYSTEM));
             transactionHelperService.persister(progress);
 
             var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
             if (nonNull(request)) {
-                return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                        .flatMap(isPresent -> {
-                            if (isTrue(isPresent)) {
-                                return kontoregisterConsumer.postKontonummerRegister(request)
-                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                                errorStatusDecoder.getErrorText(status.getStatus(),
-                                                        status.getFeilmelding()));
-                            } else {
-                                return Mono.just(encodeStatus(getVarselSlutt(SYSTEM)));
-                            }
-                        })
-                        .map(status -> futurePersist(progress, status)));
+                return Flux.from(kontoregisterConsumer.postKontonummerRegister(request)
+                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                        errorStatusDecoder.getErrorText(status.getStatus(),
+                                                status.getFeilmelding())))
+                        .map(status -> futurePersist(progress, status));
             }
         }
         return Flux.empty();

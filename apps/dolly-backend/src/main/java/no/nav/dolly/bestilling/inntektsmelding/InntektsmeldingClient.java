@@ -8,7 +8,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -19,7 +18,6 @@ import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,8 +27,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -45,7 +41,6 @@ public class InntektsmeldingClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
-    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -53,7 +48,7 @@ public class InntektsmeldingClient implements ClientRegister {
         if (nonNull(bestilling.getInntektsmelding())) {
 
             progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getInfoVenter("JOARK"))))
+                    .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter("JOARK")))
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
@@ -62,24 +57,18 @@ public class InntektsmeldingClient implements ClientRegister {
 
             var inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
 
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isTrue(isReady) ?
-                            Flux.fromIterable(bestilling.getEnvironments())
-                                    .flatMap(environment -> {
+            return Flux.from(
+                    Flux.fromIterable(bestilling.getEnvironments())
+                            .flatMap(environment -> {
 
-                                        inntektsmeldingRequest.setMiljoe(environment);
-                                        return postInntektsmelding(isOpprettEndre ||
-                                                        !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
-                                                inntektsmeldingRequest, progress.getBestilling().getId());
-                                    })
-                                    .filter(StringUtils::isNotBlank)
-                                    .collect(Collectors.joining(",")) :
-
-                            Mono.just(bestilling.getEnvironments().stream()
-                                    .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getVarselSlutt("JOARK"))))
-                                    .collect(Collectors.joining(","))))
-                    )
-                    .map(status -> futurePersist(progress, status)));
+                                inntektsmeldingRequest.setMiljoe(environment);
+                                return postInntektsmelding(isOpprettEndre ||
+                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
+                                        inntektsmeldingRequest, progress.getBestilling().getId());
+                            })
+                            .filter(StringUtils::isNotBlank)
+                            .collect(Collectors.joining(","))
+                            .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
     }

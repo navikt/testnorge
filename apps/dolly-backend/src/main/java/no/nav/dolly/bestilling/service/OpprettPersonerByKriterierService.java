@@ -22,6 +22,7 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -91,12 +92,12 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                             .map(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> pdlSync ?
                                                                     Flux.concat(
-                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                            fase2Klienter(),
-                                                                                            progress, true),
-                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                            fase3Klienter(),
-                                                                                            progress, true)) :
+                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                    fase2Klienter(),
+                                                                                    progress, true),
+                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                    fase3Klienter(),
+                                                                                    progress, true)) :
                                                                     Flux.just(Collections.emptyList()))))
                                             .doOnError(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
@@ -152,7 +153,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         if (response.getStatus().is2xxSuccessful()) {
 
-            progress.setIdent(response.getIdent());
+            progress.setIdent(Strings.isNotBlank(response.getIdent()) ? response.getIdent() : "?");
             return pdlDataConsumer.sendOrdre(response.getIdent(), true)
                     .map(resultat -> {
                         progress.setPdlDataStatus(resultat.getStatus().is2xxSuccessful() ?

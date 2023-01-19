@@ -11,7 +11,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.bestilling.dokarkiv.domain.JoarkTransaksjon;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -24,7 +23,6 @@ import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -33,10 +31,7 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -50,7 +45,6 @@ public class DokarkivClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
-    private final PersonServiceConsumer personServiceConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -60,29 +54,22 @@ public class DokarkivClient implements ClientRegister {
         if (nonNull(bestilling.getDokarkiv())) {
 
             progress.setDokarkivStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter("JOARK"))))
+                    .map(miljo -> String.format("%s:%s", miljo, getInfoVenter("JOARK")))
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
             var bestillingId = progress.getBestilling().getId();
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isReady -> (isTrue(isReady) ?
-                            getPersonData(List.of(dollyPerson.getHovedperson()))
-                                    .map(person -> buildRequest(bestilling.getDokarkiv(), person))
-                                    .flatMap(request -> dokarkivConsumer.getEnvironments()
-                                            .flatMapIterable(env -> env)
-                                            .filter(env -> bestilling.getEnvironments().contains(env))
-                                            .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
-                                                    dollyPerson.getHovedperson(), env) || isOpprettEndre)
-                                            .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
-                                                    .map(status -> getStatus(dollyPerson.getHovedperson(), bestillingId, status))))
-                                    .collect(Collectors.joining(",")) :
-
-                            Mono.just(bestilling.getEnvironments().stream()
-                                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt("JOARK"))))
-                                    .collect(Collectors.joining(",")))))
-
-                    .map(status -> futurePersist(progress, status)));
+            return Flux.from(getPersonData(List.of(dollyPerson.getHovedperson()))
+                            .map(person -> buildRequest(bestilling.getDokarkiv(), person))
+                            .flatMap(request -> dokarkivConsumer.getEnvironments()
+                                    .flatMapIterable(env -> env)
+                                    .filter(env -> bestilling.getEnvironments().contains(env))
+                                    .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
+                                            dollyPerson.getHovedperson(), env) || isOpprettEndre)
+                                    .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
+                                            .map(status -> getStatus(dollyPerson.getHovedperson(), bestillingId, status))))
+                            .collect(Collectors.joining(",")))
+                    .map(status -> futurePersist(progress, status));
         }
 
         return Flux.empty();

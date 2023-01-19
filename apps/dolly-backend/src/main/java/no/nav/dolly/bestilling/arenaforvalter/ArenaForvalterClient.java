@@ -75,23 +75,17 @@ public class ArenaForvalterClient implements ClientRegister {
         if (nonNull(bestilling.getArenaforvalter())) {
 
             progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getInfoVenter(SYSTEM))))
+                    .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                            .flatMap(isPdlReady -> (isTrue(isPdlReady) ?
-                                    getIdenterFamilie(dollyPerson.getHovedperson())
-                                            .flatMap(personServiceConsumer::getPdlSyncReady)
-                                            .collectList()
-                                            .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
-                                            .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, bestilling, dollyPerson))
-                                            .flatMap(Mono::from) :
-
-                                    doFeilmelding(bestilling))
-                            )
+            return Flux.from(getIdenterFamilie(dollyPerson.getHovedperson())
+                    .flatMap(personServiceConsumer::getPdlSyncReady)
+                    .collectList()
+                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
+                    .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, bestilling, dollyPerson))
+                    .flatMap(Mono::from)
                     .map(status -> futurePersist(progress, status)));
-
         }
         return Flux.empty();
     }

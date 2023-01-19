@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
@@ -33,10 +32,7 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPermitteringId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -54,7 +50,6 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
     private final TransactionHelperService transactionHelperService;
-    private final PersonServiceConsumer personServiceConsumer;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -64,29 +59,22 @@ public class AaregClient implements ClientRegister {
             var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
 
             progress.setAaregStatus(miljoer.stream()
-                    .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getInfoVenter(SYSTEM))))
+                    .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
-            return Flux.from(personServiceConsumer.getPdlSyncReady(dollyPerson.getHovedperson())
-                    .flatMap(isPresent -> {
-                                if (isTrue(isPresent)) {
-                                    if (bestilling.getAareg().stream()
-                                            .map(RsAareg::getAmelding)
-                                            .allMatch(List::isEmpty)) {
+            return Flux.just(1)
+                    .flatMap(index -> {
+                        if (bestilling.getAareg().stream()
+                                .map(RsAareg::getAmelding)
+                                .allMatch(List::isEmpty)) {
 
-                                        return sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre);
-                                    } else {
-                                        return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
-                                    }
-                                } else {
-                                    return Mono.just(miljoer.stream()
-                                            .map(miljo -> String.format("%s:%s", miljo, encodeStatus(getVarselSlutt(SYSTEM))))
-                                            .collect(Collectors.joining(",")));
-                                }
-                            }
-                    )
-                    .map(status -> futurePersist(progress, status)));
+                            return sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre);
+                        } else {
+                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
+                        }
+                    })
+                    .map(status -> futurePersist(progress, status));
         }
         return Flux.empty();
     }
