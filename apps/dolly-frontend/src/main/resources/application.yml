@@ -37,9 +37,6 @@ spring:
   session:
     timeout: 60m
 
-
-
-
 consumers:
   testnav-tps-messaging-service:
     cluster: dev-gcp
