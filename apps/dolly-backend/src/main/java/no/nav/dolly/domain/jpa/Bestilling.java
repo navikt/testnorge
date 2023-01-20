@@ -52,7 +52,7 @@ public class Bestilling implements Serializable {
     @Column(name = "FERDIG", nullable = false)
     private boolean ferdig;
 
-    @Column(name = "MILJOER", nullable = false)
+    @Column(name = "MILJOER", nullable = true)
     private String miljoer;
 
     @Column(name = "ANTALL_IDENTER", nullable = false)

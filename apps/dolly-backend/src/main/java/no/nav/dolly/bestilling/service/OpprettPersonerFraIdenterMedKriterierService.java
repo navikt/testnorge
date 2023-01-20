@@ -35,6 +35,7 @@ import java.util.Objects;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -83,7 +84,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                                             dollyPerson, progress, true)
                                                                     .map(ClientFuture::get)
                                                                     .map(BestillingProgress::isPdlSync)
-                                                                    .flatMap(pdlSync -> pdlSync ?
+                                                                    .flatMap(pdlSync -> isTrue(pdlSync) ?
                                                                             Flux.concat(
                                                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                             fase2Klienter(),

@@ -22,7 +22,6 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -187,9 +186,7 @@ public class DollyBestillingService {
 
         try {
             RsDollyBestillingRequest bestKriterier = objectMapper.readValue(bestilling.getBestKriterier(), RsDollyBestillingRequest.class);
-            if (nonNull(bestilling.getTpsfKriterier())) {
-                bestKriterier.setTpsf(objectMapper.readValue(bestilling.getTpsfKriterier(), RsTpsfUtvidetBestilling.class));
-            }
+
             bestKriterier.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
             bestKriterier.setEnvironments(getEnvironments(bestilling.getMiljoer()));
             bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
@@ -225,8 +222,8 @@ public class DollyBestillingService {
     }
 
     protected Flux<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
-                                                                GjenopprettSteg steg,
-                                                                BestillingProgress progress, boolean isOpprettEndre) {
+                                                           GjenopprettSteg steg,
+                                                           BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
         return Flux.from(Flux.fromIterable(clientRegisters)
@@ -303,8 +300,14 @@ public class DollyBestillingService {
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
 
+        return opprettProgress(bestilling, master, null);
+    }
+
+    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
+
         return Flux.just(transactionHelperService.oppdaterProgress(BestillingProgress.builder()
                 .bestilling(bestilling)
+                .ident(ident)
                 .master(master)
                 .build()));
     }
@@ -320,7 +323,7 @@ public class DollyBestillingService {
         if (response.getStatus().is2xxSuccessful()) {
 
             progress.setIdent(Strings.isNotBlank(response.getIdent()) ? response.getIdent() : "?");
-            return pdlDataConsumer.sendOrdre(response.getIdent(), true)
+            return pdlDataConsumer.sendOrdre(response.getIdent(), false)
                     .map(resultat -> {
                         progress.setPdlDataStatus(resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
