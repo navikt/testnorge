@@ -80,5 +80,5 @@ spec:
   image: {{image}}
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: idporten
+      value: idporten,prod
       
