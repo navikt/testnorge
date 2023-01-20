@@ -5,6 +5,7 @@ import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServ
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
+import no.nav.testnav.joarkdokumentservice.consumer.dto.JournalpostDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -48,7 +49,8 @@ public class SafConsumer {
                 ).call())
                 .map(response -> {
                     log.info("Mottok journalpost: {}", response);
-                    return new Journalpost(response.getData().getJournalpost());
+//                    return new Journalpost(response.getData().getJournalpost());
+                    return new Journalpost(new JournalpostDTO());
                 })
                 .block();
     }

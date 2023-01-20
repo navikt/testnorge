@@ -1,7 +1,6 @@
 package no.nav.testnav.joarkdokumentservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.joarkdokumentservice.consumer.dto.Response;
 import no.nav.testnav.joarkdokumentservice.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -14,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
+public class GetDokumentInfoCommand implements Callable<Mono<Object>> {
 
     private final WebClient webClient;
     private final String token;
@@ -23,7 +22,7 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
 
 
     @Override
-    public Mono<Response> call() {
+    public Mono<Object> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -38,7 +37,7 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
                                 .build()
                 ))
                 .retrieve()
-                .bodyToMono(Response.class)
+                .bodyToMono(Object.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
