@@ -11,7 +11,7 @@ export default function Panel({
 	hasErrors = false,
 	heading = 'Panel',
 	content = null,
-	children = null,
+	children = null as any,
 	checkAttributeArray = null,
 	uncheckAttributeArray = null,
 	informasjonstekst = null,
