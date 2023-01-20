@@ -21,7 +21,7 @@ public class JournalpostController {
     @GetMapping
     public ResponseEntity<JournalpostDTO> hentJournalpost(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("journalpostId") Integer journalpostId
+            @PathVariable("journalpostId") String journalpostId
     ) {
         var journalpost = service.getJournalpost(journalpostId, miljo);
         return ResponseEntity.ok(journalpost.toDTO());

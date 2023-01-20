@@ -5,7 +5,6 @@ import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServ
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
-import no.nav.testnav.joarkdokumentservice.consumer.dto.JournalpostDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -38,7 +37,7 @@ public class SafConsumer {
                 .build();
     }
 
-    public Journalpost getJournalpost(Integer journalpostId, String miljo) {
+    public Journalpost getJournalpost(String journalpostId, String miljo) {
         return tokenExchange
                 .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentInfoCommand(
@@ -48,9 +47,11 @@ public class SafConsumer {
                         miljo
                 ).call())
                 .map(response -> {
-                    log.info("Mottok journalpost: {}", response);
-//                    return new Journalpost(response.getData().getJournalpost());
-                    return new Journalpost(new JournalpostDTO());
+                    log.info("Mottok journalpost: {}", response.getData());
+                    if (!response.getErrors().isEmpty()) {
+                        response.getErrors().forEach(error -> log.error("Feilet under henting av Journalpost: {}", error.getMessage()));
+                    }
+                    return new Journalpost(response.getData().getJournalpost());
                 })
                 .block();
     }

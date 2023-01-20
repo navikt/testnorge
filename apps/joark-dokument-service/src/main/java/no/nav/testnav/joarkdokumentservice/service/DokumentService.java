@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class DokumentService {
     private final SafConsumer safConsumer;
 
-    public Journalpost getJournalpost(Integer journalpostId, String miljo) {
+    public Journalpost getJournalpost(String journalpostId, String miljo) {
         return safConsumer.getJournalpost(journalpostId, miljo);
     }
 

@@ -1,6 +1,9 @@
 package no.nav.testnav.joarkdokumentservice.controller.v1;
 
 import lombok.RequiredArgsConstructor;
+import no.nav.testnav.joarkdokumentservice.controller.v1.dto.DokumentInfoDTO;
+import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
+import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,10 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.joarkdokumentservice.controller.v1.dto.DokumentInfoDTO;
-import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
-import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 
 @RequiredArgsConstructor
 @RestController
@@ -25,7 +24,7 @@ public class DokumentController {
     @GetMapping
     public ResponseEntity<List<DokumentInfoDTO>> hentDokumenter(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("journalpostId") Integer journalpostId
+            @PathVariable("journalpostId") String journalpostId
     ) {
         var journalpost = service.getJournalpost(journalpostId, miljo);
         var list = journalpost.getDokumenter().stream().map(dokument -> DokumentInfoDTO
