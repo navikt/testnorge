@@ -4,14 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LagreInntektRequest {
+public class PensjonTpForholdRequest {
+
+    private Set<String> miljoer;
 
     private String fnr;
-    private Integer tomAar;
-    private Integer fomAar;
-    private Integer belop;
-    private Boolean redusertMedGrunnbelop;
+    private String ordning;
 }
