@@ -124,12 +124,12 @@ export const DollyFaBlokkOrg = ({
 	)
 }
 
-export const DollyFaBlokkNested = ({ idx, handleRemove, children }) => (
+export const DollyFaBlokkNested = ({ idx, handleRemove, children, whiteBackground }) => (
 	<div className="dfa-blokk-nested">
 		<div className="dfa-blokk_header">
 			<Numbering idx={idx + 1} />
 		</div>
-		<div className="dfa-blokk_content">
+		<div className={whiteBackground ? 'dfa-blokk_content_white' : 'dfa-blokk_content'}>
 			<DeleteButton onClick={handleRemove} />
 			{children}
 		</div>
@@ -145,6 +145,7 @@ export const DollyFieldArray = ({
 	children,
 	expandable = false,
 	getHeader = null,
+	whiteBackground = false,
 }) => {
 	if (ignoreOnSingleElement && data.length === 1) {
 		return children(data[0], 0)
@@ -156,7 +157,7 @@ export const DollyFieldArray = ({
 				{data.map((curr, idx) => {
 					if (nested) {
 						return (
-							<DollyFaBlokkNested key={idx} idx={idx}>
+							<DollyFaBlokkNested key={idx} idx={idx} whiteBackground={whiteBackground}>
 								{children(curr, idx)}
 							</DollyFaBlokkNested>
 						)
@@ -200,6 +201,7 @@ export const FormikDollyFieldArray = ({
 	handleRemoveEntry = null,
 	maxEntries = null,
 	maxReachedDescription = null,
+	buttonText = null,
 }) => (
 	<FieldArray name={name}>
 		{(arrayHelpers) => {
@@ -257,7 +259,7 @@ export const FormikDollyFieldArray = ({
 						})}
 						<FieldArrayAddButton
 							hoverText={title || (maxEntries === values.length && maxReachedDescription)}
-							addEntryButtonText={header}
+							addEntryButtonText={buttonText ? buttonText : header}
 							onClick={addNewEntry}
 							disabled={disabled || maxEntries === values.length}
 						/>

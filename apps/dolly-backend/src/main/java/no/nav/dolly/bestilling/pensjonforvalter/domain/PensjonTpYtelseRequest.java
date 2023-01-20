@@ -11,7 +11,7 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LagreTpYtelseRequest {
+public class PensjonTpYtelseRequest {
 
     private Set<String> miljoer;
 

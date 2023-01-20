@@ -2,16 +2,15 @@ package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.pensjonforvalter.domain.LagreInntektRequest;
+import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.util.WebClientFilter;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 
@@ -23,17 +22,17 @@ import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @Slf4j
 @RequiredArgsConstructor
-public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterResponse>> {
+public class LagrePoppInntektCommand implements Callable<Mono<PensjonforvalterResponse>> {
 
     private static final String MILJO_HEADER = "miljo";
     private static final String POPP_INNTEKT_URL = "/api/v1/inntekt";
 
     private final WebClient webClient;
     private final String token;
-    private final LagreInntektRequest lagreInntektRequest;
+    private final PensjonPoppInntektRequest pensjonPoppInntektRequest;
     private final String miljoe;
 
-    public Flux<PensjonforvalterResponse> call() {
+    public Mono<PensjonforvalterResponse> call() {
         return webClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -43,26 +42,25 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(MILJO_HEADER, miljoe)
-                .bodyValue(lagreInntektRequest)
+                .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()
-                .bodyToFlux(String.class)
-                .map(response -> pensjonforvalterResponse(miljoe, response))
+                .toBodilessEntity()
+                .map(response -> pensjonforvalterResponse(miljoe, response.getStatusCode()))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(error -> Mono.just(pensjonforvalterResponseFromError(miljoe, error)));
     }
 
-    private static PensjonforvalterResponse pensjonforvalterResponse(String miljoe, String response) {
+    private static PensjonforvalterResponse pensjonforvalterResponse(String miljoe, HttpStatus status) {
 
         var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
                 .miljo(miljoe)
                 .response(PensjonforvalterResponse.Response.builder()
                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .reasonPhrase(response)
-                                .status(200)
+                                .status(status.value())
+                                .reasonPhrase(status.getReasonPhrase())
                                 .build())
-                        .timestamp(LocalDateTime.now())
                         .path(POPP_INNTEKT_URL)
                         .build())
                 .build();
@@ -73,14 +71,15 @@ public class LagrePoppInntektCommand implements Callable<Flux<PensjonforvalterRe
     }
 
     private static PensjonforvalterResponse pensjonforvalterResponseFromError(String miljoe, Throwable error) {
+
         var miljoeResponse = PensjonforvalterResponse.ResponseEnvironment.builder()
                 .miljo(miljoe)
                 .response(PensjonforvalterResponse.Response.builder()
                         .httpStatus(PensjonforvalterResponse.HttpStatus.builder()
-                                .reasonPhrase(WebClientFilter.getMessage(error))
-                                .status(500)
+                                .status(WebClientFilter.getStatus(error).value())
+                                .reasonPhrase(WebClientFilter.getStatus(error).getReasonPhrase())
                                 .build())
-                        .timestamp(LocalDateTime.now())
+                        .message(WebClientFilter.getMessage(error))
                         .path(POPP_INNTEKT_URL)
                         .build())
                 .build();

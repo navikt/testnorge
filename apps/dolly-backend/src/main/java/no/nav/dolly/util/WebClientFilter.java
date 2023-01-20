@@ -2,6 +2,7 @@ package no.nav.dolly.util;
 
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.nio.charset.StandardCharsets;
@@ -21,6 +22,13 @@ public class WebClientFilter {
         return throwable instanceof WebClientResponseException webClientResponseException?
                 webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 throwable.getMessage();
+    }
+
+    public static HttpStatus getStatus(Throwable throwable) {
+
+        return throwable instanceof WebClientResponseException webClientResponseException?
+                webClientResponseException.getStatusCode() :
+                HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     public static void logErrorMessage(Throwable throwable) {

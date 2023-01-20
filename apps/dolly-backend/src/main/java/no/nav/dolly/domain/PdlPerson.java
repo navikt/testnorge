@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,7 +29,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TilrettelagtKommunikasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskIdentifikasjonsnummerDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 
 import java.io.Serializable;
@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.PdlPerson.Rolle.BARN;
 import static no.nav.dolly.domain.PdlPerson.Rolle.FAR;
 import static no.nav.dolly.domain.PdlPerson.Rolle.MEDMOR;
@@ -94,6 +95,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Person {
@@ -362,6 +364,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ForelderBarnRelasjon {
@@ -384,6 +387,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Sivilstand {
@@ -392,6 +396,12 @@ public class PdlPerson {
         private LocalDate gyldigFraOgMed;
         private String relatertVedSivilstand;
         private Metadata metadata;
+
+        public boolean isGift() {
+            return nonNull(type) &&
+                    type != SivilstandType.UOPPGITT &&
+                    type != SivilstandType.UGIFT;
+        }
     }
 
     @lombok.Data

@@ -117,7 +117,7 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		[journalpostUrl(transaksjonsid, dokarkivEnvironments)],
+		journalpostUrl(transaksjonsid, dokarkivEnvironments),
 		multiFetcherDokarkiv
 	)
 

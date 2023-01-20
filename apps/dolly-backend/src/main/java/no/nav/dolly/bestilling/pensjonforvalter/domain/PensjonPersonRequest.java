@@ -12,7 +12,7 @@ import static java.util.Objects.isNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class OpprettPersonRequest {
+public class PensjonPersonRequest {
 
     private Set<String> miljoer;
 

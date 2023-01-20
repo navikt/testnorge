@@ -28,10 +28,6 @@ import java.util.function.Function;
 })
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
-    public static void main(String[] args) {
-        SpringApplication.run(DokarkivProxyApplicationStarter.class, args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            TrygdeetatenAzureAdTokenService tokenService,
@@ -53,14 +49,13 @@ public class DokarkivProxyApplicationStarter {
                 .route(createRoute("q4", addAuthenticationHeaderFilter))
                 .route(createRoute("q5", addAuthenticationHeaderFilter))
                 .route(createRoute("qx", addAuthenticationHeaderFilter))
-                .route(createRoute("t0", addAuthenticationHeaderFilter))
-                .route(createRoute("t1", addAuthenticationHeaderFilter))
-                .route(createRoute("t2", addAuthenticationHeaderFilter))
                 .route(createRoute("t3", addAuthenticationHeaderFilter))
-                .route(createRoute("t4", addAuthenticationHeaderFilter))
-                .route(createRoute("t5", addAuthenticationHeaderFilter))
                 .route(createRoute("t13", addAuthenticationHeaderFilter))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(DokarkivProxyApplicationStarter.class, args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {

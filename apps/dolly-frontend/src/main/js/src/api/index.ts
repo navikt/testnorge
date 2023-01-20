@@ -62,17 +62,17 @@ export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
 	)
 }
 
-export const multiFetcherDokarkiv = (miljoUrlListe) => {
-	return Promise.all(
+export const multiFetcherDokarkiv = (miljoUrlListe) =>
+	Promise.all(
 		miljoUrlListe?.map((obj) =>
 			obj.url
-				? fetcher(obj.url, { miljo: obj.miljo }).then((result) => {
-						return { miljo: obj.miljo, data: result }
-				  })
+				? fetcher(obj.url, { miljo: obj.miljo }).then((result) => ({
+						miljo: obj.miljo,
+						data: result,
+				  }))
 				: { miljo: obj.miljo, data: null }
 		)
 	)
-}
 
 export const fetcher = (url, headers) =>
 	axios

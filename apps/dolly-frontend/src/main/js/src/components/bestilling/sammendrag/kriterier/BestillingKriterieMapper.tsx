@@ -1696,7 +1696,7 @@ const mapPensjon = (bestillingData, data) => {
 			data.push(pensjonforvalterPopp)
 		}
 
-		if (pensjonKriterier.tp) {
+		if (pensjonKriterier.tp && pensjonKriterier.tp.length > 0) {
 			const hentTpOrdningNavn = (tpnr) => {
 				if (Options('tpOrdninger').length) {
 					return Options('tpOrdninger').find((ordning) => ordning.value === tpnr)?.label
@@ -1730,6 +1730,19 @@ const mapPensjon = (bestillingData, data) => {
 			})
 
 			data.push(pensjonforvalterTp)
+		}
+
+		if (pensjonKriterier.alderspensjon) {
+			const ap = pensjonKriterier.alderspensjon
+			const pensjonforvalterAlderspensjon = {
+				header: 'Alderspensjon',
+				items: [
+					obj('Iverksettelsesdato', Formatters.formatDate(ap.iverksettelsesdato)),
+					obj('Uttaksgrad', `${ap.uttaksgrad}%`),
+					obj('Ektefelle/partners inntekt', ap.relasjoner?.[0]?.sumAvForvArbKapPenInntekt),
+				],
+			}
+			data.push(pensjonforvalterAlderspensjon)
 		}
 	}
 }
