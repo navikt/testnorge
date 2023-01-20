@@ -1,5 +1,5 @@
 # Prod config
-POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.intern.nav.no/login
+POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.nav.no/login
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
@@ -22,7 +22,7 @@ spring:
             client-authentication-method: private_key_jwt
         provider:
           idporten:
-            issuer-uri: ${IDPORTEN_ISSUER_DEV_URI} //TODO BYTTE TIL PROD VERSJON NÅR DET FUNGERER
+            issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
