@@ -1,13 +1,12 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
-IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 spring:
   security:
     oauth2:
       resourceserver:
         idporten:
-          issuer-uri: ${IDPORTEN_ISSUER_URI}
+          issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys

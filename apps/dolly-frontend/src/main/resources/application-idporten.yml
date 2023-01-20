@@ -1,5 +1,4 @@
 # Prod config
-IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.intern.nav.no/login
 
 spring:
@@ -19,7 +18,7 @@ spring:
             client-authentication-method: private_key_jwt
         provider:
           idporten:
-            issuer-uri: ${IDPORTEN_ISSUER_URI}
+            issuer-uri: ${IDPORTEN_ISSUER_DEV_URI} //TODO BYTTE TIL PROD VERSJON NÅR DET FUNGERER
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace

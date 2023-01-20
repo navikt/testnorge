@@ -27,10 +27,9 @@ spring:
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           idporten:
-            issuer-uri: ${IDPORTEN_ISSUER_URI}
+            issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:
   tps-forvalteren-proxy:

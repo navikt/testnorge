@@ -73,6 +73,8 @@ spec:
       cpu: 1500m
       memory: 2048Mi
   image: {{image}}
+  envFrom:
+    - secret: idporten-dolly-dev-gcp
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: idporten
