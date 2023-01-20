@@ -10,12 +10,15 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
 import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
+import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -29,6 +32,7 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -71,6 +75,7 @@ public class DollyBestillingService {
     protected final PdlDataConsumer pdlDataConsumer;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
+    protected final PersonServiceClient personServiceClient;
 
     protected static Boolean isSyntetisk(String ident) {
 
@@ -198,7 +203,7 @@ public class DollyBestillingService {
 
     public GjenopprettSteg fase1Klienter() {
 
-        return (register) -> register instanceof TagsHendelseslagerClient;
+        return TagsHendelseslagerClient.class::isInstance;
     }
 
     public GjenopprettSteg fase2Klienter() {
@@ -208,14 +213,14 @@ public class DollyBestillingService {
                 AaregClient.class,
                 InntektstubClient.class);
 
-        return (register) -> !fase1Klienter().apply(register) &&
+        return register -> !fase1Klienter().apply(register) &&
                 klienter.stream()
                         .anyMatch(client -> client.isInstance(register));
     }
 
     public GjenopprettSteg fase3Klienter() {
 
-        return (register) -> !fase1Klienter().apply(register) &&
+        return register -> !fase1Klienter().apply(register) &&
                 !fase2Klienter().apply(register);
     }
 
@@ -275,5 +280,60 @@ public class DollyBestillingService {
         }
 
         return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
+    }
+
+    protected Flux<DollyPerson> leggIdentTilGruppe(String ident, Testgruppe gruppe, String beskrivelse) {
+
+        identService.saveIdentTilGruppe(ident, gruppe, PDLF, beskrivelse);
+        log.info("Ident {} lagt til gruppe {}", ident, gruppe.getId());
+
+        return Flux.just(DollyPerson.builder()
+                .hovedperson(ident)
+                .master(PDLF)
+                .tags(gruppe.getTags())
+                .build());
+    }
+
+    protected void doFerdig(Bestilling bestilling) {
+
+        transactionHelperService.oppdaterBestillingFerdig(bestilling);
+        MDC.remove(MDC_KEY_BESTILLING);
+        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
+    }
+
+    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, OriginatorCommand.Originator originator) {
+
+        return Flux.just(transactionHelperService.oppdaterProgress(BestillingProgress.builder()
+                .bestilling(bestilling)
+                .master(originator.getMaster())
+                .build()));
+    }
+
+    protected Flux<PdlResponse> opprettPerson(OriginatorCommand.Originator originator) {
+
+        return pdlDataConsumer.opprettPdl(originator.getPdlBestilling())
+                .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
+    }
+
+    protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse response) {
+
+        if (response.getStatus().is2xxSuccessful()) {
+
+            progress.setIdent(Strings.isNotBlank(response.getIdent()) ? response.getIdent() : "?");
+            return pdlDataConsumer.sendOrdre(response.getIdent(), true)
+                    .map(resultat -> {
+                        progress.setPdlDataStatus(resultat.getStatus().is2xxSuccessful() ?
+                                resultat.getJsonNode() :
+                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding()));
+                        transactionHelperService.persister(progress);
+                        log.info("Sendt ordre til PDL for ident {} ", response.getIdent());
+                        return response.getIdent();
+                    });
+
+        } else {
+            progress.setPdlDataStatus(errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+            transactionHelperService.persister(progress);
+            return Flux.empty();
+        }
     }
 }

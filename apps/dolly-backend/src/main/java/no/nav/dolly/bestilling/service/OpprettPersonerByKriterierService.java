@@ -6,13 +6,10 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -22,7 +19,6 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -31,19 +27,15 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
 public class OpprettPersonerByKriterierService extends DollyBestillingService {
-
-    private final PersonServiceClient personServiceClient;
 
     public OpprettPersonerByKriterierService(DollyPersonCache dollyPersonCache, IdentService identService,
                                              BestillingProgressService bestillingProgressService,
@@ -56,9 +48,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
-
-        this.personServiceClient = personServiceClient;
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
     }
 
     @Async
@@ -98,7 +88,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase3Klienter(),
                                                                                     progress, true)) :
-                                                                    Flux.just(Collections.emptyList()))))
+                                                                    Flux.empty())))
+                                            .filter(Objects::nonNull)
                                             .doOnError(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -112,62 +103,6 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             doFerdig(bestilling);
-
-        }
-    }
-
-    private Flux<DollyPerson> leggIdentTilGruppe(String ident, Testgruppe gruppe, String beskrivelse) {
-
-        identService.saveIdentTilGruppe(ident, gruppe, PDLF, beskrivelse);
-        log.info("Ident {} lagt til gruppe {}", ident, gruppe.getId());
-
-        return Flux.just(DollyPerson.builder()
-                .hovedperson(ident)
-                .master(PDLF)
-                .tags(gruppe.getTags())
-                .build());
-    }
-
-    private void doFerdig(Bestilling bestilling) {
-
-        transactionHelperService.oppdaterBestillingFerdig(bestilling);
-        MDC.remove(MDC_KEY_BESTILLING);
-        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
-    }
-
-    private Flux<BestillingProgress> opprettProgress(Bestilling bestilling, OriginatorCommand.Originator originator) {
-
-        return Flux.just(transactionHelperService.oppdaterProgress(BestillingProgress.builder()
-                .bestilling(bestilling)
-                .master(originator.getMaster())
-                .build()));
-    }
-
-    private Flux<PdlResponse> opprettPerson(OriginatorCommand.Originator originator) {
-
-        return pdlDataConsumer.opprettPdl(originator.getPdlBestilling())
-                .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
-    }
-
-    private Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse response) {
-
-        if (response.getStatus().is2xxSuccessful()) {
-
-            progress.setIdent(Strings.isNotBlank(response.getIdent()) ? response.getIdent() : "?");
-            return pdlDataConsumer.sendOrdre(response.getIdent(), true)
-                    .map(resultat -> {
-                        progress.setPdlDataStatus(resultat.getStatus().is2xxSuccessful() ?
-                                resultat.getJsonNode() :
-                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding()));
-                        transactionHelperService.persister(progress);
-                        log.info("Sendt ordre til PDL for ident {} ", response.getIdent());
-                        return response.getIdent();
-                    });
-
-        } else {
-            progress.setPdlDataStatus(errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
-            transactionHelperService.persister(progress);
-            return Flux.empty();
         }
     }
 }

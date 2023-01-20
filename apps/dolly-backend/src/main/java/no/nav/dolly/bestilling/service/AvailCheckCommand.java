@@ -8,31 +8,29 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.domain.jpa.Testident.Master;
+import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @RequiredArgsConstructor
-public class AvailCheckCommand implements Callable<List<AvailCheckCommand.AvailStatus>> {
+public class AvailCheckCommand implements Callable<Flux<AvailCheckCommand.AvailStatus>> {
 
     private final String opprettFraIdenter;
     private final PdlDataConsumer pdlDataConsumer;
 
     @Override
-    public List<AvailStatus> call() {
+    public Flux<AvailStatus> call() {
 
-        var checkedIdenter = pdlDataConsumer.identCheck(List.of(opprettFraIdenter.split(",")));
-        return checkedIdenter.stream()
+        return pdlDataConsumer.identCheck(List.of(opprettFraIdenter.split(",")))
                 .map(status -> AvailStatus.builder()
                         .ident(status.getIdent())
                         .available(isTrue(status.getAvailable()))
                         .message(status.getStatus())
                         .master(Master.PDLF)
-                        .build())
-                .collect(Collectors.toList());
+                        .build());
     }
 
     @Data

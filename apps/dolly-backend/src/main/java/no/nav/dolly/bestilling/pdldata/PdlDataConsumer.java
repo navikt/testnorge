@@ -57,7 +57,7 @@ public class PdlDataConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_sendOrdre" })
+    @Timed(name = "providers", tags = {"operation", "pdl_sendOrdre"})
     public Flux<PdlResponse> sendOrdre(String ident, boolean ekskluderEksternePersoner) {
 
         return tokenService.exchange(serviceProperties)
@@ -65,7 +65,7 @@ public class PdlDataConsumer implements ConsumerStatus {
                         token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_delete" })
+    @Timed(name = "providers", tags = {"operation", "pdl_delete"})
     public Mono<List<Void>> slettPdl(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -76,7 +76,7 @@ public class PdlDataConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_delete_utenom" })
+    @Timed(name = "providers", tags = {"operation", "pdl_delete_utenom"})
     public Mono<List<Void>> slettPdlUtenom(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -89,14 +89,14 @@ public class PdlDataConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_opprett" })
+    @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
     public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_oppdater" })
+    @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
     public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
         return nonNull(request.getPerson()) ?
@@ -117,13 +117,14 @@ public class PdlDataConsumer implements ConsumerStatus {
                         token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_identCheck" })
-    public List<AvailibilityResponseDTO> identCheck(List<String> identer) {
+    @Timed(name = "providers", tags = {"operation", "pdl_identCheck"})
+    public Flux<AvailibilityResponseDTO> identCheck(List<String> identer) {
 
-        return List.of(new PdlDataCheckIdentCommand(webClient, identer, serviceProperties.getAccessToken(tokenService)).call().block());
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataCheckIdentCommand(webClient, identer, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_identer_standalone" })
+    @Timed(name = "providers", tags = {"operation", "pdl_identer_standalone"})
     public Mono<Void> putStandalone(String ident, Boolean standalone) {
 
         return tokenService.exchange(serviceProperties)
@@ -131,7 +132,7 @@ public class PdlDataConsumer implements ConsumerStatus {
                         .call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pdl_dataforvalter_alive" })
+    @Timed(name = "providers", tags = {"operation", "pdl_dataforvalter_alive"})
     public Map<String, String> checkAlive() {
         return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }

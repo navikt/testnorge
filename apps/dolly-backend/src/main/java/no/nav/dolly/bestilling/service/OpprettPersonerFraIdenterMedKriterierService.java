@@ -3,13 +3,15 @@ package no.nav.dolly.bestilling.service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -18,28 +20,24 @@ import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.dolly.util.WebClientFilter;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.Objects;
 
 import static java.util.Objects.nonNull;
-import static java.util.concurrent.CompletableFuture.supplyAsync;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
-
-    private ExecutorService dollyForkJoinPool;
 
     public OpprettPersonerFraIdenterMedKriterierService(DollyPersonCache dollyPersonCache, IdentService identService,
                                                         BestillingProgressService bestillingProgressService,
@@ -48,15 +46,13 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         List<ClientRegister> clientRegisters,
                                                         CounterCustomRegistry counterCustomRegistry,
                                                         ErrorStatusDecoder errorStatusDecoder,
-                                                        ExecutorService dollyForkJoinPool,
                                                         PdlPersonConsumer pdlPersonConsumer,
                                                         PdlDataConsumer pdlDataConsumer,
-                                                        TransactionHelperService transactionHelperService) {
+                                                        TransactionHelperService transactionHelperService,
+                                                        PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
-
-        this.dollyForkJoinPool = dollyForkJoinPool;
+                pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
     }
 
     @Async
@@ -70,32 +66,42 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
         if (nonNull(bestKriterier)) {
 
-            var tilgjengeligeIdenter = new AvailCheckCommand(
-                    bestilling.getOpprettFraIdenter(),
-                    pdlDataConsumer).call();
-
-            var completableFuture = tilgjengeligeIdenter.stream()
-                    .map(availStatus -> completeableFuture(bestilling, bestKriterier, availStatus))
-                    .map(completeable -> supplyAsync(completeable, dollyForkJoinPool))
-                    .toList();
-
-            completableFuture
-                    .forEach(future -> {
-                        try {
-                            future.get(60, TimeUnit.SECONDS);
-                        } catch (InterruptedException e) {
-                            log.error(e.getMessage(), e);
-                            Thread.currentThread().interrupt();
-                        } catch (ExecutionException e) {
-                            log.error(e.getMessage(), e);
-                            Thread.interrupted();
-                        } catch (TimeoutException e) {
-                            log.error("Tidsavbrudd (60 s) ved opprett personer fra identer", e);
-                            Thread.interrupted();
-                        }
-                    });
-
-            doFerdig(bestilling);
+            new AvailCheckCommand(bestilling.getOpprettFraIdenter(), pdlDataConsumer).call()
+                    .filter(availStatus -> !bestillingService.isStoppet(bestilling.getId()))
+                    .flatMap(availStatus -> buildOriginator(bestKriterier, mapperFacade, availStatus)
+                            .flatMap(originator -> opprettProgress(bestilling, originator)
+                                    .flatMap(progress -> opprettPerson(originator)
+                                            .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
+                                            .filter(Objects::nonNull)
+                                            .flatMap(ident -> leggIdentTilGruppe(ident,
+                                                    progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
+                                                    .flatMap(dollyPerson -> Flux.concat(
+                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                    fase1Klienter(),
+                                                                    progress, true),
+                                                            personServiceClient.gjenopprett(null,
+                                                                            dollyPerson, progress, true)
+                                                                    .map(ClientFuture::get)
+                                                                    .map(BestillingProgress::isPdlSync)
+                                                                    .flatMap(pdlSync -> pdlSync ?
+                                                                            Flux.concat(
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase2Klienter(),
+                                                                                            progress, true),
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase3Klienter(),
+                                                                                            progress, true)) :
+                                                                            Flux.empty()))))
+                                            .filter(Objects::nonNull)
+                                            .doOnError(throwable -> {
+                                                var error = errorStatusDecoder.getErrorText(
+                                                        WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                                log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+                                                        progress.getId(), error);
+                                                bestilling.setFeil(error);
+                                            }))))
+                    .collectList()
+                    .subscribe(done -> doFerdig(bestilling));
 
         } else {
 
@@ -104,46 +110,12 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         }
     }
 
-    private void doFerdig(Bestilling bestilling) {
+    private Flux<OriginatorCommand.Originator> buildOriginator(RsDollyUtvidetBestilling bestilling,
+                                                               MapperFacade mapperFacade,
+                                                               AvailCheckCommand.AvailStatus status) {
 
-        transactionHelperService.oppdaterBestillingFerdig(bestilling);
-        MDC.remove(MDC_KEY_BESTILLING);
-        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
-    }
-
-    private BestillingFuture completeableFuture(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, AvailCheckCommand.AvailStatus identStatus) {
-
-        return () -> {
-            if (!bestillingService.isStoppet(bestilling.getId())) {
-                BestillingProgress progress = new BestillingProgress(bestilling, identStatus.getIdent(), identStatus.getMaster());
-
-                try {
-                    if (identStatus.isAvailable()) {
-
-                        var opprettetIdent = new OpprettCommand(identStatus, bestKriterier,
-                                pdlDataConsumer, mapperFacade).call();
-
-                        identService.saveIdentTilGruppe(identStatus.getIdent(), bestilling.getGruppe(),
-                                identStatus.getMaster(), bestKriterier.getBeskrivelse());
-
-                        DollyPerson dollyPerson = DollyPerson.builder()
-                                .hovedperson(opprettetIdent)
-                                .master(identStatus.getMaster())
-                                .tags(bestilling.getGruppe().getTags())
-                                .build();
-
-                        gjenopprettAlleKlienter(dollyPerson, bestKriterier, progress, true);
-                    } else {
-                        progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getMessage());
-                    }
-                } catch (RuntimeException e) {
-                    progress.setFeil("NA:" + errorStatusDecoder.decodeThrowable(e));
-                } finally {
-                    transactionHelperService.oppdaterProgress(progress);
-                }
-                return progress;
-            }
-            return null;
-        };
+        var originator = new OriginatorCommand(bestilling, null, mapperFacade).call();
+        originator.getPdlBestilling().setOpprettFraIdent(status.getIdent());
+        return Flux.just(originator);
     }
 }

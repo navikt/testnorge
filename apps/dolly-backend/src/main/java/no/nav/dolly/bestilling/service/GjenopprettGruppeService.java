@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
+import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -53,11 +54,12 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                     ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                     PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                    TransactionHelperService transactionHelperService) {
+                                    TransactionHelperService transactionHelperService,
+                                    PersonServiceClient personServiceClient) {
 
         super(dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
 
         this.dollyForkJoinPool = dollyForkJoinPool;
     }

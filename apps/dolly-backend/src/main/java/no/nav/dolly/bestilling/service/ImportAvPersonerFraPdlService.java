@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -52,10 +53,11 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                          List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                          ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
                                          PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                         TransactionHelperService transactionHelperService) {
+                                         TransactionHelperService transactionHelperService,
+                                         PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
+                pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
 
         this.dollyForkJoinPool = dollyForkJoinPool;
     }
@@ -99,13 +101,6 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             doFerdig(bestilling);
         }
-    }
-
-    private void doFerdig(Bestilling bestilling) {
-
-        transactionHelperService.oppdaterBestillingFerdig(bestilling);
-        MDC.remove(MDC_KEY_BESTILLING);
-        log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
     private BestillingFuture doBestilling(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, String ident) {

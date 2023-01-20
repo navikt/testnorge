@@ -8,6 +8,7 @@ import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -19,7 +20,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataCheckIdentCommand implements Callable<Mono<AvailibilityResponseDTO[]>> {
+public class PdlDataCheckIdentCommand implements Callable<Flux<AvailibilityResponseDTO>> {
 
     private static final String PDL_FORVALTER_EKSISTENS_URL = "/api/v1/eksistens";
     private static final String IDENTER = "identer";
@@ -28,17 +29,17 @@ public class PdlDataCheckIdentCommand implements Callable<Mono<AvailibilityRespo
     private final List<String> identer;
     private final String token;
 
-    public Mono<AvailibilityResponseDTO[]> call() {
+    public Flux<AvailibilityResponseDTO> call() {
 
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_EKSISTENS_URL)
                         .queryParam(IDENTER, identer)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(AvailibilityResponseDTO[].class)
+                .bodyToFlux(AvailibilityResponseDTO.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
