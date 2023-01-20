@@ -26,7 +26,6 @@ public class EregProxyApplicationStarter {
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(createRoute("q0"))
                 .route(createRoute("q1"))
                 .route(createRoute("q2"))
                 .route(createRoute("q4"))

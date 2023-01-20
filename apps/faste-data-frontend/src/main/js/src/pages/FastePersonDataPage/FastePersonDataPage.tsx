@@ -30,10 +30,8 @@ const miljoer = [
   'q4',
   'q5',
   'qx',
-  't0',
   't3',
   't13',
-  'u5',
 ];
 
 const toOptions = (options: string[]) =>
