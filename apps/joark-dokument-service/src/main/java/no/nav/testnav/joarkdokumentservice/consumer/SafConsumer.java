@@ -14,6 +14,8 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import static java.util.Objects.nonNull;
+
 @Slf4j
 @Component
 public class SafConsumer {
@@ -48,7 +50,7 @@ public class SafConsumer {
                 ).call())
                 .map(response -> {
                     log.info("Mottok journalpost: {}", response.getData());
-                    if (!response.getErrors().isEmpty()) {
+                    if (nonNull(response.getErrors()) && !response.getErrors().isEmpty()) {
                         response.getErrors().forEach(error -> log.error("Feilet under henting av Journalpost: {}", error.getMessage()));
                     }
                     return new Journalpost(response.getData().getJournalpost());
@@ -56,7 +58,7 @@ public class SafConsumer {
                 .block();
     }
 
-    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+    public String getDokument(String journalpostId, String dokumentInfoId, DokumentType dokumentType, String miljo) {
         return tokenExchange
                 .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentCommand(
@@ -70,7 +72,7 @@ public class SafConsumer {
                 ).block();
     }
 
-    public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
+    public byte[] getPDF(String journalpostId, String dokumentInfoId, String miljo) {
         return tokenExchange
                 .exchange(properties)
                 .flatMap(accessToken -> new GetPDFCommand(

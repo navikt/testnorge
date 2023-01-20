@@ -15,11 +15,11 @@ public class DokumentService {
         return safConsumer.getJournalpost(journalpostId, miljo);
     }
 
-    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+    public String getDokument(String journalpostId, String dokumentInfoId, DokumentType dokumentType, String miljo) {
         return safConsumer.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
     }
 
-    public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
+    public byte[] getPDF(String journalpostId, String dokumentInfoId, String miljo) {
         return safConsumer.getPDF(journalpostId, dokumentInfoId, miljo);
     }
 }
