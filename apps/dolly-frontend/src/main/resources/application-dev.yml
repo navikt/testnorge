@@ -1,7 +1,11 @@
 #Dev config
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
+REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
 
 spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
   security:
     oauth2:
       resourceserver:

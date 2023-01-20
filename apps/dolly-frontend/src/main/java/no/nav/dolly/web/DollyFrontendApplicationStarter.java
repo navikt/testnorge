@@ -34,7 +34,6 @@ import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
-import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
@@ -58,8 +57,7 @@ import java.util.function.Function;
 @Import({
         CoreConfig.class,
         FrontendConfig.class,
-        SecureOAuth2ServerToServerConfiguration.class,
-        OicdInMemorySessionConfiguration.class
+        SecureOAuth2ServerToServerConfiguration.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor
