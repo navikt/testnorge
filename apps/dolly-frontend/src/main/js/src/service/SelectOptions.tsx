@@ -1,3 +1,7 @@
+interface SelectOptions {
+	[name: string]: Array<{ value: boolean | string | number; label: string }>
+}
+
 const adresser = {
 	vegadresse: 'Vegadresse',
 	matrikkeladresse: 'Matrikkeladresse',
@@ -489,6 +493,16 @@ const selectOptions = {
 			value: 'personligeInteresser',
 			label: 'Ivareta personens interesser innenfor det personlige område',
 		},
+	],
+
+	// Alderspensjon:
+	apUttaksgrad: [
+		{ value: 100, label: '100%' },
+		{ value: 80, label: '80%' },
+		{ value: 60, label: '60%' },
+		{ value: 50, label: '50%' },
+		{ value: 40, label: '40%' },
+		{ value: 20, label: '20%' },
 	],
 }
 

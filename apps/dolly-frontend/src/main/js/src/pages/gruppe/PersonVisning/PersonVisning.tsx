@@ -44,11 +44,13 @@ import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visni
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harApBestilling,
 	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
+import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -289,6 +291,11 @@ export const PersonVisning = ({
 					bestillingIdListe={bestillingIdListe}
 				/>
 				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
+				{harApBestilling(bestillingerFagsystemer) && (
+					<AlderspensjonVisning
+						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
+					/>
+				)}
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}

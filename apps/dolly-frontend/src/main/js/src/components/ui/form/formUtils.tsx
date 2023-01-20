@@ -57,6 +57,7 @@ const getValgteAttributter = (values) => {
 		'inntektsmelding',
 		'pensjonforvalter.inntekt',
 		'pensjonforvalter.tp',
+		'pensjonforvalter.alderspensjon',
 		'arenaforvalter',
 		'sykemelding',
 		'brregstub',
