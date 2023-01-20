@@ -30,15 +30,8 @@ const miljoer = [
   'q4',
   'q5',
   'qx',
-  't0',
-  't1',
-  't13',
-  't2',
   't3',
-  't4',
-  't5',
-  't6',
-  'u5',
+  't13',
 ];
 
 const toOptions = (options: string[]) =>

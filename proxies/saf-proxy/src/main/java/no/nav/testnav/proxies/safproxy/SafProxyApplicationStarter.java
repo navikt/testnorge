@@ -1,5 +1,10 @@
 package no.nav.testnav.proxies.safproxy;
 
+import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
+import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
+import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
+import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -14,12 +19,6 @@ import org.springframework.context.annotation.Import;
 
 import java.util.function.Function;
 
-import no.nav.testnav.libs.reactivecore.config.CoreConfig;
-import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
-import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
-import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
-
 @Import({
         CoreConfig.class,
         DevConfig.class,
@@ -27,10 +26,6 @@ import no.nav.testnav.libs.securitytokenservice.StsOidcTokenService;
 })
 @SpringBootApplication
 public class SafProxyApplicationStarter {
-    public static void main(String[] args) {
-        SpringApplication.run(SafProxyApplicationStarter.class, args);
-    }
-
     @Bean
     public StsOidcTokenService stsPreprodOidcTokenService(
             @Value("${sts.preprod.token.provider.url}") String url,
@@ -62,15 +57,13 @@ public class SafProxyApplicationStarter {
                 .route(createRoute("q4", preprodFilter))
                 .route(createRoute("q5", preprodFilter))
                 .route(createRoute("qx", preprodFilter))
-                .route(createRoute("t0", testFilter))
-                .route(createRoute("t1", testFilter))
-                .route(createRoute("t2", testFilter))
                 .route(createRoute("t3", testFilter))
-                .route(createRoute("t4", testFilter))
-                .route(createRoute("t5", testFilter))
-                .route(createRoute("t6", testFilter))
                 .route(createRoute("t13", testFilter))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(SafProxyApplicationStarter.class, args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
