@@ -8,7 +8,7 @@ import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import _has from 'lodash/has'
 import _get from 'lodash/get'
-import { add, addMonths, isAfter, isDate, setDate } from 'date-fns'
+import { add, addMonths, getYear, isAfter, isDate, setDate } from 'date-fns'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { validation } from '@/components/fagsystem/alderspensjon/form/validation'
 import { Monthpicker } from '@/components/ui/form/inputs/monthpicker/Monthpicker'
@@ -45,6 +45,42 @@ export const AlderspensjonForm = ({ formikBag }) => {
 	const alderImportertPerson = opts?.importPersoner?.map((person) =>
 		getAlder(_get(person, 'data.hentPerson.foedsel[0].foedselsdato'))
 	)
+
+	const harUgyldigFoedselsaar = () => {
+		let ugyldigFoedselsaar = false
+		if (alderNyPerson && getYear(new Date()) - alderNyPerson < 1944) {
+			ugyldigFoedselsaar = true
+		} else if (foedtFoer && getYear(foedtFoer) < 1944) {
+			ugyldigFoedselsaar = true
+		} else if (leggTil) {
+			if (
+				opts?.personFoerLeggTil?.pdl?.foedsel?.some(
+					(f) => f.foedselsaar < 1944 && !f.metadata?.historisk
+				)
+			) {
+				ugyldigFoedselsaar = true
+			}
+		} else if (importTestnorge) {
+			const foedselListe = opts?.importPersoner?.flatMap(
+				(person) => person?.data?.hentPerson?.foedsel
+			)
+			if (foedselListe?.some((f) => f.foedselsaar < 1944 && !f.metadata?.historisk)) {
+				ugyldigFoedselsaar = true
+			}
+		}
+		const foedsel = _get(formikBag.values, 'pdldata.person.foedsel')
+		if (foedsel) {
+			const foedselsaar =
+				foedsel[foedsel.length - 1]?.foedselsaar ||
+				getYear(foedsel[foedsel.length - 1]?.foedselsdato)
+			if (foedselsaar < 1944) {
+				ugyldigFoedselsaar = true
+			} else if (foedselsaar >= 1944) {
+				ugyldigFoedselsaar = false
+			}
+		}
+		return ugyldigFoedselsaar
+	}
 
 	const harNorskBankkonto =
 		_has(formikBag.values, 'bankkonto.norskBankkonto') ||
@@ -132,6 +168,12 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					(importTestnorge && alderImportertPerson?.some((alder) => alder < 62))) && (
 					<StyledAlert variant={'warning'} size={'small'}>
 						Personer under 62 år har ikke rett på alderspensjon.
+					</StyledAlert>
+				)}
+				{harUgyldigFoedselsaar() && (
+					<StyledAlert variant={'warning'} size={'small'}>
+						Personer født før 1944 følger gammelt pensjonsregelverk, som ikke støttes av
+						alderspensjon-søknad.
 					</StyledAlert>
 				)}
 				{((nyBestilling && alderNyPerson > 61 && alderNyPerson < 67) ||
