@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -69,12 +70,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             new AvailCheckCommand(bestilling.getOpprettFraIdenter(), pdlDataConsumer).call()
                     .filter(availStatus -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(availStatus -> buildOriginator(bestKriterier, mapperFacade, availStatus)
-                            .flatMap(originator -> opprettProgress(bestilling, originator)
+                            .flatMap(originator -> opprettProgress(bestilling, PDLF)
                                     .flatMap(progress -> opprettPerson(originator)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                             .filter(Objects::nonNull)
-                                            .flatMap(ident -> leggIdentTilGruppe(ident,
-                                                    progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
+                                            .flatMap(ident -> leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse())
                                                     .flatMap(dollyPerson -> Flux.concat(
                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                     fase1Klienter(),
@@ -91,8 +91,9 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                             fase3Klienter(),
                                                                                             progress, true)) :
-                                                                            Flux.empty()))))
-                                            .filter(Objects::nonNull)
+                                                                            Flux.empty())
+                                                                    .filter(Objects::nonNull))))
+                                            .collectList()
                                             .doOnError(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

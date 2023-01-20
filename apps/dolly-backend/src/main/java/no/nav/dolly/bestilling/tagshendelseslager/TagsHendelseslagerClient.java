@@ -50,8 +50,10 @@ public class TagsHendelseslagerClient implements ClientRegister {
         }
 
         if (dollyPerson.getMaster() == Testident.Master.PDL) {
+
             getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                    .map(tagsHendelseslagerConsumer::publish)
+                    .flatMapMany(tagsHendelseslagerConsumer::publish)
+                    .collectList()
                     .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
                             dollyPerson.getHovedperson(), response));
         }

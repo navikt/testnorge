@@ -18,7 +18,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -282,15 +282,15 @@ public class DollyBestillingService {
         return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
     }
 
-    protected Flux<DollyPerson> leggIdentTilGruppe(String ident, Testgruppe gruppe, String beskrivelse) {
+    protected Flux<DollyPerson> leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 
-        identService.saveIdentTilGruppe(ident, gruppe, PDLF, beskrivelse);
-        log.info("Ident {} lagt til gruppe {}", ident, gruppe.getId());
+        identService.saveIdentTilGruppe(ident, progress.getBestilling().getGruppe(), progress.getMaster(), beskrivelse);
+        log.info("Ident {} lagt til gruppe {}", ident, progress.getBestilling().getGruppe().getId());
 
         return Flux.just(DollyPerson.builder()
                 .hovedperson(ident)
-                .master(PDLF)
-                .tags(gruppe.getTags())
+                .master(progress.getMaster())
+                .tags(progress.getBestilling().getGruppe().getTags())
                 .build());
     }
 
@@ -301,11 +301,11 @@ public class DollyBestillingService {
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
-    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, OriginatorCommand.Originator originator) {
+    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
 
         return Flux.just(transactionHelperService.oppdaterProgress(BestillingProgress.builder()
                 .bestilling(bestilling)
-                .master(originator.getMaster())
+                .master(master)
                 .build()));
     }
 

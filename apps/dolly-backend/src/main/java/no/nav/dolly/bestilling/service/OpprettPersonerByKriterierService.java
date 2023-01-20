@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 
 @Slf4j
@@ -66,12 +67,11 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             Flux.range(0, bestilling.getAntallIdenter())
                     .filter(index -> !bestillingService.isStoppet(bestilling.getId()))
-                    .flatMap(index -> opprettProgress(bestilling, originator)
+                    .flatMap(index -> opprettProgress(bestilling, PDLF)
                             .flatMap(progress -> opprettPerson(originator)
                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                     .filter(Objects::nonNull)
-                                    .flatMap(ident -> leggIdentTilGruppe(ident,
-                                            progress.getBestilling().getGruppe(), bestKriterier.getBeskrivelse())
+                                    .flatMap(ident -> leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse())
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
                                                             fase1Klienter(),
@@ -88,15 +88,16 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase3Klienter(),
                                                                                     progress, true)) :
-                                                                    Flux.empty())))
-                                            .filter(Objects::nonNull)
-                                            .doOnError(throwable -> {
-                                                var error = errorStatusDecoder.getErrorText(
-                                                        WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
-                                                log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                        progress.getId(), error);
-                                                bestilling.setFeil(error);
-                                            }))))
+                                                                    Flux.empty())
+                                                            .filter(Objects::nonNull))))
+                                    .collectList()
+                                    .doOnError(throwable -> {
+                                        var error = errorStatusDecoder.getErrorText(
+                                                WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                        log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+                                                progress.getId(), error);
+                                        bestilling.setFeil(error);
+                                    })))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));
 
