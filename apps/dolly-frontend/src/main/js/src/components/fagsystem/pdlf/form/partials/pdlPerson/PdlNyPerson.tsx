@@ -46,7 +46,8 @@ export const PdlNyPerson = ({
 	const hasEksisterendePerson =
 		eksisterendePerson &&
 		(gruppeIdenter?.includes(eksisterendePerson) ||
-			_.get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value)
+			_.get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value ||
+			_.get(formikBag.values, 'sivilstand.relatertVedSivilstand') === eksisterendeNyPerson?.value)
 
 	return (
 		<div className={'flexbox--flex-wrap'} style={{ marginTop: '10px' }}>
