@@ -107,7 +107,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                         progress.getId(), error);
                                                 progress.setFeil(error);
                                                 transactionHelperService.persister(progress);
-                                                return Flux.empty();
+                                                return Flux.just(progress);
                                             }))))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));

@@ -31,6 +31,7 @@ import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataSt
 import static no.nav.dolly.mapper.BestillingKontoregisterStatusMapper.buildKontoregisterStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlPersonStatusMapper.buildPdlPersonStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
@@ -60,12 +61,13 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .toList().size());
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
+                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(bestilling.getProgresser(), objectMapper));
+                        bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(bestilling.getProgresser(), objectMapper));
                         bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));

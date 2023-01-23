@@ -27,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class PersonServiceClient {
 
+    private static final String PDL_SYNC_START = "Synkronisering mot PDL startet ...";
     private static final int TIMEOUT = 100;
     private static final int MAX_SEKUNDER = 30;
 
@@ -36,17 +37,20 @@ public class PersonServiceClient {
 
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        progress.setPdlPersonStatus(PDL_SYNC_START);
+        transactionHelperService.persister(progress);
         var startTime = System.currentTimeMillis();
         return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
                 new PersonServiceResponse(), dollyPerson.getHovedperson())
-                .doOnNext(status -> logStatus(status, startTime))
-                .map(status -> futurePersist(progress, status));
+                .flatMap(status -> logStatus(status, startTime)
+                .map(status2 -> futurePersist(progress, status, status2)));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, PersonServiceResponse status) {
+    private ClientFuture futurePersist(BestillingProgress progress, PersonServiceResponse status, String status2) {
 
         return () -> {
             progress.setPdlSync(status.getStatus().is2xxSuccessful() && isTrue(status.getExists()));
+            progress.setPdlPersonStatus(status2);
             progress.setFeil(isNotBlank(status.getFeilmelding()) ?
                     errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()) : null);
             transactionHelperService.persister(progress);
@@ -54,20 +58,26 @@ public class PersonServiceClient {
         };
     }
 
-    private void logStatus(PersonServiceResponse status, long startTime) {
+    private Flux<String> logStatus(PersonServiceResponse status, long startTime) {
 
         if (status.getStatus().is2xxSuccessful() && isTrue(status.getExists())) {
             log.info("Synkronisering mot PersonService (isPerson) for {} tok {} ms.",
                     status.getIdent(), System.currentTimeMillis() - startTime);
+            return Flux.just(String.format("Synkronisering mot PDL tok %d ms.",
+                    System.currentTimeMillis() - startTime));
 
         } else if (status.getStatus().is2xxSuccessful() && isNotTrue(status.getExists())) {
             log.error("Synkronisering mot PersonService (isPerson) for {} gitt opp etter {} ms.",
                     status.getIdent(), System.currentTimeMillis() - startTime);
+            return Flux.just(String.format("Feil: Synkronisering mot PDL gitt opp etter %d sekunder.",
+                    MAX_SEKUNDER));
+
         } else {
             log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms, feil {}.",
                     status.getIdent(), System.currentTimeMillis() - startTime,
                     errorStatusDecoder.getErrorText(status.getStatus(),
                             status.getFeilmelding()));
+            return Flux.just("Feilet å skjekke status, se logg!");
         }
     }
 

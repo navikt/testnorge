@@ -66,7 +66,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
 
-            Flux.range(0, bestilling.getAntallIdenter())
+            var test = Flux.range(0, bestilling.getAntallIdenter())
                     .filter(index -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(index -> opprettProgress(bestilling, PDLF)
                             .flatMap(progress -> opprettPerson(originator)
@@ -91,13 +91,13 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                                                     progress, true)) :
                                                                     Flux.empty())
                                                             .filter(Objects::nonNull))))
-                                    .collectList()
-                                    .doOnError(throwable -> {
+                                    .onErrorResume(throwable -> {
                                         var error = errorStatusDecoder.getErrorText(
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                 progress.getId(), error);
                                         bestilling.setFeil(error);
+                                        return Flux.just(progress);
                                     })))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));

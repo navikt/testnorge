@@ -94,13 +94,13 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                                                             progress, true)) :
                                                                             Flux.empty())
                                                                     .filter(Objects::nonNull))))
-                                            .collectList()
-                                            .doOnError(throwable -> {
+                                            .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error);
                                                 bestilling.setFeil(error);
+                                                return Flux.just(progress);
                                             }))))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));

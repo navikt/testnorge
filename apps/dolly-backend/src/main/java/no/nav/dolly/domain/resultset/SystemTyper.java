@@ -36,7 +36,8 @@ public enum SystemTyper {
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDL_DATA("Persondataløsning (PDL) ny"),
-    KONTOREGISTER("Bankkontoregister");
+    KONTOREGISTER("Bankkontoregister"),
+    PDL_PERSONSTATUS("PDL-Synkronisering");
 
     private String beskrivelse;
 
