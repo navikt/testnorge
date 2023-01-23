@@ -152,8 +152,6 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
-	console.log('forsteMiljo: ', forsteMiljo) //TODO - SLETT MEG
-	console.log('liste: ', liste) //TODO - SLETT MEG
 
 	return (
 		<div>

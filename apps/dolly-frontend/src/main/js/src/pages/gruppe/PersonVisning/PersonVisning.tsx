@@ -103,8 +103,11 @@ export const PersonVisning = ({
 
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		harAaregBestilling(bestillingerFagsystemer)
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
+
+	const visArbeidsforhold =
+		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
 
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
@@ -279,11 +282,13 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
-				<AaregVisning
-					liste={arbeidsforhold}
-					loading={loadingAareg}
-					bestillingIdListe={bestillingIdListe}
-				/>
+				{visArbeidsforhold && (
+					<AaregVisning
+						liste={arbeidsforhold}
+						loading={loadingAareg}
+						bestillingIdListe={bestillingIdListe}
+					/>
+				)}
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning
 					data={poppData}
