@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherFagsystemer } from '@/api'
+import { fetcher, multiFetcherAareg } from '@/api'
 import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -224,7 +224,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		([url, headers]) => multiFetcherFagsystemer(url, headers),
+		([url, headers]) => multiFetcherAareg(url, headers),
 		{ dedupingInterval: 30000 }
 	)
 
