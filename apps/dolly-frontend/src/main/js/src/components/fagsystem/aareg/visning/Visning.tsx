@@ -150,7 +150,10 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
-	const forsteMiljo = liste.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const forsteMiljo =
+		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
+	console.log('forsteMiljo: ', forsteMiljo) //TODO - SLETT MEG
+	console.log('liste: ', liste) //TODO - SLETT MEG
 
 	return (
 		<div>
