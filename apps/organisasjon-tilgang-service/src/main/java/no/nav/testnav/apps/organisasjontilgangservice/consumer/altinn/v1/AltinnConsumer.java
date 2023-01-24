@@ -64,6 +64,7 @@ public class AltinnConsumer {
     }
 
     public Mono<Organisasjon> create(String organiasjonsnummer, LocalDateTime gyldigTil) {
+
         var readRight = new RightDTO(
                 null,
                 organiasjonsnummer,
@@ -94,6 +95,7 @@ public class AltinnConsumer {
 
 
     public Flux<Organisasjon> getOrganisasjoner() {
+
         return getRights()
                 .map(right -> maskinportenConsumer
                         .getAccessToken()

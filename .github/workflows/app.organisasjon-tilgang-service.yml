@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-organisasjon-tilgang-service')}}
     with:
       resource: 'apps/organisasjon-tilgang-service/config.prod.yml'
       app-name: 'organisasjon-tilgang-service'

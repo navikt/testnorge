@@ -1,8 +1,12 @@
 package no.nav.testnav.apps.organisasjontilgangservice.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.AltinnConsumer;
-import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
+import no.nav.testnav.apps.organisasjontilgangservice.database.jpa.OrganisasjonTilgang;
+import no.nav.testnav.apps.organisasjontilgangservice.database.repository.OrganisasjonTilgangRepository;
+import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -12,18 +16,42 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonTilgangService {
-    private final AltinnConsumer client;
 
-    public Flux<Organisasjon> getAll() {
-        return client.getOrganisasjoner();
+    private final AltinnConsumer altinnConsumer;
+    private final OrganisasjonTilgangRepository organisasjonTilgangRepository;
+    private final MapperFacade mapperFacade;
+
+    public Flux<OrganisasjonResponse> getAll() {
+
+        return altinnConsumer.getOrganisasjoner()
+                .flatMap(organisasjon -> organisasjonTilgangRepository
+                        .getOrganisasjonTilgangByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+                        .map(organisasjonTilgang -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty("organisasjonTilgang", organisasjonTilgang);
+                            return mapperFacade.map(organisasjon, OrganisasjonResponse.class);
+                        }));
     }
 
-    public Mono<Organisasjon> create(String organisasjonsnummer, LocalDateTime gyldigTil) {
-        return client.create(organisasjonsnummer, gyldigTil);
+    public Mono<OrganisasjonResponse> create(String organisasjonsnummer, LocalDateTime gyldigTil, String miljoe) {
+
+        return organisasjonTilgangRepository.save(OrganisasjonTilgang.builder()
+                        .organisasjonNummer(organisasjonsnummer)
+                        .miljoe(miljoe)
+                        .build())
+                .flatMap(orhganisasjonTilgang -> altinnConsumer.create(organisasjonsnummer, gyldigTil)
+                .flatMap(organisasjon -> organisasjonTilgangRepository
+                        .getOrganisasjonTilgangByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+                        .map(organisasjonTilgang -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty("organisasjonTilgang", organisasjonTilgang);
+                            return mapperFacade.map(organisasjon, OrganisasjonResponse.class);
+                        })));
     }
 
     public Flux<Void> delete(String organisasjonsnummer) {
-        return client.delete(organisasjonsnummer);
+
+        return altinnConsumer.delete(organisasjonsnummer);
     }
 
 }

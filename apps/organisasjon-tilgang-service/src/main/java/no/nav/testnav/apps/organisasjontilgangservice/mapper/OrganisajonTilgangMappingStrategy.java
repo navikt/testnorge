@@ -1,0 +1,31 @@
+package no.nav.testnav.apps.organisasjontilgangservice.mapper;
+
+import ma.glasnost.orika.CustomMapper;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.MappingContext;
+import no.nav.testnav.apps.organisasjontilgangservice.database.jpa.OrganisasjonTilgang;
+import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
+import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonResponse;
+import org.springframework.stereotype.Component;
+
+import static java.util.Objects.nonNull;
+
+@Component
+public class OrganisajonTilgangMappingStrategy implements MappingStrategy {
+    @Override
+    public void register(MapperFactory factory) {
+
+        factory.classMap(Organisasjon.class, OrganisasjonResponse.class)
+                .customize(new CustomMapper<>() {
+
+                    @Override
+                    public void mapAtoB(Organisasjon organisasjon, OrganisasjonResponse response, MappingContext context) {
+
+                        var organisasjonTilgang = (OrganisasjonTilgang) context.getProperty("organisasjonTilgang");
+                        response.setMiljoe(nonNull(organisasjonTilgang) ? organisasjonTilgang.getMiljoe() : "q1");
+                    }
+                })
+                .byDefault()
+                .register();
+    }
+}
