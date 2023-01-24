@@ -10,8 +10,6 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -35,10 +33,8 @@ import java.util.List;
 import java.util.Objects;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -78,6 +74,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
                                     .flatMap(ident -> createDollyperson(progress, ident)
+                                            .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
                                                             fase1Klienter(),
@@ -112,45 +109,5 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));
         }
-    }
-
-    private Flux<String> sendOrdrePerson(BestillingProgress progress, String ident) {
-
-        progress.setIdent(ident);
-        if (progress.getMaster() == PDLF) {
-            return pdlDataConsumer.sendOrdre(ident, true)
-                    .map(resultat -> {
-                        progress.setPdlDataStatus(resultat.getStatus().is2xxSuccessful() ?
-                                resultat.getJsonNode() :
-                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding()));
-                        transactionHelperService.persister(progress);
-                        log.info("Sendt ordre til PDL for ident {} ", ident);
-                        return ident;
-                    });
-
-        } else {
-            transactionHelperService.persister(progress);
-            return Flux.just(ident);
-        }
-    }
-
-    private Flux<DollyPerson> createDollyperson(BestillingProgress progress, String ident) {
-
-        return Flux.just(DollyPerson.builder()
-                .hovedperson(ident)
-                .master(progress.getMaster())
-                .tags(progress.getBestilling().getGruppe().getTags())
-                .build());
-    }
-
-    private Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, GruppeBestillingIdent coBestilling) {
-
-        return Flux.just(getDollyBestillingRequest(
-                Bestilling.builder()
-                        .bestKriterier(coBestilling.getBestkriterier())
-                        .miljoer(isNotBlank(bestilling.getMiljoer()) ?
-                                bestilling.getMiljoer() :
-                                coBestilling.getMiljoer())
-                        .build()));
     }
 }

@@ -20,30 +20,28 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
+import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
@@ -58,8 +56,8 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class DollyBestillingService {
+
     protected static final String SUCCESS = "OK";
-    private static final String FEIL_KUNNE_IKKE_UTFORES = "FEIL: Bestilling kunne ikke utføres: %s";
 
     protected final DollyPersonCache dollyPersonCache;
     protected final IdentService identService;
@@ -111,68 +109,6 @@ public class DollyBestillingService {
         }
     }
 
-    @Async
-    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
-
-        try {
-            log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
-            MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
-
-            var testident = identService.getTestIdent(bestilling.getIdent());
-            var progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
-
-            var originator = new OriginatorCommand(request, testident, mapperFacade).call();
-
-            DollyPerson dollyPerson;
-            if (originator.isPdlf()) {
-                try {
-                    if (nonNull(originator.getPdlBestilling())) {
-                        pdlDataConsumer.oppdaterPdl(testident.getIdent(),
-                                PersonUpdateRequestDTO.builder()
-                                        .person(originator.getPdlBestilling().getPerson())
-                                        .build());
-                    }
-
-                    var pdlfPersoner = pdlDataConsumer.getPersoner(List.of(testident.getIdent())).block();
-                    dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPersoner.stream().findFirst().orElse(new FullPersonDTO()),
-                            progress.getBestilling().getGruppe().getTags());
-
-                } catch (WebClientResponseException e) {
-
-                    dollyPerson = DollyPerson.builder().hovedperson(bestilling.getIdent()).master(PDLF).build();
-                    progress.setPdlDataStatus(errorStatusDecoder.decodeThrowable(e));
-                }
-
-            } else {
-                PdlPerson pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
-                dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
-            }
-
-            if ((originator.isPdlf() || originator.isTpsf()) && !bestilling.getIdent().equals(dollyPerson.getHovedperson())) {
-                progress.setIdent(dollyPerson.getHovedperson());
-                identService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
-                bestillingProgressService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
-                bestillingService.swapIdent(bestilling.getIdent(), dollyPerson.getHovedperson());
-            }
-
-            counterCustomRegistry.invoke(request);
-            DollyPerson finalDollyPerson = dollyPerson;
-            clientRegisters.forEach(clientRegister ->
-                    clientRegister.gjenopprett(request, finalDollyPerson, progress, true));
-
-            oppdaterProgress(bestilling, progress);
-
-        } catch (Exception e) {
-            log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), bestilling.getIdent(), e.getMessage(), e);
-            bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
-
-        } finally {
-            oppdaterBestillingFerdig(bestilling);
-            MDC.remove(MDC_KEY_BESTILLING);
-            log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
-        }
-    }
-
     protected void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
@@ -221,11 +157,10 @@ public class DollyBestillingService {
                 !fase2Klienter().apply(register);
     }
 
-    protected Flux<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+    protected Flux<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
                                                            GjenopprettSteg steg,
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
-        counterCustomRegistry.invoke(bestKriterier);
         return Flux.from(Flux.fromIterable(clientRegisters)
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
@@ -251,13 +186,6 @@ public class DollyBestillingService {
             bestilling.setStoppet(true);
         }
         bestilling.setFerdig(true);
-        bestilling.setSistOppdatert(now());
-        bestillingService.saveBestillingToDB(bestilling);
-        clearCache();
-    }
-
-    protected void oppdaterProgress(Bestilling bestilling, BestillingProgress progress) {
-        bestillingProgressService.save(progress);
         bestilling.setSistOppdatert(now());
         bestillingService.saveBestillingToDB(bestilling);
         clearCache();
@@ -338,5 +266,45 @@ public class DollyBestillingService {
             transactionHelperService.persister(progress);
             return Flux.empty();
         }
+    }
+
+    protected Flux<String> sendOrdrePerson(BestillingProgress progress, String ident) {
+
+        progress.setIdent(ident);
+        if (progress.getMaster() == PDLF) {
+            return pdlDataConsumer.sendOrdre(ident, true)
+                    .map(resultat -> {
+                        progress.setPdlDataStatus(resultat.getStatus().is2xxSuccessful() ?
+                                resultat.getJsonNode() :
+                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding()));
+                        transactionHelperService.persister(progress);
+                        log.info("Sendt ordre til PDL for ident {} ", ident);
+                        return ident;
+                    });
+
+        } else {
+            transactionHelperService.persister(progress);
+            return Flux.just(ident);
+        }
+    }
+
+    protected Flux<DollyPerson> createDollyperson(BestillingProgress progress, String ident) {
+
+        return Flux.just(DollyPerson.builder()
+                .hovedperson(ident)
+                .master(progress.getMaster())
+                .tags(progress.getBestilling().getGruppe().getTags())
+                .build());
+    }
+
+    protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, IdentRepository.GruppeBestillingIdent coBestilling) {
+
+        return Flux.just(getDollyBestillingRequest(
+                Bestilling.builder()
+                        .bestKriterier(coBestilling.getBestkriterier())
+                        .miljoer(StringUtils.isNotBlank(bestilling.getMiljoer()) ?
+                                bestilling.getMiljoer() :
+                                coBestilling.getMiljoer())
+                        .build()));
     }
 }

@@ -72,6 +72,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     .flatMap(testnorgeIdent -> opprettProgress(bestilling, PDL, testnorgeIdent)
                             .flatMap(progress -> leggIdentTilGruppe(testnorgeIdent,
                                     progress, bestKriterier.getBeskrivelse())
+                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                     .flatMap(dollyPerson -> Flux.concat(
                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                     fase1Klienter(),

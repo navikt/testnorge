@@ -76,6 +76,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                             .filter(Objects::nonNull)
                                             .flatMap(ident -> leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse())
+                                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                                     .flatMap(dollyPerson -> Flux.concat(
                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                     fase1Klienter(),

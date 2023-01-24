@@ -31,8 +31,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Objects.nonNull;
-
 @Slf4j
 @Service
 public class PdlDataConsumer implements ConsumerStatus {
@@ -97,11 +95,10 @@ public class PdlDataConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_oppdater"})
-    public String oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
+    public Flux<PdlResponse> oppdaterPdl(String ident, PersonUpdateRequestDTO request) {
 
-        return nonNull(request.getPerson()) ?
-                new PdlDataOppdateringCommand(webClient, ident, request, serviceProperties.getAccessToken(tokenService)).call().block()
-                : ident;
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
     }
 
     public Mono<List<FullPersonDTO>> getPersoner(List<String> identer) {

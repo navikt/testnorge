@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -205,6 +206,15 @@ public class DollyPersonCache {
                 .hovedperson(pdlfPerson.getPerson().getIdent())
                 .pdlfPerson(pdlfPerson)
                 .master(Master.PDLF)
+                .tags(tags)
+                .build();
+    }
+
+    public DollyPerson preparePerson(Testident testident, List<Tags> tags) {
+
+        return DollyPerson.builder()
+                .hovedperson(testident.getIdent())
+                .master(testident.getMaster())
                 .tags(tags)
                 .build();
     }
