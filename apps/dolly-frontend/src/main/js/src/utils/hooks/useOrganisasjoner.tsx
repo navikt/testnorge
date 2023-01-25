@@ -19,9 +19,9 @@ const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
 
-const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
+const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =>
 	`/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=DOLLY${
-		kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
+		typeof kanHaArbeidsforhold === 'boolean' ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 	}`
 
 const getFasteDataOrganisasjon = (orgnummer: string) =>
