@@ -74,10 +74,9 @@ const getHeader = (data: Arbeidsforhold) => {
 	})`
 }
 
-const Arbeidsforhold = ({ data, amelding }: ArbeidsforholdArray) => {
+const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	if (!data) return null
 	// console.log('amelding: ', amelding) //TODO - SLETT MEG
-	const [visAmelding, setVisAmelding, setSkjulAmelding] = useBoolean(false)
 
 	const sortedData = data
 		?.slice()
@@ -135,23 +134,6 @@ const Arbeidsforhold = ({ data, amelding }: ArbeidsforholdArray) => {
 					<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
 
 					<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
-
-					{/*<div style={{ marginBottom: '10px' }}>*/}
-					{visAmelding ? (
-						<Button onClick={setSkjulAmelding} kind={'collapse'}>
-							SKJUL A-MELDING
-						</Button>
-					) : (
-						<Button onClick={setVisAmelding} kind={'expand'}>
-							VIS A-MELDING
-						</Button>
-					)}
-					{visAmelding && (
-						// <div style={{ marginTop: '10px' }}>
-						<AmeldingBestilling bestilling={amelding[0]?.data} />
-						// </div>
-					)}
-					{/*</div>*/}
 				</React.Fragment>
 			)}
 		</DollyFieldArray>
@@ -182,7 +164,10 @@ export const AaregVisning = ({
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
 	// Faar ikke hente tilbake a-meldinger, viser derfor bestillingsdata
-	const amelding = bestillingListe.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
+	const amelding = bestillingListe
+		.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
+		?.filter((amelding) => amelding)
+	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
 	console.log('amelding: ', amelding) //TODO - SLETT MEG
 
 	return (
@@ -201,8 +186,9 @@ export const AaregVisning = ({
 						data={liste}
 					>
 						{/*<Arbeidsforhold amelding={amelding} />*/}
-						<Arbeidsforhold amelding={bestillingListe} />
+						<Arbeidsforhold />
 					</MiljoTabs>
+					{harAmeldingBestilling && <AmeldingBestilling bestillinger={amelding} />}
 				</ErrorBoundary>
 			)}
 		</div>

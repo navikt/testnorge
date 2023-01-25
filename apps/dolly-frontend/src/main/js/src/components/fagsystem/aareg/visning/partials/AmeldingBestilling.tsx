@@ -5,6 +5,13 @@ import { arbeidsforholdVisning } from '@/components/bestilling/sammendrag/kriter
 import bestilling from '@/ducks/bestilling'
 import { _renderStaticValue } from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import styled from 'styled-components'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+
+const StyledButton = styled(Button)`
+	margin: -10px 0 10px 0;
+`
 
 const AmeldingVisning = styled.div`
 	width: 100%;
@@ -15,12 +22,14 @@ const AmeldingVisning = styled.div`
 	}
 `
 const ameldingMapper = (bestilling) => {
+	if (!bestilling) return null
+	console.log('bestilling xxx: ', bestilling) //TODO - SLETT MEG
 	const data = {
 		paginering: [],
 		pagineringPages: [],
 	}
 
-	bestilling[0]?.amelding.forEach((maaned) => {
+	bestilling.forEach((maaned) => {
 		const maanedData = {
 			itemRows: [],
 		}
@@ -34,31 +43,55 @@ const ameldingMapper = (bestilling) => {
 	return data
 	//TODO: fortsett - se BestillingKriterieMapper for aareg
 }
-export const AmeldingBestilling = ({ bestilling }) => {
+export const AmeldingBestilling = ({ bestillinger }) => {
+	if (!bestillinger) return null
+
+	const [visAmelding, setVisAmelding, setSkjulAmelding] = useBoolean(false)
 	const [selectedIndex, setSelectedIndex] = useState(0)
-	const kategori = ameldingMapper(bestilling?.aareg)
-	// console.log('bestilling: ', bestilling) //TODO - SLETT MEG
+	// const amelding = ameldingMapper(bestillinger)
 	return (
-		<AmeldingVisning>
-			<DollyKjede
-				objectList={kategori.pagineringPages}
-				itemLimit={10}
-				selectedIndex={selectedIndex}
-				setSelectedIndex={setSelectedIndex}
-				isLocked={false}
-			/>
-			{/*<div className={cn('info-text', { 'bottom-border': bottomBorder })}>*/}
-			{/*<div className={cn('info-text', { 'bottom-border': 1 })}>*/}
-			<div>
-				{kategori.paginering[selectedIndex].itemRows.map((row, i) => (
-					<div className="dfa-blokk" key={i}>
-						{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
-						<div className={'flexbox--align-start flexbox--wrap'} key={i}>
-							{row.map(_renderStaticValue)}
-						</div>
-					</div>
-				))}
-			</div>
-		</AmeldingVisning>
+		<>
+			{visAmelding ? (
+				<StyledButton onClick={setSkjulAmelding} kind={'collapse'}>
+					SKJUL A-MELDING
+				</StyledButton>
+			) : (
+				<StyledButton onClick={setVisAmelding} kind={'expand'}>
+					VIS A-MELDING
+				</StyledButton>
+			)}
+			{visAmelding && (
+				<DollyFieldArray
+					header="A-melding"
+					data={bestillinger}
+					expandable={bestillinger.length > 1}
+				>
+					{(bestilling, idx) => {
+						const amelding = ameldingMapper(bestilling)
+						return (
+							<AmeldingVisning id={idx}>
+								<DollyKjede
+									objectList={amelding.pagineringPages}
+									itemLimit={10}
+									selectedIndex={selectedIndex}
+									setSelectedIndex={setSelectedIndex}
+									isLocked={false}
+								/>
+								<div>
+									{amelding.paginering[selectedIndex].itemRows.map((row, i) => (
+										<div className="dfa-blokk" key={i}>
+											{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
+											<div className={'flexbox--align-start flexbox--wrap'} key={i}>
+												{row.map(_renderStaticValue)}
+											</div>
+										</div>
+									))}
+								</div>
+							</AmeldingVisning>
+						)
+					}}
+				</DollyFieldArray>
+			)}
+		</>
 	)
 }
