@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
@@ -13,7 +15,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ORGANISASJON_TILGANG")
-public class OrganisasjonTilgang {
+public class OrganisasjonTilgang implements Persistable<Long> {
 
     @Id
     private Long id;
@@ -23,4 +25,10 @@ public class OrganisasjonTilgang {
 
     @Column("miljoe")
     private String miljoe;
+
+    @Override
+    @Transient
+    public boolean isNew() {
+        return id == null;
+    }
 }

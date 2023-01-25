@@ -2,6 +2,7 @@ package no.nav.testnav.apps.organisasjontilgangservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.DeleteStatus;
 import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonResponse;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +41,7 @@ public class OrganisasjonTilgangConsumer {
 
     @DeleteMapping("/{organisasjonsnummer}")
     public Flux<Void> delete(@PathVariable String organisasjonsnummer) {
+
         return organisasjonTilgangService.delete(organisasjonsnummer);
     }
-
 }

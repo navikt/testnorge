@@ -51,7 +51,7 @@ public class OrganisasjonTilgangService {
 
     public Flux<Void> delete(String organisasjonsnummer) {
 
-        return altinnConsumer.delete(organisasjonsnummer);
+        return altinnConsumer.delete(organisasjonsnummer)
+                .flatMap(status -> organisasjonTilgangRepository.deleteByOrganisasjonNummer(organisasjonsnummer));
     }
-
 }
