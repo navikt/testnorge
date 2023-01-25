@@ -12,7 +12,7 @@ const prefetchedMiljoer = ['t3', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = ['q1', 'q2']
-const prefetchedDokarkivMiljoer = ['q1', 'q2', 'q4', 'q5']
+const prefetchedDokarkivMiljoer = ['q1', 'q2']
 
 export const useDollyEnvironments = () => {
 	const { data, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
