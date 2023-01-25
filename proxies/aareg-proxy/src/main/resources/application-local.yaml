@@ -21,3 +21,7 @@ management:
     web:
       exposure:
         include: "*"
+
+AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
+AZURE_TRYGDEETATEN_APP_CLIENT_ID: 5af10d50-e935-46ed-8a3f-6830bbba6b13
+AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: "STOLEN FROM POD"

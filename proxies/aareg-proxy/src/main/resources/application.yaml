@@ -24,4 +24,4 @@ app:
     name: aareg-services-nais-{env}
     namespace: arbeidsforhold
     url: https://aareg-services-{env}.dev.intern.nav.no
-    cluster: dev-gcp
+    cluster: dev-fss
