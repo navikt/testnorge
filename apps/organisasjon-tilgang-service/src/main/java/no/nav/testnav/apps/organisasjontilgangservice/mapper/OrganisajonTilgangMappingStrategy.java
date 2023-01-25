@@ -3,7 +3,7 @@ package no.nav.testnav.apps.organisasjontilgangservice.mapper;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.testnav.apps.organisasjontilgangservice.database.jpa.OrganisasjonTilgang;
+import no.nav.testnav.apps.organisasjontilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
 import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonResponse;
 import org.springframework.stereotype.Component;

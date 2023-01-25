@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.AltinnConsumer;
-import no.nav.testnav.apps.organisasjontilgangservice.database.jpa.OrganisasjonTilgang;
+import no.nav.testnav.apps.organisasjontilgangservice.database.entity.OrganisasjonTilgang;
 import no.nav.testnav.apps.organisasjontilgangservice.database.repository.OrganisasjonTilgangRepository;
 import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonResponse;
 import org.springframework.stereotype.Service;

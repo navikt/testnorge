@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.organisasjontilgangservice.database.jpa;
+package no.nav.testnav.apps.organisasjontilgangservice.database.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,8 +14,6 @@ import org.springframework.data.relational.core.mapping.Table;
 @AllArgsConstructor
 @Table(name = "ORGANISASJON_TILGANG")
 public class OrganisasjonTilgang {
-
-    public static final String SEQUENCE_STYLE_GENERATOR = "org.hibernate.id.enhanced.SequenceStyleGenerator";
 
     @Id
     private Long id;
