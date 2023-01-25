@@ -39,6 +39,7 @@ spec:
     path: /internal/metrics
   envFrom:
     - secret: altinn
+    - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
     max: 1
