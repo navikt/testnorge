@@ -71,7 +71,7 @@ const _renderBestillingsDetaljer = (data) => {
 	})
 }
 
-const _renderStaticValue = (attributt, idx) => {
+export const _renderStaticValue = (attributt, idx) => {
 	if (!attributt.value) {
 		return null
 	}
@@ -125,7 +125,7 @@ export default function Bestillingskriterier({ bestilling, bestillingsinformasjo
 	}
 
 	const data = mapBestillingData(bestilling, bestillingsinformasjon)
-
+	console.log('data: ', data) //TODO - SLETT MEG
 	if (!data) return <p>Kunne ikke hente bestillingsdata</p>
 
 	return (

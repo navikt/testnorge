@@ -15,6 +15,10 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Formatters from '@/utils/DataFormatter'
 import React from 'react'
+import useBoolean from '@/utils/hooks/useBoolean'
+import Button from '@/components/ui/button/Button'
+import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
+import { AmeldingBestilling } from '@/components/fagsystem/aareg/visning/partials/AmeldingBestilling'
 
 type AaregVisningProps = {
 	ident?: string
@@ -70,8 +74,10 @@ const getHeader = (data: Arbeidsforhold) => {
 	})`
 }
 
-const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
+const Arbeidsforhold = ({ data, amelding }: ArbeidsforholdArray) => {
 	if (!data) return null
+	// console.log('amelding: ', amelding) //TODO - SLETT MEG
+	const [visAmelding, setVisAmelding, setSkjulAmelding] = useBoolean(false)
 
 	const sortedData = data
 		?.slice()
@@ -129,13 +135,35 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 					<Utenlandsopphold data={arbeidsforhold.utenlandsopphold} />
 
 					<PermisjonPermitteringer data={arbeidsforhold.permisjonPermitteringer} />
+
+					{/*<div style={{ marginBottom: '10px' }}>*/}
+					{visAmelding ? (
+						<Button onClick={setSkjulAmelding} kind={'collapse'}>
+							SKJUL A-MELDING
+						</Button>
+					) : (
+						<Button onClick={setVisAmelding} kind={'expand'}>
+							VIS A-MELDING
+						</Button>
+					)}
+					{visAmelding && (
+						// <div style={{ marginTop: '10px' }}>
+						<AmeldingBestilling bestilling={amelding[0]?.data} />
+						// </div>
+					)}
+					{/*</div>*/}
 				</React.Fragment>
 			)}
 		</DollyFieldArray>
 	)
 }
 
-export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisningProps) => {
+export const AaregVisning = ({
+	liste,
+	loading,
+	bestillingListe,
+	bestillingIdListe,
+}: AaregVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
 
 	if (loading) {
@@ -153,6 +181,10 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
+	// Faar ikke hente tilbake a-meldinger, viser derfor bestillingsdata
+	const amelding = bestillingListe.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
+	console.log('amelding: ', amelding) //TODO - SLETT MEG
+
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
@@ -168,7 +200,8 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 						forsteMiljo={forsteMiljo}
 						data={liste}
 					>
-						<Arbeidsforhold />
+						{/*<Arbeidsforhold amelding={amelding} />*/}
+						<Arbeidsforhold amelding={bestillingListe} />
 					</MiljoTabs>
 				</ErrorBoundary>
 			)}
