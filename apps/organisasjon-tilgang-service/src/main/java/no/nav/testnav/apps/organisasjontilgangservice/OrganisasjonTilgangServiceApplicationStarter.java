@@ -8,7 +8,6 @@ import org.springframework.web.reactive.config.EnableWebFlux;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 
-
 @Import({
         CoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class
