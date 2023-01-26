@@ -11,6 +11,10 @@ const StyledForm = styled.form`
 
 const StyledHovedknapp = styled(Knapp)`
   margin: 20px 0;
+  && {
+    align-self: flex-start;
+    margin-left: 0;
+  }
 `;
 
 type Props<T> = {

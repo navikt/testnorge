@@ -5,6 +5,7 @@ type Organisasjon = {
   organisasjonsnummer: string;
   organisasjonsform: string;
   gyldigTil: string;
+  miljoe: string;
 };
 
 const getOrganisasjonTilganger = () =>
@@ -12,11 +13,11 @@ const getOrganisasjonTilganger = () =>
     method: 'GET',
   });
 
-const createOrganisasjonTilgang = (organisasjonsnummer: string, gyldigTil: string) =>
+const createOrganisasjonTilgang = (organisasjonsnummer: string, gyldigTil: string, miljoe: string) =>
   Api.fetchJson<Organisasjon>(
     '/organisasjon-tilgang-service/api/v1/organisasjoner',
     { method: 'POST' },
-    JSON.stringify({ organisasjonsnummer, gyldigTil })
+    JSON.stringify({ organisasjonsnummer, gyldigTil, miljoe })
   );
 
 const deleteOrganisasjonTilgang = (organisasjonsnummer: string) =>
