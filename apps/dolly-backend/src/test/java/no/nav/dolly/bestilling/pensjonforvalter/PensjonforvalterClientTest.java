@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse.ResponseEnvironment;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -75,9 +74,6 @@ class PensjonforvalterClientTest {
 
     @Mock
     private TransactionHelperService transactionHelperService;
-
-    @Mock
-    private PersonServiceConsumer personServiceConsumer;
 
     @Mock
     private PdlPersonConsumer pdlPersonConsumer;
@@ -304,11 +300,14 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
+        when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class)))
+                .thenReturn(PensjonPersonRequest.builder()
+                        .fnr(IDENT)
+                        .build());
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -385,11 +384,14 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
+        when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class)))
+                .thenReturn(PensjonPersonRequest.builder()
+                        .fnr(IDENT)
+                        .build());
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
                 .thenReturn("Feil= ytelse2 feil on TEST2");
 
@@ -467,11 +469,14 @@ class PensjonforvalterClientTest {
                                         .build())))
                         .build()));
 
+        when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class)))
+                .thenReturn(PensjonPersonRequest.builder()
+                        .fnr(IDENT)
+                        .build());
         when(mapperFacade.map(any(PensjonData.TpOrdning.class), eq(PensjonTpForholdRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.INTERNAL_SERVER_ERROR), anyString()))
                 .thenReturn("Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon)");
 

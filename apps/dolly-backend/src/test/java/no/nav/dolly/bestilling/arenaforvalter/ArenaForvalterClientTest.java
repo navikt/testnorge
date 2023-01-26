@@ -87,7 +87,6 @@ class ArenaForvalterClientTest {
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
@@ -124,7 +123,6 @@ class ArenaForvalterClientTest {
                                 .build()));
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         var request = new RsDollyBestillingRequest();
@@ -167,7 +165,6 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singletonList("t3"));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(),

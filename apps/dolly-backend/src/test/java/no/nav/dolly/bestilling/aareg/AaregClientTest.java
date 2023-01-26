@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
@@ -30,7 +29,6 @@ import reactor.test.StepVerifier;
 import static java.util.Collections.singletonList;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -54,9 +52,6 @@ class AaregClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
-    @Mock
-    private PersonServiceConsumer personServiceConsumer;
-
     @InjectMocks
     private AaregClient aaregClient;
 
@@ -64,7 +59,6 @@ class AaregClientTest {
     void setup() {
 
         when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
-        when(personServiceConsumer.getPdlSyncReady(anyString())).thenReturn(Mono.just(true));
     }
 
     private ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
