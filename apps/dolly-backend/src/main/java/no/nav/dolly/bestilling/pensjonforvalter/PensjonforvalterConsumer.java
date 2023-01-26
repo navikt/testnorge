@@ -72,7 +72,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
-    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest lagreInntektRequest,
+    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest,
                                                          Set<String> miljoer, AccessToken token) {
 
         log.info("Popp lagre inntekt {}", pensjonPoppInntektRequest);
@@ -133,7 +133,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_lagreTpYtelse" })
-    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
+    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest pensjonTpYtelseRequest, AccessToken token) {
 
         log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
         return new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call();
