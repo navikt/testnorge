@@ -15,9 +15,6 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Formatters from '@/utils/DataFormatter'
 import React from 'react'
-import useBoolean from '@/utils/hooks/useBoolean'
-import Button from '@/components/ui/button/Button'
-import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import { AmeldingBestilling } from '@/components/fagsystem/aareg/visning/partials/AmeldingBestilling'
 
 type AaregVisningProps = {
@@ -76,7 +73,6 @@ const getHeader = (data: Arbeidsforhold) => {
 
 const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	if (!data) return null
-	// console.log('amelding: ', amelding) //TODO - SLETT MEG
 
 	const sortedData = data
 		?.slice()
@@ -168,7 +164,6 @@ export const AaregVisning = ({
 		.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
 		?.filter((amelding) => amelding)
 	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
-	console.log('amelding: ', amelding) //TODO - SLETT MEG
 
 	return (
 		<div>
@@ -185,7 +180,6 @@ export const AaregVisning = ({
 						forsteMiljo={forsteMiljo}
 						data={liste}
 					>
-						{/*<Arbeidsforhold amelding={amelding} />*/}
 						<Arbeidsforhold />
 					</MiljoTabs>
 					{harAmeldingBestilling && <AmeldingBestilling bestillinger={amelding} />}

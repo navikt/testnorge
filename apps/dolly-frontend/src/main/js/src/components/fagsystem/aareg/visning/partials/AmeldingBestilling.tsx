@@ -1,8 +1,6 @@
 import DollyKjede from '@/components/dollyKjede/DollyKjede'
-import cn from 'classnames'
 import React, { useState } from 'react'
 import { arbeidsforholdVisning } from '@/components/bestilling/sammendrag/kriterier/BestillingKriterieMapper'
-import bestilling from '@/ducks/bestilling'
 import { _renderStaticValue } from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import styled from 'styled-components'
 import useBoolean from '@/utils/hooks/useBoolean'
@@ -23,7 +21,7 @@ const AmeldingVisning = styled.div`
 `
 const ameldingMapper = (bestilling) => {
 	if (!bestilling) return null
-	console.log('bestilling xxx: ', bestilling) //TODO - SLETT MEG
+
 	const data = {
 		paginering: [],
 		pagineringPages: [],
@@ -41,14 +39,13 @@ const ameldingMapper = (bestilling) => {
 	})
 
 	return data
-	//TODO: fortsett - se BestillingKriterieMapper for aareg
 }
 export const AmeldingBestilling = ({ bestillinger }) => {
 	if (!bestillinger) return null
 
 	const [visAmelding, setVisAmelding, setSkjulAmelding] = useBoolean(false)
 	const [selectedIndex, setSelectedIndex] = useState(0)
-	// const amelding = ameldingMapper(bestillinger)
+
 	return (
 		<>
 			{visAmelding ? (
@@ -68,6 +65,8 @@ export const AmeldingBestilling = ({ bestillinger }) => {
 				>
 					{(bestilling, idx) => {
 						const amelding = ameldingMapper(bestilling)
+						if (!amelding) return null
+
 						return (
 							<AmeldingVisning id={idx}>
 								<DollyKjede

@@ -109,9 +109,6 @@ export const PersonVisning = ({
 	const visArbeidsforhold =
 		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
 
-	// console.log('arbeidsforhold: ', arbeidsforhold) //TODO - SLETT MEG
-	// console.log('bestillingListe: ', bestillingListe) //TODO - SLETT MEG
-
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
 		harTpBestilling(bestillingerFagsystemer)

@@ -1105,17 +1105,17 @@ export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKrite
 	obj('Avtalte arbeidstimer per uke', arbeidsforhold.arbeidsavtale?.avtaltArbeidstimerPerUke),
 	{
 		label: 'Skipsregister',
-		value: arbeidsforhold.fartoy?.[0].skipsregister,
+		value: arbeidsforhold.fartoy?.[0]?.skipsregister,
 		apiKodeverkId: ArbeidKodeverk.Skipsregistre,
 	},
 	{
 		label: 'Fartøystype',
-		value: arbeidsforhold.fartoy?.[0].skipstype,
+		value: arbeidsforhold.fartoy?.[0]?.skipstype,
 		apiKodeverkId: ArbeidKodeverk.Skipstyper,
 	},
 	{
 		label: 'Fartsområde',
-		value: arbeidsforhold.fartoy?.[0].fartsomraade,
+		value: arbeidsforhold.fartoy?.[0]?.fartsomraade,
 		apiKodeverkId: ArbeidKodeverk.Fartsomraader,
 	},
 	obj('Perioder med antall timer for timelønnet', arbeidsforhold.antallTimerForTimeloennet?.length),
@@ -1124,7 +1124,6 @@ export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKrite
 	obj('Perioder med permittering', arbeidsforhold.permittering?.length),
 ]
 const mapAareg = (bestillingData, data) => {
-	// console.log('bestillingData: ', bestillingData) //TODO - SLETT MEG
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
 		const aareg = {
@@ -1135,7 +1134,7 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		const harAmelding = _.has(aaregKriterier[0], 'amelding')
+		const harAmelding = aaregKriterier[0]?.amelding?.length > 0
 
 		if (harAmelding) {
 			aareg.items.push(
