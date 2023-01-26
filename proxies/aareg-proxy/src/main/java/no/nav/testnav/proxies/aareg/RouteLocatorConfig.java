@@ -26,8 +26,7 @@ import java.util.stream.Stream;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String[] ENV_PREPROD = {"q1", "q2", "q4", "q5", "qx"};
-    private static final String[] ENV_TEST = {"t3", "T13"};
+    private static final String[] ENV = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
 
     @Bean
     public RouteLocator customRouteLocator(
@@ -38,23 +37,15 @@ public class RouteLocatorConfig {
 
         var routes = builder.routes();
 
-        Stream.of(ENV_PREPROD)
+        Stream.of(ENV)
                 .forEach(env -> {
                     var azureAuthentication = AddAuthenticationRequestGatewayFilterFactory
                             .bearerAuthenticationHeaderFilter(() -> tokenService
                                     .exchange(azureProperties.forEnvironment(env))
                                     .map(AccessToken::getTokenValue));
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication));
-                });
-        Stream.of(ENV_TEST)
-                .forEach(env -> {
-                    var azureAuthentication = AddAuthenticationRequestGatewayFilterFactory
-                            .bearerAuthenticationHeaderFilter(() -> tokenService
-                                    .exchange(azureProperties.forEnvironment(env))
-                                    .map(AccessToken::getTokenValue));
-                    routes
-                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication));
+                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication))
+                            .route(createWriteableRouteToNewEndpoint(env, azureAuthentication));
                 });
 
         return routes.build();
@@ -71,6 +62,18 @@ public class RouteLocatorConfig {
                         .filter(authentication)
                 )
                 .uri("https://aareg-services-" + env + ".dev.intern.nav.no");
+    }
+
+    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+        return predicateSpec -> predicateSpec
+                .path("/" + env + "/api/v1/arbeidsforhold")
+                .and()
+                .method(HttpMethod.POST, HttpMethod.PUT)
+                .filters(filterSpec -> filterSpec
+                        .rewritePath("/" + env + "/(?<segment>.*)", "/aareg-services/api/v1/arbeidsforhold/")
+                        .filter(authentication)
+                )
+                .uri("https://aareg-vedlikehold-" + env + ".dev.intern.nav.no");
     }
 
 }
