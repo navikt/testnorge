@@ -13,6 +13,8 @@ import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
 
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
+
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonTilgangService {
@@ -26,7 +28,7 @@ public class OrganisasjonTilgangService {
         return altinnConsumer.getOrganisasjoner()
                 .flatMap(organisasjon -> organisasjonTilgangRepository
                         .existsByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
-                        .map(exists -> exists ?
+                        .map(exists -> isTrue(exists) ?
                                 organisasjonTilgangRepository
                                         .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer()) :
                                 Mono.just(new OrganisasjonTilgang()))
@@ -40,7 +42,7 @@ public class OrganisasjonTilgangService {
     public Mono<OrganisasjonResponse> create(String organisasjonsnummer, LocalDateTime gyldigTil, String miljoe) {
 
         return organisasjonTilgangRepository.existsByOrganisasjonNummer(organisasjonsnummer)
-                .flatMap(exists -> exists ?
+                .flatMap(exists -> isTrue(exists) ?
                         organisasjonTilgangRepository.findByOrganisasjonNummer(organisasjonsnummer) :
                         Mono.just(OrganisasjonTilgang.builder()
                                 .organisasjonNummer(organisasjonsnummer)

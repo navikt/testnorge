@@ -2,8 +2,9 @@ package no.nav.testnav.apps.organisasjontilgangservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.DeleteStatus;
+import no.nav.testnav.apps.organisasjontilgangservice.controller.request.OrganisasjonAccessRequest;
 import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonResponse;
+import no.nav.testnav.apps.organisasjontilgangservice.service.OrganisasjonTilgangService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import no.nav.testnav.apps.organisasjontilgangservice.controller.request.OrganisasjonAccessRequest;
-import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
-import no.nav.testnav.apps.organisasjontilgangservice.service.OrganisasjonTilgangService;
 
 @Slf4j
 @RestController
