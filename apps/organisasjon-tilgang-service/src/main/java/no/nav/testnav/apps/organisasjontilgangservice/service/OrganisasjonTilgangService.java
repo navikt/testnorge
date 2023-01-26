@@ -25,7 +25,11 @@ public class OrganisasjonTilgangService {
 
         return altinnConsumer.getOrganisasjoner()
                 .flatMap(organisasjon -> organisasjonTilgangRepository
-                        .getOrganisasjonTilgangByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+                        .existsByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+                        .map(exists -> exists ?
+                                organisasjonTilgangRepository
+                                        .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer()) :
+                                Mono.just(new OrganisasjonTilgang()))
                         .map(organisasjonTilgang -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty("organisasjonTilgang", organisasjonTilgang);
@@ -35,18 +39,24 @@ public class OrganisasjonTilgangService {
 
     public Mono<OrganisasjonResponse> create(String organisasjonsnummer, LocalDateTime gyldigTil, String miljoe) {
 
-        return organisasjonTilgangRepository.save(OrganisasjonTilgang.builder()
-                        .organisasjonNummer(organisasjonsnummer)
-                        .miljoe(miljoe)
-                        .build())
-                .flatMap(orhganisasjonTilgang -> altinnConsumer.create(organisasjonsnummer, gyldigTil)
-                .flatMap(organisasjon -> organisasjonTilgangRepository
-                        .getOrganisasjonTilgangByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
-                        .map(organisasjonTilgang -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty("organisasjonTilgang", organisasjonTilgang);
-                            return mapperFacade.map(organisasjon, OrganisasjonResponse.class);
-                        })));
+        return organisasjonTilgangRepository.existsByOrganisasjonNummer(organisasjonsnummer)
+                .flatMap(exists -> exists ?
+                        organisasjonTilgangRepository.findByOrganisasjonNummer(organisasjonsnummer) :
+                        Mono.just(OrganisasjonTilgang.builder()
+                                .organisasjonNummer(organisasjonsnummer)
+                                .build()))
+                .flatMap(organisasjon -> {
+                    organisasjon.setMiljoe(miljoe);
+                    return organisasjonTilgangRepository.save(organisasjon);
+                })
+                .flatMap(organisasjonTilgang -> altinnConsumer.create(organisasjonsnummer, gyldigTil)
+                        .flatMap(organisasjon -> organisasjonTilgangRepository
+                                .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
+                                .map(tilgang -> {
+                                    var context = new MappingContext.Factory().getContext();
+                                    context.setProperty("organisasjonTilgang", tilgang);
+                                    return mapperFacade.map(organisasjon, OrganisasjonResponse.class, context);
+                                })));
     }
 
     public Flux<Void> delete(String organisasjonsnummer) {

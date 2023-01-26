@@ -10,14 +10,19 @@ import org.springframework.data.domain.Persistable;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.Objects;
+
+import static java.util.Objects.isNull;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "ORGANISASJON_TILGANG")
-public class OrganisasjonTilgang implements Persistable<Long> {
+public class OrganisasjonTilgang {
 
     @Id
+    @Column("ID")
     private Long id;
 
     @Column("ORGANISAJON_NUMMER")
@@ -25,10 +30,4 @@ public class OrganisasjonTilgang implements Persistable<Long> {
 
     @Column("miljoe")
     private String miljoe;
-
-    @Override
-    @Transient
-    public boolean isNew() {
-        return id == null;
-    }
 }

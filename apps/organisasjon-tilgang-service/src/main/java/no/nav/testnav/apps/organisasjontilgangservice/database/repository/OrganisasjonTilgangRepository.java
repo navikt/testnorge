@@ -8,9 +8,11 @@ import reactor.core.publisher.Mono;
 
 public interface OrganisasjonTilgangRepository extends ReactiveCrudRepository<OrganisasjonTilgang, Long> {
 
-    Mono<OrganisasjonTilgang> getOrganisasjonTilgangByOrganisasjonNummer(String orgnummer);
+    Mono<Boolean> existsByOrganisasjonNummer(String orgnummer);
+
+    Mono<OrganisasjonTilgang> findByOrganisasjonNummer(String orgnummer);
 
     Mono<OrganisasjonTilgang> save(OrganisasjonTilgang organisasjonTilgang);
 
-    Mono<Void> deleteByOrganisasjonNummer(String orgnisasjonsnummer);
+    Mono<Void> deleteByOrganisasjonNummer(String orgnummer);
 }

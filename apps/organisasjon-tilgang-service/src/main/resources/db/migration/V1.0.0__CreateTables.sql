@@ -4,7 +4,7 @@
 
 create table organisasjon_tilgang
 (
-    id                 integer primary key,
+    id                 serial primary key,
     organisajon_nummer varchar(50) unique,
     miljoe             varchar(100)
 );
