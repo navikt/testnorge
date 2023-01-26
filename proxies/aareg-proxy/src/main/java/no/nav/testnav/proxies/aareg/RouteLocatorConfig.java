@@ -26,8 +26,8 @@ import java.util.stream.Stream;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String[] ENV_PREPROD = {"q0", "q1", "q4", "q5"};
-    private static final String[] ENV_TEST = {"t0", "t1", "t3", "t4", "t5"};
+    private static final String[] ENV_PREPROD = {"q1", "q2", "q4", "q5", "qx"};
+    private static final String[] ENV_TEST = {"t3", "T13"};
 
     @Bean
     public RouteLocator customRouteLocator(
