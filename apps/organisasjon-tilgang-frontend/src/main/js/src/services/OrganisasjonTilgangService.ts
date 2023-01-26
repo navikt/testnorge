@@ -13,7 +13,11 @@ const getOrganisasjonTilganger = () =>
     method: 'GET',
   });
 
-const createOrganisasjonTilgang = (organisasjonsnummer: string, gyldigTil: string, miljoe: string) =>
+const createOrganisasjonTilgang = (
+  organisasjonsnummer: string,
+  gyldigTil: string,
+  miljoe: string
+) =>
   Api.fetchJson<Organisasjon>(
     '/organisasjon-tilgang-service/api/v1/organisasjoner',
     { method: 'POST' },
