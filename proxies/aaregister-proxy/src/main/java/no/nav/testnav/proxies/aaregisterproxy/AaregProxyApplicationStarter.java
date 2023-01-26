@@ -21,31 +21,27 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 @Import({
-    CoreConfig.class,
-    DevConfig.class,
-    SecurityConfig.class
+        CoreConfig.class,
+        DevConfig.class,
+        SecurityConfig.class
 })
 @SpringBootApplication
 public class AaregProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        SpringApplication.run(AaregProxyApplicationStarter.class, args);
-    }
-
     @Bean
     public StsOidcTokenService stsPreprodOidcTokenService(
-        @Value("${sts.preprod.token.provider.url}") String url,
-        @Value("${sts.preprod.token.provider.username}") String username,
-        @Value("${sts.preprod.token.provider.password}") String password) {
+            @Value("${sts.preprod.token.provider.url}") String url,
+            @Value("${sts.preprod.token.provider.username}") String username,
+            @Value("${sts.preprod.token.provider.password}") String password) {
 
         return new StsOidcTokenService(url, username, password);
     }
 
     @Bean
     public StsOidcTokenService stsTestOidcTokenService(
-        @Value("${sts.test.token.provider.url}") String url,
-        @Value("${sts.test.token.provider.username}") String username,
-        @Value("${sts.test.token.provider.password}") String password) {
+            @Value("${sts.test.token.provider.url}") String url,
+            @Value("${sts.test.token.provider.username}") String username,
+            @Value("${sts.test.token.provider.password}") String password) {
 
         return new StsOidcTokenService(url, username, password);
     }
@@ -55,27 +51,30 @@ public class AaregProxyApplicationStarter {
 
         var routes = builder.routes();
         var preprodFilter = AddAuthenticationRequestGatewayFilterFactory
-            .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
+                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsPreprodOidcTokenService::getToken);
         Stream.of("q1", "q2", "q4", "q5")
-            .forEach(env -> routes
-                .route(createRoute(env, preprodFilter)));
+                .forEach(env -> routes
+                        .route(createRoute(env, preprodFilter)));
 
         var testFilter = AddAuthenticationRequestGatewayFilterFactory
-            .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
-        Stream.of("t0", "t1", "t3", "t4", "t5")
-            .forEach(env -> routes
-                .route(createRoute(env, testFilter)));
+                .bearerAuthenticationAndNavConsumerTokenHeaderFilter(stsTestOidcTokenService::getToken);
+        routes
+                .route(createRoute("t3", testFilter));
 
         return routes.build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(AaregProxyApplicationStarter.class, args);
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
 
         return spec -> spec
-            .path("/" + miljo + "/**")
-            .filters(filterSpec -> filterSpec
-                .rewritePath("/" + miljo + "/(?<segment>.*)", "/aareg-core/${segment}")
-                .filter(filter)
-            ).uri("https://modapp-" + miljo + ".adeo.no");
+                .path("/" + miljo + "/**")
+                .filters(filterSpec -> filterSpec
+                        .rewritePath("/" + miljo + "/(?<segment>.*)", "/aareg-core/${segment}")
+                        .filter(filter)
+                ).uri("https://modapp-" + miljo + ".adeo.no");
     }
 }

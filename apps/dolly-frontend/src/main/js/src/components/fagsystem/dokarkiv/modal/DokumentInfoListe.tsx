@@ -3,9 +3,14 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { Document, Page } from 'react-pdf'
+import { Document, Page } from 'react-pdf/dist/esm/entry.vite'
+import { pdfjs } from 'react-pdf'
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
+import 'react-pdf/dist/esm/Page/TextLayer.css'
 import styled from 'styled-components'
 import Button from '@/components/ui/button/Button'
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`
 
 type Data = {
 	filer: Vedlegg[]
@@ -21,6 +26,7 @@ const PdfDocument = styled(Document)`
 	align-self: center;
 	text-align: -webkit-center;
 	max-height: 90px;
+	margin-right: 10px;
 `
 export const DokumentInfoListe = ({ filer, handleChange }: Data) => {
 	if (!filer || filer.length < 1) {

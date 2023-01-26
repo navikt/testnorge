@@ -147,7 +147,7 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 
 	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
-	const miljoerMedData = liste?.map((miljoData) => miljoData.data?.length > 0 && miljoData.miljo)
+	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
 	const forsteMiljo = liste.find((miljoData) => miljoData?.data?.length > 0)?.miljo

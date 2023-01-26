@@ -72,7 +72,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
-    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest,
+    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest lagreInntektRequest,
                                                          Set<String> miljoer, AccessToken token) {
 
         log.info("Popp lagre inntekt {}", pensjonPoppInntektRequest);
@@ -105,11 +105,11 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreTpForhold"})
-    public Flux<PensjonforvalterResponse> lagreTpForhold(PensjonTpForholdRequest lagreTpForholdRequest, AccessToken token) {
+    @Timed(name = "providers", tags = { "operation", "pen_lagreTpForhold" })
+    public Flux<PensjonforvalterResponse> lagreTpForhold(PensjonTpForholdRequest pensjonTpForholdRequest, AccessToken token) {
 
-        log.info("Pensjon lagre TP-forhold {}", lagreTpForholdRequest);
-        return new LagreTpForholdCommand(webClient, token.getTokenValue(), lagreTpForholdRequest).call();
+        log.info("Pensjon lagre TP-forhold {}", pensjonTpForholdRequest);
+        return new LagreTpForholdCommand(webClient, token.getTokenValue(), pensjonTpForholdRequest).call();
     }
 
     @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
@@ -132,8 +132,8 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .block();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreTpYtelse"})
-    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest pensjonTpYtelseRequest, AccessToken token) {
+    @Timed(name = "providers", tags = { "operation", "pen_lagreTpYtelse" })
+    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
 
         log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
         return new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call();

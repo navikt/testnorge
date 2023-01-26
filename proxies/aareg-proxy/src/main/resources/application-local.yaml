@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: testnav-aareg-proxy
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/v2.0
+          jwk-set-uri: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b/discovery/v2.0/keys
+          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-fss:dolly:testnav-aareg-proxy
+
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
+AZURE_TRYGDEETATEN_APP_CLIENT_ID: 5af10d50-e935-46ed-8a3f-6830bbba6b13
+AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: dDm8Q~Cl3GuXVAj3Qh.3H5kZoa3exxOVt4uGIb-x
+#AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: "> k exec testnav-aareg-proxy-??? -- printenv|grep AZURE_APP_CLIENT_SECRET"
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.web.reactive: DEBUG

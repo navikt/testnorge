@@ -36,15 +36,6 @@ public class PensjonData {
         return tp;
     }
 
-    public enum TpYtelseType {
-        ALDER,
-        UFORE,
-        GJENLEVENDE,
-        BARN,
-        AFP,
-        UKJENT
-    }
-
     @Data
     @Builder
     @NoArgsConstructor
@@ -88,6 +79,15 @@ public class PensjonData {
         }
     }
 
+    public enum TpYtelseType {
+        ALDER,
+        UFORE,
+        GJENLEVENDE,
+        BARN,
+        AFP,
+        UKJENT
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -120,10 +120,24 @@ public class PensjonData {
         @Schema(required = true)
         private Integer uttaksgrad;
 
-        @Schema(required = true)
-        private String sivilstand;
-
         @Schema
-        private LocalDate sivilstatusDatoFom;
+        private List<SkjemaRelasjon> relasjoner;
+
+        public List<SkjemaRelasjon> getRelasjoner() {
+
+            if (isNull(relasjoner)) {
+                relasjoner = new ArrayList<>();
+            }
+            return relasjoner;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SkjemaRelasjon {
+        @Schema(required = true)
+        private Integer sumAvForvArbKapPenInntekt;
     }
 }

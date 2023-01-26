@@ -13,6 +13,7 @@ const StyledPanel = styled(Tabs.Panel)`
 
 const BestiltMiljoTab = styled(Tabs.Tab)`
 	color: #06893a;
+
 	&&& {
 		.navds-tabs__tab-inner {
 			color: #06893a;
@@ -38,7 +39,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 							<ErrorMiljoTab
 								key={miljoData?.miljo}
 								value={miljoData?.miljo}
-								label={miljoData?.miljo?.toUpperCase()}
+								label={miljoData?.miljo?.toUpperCase() || '?'}
 							/>
 						)
 					}
@@ -47,7 +48,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 							<BestiltMiljoTab
 								key={miljoData?.miljo}
 								value={miljoData?.miljo}
-								label={miljoData?.miljo?.toUpperCase()}
+								label={miljoData?.miljo?.toUpperCase() || '?'}
 							/>
 						)
 					}
@@ -55,7 +56,7 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 						<Tabs.Tab
 							key={miljoData?.miljo}
 							value={miljoData?.miljo}
-							label={miljoData?.miljo?.toUpperCase()}
+							label={miljoData?.miljo?.toUpperCase() || '?'}
 						/>
 					)
 				})}

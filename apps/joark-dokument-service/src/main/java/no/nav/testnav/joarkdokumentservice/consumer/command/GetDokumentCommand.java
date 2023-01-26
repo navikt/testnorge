@@ -16,8 +16,8 @@ import java.util.concurrent.Callable;
 public class GetDokumentCommand implements Callable<Mono<String>> {
     private final WebClient webClient;
     private final String token;
-    private final Integer journalpostId;
-    private final Integer dokumentInfoId;
+    private final String journalpostId;
+    private final String dokumentInfoId;
     private final String miljo;
     private final DokumentType type;
 

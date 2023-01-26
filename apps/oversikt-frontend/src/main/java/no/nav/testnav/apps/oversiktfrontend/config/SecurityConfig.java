@@ -1,8 +1,6 @@
 package no.nav.testnav.apps.oversiktfrontend.config;
 
 import lombok.SneakyThrows;
-import no.nav.common.token_client.builder.AzureAdTokenClientBuilder;
-import no.nav.common.token_client.client.AzureAdOnBehalfOfTokenClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,9 +16,6 @@ public class SecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.aad.issuer-uri}")
     private String issuer;
-
-    public SecurityConfig() {
-    }
 
     @SneakyThrows
     @Bean
@@ -38,13 +33,5 @@ public class SecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
         return ReactiveJwtDecoders.fromOidcIssuerLocation(issuer);
-    }
-
-    @Bean
-    public AzureAdOnBehalfOfTokenClient azureAdMachineToMachineTokenClient() {
-
-        return AzureAdTokenClientBuilder.builder()
-                .withNaisDefaults()
-                .buildOnBehalfOfTokenClient();
     }
 }

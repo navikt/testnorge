@@ -48,7 +48,6 @@ dependencies {
 
     implementation 'no.nav.testnav.libs:reactive-frontend'
     implementation 'no.nav.testnav.libs:reactive-security'
-    implementation 'no.nav.common:token-client:2.2023.01.10_13.49-81ddc732df3a'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'

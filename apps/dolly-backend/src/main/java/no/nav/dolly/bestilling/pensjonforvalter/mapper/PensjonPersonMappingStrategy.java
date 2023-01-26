@@ -51,9 +51,9 @@ public class PensjonPersonMappingStrategy implements MappingStrategy {
                                 .findFirst().orElse(null)));
 
                         if (person.getPerson().getUtflyttingFraNorge().stream()
-                                            .noneMatch(utflytting -> person.getPerson().getInnflyttingTilNorge().stream()
-                                                            .anyMatch(innflytting -> innflytting.getInnflyttingsdato()
-                                                                    .isAfter(utflytting.getUtflyttingsdato())))) {
+                                .noneMatch(utflytting -> person.getPerson().getInnflyttingTilNorge().stream()
+                                        .anyMatch(innflytting -> innflytting.getInnflyttingsdato()
+                                                .isAfter(utflytting.getUtflyttingsdato())))) {
 
                             pensjonPersonRequest.setBostedsland(person.getPerson().getUtflyttingFraNorge().stream()
                                     .map(PdlPerson.UtflyttingFraNorge::getTilflyttingsland)

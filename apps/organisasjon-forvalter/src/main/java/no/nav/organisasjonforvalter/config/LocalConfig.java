@@ -21,7 +21,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
         VaultHikariConfiguration.class
 })
 @RequiredArgsConstructor
-@VaultPropertySource(value = "azuread/prod/creds/team-dolly-lokal-app", ignoreSecretNotFound = false)
+@VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
 @VaultPropertySource(value = "serviceuser/dev/srvtestnorge", propertyNamePrefix = "serviceuser.", ignoreSecretNotFound = false)
 class LocalConfig extends AbstractVaultConfiguration {
 

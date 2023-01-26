@@ -21,7 +21,7 @@ public class JournalpostController {
     @GetMapping
     public ResponseEntity<JournalpostDTO> hentJournalpost(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("journalpostId") Integer journalpostId
+            @PathVariable("journalpostId") String journalpostId
     ) {
         var journalpost = service.getJournalpost(journalpostId, miljo);
         return ResponseEntity.ok(journalpost.toDTO());
@@ -30,8 +30,8 @@ public class JournalpostController {
     @GetMapping("/dokumenter/{dokumentInfoId}")
     public ResponseEntity<String> hentDokument(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("dokumentInfoId") Integer dokumentInfoId,
-            @PathVariable("journalpostId") Integer journalpostId,
+            @PathVariable("dokumentInfoId") String dokumentInfoId,
+            @PathVariable("journalpostId") String journalpostId,
             @RequestParam DokumentType dokumentType
     ) {
         var dokument = service.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
@@ -46,8 +46,8 @@ public class JournalpostController {
     @GetMapping("/dokumenter/{dokumentInfoId}/pdf")
     public ResponseEntity<byte[]> hentPDF(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("dokumentInfoId") Integer dokumentInfoId,
-            @PathVariable("journalpostId") Integer journalpostId
+            @PathVariable("dokumentInfoId") String dokumentInfoId,
+            @PathVariable("journalpostId") String journalpostId
     ) {
         var dokument = service.getPDF(journalpostId, dokumentInfoId, miljo);
 

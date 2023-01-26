@@ -20,6 +20,7 @@ import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form
 import { ifPresent } from '@/utils/YupValidations'
 import { Alert } from '@navikt/ds-react'
 import { useFormikContext } from 'formik'
+import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -59,6 +60,7 @@ export const Steg2 = () => {
 			<InntektsmeldingForm formikBag={formikBag} />
 			<PensjonForm formikBag={formikBag} />
 			<TjenestepensjonForm formikBag={formikBag} />
+			<AlderspensjonForm formikBag={formikBag} />
 			<ArenaForm formikBag={formikBag} />
 			<SykdomForm formikBag={formikBag} />
 			<BrregstubForm formikBag={formikBag} />
@@ -92,6 +94,7 @@ Steg2.validation = Yup.object({
 		Yup.object({
 			...PensjonForm.validation,
 			...TjenestepensjonForm.validation,
+			...AlderspensjonForm.validation,
 		})
 	),
 })

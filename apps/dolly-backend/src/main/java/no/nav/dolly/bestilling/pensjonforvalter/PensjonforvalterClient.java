@@ -23,9 +23,10 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
@@ -110,37 +111,34 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.toSet()));
 
                     return pensjonforvalterConsumer.getAccessToken()
-                            .flatMapMany(token -> getIdenterFamilie(dollyPerson.getHovedperson())
-                                    .map(this::getPersonData)
-                                    .flatMap(Flux::from)
-                                    .map(person -> Flux.concat(
-                                            pensjonforvalterConsumer.opprettPerson(
-                                                            mapperFacade.map(person, PensjonPersonRequest.class), tilgjengeligeMiljoer, token)
-                                                    .filter(response -> dollyPerson.getHovedperson().equals(person.getIdent()))
-                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, person.getIdent())),
-                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
-                                                            .map(response -> TP_FORHOLD + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just("")),
-                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
-                                                    lagreAlderspensjon(
+                            .flatMapMany(token -> getIdenterRelasjoner(dollyPerson.getHovedperson())
+                                    .flatMap(this::getPersonData)
+                                    .collectList()
+                                    .map(relasjoner -> Flux.concat(
+                                            opprettPersoner(dollyPerson.getHovedperson(), tilgjengeligeMiljoer,
+                                                    relasjoner, token)
+                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getHovedperson())),
+
+                                            lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
+                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getHovedperson())),
+
+                                            lagreAlderspensjon(
                                                             bestilling.getPensjonforvalter(),
+                                                            relasjoner,
                                                             dollyPerson.getHovedperson(),
                                                             bestilteMiljoer.get(),
                                                             token,
                                                             isOpprettEndre,
                                                             bestillingId)
-                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just("")),
-                                            (dollyPerson.getHovedperson().equals(person.getIdent()) ?
+                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getHovedperson())),
+
                                                     lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
-                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, person.getIdent())) :
-                                                    Flux.just(""))))
-                                    .flatMap(Flux::from))
+                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getHovedperson())))))
+                                    .flatMap(Flux::from)
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining("$"));
-                })
-                .map(status -> futurePersist(progress, status)));
+                }))
+                .map(status -> futurePersist(progress, status));
     }
 
     private String prepInitStatus(Set<String> miljoer) {
@@ -160,7 +158,7 @@ public class PensjonforvalterClient implements ClientRegister {
         };
     }
 
-    private Flux<List<String>> getIdenterFamilie(String ident) {
+    private Flux<List<String>> getIdenterRelasjoner(String ident) {
 
         return getPersonData(List.of(ident))
                 .map(person -> Stream.of(List.of(person.getIdent()),
@@ -170,6 +168,10 @@ public class PensjonforvalterClient implements ClientRegister {
                                         .toList(),
                                 person.getPerson().getForelderBarnRelasjon().stream()
                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getPerson().getFullmakt().stream()
+                                        .map(FullmaktDTO::getMotpartsPersonident)
                                         .filter(Objects::nonNull)
                                         .toList())
                         .flatMap(Collection::stream)
@@ -195,8 +197,18 @@ public class PensjonforvalterClient implements ClientRegister {
         pensjonforvalterConsumer.sletteTpForhold(identer);
     }
 
-    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, String ident,
-                                                              Set<String> miljoer, AccessToken token,
+    private Flux<PensjonforvalterResponse> opprettPersoner(String hovedperson, Set<String> miljoer,
+                                                           List<PdlPersonBolk.PersonBolk> relasjoner,
+                                                           AccessToken token) {
+
+        return Flux.fromIterable(relasjoner)
+                .map(person -> mapperFacade.map(person, PensjonPersonRequest.class))
+                .flatMap(request -> pensjonforvalterConsumer.opprettPerson(request, miljoer, token)
+                        .filter(response -> hovedperson.equals(request.getFnr())));
+    }
+
+    private Flux<PensjonforvalterResponse> lagreAlderspensjon(PensjonData pensjonData, List<PdlPersonBolk.PersonBolk> relasjoner,
+                                                              String ident, Set<String> miljoer, AccessToken token,
                                                               boolean isOpprettEndre, Long bestillingId) {
 
         if (nonNull(pensjonData) && nonNull(pensjonData.getAlderspensjon())) {
@@ -207,16 +219,17 @@ public class PensjonforvalterClient implements ClientRegister {
                     .toList();
 
             if (!opprettIMiljoer.isEmpty()) {
-                var context = MappingContextUtils.getMappingContext();
+                var context = new MappingContext.Factory().getContext();
+
                 context.setProperty("ident", ident);
                 context.setProperty("miljoer", opprettIMiljoer);
+                context.setProperty("relasjoner", relasjoner);
                 var alderspensjonRequest = mapperFacade.map(pensjonData.getAlderspensjon(),
                         AlderspensjonRequest.class, context);
 
                 return pensjonforvalterConsumer.lagreAlderspensjon(alderspensjonRequest, token)
                         .map(response -> {
                             response.getStatus().forEach(status -> {
-                                log.info("Mottatt status for {} fra miljø {} fra Pensjon-Testdata-Facade: {}", ident, status.getMiljo(), status.getResponse());
                                 if (status.getResponse().isResponse2xx()) {
                                     saveAPTransaksjonId(ident, status.getMiljo(), bestillingId, pensjonData.getAlderspensjon());
                                 }
@@ -277,7 +290,6 @@ public class PensjonforvalterClient implements ClientRegister {
                                                 log.info("Lagret TP-forhold {}", forholdSvar);
                                                 return Flux.fromIterable(tp.getYtelser())
                                                         .flatMap(ytelse -> {
-
                                                             context.setProperty("ordning", tp.getOrdning());
                                                             PensjonTpYtelseRequest pensjonTpYtelseRequest = mapperFacade.map(ytelse, PensjonTpYtelseRequest.class, context);
                                                             return pensjonforvalterConsumer.lagreTpYtelse(pensjonTpYtelseRequest, token);
@@ -315,7 +327,7 @@ public class PensjonforvalterClient implements ClientRegister {
         try {
             return objectMapper.writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Feilet å konvertere transaksjonsId for dokarkiv", e);
+            log.error("Feilet å konvertere transaksjonsId for pensjonForvalter", e);
         }
         return null;
     }

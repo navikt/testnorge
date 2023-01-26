@@ -15,12 +15,12 @@ public class AlderspensjonRequest {
 
     private List<String> miljoer;
 
-    private String pid;
+    private String fnr;
     private LocalDate iverksettelsesdato;
     private Integer uttaksgrad;
     private String statsborgerskap;
     private String sivilstand;
-    private LocalDate sivilstatusDatoFom;
+    private LocalDate sivilstandDatoFom;
 
     private List<AlderspensjonRequest.SkjemaRelasjon> relasjonListe;
 
@@ -28,8 +28,9 @@ public class AlderspensjonRequest {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjemaRelasjon {
+
         @Schema(required = true)
-        private LocalDate samboerFraDato;
+        private LocalDate relasjonFraDato;
 
         private LocalDate dodsdato;
         private Boolean varigAdskilt;
@@ -37,7 +38,7 @@ public class AlderspensjonRequest {
         private LocalDate samlivsbruddDato;
         private Boolean harVaertGift;
         private Boolean harFellesBarn;
-        private Integer sumAvForvArbKapPenInntekt;
+        private Integer sumAvForventetArbeidKapitalPensjonInntekt;
         private String relasjonType;
     }
 }
