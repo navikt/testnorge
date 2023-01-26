@@ -41,10 +41,10 @@ const ameldingMapper = (bestilling) => {
 	return data
 }
 export const AmeldingBestilling = ({ bestillinger }) => {
-	if (!bestillinger) return null
-
 	const [visAmelding, setVisAmelding, setSkjulAmelding] = useBoolean(false)
 	const [selectedIndex, setSelectedIndex] = useState(0)
+
+	if (!bestillinger) return null
 
 	return (
 		<>
@@ -78,9 +78,9 @@ export const AmeldingBestilling = ({ bestillinger }) => {
 								/>
 								<div>
 									{amelding.paginering[selectedIndex].itemRows.map((row, i) => (
-										<div className="dfa-blokk" key={i}>
+										<div className="dfa-blokk" key={`blokk_${i}`}>
 											{row[0].numberHeader && <h4>{row[0].numberHeader}</h4>}
-											<div className={'flexbox--align-start flexbox--wrap'} key={i}>
+											<div className={'flexbox--align-start flexbox--wrap'} key={`values_${i}`}>
 												{row.map(_renderStaticValue)}
 											</div>
 										</div>
