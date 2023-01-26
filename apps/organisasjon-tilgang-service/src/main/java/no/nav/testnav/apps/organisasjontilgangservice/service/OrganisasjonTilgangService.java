@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.organisasjontilgangservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.AltinnConsumer;
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class OrganisasjonTilgangService {
@@ -26,6 +28,7 @@ public class OrganisasjonTilgangService {
     public Flux<OrganisasjonResponse> getAll() {
 
         return altinnConsumer.getOrganisasjoner()
+                .doOnNext(organisasjon -> log.info(String.valueOf(organisasjon)))
                 .flatMap(organisasjon -> organisasjonTilgangRepository
                         .existsByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
                         .map(exists -> isTrue(exists) ?

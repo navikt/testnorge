@@ -51,6 +51,7 @@ spec:
     max: 1
   envFrom:
     - secret: altinn-dev
+    - secret: google-sql-testnav-organisasjon-tilgang-service
   resources:
     requests:
       cpu: 200m
@@ -63,3 +64,10 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-organisasjon-tilgang
+        databases:
+          - name: testnav-organisasjon-tilgang
+        autoBackupTime: "02:00"

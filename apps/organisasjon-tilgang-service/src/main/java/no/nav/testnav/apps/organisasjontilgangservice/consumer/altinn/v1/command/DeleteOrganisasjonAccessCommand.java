@@ -20,6 +20,7 @@ public class DeleteOrganisasjonAccessCommand implements Callable<Mono<DeleteStat
 
     @Override
     public Mono<DeleteStatus> call() {
+
         return webClient
                 .delete()
                 .uri(builder -> builder.path("/api/serviceowner/Srr/{id}")

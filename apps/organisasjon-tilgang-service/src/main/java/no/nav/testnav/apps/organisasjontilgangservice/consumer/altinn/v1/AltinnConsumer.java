@@ -94,7 +94,6 @@ public class AltinnConsumer {
                 );
     }
 
-
     public Flux<Organisasjon> getOrganisasjoner() {
 
         return getRights()
@@ -110,7 +109,6 @@ public class AltinnConsumer {
                 ).collectList()
                 .flatMapMany(Flux::concat);
     }
-
 
     private Flux<RightDTO> getRights() {
         return maskinportenConsumer
