@@ -62,7 +62,7 @@ const AccessForm = () => {
       {/* @ts-ignore */}
       <StyledTimepicker
         value={gyldigTil}
-        label="Gyldig til"
+        label="Gyldig til dato"
         onChange={(value: Date) => {
           setGyldigTil(value);
         }}
