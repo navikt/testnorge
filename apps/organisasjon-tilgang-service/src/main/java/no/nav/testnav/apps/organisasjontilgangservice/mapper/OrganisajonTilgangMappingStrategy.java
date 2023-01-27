@@ -9,6 +9,7 @@ import no.nav.testnav.apps.organisasjontilgangservice.domain.OrganisasjonRespons
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class OrganisajonTilgangMappingStrategy implements MappingStrategy {
@@ -22,7 +23,8 @@ public class OrganisajonTilgangMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Organisasjon organisasjon, OrganisasjonResponse response, MappingContext context) {
 
                         var organisasjonTilgang = (OrganisasjonTilgang) context.getProperty("organisasjonTilgang");
-                        response.setMiljoe(nonNull(organisasjonTilgang) ? organisasjonTilgang.getMiljoe() : "q1");
+                        response.setMiljoe(nonNull(organisasjonTilgang) && isNotBlank(organisasjonTilgang.getMiljoe()) ?
+                                organisasjonTilgang.getMiljoe() : "q1");
                     }
                 })
                 .byDefault()

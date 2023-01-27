@@ -31,14 +31,14 @@ public class OrganisasjonTilgangService {
                 .doOnNext(organisasjon -> log.info(String.valueOf(organisasjon)))
                 .flatMap(organisasjon -> organisasjonTilgangRepository
                         .existsByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer())
-                        .map(exists -> isTrue(exists) ?
+                        .flatMap(exists -> isTrue(exists) ?
                                 organisasjonTilgangRepository
                                         .findByOrganisasjonNummer(organisasjon.getOrganisasjonsnummer()) :
                                 Mono.just(new OrganisasjonTilgang()))
                         .map(organisasjonTilgang -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty("organisasjonTilgang", organisasjonTilgang);
-                            return mapperFacade.map(organisasjon, OrganisasjonResponse.class);
+                            return mapperFacade.map(organisasjon, OrganisasjonResponse.class, context);
                         }));
     }
 
