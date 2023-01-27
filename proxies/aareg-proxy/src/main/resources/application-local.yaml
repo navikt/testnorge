@@ -29,6 +29,7 @@ AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: dDm8Q~Cl3GuXVAj3Qh.3H5kZoa3exxOVt4uGIb-x
 
 logging:
   level:
-    org.springframework.security: DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.web.reactive: DEBUG
+    org.springframework.security: debug
+    org.springframework.cloud.gateway: debug
+    org.springframework.web.reactive: debug
+    org.springframework.web.server: debug
