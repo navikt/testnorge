@@ -3,7 +3,7 @@ package no.nav.testnav.apps.organisasjontilgangservice.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.organisasjontilgangservice.database.entity.OrganisasjonTilgang;
-import no.nav.testnav.apps.organisasjontilgangservice.database.repository.OrganisasjonTilgangRepository;
+import no.nav.testnav.apps.organisasjontilgangservice.service.MiljoerOversiktService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,24 +15,18 @@ import org.springframework.web.bind.annotation.RestController;
 import org.webjars.NotFoundException;
 import reactor.core.publisher.Mono;
 
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/v1/miljoer")
 @RequiredArgsConstructor
 public class OrganisasjonMiljoeConsumer {
 
-    private final OrganisasjonTilgangRepository organisasjonTilgangRepository;
+    private final MiljoerOversiktService miljoerOversiktService;
 
     @GetMapping("/organisasjon/{orgnummer}")
     public Mono<OrganisasjonTilgang> getOrganisasjon(@RequestParam("orgnummer") String orgnummer) {
 
-        return organisasjonTilgangRepository.existsByOrganisasjonNummer(orgnummer)
-                .flatMap(miljoe -> isTrue(miljoe) ?
-                        organisasjonTilgangRepository.findByOrganisasjonNummer(orgnummer) :
-                        Mono.error(new NotFoundException(
-                                String.format("Organisasjonsnummer %s ble ikke funnet", orgnummer))));
+            return miljoerOversiktService.getMiljoe(orgnummer);
     }
 
     @ExceptionHandler(NotFoundException.class)
