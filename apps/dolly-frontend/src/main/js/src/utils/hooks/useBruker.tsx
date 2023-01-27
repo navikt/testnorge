@@ -8,6 +8,12 @@ const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
 const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
+const getOrganisasjonTilgangUrl = `/testnav-organisasjon-tilgang-service/api/v1/organisasjoner`
+
+// const getOrganisasjonTilgangUrl = (orgnummer) =>
+// 	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
+
+// const getPersonOrganisasjonTilgangUrl = `/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner`
 
 type BrukerProfil = {
 	visningsNavn: string
@@ -23,6 +29,12 @@ type BrukerType = {
 	brukertype: string
 	epost: string
 	favoritter: []
+}
+
+type OrganisasjonMiljoe = {
+	id: number
+	organisasjonNummer: string
+	miljoe: string
 }
 
 export const useAlleBrukere = () => {
@@ -42,6 +54,7 @@ export const useCurrentBruker = () => {
 		console.error('Klarte ikke å hente aktiv bruker, logger ut..')
 		logoutBruker()
 	}
+	console.log('data currentBruker: ', data) //TODO - SLETT MEG
 
 	return {
 		currentBruker: data,
@@ -52,6 +65,7 @@ export const useCurrentBruker = () => {
 
 export const useBrukerProfil = () => {
 	const { data, error } = useSWR<BrukerProfil, Error>(getProfilUrl, fetcher)
+	console.log('data brukerProfil: ', data) //TODO - SLETT MEG
 
 	return {
 		brukerProfil: data,
@@ -69,3 +83,20 @@ export const useBrukerProfilBilde = () => {
 		error: error,
 	}
 }
+
+export const useOrganisasjonTilgang = (orgnummer: string) => {
+	const { data, error } = useSWR<OrganisasjonMiljoe, Error>(
+		// getOrganisasjonTilgangUrl(orgnummer),
+		getOrganisasjonTilgangUrl,
+		fetcher
+	)
+	console.log('data orgmiljoe: ', data) //TODO - SLETT MEG
+
+	return {
+		organisasjonTilgang: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+// export const usePersonOrganisasjonTilgang = (orgnummer: string) => {}

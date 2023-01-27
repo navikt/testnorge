@@ -10,7 +10,7 @@ import Utlogging from '@/components/utlogging'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
-import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 import {
@@ -35,6 +35,8 @@ export const App = () => {
 	useBrukerProfil()
 	useDollyMalerBrukerOgMalnavn(currentBruker?.brukerId)
 	useDollyOrganisasjonMalerBrukerOgMalnavn(currentBruker?.brukerId)
+	useOrganisasjonTilgang('811307602')
+	// TODO: Hent orgnr fra profil naar BE er klar
 
 	useEffect(() => {
 		if (userError) {
