@@ -19,13 +19,6 @@ spring:
       httpclient:
         response-timeout: 600s
 
-logging:
-  level:
-    org.springframework.security: debug
-    org.springframework.cloud.gateway: debug
-    org.springframework.web.reactive: debug
-    org.springframework.web.server: debug
-
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 app:
