@@ -14,6 +14,7 @@ import static java.util.Objects.nonNull;
 public class MapperFacadeConfig {
 
     @Bean
+    @SuppressWarnings("java:S3740")
     MapperFacade mapperFacade(List<MappingStrategy> mappingStrategies, List<CustomConverter> customConverters) {
         DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
