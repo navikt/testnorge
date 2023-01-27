@@ -38,6 +38,7 @@ import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.build
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -48,6 +49,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
 
+    private static List<String> mapIdents(String idents) {
+        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
+    }
+
     @Override
     public void register(MapperFactory factory) {
         factory.classMap(Bestilling.class, RsBestillingStatus.class)
@@ -55,30 +60,41 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
+                        List<BestillingProgress> progresser;
+                        var ident = (String) context.getProperty("ident");
+                        if (isBlank(ident)) {
+                            progresser = bestilling.getProgresser();
+
+                        } else {
+                            progresser = bestilling.getProgresser().stream()
+                                    .filter(progress -> ident.equals(progress.getIdent()))
+                                    .toList();
+                        }
+
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
-                        bestillingStatus.setAntallLevert(bestilling.getProgresser().stream()
+                        bestillingStatus.setAntallLevert(progresser.stream()
                                 .filter(BestillingProgress::isIdentGyldig)
                                 .toList().size());
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
-                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(bestilling.getProgresser(), objectMapper));
-                        bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildAaregStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildArenaStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser, objectMapper));
+                        bestillingStatus.getStatus().addAll(buildInstdataStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildImportFraTpsStatusMap(bestilling));
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling));
-                        bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .pdldata(bestillingRequest.getPdldata())
@@ -95,7 +111,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .skjerming(bestillingRequest.getSkjerming())
-                                .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
+//                                .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .bankkonto(bestillingRequest.getBankkonto())
@@ -122,9 +138,5 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .byDefault()
                 .register();
 
-    }
-
-    private static List<String> mapIdents(String idents) {
-        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
     }
 }
