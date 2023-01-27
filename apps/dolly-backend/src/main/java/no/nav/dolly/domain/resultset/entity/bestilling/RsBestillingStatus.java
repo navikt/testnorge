@@ -79,7 +79,6 @@ public class RsBestillingStatus {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class RsBestilling {
 
-        //        private RsTpsfUtvidetBestilling tpsf;
         private Boolean navSyntetiskIdent;
         private List<String> importFraTps;
         private List<String> importFraPdl;
