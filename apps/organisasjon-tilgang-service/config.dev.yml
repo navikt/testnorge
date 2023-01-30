@@ -64,6 +64,8 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
+    - name: TOKENDINGS_URL
+      value: https://tokendings.dev-gcp.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_14
