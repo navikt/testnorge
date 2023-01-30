@@ -60,7 +60,7 @@ public class OppdaterPersonService extends DollyBestillingService {
 
         var testident = identService.getTestIdent(bestilling.getIdent());
 
-        var test = Flux.just(new OriginatorCommand(request, testident, mapperFacade).call())
+        Flux.just(new OriginatorCommand(request, testident, mapperFacade).call())
                 .flatMap(originator -> opprettProgress(bestilling, originator.getMaster())
                         .flatMap(progress -> (originator.isPdlf() ?
                                 oppdaterPdlPerson(originator, testident.getIdent())

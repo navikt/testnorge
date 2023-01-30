@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -12,7 +11,6 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
@@ -32,8 +30,6 @@ import reactor.core.publisher.Operators;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.ExecutorService;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -43,21 +39,17 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class GjenopprettBestillingService extends DollyBestillingService {
 
-    private final ExecutorService dollyForkJoinPool;
-
     public GjenopprettBestillingService(DollyPersonCache dollyPersonCache,
                                         IdentService identService, BestillingProgressService bestillingProgressService,
                                         BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
                                         ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                        ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
+                                        ErrorStatusDecoder errorStatusDecoder,
                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
                                         TransactionHelperService transactionHelperService,
                                         PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
                 pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
-
-        this.dollyForkJoinPool = dollyForkJoinPool;
     }
 
     @Async
@@ -113,41 +105,5 @@ public class GjenopprettBestillingService extends DollyBestillingService {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             oppdaterBestillingFerdig(bestilling);
         }
-    }
-
-    private BestillingFuture doBestilling(Bestilling bestilling, RsDollyBestillingRequest bestKriterier, BestillingProgress gjenopprettFraProgress) {
-
-        return () -> {
-            if (!bestillingService.isStoppet(bestilling.getId())) {
-                var progress = new BestillingProgress(bestilling, gjenopprettFraProgress.getIdent(),
-                        gjenopprettFraProgress.getMaster());
-                transactionHelperService.oppdaterProgress(progress);
-
-                bestKriterier.setNavSyntetiskIdent(isSyntetisk(gjenopprettFraProgress.getIdent()));
-                bestKriterier.setBeskrivelse(bestilling.getBeskrivelse());
-
-                try {
-                    Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
-
-                    if (dollyPerson.isPresent()) {
-
-                        gjenopprettAlleKlienter(dollyPerson.get(), bestKriterier, progress, false);
-                    } else {
-                        progress.setFeil("NA:Feil= Finner ikke personen i database");
-                    }
-
-                } catch (JsonProcessingException e) {
-                    progress.setFeil(errorStatusDecoder.decodeException(e));
-
-                } catch (RuntimeException e) {
-                    progress.setFeil(errorStatusDecoder.decodeThrowable(e));
-
-                } finally {
-                    transactionHelperService.persister(progress);
-                }
-                return progress;
-            }
-            return null;
-        };
     }
 }

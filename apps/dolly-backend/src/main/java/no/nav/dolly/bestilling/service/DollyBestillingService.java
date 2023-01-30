@@ -15,7 +15,6 @@ import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
@@ -30,7 +29,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
@@ -40,7 +38,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
@@ -191,21 +188,21 @@ public class DollyBestillingService {
         clearCache();
     }
 
-    protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
-
-        DollyPerson dollyPerson = null;
-        if (progress.isPdlf()) {
-            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent())).block();
-            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
-                    progress.getBestilling().getGruppe().getTags());
-
-        } else if (progress.isPdl()) {
-            var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
-            dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
-        }
-
-        return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
-    }
+//    protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
+//
+//        DollyPerson dollyPerson = null;
+//        if (progress.isPdlf()) {
+//            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent())).block();
+//            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
+//                    progress.getBestilling().getGruppe().getTags());
+//
+//        } else if (progress.isPdl()) {
+//            var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
+//            dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
+//        }
+//
+//        return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
+//    }
 
     protected Flux<DollyPerson> leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 

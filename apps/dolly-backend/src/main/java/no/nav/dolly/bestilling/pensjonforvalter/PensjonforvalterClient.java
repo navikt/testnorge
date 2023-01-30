@@ -23,7 +23,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
@@ -105,7 +104,9 @@ public class PensjonforvalterClient implements ClientRegister {
         return Flux.from(pensjonforvalterConsumer.getMiljoer()
                 .flatMap(tilgjengeligeMiljoer -> {
                     progress.setPensjonforvalterStatus(prepInitStatus(tilgjengeligeMiljoer));
-                    transactionHelperService.persister(progress);
+                    if (!dollyPerson.isOrdre()) {
+                        transactionHelperService.persister(progress);
+                    }
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
@@ -138,7 +139,7 @@ public class PensjonforvalterClient implements ClientRegister {
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining("$"));
                 }))
-                .map(status -> futurePersist(progress, status));
+                .map(status -> futurePersist(dollyPerson, progress, status));
     }
 
     private String prepInitStatus(Set<String> miljoer) {
@@ -149,11 +150,13 @@ public class PensjonforvalterClient implements ClientRegister {
                         .collect(Collectors.joining(","));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+    private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
 
         return () -> {
             progress.setPensjonforvalterStatus(status);
-            transactionHelperService.persister(progress);
+            if (!dollyPerson.isOrdre()) {
+                transactionHelperService.persister(progress);
+            }
             return progress;
         };
     }

@@ -38,22 +38,26 @@ public class PersonServiceClient {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         progress.setPdlPersonStatus(PDL_SYNC_START);
-        transactionHelperService.persister(progress);
+        if (!dollyPerson.isOrdre()) {
+            transactionHelperService.persister(progress);
+        }
         var startTime = System.currentTimeMillis();
         return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
                 new PersonServiceResponse(), dollyPerson.getHovedperson())
                 .flatMap(status -> logStatus(status, startTime)
-                .map(status2 -> futurePersist(progress, status, status2)));
+                        .map(status2 -> futurePersist(dollyPerson, progress, status, status2)));
     }
 
-    private ClientFuture futurePersist(BestillingProgress progress, PersonServiceResponse status, String status2) {
+    private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, PersonServiceResponse status, String status2) {
 
         return () -> {
             progress.setPdlSync(status.getStatus().is2xxSuccessful() && isTrue(status.getExists()));
             progress.setPdlPersonStatus(status2);
             progress.setFeil(isNotBlank(status.getFeilmelding()) ?
                     errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()) : null);
-            transactionHelperService.persister(progress);
+            if (!dollyPerson.isOrdre()) {
+                transactionHelperService.persister(progress);
+            }
             return progress;
         };
     }
