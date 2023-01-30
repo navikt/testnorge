@@ -17,3 +17,8 @@ spring:
     url: jdbc:h2:mem:testdb
     username: sa
     password:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-organisasjon-tilgang-service
