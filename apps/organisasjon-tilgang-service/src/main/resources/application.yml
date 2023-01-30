@@ -16,6 +16,7 @@ spring:
           issuer-uri: ${TOKENDINGS_URL}
           jwk-set-uri: ${TOKENDINGS_URL}/jwks
           accepted-audience: ${ACCEPTED_AUDIENCE}
+          TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-organisasjon-tilgang-service
   jackson:
     serialization:
       write_dates_as_timestamps: false
