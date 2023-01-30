@@ -8,10 +8,10 @@ const getBrukereUrl = `/dolly-backend/api/v1/bruker`
 const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
 const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
-const getOrganisasjonTilgangUrl = `/testnav-organisasjon-tilgang-service/api/v1/organisasjoner`
+// const getOrganisasjonTilgangUrl = `/testnav-organisasjon-tilgang-service/api/v1/organisasjoner`
 
-// const getOrganisasjonTilgangUrl = (orgnummer) =>
-// 	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
+const getOrganisasjonTilgangUrl = (orgnummer) =>
+	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
 
 // const getPersonOrganisasjonTilgangUrl = `/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner`
 
@@ -86,8 +86,8 @@ export const useBrukerProfilBilde = () => {
 
 export const useOrganisasjonTilgang = (orgnummer: string) => {
 	const { data, error } = useSWR<OrganisasjonMiljoe, Error>(
-		// getOrganisasjonTilgangUrl(orgnummer),
-		getOrganisasjonTilgangUrl,
+		getOrganisasjonTilgangUrl(orgnummer),
+		// getOrganisasjonTilgangUrl,
 		fetcher
 	)
 	console.log('data orgmiljoe: ', data) //TODO - SLETT MEG

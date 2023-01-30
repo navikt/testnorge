@@ -49,7 +49,13 @@ const erMiljouavhengig = (bestilling) => {
 	return miljoeNotRequired
 }
 
-export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
+export const MiljoVelger = ({
+	bestillingsdata,
+	heading,
+	bankIdBruker,
+	orgTilgang,
+	alleredeValgtMiljoe,
+}) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
 	if (loading) {
 		return <Loading label={'Laster miljøer...'} />

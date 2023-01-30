@@ -115,7 +115,7 @@ consumers:
     name: testnorge-profil-api
     url: https://testnorge-profil-api.dev.intern.nav.no
   testnav-organisasjon-tilgang-service:
-    cluster: dev-gcp
+    cluster: prod-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
     url: https://testnav-organisasjon-tilgang-service.dev.intern.nav.no
