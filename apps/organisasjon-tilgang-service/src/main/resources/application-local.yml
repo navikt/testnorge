@@ -1,6 +1,7 @@
 azure.app.client.id: ${local.client.id}
 azure.app.client.secret: ${local.client.secret}
 ALTINN_URL: https://tt02.altinn.no
+TOKENDINGS_URL: https://tokendings.dev-gcp.nais.io
 
 altinn.api.url: dummy
 altinn.api.key: dummy
@@ -21,4 +22,4 @@ spring:
     oauth2:
       resourceserver:
         tokenx:
-          TOKEN_X_CLIENT_ID: dev-gcp:dolly:testnav-organisasjon-tilgang-service
+          accepted-audience: dev-gcp:dolly:testnav-organisasjon-tilgang-service

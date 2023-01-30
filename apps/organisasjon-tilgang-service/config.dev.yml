@@ -66,6 +66,8 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: dev
+    - name: ACCEPTED_AUDIENCE
+      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
       value: https://tokendings.dev-gcp.nais.io
   gcp:
