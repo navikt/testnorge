@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnav-testnav-aareg-proxy")
-public class TestnavAaregProxyProperties extends NaisServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-testnav-aaregister-proxy")
+public class TestnavAaregisterProxyProperties extends NaisServerProperties {
 }
