@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 
+import java.util.Arrays;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 @Import({
         SecureOAuth2ServerToServerConfiguration.class,
@@ -36,13 +36,12 @@ public class RouteLocatorConfig {
             AaregProperties aaregProperties
     ) {
         var routes = builder.routes();
-        Stream.of(ENV)
+        Arrays.stream(ENV)
                 .forEach(env -> {
-                    var readableAuthentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
-                    var writeableAuthentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                    var authentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
-                            .route(createWriteableRouteToNewEndpoint(env, writeableAuthentication));
+                            .route(createReadableRouteToNewEndpoint(env, authentication))
+                            .route(createWriteableRouteToNewEndpoint(env, authentication));
                 });
         return routes.build();
     }
@@ -56,11 +55,11 @@ public class RouteLocatorConfig {
 
     private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String env, GatewayFilter authentication) {
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidstaker/arbeidsforhold/**")
+                .path("/" + env + "/api/v1/arbeidstaker/**")
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/api/v1/arbeidstaker/arbeidsforhold", "/api/v1/arbeidsforhold")
+                        .rewritePath("/" + env + "/api/v1/arbeidstaker", "/api/v1/arbeidstaker")
                         .filter(authentication)
                 )
                 .uri("https://aareg-services-" + env + ".dev.intern.nav.no");
