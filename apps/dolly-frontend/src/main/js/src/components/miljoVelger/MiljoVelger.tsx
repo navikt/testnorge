@@ -10,6 +10,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import { Alert } from '@navikt/ds-react'
+import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 const StyledH3 = styled.h3`
 	display: flex;
@@ -66,11 +67,12 @@ export const MiljoVelger = ({
 	alleredeValgtMiljoe,
 }) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
+
 	if (loading) {
 		return <Loading label={'Laster miljøer...'} />
 	}
-
-	const filterEnvironments = (miljoer, erBankIdBruker, orgTilgang) => {
+	console.log('orgTilgang: ', orgTilgang) //TODO - SLETT MEG
+	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) {
 			const tilgjengeligMiljo = orgTilgang?.miljoe
 			if (tilgjengeligMiljo === 'q2') return bankIdQ2
@@ -78,12 +80,11 @@ export const MiljoVelger = ({
 		}
 		return miljoer
 	}
-	console.log('orgTilgang: ', orgTilgang) //TODO - SLETT MEG
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
-	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker, orgTilgang)
+	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
 	const order = ['T', 'Q']
-	console.log('filteredEnvironments: ', filteredEnvironments) //TODO - SLETT MEG
+
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>

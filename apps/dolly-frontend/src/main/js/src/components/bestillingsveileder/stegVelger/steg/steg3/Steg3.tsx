@@ -18,15 +18,9 @@ export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const formikBag = useFormikContext()
 	const { currentBruker } = useCurrentBruker()
-	const { brukerProfil } = useBrukerProfil()
-	console.log('brukerProfil: ', brukerProfil) //TODO - SLETT MEG
-	const { organisasjonTilgang } = useOrganisasjonTilgang(brukerProfil?.orgnummer)
 
-	// const testOrgTilgang = {
-	// 	id: null,
-	// 	miljoe: 'q2',
-	// 	organisasjonNummer: '811307602',
-	// }
+	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
@@ -51,7 +45,7 @@ export const Steg3 = () => {
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker) {
-			return erQ2MiljoeAvhengig ? ['q1', 'q2'] : ['q1']
+			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
 		}
 		return erQ2MiljoeAvhengig ? ['q2'] : []
 	}
@@ -62,7 +56,9 @@ export const Steg3 = () => {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
-		} else if (formikBag.values?.sykemelding || bankIdBruker) {
+		} else if (bankIdBruker) {
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (formikBag.values?.sykemelding) {
 			formikBag.setFieldValue('environments', ['q1'])
 		} else if (!formikBag.values?.environments) {
 			formikBag.setFieldValue('environments', [])
@@ -90,7 +86,6 @@ export const Steg3 = () => {
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
 					orgTilgang={organisasjonTilgang}
-					// orgTilgang={testOrgTilgang}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}

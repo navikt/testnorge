@@ -35,8 +35,6 @@ export const App = () => {
 	useBrukerProfil()
 	useDollyMalerBrukerOgMalnavn(currentBruker?.brukerId)
 	useDollyOrganisasjonMalerBrukerOgMalnavn(currentBruker?.brukerId)
-	useOrganisasjonTilgang('811307602')
-	// TODO: Hent orgnr fra profil naar BE er klar
 
 	useEffect(() => {
 		if (userError) {
