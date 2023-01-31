@@ -6,7 +6,7 @@ import no.nav.dolly.web.credentials.DollyBackendProperties;
 import no.nav.dolly.web.credentials.KontoregisterProxyProperties;
 import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
 import no.nav.dolly.web.credentials.SkjermingsregisterProxyProperties;
-import no.nav.dolly.web.credentials.TestnavAaregisterProxyProperties;
+import no.nav.dolly.web.credentials.TestnavAaregProxyProperties;
 import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
 import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
 import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
@@ -72,7 +72,7 @@ public class DollyFrontendApplicationStarter {
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
-    private final TestnavAaregisterProxyProperties testnavAaregisterProxyProperties;
+    private final TestnavAaregProxyProperties testnavAaregProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
     private final TestnavInstServiceProperties testnavInstServiceProperties;
@@ -112,7 +112,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavInntektstubProxyProperties))
                 .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
                 .route(createRoute(testnavBrregstubProxyProperties))
-                .route(createRoute(testnavAaregisterProxyProperties))
+                .route(createRoute(testnavAaregProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavInstServiceProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
