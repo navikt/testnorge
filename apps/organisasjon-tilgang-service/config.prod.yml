@@ -23,13 +23,13 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-        cluster: dev-gcp
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
-        cluster: dev-gcp
+         cluster: dev-gcp
         - application: testnav-oversikt-frontend
-        cluster: dev-gcp
+         cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
-        cluster: dev-gcp
+          cluster: dev-gcp
     outbound:
       external:
         - host: altinn.no
