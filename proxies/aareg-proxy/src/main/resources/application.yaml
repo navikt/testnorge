@@ -1,6 +1,8 @@
 spring:
   application:
     name: testnav-aareg-proxy
+  main:
+    banner-mode: off
   security:
     oauth2:
       resourceserver:
@@ -20,8 +22,14 @@ spring:
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 
 app:
-  azure:
-    name: aareg-services-nais-{env}
-    namespace: arbeidsforhold
-    url: https://aareg-services-{env}.dev.intern.nav.no
-    cluster: dev-fss
+  aareg:
+    services:
+      name: aareg-services-nais-{env}
+      namespace: arbeidsforhold
+      url: https://aareg-services-{env}.dev.intern.nav.no
+      cluster: dev-fss
+    vedlikehold:
+      name: aareg-vedlikehold-nais-{env}
+      namespace: arbeidsforhold
+      url: https://aareg-vedlikehold-{env}.dev.intern.nav.no
+      cluster: dev-fss

@@ -153,6 +153,7 @@ export const validation = {
 					.integer('Kan ikke være et desimaltall')
 					.transform((i, j) => (j === '' ? null : i))
 					.min(1, 'Antall måneder må være et positivt tall')
+					.max(500, 'Antall måneder kan maksimalt være 500')
 					.nullable(),
 				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
 				opplysningspliktig: requiredString.nullable(),

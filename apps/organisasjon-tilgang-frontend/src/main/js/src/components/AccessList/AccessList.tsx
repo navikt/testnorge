@@ -16,7 +16,8 @@ const AccessList = () => (
               <th>Org.nr</th>
               <th>Navn</th>
               <th>Form</th>
-              <th>Gyldig Til</th>
+              <th>Miljø</th>
+              <th>Gyldig til</th>
               <th>Fjern tilgang</th>
             </tr>
           </thead>
@@ -26,6 +27,7 @@ const AccessList = () => (
                 <td>{item.organisasjonsnummer}</td>
                 <td>{item.navn}</td>
                 <td>{item.organisasjonsform}</td>
+                <td>{item.miljoe}</td>
                 <td>{format(new Date(item.gyldigTil))}</td>
                 <td>
                   <Knapp

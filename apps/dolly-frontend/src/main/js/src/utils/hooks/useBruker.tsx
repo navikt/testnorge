@@ -86,7 +86,11 @@ export const useBrukerProfilBilde = () => {
 }
 
 export const useOrganisasjonTilgang = (orgnummer: string) => {
-	if (!orgnummer) return null
+	if (!orgnummer) {
+		return {
+			loading: false,
+		}
+	}
 
 	const { data, error } = useSWR<OrganisasjonMiljoe, Error>(
 		getOrganisasjonTilgangUrl(orgnummer),

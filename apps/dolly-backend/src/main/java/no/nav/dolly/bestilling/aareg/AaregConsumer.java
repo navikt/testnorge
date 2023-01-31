@@ -7,7 +7,7 @@ import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdGetCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPostCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPutCommand;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.config.credentials.TestnavAaregisterProxyProperties;
+import no.nav.dolly.config.credentials.TestnavAaregProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
@@ -19,7 +19,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -32,7 +31,7 @@ public class AaregConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
-    public AaregConsumer(TestnavAaregisterProxyProperties serverProperties, TokenExchange tokenService, ObjectMapper objectMapper) {
+    public AaregConsumer(TestnavAaregProxyProperties serverProperties, TokenExchange tokenService, ObjectMapper objectMapper) {
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.webClient = WebClient

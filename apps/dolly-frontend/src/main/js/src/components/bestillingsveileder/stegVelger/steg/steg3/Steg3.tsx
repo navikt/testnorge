@@ -19,6 +19,7 @@ export const Steg3 = () => {
 	const formikBag = useFormikContext()
 	const { currentBruker } = useCurrentBruker()
 	const { brukerProfil } = useBrukerProfil()
+	console.log('brukerProfil: ', brukerProfil) //TODO - SLETT MEG
 	const { organisasjonTilgang } = useOrganisasjonTilgang(brukerProfil?.orgnummer)
 
 	// const testOrgTilgang = {

@@ -24,11 +24,11 @@ management:
 
 AZURE_TRYGDEETATEN_OPENID_CONFIG_TOKEN_ENDPOINT: https://login.microsoftonline.com/966ac572-f5b7-4bbe-aa88-c76419c0f851/oauth2/v2.0/token
 AZURE_TRYGDEETATEN_APP_CLIENT_ID: 5af10d50-e935-46ed-8a3f-6830bbba6b13
-AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: dDm8Q~Cl3GuXVAj3Qh.3H5kZoa3exxOVt4uGIb-x
 #AZURE_TRYGDEETATEN_APP_CLIENT_SECRET: "> k exec testnav-aareg-proxy-??? -- printenv|grep AZURE_APP_CLIENT_SECRET"
 
 logging:
   level:
-    org.springframework.security: DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.web.reactive: DEBUG
+    org.springframework.security: trace
+    org.springframework.cloud.gateway: trace
+    org.springframework.web.reactive: trace
+    org.springframework.web.server: trace
