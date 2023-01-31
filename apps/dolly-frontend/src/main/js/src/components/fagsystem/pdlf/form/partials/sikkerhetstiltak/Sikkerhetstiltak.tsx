@@ -35,6 +35,8 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	const opts = useContext(BestillingsveilederContext)
 	const [randomNavUsers, setRandomNavUsers] = useState([])
 
+	const { navEnheter } = useNavEnheter()
+
 	useEffect(() => {
 		setRandomNavUsers(genererTilfeldigeNavPersonidenter())
 	}, [])
@@ -50,8 +52,6 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 	if (!sikkerhetstiltakListe) {
 		return null
 	}
-
-	const { navEnheter } = useNavEnheter()
 
 	const indexBeskrSikkerhetTiltak = 7
 
