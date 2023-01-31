@@ -29,7 +29,7 @@ spec:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: dev-gcp
+          cluster: prod-gcp
     outbound:
       external:
         - host: altinn.no
