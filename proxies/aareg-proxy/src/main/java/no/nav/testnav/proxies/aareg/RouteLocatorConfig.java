@@ -5,6 +5,7 @@ import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayF
 import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerConfiguration;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.route.Route;
 import org.springframework.cloud.gateway.route.RouteLocator;
@@ -26,51 +27,55 @@ import java.util.stream.Stream;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String[] ENV_PREPROD = {"q0", "q1", "q4", "q5"};
-    private static final String[] ENV_TEST = {"t0", "t1", "t3", "t4", "t5"};
+    private static final String[] ENV = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
 
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             TrygdeetatenAzureAdTokenService tokenService,
-            AzureConfig azureProperties
+            AaregProperties aaregProperties
     ) {
-
         var routes = builder.routes();
-
-        Stream.of(ENV_PREPROD)
+        Stream.of(ENV)
                 .forEach(env -> {
-                    var azureAuthentication = AddAuthenticationRequestGatewayFilterFactory
-                            .bearerAuthenticationHeaderFilter(() -> tokenService
-                                    .exchange(azureProperties.forEnvironment(env))
-                                    .map(AccessToken::getTokenValue));
+                    var readableAuthentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                    var writeableAuthentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication));
+                            .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
+                            .route(createWriteableRouteToNewEndpoint(env, writeableAuthentication));
                 });
-        Stream.of(ENV_TEST)
-                .forEach(env -> {
-                    var azureAuthentication = AddAuthenticationRequestGatewayFilterFactory
-                            .bearerAuthenticationHeaderFilter(() -> tokenService
-                                    .exchange(azureProperties.forEnvironment(env))
-                                    .map(AccessToken::getTokenValue));
-                    routes
-                            .route(createReadableRouteToNewEndpoint(env, azureAuthentication));
-                });
-
         return routes.build();
+    }
 
+    private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService, ServerProperties serverProperties) {
+        return AddAuthenticationRequestGatewayFilterFactory
+                .bearerAuthenticationHeaderFilter(() -> tokenService
+                        .exchange(serverProperties)
+                        .map(AccessToken::getTokenValue));
     }
 
     private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String env, GatewayFilter authentication) {
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidsforhold")
+                .path("/" + env + "/api/v1/arbeidstaker/arbeidsforhold/**")
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/(?<segment>.*)", "/aareg-services/api/v1/arbeidsforhold/")
+                        .rewritePath("/" + env + "/api/v1/arbeidstaker/arbeidsforhold", "/api/v1/arbeidsforhold")
                         .filter(authentication)
                 )
                 .uri("https://aareg-services-" + env + ".dev.intern.nav.no");
+    }
+
+    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+        return predicateSpec -> predicateSpec
+                .path("/" + env + "/api/v1/arbeidsforhold/**")
+                .and()
+                .method(HttpMethod.POST, HttpMethod.PUT)
+                .filters(filterSpec -> filterSpec
+                        .rewritePath("/" + env + "/api/v1/arbeidsforhold", "/api/v1/arbeidsforhold")
+                        .filter(authentication)
+                )
+                .uri("https://aareg-vedlikehold-" + env + ".dev.intern.nav.no");
     }
 
 }

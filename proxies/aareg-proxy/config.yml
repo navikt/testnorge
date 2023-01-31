@@ -11,8 +11,8 @@ spec:
   secretKeyPrefix: "AZURE_TRYGDEETATEN"
   tenant: trygdeetaten.no
 ---
-apiVersion: "nais.io/v1alpha1"
-kind: "Application"
+apiVersion: nais.io/v1alpha1
+kind: Application
 metadata:
   name: testnav-aareg-proxy
   namespace: dolly
@@ -27,12 +27,16 @@ spec:
   azure:
     application:
       enabled: true
-      tenant: trygdeetaten.no
+      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-fss
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
         - application: dolly-frontend-dev
@@ -61,6 +65,8 @@ spec:
     limits:
       cpu: 500m
       memory: 5000Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-aareg-proxy-trygdeetaten
   ingresses:
     - "https://testnav-aareg-proxy.dev.intern.nav.no"
     - "https://testnav-aareg-proxy.dev-fss-pub.nais.io"
