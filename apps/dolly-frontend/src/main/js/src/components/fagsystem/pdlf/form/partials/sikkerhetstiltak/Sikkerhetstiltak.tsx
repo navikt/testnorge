@@ -8,7 +8,7 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import * as _ from 'lodash-es'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
-import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
+import { Option } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
@@ -17,6 +17,7 @@ import {
 	initialSikkerhetstiltak,
 	initialTpsSikkerhetstiltak,
 } from '@/components/fagsystem/pdlf/form/initialValues'
+import { useNavEnheter } from '@/utils/hooks/useNorg2'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string
@@ -50,8 +51,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 		return null
 	}
 
-	const navEnheter = SelectOptionsOppslag.hentNavEnheter()
-	const navEnheterOptions = SelectOptionsOppslag.formatOptions('navEnheter', navEnheter)
+	const { navEnheter } = useNavEnheter()
 
 	const indexBeskrSikkerhetTiltak = 7
 
@@ -131,7 +131,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 									name={`${path}.kontaktperson.enhet`}
 									label={'NAV kontor'}
 									size={'xxxlarge'}
-									options={navEnheterOptions}
+									options={navEnheter}
 								/>
 								<InputWarning
 									visWarning={
