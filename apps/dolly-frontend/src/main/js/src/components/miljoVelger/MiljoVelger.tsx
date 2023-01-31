@@ -17,11 +17,20 @@ const StyledH3 = styled.h3`
 	align-items: center;
 `
 
-const bankIdMiljoer = {
+const bankIdQ1 = {
 	Q: [
 		{
 			id: 'q1',
 			label: 'Q1',
+		},
+	],
+}
+
+const bankIdQ2 = {
+	Q: [
+		{
+			id: 'q2',
+			label: 'Q2',
 		},
 	],
 }
@@ -61,15 +70,20 @@ export const MiljoVelger = ({
 		return <Loading label={'Laster miljøer...'} />
 	}
 
-	const filterEnvironments = (miljoer, erBankIdBruker) => {
-		if (erBankIdBruker) return bankIdMiljoer
+	const filterEnvironments = (miljoer, erBankIdBruker, orgTilgang) => {
+		if (erBankIdBruker) {
+			const tilgjengeligMiljo = orgTilgang?.miljoe
+			if (tilgjengeligMiljo === 'q2') return bankIdQ2
+			return bankIdQ1
+		}
 		return miljoer
 	}
+	console.log('orgTilgang: ', orgTilgang) //TODO - SLETT MEG
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)
-	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker)
+	const filteredEnvironments = filterEnvironments(dollyEnvironments, bankIdBruker, orgTilgang)
 	const order = ['T', 'Q']
-
+	console.log('filteredEnvironments: ', filteredEnvironments) //TODO - SLETT MEG
 	return (
 		<div className="miljo-velger">
 			<h2>{heading}</h2>

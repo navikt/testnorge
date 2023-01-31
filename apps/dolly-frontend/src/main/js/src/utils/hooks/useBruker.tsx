@@ -10,7 +10,7 @@ const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
 // const getOrganisasjonTilgangUrl = `/testnav-organisasjon-tilgang-service/api/v1/organisasjoner`
 
-const getOrganisasjonTilgangUrl = (orgnummer) =>
+const getOrganisasjonTilgangUrl = (orgnummer: string) =>
 	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
 
 // const getPersonOrganisasjonTilgangUrl = `/testnav-person-organisasjon-tilgang-service/api/v1/person/organisasjoner`
@@ -20,6 +20,7 @@ type BrukerProfil = {
 	epost: string
 	avdeling: string
 	organisasjon: string
+	orgnummer: string | undefined
 	type: string
 }
 
@@ -54,7 +55,7 @@ export const useCurrentBruker = () => {
 		console.error('Klarte ikke å hente aktiv bruker, logger ut..')
 		logoutBruker()
 	}
-	console.log('data currentBruker: ', data) //TODO - SLETT MEG
+	// console.log('data currentBruker: ', data) //TODO - SLETT MEG
 
 	return {
 		currentBruker: data,
@@ -65,7 +66,7 @@ export const useCurrentBruker = () => {
 
 export const useBrukerProfil = () => {
 	const { data, error } = useSWR<BrukerProfil, Error>(getProfilUrl, fetcher)
-	console.log('data brukerProfil: ', data) //TODO - SLETT MEG
+	// console.log('data brukerProfil: ', data) //TODO - SLETT MEG
 
 	return {
 		brukerProfil: data,
@@ -85,12 +86,14 @@ export const useBrukerProfilBilde = () => {
 }
 
 export const useOrganisasjonTilgang = (orgnummer: string) => {
+	if (!orgnummer) return null
+
 	const { data, error } = useSWR<OrganisasjonMiljoe, Error>(
 		getOrganisasjonTilgangUrl(orgnummer),
 		// getOrganisasjonTilgangUrl,
 		fetcher
 	)
-	console.log('data orgmiljoe: ', data) //TODO - SLETT MEG
+	// console.log('data orgmiljoe: ', data) //TODO - SLETT MEG
 
 	return {
 		organisasjonTilgang: data,

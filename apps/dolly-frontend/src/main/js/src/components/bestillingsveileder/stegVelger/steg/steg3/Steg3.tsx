@@ -12,14 +12,20 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useFormikContext } from 'formik'
-import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const formikBag = useFormikContext()
 	const { currentBruker } = useCurrentBruker()
-	const { organisasjonTilgang } = useOrganisasjonTilgang('811307602')
-	// TODO: Hent orgnr fra profil naar BE er klar
+	const { brukerProfil } = useBrukerProfil()
+	const { organisasjonTilgang } = useOrganisasjonTilgang(brukerProfil?.orgnummer)
+
+	// const testOrgTilgang = {
+	// 	id: null,
+	// 	miljoe: 'q2',
+	// 	organisasjonNummer: '811307602',
+	// }
 
 	const importTestnorge = opts.is.importTestnorge
 	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
@@ -83,6 +89,7 @@ export const Steg3 = () => {
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
 					orgTilgang={organisasjonTilgang}
+					// orgTilgang={testOrgTilgang}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}
