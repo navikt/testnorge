@@ -17,13 +17,13 @@ public class Organisasjon {
 
     private String navn;
     private String organisasjonsnummer;
-    private String organisasjonsfrom;
+    private String organisasjonsform;
     private LocalDateTime gyldigTil;
 
     public Organisasjon(OrganisasjonDTO dto, RightDTO rightDTO) {
         this.navn = dto.Name();
         this.organisasjonsnummer = dto.OrganizationNumber();
-        this.organisasjonsfrom = dto.Type();
+        this.organisasjonsform = dto.Type();
         this.gyldigTil = rightDTO.validTo();
     }
 }
