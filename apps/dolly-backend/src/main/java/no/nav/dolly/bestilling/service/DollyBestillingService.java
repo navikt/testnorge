@@ -32,19 +32,14 @@ import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
-import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
 
-import static java.time.LocalDateTime.now;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
-import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
-import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -61,7 +56,6 @@ public class DollyBestillingService {
     protected final BestillingProgressService bestillingProgressService;
     protected final BestillingService bestillingService;
     protected final MapperFacade mapperFacade;
-    protected final CacheManager cacheManager;
     protected final ObjectMapper objectMapper;
     protected final List<ClientRegister> clientRegisters;
     protected final CounterCustomRegistry counterCustomRegistry;
@@ -70,11 +64,6 @@ public class DollyBestillingService {
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
     protected final PersonServiceClient personServiceClient;
-
-    protected static Boolean isSyntetisk(String ident) {
-
-        return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
 
     public static List<String> getEnvironments(String miljoer) {
 
@@ -103,15 +92,6 @@ public class DollyBestillingService {
 
         } else {
             return "opprett fra kriterier";
-        }
-    }
-
-    protected void clearCache() {
-        if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
-            requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
-        }
-        if (nonNull(cacheManager.getCache(CACHE_GRUPPE))) {
-            requireNonNull(cacheManager.getCache(CACHE_GRUPPE)).clear();
         }
     }
 
@@ -165,44 +145,6 @@ public class DollyBestillingService {
                 .filter(Objects::nonNull)
                 .map(ClientFuture::get));
     }
-
-    protected Flux<List<BestillingProgress>> gjenopprettAlleKlienter(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
-                                                                     BestillingProgress progress, boolean isOpprettEndre) {
-
-        counterCustomRegistry.invoke(bestKriterier);
-        return Flux.from(Flux.fromIterable(clientRegisters)
-                .flatMap(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
-                .filter(Objects::nonNull)
-                .map(ClientFuture::get)
-                .collectList());
-    }
-
-    protected void oppdaterBestillingFerdig(Bestilling bestilling) {
-        if (bestillingService.isStoppet(bestilling.getId())) {
-            bestilling.setStoppet(true);
-        }
-        bestilling.setFerdig(true);
-        bestilling.setSistOppdatert(now());
-        bestillingService.saveBestillingToDB(bestilling);
-        clearCache();
-    }
-
-//    protected Optional<DollyPerson> prepareDollyPerson(BestillingProgress progress) throws JsonProcessingException {
-//
-//        DollyPerson dollyPerson = null;
-//        if (progress.isPdlf()) {
-//            var pdlfPerson = pdlDataConsumer.getPersoner(List.of(progress.getIdent())).block();
-//            dollyPerson = dollyPersonCache.preparePdlfPerson(pdlfPerson.stream().findFirst().orElse(new FullPersonDTO()),
-//                    progress.getBestilling().getGruppe().getTags());
-//
-//        } else if (progress.isPdl()) {
-//            var pdlPerson = objectMapper.readValue(pdlPersonConsumer.getPdlPerson(progress.getIdent()).toString(), PdlPerson.class);
-//            dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
-//        }
-//
-//        return nonNull(dollyPerson) ? Optional.of(dollyPerson) : Optional.empty();
-//    }
 
     protected Flux<DollyPerson> leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 

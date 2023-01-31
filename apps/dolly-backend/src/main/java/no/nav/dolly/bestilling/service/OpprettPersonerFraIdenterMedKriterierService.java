@@ -22,7 +22,6 @@ import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import org.slf4j.MDC;
-import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -44,7 +43,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
     public OpprettPersonerFraIdenterMedKriterierService(DollyPersonCache dollyPersonCache, IdentService identService,
                                                         BestillingProgressService bestillingProgressService,
                                                         BestillingService bestillingService, MapperFacade mapperFacade,
-                                                        CacheManager cacheManager, ObjectMapper objectMapper,
+                                                        ObjectMapper objectMapper,
                                                         List<ClientRegister> clientRegisters,
                                                         CounterCustomRegistry counterCustomRegistry,
                                                         ErrorStatusDecoder errorStatusDecoder,
@@ -53,7 +52,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         TransactionHelperService transactionHelperService,
                                                         PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
+                mapperFacade, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
                 pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
     }
 

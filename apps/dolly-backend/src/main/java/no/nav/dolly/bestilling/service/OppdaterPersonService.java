@@ -22,7 +22,6 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.slf4j.MDC;
-import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -41,14 +40,14 @@ public class OppdaterPersonService extends DollyBestillingService {
     public OppdaterPersonService(DollyPersonCache dollyPersonCache, IdentService identService,
                                  BestillingProgressService bestillingProgressService,
                                  BestillingService bestillingService, MapperFacade mapperFacade,
-                                 CacheManager cacheManager, ObjectMapper objectMapper,
+                                 ObjectMapper objectMapper,
                                  List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
                                  ErrorStatusDecoder errorStatusDecoder,
                                  PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
                                  TransactionHelperService transactionHelperService,
                                  PersonServiceClient personServiceClient) {
         super(dollyPersonCache, identService, bestillingProgressService,
-                bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
+                bestillingService, mapperFacade, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
     }
 
@@ -66,38 +65,38 @@ public class OppdaterPersonService extends DollyBestillingService {
                                 oppdaterPdlPerson(originator, testident.getIdent())
                                         .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                 Flux.just(testident.getIdent()))
-                                        .flatMap(ident -> Flux.just(dollyPersonCache.preparePerson(testident, bestilling.getGruppe().getTags()))
-                                                        .flatMap(dollyPerson -> (!dollyPerson.getHovedperson().equals(bestilling.getIdent()) ?
-                                                                updateIdent(dollyPerson, progress) : Flux.just(ident))
-                                                                .doOnNext(nyident -> counterCustomRegistry.invoke(request))
-                                                                .flatMap(nyIdent -> Flux.concat(
+                                .flatMap(ident -> Flux.just(dollyPersonCache.preparePerson(testident, bestilling.getGruppe().getTags()))
+                                        .flatMap(dollyPerson -> (!dollyPerson.getHovedperson().equals(bestilling.getIdent()) ?
+                                                updateIdent(dollyPerson, progress) : Flux.just(ident))
+                                                .doOnNext(nyident -> counterCustomRegistry.invoke(request))
+                                                .flatMap(nyIdent -> Flux.concat(
+                                                        gjenopprettKlienter(dollyPerson, request,
+                                                                fase1Klienter(),
+                                                                progress, true),
+                                                        personServiceClient.gjenopprett(null,
+                                                                        dollyPerson, progress, true)
+                                                                .map(ClientFuture::get)
+                                                                .map(BestillingProgress::isPdlSync)
+                                                                .flatMap(pdlSync -> isTrue(pdlSync) ?
+                                                                        Flux.concat(
                                                                                 gjenopprettKlienter(dollyPerson, request,
-                                                                                        fase1Klienter(),
+                                                                                        fase2Klienter(),
                                                                                         progress, true),
-                                                                                personServiceClient.gjenopprett(null,
-                                                                                                dollyPerson, progress, true)
-                                                                                        .map(ClientFuture::get)
-                                                                                        .map(BestillingProgress::isPdlSync)
-                                                                                        .flatMap(pdlSync -> isTrue(pdlSync) ?
-                                                                                                Flux.concat(
-                                                                                                        gjenopprettKlienter(dollyPerson, request,
-                                                                                                                fase2Klienter(),
-                                                                                                                progress, true),
-                                                                                                        gjenopprettKlienter(dollyPerson, request,
-                                                                                                                fase3Klienter(),
-                                                                                                                progress, true)) :
-                                                                                                Flux.empty())))))
-                                                                                        .filter(Objects::nonNull)
-                                                                        .onErrorResume(throwable -> {
-                                                                            var error = errorStatusDecoder.getErrorText(
-                                                                                    WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
-                                                                            log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                                                    progress.getId(), error);
-                                                                            bestilling.setFeil(error);
-                                                                            return Flux.just(progress);
-                                                                        })))
-                            .collectList()
-                            .subscribe(done -> doFerdig(bestilling));
+                                                                                gjenopprettKlienter(dollyPerson, request,
+                                                                                        fase3Klienter(),
+                                                                                        progress, true)) :
+                                                                        Flux.empty())))))
+                                .filter(Objects::nonNull)
+                                .onErrorResume(throwable -> {
+                                    var error = errorStatusDecoder.getErrorText(
+                                            WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                    log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+                                            progress.getId(), error);
+                                    bestilling.setFeil(error);
+                                    return Flux.just(progress);
+                                })))
+                .collectList()
+                .subscribe(done -> doFerdig(bestilling));
     }
 
     private Flux<String> oppdaterPdlPerson(OriginatorCommand.Originator originator, String ident) {
