@@ -35,7 +35,7 @@ public class EgenansattPostCommand implements Callable<Flux<TpsMeldingResponseDT
     @Override
     public Flux<TpsMeldingResponseDTO> call() {
 
-        log.trace("Sender request på ident: {} til TPS messaging service: {}", ident, datoFra);
+        log.info("Sender request på ident: {} til TPS messaging service, Egenansatt datoFra: {}", ident, datoFra);
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder

@@ -86,32 +86,6 @@ public class OrdreService {
                                                                 .toList())
                                                         .build()))))
                 .blockFirst();
-
-//                .build();)
-//                        List.of(CompletableFuture.supplyAsync(
-//                                                () -> sendPdlData(testident, progress), dollyForkJoinPool),
-//                                        CompletableFuture.supplyAsync(
-//                                                () -> sendTpsMessaging(dollyPerson, progress), dollyForkJoinPool),
-//                                        CompletableFuture.supplyAsync(
-//                                                () -> sendPensjonPersoninfo(dollyPerson, progress), dollyForkJoinPool)
-//                                )
-//                                .forEach(future -> {
-//                                    try {
-//                                        future.get(1, TimeUnit.MINUTES);
-//                                    } catch (InterruptedException | ExecutionException | TimeoutException e) {
-//                                        log.error("Future task exception {}", e.getMessage(), e);
-//                                        Thread.interrupted();
-//                                        throw new ResponseStatusException(INTERNAL_SERVER_ERROR, e.getMessage(), e);
-//                                    }
-//                                });
-
-//        return RsOrdreStatus.builder()
-//                .status(Stream.of(getStatus(BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap(List.of(progress), objectMapper)),
-//                                getStatus(BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(List.of(progress))),
-//                                getStatus(BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap(List.of(progress))))
-//                        .filter(Objects::nonNull)
-//                        .toList())
-//                .build();
     }
 
     private Flux<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {
@@ -120,25 +94,8 @@ public class OrdreService {
                 .map(response -> {
                     progress.setPdlDataStatus(response.getStatus().is2xxSuccessful() ?
                             response.getJsonNode() : response.getFeilmelding());
+                    log.info("Pdl-forvalter status: {}", progress.getPdlDataStatus());
                     return progress;
                 });
-    }
-
-    private String sendTpsMessaging(DollyPerson dollyPerson, BestillingProgress progress) {
-
-        tpsMessagingClient.gjenopprett(new RsDollyUtvidetBestilling(),
-                dollyPerson,
-                progress, false);
-
-        return progress.getTpsMessagingStatus();
-    }
-
-    private String sendPensjonPersoninfo(DollyPerson dollyPerson, BestillingProgress progress) {
-
-        pensjonforvalterClient.gjenopprett(new RsDollyUtvidetBestilling(),
-                dollyPerson,
-                progress, false);
-
-        return progress.getPensjonforvalterStatus();
     }
 }
