@@ -12,8 +12,6 @@ consumers:
   # Konsumenter for prod
   testnorge-profil-api:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
-  testnav-organisasjon-tilgang-service:
-    url: https://testnav-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-varslinger-service:
     url: http://testnav-varslinger-service.dolly.svc.cluster.local
   testnav-person-organisasjon-tilgang-service:

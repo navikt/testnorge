@@ -118,7 +118,7 @@ consumers:
     cluster: prod-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
-    url: https://testnav-organisasjon-tilgang-service.dev.intern.nav.no
+    url: https://testnav-organisasjon-tilgang-service.intern.nav.no
   testnav-varslinger-service:
     cluster: dev-gcp
     namespace: dolly
