@@ -43,6 +43,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: testnav-arbeidsforhold-service
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
