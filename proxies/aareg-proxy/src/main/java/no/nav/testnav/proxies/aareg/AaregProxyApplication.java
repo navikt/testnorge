@@ -14,5 +14,4 @@ public class AaregProxyApplication {
     public static void main(String[] args) {
         SpringApplication.run(AaregProxyApplication.class, args);
     }
-
 }

@@ -38,10 +38,14 @@ public class RouteLocatorConfig {
         var routes = builder.routes();
         Arrays.stream(MILJOER)
                 .forEach(env -> {
-                    var authentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                    var readableAuthentication =
+                            getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                    var writeableAuthentication =
+                            getAuthenticationFilter(tokenService, aaregProperties.vedlikehold.forEnvironment(env));
+
                     routes
-                            .route(createReadableRouteToNewEndpoint(env, authentication))
-                            .route(createWriteableRouteToNewEndpoint(env, authentication));
+                            .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
+                            .route(createWriteableRouteToNewEndpoint(env, writeableAuthentication));
                 });
         return routes.build();
     }
@@ -66,16 +70,16 @@ public class RouteLocatorConfig {
                 .uri("https://aareg-services-" + miljoe + ".dev.intern.nav.no");
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
 
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/**")
+                .path("/" + miljoe + "/**")
                 .and()
                 .method(HttpMethod.POST, HttpMethod.PUT)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/(?<segment>.*)", "/${segment}")
+                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("https://aareg-vedlikehold-" + env + ".dev.intern.nav.no");
+                .uri("https://aareg-vedlikehold-" + miljoe + ".dev.intern.nav.no");
     }
 }
