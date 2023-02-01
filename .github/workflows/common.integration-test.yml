@@ -34,6 +34,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: 1.17
+          distribution: 'temurin'
       - name: Assemble
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
