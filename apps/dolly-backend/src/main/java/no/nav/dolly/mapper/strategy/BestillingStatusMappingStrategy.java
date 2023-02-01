@@ -75,6 +75,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.setAntallLevert(progresser.stream()
                                 .filter(BestillingProgress::isIdentGyldig)
                                 .toList().size());
+                        bestillingStatus.setAntallIdenter(bestillingStatus.getAntallLevert()); // midlertidig til TPSF har blitt fjernet
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
