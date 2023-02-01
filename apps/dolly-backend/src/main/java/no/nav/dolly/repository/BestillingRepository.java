@@ -63,7 +63,7 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
     @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.bruker = :bruker order by b.malBestillingNavn")
     Optional<List<Bestilling>> findMalBestillingByUser(@Param("bruker") Bruker bruker);
 
-    @Query(value = "from Bestilling b " +
+    @Query(value = "select b from Bestilling b " +
             "join BestillingProgress bp on bp.bestilling.id = b.id " +
             "where b.gruppe = :gruppe " +
             "and exists (select b1 from BestillingProgress b1 where b1.bestilling.id = b.id and (b1.master = 'PDL' or b1.master = 'PDLF')) " +
