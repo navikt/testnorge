@@ -27,16 +27,16 @@ import java.util.function.Function;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String[] ENV = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
+    private static final String[] MILJOER = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
 
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             TrygdeetatenAzureAdTokenService tokenService,
-            AaregProperties aaregProperties
-    ) {
+            AaregProperties aaregProperties) {
+
         var routes = builder.routes();
-        Arrays.stream(ENV)
+        Arrays.stream(MILJOER)
                 .forEach(env -> {
                     var authentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
                     routes
@@ -53,28 +53,29 @@ public class RouteLocatorConfig {
                         .map(AccessToken::getTokenValue));
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
+
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidstaker/**")
+                .path("/" + miljoe + "/**")
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/api/v1/arbeidstaker", "/api/v1/arbeidstaker")
+                        .rewritePath("/" + miljoe +  "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("https://aareg-services-" + env + ".dev.intern.nav.no");
+                .uri("https://aareg-services-" + miljoe + ".dev.intern.nav.no");
     }
 
     private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidsforhold/**")
+                .path("/" + env + "/**")
                 .and()
                 .method(HttpMethod.POST, HttpMethod.PUT)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/api/v1/arbeidsforhold", "/api/v1/arbeidsforhold")
+                        .rewritePath("/" + env + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
                 .uri("https://aareg-vedlikehold-" + env + ".dev.intern.nav.no");
     }
-
 }
