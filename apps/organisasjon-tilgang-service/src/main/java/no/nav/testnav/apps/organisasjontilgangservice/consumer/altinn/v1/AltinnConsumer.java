@@ -6,6 +6,7 @@ import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command.DeleteOrganisasjonAccessCommand;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command.GetOrganisasjonCommand;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.command.GetRightsCommand;
+import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.DeleteStatus;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.RightDTO;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.MaskinportenConsumer;
 import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
@@ -49,7 +50,7 @@ public class AltinnConsumer {
                 .build();
     }
 
-    public Flux<Void> delete(String organiasjonsnummer) {
+    public Flux<DeleteStatus> delete(String organiasjonsnummer) {
         return getRights()
                 .filter(value -> value.reportee().equals(organiasjonsnummer))
                 .flatMap(value -> maskinportenConsumer
@@ -64,6 +65,7 @@ public class AltinnConsumer {
     }
 
     public Mono<Organisasjon> create(String organiasjonsnummer, LocalDateTime gyldigTil) {
+
         var readRight = new RightDTO(
                 null,
                 organiasjonsnummer,
@@ -92,8 +94,8 @@ public class AltinnConsumer {
                 );
     }
 
-
     public Flux<Organisasjon> getOrganisasjoner() {
+
         return getRights()
                 .map(right -> maskinportenConsumer
                         .getAccessToken()
@@ -107,7 +109,6 @@ public class AltinnConsumer {
                 ).collectList()
                 .flatMapMany(Flux::concat);
     }
-
 
     private Flux<RightDTO> getRights() {
         return maskinportenConsumer

@@ -1,3 +1,25 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+azure.app.client.id: ${local.client.id}
+azure.app.client.secret: ${local.client.secret}
 ALTINN_URL: https://tt02.altinn.no
+TOKENDINGS_URL: https://tokendings.dev-gcp.nais.io
+
+altinn.api.url: dummy
+altinn.api.key: dummy
+altinn.service.code: dummy
+altinn.service.edition: dummy
+
+MASKINPORTEN_CLIENT_ID: dummy
+MASKINPORTEN_CLIENT_JWK: dummy
+MASKINPORTEN_SCOPES: dummy
+MASKINPORTEN_WELL_KNOWN_URL: dummy
+
+spring:
+  flyway:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password:
+  security:
+    oauth2:
+      resourceserver:
+        tokenx:
+          accepted-audience: dev-gcp:dolly:testnav-organisasjon-tilgang-service

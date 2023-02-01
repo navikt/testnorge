@@ -12,6 +12,10 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: ${TOKENDINGS_URL}
+          jwk-set-uri: ${TOKENDINGS_URL}/jwks
+          accepted-audience: ${ACCEPTED_AUDIENCE}
   jackson:
     serialization:
       write_dates_as_timestamps: false
