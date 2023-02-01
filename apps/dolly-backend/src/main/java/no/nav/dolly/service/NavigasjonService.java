@@ -3,15 +3,12 @@ package no.nav.dolly.service;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.Relasjon;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
@@ -37,7 +34,6 @@ public class NavigasjonService {
     private final IdentRepository identRepository;
     private final IdentService identService;
     private final BestillingService bestillingService;
-    private final TpsfService tpsfService;
     private final MapperFacade mapperFacade;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final ExecutorService dollyForkJoinPool;
@@ -45,14 +41,12 @@ public class NavigasjonService {
     @SneakyThrows
     public RsWhereAmI navigerTilIdent(String ident) {
 
-        var tpsfStatus = CompletableFuture.supplyAsync(
-                () -> getTpsfIdenter(ident), dollyForkJoinPool);
         var pdlStatus = CompletableFuture.supplyAsync(
                 () -> getPdlIdenter(ident), dollyForkJoinPool);
 
-        var miljoeIdenter = CompletableFuture.allOf(tpsfStatus, pdlStatus)
+        var miljoeIdenter = CompletableFuture.allOf(pdlStatus)
 
-                .thenApply(result -> Stream.of(tpsfStatus, pdlStatus)
+                .thenApply(result -> Stream.of(pdlStatus)
                         .map(CompletableFuture::join)
                         .filter(Objects::nonNull)
                         .flatMap(Collection::stream)
@@ -93,16 +87,6 @@ public class NavigasjonService {
                         bestillingService.getPaginertBestillingIndex(bestillingId, bestilling.getGruppe().getId())
                                 .orElseThrow(() -> new NotFoundException(bestillingId + " ble ikke funnet i database")), 10))
                 .build();
-    }
-
-    private List<String> getTpsfIdenter(String ident) {
-
-        return tpsfService.hentTestpersoner(List.of(ident)).stream()
-                .map(Person::getRelasjoner)
-                .flatMap(Collection::stream)
-                .map(Relasjon::getPersonRelasjonMed)
-                .map(Person::getIdent)
-                .toList();
     }
 
     private List<String> getPdlIdenter(String ident) {

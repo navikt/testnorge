@@ -89,6 +89,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             List<GruppeBestillingIdent> coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
             var completableFuture = bestilling.getGruppe().getTestidenter().stream()
+                    .filter(testident -> testident.getMaster() != Testident.Master.TPSF)
                     .map(testident -> doGjenopprett(bestilling, bestKriterier, coBestillinger, testident))
                     .map(completable -> supplyAsync(completable, dollyForkJoinPool))
                     .toList();
