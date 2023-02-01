@@ -51,6 +51,7 @@ import {
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
 import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
+import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -84,6 +85,10 @@ export const PersonVisning = ({
 	tmpPersoner,
 }) => {
 	const { gruppeId } = ident
+
+	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+	console.log('organisasjonTilgang: ', organisasjonTilgang) //TODO - SLETT MEG
 
 	const bestillinger = []
 
@@ -330,8 +335,16 @@ export const PersonVisning = ({
 					bestillingIdListe={bestillingIdListe}
 					loading={loadingDokarkivData}
 				/>
-				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-				<PdlPersonMiljoeInfo ident={ident.ident} />
+				<PersonMiljoeinfo
+					bankIdBruker={brukertype === 'BANKID'}
+					ident={ident.ident}
+					miljoe={tilgjengeligMiljoe}
+				/>
+				<PdlPersonMiljoeInfo
+					bankIdBruker={brukertype === 'BANKID'}
+					ident={ident.ident}
+					miljoe={tilgjengeligMiljoe}
+				/>
 				<TidligereBestillinger ids={ident.bestillingId} />
 				<BeskrivelseConnector ident={ident} />
 			</div>
