@@ -6,7 +6,14 @@ import {
 	KontaktadresseData,
 	OppholdsadresseData,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
-import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
+import {
+	Foreldreansvar,
+	ForeldreBarnRelasjon,
+	FullmaktValues,
+	NyIdent,
+	Sivilstand,
+	VergemaalValues,
+} from '@/components/fagsystem/pdlf/PdlTypes'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 
 export const initialValuesBasedOnMal = (mal: any) => {
@@ -130,7 +137,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		if (nyPerson.alder === null && nyPerson.foedtFoer === null && nyPerson.foedtEtter === null) {
 			newPdldata.opprettNyPerson = {
 				identtype: nyPerson.identtype,
-				syntetisk: nyPerson.syntetisk,
+				syntetisk: true,
 			}
 		}
 	} else {
@@ -161,16 +168,63 @@ const getUpdatedPdldata = (pdldata: any) => {
 				if (relasjon.relatertPersonsRolle === 'BARN' && relasjon.deltBosted) {
 					relasjon.deltBosted = updateAdressetyper(relasjon.deltBosted, true)
 				}
+				if (relasjon.nyRelatertPerson) {
+					relasjon.nyRelatertPerson.syntetisk = true
+				}
 				return relasjon
 			}
 		)
 	}
 
+	if (person.foreldreansvar) {
+		newPdldata.person.foreldreansvar = person.foreldreansvar.map((relasjon: Foreldreansvar) => {
+			if (relasjon.nyAnsvarlig) {
+				relasjon.nyAnsvarlig.syntetisk = true
+			}
+		})
+	}
+
+	if (person.sivilstand) {
+		newPdldata.person.sivilstand = person.sivilstand.map((relasjon: Sivilstand) => {
+			if (relasjon.nyRelatertPerson) {
+				relasjon.nyRelatertPerson.syntetisk = true
+			}
+		})
+	}
+
+	if (person.fullmakt) {
+		newPdldata.person.fullmakt = person.fullmakt.map((fullmektig: FullmaktValues) => {
+			if (fullmektig.nyFullmektig) {
+				fullmektig.nyFullmektig.syntetisk = true
+			}
+		})
+	}
+
+	if (person.vergemaal) {
+		newPdldata.person.vergemaal = person.vergemaal.map((verge: VergemaalValues) => {
+			if (verge.nyVergeIdent) {
+				verge.nyVergeIdent.syntetisk = true
+			}
+		})
+	}
+
 	if (person?.kontaktinformasjonForDoedsbo) {
 		newPdldata.person.kontaktinformasjonForDoedsbo = person.kontaktinformasjonForDoedsbo.map(
-			(kontaktinfo: any) => updateKontaktType(kontaktinfo)
+			(kontaktinfo: any) => {
+				updateKontaktType(kontaktinfo)
+				if (kontaktinfo.personSomKontakt?.nyKontaktperson) {
+					kontaktinfo.personSomKontakt.nyKontaktperson.syntetisk = true
+				}
+			}
 		)
 	}
+
+	if (person.nyident) {
+		newPdldata.person.nyident = person.nyident.map((ident: NyIdent) => {
+			ident.syntetisk = true
+		})
+	}
+
 	return newPdldata
 }
 

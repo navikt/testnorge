@@ -5,7 +5,6 @@ import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/B
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
-import { IdentVelger } from './IdentVelger'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
@@ -20,7 +19,7 @@ export const Steg3 = () => {
 	const { currentBruker } = useCurrentBruker()
 
 	const importTestnorge = opts.is.importTestnorge
-	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
+
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
 	const erQ2MiljoeAvhengig =
 		_.get(formikBag.values, 'pdldata.person.fullmakt') ||
@@ -74,7 +73,6 @@ export const Steg3 = () => {
 					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
-			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
 			{visMiljoeVelger && (
 				<MiljoVelger
 					bestillingsdata={formikBag.values}
