@@ -29,7 +29,7 @@ app:
       url: https://aareg-services-{env}.dev.intern.nav.no
       cluster: dev-fss
     vedlikehold:
-      name: aareg-vedlikehold-nais-{env}
+      name: aareg-vedlikehold-{env}
       namespace: arbeidsforhold
       url: https://aareg-vedlikehold-{env}.dev.intern.nav.no
       cluster: dev-fss
