@@ -3,9 +3,6 @@ pluginManagement {
         gradlePluginPortal()
         mavenCentral()
         maven {
-            url "https://dl.bintray.com/gradle/gradle-plugins"
-        }
-        maven {
             url "https://repository-cdn.liferay.com/nexus/content/groups/public"
         }
     }
