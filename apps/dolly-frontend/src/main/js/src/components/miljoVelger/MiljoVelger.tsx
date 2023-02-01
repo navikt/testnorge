@@ -10,7 +10,6 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
 import { Alert } from '@navikt/ds-react'
-import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 const StyledH3 = styled.h3`
 	display: flex;

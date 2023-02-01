@@ -10,7 +10,7 @@ import Utlogging from '@/components/utlogging'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
-import { useBrukerProfil, useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 import logoutBruker from '@/components/utlogging/logoutBruker'
 import {
