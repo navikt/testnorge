@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -55,7 +57,7 @@ public class OrganisasjonClient {
 
         Set<String> orgnumre = new HashSet<>();
 
-        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
+        var miljoer = crossConnect(request.getEnvironments(), Q4_TO_Q1);
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 
@@ -87,7 +89,7 @@ public class OrganisasjonClient {
     @Async
     public void gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
 
-        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
+        var miljoer = crossConnect(request.getEnvironments(), Q4_TO_Q1);
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
                 .bestilling(bestilling)
                 .organisasjonsnummer(request.getOrgnumre().iterator().next())
