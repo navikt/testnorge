@@ -45,6 +45,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-arbeidsforhold-service
           cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
   liveness:
     path: /internal/isAlive
     initialDelay: 4
