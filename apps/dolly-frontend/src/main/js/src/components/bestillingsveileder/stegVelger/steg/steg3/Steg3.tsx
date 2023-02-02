@@ -11,12 +11,15 @@ import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bes
 import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useFormikContext } from 'formik'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const formikBag = useFormikContext()
 	const { currentBruker } = useCurrentBruker()
+
+	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
 
 	const importTestnorge = opts.is.importTestnorge
 
@@ -41,7 +44,7 @@ export const Steg3 = () => {
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker) {
-			return erQ2MiljoeAvhengig ? ['q1', 'q2'] : ['q1']
+			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
 		}
 		return erQ2MiljoeAvhengig ? ['q2'] : []
 	}
@@ -52,7 +55,9 @@ export const Steg3 = () => {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
-		} else if (formikBag.values?.sykemelding || bankIdBruker) {
+		} else if (bankIdBruker) {
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (formikBag.values?.sykemelding) {
 			formikBag.setFieldValue('environments', ['q1'])
 		} else if (!formikBag.values?.environments) {
 			formikBag.setFieldValue('environments', [])
@@ -78,6 +83,7 @@ export const Steg3 = () => {
 					bestillingsdata={formikBag.values}
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
+					orgTilgang={organisasjonTilgang}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}

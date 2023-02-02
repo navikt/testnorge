@@ -19,6 +19,10 @@ consumers:
   testnorge-profil-api:
     name: testnorge-profil-api-dev
     url: http://testnorge-profil-api-dev.dolly.svc.cluster.local
+  testnav-organisasjon-tilgang-service:
+    name: testnav-organisasjon-tilgang-service
+    url: https://testnav-organisasjon-tilgang-service.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
     url: http://testnav-varslinger-service-dev.dolly.svc.cluster.local

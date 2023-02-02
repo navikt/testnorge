@@ -17,11 +17,20 @@ const StyledH3 = styled.h3`
 	align-items: center;
 `
 
-const bankIdMiljoer = {
+const bankIdQ1 = {
 	Q: [
 		{
 			id: 'q1',
 			label: 'Q1',
+		},
+	],
+}
+
+const bankIdQ2 = {
+	Q: [
+		{
+			id: 'q2',
+			label: 'Q2',
 		},
 	],
 }
@@ -49,14 +58,25 @@ const erMiljouavhengig = (bestilling) => {
 	return miljoeNotRequired
 }
 
-export const MiljoVelger = ({ bestillingsdata, heading, bankIdBruker, alleredeValgtMiljoe }) => {
+export const MiljoVelger = ({
+	bestillingsdata,
+	heading,
+	bankIdBruker,
+	orgTilgang,
+	alleredeValgtMiljoe,
+}) => {
 	const { dollyEnvironments, loading } = useDollyEnvironments()
+
 	if (loading) {
 		return <Loading label={'Laster miljøer...'} />
 	}
 
 	const filterEnvironments = (miljoer, erBankIdBruker) => {
-		if (erBankIdBruker) return bankIdMiljoer
+		if (erBankIdBruker) {
+			const tilgjengeligMiljo = orgTilgang?.miljoe
+			if (tilgjengeligMiljo === 'q2') return bankIdQ2
+			return bankIdQ1
+		}
 		return miljoer
 	}
 
