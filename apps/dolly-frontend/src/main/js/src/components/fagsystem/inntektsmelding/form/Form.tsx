@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
@@ -31,6 +31,7 @@ import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequir
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>
@@ -83,6 +84,8 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 			: TypeArbeidsgiver.VIRKSOMHET
 	)
 
+	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
 
@@ -115,7 +118,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
 			>
-				{!_.has(formikBag.values, 'aareg') && (
+				{!_.has(formikBag.values, 'aareg') && !_.has(personFoerLeggTil, 'aareg') && (
 					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
 				)}
 
