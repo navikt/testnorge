@@ -47,6 +47,9 @@ spec:
           cluster: dev-gcp
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
   liveness:
     path: /internal/isAlive
     initialDelay: 4
