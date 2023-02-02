@@ -88,8 +88,6 @@ export const PersonVisning = ({
 
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
-	console.log('organisasjonTilgang: ', organisasjonTilgang) //TODO - SLETT MEG
-	console.log('tilgjengeligMiljoe: ', tilgjengeligMiljoe) //TODO - SLETT MEG
 
 	const bestillinger = []
 

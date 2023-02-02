@@ -95,14 +95,7 @@ export const useOrganisasjonTilgang = () => {
 		fetcher
 	)
 
-	// const testOrgTilgang = {
-	// 	id: null,
-	// 	miljoe: 'q2',
-	// 	organisasjonNummer: '811307602',
-	// }
-
 	return {
-		// organisasjonTilgang: testOrgTilgang,
 		organisasjonTilgang: data,
 		loading: !error && !data,
 		error: error,

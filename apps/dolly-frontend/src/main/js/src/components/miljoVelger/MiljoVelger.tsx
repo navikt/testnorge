@@ -70,7 +70,7 @@ export const MiljoVelger = ({
 	if (loading) {
 		return <Loading label={'Laster miljøer...'} />
 	}
-	console.log('orgTilgang: ', orgTilgang) //TODO - SLETT MEG
+
 	const filterEnvironments = (miljoer, erBankIdBruker) => {
 		if (erBankIdBruker) {
 			const tilgjengeligMiljo = orgTilgang?.miljoe
