@@ -78,7 +78,7 @@ public class AaregConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-aaregister-proxy";
+        return "testnav-aareg-proxy";
     }
 
 }

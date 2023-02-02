@@ -22,6 +22,7 @@ type AaregVisningProps = {
 	liste?: Array<MiljoDataListe>
 	loading?: boolean
 	bestillingIdListe?: Array<string>
+	tilgjengeligMiljoe?: string
 }
 
 type MiljoDataListe = {
@@ -141,6 +142,7 @@ export const AaregVisning = ({
 	loading,
 	bestillingListe,
 	bestillingIdListe,
+	tilgjengeligMiljoe,
 }: AaregVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
 
@@ -165,6 +167,9 @@ export const AaregVisning = ({
 		?.filter((amelding) => amelding)
 	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
 
+	const filteredData =
+		tilgjengeligMiljoe && liste.filter((item) => item.miljo === tilgjengeligMiljoe)
+
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
@@ -178,7 +183,7 @@ export const AaregVisning = ({
 						bestilteMiljoer={bestilteMiljoer}
 						errorMiljoer={errorMiljoer}
 						forsteMiljo={forsteMiljo}
-						data={liste}
+						data={filteredData || liste}
 					>
 						<Arbeidsforhold />
 					</MiljoTabs>

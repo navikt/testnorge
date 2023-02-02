@@ -33,7 +33,7 @@ const TpOrdning = ({ data, ordninger }) => {
 	)
 }
 
-export const TpVisning = ({ data, loading, bestillingIdListe }) => {
+export const TpVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
 	const [ordninger, setOrdninger] = useState(Options('tpOrdninger'))
 
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.tp')
@@ -62,6 +62,9 @@ export const TpVisning = ({ data, loading, bestillingIdListe }) => {
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 
+	const filteredData =
+		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -78,7 +81,7 @@ export const TpVisning = ({ data, loading, bestillingIdListe }) => {
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={data}
+					data={filteredData || data}
 				>
 					<TpOrdning ordninger={ordninger} />
 				</MiljoTabs>

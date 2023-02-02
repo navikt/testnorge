@@ -94,6 +94,7 @@ export type Sivilstand = {
 	bekreftelsesdato?: string
 	id?: number
 	sivilstandsdato?: string
+	nyRelatertPerson?: NyIdent
 	metadata: Metadata
 }
 
@@ -136,6 +137,7 @@ export type Foreldreansvar = {
 	ansvar: string
 	ansvarlig: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
+	nyAnsvarlig?: NyIdent
 	metadata?: Metadata
 }
 
@@ -152,8 +154,13 @@ export type VergemaalValues = {
 	sakType?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
+	nyVergeIdent?: NyIdent
 	vergeIdent?: string
 	id: number
+}
+
+export type FullmaktValues = {
+	nyFullmektig?: NyIdent
 }
 
 export type NyIdent = {

@@ -32,7 +32,7 @@ spec:
     inbound:
       rules:
         - application: team-dolly-lokal-app
-          cluster: dev-fss
+          cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-gcp
         - application: dolly-backend-dev
@@ -42,6 +42,13 @@ spec:
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-arbeidsforhold-service
+          cluster: dev-gcp
+        - application: testnorge-statisk-data-forvalter
+          cluster: dev-fss
+        - application: app-1
+          namespace: plattformsikkerhet
           cluster: dev-gcp
   liveness:
     path: /internal/isAlive

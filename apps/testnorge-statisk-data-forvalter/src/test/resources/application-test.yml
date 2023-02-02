@@ -60,9 +60,9 @@ consumers:
     url: http://localhost:${wiremock.server.port:0}/synt-aareg
   kodeverk:
     url: http://localhost:${wiremock.server.port:0}/kodeverk
-  testnav-aaregister-proxy:
+  testnav-aareg-proxy:
     url: http://localhost:${wiremock.server.port:0}/aareg
-    name: testnav-aaregister-proxy
+    name: testnav-aareg-proxy
     cluster: dummy
     namespace: dolly
 

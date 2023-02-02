@@ -73,5 +73,5 @@ spec:
         - application: synthdata-aareg
           cluster: dev-fss
         - application: kodeverk
-        - application: testnav-aaregister-proxy
+        - application: testnav-aareg-proxy
           cluster: dev-fss
