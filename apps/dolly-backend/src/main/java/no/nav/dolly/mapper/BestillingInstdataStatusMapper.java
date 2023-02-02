@@ -15,6 +15,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.INST2;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.checkAndUpdateStatus;
+import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -28,10 +29,12 @@ public final class BestillingInstdataStatusMapper {
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getInstdataStatus())) {
                 List.of(progress.getInstdataStatus().split(",")).forEach(status -> {
-                    String[] environErrMsg = status.split(":", 2);
-                    String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim().replaceAll("&", ",") : "";
-                    checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
+                    var environErrMsg = status.split(":", 2);
+                    var environ = environErrMsg[0];
+                    if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {
+                        var errMsg = decodeMsg(environErrMsg[1]);
+                        checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
+                    }
                 });
             }
         });

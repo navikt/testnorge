@@ -36,7 +36,6 @@ import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPe
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
 import static no.nav.dolly.mapper.BestillingSykemeldingStatusMapper.buildSykemeldingStatusMap;
-import static no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap;
 import static no.nav.dolly.mapper.BestillingUdiStubStatusMapper.buildUdiStubStatusMap;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -78,7 +77,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.setAntallIdenter(bestillingStatus.getAntallLevert()); // midlertidig til TPSF har blitt fjernet
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
-                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
+//                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(progresser));
