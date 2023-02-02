@@ -228,6 +228,9 @@ export const PersonVisning = ({
 								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
 									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
 								}
+								if (arbeidsforhold) {
+									personData.aareg = arbeidsforhold
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,

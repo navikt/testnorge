@@ -85,7 +85,6 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 	)
 
 	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
-	console.log('personFoerLeggTil: ', personFoerLeggTil) //TODO - SLETT MEG
 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
@@ -119,7 +118,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
 			>
-				{!_.has(formikBag.values, 'aareg') && (
+				{!_.has(formikBag.values, 'aareg') && !_.has(personFoerLeggTil, 'aareg') && (
 					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
 				)}
 
