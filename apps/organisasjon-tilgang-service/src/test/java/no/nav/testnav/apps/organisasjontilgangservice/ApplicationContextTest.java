@@ -1,6 +1,7 @@
 package no.nav.testnav.apps.organisasjontilgangservice;
 
-
+import ma.glasnost.orika.MapperFacade;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -13,6 +14,12 @@ class ApplicationContextTest {
 
     @MockBean
     public JwtDecoder jwtDecoder;
+
+    @MockBean
+    public MapperFacade mapperFacade;
+
+    @MockBean
+    public Flyway flyway;
 
     @Test
     @SuppressWarnings("java:S2699")

@@ -21,6 +21,7 @@ public class GetRightsCommand implements Callable<Flux<RightDTO>> {
 
     @Override
     public Flux<RightDTO> call() {
+
         return webClient
                 .get()
                 .uri(builder -> builder.path("/api/serviceowner/Srr")

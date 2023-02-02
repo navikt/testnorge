@@ -12,7 +12,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Configuration
 @Profile("local")
 @VaultPropertySource(
-        value = "azuread/prod/creds/team-dolly-lokal-app",
+        value = "secret/dolly/lokal",
         ignoreSecretNotFound = false
 )
 public class LocalVaultConfig extends AbstractVaultConfiguration {

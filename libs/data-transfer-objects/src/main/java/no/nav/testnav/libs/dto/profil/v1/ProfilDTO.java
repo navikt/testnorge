@@ -10,9 +10,11 @@ import lombok.Value;
 @AllArgsConstructor
 @NoArgsConstructor(force = true)
 public class ProfilDTO {
+
     String visningsNavn;
     String epost;
     String avdeling;
     String organisasjon;
+    String orgnummer;
     String type;
 }

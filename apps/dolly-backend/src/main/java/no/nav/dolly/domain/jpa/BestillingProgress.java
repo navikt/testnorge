@@ -146,7 +146,9 @@ public class BestillingProgress implements Serializable {
     @JsonIgnore
     public boolean isIdentGyldig() {
 
-        return isNotBlank(getIdent()) && getIdent().length() == 11;
+        return isNotBlank(getIdent()) &&
+                getIdent().length() == 11 &&
+                (isPdl() || isPdlf());
     }
 
     public void setDokarkivStatus(String dokarkivStatus) {

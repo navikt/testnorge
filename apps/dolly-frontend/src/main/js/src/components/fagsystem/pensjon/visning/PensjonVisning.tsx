@@ -37,7 +37,7 @@ const PensjonInntekt = ({ data }) => {
 	)
 }
 
-export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
+export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
 
 	if (loading) {
@@ -53,6 +53,9 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+
+	const filteredData =
+		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	return (
 		<ErrorBoundary>
@@ -70,7 +73,7 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe }) => {
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={data}
+					data={filteredData || data}
 				>
 					<PensjonInntekt />
 				</MiljoTabs>

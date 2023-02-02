@@ -32,8 +32,10 @@ public final class BestillingInntektsmeldingStatusMapper {
                 List.of(progress.getInntektsmeldingStatus().split(",")).forEach(status -> {
                     var environErrMsg = status.split(":", 2);
                     var environ = environErrMsg[0];
-                    var errMsg = decodeMsg(environErrMsg.length > 1 ? environErrMsg[1] : "");
-                    checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
+                    if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {
+                        var errMsg = decodeMsg(environErrMsg[1]);
+                        checkAndUpdateStatus(statusEnvIdents, progress.getIdent(), environ, errMsg);
+                    }
                 });
             }
         });

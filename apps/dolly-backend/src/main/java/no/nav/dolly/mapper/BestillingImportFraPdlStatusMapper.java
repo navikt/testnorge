@@ -28,7 +28,7 @@ public final class BestillingImportFraPdlStatusMapper {
 
         if (isNotBlank(bestilling.getPdlImport())) {
             bestilling.getProgresser().forEach(progress -> {
-                if (isNotBlank(progress.getPdlImportStatus())) {
+                if (isNotBlank(progress.getPdlImportStatus()) && isNotBlank(progress.getIdent())) {
                     String status =
                             progress.getPdlImportStatus().replaceAll("\\d{11}", "").replace("  ", " ");
                     String environ = bestilling.getKildeMiljoe();

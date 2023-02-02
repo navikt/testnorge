@@ -34,6 +34,7 @@ import java.util.Set;
 
 import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Entity
 @Data
@@ -111,7 +112,7 @@ public class Testgruppe implements Serializable {
     }
 
     public List<Tags> getTags() {
-        if (isNull(tags)) {
+        if (isBlank(tags)) {
             return Collections.emptyList();
         }
         return Arrays.stream(tags.split(",")).map(Tags::valueOf).toList();

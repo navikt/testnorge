@@ -28,9 +28,6 @@ public interface TestgruppeUtenIdenter {
 
     String getLaastBeskrivelse();
 
-    default String getTags() {
-        return null;
-    }
-
+    String getTags();
 }
 

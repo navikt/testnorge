@@ -17,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpMethod;
 
+import java.util.Arrays;
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 @Import({
         SecureOAuth2ServerToServerConfiguration.class,
@@ -27,19 +27,22 @@ import java.util.stream.Stream;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String[] ENV = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
+    private static final String[] MILJOER = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
 
     @Bean
     public RouteLocator customRouteLocator(
             RouteLocatorBuilder builder,
             TrygdeetatenAzureAdTokenService tokenService,
-            AaregProperties aaregProperties
-    ) {
+            AaregProperties aaregProperties) {
+
         var routes = builder.routes();
-        Stream.of(ENV)
+        Arrays.stream(MILJOER)
                 .forEach(env -> {
-                    var readableAuthentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
-                    var writeableAuthentication = getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                    var readableAuthentication =
+                            getAuthenticationFilter(tokenService, aaregProperties.services.forEnvironment(env));
+                    var writeableAuthentication =
+                            getAuthenticationFilter(tokenService, aaregProperties.vedlikehold.forEnvironment(env));
+
                     routes
                             .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
                             .route(createWriteableRouteToNewEndpoint(env, writeableAuthentication));
@@ -54,28 +57,29 @@ public class RouteLocatorConfig {
                         .map(AccessToken::getTokenValue));
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
+
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidstaker/arbeidsforhold/**")
+                .path("/" + miljoe + "/**")
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/api/v1/arbeidstaker/arbeidsforhold", "/api/v1/arbeidsforhold")
+                        .rewritePath("/" + miljoe +  "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("https://aareg-services-" + env + ".dev.intern.nav.no");
+                .uri("https://aareg-services-" + miljoe + ".dev.intern.nav.no");
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String env, GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
+
         return predicateSpec -> predicateSpec
-                .path("/" + env + "/api/v1/arbeidsforhold/**")
+                .path("/" + miljoe + "/**")
                 .and()
                 .method(HttpMethod.POST, HttpMethod.PUT)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + env + "/api/v1/arbeidsforhold", "/api/v1/arbeidsforhold")
+                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("https://aareg-vedlikehold-" + env + ".dev.intern.nav.no");
+                .uri("https://aareg-vedlikehold-" + miljoe + ".dev.intern.nav.no");
     }
-
 }
