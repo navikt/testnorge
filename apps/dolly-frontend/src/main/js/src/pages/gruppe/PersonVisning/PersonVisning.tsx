@@ -89,6 +89,7 @@ export const PersonVisning = ({
 	const { organisasjonTilgang } = useOrganisasjonTilgang()
 	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
 	console.log('organisasjonTilgang: ', organisasjonTilgang) //TODO - SLETT MEG
+	console.log('tilgjengeligMiljoe: ', tilgjengeligMiljoe) //TODO - SLETT MEG
 
 	const bestillinger = []
 
@@ -293,6 +294,7 @@ export const PersonVisning = ({
 						loading={loadingAareg}
 						bestillingListe={bestillingListe}
 						bestillingIdListe={bestillingIdListe}
+						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
 				)}
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
@@ -300,8 +302,14 @@ export const PersonVisning = ({
 					data={poppData}
 					loading={loadingPoppData}
 					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
+				<TpVisning
+					data={tpData}
+					loading={loadingTpData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
 				{harApBestilling(bestillingerFagsystemer) && (
 					<AlderspensjonVisning
 						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
@@ -319,12 +327,14 @@ export const PersonVisning = ({
 					data={instData}
 					loading={loadingInstData}
 					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 					ident={ident}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
@@ -334,6 +344,7 @@ export const PersonVisning = ({
 					data={dokarkivData}
 					bestillingIdListe={bestillingIdListe}
 					loading={loadingDokarkivData}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}

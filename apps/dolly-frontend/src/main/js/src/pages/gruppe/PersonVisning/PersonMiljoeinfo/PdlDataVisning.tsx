@@ -10,6 +10,8 @@ import DollyTooltip from '@/components/ui/button/DollyTooltip'
 
 type PdlDataVisningProps = {
 	ident: Ident
+	bankIdBruker: boolean
+	miljoe: string
 }
 
 export const ApiFeilmelding = ({ feil }) => {
@@ -25,7 +27,7 @@ export const ApiFeilmelding = ({ feil }) => {
 	)
 }
 
-export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
+export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningProps) => {
 	const [pdlData, setPdlData] = useState(null)
 	const [pdlDataQ1, setPdlDataQ1] = useState(null)
 	const [pdlLoading, setPdlLoading] = useBoolean(true)
@@ -101,17 +103,19 @@ export const PdlDataVisning = ({ ident }: PdlDataVisningProps) => {
 			>
 				<div className="miljoe-knapp">PDL</div>
 			</DollyTooltip>
-			<DollyTooltip
-				overlay={() => getPersonInfo('Q1')}
-				align={{
-					offset: [0, -10],
-				}}
-				arrowContent={<div className="rc-tooltip-arrow-inner" />}
-				overlayStyle={{ opacity: 1 }}
-				destroyTooltipOnHide={{ keepParent: false }}
-			>
-				<div className="miljoe-knapp">Q1</div>
-			</DollyTooltip>
+			{(!bankIdBruker || miljoe === 'q1') && (
+				<DollyTooltip
+					overlay={() => getPersonInfo('Q1')}
+					align={{
+						offset: [0, -10],
+					}}
+					arrowContent={<div className="rc-tooltip-arrow-inner" />}
+					overlayStyle={{ opacity: 1 }}
+					destroyTooltipOnHide={{ keepParent: false }}
+				>
+					<div className="miljoe-knapp">Q1</div>
+				</DollyTooltip>
+			)}
 		</div>
 	)
 }

@@ -14,8 +14,7 @@ export const PdlPersonMiljoeInfo = ({ bankIdBruker, ident, miljoe }: PdlMiljoeVa
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="PDL" iconKind="visTpsData" />
-				//TODO: send med bankid og miljoe
-				<PdlDataVisning ident={ident} />
+				<PdlDataVisning ident={ident} bankIdBruker={bankIdBruker} miljoe={miljoe} />
 				<p>
 					<i>Hold pekeren over PDL/miljø for å se dataene som finnes på denne personen i PDL.</i>
 				</p>

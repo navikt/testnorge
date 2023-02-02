@@ -27,7 +27,7 @@ const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
 	return <DokarkivVisning journalpost={data} miljoe={miljo} />
 }
 
-export default ({ data, bestillingIdListe, loading }: Form) => {
+export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'dokarkiv')
 
 	if (loading) {
@@ -43,6 +43,9 @@ export default ({ data, bestillingIdListe, loading }: Form) => {
 
 	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
+	const filteredData =
+		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
+
 	return (
 		<>
 			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
@@ -50,7 +53,7 @@ export default ({ data, bestillingIdListe, loading }: Form) => {
 				bestilteMiljoer={bestilteMiljoer}
 				errorMiljoer={errorMiljoer}
 				forsteMiljo={forsteMiljo}
-				data={data}
+				data={filteredData || data}
 			>
 				<Dokarkiv />
 			</MiljoTabs>
