@@ -38,7 +38,7 @@ public final class BestillingPensjonforvalterStatusMapper {
                 List.of(progress.getPensjonforvalterStatus()
                         .split("\\$")).forEach(meldingMiljoStatus -> {
                     String melding = meldingMiljoStatus.split("#")[0];
-                    if (meldingMiljoStatus.split("#").length > 1) {
+                    if (meldingMiljoStatus.split("#").length > 1 && isNotBlank(progress.getIdent())) {
                         List.of(meldingMiljoStatus.split("#")[1].split(",")).forEach(miljostatus -> {
                             String[] miljoStatuser = miljostatus.split(":");
                             String miljoe = miljoStatuser.length > 1 ? miljoStatuser[0] : null;

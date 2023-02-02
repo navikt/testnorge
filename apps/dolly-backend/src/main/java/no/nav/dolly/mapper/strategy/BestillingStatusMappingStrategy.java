@@ -71,10 +71,12 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                     .toList();
                         }
 
-                        RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
+                        RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper
+                                .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(progresser.stream()
                                 .filter(BestillingProgress::isIdentGyldig)
                                 .toList().size());
+                        bestillingStatus.setAntallIdenter(bestillingStatus.getAntallLevert()); // midlertidig til TPSF har blitt fjernet
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));

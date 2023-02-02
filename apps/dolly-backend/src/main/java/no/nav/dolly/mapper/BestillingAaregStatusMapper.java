@@ -31,13 +31,15 @@ public final class BestillingAaregStatusMapper {
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getAaregStatus())) {
                 List.of(progress.getAaregStatus().split(",")).forEach(status -> {
-                    String[] environErrMsg = status.split(":");
-                    String environ = environErrMsg[0];
-                    String errMsg = environErrMsg.length > 1 ? environErrMsg[1].trim() : "";
-                    String errMsgWithBAFeilmelding = errMsg.contains("BA")
-                            ? konverterBAfeilkodeTilFeilmelding(errMsg)
-                            : errMsg;
-                    checkAndUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsgWithBAFeilmelding);
+                    var environErrMsg = status.split(":");
+                    var environ = environErrMsg[0];
+                    if (environErrMsg.length > 1 && isNotBlank(environErrMsg[1]) && isNotBlank(progress.getIdent())) {
+                        var errMsg = environErrMsg[1].trim();
+                        var errMsgWithBAFeilmelding = errMsg.contains("BA")
+                                ? konverterBAfeilkodeTilFeilmelding(errMsg)
+                                : errMsg;
+                        checkAndUpdateStatus(errorEnvIdents, progress.getIdent(), environ, errMsgWithBAFeilmelding);
+                    }
                 });
             }
         });
