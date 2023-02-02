@@ -75,9 +75,6 @@ spec:
       memory: 2048Mi
   envFrom:
     - secret: azure-trygdeetaten-testnav-dokarkiv-proxy-trygdeetaten
-  env:
-    - name: ACCEPTED_AUDIENCE
-      value: dev-gcp:dolly:testnav-aareg-proxy
   ingresses:
     - "https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io"
     - "https://testnav-dokarkiv-proxy.dev.intern.nav.no"

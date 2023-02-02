@@ -1,3 +1,5 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
 spring:
   application:
     name: testnav-aareg-proxy
@@ -7,19 +9,22 @@ spring:
     oauth2:
       resourceserver:
         aad:
-          issuer-uri: ${AZURE_OPENID_CONFIG_ISSUER}
-          jwk-set-uri: ${AZURE_OPENID_CONFIG_JWKS_URI}
-          accepted-audience: ${AZURE_APP_CLIENT_ID}, api://${AZURE_APP_CLIENT_ID}
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: ${ACCEPTED_AUDIENCE}
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
   cloud:
     gateway:
       httpclient:
         response-timeout: 600s
 
-AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+springdoc:
+  swagger-ui:
+    disable-swagger-default-url: true
+    url: /v3/api-docs
 
 app:
   aareg:
