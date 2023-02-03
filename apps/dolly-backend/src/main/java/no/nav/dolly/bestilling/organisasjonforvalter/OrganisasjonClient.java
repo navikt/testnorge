@@ -15,7 +15,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
-import no.nav.dolly.util.EnvironmentsCrossConnect;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -99,12 +98,11 @@ public class OrganisasjonClient {
         deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer);
     }
 
-    public void release(List<String> orgnummer) {
-
+    public void release(List<String> ignored) {
         throw new UnsupportedOperationException("Release ikke implementert");
     }
 
-    private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
+    private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, Set<String> environments) {
 
         log.info("Deployer orgnumre fra Organisasjon Forvalter");
         if (isNull(orgnumre) || orgnumre.isEmpty() || isNull(environments) || environments.isEmpty()) {
@@ -113,7 +111,7 @@ public class OrganisasjonClient {
         }
     }
 
-    private void deployOrganisasjon(Set<String> orgnumre, OrganisasjonBestilling bestilling, List<String> environments) {
+    private void deployOrganisasjon(Set<String> orgnumre, OrganisasjonBestilling bestilling, Set<String> environments) {
         ResponseEntity<DeployResponse> deployResponse = organisasjonConsumer.deployOrganisasjon(new DeployRequest(orgnumre, environments));
 
         if (deployResponse.hasBody()) {

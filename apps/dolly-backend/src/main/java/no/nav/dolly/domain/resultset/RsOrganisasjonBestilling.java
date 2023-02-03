@@ -11,7 +11,9 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 
@@ -24,14 +26,14 @@ import static java.util.Objects.isNull;
 public class RsOrganisasjonBestilling {
 
     @Schema(description = "Liste av miljøer bestillingen skal deployes til")
-    private List<String> environments;
+    private Set<String> environments;
     private SyntetiskOrganisasjon organisasjon;
     @Schema(description = "Navn på malbestillling")
     private String malBestillingNavn;
 
-    public List<String> getEnvironments() {
+    public Set<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList<>();
+            environments = new HashSet<>();
         }
         return environments;
     }

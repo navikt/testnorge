@@ -26,6 +26,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -100,7 +101,7 @@ public class AaregClient implements ClientRegister {
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                            List<String> miljoer, boolean isOpprettEndre) {
+                                            Set<String> miljoer, boolean isOpprettEndre) {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getHovedperson());

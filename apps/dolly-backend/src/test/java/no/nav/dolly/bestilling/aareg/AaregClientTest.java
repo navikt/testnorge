@@ -26,6 +26,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -98,7 +99,7 @@ class AaregClientTest {
 
             var request = new RsDollyBestillingRequest();
             request.setAareg(singletonList(RsAareg.builder().build()));
-            request.setEnvironments(singletonList(ENV));
+            request.setEnvironments(singleton(ENV));
             aaregClient.gjenopprett(request,
                     DollyPerson.builder().hovedperson(IDENT)
                             .opprettetIPDL(true).build(), new BestillingProgress(), false);
@@ -123,7 +124,7 @@ class AaregClientTest {
 
             var request = new RsDollyBestillingRequest();
             request.setAareg(singletonList(RsAareg.builder().build()));
-            request.setEnvironments(singletonList(ENV));
+            request.setEnvironments(singleton(ENV));
             aaregClient.gjenopprett(request,
                     DollyPerson.builder().hovedperson(IDENT)
                             .opprettetIPDL(true).build(), new BestillingProgress(), false);
@@ -143,7 +144,7 @@ class AaregClientTest {
                     .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                     .arbeidsforholdId("1")
                     .build()));
-            request.setEnvironments(singletonList(ENV));
+            request.setEnvironments(singleton(ENV));
 
             when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(
                     buildArbeidsforhold(false)));
@@ -181,7 +182,7 @@ class AaregClientTest {
                     .arbeidsforholdId("1")
                     .isOppdatering(true)
                     .build()));
-            request.setEnvironments(singletonList(ENV));
+            request.setEnvironments(singleton(ENV));
 
             when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
                     .thenReturn(Mono.just(buildArbeidsforhold(true)));

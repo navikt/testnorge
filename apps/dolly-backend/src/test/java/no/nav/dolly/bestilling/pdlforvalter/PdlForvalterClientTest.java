@@ -39,6 +39,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.util.List;
 
 import static com.fasterxml.jackson.databind.node.JsonNodeFactory.instance;
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
@@ -51,7 +52,7 @@ import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class PdlForvalterClientTest {
+class PdlForvalterClientTest {
 
     private static final String ENV = "q2";
     private static final String IDENT = "11111111111";
@@ -84,7 +85,7 @@ public class PdlForvalterClientTest {
 
     @BeforeEach
     public void setup() {
-        when(pdlForvalterConsumer.deleteIdent(eq(IDENT)))
+        when(pdlForvalterConsumer.deleteIdent(IDENT))
                 .thenReturn(ResponseEntity.ok(instance.objectNode().put(HENDLSE_ID, HENDELSE_ID_SLETTING)));
 
         when(mapperFacade.map(any(Person.class), eq(PdlOppholdsadresseHistorikk.class), any(MappingContext.class))).thenReturn(new PdlOppholdsadresseHistorikk());
@@ -98,7 +99,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_kontaktinformasjonDoedsbo_OK() {
+    void gjenopprett_kontaktinformasjonDoedsbo_OK() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -109,7 +110,7 @@ public class PdlForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
@@ -123,7 +124,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_kontaktinformasjonDoedsbo_Feil() {
+    void gjenopprett_kontaktinformasjonDoedsbo_Feil() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -135,7 +136,7 @@ public class PdlForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
@@ -149,7 +150,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_utenlandsIdent_OK() {
+     void gjenopprett_utenlandsIdent_OK() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -160,7 +161,7 @@ public class PdlForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
@@ -174,7 +175,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_utenlandsIdent_Feil() {
+    void gjenopprett_utenlandsIdent_Feil() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -186,7 +187,7 @@ public class PdlForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
@@ -200,7 +201,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_falskidentitet_OK() {
+    void gjenopprett_falskidentitet_OK() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -211,7 +212,7 @@ public class PdlForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
@@ -225,7 +226,7 @@ public class PdlForvalterClientTest {
     }
 
     @Test
-    public void gjenopprett_falskIdentitet_Feil() {
+    void gjenopprett_falskIdentitet_Feil() {
 
         BestillingProgress progress = BestillingProgress.builder().master(Master.TPSF).build();
 
@@ -237,7 +238,7 @@ public class PdlForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setPdlforvalter(RsPdldata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         pdlForvalterClient.gjenopprett(request,
                 DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
