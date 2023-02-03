@@ -149,7 +149,7 @@ export const sivilstand = Yup.object({
 	sivilstandsdato: Yup.string().nullable(),
 	relatertVedSivilstand: Yup.string().nullable(),
 	bekreftelsesdato: Yup.string().nullable(),
-	borIkkeSammen: Yup.boolean(),
+	borIkkeSammen: Yup.boolean().nullable(),
 	nyRelatertPerson: nyPerson,
 })
 
