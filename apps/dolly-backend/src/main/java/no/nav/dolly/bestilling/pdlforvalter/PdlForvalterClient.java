@@ -11,8 +11,6 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
 import reactor.core.publisher.Flux;
 
@@ -68,12 +66,12 @@ public class PdlForvalterClient implements ClientRegister {
         // Sletting blir nå utført fra PersonService
     }
 
-    private PersonDTO getPdldataHovedIdent(String ident) {
-
-        var personer = pdlDataConsumer.getPersoner(List.of(ident)).block();
-        return personer.isEmpty() ? null :
-                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
-    }
+//    private PersonDTO getPdldataHovedIdent(String ident) {
+//
+//        var personer = pdlDataConsumer.getPersoner(List.of(ident)).block();
+//        return personer.isEmpty() ? null :
+//                personer.stream().findFirst().orElse(new FullPersonDTO()).getPerson();
+//    }
 
 //    private void hentPersondetaljer(DollyPerson dollyPerson) {
 //

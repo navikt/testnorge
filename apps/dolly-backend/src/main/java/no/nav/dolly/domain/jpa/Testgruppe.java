@@ -70,14 +70,14 @@ public class Testgruppe implements Serializable {
     @Column(name = "DATO_ENDRET", nullable = false)
     private LocalDate datoEndret;
 
-    @OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "testgruppe", fetch = FetchType.EAGER)
     @Column(unique = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OrderBy("id DESC")
     private List<Testident> testidenter;
 
-    @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Bruker> favorisertAv;
