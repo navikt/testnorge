@@ -11,6 +11,8 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import static java.util.Objects.nonNull;
@@ -39,6 +41,10 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
+
+                        var securityContext = (SecurityContext) context.getProperty("securityContext");
+                        SecurityContextHolder.setContext(securityContext);
+
                         rsTestgruppe.setAntallIdenter((int) testgruppe.getTestidenter().stream()
                                 .filter(testident -> testident.getMaster() != Testident.Master.TPSF)
                                 .count());

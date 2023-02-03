@@ -2,10 +2,12 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -16,6 +18,8 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -45,6 +49,7 @@ public class NavigasjonService {
     @Transactional(readOnly = true)
     public Mono<RsWhereAmI> navigerTilIdent(String ident) {
 
+        var securityContext = SecurityContextHolder.getContext();
         return Flux.merge(getPdlForvalterIdenter(ident),
                         getPdlPersonIdenter(ident))
                 .distinct()
@@ -52,7 +57,7 @@ public class NavigasjonService {
                         .filter(Optional::isPresent)
                         .map(Optional::get)
                         .map(testident -> RsWhereAmI.builder()
-                                .gruppe(mapperFacade.map(testident.getTestgruppe(), RsTestgruppe.class))
+                                .gruppe(mapGruppe(testident.getTestgruppe(), securityContext))
                                 .identHovedperson(testident.getIdent())
                                 .identNavigerTil(ident)
                                 .sidetall(Math.floorDiv(
@@ -61,6 +66,13 @@ public class NavigasjonService {
                                 .build()))
                 .switchIfEmpty(Flux.error(() -> new NotFoundException(String.format(IKKE_FUNNET, ident))))
                 .next();
+    }
+
+    private RsTestgruppe mapGruppe(Testgruppe testgruppe, SecurityContext securityContext) {
+
+        var context = new MappingContext.Factory().getContext();
+        context.setProperty("securityContext", securityContext);
+        return mapperFacade.map(testgruppe, RsTestgruppe.class, context);
     }
 
     public Mono<RsWhereAmI> navigerTilBestilling(Long bestillingId) {
