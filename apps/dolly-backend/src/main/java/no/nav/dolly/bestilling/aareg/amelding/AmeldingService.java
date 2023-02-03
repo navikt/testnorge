@@ -16,8 +16,8 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,7 +32,7 @@ public class AmeldingService {
     private final OrganisasjonServiceConsumer organisasjonServiceConsumer;
 
     public Mono<String> sendAmelding(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                     List<String> miljoer) {
+                                     Set<String> miljoer) {
 
         var orgnumre = bestilling.getAareg().get(0).getAmelding().stream()
                 .map(RsAmeldingRequest::getArbeidsforhold)

@@ -26,7 +26,9 @@ import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 
@@ -38,8 +40,8 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDollyBestilling {
 
-    @Schema(description = "Liste av miljøer bestillingen skal deployes til")
-    private List<String> environments;
+    @Schema(description = "Sett av miljøer bestillingen skal deployes til")
+    private Set<String> environments;
 
     @Schema(description = "Navn på malbestillling")
     private String malBestillingNavn;
@@ -68,9 +70,9 @@ public class RsDollyBestilling {
         return aareg;
     }
 
-    public List<String> getEnvironments() {
+    public Set<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList<>();
+            environments = new HashSet<>();
         }
         return environments;
     }

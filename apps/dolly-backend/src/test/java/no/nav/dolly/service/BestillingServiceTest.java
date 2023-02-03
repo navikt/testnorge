@@ -14,6 +14,8 @@ import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.http.entity.ContentType;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,19 +34,20 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.mockito.ArgumentMatchers.any;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class BestillingServiceTest {
+class BestillingServiceTest {
 
     private final static String BRUKERID = "123";
     private final static String BRUKERNAVN = "BRUKER";
@@ -68,48 +71,48 @@ public class BestillingServiceTest {
     private BestillingService bestillingService;
 
     @Test
-    public void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() {
+    void fetchBestillingByIdKasterExceptionHvisBestillingIkkeFunnet() {
         Optional<Bestilling> bes = Optional.empty();
 
         when(bestillingRepository.findById(any())).thenReturn(bes);
 
         Assertions.assertThrows(NotFoundException.class, () ->
-                bestillingService.fetchBestillingById(1l));
+                bestillingService.fetchBestillingById(1L));
     }
 
     @Test
-    public void fetchBestillingByIdKasterReturnererBestillingHvisBestillingErFunnet() {
+    void fetchBestillingByIdKasterReturnererBestillingHvisBestillingErFunnet() {
         Bestilling mock = mock(Bestilling.class);
         Optional<Bestilling> bes = Optional.of(mock);
 
         when(bestillingRepository.findById(any())).thenReturn(bes);
 
-        Bestilling bestilling = bestillingService.fetchBestillingById(1l);
+        Bestilling bestilling = bestillingService.fetchBestillingById(1L);
 
         assertThat(bestilling, is(mock));
     }
 
     @Test
-    public void saveBestillingToDBKasterExceptionHvisDBConstraintBlirBrutt() {
+    void saveBestillingToDBKasterExceptionHvisDBConstraintBlirBrutt() {
         when(bestillingRepository.save(any())).thenThrow(DataIntegrityViolationException.class);
         Assertions.assertThrows(ConstraintViolationException.class, () ->
                 bestillingService.saveBestillingToDB(new Bestilling()));
     }
 
     @Test
-    public void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger() {
+    void fetchBestillingerByGruppeIdBlirKaltMedGittFunnetTestgruppeOgReturnererBestillinger() {
         Testgruppe gruppe = mock(Testgruppe.class);
         when(testgruppeRepository.findById(any())).thenReturn(Optional.of(gruppe));
 
-        bestillingService.fetchBestillingerByGruppeId(1l, 0, 10);
-        verify(testgruppeRepository).findById(1l);
+        bestillingService.fetchBestillingerByGruppeId(1L, 0, 10);
+        verify(testgruppeRepository).findById(1L);
     }
 
     @Test
-    public void saveBestillingByGruppeIdAndAntallIdenterInkludererAlleMiljoerOgIdenterIBestilling() {
-        long gruppeId = 1l;
+    void saveBestillingByGruppeIdAndAntallIdenterInkludererAlleMiljoerOgIdenterIBestilling() {
+        long gruppeId = 1L;
         Testgruppe gruppe = mock(Testgruppe.class);
-        List<String> miljoer = asList("a1", "b2", "c3", "d4");
+        Set<String> miljoer = Set.of("a1", "b2", "c3", "d4");
         int antallIdenter = 4;
 
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
@@ -124,11 +127,18 @@ public class BestillingServiceTest {
 
         assertThat(bes.getGruppe(), is(gruppe));
         assertThat(bes.getAntallIdenter(), is(antallIdenter));
-        assertThat(bes.getMiljoer(), is("a1,b2,c3,d4"));
+        assertThat(
+                Set.of(bes.getMiljoer().split(",")),
+                containsInAnyOrder("a1", "b2", "c3", "d4")
+        );
+    }
+
+    private static Set<String> setOf(String s) {
+        return Set.of(s.split(","));
     }
 
     @Test
-    public void cancelBestilling_OK() {
+    void cancelBestilling_OK() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
         when(brukerService.fetchOrCreateBruker(BRUKERID)).thenReturn(Bruker.builder().build());
@@ -139,7 +149,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void cancelBestilling_NotFound() {
+    void cancelBestilling_NotFound() {
 
         when(bestillingRepository.findById(BEST_ID)).thenThrow(NotFoundException.class);
         Assertions.assertThrows(NotFoundException.class, () ->
@@ -147,7 +157,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void createBestillingForGjenopprett_Ok() {
+    void createBestillingForGjenopprett_Ok() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder()
                 .gruppe(Testgruppe.builder()
@@ -161,7 +171,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void createBestillingForGjenopprett_notFerdig() {
+    void createBestillingForGjenopprett_notFerdig() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(Bestilling.builder().build()));
 
@@ -170,7 +180,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void createBestillingForGjenopprett_noTestidenter() {
+    void createBestillingForGjenopprett_noTestidenter() {
 
         when(bestillingRepository.findById(BEST_ID)).thenReturn(Optional.of(
                 Bestilling.builder().ferdig(true)
@@ -182,7 +192,7 @@ public class BestillingServiceTest {
     }
 
     @Test
-    public void isStoppet_OK() {
+    void isStoppet_OK() {
 
         bestillingService.isStoppet(BEST_ID);
 

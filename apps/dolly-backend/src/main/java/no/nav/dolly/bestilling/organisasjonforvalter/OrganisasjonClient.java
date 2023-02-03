@@ -15,7 +15,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
-import no.nav.dolly.util.EnvironmentsCrossConnect;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -30,6 +29,8 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -55,7 +56,7 @@ public class OrganisasjonClient {
 
         Set<String> orgnumre = new HashSet<>();
 
-        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
+        var miljoer = crossConnect(request.getEnvironments(), Q4_TO_Q1);
 
         bestillingRequest.getOrganisasjoner().forEach(organisasjon -> {
 
@@ -87,7 +88,7 @@ public class OrganisasjonClient {
     @Async
     public void gjenopprett(DeployRequest request, OrganisasjonBestilling bestilling) {
 
-        var miljoer = EnvironmentsCrossConnect.crossConnect(request.getEnvironments());
+        var miljoer = crossConnect(request.getEnvironments(), Q4_TO_Q1);
         organisasjonProgressService.save(OrganisasjonBestillingProgress.builder()
                 .bestilling(bestilling)
                 .organisasjonsnummer(request.getOrgnumre().iterator().next())
@@ -97,12 +98,11 @@ public class OrganisasjonClient {
         deployOrganisasjon(request.getOrgnumre(), bestilling, miljoer);
     }
 
-    public void release(List<String> orgnummer) {
-
+    public void release(List<String> ignored) {
         throw new UnsupportedOperationException("Release ikke implementert");
     }
 
-    private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, List<String> environments) {
+    private void saveErrorToDb(Set<String> orgnumre, Long bestillingId, Set<String> environments) {
 
         log.info("Deployer orgnumre fra Organisasjon Forvalter");
         if (isNull(orgnumre) || orgnumre.isEmpty() || isNull(environments) || environments.isEmpty()) {
@@ -111,7 +111,7 @@ public class OrganisasjonClient {
         }
     }
 
-    private void deployOrganisasjon(Set<String> orgnumre, OrganisasjonBestilling bestilling, List<String> environments) {
+    private void deployOrganisasjon(Set<String> orgnumre, OrganisasjonBestilling bestilling, Set<String> environments) {
         ResponseEntity<DeployResponse> deployResponse = organisasjonConsumer.deployOrganisasjon(new DeployRequest(orgnumre, environments));
 
         if (deployResponse.hasBody()) {

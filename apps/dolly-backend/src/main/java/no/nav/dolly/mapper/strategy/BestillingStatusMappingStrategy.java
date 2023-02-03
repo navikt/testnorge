@@ -132,7 +132,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(OrganisasjonBestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
-
                         bestillingStatus.setAntallLevert(0);
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                     }
