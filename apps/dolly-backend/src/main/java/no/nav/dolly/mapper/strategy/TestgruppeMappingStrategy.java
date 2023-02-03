@@ -43,7 +43,9 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                     public void mapAtoB(Testgruppe testgruppe, RsTestgruppe rsTestgruppe, MappingContext context) {
 
                         var securityContext = (SecurityContext) context.getProperty("securityContext");
-                        SecurityContextHolder.setContext(securityContext);
+                        if (nonNull(securityContext)) {
+                            SecurityContextHolder.setContext(securityContext);
+                        }
 
                         rsTestgruppe.setAntallIdenter((int) testgruppe.getTestidenter().stream()
                                 .filter(testident -> testident.getMaster() != Testident.Master.TPSF)
