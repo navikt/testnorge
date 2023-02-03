@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class BestillingController {
     @Operation(description = "Naviger til ønsket bestilling")
     @Transactional
     @GetMapping("/naviger/{bestillingId}")
-    public RsWhereAmI navigerTilBestilling(@PathVariable Long bestillingId) {
+    public Mono<RsWhereAmI> navigerTilBestilling(@PathVariable Long bestillingId) {
 
         return navigasjonService.navigerTilBestilling(bestillingId);
     }

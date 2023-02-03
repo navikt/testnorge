@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -134,7 +135,7 @@ public class TestpersonController {
     @Operation(description = "Naviger til ønsket testperson")
     @Transactional
     @GetMapping("/naviger/{ident}")
-    public RsWhereAmI navigerTilTestident(@PathVariable String ident) {
+    public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
         return navigasjonService.navigerTilIdent(ident);
     }

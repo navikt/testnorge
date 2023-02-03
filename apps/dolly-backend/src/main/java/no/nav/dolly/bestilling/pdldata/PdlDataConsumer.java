@@ -101,10 +101,9 @@ public class PdlDataConsumer implements ConsumerStatus {
                 .flatMapMany(token -> new PdlDataOppdateringCommand(webClient, ident, request, token.getTokenValue()).call());
     }
 
-    public Mono<List<FullPersonDTO>> getPersoner(List<String> identer) {
+    public Flux<FullPersonDTO> getPersoner(List<String> identer) {
 
-        return getPersoner(identer, 0, 10)
-                .collectList();
+        return getPersoner(identer, 0, 10);
     }
 
     public Flux<FullPersonDTO> getPersoner(List<String> identer, Integer sidenummer, Integer sidestoerrelse) {

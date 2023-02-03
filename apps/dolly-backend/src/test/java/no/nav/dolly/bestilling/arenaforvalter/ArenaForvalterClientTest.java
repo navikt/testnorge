@@ -152,7 +152,7 @@ class ArenaForvalterClientTest {
 
         Assertions.assertThrows(NullPointerException.class, () ->
                 arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), progress, false));
+                        .build(), progress, false));
     }
 
     @Test
@@ -184,7 +184,7 @@ class ArenaForvalterClientTest {
         var request = new RsDollyBestillingRequest();
         request.setEnvironments(singletonList(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), progress, false)
+                        .build(), progress, false)
                 .subscribe();
 
         verifyNoInteractions(arenaForvalterConsumer);

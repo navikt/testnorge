@@ -102,7 +102,7 @@ class AaregClientTest {
         request.setEnvironments(singletonList(ENV));
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().hovedperson(IDENT)
-                                .opprettetIPDL(true).build(), new BestillingProgress(), false)
+                                .build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
@@ -122,7 +122,7 @@ class AaregClientTest {
         request.setEnvironments(singletonList(ENV));
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().hovedperson(IDENT)
-                                .opprettetIPDL(true).build(), new BestillingProgress(), false)
+                               .build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
@@ -154,7 +154,7 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().hovedperson(IDENT)
-                                        .opprettetIPDL(true).build(), progress, false)
+                                        .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
                         .aaregStatus("u2: arbforhold=1$OK")
@@ -189,7 +189,7 @@ class AaregClientTest {
         var progress = new BestillingProgress();
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                                .opprettetIPDL(true).build(), progress, false)
+                                .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
                         .aaregStatus("u2: arbforhold=1$OK")
