@@ -68,7 +68,7 @@ public class OrdreService {
                                 .build())
                         .flatMap(dollyperson -> sendOrdre(dollyperson, progress)
                                 .flatMap(pdlOrdreResponse ->
-                                        personServiceClient.gjenopprett(null, dollyperson, progress, false)
+                                        personServiceClient.syncPerson(dollyperson, progress)
                                                 .map(ClientFuture::get)
                                                 .map(BestillingProgress::isPdlSync)
                                                 .flatMap(isPresent -> isTrue(isPresent) ?

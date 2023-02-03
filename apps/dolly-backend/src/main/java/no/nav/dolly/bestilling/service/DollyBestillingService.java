@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.AaregClient;
@@ -12,9 +11,7 @@ import no.nav.dolly.bestilling.inntektstub.InntektstubClient;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
-import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
@@ -24,9 +21,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
@@ -51,19 +46,14 @@ public class DollyBestillingService {
 
     protected static final String SUCCESS = "OK";
 
-    protected final DollyPersonCache dollyPersonCache;
     protected final IdentService identService;
-    protected final BestillingProgressService bestillingProgressService;
     protected final BestillingService bestillingService;
-    protected final MapperFacade mapperFacade;
     protected final ObjectMapper objectMapper;
     protected final List<ClientRegister> clientRegisters;
     protected final CounterCustomRegistry counterCustomRegistry;
-    protected final PdlPersonConsumer pdlPersonConsumer;
     protected final PdlDataConsumer pdlDataConsumer;
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
-    protected final PersonServiceClient personServiceClient;
 
     public static List<String> getEnvironments(String miljoer) {
 

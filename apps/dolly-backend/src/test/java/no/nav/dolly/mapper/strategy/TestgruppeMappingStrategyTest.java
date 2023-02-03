@@ -48,7 +48,7 @@ class TestgruppeMappingStrategyTest {
                 .build()));
     }
 
-    @Disabled
+    @Disabled("Tatt ut pga bug i Orika-rammeverk der setting av context ikke virker")
     @Test
     void mappingFromTestgruppeToRsTestgruppe() {
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();

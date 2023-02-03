@@ -110,4 +110,13 @@ public class DollyPerson {
     public boolean isPdlfMaster() {
         return getMaster() == Testident.Master.PDLF;
     }
+
+    public static DollyPerson preparePerson(Testident testident, List<Tags> tags) {
+
+        return DollyPerson.builder()
+                .hovedperson(testident.getIdent())
+                .master(testident.getMaster())
+                .tags(tags)
+                .build();
+    }
 }

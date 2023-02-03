@@ -7,16 +7,13 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
@@ -40,20 +37,24 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillingService {
 
-    public OpprettPersonerFraIdenterMedKriterierService(DollyPersonCache dollyPersonCache, IdentService identService,
-                                                        BestillingProgressService bestillingProgressService,
+    private MapperFacade mapperFacade;
+    private PersonServiceClient personServiceClient;
+
+    public OpprettPersonerFraIdenterMedKriterierService(IdentService identService,
                                                         BestillingService bestillingService, MapperFacade mapperFacade,
                                                         ObjectMapper objectMapper,
                                                         List<ClientRegister> clientRegisters,
                                                         CounterCustomRegistry counterCustomRegistry,
                                                         ErrorStatusDecoder errorStatusDecoder,
-                                                        PdlPersonConsumer pdlPersonConsumer,
                                                         PdlDataConsumer pdlDataConsumer,
                                                         TransactionHelperService transactionHelperService,
                                                         PersonServiceClient personServiceClient) {
-        super(dollyPersonCache, identService, bestillingProgressService, bestillingService,
-                mapperFacade, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder, transactionHelperService, personServiceClient);
+
+        super(identService, bestillingService, objectMapper, clientRegisters, counterCustomRegistry,
+                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
+
+        this.mapperFacade = mapperFacade;
+        this.personServiceClient = personServiceClient;
     }
 
     @Async
@@ -80,8 +81,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                     fase1Klienter(),
                                                                     progress, true),
-                                                            personServiceClient.gjenopprett(null,
-                                                                            dollyPerson, progress, true)
+                                                            personServiceClient.syncPerson(dollyPerson, progress)
                                                                     .map(ClientFuture::get)
                                                                     .map(BestillingProgress::isPdlSync)
                                                                     .flatMap(pdlSync -> isTrue(pdlSync) ?
