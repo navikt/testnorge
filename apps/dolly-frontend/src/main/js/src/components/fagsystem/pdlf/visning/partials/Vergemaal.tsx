@@ -62,10 +62,10 @@ const VergemaalLes = ({
 		return null
 	}
 
-	const retatertPersonIdent = vergemaalData.vergeIdent
-	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === retatertPersonIdent)
+	const relatertPersonIdent = vergemaalData.vergeIdent
+	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
 	const relasjonRedigert = redigertRelatertePersoner?.find(
-		(item) => item.relatertPerson?.ident === retatertPersonIdent
+		(item) => item.relatertPerson?.ident === relatertPersonIdent
 	)
 
 	const harFullmektig = vergemaalData.sakType === 'FRE'

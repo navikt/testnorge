@@ -14,20 +14,35 @@ import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 type SivilstandTypes = {
 	data: Array<SivilstandData>
 	relasjoner: Array<Relasjon>
+	tmpPersoner?: Array<SivilstandData>
+	ident?: string
 }
 
 type VisningData = {
-	data: SivilstandData
+	sivilstandData: SivilstandData
 	relasjoner: Array<Relasjon>
+	redigertRelatertePersoner: Array<Relasjon> | null
+	idx: number
+	data?: Array<SivilstandData>
+	tmpPersoner?: Array<SivilstandData>
+	ident: string
 }
 
-const SivilstandLes = ({ sivilstandData, relasjoner, idx }) => {
+const SivilstandLes = ({
+	sivilstandData,
+	redigertRelatertePersoner = null,
+	relasjoner,
+	idx,
+}: VisningData) => {
 	if (!sivilstandData) {
 		return null
 	}
 
 	const relatertPersonIdent = sivilstandData.relatertVedSivilstand
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
+	const relasjonRedigert = redigertRelatertePersoner?.find(
+		(item) => item.relatertPerson?.ident === relatertPersonIdent
+	)
 
 	return (
 		<div className="person-visning_redigerbar" key={idx}>
@@ -48,13 +63,13 @@ const SivilstandLes = ({ sivilstandData, relasjoner, idx }) => {
 						title="Bekreftelsesdato"
 						value={Formatters.formatDate(sivilstandData.bekreftelsesdato)}
 					/>
-					{!relasjoner && (
+					{!relasjoner && !relasjonRedigert && (
 						<TitleValue title="Relatert person" value={sivilstandData.relatertVedSivilstand} />
 					)}
 				</div>
-				{relasjon && (
+				{(relasjonRedigert || relasjon) && (
 					<RelatertPerson
-						data={relasjon.relatertPerson}
+						data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}
 						tittel={sivilstandData.type === 'SAMBOER' ? 'Samboer' : 'Ektefelle/partner'}
 					/>
 				)}
@@ -110,15 +125,18 @@ const SivilstandVisning = ({
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={
-				<SivilstandLes sivilstandData={sivilstandValues} relasjoner={relasjoner} idx={idx} />
+				<SivilstandLes
+					sivilstandData={sivilstandValues}
+					redigertRelatertePersoner={redigertRelatertePersoner}
+					relasjoner={relasjoner}
+					idx={idx}
+				/>
 			}
 			initialValues={initialValues}
 			eksisterendeNyPerson={eksisterendeNyPerson}
 			redigertAttributt={redigertSivilstandValues}
 			path="sivilstand"
 			ident={ident}
-			// disableSlett={}
-			// personFoerLeggTil={}
 		/>
 	)
 }
@@ -131,7 +149,6 @@ export const Sivilstand = ({ data, relasjoner, tmpPersoner, ident }: SivilstandT
 	return (
 		<div>
 			<SubOverskrift label="Sivilstand (partner)" iconKind="partner" />
-
 			<DollyFieldArray data={data} nested>
 				{(sivilstand: SivilstandData, idx: number) => (
 					<SivilstandVisning

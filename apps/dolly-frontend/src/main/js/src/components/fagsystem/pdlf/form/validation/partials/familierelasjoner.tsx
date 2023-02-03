@@ -144,16 +144,14 @@ export const doedfoedtBarn = Yup.array().of(
 	})
 )
 
-export const sivilstand = Yup.array().of(
-	Yup.object({
-		type: requiredString.nullable(),
-		sivilstandsdato: Yup.string().nullable(),
-		relatertVedSivilstand: Yup.string().nullable(),
-		bekreftelsesdato: Yup.string().nullable(),
-		borIkkeSammen: Yup.boolean(),
-		nyRelatertPerson: nyPerson,
-	})
-)
+export const sivilstand = Yup.object({
+	type: requiredString.nullable(),
+	sivilstandsdato: Yup.string().nullable(),
+	relatertVedSivilstand: Yup.string().nullable(),
+	bekreftelsesdato: Yup.string().nullable(),
+	borIkkeSammen: Yup.boolean(),
+	nyRelatertPerson: nyPerson,
+})
 
 const deltBosted = Yup.object({
 	adressetype: testDeltBostedAdressetype(requiredString.nullable()),

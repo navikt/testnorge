@@ -33,6 +33,7 @@ import {
 	kontaktadresse,
 	oppholdsadresse,
 	vergemaal,
+	sivilstand,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -249,6 +250,7 @@ export const VisningRedigerbar = ({
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
+			sivilstand: ifPresent('sivilstand', sivilstand),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -260,6 +262,7 @@ export const VisningRedigerbar = ({
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
+			['sivilstand', 'sivilstand'],
 		]
 	)
 
