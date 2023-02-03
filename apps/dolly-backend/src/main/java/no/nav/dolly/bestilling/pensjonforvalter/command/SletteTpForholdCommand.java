@@ -1,3 +1,5 @@
+
+
 package no.nav.dolly.bestilling.pensjonforvalter.command;
 
 import lombok.RequiredArgsConstructor;

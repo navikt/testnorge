@@ -59,22 +59,27 @@ public class PdlTestdataConsumer {
         return tokenExchange
                 .exchange(properties)
                 .flatMapMany(accessToken -> Flux.concat(
-                        Flux.fromIterable(orders.getSletting())
-                                .parallel()
-                                .flatMap(order -> Flux.fromIterable(order)
-                                        .flatMap(entry -> entry.apply(accessToken))
-                                        .collectList()),
-                        Flux.fromIterable(orders.getOppretting())
-                                .parallel()
-                                .flatMap(order -> Flux.fromIterable(order)
-                                        .flatMap(entry -> entry.apply(accessToken))
-                                        .collectList()),
-                        Flux.fromIterable(orders.getOpplysninger())
-                                .parallel()
-                                .flatMap(order -> Flux.fromIterable(order)
-                                        .flatMap(entry -> entry.apply(accessToken))
-                                        .collectList()))
-                .flatMap(Flux::fromIterable));
+                                Flux.fromIterable(orders.getSletting())
+                                        .parallel()
+                                        .flatMap(order -> Flux.fromIterable(order)
+                                                .flatMap(entry -> entry.apply(accessToken))
+                                                .collectList()),
+                                Flux.fromIterable(orders.getOppretting())
+                                        .parallel()
+                                        .flatMap(order -> Flux.fromIterable(order)
+                                                .flatMap(entry -> entry.apply(accessToken))
+                                                .collectList()),
+                                Flux.fromIterable(orders.getOpplysninger1())
+                                        .parallel()
+                                        .flatMap(order -> Flux.fromIterable(order)
+                                                .flatMap(entry -> entry.apply(accessToken))
+                                                .collectList()),
+                                Flux.fromIterable(orders.getOpplysninger2())
+                                        .parallel()
+                                        .flatMap(order -> Flux.fromIterable(order)
+                                                .flatMap(entry -> entry.apply(accessToken))
+                                                .collectList()))
+                        .flatMap(Flux::fromIterable));
     }
 
     public Flux<List<OrdreResponseDTO.HendelseDTO>> delete(Set<String> identer) {

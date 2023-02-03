@@ -33,6 +33,7 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-forvalter
         - application: testnorge-profil-api
+        - application: testnav-organisasjon-tilgang-service
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service
@@ -48,7 +49,7 @@ spec:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-aaregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-aareg-proxy.dev-fss-pub.nais.io
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io

@@ -44,11 +44,14 @@ import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visni
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
+	harApBestilling,
 	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
+import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
+import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -83,6 +86,9 @@ export const PersonVisning = ({
 }) => {
 	const { gruppeId } = ident
 
+	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+
 	const bestillinger = []
 
 	if (ident.bestillinger) {
@@ -101,8 +107,11 @@ export const PersonVisning = ({
 
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
 		ident.ident,
-		harAaregBestilling(bestillingerFagsystemer)
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
+
+	const visArbeidsforhold =
+		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
 
 	const { loading: loadingTpData, tpData } = useTpData(
 		ident.ident,
@@ -219,6 +228,9 @@ export const PersonVisning = ({
 								if (tmpPersoner?.skjermingsregister?.hasOwnProperty(ident.ident)) {
 									personData.skjermingsregister = tmpPersoner.skjermingsregister[ident.ident]
 								}
+								if (arbeidsforhold) {
+									personData.aareg = arbeidsforhold
+								}
 								leggTilPaaPerson(
 									personData,
 									bestillingListe,
@@ -277,18 +289,33 @@ export const PersonVisning = ({
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
-				<AaregVisning
-					liste={arbeidsforhold}
-					loading={loadingAareg}
-					bestillingIdListe={bestillingIdListe}
-				/>
+				{visArbeidsforhold && (
+					<AaregVisning
+						liste={arbeidsforhold}
+						loading={loadingAareg}
+						bestillingListe={bestillingListe}
+						bestillingIdListe={bestillingIdListe}
+						tilgjengeligMiljoe={tilgjengeligMiljoe}
+					/>
+				)}
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
 					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<TpVisning data={tpData} loading={loadingTpData} bestillingIdListe={bestillingIdListe} />
+				<TpVisning
+					data={tpData}
+					loading={loadingTpData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				{harApBestilling(bestillingerFagsystemer) && (
+					<AlderspensjonVisning
+						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
+					/>
+				)}
 				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
 				<InntektsmeldingVisning
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
@@ -301,12 +328,14 @@ export const PersonVisning = ({
 					data={instData}
 					loading={loadingInstData}
 					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}
 					loading={loading.arenaforvalteren}
 					ident={ident}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
@@ -316,9 +345,18 @@ export const PersonVisning = ({
 					data={dokarkivData}
 					bestillingIdListe={bestillingIdListe}
 					loading={loadingDokarkivData}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<PersonMiljoeinfo bankIdBruker={brukertype === 'BANKID'} ident={ident.ident} />
-				<PdlPersonMiljoeInfo ident={ident.ident} />
+				<PersonMiljoeinfo
+					bankIdBruker={brukertype === 'BANKID'}
+					ident={ident.ident}
+					miljoe={tilgjengeligMiljoe}
+				/>
+				<PdlPersonMiljoeInfo
+					bankIdBruker={brukertype === 'BANKID'}
+					ident={ident.ident}
+					miljoe={tilgjengeligMiljoe}
+				/>
 				<TidligereBestillinger ids={ident.bestillingId} />
 				<BeskrivelseConnector ident={ident} />
 			</div>

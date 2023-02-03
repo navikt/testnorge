@@ -15,12 +15,14 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import Formatters from '@/utils/DataFormatter'
 import React from 'react'
+import { AmeldingBestilling } from '@/components/fagsystem/aareg/visning/partials/AmeldingBestilling'
 
 type AaregVisningProps = {
 	ident?: string
 	liste?: Array<MiljoDataListe>
 	loading?: boolean
 	bestillingIdListe?: Array<string>
+	tilgjengeligMiljoe?: string
 }
 
 type MiljoDataListe = {
@@ -135,7 +137,13 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 	)
 }
 
-export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisningProps) => {
+export const AaregVisning = ({
+	liste,
+	loading,
+	bestillingListe,
+	bestillingIdListe,
+	tilgjengeligMiljoe,
+}: AaregVisningProps) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'aareg')
 
 	if (loading) {
@@ -147,10 +155,20 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 
 	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
-	const miljoerMedData = liste?.map((miljoData) => miljoData.data?.length > 0 && miljoData.miljo)
+	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
 
-	const forsteMiljo = liste.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const forsteMiljo =
+		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
+
+	// Faar ikke hente tilbake a-meldinger, viser derfor bestillingsdata
+	const amelding = bestillingListe
+		.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
+		?.filter((amelding) => amelding)
+	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
+
+	const filteredData =
+		tilgjengeligMiljoe && liste.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	return (
 		<div>
@@ -165,10 +183,11 @@ export const AaregVisning = ({ liste, loading, bestillingIdListe }: AaregVisning
 						bestilteMiljoer={bestilteMiljoer}
 						errorMiljoer={errorMiljoer}
 						forsteMiljo={forsteMiljo}
-						data={liste}
+						data={filteredData || liste}
 					>
 						<Arbeidsforhold />
 					</MiljoTabs>
+					{harAmeldingBestilling && <AmeldingBestilling bestillinger={amelding} />}
 				</ErrorBoundary>
 			)}
 		</div>

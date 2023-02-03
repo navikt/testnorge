@@ -11,15 +11,15 @@ import org.springframework.stereotype.Service;
 public class DokumentService {
     private final SafConsumer safConsumer;
 
-    public Journalpost getJournalpost(Integer journalpostId, String miljo) {
+    public Journalpost getJournalpost(String journalpostId, String miljo) {
         return safConsumer.getJournalpost(journalpostId, miljo);
     }
 
-    public String getDokument(Integer journalpostId, Integer dokumentInfoId, DokumentType dokumentType, String miljo) {
+    public String getDokument(String journalpostId, String dokumentInfoId, DokumentType dokumentType, String miljo) {
         return safConsumer.getDokument(journalpostId, dokumentInfoId, dokumentType, miljo);
     }
 
-    public byte[] getPDF(Integer journalpostId, Integer dokumentInfoId, String miljo) {
+    public byte[] getPDF(String journalpostId, String dokumentInfoId, String miljo) {
         return safConsumer.getPDF(journalpostId, dokumentInfoId, miljo);
     }
 }

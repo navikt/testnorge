@@ -1,6 +1,7 @@
 package no.nav.dolly.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,7 @@ public class PdlPersonBolk {
     }
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PersonBolk {

@@ -472,7 +472,7 @@ const getDefaultInfo = (ident, bestillingStatuser, kilde) => {
 	}
 }
 
-export const getAlder = (datoFoedt, doedsdato) => {
+export const getAlder = (datoFoedt, doedsdato = null) => {
 	const foedselsdato = new Date(datoFoedt)
 	let diff_ms = Date.now() - foedselsdato.getTime()
 

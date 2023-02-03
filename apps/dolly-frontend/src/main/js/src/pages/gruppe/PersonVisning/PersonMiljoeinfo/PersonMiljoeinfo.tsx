@@ -8,13 +8,14 @@ import { KontoregisterData } from '@/service/services/kontoregister/Kontoregiste
 type PersonMiljoeinfoProps = {
 	bankIdBruker: boolean
 	ident: string
+	miljoe: string
 }
 
-export const PersonMiljoeinfo = ({ bankIdBruker, ident }: PersonMiljoeinfoProps) => {
+export const PersonMiljoeinfo = ({ bankIdBruker, ident, miljoe }: PersonMiljoeinfoProps) => {
 	const state = useAsync(async () => {
 		if (ident) {
 			return bankIdBruker
-				? TpsMessagingApi.getTpsPersonInfo(ident, ['q1'])
+				? TpsMessagingApi.getTpsPersonInfo(ident, miljoe ? [miljoe] : ['q1'])
 				: TpsMessagingApi.getTpsPersonInfoAllEnvs(ident)
 		}
 	}, [])

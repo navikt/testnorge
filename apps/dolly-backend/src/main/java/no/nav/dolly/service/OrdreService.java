@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -60,6 +61,9 @@ public class OrdreService {
         var progress = BestillingProgress.builder()
                 .ident(ident)
                 .master(testident.getMaster())
+                .bestilling(Bestilling.builder()
+                        .id(1L)
+                        .build())
                 .build();
 
         var dollyPerson = DollyPerson.builder()

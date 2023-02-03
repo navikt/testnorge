@@ -2,6 +2,7 @@ package no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.comman
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.DeleteStatus;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -10,7 +11,7 @@ import java.util.concurrent.Callable;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DeleteOrganisasjonAccessCommand implements Callable<Mono<Void>> {
+public class DeleteOrganisasjonAccessCommand implements Callable<Mono<DeleteStatus>> {
     private final WebClient webClient;
     private final String token;
     private final String apiKey;
@@ -18,7 +19,8 @@ public class DeleteOrganisasjonAccessCommand implements Callable<Mono<Void>> {
 
 
     @Override
-    public Mono<Void> call() {
+    public Mono<DeleteStatus> call() {
+
         return webClient
                 .delete()
                 .uri(builder -> builder.path("/api/serviceowner/Srr/{id}")
@@ -28,8 +30,10 @@ public class DeleteOrganisasjonAccessCommand implements Callable<Mono<Void>> {
                 .header("ApiKey", apiKey)
                 .header(HttpHeaders.CONTENT_TYPE, "application/hal+json")
                 .retrieve()
-                .bodyToMono(Void.class)
+                .toBodilessEntity()
+                .map(resultat -> DeleteStatus.builder()
+                        .status(resultat.getStatusCode())
+                        .build())
                 .doOnSuccess(value -> log.info("Organiasjon tilgang {} slettet.", id));
     }
-
 }

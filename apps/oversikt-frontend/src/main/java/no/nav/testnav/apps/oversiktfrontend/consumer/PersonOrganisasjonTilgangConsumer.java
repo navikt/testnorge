@@ -6,7 +6,7 @@ import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetPersonOrganisasj
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetPersonOrganisasjonerTilgangCommand;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.OrganisasjonDTO;
 import no.nav.testnav.apps.oversiktfrontend.credentials.PersonOrganisasjonTilgangServiceProperties;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
@@ -15,7 +15,6 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -49,13 +48,13 @@ public class PersonOrganisasjonTilgangConsumer {
                 .build();
     }
 
-    public Flux<OrganisasjonDTO> getOrganisasjoner(ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
+    public Flux<OrganisasjonDTO> getOrganisasjoner() {
+        return tokenExchange.exchange(serviceProperties)
                 .flatMapMany(accessToken -> new GetPersonOrganisasjonerTilgangCommand(webClient, accessToken.getTokenValue()).call());
     }
 
-    public Mono<Boolean> hasAccess(String organisasjonsnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
+    public Mono<Boolean> hasAccess(String organisasjonsnummer) {
+        return tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new GetPersonOrganisasjonTilgangCommand(webClient, accessToken.getTokenValue(), organisasjonsnummer).call())
                 .onErrorResume(
                         throwable -> throwable instanceof WebClientResponseException,

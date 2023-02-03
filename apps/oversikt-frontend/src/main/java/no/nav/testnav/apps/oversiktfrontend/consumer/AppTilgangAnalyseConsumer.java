@@ -4,12 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetApplicationAccessCommand;
 import no.nav.testnav.apps.oversiktfrontend.credentials.AppTilgangAnalyseServiceProperties;
 import no.nav.testnav.apps.oversiktfrontend.domain.Application;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Function;
@@ -35,18 +34,17 @@ public class AppTilgangAnalyseConsumer {
                 .build();
     }
 
-    public Flux<Application> getApplications(ServerWebExchange serverWebExchange) {
+    public Flux<Application> getApplications() {
         return Flux.concat(
-                getApplications(serverWebExchange, getCommand("testnorge"))
+                getApplications(getCommand("testnorge"))
         );
     }
 
     private Flux<Application> getApplications(
-            ServerWebExchange serverWebExchange,
             Function<AccessToken, GetApplicationAccessCommand> getCommand
     ) {
         return tokenExchange
-                .exchange(appTilgangAnalyseServiceProperties, serverWebExchange)
+                .exchange(appTilgangAnalyseServiceProperties)
                 .flatMap(accessToken -> getCommand.apply(accessToken).call())
                 .map(access -> access
                         .getAccessTo()

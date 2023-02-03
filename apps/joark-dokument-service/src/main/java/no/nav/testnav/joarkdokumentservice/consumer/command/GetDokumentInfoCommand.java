@@ -1,6 +1,7 @@
 package no.nav.testnav.joarkdokumentservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.joarkdokumentservice.consumer.dto.Response;
 import no.nav.testnav.joarkdokumentservice.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -14,11 +15,12 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
+@Slf4j
 public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
 
     private final WebClient webClient;
     private final String token;
-    private final Integer journalpostId;
+    private final String journalpostId;
     private final String miljo;
 
 
@@ -39,6 +41,9 @@ public class GetDokumentInfoCommand implements Callable<Mono<Response>> {
                 ))
                 .retrieve()
                 .bodyToMono(Response.class)
+                .doOnError(throwable -> {
+                    log.error("Feilet under henting av Journalpost", throwable);
+                })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

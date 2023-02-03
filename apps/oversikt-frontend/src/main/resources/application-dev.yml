@@ -3,12 +3,3 @@ azure.app.client.secret: ${client_secret}
 
 server:
   port : 8080
-
-spring:
-  security:
-    oauth2:
-      client:
-        registration:
-          idporten:
-            redirect-uri: 'http://localhost:3000/login/oauth2/code/idporten'
-            post-logout-redirect-uri: 'http://localhost:3000/login'

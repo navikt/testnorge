@@ -12,7 +12,6 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -36,23 +35,24 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                 .map(BestillingProgress::getBestilling)
                                                 .map(Bestilling::getId)
                                                 .sorted(Comparator.reverseOrder())
-                                                .collect(Collectors.toList()))
+                                                .toList())
                                         .master(testident.getMaster())
                                         .bestillinger(testident.getBestillingProgress().stream()
                                                 .filter(bestillingProgress ->
                                                         bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(BestillingProgress::getBestilling)
-                                                .map(bestilling ->  {
-                                                    var status = factory.getMapperFacade().map(bestilling, RsBestillingStatus.class);
+                                                .map(bestilling -> {
+                                                    context.setProperty("ident", testident.getIdent());
+                                                    var status = mapperFacade.map(bestilling, RsBestillingStatus.class, context);
                                                     return RsBestillingStatus.builder()
                                                             .id(bestilling.getId())
                                                             .status(status.getStatus())
                                                             .bestilling(status.getBestilling())
                                                             .build();
                                                 })
-                                                .collect(Collectors.toList()))
+                                                .toList())
                                         .build())
-                                .collect(Collectors.toList()));
+                                .toList());
                         testgruppeMedBestillingId.setErLaast(isTrue(testgruppe.getErLaast()));
                     }
                 })

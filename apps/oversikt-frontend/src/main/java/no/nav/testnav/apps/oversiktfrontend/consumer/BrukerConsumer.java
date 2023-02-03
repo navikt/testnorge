@@ -4,12 +4,11 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetBrukerCommand;
 import no.nav.testnav.apps.oversiktfrontend.consumer.command.GetTokenCommand;
 import no.nav.testnav.apps.oversiktfrontend.consumer.dto.BrukerDTO;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
+import no.nav.testnav.apps.oversiktfrontend.credentials.TestnavBrukerServiceProperties;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -32,13 +31,13 @@ public class BrukerConsumer {
                 .build();
     }
 
-    public Mono<BrukerDTO> getBruker(String orgnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
+    public Mono<BrukerDTO> getBruker(String orgnummer) {
+        return tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new GetBrukerCommand(webClient, accessToken.getTokenValue(), orgnummer).call());
     }
 
-    public Mono<String> getToken(String id, ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
+    public Mono<String> getToken(String id) {
+        return tokenExchange.exchange(serviceProperties)
                 .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call());
     }
 
