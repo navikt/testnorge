@@ -11,9 +11,13 @@ import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { Option } from '@/service/SelectOptionsOppslag'
 
-interface SivilstandForm {
+interface SivilstandFormTypes {
 	formikBag: FormikProps<{}>
+	path?: string
+	eksisterendeNyPerson?: Option | null
 }
 
 const gyldigeSivilstander = [
@@ -24,7 +28,11 @@ const gyldigeSivilstander = [
 	'SAMBOER',
 ]
 
-export const SivilstandForm = ({ path, formikBag, eksisterendeNyPerson = null }) => {
+export const SivilstandForm = ({
+	path,
+	formikBag,
+	eksisterendeNyPerson = null,
+}: SivilstandFormTypes) => {
 	const handleTypeChange = (selected: any, path: string) => {
 		formikBag.setFieldValue(`${path}.type`, selected.value)
 		if (!gyldigeSivilstander.includes(selected.value)) {
@@ -53,21 +61,23 @@ export const SivilstandForm = ({ path, formikBag, eksisterendeNyPerson = null })
 					</Hjelpetekst>
 				</div>
 			)}
-			<FormikDatepicker
-				name={`${path}.sivilstandsdato`}
-				label="Gyldig fra og med"
-				disabled={_.get(formikBag.values, `${path}.bekreftelsesdato`) != null}
-				fastfield={false}
-			/>
-			<FormikDatepicker
-				name={`${path}.bekreftelsesdato`}
-				label="Bekreftelsesdato"
-				disabled={
-					_.get(formikBag.values, `${path}.sivilstandsdato`) != null ||
-					_.get(formikBag.values, `${path}.master`) !== 'PDL'
-				}
-				fastfield={false}
-			/>
+			<DatepickerWrapper>
+				<FormikDatepicker
+					name={`${path}.sivilstandsdato`}
+					label="Gyldig fra og med"
+					disabled={_.get(formikBag.values, `${path}.bekreftelsesdato`) != null}
+					fastfield={false}
+				/>
+				<FormikDatepicker
+					name={`${path}.bekreftelsesdato`}
+					label="Bekreftelsesdato"
+					disabled={
+						_.get(formikBag.values, `${path}.sivilstandsdato`) != null ||
+						_.get(formikBag.values, `${path}.master`) !== 'PDL'
+					}
+					fastfield={false}
+				/>
+			</DatepickerWrapper>
 			<FormikCheckbox
 				name={`${path}.borIkkeSammen`}
 				label="Bor ikke sammen"
@@ -95,7 +105,7 @@ export const SivilstandForm = ({ path, formikBag, eksisterendeNyPerson = null })
 	)
 }
 
-export const Sivilstand = ({ formikBag }: SivilstandForm) => {
+export const Sivilstand = ({ formikBag }: SivilstandFormTypes) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.sivilstand"

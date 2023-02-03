@@ -6,7 +6,7 @@ import Formatters from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import { initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
+import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
@@ -63,7 +63,7 @@ const SivilstandLes = ({ sivilstandData, relasjoner, idx }) => {
 	)
 }
 
-export const SivilstandVisning = ({
+const SivilstandVisning = ({
 	sivilstandData,
 	idx,
 	data,
@@ -72,7 +72,8 @@ export const SivilstandVisning = ({
 	ident,
 }: VisningData) => {
 	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
-	const initialValues = { sivilstand: initSivilstand }
+	let initialValues = { sivilstand: initSivilstand }
+	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
 
 	const redigertSivilstandPdlf = _.get(tmpPersoner, `${ident}.person.sivilstand`)?.find(
 		(a) => a.id === sivilstandData.id
@@ -85,11 +86,14 @@ export const SivilstandVisning = ({
 	}
 
 	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData
-	const redigertSivilstandValues = redigertSivilstandPdlf
+	let redigertSivilstandValues = redigertSivilstandPdlf
 		? {
 				sivilstand: Object.assign(_.cloneDeep(initialSivilstand), redigertSivilstandPdlf),
 		  }
 		: null
+	if (redigertSivilstandValues) {
+		redigertSivilstandValues.sivilstand.nyRelatertPerson = initialPdlPerson
+	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(
