@@ -142,10 +142,6 @@ export default {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
 
-	getPersonFraPdl(ident, pdlMiljoe) {
-		return Request.get(Endpoints.personoppslag(ident, pdlMiljoe))
-	},
-
 	getAktoerFraPdl(aktoerId, pdlMiljoe) {
 		if (aktoerId.length !== 13) {
 			return null
