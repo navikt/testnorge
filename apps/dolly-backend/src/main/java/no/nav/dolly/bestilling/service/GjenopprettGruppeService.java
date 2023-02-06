@@ -21,6 +21,7 @@ import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -64,11 +65,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     PdlPersonConsumer pdlPersonConsumer,
                                     PdlDataConsumer pdlDataConsumer,
                                     TransactionHelperService transactionHelperService,
-                                    AutentisertBrukerService bruker) {
-
+                                    AutentisertBrukerService bruker,
+                                    GetUserInfo userInfo) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, bruker);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, bruker, userInfo);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
