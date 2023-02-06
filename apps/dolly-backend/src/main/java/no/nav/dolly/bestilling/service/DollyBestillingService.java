@@ -221,6 +221,7 @@ public class DollyBestillingService {
                     });
 
         } else {
+            progress.setPdlImportStatus("OK");
             transactionHelperService.persister(progress);
             return Flux.just(ident);
         }

@@ -93,7 +93,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling));
+                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling.getProgresser()));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
