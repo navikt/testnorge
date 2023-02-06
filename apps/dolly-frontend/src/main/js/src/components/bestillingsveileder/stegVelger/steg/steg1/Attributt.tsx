@@ -1,7 +1,14 @@
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { CheckboxGroup } from '@navikt/ds-react'
 
-export const Attributt = ({ attr, vis = true, disabled = false, title = null, ...props }) => {
+export const Attributt = ({
+	attr,
+	vis = true,
+	disabled = false,
+	title = null,
+	id = null,
+	...props
+}) => {
 	if (!vis) {
 		return null
 	}
@@ -14,6 +21,7 @@ export const Attributt = ({ attr, vis = true, disabled = false, title = null, ..
 				onChange={attr.checked ? attr.remove : attr.add}
 				value={attr.label}
 				isDisabled={disabled}
+				id={id}
 				{...props}
 			/>
 		</div>

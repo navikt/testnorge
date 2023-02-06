@@ -40,6 +40,7 @@ export const DollyCheckbox = ({
 	wrapperSize = 'grow',
 	checkboxMargin = false,
 	label = '',
+	id = null,
 	...props
 }) => (
 	<InputWrapper size={wrapperSize} checkboxMargin={checkboxMargin}>
@@ -48,7 +49,7 @@ export const DollyCheckbox = ({
 				{label}
 			</StyledSwitch>
 		) : (
-			<Checkbox id={label} disabled={isDisabled} {...props}>
+			<Checkbox id={id || label} disabled={isDisabled} {...props}>
 				{label}
 			</Checkbox>
 		)}
