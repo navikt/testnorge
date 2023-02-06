@@ -139,7 +139,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     DollyPerson dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
                     identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
                             PDL, bestilling.getBeskrivelse());
-                    gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson, bestKriterier, progress, true);
+                    gjenopprettNonTpsf(bestilling.getBruker(), dollyPerson, bestKriterier, progress, true);
                     progress.setPdlImportStatus(SUCCESS);
 
                 } catch (JsonProcessingException e) {
