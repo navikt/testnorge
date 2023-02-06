@@ -74,12 +74,14 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                             .flatMap(progress -> opprettPerson(originator)
                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                     .filter(Objects::nonNull)
-                                    .flatMap(ident -> leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse())
+                                    .flatMap(ident -> opprettDollyPerson(ident, progress)
+                                            .doOnNext(dollyPerson -> leggIdentTilGruppe(ident, progress,
+                                                    bestKriterier.getBeskrivelse()))
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
-//                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-//                                                            fase1Klienter(),
-//                                                            progress, true),
+                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                            fase1Klienter(),
+                                                            progress, true),
                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                             .map(ClientFuture::get)
                                                             .map(BestillingProgress::isPdlSync)

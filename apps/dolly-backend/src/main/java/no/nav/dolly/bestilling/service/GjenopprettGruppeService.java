@@ -71,7 +71,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
-                                    .flatMap(ident -> createDollyperson(progress, ident)
+                                    .flatMap(ident -> opprettDollyPerson(ident, progress)
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,

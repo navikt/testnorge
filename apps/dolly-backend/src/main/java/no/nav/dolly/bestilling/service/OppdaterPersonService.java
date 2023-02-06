@@ -71,7 +71,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                                 oppdaterPdlPerson(originator, testident.getIdent())
                                         .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                 Flux.just(testident.getIdent()))
-                                .flatMap(ident -> Flux.just(DollyPerson.preparePerson(testident, bestilling.getGruppe().getTags()))
+                                .flatMap(ident -> opprettDollyPerson(testident.getIdent(), progress)
                                         .flatMap(dollyPerson -> (!dollyPerson.getHovedperson().equals(bestilling.getIdent()) ?
                                                 updateIdent(dollyPerson, progress) : Flux.just(ident))
                                                 .doOnNext(nyident -> counterCustomRegistry.invoke(request))

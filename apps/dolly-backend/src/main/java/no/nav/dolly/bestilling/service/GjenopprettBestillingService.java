@@ -71,7 +71,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                     .filter(gmlProgress -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(gmlProgress -> opprettProgress(bestilling, gmlProgress.getMaster(), gmlProgress.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, gmlProgress.getIdent())
-                                    .flatMap(ident -> createDollyperson(progress, ident)
+                                    .flatMap(ident -> opprettDollyPerson(ident, progress)
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,

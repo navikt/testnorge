@@ -139,10 +139,13 @@ public class DollyBestillingService {
                 .map(ClientFuture::get));
     }
 
-    protected Flux<DollyPerson> leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
+    protected void leggIdentTilGruppe(String ident, BestillingProgress progress, String beskrivelse) {
 
         identService.saveIdentTilGruppe(ident, progress.getBestilling().getGruppe(), progress.getMaster(), beskrivelse);
         log.info("Ident {} lagt til gruppe {}", ident, progress.getBestilling().getGruppe().getId());
+    }
+
+    protected Flux<DollyPerson> opprettDollyPerson(String ident, BestillingProgress progress) {
 
         return Flux.just(DollyPerson.builder()
                 .hovedperson(ident)
@@ -221,15 +224,6 @@ public class DollyBestillingService {
             transactionHelperService.persister(progress);
             return Flux.just(ident);
         }
-    }
-
-    protected Flux<DollyPerson> createDollyperson(BestillingProgress progress, String ident) {
-
-        return Flux.just(DollyPerson.builder()
-                .hovedperson(ident)
-                .master(progress.getMaster())
-                .tags(progress.getBestilling().getGruppe().getTags())
-                .build());
     }
 
     protected Flux<RsDollyBestillingRequest> createBestilling(Bestilling bestilling, IdentRepository.GruppeBestillingIdent coBestilling) {
