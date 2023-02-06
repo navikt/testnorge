@@ -22,8 +22,10 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.*;
+import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -67,6 +69,7 @@ public class DollyBestillingService {
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final AutentisertBrukerService bruker;
+    private final GetUserInfo userInfo;
 
     protected static Boolean isSyntetisk(String ident) {
 
@@ -116,7 +119,12 @@ public class DollyBestillingService {
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
             // TODO: Fjern testkode
-            log.info("Bestilling: {}/{} = {}", bestilling.getBruker().getBrukernavn(), bestilling.getBruker().getNavIdent(), bestilling.getBruker().getBrukertype());
+            var bruker = bestilling.getBruker();
+            log.info("TEST B");
+            log.info("C: {}/{} = {}", bruker.getBrukernavn(), bruker.getNavIdent(), bruker.getBrukertype());
+            var v = CurrentAuthentication.getAuthUser(userInfo);
+            log.info("D: {}/{} = {}", v.getBrukernavn(), v.getNavIdent(), v.getBrukertype());
+            log.info("TEST E");
             //
 
             var testident = identService.getTestIdent(bestilling.getIdent());
