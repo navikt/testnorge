@@ -33,7 +33,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class KrrstubClientTest {
+class KrrstubClientTest {
 
     private static final String IDENT = "111111111";
     private static final Long BESTILLING_ID = 1L;
@@ -54,14 +54,14 @@ public class KrrstubClientTest {
     private KrrstubClient krrstubClient;
 
     @Test
-    public void gjenopprett_ingendata() {
-        krrstubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
+    void gjenopprett_ingendata() {
+        krrstubClient.gjenopprett(null, new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
 
         verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
 
     @Test
-    public void gjenopprett_krrdata_ok() {
+    void gjenopprett_krrdata_ok() {
 
         when(mapperFacade.map(any(RsDigitalKontaktdata.class), eq(DigitalKontaktdata.class)))
                 .thenReturn(new DigitalKontaktdata());
@@ -71,18 +71,29 @@ public class KrrstubClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
-        krrstubClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).build(),
-                BestillingProgress.builder()
-                        .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
-                        .build(), false);
+        krrstubClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .build(),
+                BestillingProgress
+                        .builder()
+                        .bestilling(
+                                Bestilling
+                                        .builder()
+                                        .id(BESTILLING_ID)
+                                        .build())
+                        .build(),
+                false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler).extractResponse(any());
     }
 
     @Test
-    public void gjenopprett_krrdata_feil() {
+    void gjenopprett_krrdata_feil() {
 
         BestillingProgress progress = BestillingProgress.builder()
                 .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
@@ -95,7 +106,15 @@ public class KrrstubClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
-        krrstubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        krrstubClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .build(),
+                progress,
+                false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any());
@@ -117,7 +136,15 @@ public class KrrstubClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
-        krrstubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        krrstubClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .build(),
+                progress,
+                false);
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));
         verify(krrStubResponseHandler, times(0)).extractResponse(any());

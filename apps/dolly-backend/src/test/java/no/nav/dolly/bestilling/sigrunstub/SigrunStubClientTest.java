@@ -31,7 +31,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SigrunStubClientTest {
+class SigrunStubClientTest {
 
     private static final String IDENT = "11111111";
 
@@ -51,16 +51,23 @@ public class SigrunStubClientTest {
     private SigrunStubClient sigrunStubClient;
 
     @Test
-    public void gjenopprett_ingendata() {
+    void gjenopprett_ingendata() {
         BestillingProgress progress = new BestillingProgress();
-        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(),
-                new BestillingProgress(), false);
+        sigrunStubClient.gjenopprett(
+                null,
+                new RsDollyBestillingRequest(),
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .build(),
+                new BestillingProgress(),
+                false);
 
         assertThat(progress.getSigrunstubStatus(), is(nullValue()));
     }
 
     @Test
-    public void gjenopprett_sigrunstub_feiler() {
+    void gjenopprett_sigrunstub_feiler() {
 
         BestillingProgress progress = new BestillingProgress();
         when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
@@ -70,13 +77,21 @@ public class SigrunStubClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        sigrunStubClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .build(),
+                progress,
+                false);
 
         assertThat(progress.getSigrunstubStatus(), containsString("Feil:"));
     }
 
     @Test
-    public void gjenopprett_sigrunstub_ok() {
+    void gjenopprett_sigrunstub_ok() {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
@@ -89,7 +104,15 @@ public class SigrunStubClientTest {
 
         when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
 
-        sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        sigrunStubClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .build(),
+                progress,
+                false);
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
         verify(sigrunStubResponseHandler).extractResponse(any());

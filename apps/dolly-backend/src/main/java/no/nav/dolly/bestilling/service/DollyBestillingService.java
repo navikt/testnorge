@@ -12,6 +12,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -20,10 +21,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.service.BestillingProgressService;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.*;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.slf4j.MDC;
@@ -68,10 +66,15 @@ public class DollyBestillingService {
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final AutentisertBrukerService bruker;
 
     protected static Boolean isSyntetisk(String ident) {
 
         return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
+    }
+
+    Bruker getAutentisertBruker() {
+        return bruker.get();
     }
 
     public static Set<String> getEnvironments(String miljoer) {
@@ -104,7 +107,9 @@ public class DollyBestillingService {
     }
 
     @Async
-    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
+    public void oppdaterPersonAsync(
+            RsDollyUpdateRequest request,
+            Bestilling bestilling) {
 
         try {
             log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
@@ -158,7 +163,7 @@ public class DollyBestillingService {
             counterCustomRegistry.invoke(request);
             DollyPerson finalDollyPerson = dollyPerson;
             clientRegisters.forEach(clientRegister ->
-                    clientRegister.gjenopprett(request, finalDollyPerson, progress, true));
+                    clientRegister.gjenopprett(getAutentisertBruker(), request, finalDollyPerson, progress, true));
 
             oppdaterProgress(bestilling, progress);
 
@@ -200,13 +205,13 @@ public class DollyBestillingService {
         }
     }
 
-    protected void gjenopprettNonTpsf(DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+    protected void gjenopprettNonTpsf(Bruker bruker, DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
                                       BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
         Flux.fromIterable(clientRegisters)
                 .flatMap(clientRegister ->
-                        clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
+                        clientRegister.gjenopprett(bruker, bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .collectList()
                 .block();
     }

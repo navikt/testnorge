@@ -15,17 +15,19 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
@@ -56,10 +58,8 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
 
-    private final GetUserInfo getUserInfo;
-
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(Bruker bruker, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
@@ -70,11 +70,23 @@ public class AaregClient implements ClientRegister {
                 return Flux.just();
             }
 
+            // TODO: Clean up test code.
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
-            if (CurrentAuthentication.getAuthUser(getUserInfo).getBrukertype() == Bruker.Brukertype.BANKID) {
+            try {
+                var context = ReactiveSecurityContextHolder.getContext().block();
+                var token = Optional.ofNullable(context.getAuthentication())
+                        .filter(JwtAuthenticationToken.class::isInstance)
+                        .map(JwtAuthenticationToken.class::cast)
+                        .orElseThrow(() -> new RuntimeException("Finner ikke Jwt Authentication Token"));
+                log.info("A: Bruker {} = {}", token.getName(), token.getTokenAttributes());
+            } catch (NullPointerException e) {
+                log.warn("No JWT: {}", e.getMessage(), e);
+            }
+            log.info("B: Bruker {} = {}", bruker.getBrukernavn(), bruker.getBrukertype());
+            //
+            if (bruker.getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
-
             progress.setAaregStatus((bestilling.getAareg().stream()
                     .map(RsAareg::getAmelding)
                     .anyMatch(amelding -> !amelding.isEmpty()) ?
@@ -84,6 +96,13 @@ public class AaregClient implements ClientRegister {
             ).block());
         }
         return Flux.just();
+    }
+
+    Mono<Void> getItems() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(SecurityContext::getAuthentication)
+                .doOnNext(auth -> log.info(String.valueOf(auth)))
+                .then();
     }
 
     @Override

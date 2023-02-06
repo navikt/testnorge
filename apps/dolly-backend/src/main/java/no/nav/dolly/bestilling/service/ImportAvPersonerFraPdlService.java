@@ -15,10 +15,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.service.BestillingProgressService;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
@@ -52,16 +49,25 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
     private final IdentService identService;
     private final TransactionHelperService transactionHelperService;
 
-    public ImportAvPersonerFraPdlService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
-                                         IdentService identService, BestillingProgressService bestillingProgressService,
-                                         BestillingService bestillingService, MapperFacade mapperFacade,
-                                         CacheManager cacheManager, ObjectMapper objectMapper,
-                                         List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                         ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                         PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
+    public ImportAvPersonerFraPdlService(TpsfService tpsfService,
+                                         DollyPersonCache dollyPersonCache,
+                                         IdentService identService,
+                                         BestillingProgressService bestillingProgressService,
+                                         BestillingService bestillingService,
+                                         MapperFacade mapperFacade,
+                                         CacheManager cacheManager,
+                                         ObjectMapper objectMapper,
+                                         List<ClientRegister> clientRegisters,
+                                         CounterCustomRegistry counterCustomRegistry,
+                                         ErrorStatusDecoder errorStatusDecoder,
+                                         ExecutorService dollyForkJoinPool,
+                                         PdlPersonConsumer pdlPersonConsumer,
+                                         PdlDataConsumer pdlDataConsumer,
+                                         TransactionHelperService transactionHelperService,
+                                         AutentisertBrukerService bruker) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder);
+                pdlDataConsumer, errorStatusDecoder, bruker);
 
         this.dollyPersonCache = dollyPersonCache;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -131,7 +137,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                     DollyPerson dollyPerson = dollyPersonCache.preparePdlPersoner(pdlPerson);
                     identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
                             PDL, bestilling.getBeskrivelse());
-                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+                    gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson, bestKriterier, progress, true);
                     progress.setPdlImportStatus(SUCCESS);
 
                 } catch (JsonProcessingException e) {

@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.instdata.domain.DeleteResponseDTO;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.inst.Instdata;
@@ -22,7 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -41,7 +41,7 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
@@ -114,9 +114,13 @@ public class InstdataClient implements ClientRegister {
 
         if (eksisterendeInstdata.hasBody() && !eksisterendeInstdata.getBody().isEmpty()) {
 
-            return instdataRequest.stream().filter(request -> eksisterendeInstdata.getBody().stream()
+            return instdataRequest
+                    .stream()
+                    .filter(request -> eksisterendeInstdata
+                            .getBody()
+                            .stream()
                             .noneMatch(eksisterende -> eksisterende.equals(request)))
-                    .collect(Collectors.toList());
+                    .toList();
         } else {
 
             return instdataRequest;

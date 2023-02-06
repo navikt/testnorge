@@ -75,8 +75,16 @@ class ArenaForvalterClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        arenaForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                progress,
+                false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
@@ -106,8 +114,16 @@ class ArenaForvalterClientTest {
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        arenaForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                progress,
+                false);
 
         assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feil: DUPLIKAT. Se detaljer i logg. ")));
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
@@ -124,8 +140,16 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton(ENV));
 
         Assertions.assertThrows(NullPointerException.class, () ->
-                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), progress, false));
+                arenaForvalterClient.gjenopprett(
+                        null,
+                        request,
+                        DollyPerson
+                                .builder()
+                                .hovedperson(IDENT)
+                                .opprettetIPDL(true)
+                                .build(),
+                        progress,
+                        false));
     }
 
     @Test
@@ -139,8 +163,16 @@ class ArenaForvalterClientTest {
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
 
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        arenaForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                progress,
+                false);
 
         assertThat(progress.getArenaforvalterStatus(), is(emptyString()));
     }
@@ -152,8 +184,16 @@ class ArenaForvalterClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        arenaForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                progress,
+                false);
 
         verifyNoInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));

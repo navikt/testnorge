@@ -18,10 +18,7 @@ import no.nav.dolly.domain.resultset.tpsf.RsOppdaterPersonResponse;
 import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.service.BestillingProgressService;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
@@ -56,17 +53,24 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private final TransactionHelperService transactionHelperService;
 
     public LeggTilPaaGruppeService(TpsfService tpsfService,
-                                   DollyPersonCache dollyPersonCache, IdentService identService,
+                                   DollyPersonCache dollyPersonCache,
+                                   IdentService identService,
                                    BestillingProgressService bestillingProgressService,
-                                   BestillingService bestillingService, MapperFacade mapperFacade,
-                                   CacheManager cacheManager, ObjectMapper objectMapper,
-                                   List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                   ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                   PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                   TransactionHelperService transactionHelperService) {
+                                   BestillingService bestillingService,
+                                   MapperFacade mapperFacade,
+                                   CacheManager cacheManager,
+                                   ObjectMapper objectMapper,
+                                   List<ClientRegister> clientRegisters,
+                                   CounterCustomRegistry counterCustomRegistry,
+                                   ErrorStatusDecoder errorStatusDecoder,
+                                   ExecutorService dollyForkJoinPool,
+                                   PdlPersonConsumer pdlPersonConsumer,
+                                   PdlDataConsumer pdlDataConsumer,
+                                   TransactionHelperService transactionHelperService,
+                                   AutentisertBrukerService bruker) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, bruker);
 
         this.mapperFacade = mapperFacade;
         this.bestillingService = bestillingService;
@@ -137,7 +141,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                 BestillingProgress progress = new BestillingProgress(bestilling, testident.getIdent(), testident.getMaster());
                 try {
                     DollyPerson dollyPerson = prepareDollyPerson(bestilling, tpsfBestilling, testident, progress);
-                    gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, false);
+                    gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson, bestKriterier, progress, false);
 
                 } catch (JsonProcessingException e) {
                     progress.setFeil(errorStatusDecoder.decodeException(e));

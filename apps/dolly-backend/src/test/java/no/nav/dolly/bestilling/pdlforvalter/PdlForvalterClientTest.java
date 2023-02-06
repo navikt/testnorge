@@ -112,9 +112,16 @@ class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
-                progress, false);
+        pdlForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .persondetaljer(List.of(Person.builder().ident(IDENT).build()))
+                        .build(),
+                progress,
+                false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -138,9 +145,16 @@ class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
-                progress, false);
+        pdlForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .persondetaljer(List.of(Person.builder().ident(IDENT).build()))
+                        .build(),
+                progress,
+                false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -163,9 +177,16 @@ class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
-                progress, false);
+        pdlForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .persondetaljer(List.of(Person.builder().ident(IDENT).build()))
+                        .build(),
+                progress,
+                false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -189,9 +210,16 @@ class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
-                progress, false);
+        pdlForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .persondetaljer(List.of(Person.builder().ident(IDENT).build()))
+                        .build(),
+                progress,
+                false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -214,9 +242,16 @@ class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
-                progress, false);
+        pdlForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .persondetaljer(List.of(Person.builder().ident(IDENT).build()))
+                        .build(),
+                progress,
+                false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);
@@ -240,9 +275,16 @@ class PdlForvalterClientTest {
         request.setPdlforvalter(RsPdldata.builder().build());
         request.setEnvironments(singleton(ENV));
         request.setTpsf(RsTpsfUtvidetBestilling.builder().build());
-        pdlForvalterClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT).persondetaljer(List.of(Person.builder().ident(IDENT).build())).build(),
-                progress, false);
+        pdlForvalterClient.gjenopprett(
+                null,
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .persondetaljer(List.of(Person.builder().ident(IDENT).build()))
+                        .build(),
+                progress,
+                false);
 
         verify(mapperFacade).map(any(RsPdldata.class), eq(Pdldata.class));
         verify(pdlForvalterConsumer).deleteIdent(IDENT);

@@ -18,10 +18,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
-import no.nav.dolly.service.BestillingProgressService;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
@@ -53,18 +50,25 @@ public class GjenopprettGruppeService extends DollyBestillingService {
     private final TransactionHelperService transactionHelperService;
 
     public GjenopprettGruppeService(TpsfService tpsfService,
-                                    DollyPersonCache dollyPersonCache, IdentService identService,
+                                    DollyPersonCache dollyPersonCache,
+                                    IdentService identService,
                                     BestillingProgressService bestillingProgressService,
-                                    BestillingService bestillingService, MapperFacade mapperFacade,
-                                    CacheManager cacheManager, ObjectMapper objectMapper,
-                                    List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                    ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                    PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer,
-                                    TransactionHelperService transactionHelperService) {
+                                    BestillingService bestillingService,
+                                    MapperFacade mapperFacade,
+                                    CacheManager cacheManager,
+                                    ObjectMapper objectMapper,
+                                    List<ClientRegister> clientRegisters,
+                                    CounterCustomRegistry counterCustomRegistry,
+                                    ErrorStatusDecoder errorStatusDecoder,
+                                    ExecutorService dollyForkJoinPool,
+                                    PdlPersonConsumer pdlPersonConsumer,
+                                    PdlDataConsumer pdlDataConsumer,
+                                    TransactionHelperService transactionHelperService,
+                                    AutentisertBrukerService bruker) {
 
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, bruker);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -114,7 +118,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                     if (dollyPerson.isPresent()) {
-                        gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+                        gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson.get(), bestKriterier, progress, false);
 
                         coBestillinger.stream()
                                 .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
@@ -124,7 +128,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                 !(register instanceof PdlForvalterClient ||
                                                         register instanceof PdlDataClient ))
                                         .forEach(register ->
-                                                register.gjenopprett(getDollyBestillingRequest(
+                                                register.gjenopprett(getAutentisertBruker(), getDollyBestillingRequest(
                                                         Bestilling.builder()
                                                                 .bestKriterier(coBestilling.getBestkriterier())
                                                                 .miljoer(isNotBlank(bestilling.getMiljoer()) ?

@@ -14,10 +14,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.service.BestillingProgressService;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
@@ -48,15 +45,25 @@ public class GjenopprettBestillingService extends DollyBestillingService {
     private final ExecutorService dollyForkJoinPool;
     private final TransactionHelperService transactionHelperService;
 
-    public GjenopprettBestillingService(TpsfService tpsfService, DollyPersonCache dollyPersonCache,
-                                        IdentService identService, BestillingProgressService bestillingProgressService,
-                                        BestillingService bestillingService, MapperFacade mapperFacade, CacheManager cacheManager,
-                                        ObjectMapper objectMapper, List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                        ErrorStatusDecoder errorStatusDecoder, ExecutorService dollyForkJoinPool,
-                                        PdlPersonConsumer pdlPersonConsumer, PdlDataConsumer pdlDataConsumer, TransactionHelperService transactionHelperService) {
+    public GjenopprettBestillingService(TpsfService tpsfService,
+                                        DollyPersonCache dollyPersonCache,
+                                        IdentService identService,
+                                        BestillingProgressService bestillingProgressService,
+                                        BestillingService bestillingService,
+                                        MapperFacade mapperFacade,
+                                        CacheManager cacheManager,
+                                        ObjectMapper objectMapper,
+                                        List<ClientRegister> clientRegisters,
+                                        CounterCustomRegistry counterCustomRegistry,
+                                        ErrorStatusDecoder errorStatusDecoder,
+                                        ExecutorService dollyForkJoinPool,
+                                        PdlPersonConsumer pdlPersonConsumer,
+                                        PdlDataConsumer pdlDataConsumer,
+                                        TransactionHelperService transactionHelperService,
+                                        AutentisertBrukerService bruker) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder);
+                pdlDataConsumer, errorStatusDecoder, bruker);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -124,8 +131,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                     Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                     if (dollyPerson.isPresent()) {
-
-                        gjenopprettNonTpsf(dollyPerson.get(), bestKriterier, progress, false);
+                        gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson.get(), bestKriterier, progress, false);
                     } else {
                         progress.setFeil("NA:Feil= Finner ikke personen i database");
                     }

@@ -275,7 +275,7 @@ class PensjonforvalterClientTest {
                 .thenReturn(new PensjonTpYtelseRequest());
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(new PdlPersonBolk()));
 
-        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
+        pensjonforvalterClient.gjenopprett(null, bestilling, dollyPerson, progress, false);
 
         assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
         assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
@@ -341,7 +341,7 @@ class PensjonforvalterClientTest {
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(new PdlPersonBolk()));
         when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn("Feil= " + test2EnvYtelseResponse.getMessage());
 
-        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
+        pensjonforvalterClient.gjenopprett(null, bestilling, dollyPerson, progress, false);
 
         assertThat(progress.getPensjonforvalterStatus(), is(not(nullValue())));
         assertThat(progress.getPensjonforvalterStatus(), containsString("TEST1:OK"));
@@ -407,7 +407,7 @@ class PensjonforvalterClientTest {
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(new PdlPersonBolk()));
         when(errorStatusDecoder.getErrorText(any(HttpStatus.class), anyString())).thenReturn(test2EnvYtelseResponse.getMessage());
 
-        pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false);
+        pensjonforvalterClient.gjenopprett(null, bestilling, dollyPerson, progress, false);
 
         assertThat(progress.getPensjonforvalterStatus(), containsString("Klarte ikke å få TP-ytelse respons"));
     }

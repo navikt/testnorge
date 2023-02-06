@@ -13,10 +13,7 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.service.BestillingProgressService;
-import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.DollyPersonCache;
-import no.nav.dolly.service.IdentService;
+import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import org.slf4j.MDC;
@@ -59,10 +56,11 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         ExecutorService dollyForkJoinPool,
                                                         PdlPersonConsumer pdlPersonConsumer,
                                                         PdlDataConsumer pdlDataConsumer,
-                                                        TransactionHelperService transactionHelperService) {
+                                                        TransactionHelperService transactionHelperService,
+                                                        AutentisertBrukerService bruker) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService, bestillingService,
                 mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry, pdlPersonConsumer,
-                pdlDataConsumer, errorStatusDecoder);
+                pdlDataConsumer, errorStatusDecoder, bruker);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -145,8 +143,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                 .master(identStatus.getMaster())
                                 .tags(bestilling.getGruppe().getTags())
                                 .build();
-
-                        gjenopprettNonTpsf(dollyPerson, bestKriterier, progress, true);
+                        gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson, bestKriterier, progress, true);
                     } else {
                         progress.setFeil("NA:Feil= Ident er ikke tilgjengelig; " + identStatus.getMessage());
                     }

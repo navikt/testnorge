@@ -4,6 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
@@ -114,9 +115,16 @@ class AaregClientTest {
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singleton(ENV));
-        aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), new BestillingProgress(), false);
+        aaregClient.gjenopprett(
+                Bruker.builder().build(),
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                new BestillingProgress(),
+                false);
 
         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken));
     }
@@ -133,9 +141,16 @@ class AaregClientTest {
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singleton(ENV));
-        aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), new BestillingProgress(), false);
+        aaregClient.gjenopprett(
+                Bruker.builder().build(),
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                new BestillingProgress(),
+                false);
         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken));
     }
 
@@ -163,9 +178,16 @@ class AaregClientTest {
 
         var progress = new BestillingProgress();
 
-        aaregClient.gjenopprett(request,
-                DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), progress, false);
+        aaregClient.gjenopprett(
+                Bruker.builder().build(),
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                progress,
+                false);
 
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
@@ -195,8 +217,16 @@ class AaregClientTest {
 
         var progress = new BestillingProgress();
 
-        aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        aaregClient.gjenopprett(
+                Bruker.builder().build(),
+                request,
+                DollyPerson
+                        .builder()
+                        .hovedperson(IDENT)
+                        .opprettetIPDL(true)
+                        .build(),
+                progress,
+                false);
 
         assertThat(progress.getAaregStatus(), is(equalTo("u2: arbforhold=1$OK")));
     }
