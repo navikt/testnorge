@@ -17,6 +17,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -32,9 +33,11 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
@@ -144,7 +147,10 @@ public class DollyBestillingService {
         return Flux.just(DollyPerson.builder()
                 .hovedperson(ident)
                 .master(progress.getMaster())
-                .tags(progress.getBestilling().getGruppe().getTags())
+                .tags(Stream.concat(progress.getBestilling().getGruppe().getTags().stream(),
+                                Stream.of(Tags.DOLLY)
+                                        .filter(tag -> progress.getMaster() == PDL))
+                        .toList())
                 .build());
     }
 

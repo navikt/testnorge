@@ -52,6 +52,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                 pdlDataConsumer, errorStatusDecoder, transactionHelperService);
 
         this.personServiceClient = personServiceClient;
+        this.mapperFacade = mapperFacade;
     }
 
     @Async
@@ -76,9 +77,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                     .flatMap(ident -> leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
-                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                            fase1Klienter(),
-                                                            progress, true),
+//                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+//                                                            fase1Klienter(),
+//                                                            progress, true),
                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                             .map(ClientFuture::get)
                                                             .map(BestillingProgress::isPdlSync)

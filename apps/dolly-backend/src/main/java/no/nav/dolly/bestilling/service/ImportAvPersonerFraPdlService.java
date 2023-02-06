@@ -89,15 +89,14 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                                                             progress, true)) :
                                                             Flux.empty())
                                                     .filter(Objects::nonNull)))
-                                    .collectList()
-                                    .doOnNext(status -> oppdaterStatus(progress))
                                     .doOnError(throwable -> {
                                         var error = errorStatusDecoder.getErrorText(
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                 progress.getId(), error);
                                         bestilling.setFeil(error);
-                                    })))
+                                    })
+                                    .doOnNext(status -> oppdaterStatus(progress))))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));
 

@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -112,10 +111,12 @@ public class Testgruppe implements Serializable {
     }
 
     public List<Tags> getTags() {
-        if (isBlank(tags)) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(tags.split(",")).map(Tags::valueOf).toList();
+
+        return isBlank(tags) ?
+                new ArrayList<>() :
+                new ArrayList<>(Arrays.stream(tags.split(","))
+                        .map(Tags::valueOf)
+                        .toList());
     }
 
     @Override
