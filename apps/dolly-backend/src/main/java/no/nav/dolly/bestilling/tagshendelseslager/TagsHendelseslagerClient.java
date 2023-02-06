@@ -45,8 +45,9 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
         if (dollyPerson.getMaster() == Testident.Master.PDL) { // Midlertidig
             dollyPerson.setTags(Stream.of(dollyPerson.getTags(),
-                    List.of(Tags.DOLLY))
+                            List.of(Tags.DOLLY))
                     .flatMap(Collection::stream)
+                    .distinct()
                     .toList());
         }
 
@@ -64,12 +65,12 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getHovedperson()));
         }
 
-//        if (dollyPerson.getMaster() == Testident.Master.PDL) {
-//            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-//                    .flatMap(tagsHendelseslagerConsumer::publish)
-//                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-//                            dollyPerson.getHovedperson(), response));
-//        }
+        if (dollyPerson.getMaster() == Testident.Master.PDL) {
+            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+                    .flatMap(tagsHendelseslagerConsumer::publish)
+                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                            dollyPerson.getHovedperson(), response));
+        }
 
         return Flux.just();
     }
