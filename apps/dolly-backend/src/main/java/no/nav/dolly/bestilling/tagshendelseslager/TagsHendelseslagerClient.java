@@ -43,6 +43,10 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (dollyPerson.getMaster() == Testident.Master.PDL) { // Midlertidig
+            dollyPerson.getTags().add(Tags.DOLLY);
+        }
+
         if (!dollyPerson.getTags().isEmpty()) {
 
             dollyPersonCache.fetchIfEmpty(dollyPerson);
@@ -57,12 +61,12 @@ public class TagsHendelseslagerClient implements ClientRegister {
                             dollyPerson.getHovedperson()));
         }
 
-        if (dollyPerson.getMaster() == Testident.Master.PDL) {
-            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                    .flatMap(tagsHendelseslagerConsumer::publish)
-                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-                            dollyPerson.getHovedperson(), response));
-        }
+//        if (dollyPerson.getMaster() == Testident.Master.PDL) {
+//            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+//                    .flatMap(tagsHendelseslagerConsumer::publish)
+//                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+//                            dollyPerson.getHovedperson(), response));
+//        }
 
         return Flux.just();
     }
