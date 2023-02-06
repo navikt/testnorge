@@ -44,7 +44,10 @@ public class TagsHendelseslagerClient implements ClientRegister {
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (dollyPerson.getMaster() == Testident.Master.PDL) { // Midlertidig
-            dollyPerson.getTags().add(Tags.DOLLY);
+            dollyPerson.setTags(Stream.of(dollyPerson.getTags(),
+                    List.of(Tags.DOLLY))
+                    .flatMap(Collection::stream)
+                    .toList());
         }
 
         if (!dollyPerson.getTags().isEmpty()) {
