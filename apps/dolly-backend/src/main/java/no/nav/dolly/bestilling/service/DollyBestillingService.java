@@ -115,6 +115,10 @@ public class DollyBestillingService {
             log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
+            // TODO: Fjern testkode
+            log.info("Bestilling: {}/{} = {}", bestilling.getBruker().getBrukernavn(), bestilling.getBruker().getNavIdent(), bestilling.getBruker().getBrukertype());
+            //
+
             var testident = identService.getTestIdent(bestilling.getIdent());
             var progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
 
