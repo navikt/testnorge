@@ -38,7 +38,7 @@ export const PdlVisning = ({
 	loading = {},
 	miljoeVisning = false,
 }: PdlVisningProps) => {
-	if (loading?.pdl) {
+	if (loading?.pdl || (miljoeVisning && loading)) {
 		return <Loading label="Laster PDL-data" />
 	}
 	if (!pdlData?.hentPerson) {
