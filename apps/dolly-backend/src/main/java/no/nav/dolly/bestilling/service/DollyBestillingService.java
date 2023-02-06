@@ -118,15 +118,6 @@ public class DollyBestillingService {
             log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
-            // TODO: Fjern testkode
-            var bruker = bestilling.getBruker();
-            log.info("TEST B");
-            log.info("C: {}/{} = {}", bruker.getBrukernavn(), bruker.getNavIdent(), bruker.getBrukertype());
-            var v = CurrentAuthentication.getAuthUser(userInfo);
-            log.info("D: {}/{} = {}", v.getBrukernavn(), v.getNavIdent(), v.getBrukertype());
-            log.info("TEST E");
-            //
-
             var testident = identService.getTestIdent(bestilling.getIdent());
             var progress = new BestillingProgress(bestilling, bestilling.getIdent(), testident.getMaster());
 
@@ -175,7 +166,7 @@ public class DollyBestillingService {
             counterCustomRegistry.invoke(request);
             DollyPerson finalDollyPerson = dollyPerson;
             clientRegisters.forEach(clientRegister ->
-                    clientRegister.gjenopprett(getAutentisertBruker(), request, finalDollyPerson, progress, true));
+                    clientRegister.gjenopprett(bestilling.getBruker(), request, finalDollyPerson, progress, true));
 
             oppdaterProgress(bestilling, progress);
 

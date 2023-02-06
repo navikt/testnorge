@@ -80,6 +80,9 @@ public class AaregClient implements ClientRegister {
             }
             var user = CurrentAuthentication.getAuthUser(userInfo);
             log.info("B: Bruker {} = {} {} {} {}", user.getBrukernavn(), user.getBrukertype(), user.getBrukerId(), user.getId(), user.getNavIdent());
+            var v = CurrentAuthentication.getAuthUser(userInfo);
+            log.info("C: {}/{} = {}", v.getBrukernavn(), v.getNavIdent(), v.getBrukertype());
+            log.info("Trace:", new NullPointerException("Trace"));
             //
             progress.setAaregStatus((bestilling.getAareg().stream()
                     .map(RsAareg::getAmelding)
