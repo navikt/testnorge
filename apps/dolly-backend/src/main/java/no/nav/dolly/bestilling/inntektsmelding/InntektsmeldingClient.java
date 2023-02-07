@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -46,11 +45,6 @@ public class InntektsmeldingClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektsmelding())) {
-
-            progress.setInntektsmeldingStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter("JOARK")))
-                    .collect(Collectors.joining(",")));
-            transactionHelperService.persister(progress);
 
             var context = MappingContextUtils.getMappingContext();
             context.setProperty("ident", dollyPerson.getHovedperson());

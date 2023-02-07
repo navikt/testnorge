@@ -28,7 +28,6 @@ import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenan
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEgenansatt;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -46,9 +45,6 @@ public class SkjermingsRegisterClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
-
-            progress.setSkjermingsregisterStatus(getInfoVenter("Skjermingsregisteret"));
-            transactionHelperService.persister(progress);
 
             return Flux.from(getPersonData(dollyPerson.getHovedperson())
                             .map(person -> prepRequest(bestilling, person))

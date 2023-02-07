@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -21,7 +20,6 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
 @Service
@@ -31,7 +29,6 @@ public class KontoregisterClient implements ClientRegister {
     private static final String SYSTEM = "Kontoregister";
     private final KontoregisterConsumer kontoregisterConsumer;
     private final MapperFacade mapperFacade;
-    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
     private final ErrorStatusDecoder errorStatusDecoder;
 
@@ -39,9 +36,6 @@ public class KontoregisterClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
-
-            progress.setKontoregisterStatus(getInfoVenter(SYSTEM));
-            transactionHelperService.persister(progress);
 
             var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
             if (nonNull(request)) {

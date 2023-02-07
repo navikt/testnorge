@@ -24,7 +24,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -44,9 +43,6 @@ public class BrregstubClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBrregstub())) {
-
-            progress.setBrregstubStatus(getInfoVenter("BRREG"));
-            transactionHelperService.persister(progress);
 
             return Flux.from(getPersonData(dollyPerson.getHovedperson())
                             .flatMap(personBolk -> mapRolleoversikt(bestilling.getBrregstub(), personBolk)

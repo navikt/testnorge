@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -52,11 +51,6 @@ public class DokarkivClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getDokarkiv())) {
-
-            progress.setDokarkivStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format("%s:%s", miljo, getInfoVenter("JOARK")))
-                    .collect(Collectors.joining(",")));
-            transactionHelperService.persister(progress);
 
             var bestillingId = progress.getBestilling().getId();
             return Flux.from(getPersonData(List.of(dollyPerson.getHovedperson()))
