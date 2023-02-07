@@ -15,8 +15,11 @@ spec:
     application:
       enabled: true
       tenant: nav.no
+      replyURLs:
+        - https://dolly-idporten.ekstern.dev.nav.no/login/oauth2/code/idporten
   idporten:
     enabled: true
+    errorPath: /login
   accessPolicy:
     outbound:
       rules:
