@@ -52,7 +52,7 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-idporten
+        - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-import-fra-tpsf-service
           cluster: dev-gcp

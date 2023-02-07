@@ -16,7 +16,7 @@ spec:
       rules:
         - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-idporten
+        - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
