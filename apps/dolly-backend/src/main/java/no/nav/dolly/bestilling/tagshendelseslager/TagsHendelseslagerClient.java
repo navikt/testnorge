@@ -15,7 +15,6 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -31,7 +30,6 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
-@Order(4)
 @RequiredArgsConstructor
 public class TagsHendelseslagerClient implements ClientRegister {
 
@@ -40,14 +38,6 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
-
-        if (dollyPerson.getMaster() == Testident.Master.PDL) { // Midlertidig
-            dollyPerson.setTags(Stream.of(dollyPerson.getTags(),
-                            List.of(Tags.DOLLY))
-                    .flatMap(Collection::stream)
-                    .distinct()
-                    .toList());
-        }
 
         if (!dollyPerson.getTags().isEmpty()) {
 

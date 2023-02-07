@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -27,6 +28,7 @@ import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -67,6 +69,7 @@ public class AaregClient implements ClientRegister {
             if (CurrentAuthentication.getAuthUser(getUserInfo).getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
+            var miljoerTrygg = new AtomicReference<>(miljoer);
 
             progress.setAaregStatus(miljoer.stream()
                     .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
@@ -79,9 +82,9 @@ public class AaregClient implements ClientRegister {
                                 .map(RsAareg::getAmelding)
                                 .allMatch(List::isEmpty)) {
 
-                            return sendArbeidsforhold(bestilling, dollyPerson, miljoer, isOpprettEndre);
+                            return sendArbeidsforhold(bestilling, dollyPerson, miljoerTrygg.get(), isOpprettEndre);
                         } else {
-                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoer);
+                            return ameldingService.sendAmelding(bestilling, dollyPerson, miljoerTrygg.get());
                         }
                     })
                     .map(status -> futurePersist(progress, status));
