@@ -9,7 +9,7 @@ spring:
     oauth2:
       resourceserver:
         idporten:
-          issuer-uri: ${IDPORTEN_ISSUER_URI}
+          issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
