@@ -19,6 +19,8 @@ spec:
         - https://dolly-idporten.ekstern.dev.nav.no/login/oauth2/code/idporten
   idporten:
     enabled: true
+    sidecar:
+      enabled: true
     errorPath: /login
   accessPolicy:
     outbound:
