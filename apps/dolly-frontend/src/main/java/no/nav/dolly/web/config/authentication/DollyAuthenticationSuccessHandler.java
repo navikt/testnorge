@@ -24,7 +24,7 @@ public class DollyAuthenticationSuccessHandler implements ServerAuthenticationSu
         ServerWebExchange exchange = webFilterExchange.getExchange();
         var requestPath = exchange.getRequest().getPath().toString();
 
-        if (requestPath.equals("/login/oauth2/code/idporten")) {
+        if (requestPath.contains("idporten")) {
             return redirectStrategy.sendRedirect(exchange, idPortenLocation);
         } else {
             return redirectStrategy.sendRedirect(exchange, defaultLocation);
