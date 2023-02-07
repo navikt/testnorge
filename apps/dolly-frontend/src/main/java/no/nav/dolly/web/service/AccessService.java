@@ -18,7 +18,7 @@ import static java.util.Collections.singletonList;
 @Service
 @RequiredArgsConstructor
 public class AccessService {
-    private static final List<String> SESSION_PROFILES = singletonList("lokal");
+    private static final List<String> SESSION_PROFILES = singletonList("local");
     private final TokenExchange tokenExchange;
 
     private final Environment environment;
