@@ -25,6 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse.BrukerFeilstatus.DUPLIKAT;
 import static org.hamcrest.CoreMatchers.is;
@@ -91,7 +92,7 @@ class ArenaForvalterClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                                 .build(), progress, false)
                         .map(ClientFuture::get))
@@ -127,7 +128,7 @@ class ArenaForvalterClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                                 .build(), progress, false)
@@ -148,7 +149,7 @@ class ArenaForvalterClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
 
         Assertions.assertThrows(NullPointerException.class, () ->
                 arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
@@ -162,7 +163,7 @@ class ArenaForvalterClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
-        request.setEnvironments(singletonList("t3"));
+        request.setEnvironments(singleton("t3"));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
@@ -182,7 +183,7 @@ class ArenaForvalterClientTest {
         var progress = new BestillingProgress();
 
         var request = new RsDollyBestillingRequest();
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
                         .build(), progress, false)
                 .subscribe();

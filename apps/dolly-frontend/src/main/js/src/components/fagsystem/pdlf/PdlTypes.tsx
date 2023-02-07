@@ -19,7 +19,7 @@ export type PersonData = {
 	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<StatsborgerskapData>
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
-	sivilstand?: Array<Sivilstand>
+	sivilstand?: Array<SivilstandData>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
 	innflytting?: Array<Innflytting>
@@ -87,7 +87,7 @@ export type AdressebeskyttelseData = {
 	id?: number
 }
 
-export type Sivilstand = {
+export type SivilstandData = {
 	type: string
 	gyldigFraOgMed?: string
 	relatertVedSivilstand: string

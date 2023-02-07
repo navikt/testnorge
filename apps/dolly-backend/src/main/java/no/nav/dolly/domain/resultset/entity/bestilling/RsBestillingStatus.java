@@ -27,7 +27,9 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.isNull;
 
@@ -47,7 +49,7 @@ public class RsBestillingStatus {
     private long gruppeId;
     private boolean stoppet;
     private String feil;
-    private List<String> environments;
+    private Set<String> environments;
     private List<RsStatusRapport> status;
 
     private Long opprettetFraId;
@@ -58,9 +60,9 @@ public class RsBestillingStatus {
 
     private String malBestillingNavn;
 
-    public List<String> getEnvironments() {
+    public Set<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList<>();
+            environments = new HashSet<>();
         }
         return environments;
     }

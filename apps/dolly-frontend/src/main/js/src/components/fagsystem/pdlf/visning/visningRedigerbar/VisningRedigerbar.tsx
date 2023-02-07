@@ -18,6 +18,7 @@ import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/ad
 import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
 	getIdenttype,
@@ -32,6 +33,7 @@ import {
 	kontaktadresse,
 	oppholdsadresse,
 	vergemaal,
+	sivilstand,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -64,6 +66,7 @@ enum Attributt {
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
 	Adressebeskyttelse = 'adressebeskyttelse',
+	Sivilstand = 'sivilstand',
 }
 
 const FieldArrayEdit = styled.div`
@@ -140,9 +143,7 @@ export const VisningRedigerbar = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
+								setVisningModus(Modus.Les)
 							})
 						})
 					}
@@ -168,9 +169,7 @@ export const VisningRedigerbar = ({
 						setVisningModus(Modus.LoadingPdl)
 						DollyApi.sendOrdre(ident).then(() => {
 							getPdlForvalter().then(() => {
-								if (mountedRef.current) {
-									setVisningModus(Modus.Les)
-								}
+								setVisningModus(Modus.Les)
 							})
 						})
 					}
@@ -229,6 +228,14 @@ export const VisningRedigerbar = ({
 						identtype={getIdenttype(formikBag, identtype)}
 					/>
 				)
+			case Attributt.Sivilstand:
+				return (
+					<SivilstandForm
+						path={path}
+						formikBag={formikBag}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 		}
 	}
 
@@ -243,6 +250,7 @@ export const VisningRedigerbar = ({
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
+			sivilstand: ifPresent('sivilstand', sivilstand),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -254,6 +262,7 @@ export const VisningRedigerbar = ({
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
+			['sivilstand', 'sivilstand'],
 		]
 	)
 

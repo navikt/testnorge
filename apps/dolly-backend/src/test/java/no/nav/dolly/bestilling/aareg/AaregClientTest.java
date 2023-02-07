@@ -22,14 +22,19 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import java.time.Instant;
+import java.util.Map;
+
+import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -57,8 +62,21 @@ class AaregClientTest {
 
     @BeforeEach
     void setup() {
-
         when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+
+        SecurityContextHolder
+                .getContext()
+                .setAuthentication(
+                        new JwtAuthenticationToken(
+                                new Jwt(
+                                        "token",
+                                        Instant.now(),
+                                        Instant.now().plusSeconds(1000),
+                                        Map.of("alg", "none"),
+                                        Map.of("sub", "n/a")
+                                )
+                        )
+                );
     }
 
     private ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
@@ -89,7 +107,6 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
-
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any())).thenReturn(singletonList(new Arbeidsforhold()));
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
         when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
@@ -99,7 +116,7 @@ class AaregClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().hovedperson(IDENT)
                                 .build(), new BestillingProgress(), false)
@@ -109,7 +126,6 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
-
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any())).thenReturn(singletonList(new Arbeidsforhold()));
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
         when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
@@ -119,7 +135,7 @@ class AaregClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder().build()));
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().hovedperson(IDENT)
                                .build(), new BestillingProgress(), false)
@@ -129,13 +145,12 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerPerson_returnsOK() {
-
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsAktoerPerson.builder().ident(IDENT).build())
                 .arbeidsforholdId("1")
                 .build()));
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
 
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(
                 buildArbeidsforhold(false)));
@@ -164,14 +179,13 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_tidligereArbeidsforholdFinnesAktoerOrganisasjon_returnsOK() {
-
         var request = new RsDollyBestillingRequest();
         request.setAareg(singletonList(RsAareg.builder()
                 .arbeidsgiver(RsOrganisasjon.builder().orgnummer(ORGNUMMER).build())
                 .arbeidsforholdId("1")
                 .isOppdatering(true)
                 .build()));
-        request.setEnvironments(singletonList(ENV));
+        request.setEnvironments(singleton(ENV));
 
         when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
                 .thenReturn(Mono.just(buildArbeidsforhold(true)));
@@ -196,4 +210,5 @@ class AaregClientTest {
                         .build())
                 .verifyComplete();
     }
+
 }

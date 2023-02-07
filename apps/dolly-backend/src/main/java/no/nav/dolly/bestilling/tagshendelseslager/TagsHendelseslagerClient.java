@@ -41,6 +41,14 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (dollyPerson.getMaster() == Testident.Master.PDL) { // Midlertidig
+            dollyPerson.setTags(Stream.of(dollyPerson.getTags(),
+                            List.of(Tags.DOLLY))
+                    .flatMap(Collection::stream)
+                    .distinct()
+                    .toList());
+        }
+
         if (!dollyPerson.getTags().isEmpty()) {
 
             return Flux.from(getPdlIdenter(List.of(dollyPerson.getHovedperson()))

@@ -22,9 +22,9 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import static java.util.Collections.singleton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.eq;
@@ -87,7 +87,7 @@ class OrganisasjonClientTest {
                 .build();
 
         bestilling = RsOrganisasjonBestilling.builder()
-                .environments(List.of("q1"))
+                .environments(singleton("q1"))
                 .organisasjon(
                         RsOrganisasjonBestilling.SyntetiskOrganisasjon.builder()
                                 .forretningsadresse(adresse)

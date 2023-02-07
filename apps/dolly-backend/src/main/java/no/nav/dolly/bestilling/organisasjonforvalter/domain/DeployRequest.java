@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
@@ -21,15 +19,15 @@ import static java.util.Objects.isNull;
 public class DeployRequest {
 
     private Set<String> orgnumre;
-    private List<String> environments;
+    private Set<String> environments;
 
     public Set<String> getOrgnumre() {
         return isNull(orgnumre) ? new HashSet<>() : orgnumre;
     }
 
-    public List<String> getEnvironments() {
+    public Set<String> getEnvironments() {
         if (isNull(environments)) {
-            environments = new ArrayList<>();
+            environments = new HashSet<>();
         }
         return environments;
     }

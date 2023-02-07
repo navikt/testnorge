@@ -111,7 +111,6 @@ class PensjonforvalterClientTest {
     // empty new response list to none empty previous list
     @Test
     void testMergePensjonforvalterResponses_withEmptyList() {
-
         var response1 = new PensjonforvalterResponse();
         response1.setStatus(new ArrayList<>());
 
@@ -250,7 +249,7 @@ class PensjonforvalterClientTest {
         pensjonData.setTp(Arrays.asList(tp1, tp2));
 
         var bestilling = new RsDollyUtvidetBestilling();
-        bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
+        bestilling.setEnvironments(Set.of("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
         var person = Person.builder()
@@ -328,7 +327,7 @@ class PensjonforvalterClientTest {
         pensjonData.setTp(Arrays.asList(tp1, tp2));
 
         var bestilling = new RsDollyUtvidetBestilling();
-        bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
+        bestilling.setEnvironments(Set.of("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
         var dollyPerson = DollyPerson.builder()
@@ -408,7 +407,7 @@ class PensjonforvalterClientTest {
     void testLagreTpForhold_withException() {
 
         var bestilling = new RsDollyUtvidetBestilling();
-        bestilling.setEnvironments(Arrays.asList("TEST1", "TEST2"));
+        bestilling.setEnvironments(Set.of("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(PensjonData.builder()
                 .tp(List.of(PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("1111", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse())),
                         PensjonforvalterClientTestUtil.getTpOrdningWithYtelser("2222", List.of(new PensjonData.TpYtelse(), new PensjonData.TpYtelse()))))

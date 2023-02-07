@@ -25,7 +25,7 @@ import reactor.test.StepVerifier;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -81,7 +81,7 @@ class InstdataClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
-        request.setEnvironments(singletonList("q2"));
+        request.setEnvironments(singleton("q2"));
 
         StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true)
                         .map(ClientFuture::get))
@@ -110,7 +110,7 @@ class InstdataClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
-        request.setEnvironments(singletonList("q2"));
+        request.setEnvironments(singleton("q2"));
 
         StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false)
                         .map(ClientFuture::get))

@@ -34,8 +34,9 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
+import java.util.Set;
 
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
@@ -58,9 +59,8 @@ public class DollyBestillingService {
     protected final ErrorStatusDecoder errorStatusDecoder;
     protected final TransactionHelperService transactionHelperService;
 
-    public static List<String> getEnvironments(String miljoer) {
-
-        return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
+    public static Set<String> getEnvironments(String miljoer) {
+        return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
     }
 
     public static String getBestillingType(Bestilling bestilling) {
