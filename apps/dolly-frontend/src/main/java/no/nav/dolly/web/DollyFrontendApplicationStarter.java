@@ -2,32 +2,7 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.credentials.DollyBackendProperties;
-import no.nav.dolly.web.credentials.KontoregisterProxyProperties;
-import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
-import no.nav.dolly.web.credentials.SkjermingsregisterProxyProperties;
-import no.nav.dolly.web.credentials.TestnavAaregisterProxyProperties;
-import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
-import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
-import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavDokarkivProxyProperties;
-import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavInstServiceProperties;
-import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
-import no.nav.dolly.web.credentials.TestnavKrrstubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
-import no.nav.dolly.web.credentials.TestnavNorg2ProxyProperties;
-import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServiceProperties;
-import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
-import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
-import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
-import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
-import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
-import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
-import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
-import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
-import no.nav.dolly.web.credentials.TpsForvalterenProxyProperties;
-import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
+import no.nav.dolly.web.credentials.*;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -71,7 +46,7 @@ public class DollyFrontendApplicationStarter {
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
-    private final TestnavAaregisterProxyProperties testnavAaregisterProxyProperties;
+    private final TestnavAaregProxyProperties testnavAaregProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
     private final TestnavInstServiceProperties testnavInstServiceProperties;
@@ -80,7 +55,6 @@ public class DollyFrontendApplicationStarter {
     private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
     private final DollyBackendProperties dollyBackendProperties;
     private final TestnorgeProfilApiProperties testnorgeProfilApiProperties;
-    private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavVarslingerServiceProperties testnavVarslingerServiceProperties;
     private final TestnavOrganisasjonForvalterProperties testnavOrganisasjonForvalterProperties;
     private final TestnavOrganisasjonServiceProperties testnavOrganisasjonServiceProperties;
@@ -103,6 +77,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
                 .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
+                .route(createRoute(testnavOrganisasjonTilgangServiceProperties, "testnav-organisasjon-tilgang-service"))
                 .route(createRoute(tpsMessagingServiceProperties, "testnav-tps-messaging-service"))
                 .route(createRoute(testnorgeProfilApiProperties, "testnorge-profil-api"))
                 .route(createRoute(testnavBrukerServiceProperties, "testnav-bruker-service"))
@@ -113,7 +88,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavInntektstubProxyProperties))
                 .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
                 .route(createRoute(testnavBrregstubProxyProperties))
-                .route(createRoute(testnavAaregisterProxyProperties))
+                .route(createRoute(testnavAaregProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavInstServiceProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))

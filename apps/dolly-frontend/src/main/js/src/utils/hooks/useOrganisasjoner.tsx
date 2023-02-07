@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherFagsystemer } from '@/api'
+import { fetcher, multiFetcherAareg } from '@/api'
 import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -19,9 +19,9 @@ const getOrganisasjonBestillingerUrl = (brukerId: string) =>
 const getOrganisasjonBestillingStatusUrl = (bestillingId: number | string) =>
 	`/dolly-backend/api/v1/organisasjon/bestilling?bestillingId=${bestillingId}`
 
-const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold: boolean) =>
+const getDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =>
 	`/testnav-organisasjon-faste-data-service/api/v1/organisasjoner?gruppe=DOLLY${
-		kanHaArbeidsforhold !== null ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
+		typeof kanHaArbeidsforhold === 'boolean' ? '&kanHaArbeidsforhold=' + kanHaArbeidsforhold : ''
 	}`
 
 const getFasteDataOrganisasjon = (orgnummer: string) =>
@@ -29,7 +29,7 @@ const getFasteDataOrganisasjon = (orgnummer: string) =>
 
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
-		url: `/testnav-aaregister-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
+		url: `/testnav-aareg-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
 		miljo: miljoe,
 	}))
 }
@@ -224,7 +224,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
-		([url, headers]) => multiFetcherFagsystemer(url, headers),
+		([url, headers]) => multiFetcherAareg(url, headers),
 		{ dedupingInterval: 30000 }
 	)
 

@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Arrays.asList;
-
 @RestController
 @RequiredArgsConstructor
 @RequestMapping(value = "api/v1/organisasjon")
@@ -41,7 +39,7 @@ public class OrganisasjonController {
 
         DeployRequest request = new DeployRequest(
                 Set.of(bestillingStatus.getOrganisasjonNummer()),
-                asList(miljoer.split(",")));
+                Set.of(miljoer.split(",")));
 
         RsOrganisasjonBestillingStatus status = RsOrganisasjonBestillingStatus.builder()
                 .organisasjonNummer(request.getOrgnumre().iterator().next())

@@ -18,7 +18,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
@@ -29,7 +29,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class InstdataClientTest {
+class InstdataClientTest {
 
     private static final String IDENT = "11111111111";
     private static final DollyPerson TPS_IDENT = DollyPerson.builder().hovedperson(IDENT).build();
@@ -48,7 +48,7 @@ public class InstdataClientTest {
     private InstdataClient instdataClient;
 
     @Test
-    public void gjenopprettUtenInstdata_TomRetur() {
+    void gjenopprettUtenInstdata_TomRetur() {
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -58,7 +58,7 @@ public class InstdataClientTest {
     }
 
     @Test
-    public void gjenopprettMiljoeIkkeStoettet_SkalGiFeilmedling() {
+    void gjenopprettMiljoeIkkeStoettet_SkalGiFeilmedling() {
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -66,14 +66,14 @@ public class InstdataClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
-        request.setEnvironments(singletonList("t2"));
+        request.setEnvironments(singleton("t2"));
         instdataClient.gjenopprett(request, TPS_IDENT, progress, false);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("t2:Feil: Miljø ikke støttet")));
     }
 
     @Test
-    public void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
+    void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
         BestillingProgress progress = new BestillingProgress();
 
@@ -85,7 +85,7 @@ public class InstdataClientTest {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setInstdata(List.of(RsInstdata.builder().build()));
-        request.setEnvironments(singletonList("q2"));
+        request.setEnvironments(singleton("q2"));
         instdataClient.gjenopprett(request, TPS_IDENT, progress, false);
 
         assertThat(progress.getInstdataStatus(), is(equalTo("q2:opphold=1$OK")));

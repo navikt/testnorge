@@ -6,6 +6,8 @@ metadata:
   labels:
     team: dolly
 spec:
+  tokenx:
+    enabled: true
   image: {{ image }}
   port: 8080
   azure:
@@ -20,7 +22,14 @@ spec:
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
+          cluster: prod-gcp
     outbound:
       external:
         - host: altinn.no
@@ -39,6 +48,7 @@ spec:
     path: /internal/metrics
   envFrom:
     - secret: altinn
+    - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
     max: 1
@@ -54,3 +64,14 @@ spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
+    - name: ACCEPTED_AUDIENCE
+      value: prod-gcp:dolly:testnav-organisasjon-tilgang-service
+    - name: TOKENDINGS_URL
+      value: https://tokendings.dev-gcp.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-organisasjon-tilgang
+        databases:
+          - name: testnav-organisasjon-tilgang
+        autoBackupTime: "02:00"

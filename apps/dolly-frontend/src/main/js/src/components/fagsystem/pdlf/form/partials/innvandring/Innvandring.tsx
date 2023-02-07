@@ -84,7 +84,11 @@ export const Innvandring = () => {
 
 	return (
 		<div className="person-visning_content">
-			<InnvandringForm path={'pdldata.person.innflytting[0]'} minDate={datoBegresning} />
+			<InnvandringForm
+				path={'pdldata.person.innflytting[0]'}
+				minDate={datoBegresning}
+				maxDate={new Date()}
+			/>
 		</div>
 	)
 }

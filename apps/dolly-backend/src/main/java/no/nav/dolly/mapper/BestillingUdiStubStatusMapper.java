@@ -24,7 +24,7 @@ public final class BestillingUdiStubStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (isNotBlank(progress.getUdistubStatus())) {
+            if (isNotBlank(progress.getUdistubStatus()) && isNotBlank(progress.getIdent())) {
                 if (statusMap.containsKey(progress.getUdistubStatus())) {
                     statusMap.get(progress.getUdistubStatus()).add(progress.getIdent());
                 } else {

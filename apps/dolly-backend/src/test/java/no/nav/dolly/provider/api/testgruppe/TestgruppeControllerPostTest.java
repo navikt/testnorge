@@ -1,10 +1,7 @@
 package no.nav.dolly.provider.api.testgruppe;
 
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,12 +14,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDate;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Disabled
 @DisplayName("POST /api/v1/gruppe")
@@ -52,29 +46,5 @@ class TestgruppeControllerPostTest extends TestgruppeTestBase {
         assertThat(resp.getNavn(), is("mingruppe"));
         assertThat(resp.getHensikt(), is("hensikt"));
         assertThat(resp.getOpprettetAv().getBrukerId(), is("NAVIDENT"));
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("Oppretter TPS bestilling")
-    void createTpsBestilling() {
-        Long gruppeId = dataFactory.createTestgruppe("Test gruppe").getId();
-
-        String url = ENDPOINT_BASE_URI + "/" + gruppeId + "/bestilling";
-
-        RsTpsfUtvidetBestilling tpsfBestilling = RsTpsfUtvidetBestilling.builder()
-                .kjonn("M")
-                .foedtEtter(LocalDate.of(2000, 1, 1).atStartOfDay())
-                .build();
-
-        RsDollyBestillingRequest rsDollyBestillingRequest = new RsDollyBestillingRequest();
-
-        rsDollyBestillingRequest.setTpsf(tpsfBestilling);
-
-        RsBestillingStatus resp = sendRequest(rsDollyBestillingRequest)
-                .to(HttpMethod.POST, url)
-                .andExpect(HttpStatus.CREATED, RsBestillingStatus.class);
-
-        assertNotNull(resp.getBestilling().getTpsf());
     }
 }

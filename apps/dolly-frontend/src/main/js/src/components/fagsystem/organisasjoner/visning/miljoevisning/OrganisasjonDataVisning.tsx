@@ -7,6 +7,7 @@ import { Detaljer } from '@/components/fagsystem/organisasjoner/visning/Detaljer
 import { Enhetstre, OrgTree } from '@/components/enhetstre'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
+import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 // @ts-ignore
 const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
@@ -23,6 +24,10 @@ const getOrganisasjonInfo = (organisasjon, selectedId, setSelectedId) => {
 // @ts-ignore
 export const OrganisasjonDataVisning = ({ data }) => {
 	const [selectedId, setSelectedId] = useState('0')
+
+	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+
 	if (!data) {
 		return null
 	}
@@ -33,6 +38,7 @@ export const OrganisasjonDataVisning = ({ data }) => {
 		<div className="flexbox--flex-wrap">
 			{organisasjonListe.map((organisasjoner, idx) => {
 				const miljoe = organisasjoner[0]
+				if (tilgjengeligMiljoe && tilgjengeligMiljoe !== miljoe) return null
 				return (
 					<DollyTooltip
 						overlay={getOrganisasjonInfo(organisasjoner, selectedId, setSelectedId)}

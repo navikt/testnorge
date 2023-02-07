@@ -76,6 +76,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
             bestKriterier.setEkskluderEksternePersoner(true);
             var computableFuture =
                     bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId()).stream()
+                            .filter(progress -> progress.isPdl() || progress.isPdlf())
                             .map(progress -> doBestilling(bestilling, bestKriterier, progress))
                             .map(computable -> supplyAsync(computable, dollyForkJoinPool))
                             .toList();

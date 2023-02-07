@@ -37,11 +37,11 @@ public class JsonBestillingMapper {
         return new RsTpsfUtvidetBestilling();
     }
 
-    public RsDollyBestillingRequest mapBestillingRequest(String jsonInput) {
+    public RsDollyBestillingRequest mapBestillingRequest(Long bestillingId, String jsonInput) {
         try {
             return objectMapper.readValue(nonNull(jsonInput) ? jsonInput : "{}", RsDollyBestillingRequest.class);
         } catch (IOException e) {
-            log.error("Mapping av JSON fra database bestKriterier feilet. {}", e.getMessage(), e);
+            log.error("Mapping av JSON fra database bestKriterier, bestId: {} feilet. {}", bestillingId, e.getMessage(), e);
         }
         return new RsDollyBestillingRequest();
     }

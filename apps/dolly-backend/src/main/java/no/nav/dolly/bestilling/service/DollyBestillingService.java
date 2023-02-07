@@ -35,10 +35,11 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static java.lang.String.format;
 import static java.time.LocalDateTime.now;
-import static java.util.Collections.emptyList;
+import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
 import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
@@ -73,9 +74,8 @@ public class DollyBestillingService {
         return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
     }
 
-    public static List<String> getEnvironments(String miljoer) {
-
-        return isNotBlank(miljoer) ? List.of(miljoer.split(",")) : emptyList();
+    public static Set<String> getEnvironments(String miljoer) {
+        return isNotBlank(miljoer) ? Set.of(miljoer.split(",")) : emptySet();
     }
 
     public static String getBestillingType(Bestilling bestilling) {

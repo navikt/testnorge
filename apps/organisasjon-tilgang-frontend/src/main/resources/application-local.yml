@@ -1,9 +1,9 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+azure.app.client.id: ${local.client.id}
+azure.app.client.secret: ${local.client.secret}
 
 consumers:
   testnav-organisasjon-tilgang-service:
-    cluster: dev-gcp
+    cluster: prod-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
-    url: https://testnav-organisasjon-tilgang-service.dev.intern.nav.no
+    url: https://testnav-organisasjon-tilgang-service.intern.nav.no

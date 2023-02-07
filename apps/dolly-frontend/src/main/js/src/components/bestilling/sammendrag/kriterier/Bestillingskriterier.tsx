@@ -71,7 +71,7 @@ const _renderBestillingsDetaljer = (data) => {
 	})
 }
 
-const _renderStaticValue = (attributt, idx) => {
+export const _renderStaticValue = (attributt, idx) => {
 	if (!attributt.value) {
 		return null
 	}

@@ -22,6 +22,7 @@ public class CreateOrganisasjonAccessCommand implements Callable<Mono<RightDTO>>
 
     @Override
     public Mono<RightDTO> call() {
+
         return webClient
                 .post()
                 .uri(builder -> builder.path("/api/serviceowner/Srr")

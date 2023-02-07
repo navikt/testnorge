@@ -67,4 +67,5 @@ public class DokarkivProxyApplicationStarter {
                         .filter(filter)
                 ).uri("https://dokarkiv-" + miljo + ".dev.adeo.no");
     }
+
 }

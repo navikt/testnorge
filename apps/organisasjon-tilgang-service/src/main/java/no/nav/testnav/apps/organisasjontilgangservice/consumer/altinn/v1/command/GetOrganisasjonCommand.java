@@ -18,6 +18,7 @@ public class GetOrganisasjonCommand implements Callable<Mono<OrganisasjonDTO>> {
 
     @Override
     public Mono<OrganisasjonDTO> call() {
+
         return webClient
                 .get()
                 .uri(builder -> builder.path("api/serviceowner/organizations/{organisajonsnummer}").build(organisajonsnummer)

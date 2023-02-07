@@ -85,7 +85,7 @@ const initialVisningData = {
 	dagpenger: [],
 }
 
-export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
+export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligMiljoe }) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
@@ -142,6 +142,9 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 		return vData
 	})
 
+	const filteredData =
+		tilgjengeligMiljoe && visningData.filter((item) => item.miljo === tilgjengeligMiljoe)
+
 	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
 	return (
 		<div>
@@ -150,7 +153,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading }) => {
 				bestilteMiljoer={bestilteMiljoer}
 				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 				errorMiljoer={errorMiljoer}
-				data={visningData}
+				data={filteredData || visningData}
 			>
 				<Visning />
 			</MiljoTabs>

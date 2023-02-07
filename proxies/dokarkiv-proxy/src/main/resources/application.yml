@@ -43,4 +43,4 @@ consumers:
     name: dokarkiv-q1
     namespace: teamdokumenthandtering
 
-environments: q1,q2,q4,q5
+environments: q1,q2

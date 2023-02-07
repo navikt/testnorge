@@ -38,7 +38,7 @@ export const ArbeidInntektPanel = ({ stateModifier, formikBag }) => {
 				<Attributt attr={sm.attrs.inntektstub} />
 			</AttributtKategori>
 			<AttributtKategori title="Inntektsmelding (fra Altinn)" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.inntektsmelding} />
+				<Attributt attr={sm.attrs.inntektsmelding} id="inntekt_inntektstub" />
 			</AttributtKategori>
 		</Panel>
 	)

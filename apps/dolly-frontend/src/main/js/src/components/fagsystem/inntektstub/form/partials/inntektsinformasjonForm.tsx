@@ -30,7 +30,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 		setDate(selectedDate)
 		formikBag.setFieldValue(
 			`${path}.sisteAarMaaned`,
-			selectedDate ? selectedDate.toISOString().substr(0, 7) : undefined
+			selectedDate ? selectedDate.toISOString().substr(0, 7) : ''
 		)
 	}
 
@@ -38,7 +38,7 @@ export default ({ path, formikBag }: InntektsinformasjonForm) => {
 		setRapporteringsdato(selectedDate)
 		formikBag.setFieldValue(
 			`${path}.rapporteringsdato`,
-			selectedDate ? selectedDate.toISOString() : undefined
+			selectedDate ? selectedDate.toISOString() : null
 		)
 	}
 

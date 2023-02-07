@@ -28,6 +28,7 @@ import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static java.util.Objects.isNull;
@@ -74,7 +75,7 @@ public class RsMalBestillingWrapper {
         private Integer antallIdenter;
         private Boolean navSyntetiskIdent;
         private String opprettFraIdenter;
-        private List<String> environments;
+        private Set<String> environments;
         private RsTpsfUtvidetBestilling tpsf;
 
         private RsPdldata pdlforvalter;

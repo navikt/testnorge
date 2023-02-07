@@ -1053,6 +1053,76 @@ const mapTpsMessaging = (bestillingData, data) => {
 	}
 }
 
+export const arbeidsforholdVisning = (arbeidsforhold, i, harAmelding, aaregKriterier) => [
+	{
+		numberHeader: `Arbeidsforhold ${i + 1}`,
+	},
+	{
+		label: 'Type arbeidsforhold',
+		value:
+			arbeidsforhold.arbeidsforholdstype || (!harAmelding && aaregKriterier?.arbeidsforholdstype),
+		apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
+	},
+	obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
+	obj('Arbeidsgiver ident', arbeidsforhold.arbeidsgiver?.ident),
+	obj('Arbeidsforhold-ID', arbeidsforhold.arbeidsforholdID),
+	obj('Ansatt fra', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode?.fom)),
+	obj('Ansatt til', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode?.tom)),
+	{
+		label: 'Sluttårsak',
+		value: arbeidsforhold.ansettelsesPeriode?.sluttaarsak,
+		apiKodeverkId: ArbeidKodeverk.SluttaarsakAareg,
+	},
+	{
+		label: 'Yrke',
+		value: arbeidsforhold.arbeidsavtale?.yrke,
+		apiKodeverkId: ArbeidKodeverk.Yrker,
+	},
+	{
+		label: 'Ansettelsesform',
+		value: arbeidsforhold.arbeidsavtale?.ansettelsesform,
+		apiKodeverkId: ArbeidKodeverk.AnsettelsesformAareg,
+	},
+	obj(
+		'Stillingprosent',
+		arbeidsforhold.arbeidsavtale?.stillingsprosent === 0
+			? '0'
+			: arbeidsforhold.arbeidsavtale?.stillingsprosent
+	),
+	obj(
+		'Endringsdato stillingprosent',
+		Formatters.formatDate(arbeidsforhold.arbeidsavtale?.endringsdatoStillingsprosent)
+	),
+	obj(
+		'Endringsdato lønn',
+		Formatters.formatDate(arbeidsforhold.arbeidsavtale?.sisteLoennsendringsdato)
+	),
+	{
+		label: 'Arbeidstidsordning',
+		value: arbeidsforhold.arbeidsavtale?.arbeidstidsordning,
+		apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger,
+	},
+	obj('Avtalte arbeidstimer per uke', arbeidsforhold.arbeidsavtale?.avtaltArbeidstimerPerUke),
+	{
+		label: 'Skipsregister',
+		value: arbeidsforhold.fartoy?.[0]?.skipsregister,
+		apiKodeverkId: ArbeidKodeverk.Skipsregistre,
+	},
+	{
+		label: 'Fartøystype',
+		value: arbeidsforhold.fartoy?.[0]?.skipstype,
+		apiKodeverkId: ArbeidKodeverk.Skipstyper,
+	},
+	{
+		label: 'Fartsområde',
+		value: arbeidsforhold.fartoy?.[0]?.fartsomraade,
+		apiKodeverkId: ArbeidKodeverk.Fartsomraader,
+	},
+	obj('Perioder med antall timer for timelønnet', arbeidsforhold.antallTimerForTimeloennet?.length),
+	obj('Perioder med utenlandsopphold', arbeidsforhold.utenlandsopphold?.length),
+	obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
+	obj('Perioder med permittering', arbeidsforhold.permittering?.length),
+]
 const mapAareg = (bestillingData, data) => {
 	const aaregKriterier = bestillingData.aareg
 	if (aaregKriterier) {
@@ -1064,81 +1134,7 @@ const mapAareg = (bestillingData, data) => {
 			pagineringPages: [],
 		}
 
-		const harAmelding = _.has(aaregKriterier[0], 'amelding')
-		const arbeidsforholdVisning = (arbeidsforhold, i) => [
-			{
-				numberHeader: `Arbeidsforhold ${i + 1}`,
-			},
-			{
-				label: 'Type arbeidsforhold',
-				value:
-					arbeidsforhold.arbeidsforholdstype ||
-					(!harAmelding && aaregKriterier.arbeidsforholdstype),
-				apiKodeverkId: ArbeidKodeverk.Arbeidsforholdstyper,
-			},
-			obj('Orgnummer', arbeidsforhold.arbeidsgiver?.orgnummer),
-			obj('Arbeidsgiver ident', arbeidsforhold.arbeidsgiver?.ident),
-			obj('Arbeidsforhold-ID', arbeidsforhold.arbeidsforholdID),
-			obj('Ansatt fra', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode?.fom)),
-			obj('Ansatt til', Formatters.formatDate(arbeidsforhold.ansettelsesPeriode?.tom)),
-			{
-				label: 'Sluttårsak',
-				value: arbeidsforhold.ansettelsesPeriode?.sluttaarsak,
-				apiKodeverkId: ArbeidKodeverk.SluttaarsakAareg,
-			},
-			{
-				label: 'Yrke',
-				value: arbeidsforhold.arbeidsavtale?.yrke,
-				apiKodeverkId: ArbeidKodeverk.Yrker,
-			},
-			{
-				label: 'Ansettelsesform',
-				value: arbeidsforhold.arbeidsavtale?.ansettelsesform,
-				apiKodeverkId: ArbeidKodeverk.AnsettelsesformAareg,
-			},
-			obj(
-				'Stillingprosent',
-				arbeidsforhold.arbeidsavtale?.stillingsprosent === 0
-					? '0'
-					: arbeidsforhold.arbeidsavtale?.stillingsprosent
-			),
-			obj(
-				'Endringsdato stillingprosent',
-				Formatters.formatDate(arbeidsforhold.arbeidsavtale?.endringsdatoStillingsprosent)
-			),
-			obj(
-				'Endringsdato lønn',
-				Formatters.formatDate(arbeidsforhold.arbeidsavtale?.sisteLoennsendringsdato)
-			),
-			{
-				label: 'Arbeidstidsordning',
-				value: arbeidsforhold.arbeidsavtale?.arbeidstidsordning,
-				apiKodeverkId: ArbeidKodeverk.Arbeidstidsordninger,
-			},
-			obj('Avtalte arbeidstimer per uke', arbeidsforhold.arbeidsavtale?.avtaltArbeidstimerPerUke),
-			{
-				label: 'Skipsregister',
-				value: arbeidsforhold.fartoy?.[0].skipsregister,
-				apiKodeverkId: ArbeidKodeverk.Skipsregistre,
-			},
-			{
-				label: 'Fartøystype',
-				value: arbeidsforhold.fartoy?.[0].skipstype,
-				apiKodeverkId: ArbeidKodeverk.Skipstyper,
-			},
-			{
-				label: 'Fartsområde',
-				value: arbeidsforhold.fartoy?.[0].fartsomraade,
-				apiKodeverkId: ArbeidKodeverk.Fartsomraader,
-			},
-			obj(
-				'Perioder med antall timer for timelønnet',
-				arbeidsforhold.antallTimerForTimeloennet?.length
-			),
-			obj('Perioder med utenlandsopphold', arbeidsforhold.utenlandsopphold?.length),
-			obj('Perioder med permisjon', arbeidsforhold.permisjon?.length),
-			obj('Perioder med permittering', arbeidsforhold.permittering?.length),
-		]
+		const harAmelding = aaregKriterier[0]?.amelding?.length > 0
 
 		if (harAmelding) {
 			aareg.items.push(
@@ -1155,14 +1151,16 @@ const mapAareg = (bestillingData, data) => {
 					itemRows: [],
 				}
 				maaned.arbeidsforhold.forEach((arbeidsforhold, i) => {
-					maanedData.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
+					maanedData.itemRows.push(
+						arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier)
+					)
 				})
 				aareg.pagineringPages.push(maaned.maaned)
 				aareg.paginering.push(maanedData)
 			})
 		} else if (aaregKriterier[0]?.arbeidsgiver) {
 			aaregKriterier.forEach((arbeidsforhold, i) => {
-				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i))
+				aareg.itemRows.push(arbeidsforholdVisning(arbeidsforhold, i, harAmelding, aaregKriterier))
 			})
 		}
 

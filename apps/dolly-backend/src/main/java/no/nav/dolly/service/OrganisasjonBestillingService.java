@@ -27,11 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -97,7 +93,7 @@ public class OrganisasjonBestillingService {
                 .id(bestillingId)
                 .ferdig(isTrue(bestilling.getFerdig()))
                 .feil(bestilling.getFeil())
-                .environments(Arrays.asList(bestilling.getMiljoer().split(",")))
+                .environments(Set.of(bestilling.getMiljoer().split(",")))
                 .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
                 .malBestillingNavn(bestilling.getMalBestillingNavn())
                 .build();
@@ -118,7 +114,7 @@ public class OrganisasjonBestillingService {
                         .id(progress.getBestilling().getId())
                         .ferdig(isTrue(progress.getBestilling().getFerdig()))
                         .feil(progress.getBestilling().getFeil())
-                        .environments(Arrays.asList(progress.getBestilling().getMiljoer().split(",")))
+                        .environments(Set.of(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
                         .malBestillingNavn(progress.getBestilling().getMalBestillingNavn())
                         .build())

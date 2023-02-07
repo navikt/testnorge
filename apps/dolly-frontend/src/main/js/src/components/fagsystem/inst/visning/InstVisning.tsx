@@ -23,7 +23,7 @@ export const sjekkManglerInstData = (instData) => {
 	return instData?.length < 1 || instData?.every((miljoData) => miljoData.data?.length < 1)
 }
 
-export const InstVisning = ({ data, loading, bestillingIdListe }) => {
+export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'instdata')
 
 	if (loading) {
@@ -46,6 +46,9 @@ export const InstVisning = ({ data, loading, bestillingIdListe }) => {
 		return miljoeData
 	})
 
+	const filteredData =
+		tilgjengeligMiljoe && sortedData.filter((item) => item.miljo === tilgjengeligMiljoe)
+
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -62,7 +65,7 @@ export const InstVisning = ({ data, loading, bestillingIdListe }) => {
 					bestilteMiljoer={bestilteMiljoer}
 					errorMiljoer={errorMiljoer}
 					forsteMiljo={forsteMiljo}
-					data={sortedData}
+					data={filteredData || sortedData}
 				>
 					<DollyFieldArray nested>
 						{(opphold, idx) => (

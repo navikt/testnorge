@@ -38,10 +38,12 @@ public class ProfilService {
                                     "[ukjent]",
                                     "[ukjent]",
                                     dto.navn(),
+                                    dto.organisasjonsnummer(),
                                     "BankId")
                             ).block()
             ).orElse(new Profil(
                     "BankId",
+                    "[ukjent]",
                     "[ukjent]",
                     "[ukjent]",
                     "[ukjent]",

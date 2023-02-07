@@ -86,11 +86,11 @@ consumers:
     url: https://nais-synthdata-aareg.dev.intern.nav.no
   kodeverk:
     url: https://kodeverk.dev.intern.nav.no
-  testnav-aaregister-proxy:
-    url: https://testnav-aaregister-proxy.dev.intern.nav.no
-    name: testnav-aaregister-proxy
-    cluster: dev-fss
+  testnav-aareg-proxy:
+    name: testnav-aareg-proxy
     namespace: dolly
+    url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 aareg:
   pageSize: 50

@@ -85,7 +85,11 @@ export const Utvandring = () => {
 	const datoBegresning = sisteDatoInnflytting()
 	return (
 		<div className="person-visning_content">
-			<UtvandringForm path={'pdldata.person.utflytting[0]'} minDate={datoBegresning} />
+			<UtvandringForm
+				path={'pdldata.person.utflytting[0]'}
+				minDate={datoBegresning}
+				maxDate={new Date()}
+			/>
 		</div>
 	)
 }

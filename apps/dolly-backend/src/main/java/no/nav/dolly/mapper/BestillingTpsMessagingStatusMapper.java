@@ -20,9 +20,9 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptyList;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.TPS_MESSAGING;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
@@ -37,7 +37,8 @@ public final class BestillingTpsMessagingStatusMapper {
             Map<String, Map<String, Set<String>>> statusMap = new HashMap<>();
 
             var intermediateStatus = progressList.stream()
-                    .filter(progress -> nonNull(progress.getTpsMessagingStatus()))
+                    .filter(progress -> isNotBlank(progress.getTpsMessagingStatus()))
+                    .filter(progress -> isNotBlank(progress.getIdent()))
                     .map(progress ->
                             Stream.of(progress.getTpsMessagingStatus().split("\\$"))
                                     .filter(Strings::isNotBlank)

@@ -9,14 +9,16 @@ import no.nav.dolly.bestilling.aareg.amelding.AmeldingService;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.EnvironmentsCrossConnect;
+import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -24,6 +26,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -34,6 +37,9 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
+import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -50,6 +56,8 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
 
+    private final GetUserInfo getUserInfo;
+
     @Override
     public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -62,7 +70,10 @@ public class AaregClient implements ClientRegister {
                 return Flux.just();
             }
 
-            var miljoer = EnvironmentsCrossConnect.crossConnect(bestilling.getEnvironments());
+            var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
+            if (CurrentAuthentication.getAuthUser(getUserInfo).getBrukertype() == Bruker.Brukertype.BANKID) {
+                miljoer = crossConnect(miljoer, Q1_AND_Q2);
+            }
 
             progress.setAaregStatus((bestilling.getAareg().stream()
                     .map(RsAareg::getAmelding)
@@ -90,7 +101,7 @@ public class AaregClient implements ClientRegister {
     }
 
     private Mono<String> sendArbeidsforhold(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson,
-                                            List<String> miljoer, boolean isOpprettEndre) {
+                                            Set<String> miljoer, boolean isOpprettEndre) {
 
         MappingContext context = new MappingContext.Factory().getContext();
         context.setProperty(IDENT, dollyPerson.getHovedperson());

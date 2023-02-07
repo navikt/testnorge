@@ -5,22 +5,24 @@ import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/B
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { BestillingInfoboks } from './BestillingInfoboks'
-import { IdentVelger } from './IdentVelger'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useFormikContext } from 'formik'
-import { useCurrentBruker } from '@/utils/hooks/useBruker'
+import { useBrukerProfil, useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 
 export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const formikBag = useFormikContext()
 	const { currentBruker } = useCurrentBruker()
 
+	const { organisasjonTilgang } = useOrganisasjonTilgang()
+	const tilgjengeligMiljoe = organisasjonTilgang?.miljoe
+
 	const importTestnorge = opts.is.importTestnorge
-	const erNyIdent = !opts.personFoerLeggTil && !importTestnorge
+
 	const erOrganisasjon = formikBag.values.hasOwnProperty('organisasjon')
 	const erQ2MiljoeAvhengig =
 		_.get(formikBag.values, 'pdldata.person.fullmakt') ||
@@ -42,7 +44,7 @@ export const Steg3 = () => {
 
 	const alleredeValgtMiljoe = () => {
 		if (bankIdBruker) {
-			return erQ2MiljoeAvhengig ? ['q1', 'q2'] : ['q1']
+			return tilgjengeligMiljoe ? [tilgjengeligMiljoe] : ['q1']
 		}
 		return erQ2MiljoeAvhengig ? ['q2'] : []
 	}
@@ -53,7 +55,9 @@ export const Steg3 = () => {
 				formikBag.setFieldValue('environments', alleredeValgtMiljoe())
 			}
 			formikBag.setFieldValue('gruppeId', opts.gruppe?.id)
-		} else if (formikBag.values?.sykemelding || bankIdBruker) {
+		} else if (bankIdBruker) {
+			formikBag.setFieldValue('environments', alleredeValgtMiljoe())
+		} else if (formikBag.values?.sykemelding) {
 			formikBag.setFieldValue('environments', ['q1'])
 		} else if (!formikBag.values?.environments) {
 			formikBag.setFieldValue('environments', [])
@@ -74,12 +78,12 @@ export const Steg3 = () => {
 					<BestillingInfoboks bestillingsdata={formikBag.values} />
 				</div>
 			)}
-			{!erOrganisasjon && erNyIdent && <IdentVelger formikBag={formikBag} />}
 			{visMiljoeVelger && (
 				<MiljoVelger
 					bestillingsdata={formikBag.values}
 					heading="Hvilke miljøer vil du opprette i?"
 					bankIdBruker={bankIdBruker}
+					orgTilgang={organisasjonTilgang}
 					alleredeValgtMiljoe={alleredeValgtMiljoe()}
 				/>
 			)}

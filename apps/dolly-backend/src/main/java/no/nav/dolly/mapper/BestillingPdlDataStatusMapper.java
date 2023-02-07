@@ -38,7 +38,7 @@ public final class BestillingPdlDataStatusMapper {
         Map<String, List<String>> meldingIdents = new HashMap<>();
 
         bestProgress.forEach(progress -> {
-            if (isNotBlank(progress.getPdlDataStatus())) {
+            if (isNotBlank(progress.getPdlDataStatus()) && isNotBlank(progress.getIdent())) {
 
                 if (progress.getPdlDataStatus().contains("PDL_OPPRETT_PERSON")) {
                     extractStatus(meldingIdents, progress, objectMapper);

@@ -1,11 +1,7 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 
@@ -14,8 +10,8 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsTestgruppeMedBestillingId extends RsTestgruppe {
@@ -30,8 +26,7 @@ public class RsTestgruppeMedBestillingId extends RsTestgruppe {
         return identer;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

@@ -19,7 +19,7 @@ export type PersonData = {
 	foedsel?: Array<FoedselData>
 	statsborgerskap?: Array<StatsborgerskapData>
 	adressebeskyttelse?: Array<AdressebeskyttelseData>
-	sivilstand?: Array<Sivilstand>
+	sivilstand?: Array<SivilstandData>
 	foreldreBarnRelasjon?: Array<ForeldreBarnRelasjon>
 	foreldreansvar?: Array<Foreldreansvar>
 	innflytting?: Array<Innflytting>
@@ -87,13 +87,14 @@ export type AdressebeskyttelseData = {
 	id?: number
 }
 
-export type Sivilstand = {
+export type SivilstandData = {
 	type: string
 	gyldigFraOgMed?: string
 	relatertVedSivilstand: string
 	bekreftelsesdato?: string
 	id?: number
 	sivilstandsdato?: string
+	nyRelatertPerson?: NyIdent
 	metadata: Metadata
 }
 
@@ -136,6 +137,7 @@ export type Foreldreansvar = {
 	ansvar: string
 	ansvarlig: string
 	ansvarligUtenIdentifikator: ForeldreansvarUtenId
+	nyAnsvarlig?: NyIdent
 	metadata?: Metadata
 }
 
@@ -152,8 +154,13 @@ export type VergemaalValues = {
 	sakType?: string
 	gyldigFraOgMed: string
 	gyldigTilOgMed: string
+	nyVergeIdent?: NyIdent
 	vergeIdent?: string
 	id: number
+}
+
+export type FullmaktValues = {
+	nyFullmektig?: NyIdent
 }
 
 export type NyIdent = {

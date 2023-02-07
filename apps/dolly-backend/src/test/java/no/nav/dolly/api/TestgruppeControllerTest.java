@@ -17,16 +17,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
+import java.util.Set;
 
-import static java.util.Collections.singletonList;
+import static java.util.Collections.singleton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class TestgruppeControllerTest {
+class TestgruppeControllerTest {
 
     private static final Long GRUPPE_ID = 1L;
     private static final Long BESTILLING_ID = 1L;
@@ -47,7 +47,7 @@ public class TestgruppeControllerTest {
     private TestgruppeController testgruppeController;
 
     @Test
-    public void opprettTestgruppe() {
+    void opprettTestgruppe() {
         RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
         Testgruppe testgruppe = Testgruppe.builder().id(1L).build();
         when(testgruppeService.opprettTestgruppe(gruppe)).thenReturn(testgruppe);
@@ -57,7 +57,7 @@ public class TestgruppeControllerTest {
     }
 
     @Test
-    public void oppdaterTestgruppe() {
+    void oppdaterTestgruppe() {
 
         RsOpprettEndreTestgruppe gruppe = new RsOpprettEndreTestgruppe();
         Testgruppe testgruppe = new Testgruppe();
@@ -69,15 +69,15 @@ public class TestgruppeControllerTest {
     }
 
     @Test
-    public void getTestgrupper() {
+    void getTestgrupper() {
         testgruppeController.getTestgrupper(0, 10, "nav");
         verify(testgruppeService).getTestgruppeByBrukerId(0, 10, "nav");
     }
 
     @Test
-    public void oppretteIdentBestilling() {
+    void oppretteIdentBestilling() {
         int ant = 1;
-        List<String> envir = singletonList("u");
+        Set<String> envir = singleton("u");
 
         RsDollyBestillingRequest dollyBestillingRequest = new RsDollyBestillingRequest();
         dollyBestillingRequest.setTpsf(RsTpsfUtvidetBestilling.builder().build());
@@ -91,4 +91,5 @@ public class TestgruppeControllerTest {
         testgruppeController.opprettIdentBestilling(GRUPPE_ID, dollyBestillingRequest);
         verify(opprettPersonerByKriterierService).executeAsync(bestilling);
     }
+
 }

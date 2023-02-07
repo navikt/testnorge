@@ -1,16 +1,14 @@
 package no.nav.dolly.domain.resultset;
 
-import java.util.List;
 import com.fasterxml.jackson.annotation.JsonInclude;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -21,8 +19,7 @@ public class RsStatusRapport {
     private String navn;
     private List<Status> statuser;
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -34,8 +31,7 @@ public class RsStatusRapport {
         private List<Detaljert> detaljert;
     }
 
-    @Getter
-    @Setter
+    @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor

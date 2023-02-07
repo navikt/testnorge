@@ -27,7 +27,8 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsMalBestillingWrapper.RsBestilling malBestilling, MappingContext context) {
 
-                        RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper.mapBestillingRequest(bestilling.getBestKriterier());
+                        RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper
+                                .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
                         mapperFacade.map(bestillingRequest, malBestilling);
                         malBestilling.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         malBestilling.setTpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()));

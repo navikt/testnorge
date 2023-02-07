@@ -13,4 +13,5 @@ public class ProfileDTO {
     String displayName;
     String mail;
     String officeLocation;
+    String orgnummer;
 }

@@ -200,7 +200,7 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                 personDto.getUtflytting().stream()
                                         .filter(utflytting -> personDto.getInnflytting().stream()
                                                 .noneMatch(innflytting -> utflytting.getUtflyttingsdato()
-                                                        .isBefore(innflytting.getInnflyttingsdato())))
+                                                        .isBefore(innflytting.getFolkeregistermetadata().getGyldighetstidspunkt())))
                                         .map(utflytting -> InnvandretUtvandret.builder()
                                                 .innutvandret(InnUtvandret.UTVANDRET)
                                                 .landkode(utflytting.getTilflyttingsland())

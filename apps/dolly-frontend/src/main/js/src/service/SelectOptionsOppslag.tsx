@@ -1,10 +1,9 @@
 import { useAsync } from 'react-use'
-import { BrregstubApi, DollyApi, KrrApi, Norg2Api, PdlforvalterApi, TpsfApi } from '@/service/Api'
+import { BrregstubApi, DollyApi, KrrApi, PdlforvalterApi } from '@/service/Api'
 import Api from '@/api'
 import * as _ from 'lodash-es'
 import { Person, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getAlder } from '@/ducks/fagsystem'
-import { HentPerson } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -83,10 +82,6 @@ export const SelectOptionsOppslag = {
 
 	hentKrrLeverandoerer: () => {
 		return useAsync(async () => KrrApi.getSdpLeverandoerListe(), [KrrApi.getSdpLeverandoerListe])
-	},
-
-	hentNavEnheter: () => {
-		return useAsync(async () => Norg2Api.getNavEnheter(), [Norg2Api.getNavEnheter])
 	},
 
 	hentPersonnavn: () => {
@@ -187,16 +182,6 @@ export const SelectOptionsOppslag = {
 			const options: Option[] = []
 			roller.forEach((rolle: [string, string]) => {
 				options.push({ value: rolle[0], label: rolle[1] })
-			})
-			return options
-		} else if (type === 'navEnheter') {
-			const enheter = data.value ? Object.entries(data.value.data) : []
-			const options: Option[] = []
-			enheter?.forEach((enhet: [string, any]) => {
-				options.push({
-					value: enhet?.[1]?.enhetNr,
-					label: `${enhet?.[1]?.navn} (${enhet?.[1]?.enhetNr})`,
-				})
 			})
 			return options
 		} else if (type === 'sdpLeverandoer') {
