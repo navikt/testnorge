@@ -84,4 +84,4 @@ spec:
     - secret: idporten-dolly-dev-gcp
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: idporten
+      value: idporten,prod
