@@ -178,7 +178,7 @@ public class DollyBestillingService {
                 .build()));
     }
 
-    protected Flux<PdlResponse> opprettPerson(OriginatorCommand.Originator originator) {
+    protected Flux<PdlResponse> opprettPerson(OriginatorUtility.Originator originator) {
 
         return pdlDataConsumer.opprettPdl(originator.getPdlBestilling())
                 .doOnNext(response -> log.info("Opprettet person med ident {} ", response));

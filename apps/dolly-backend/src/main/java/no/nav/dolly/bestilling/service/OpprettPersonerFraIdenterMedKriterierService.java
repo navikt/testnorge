@@ -10,7 +10,6 @@ import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingService;
@@ -70,7 +69,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
 
             new AvailCheckCommand(bestilling.getOpprettFraIdenter(), pdlDataConsumer).call()
                     .filter(availStatus -> !bestillingService.isStoppet(bestilling.getId()))
-                    .flatMap(availStatus -> buildOriginator(bestKriterier, mapperFacade, availStatus)
+                    .flatMap(availStatus -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
+                                    availStatus.getIdent(), mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, PDLF)
                                     .flatMap(progress -> opprettPerson(originator)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
@@ -112,14 +112,5 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");
             doFerdig(bestilling);
         }
-    }
-
-    private Flux<OriginatorCommand.Originator> buildOriginator(RsDollyUtvidetBestilling bestilling,
-                                                               MapperFacade mapperFacade,
-                                                               AvailCheckCommand.AvailStatus status) {
-
-        var originator = new OriginatorCommand(bestilling, null, mapperFacade).call();
-        originator.getPdlBestilling().setOpprettFraIdent(status.getIdent());
-        return Flux.just(originator);
     }
 }

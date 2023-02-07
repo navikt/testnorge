@@ -5,34 +5,46 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
+import lombok.experimental.UtilityClass;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
+import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 
-import java.util.concurrent.Callable;
-
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@RequiredArgsConstructor
-public class OriginatorCommand implements Callable<OriginatorCommand.Originator> {
+@UtilityClass
+public class OriginatorUtility {
 
-    private final RsDollyUtvidetBestilling bestillingRequest;
-    private final Testident testident;
-    private final MapperFacade mapperFacade;
+    public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, Testident testident, MapperFacade mapperFacade) {
 
-    @Override
-    public Originator call() {
+        return prepOriginator(bestillingRequest, testident, null, mapperFacade);
+    }
+
+    public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, String ident, MapperFacade mapperFacade) {
+
+        return prepOriginator(bestillingRequest, null, ident, mapperFacade);
+    }
+
+    public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, MapperFacade mapperFacade) {
+
+        return prepOriginator(bestillingRequest, null, null, mapperFacade);
+    }
+
+    public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, Testident testident,
+                                            String ident, MapperFacade mapperFacade) {
 
         if (nonNull(testident) && testident.isPdlf() ||
-                nonNull(bestillingRequest.getPdldata()) && nonNull((bestillingRequest.getPdldata().getOpprettNyPerson()))) {
+                nonNull(bestillingRequest.getPdldata()) && nonNull((bestillingRequest.getPdldata().getOpprettNyPerson())) ||
+                isNotBlank(ident)) {
 
-            var context = new MappingContext.Factory().getContext();
+
+            var context = MappingContextUtils.getMappingContext();
             context.setProperty("navSyntetiskIdent", bestillingRequest.getNavSyntetiskIdent());
+            context.setProperty("opprettFraIdent", ident);
 
             return Originator.builder()
                     .pdlBestilling(mapperFacade.map(bestillingRequest.getPdldata(), BestillingRequestDTO.class, context))
@@ -54,13 +66,7 @@ public class OriginatorCommand implements Callable<OriginatorCommand.Originator>
     public static class Originator {
 
         private BestillingRequestDTO pdlBestilling;
-        private TpsfBestilling tpsfBestilling;
         private Master master;
-
-        @JsonIgnore
-        public boolean isTpsf() {
-            return getMaster() == Master.TPSF;
-        }
 
         @JsonIgnore
         public boolean isPdlf() {

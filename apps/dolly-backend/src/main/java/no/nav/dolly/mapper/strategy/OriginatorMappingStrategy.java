@@ -29,6 +29,7 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                         if (isNull(destinasjon.getSyntetisk())) {
                             destinasjon.setSyntetisk((Boolean) context.getProperty("navSyntetiskIdent"));
                         }
+                        destinasjon.setOpprettFraIdent((String) context.getProperty("opprettFraIdent"));
                     }
                 })
                 .exclude("person")

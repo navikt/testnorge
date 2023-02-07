@@ -71,7 +71,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
 
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .flatMap(testident -> Flux.just(new OriginatorCommand(bestKriterier, testident, mapperFacade).call())
+                    .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster())
                                     .flatMap(progress -> (originator.isPdlf() ?
                                             oppdaterPdlPerson(originator, testident.getIdent())
@@ -111,7 +111,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         }
     }
 
-    private Flux<String> oppdaterPdlPerson(OriginatorCommand.Originator originator, String ident) {
+    private Flux<String> oppdaterPdlPerson(OriginatorUtility.Originator originator, String ident) {
 
         if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
 

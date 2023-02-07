@@ -66,7 +66,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
         if (nonNull(bestKriterier)) {
 
-            var originator = new OriginatorCommand(bestKriterier, null, mapperFacade).call();
+            var originator = OriginatorUtility.prepOriginator(bestKriterier, mapperFacade);
 
             Flux.range(0, bestilling.getAntallIdenter())
                     .filter(index -> !bestillingService.isStoppet(bestilling.getId()))

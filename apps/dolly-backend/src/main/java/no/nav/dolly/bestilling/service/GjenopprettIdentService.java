@@ -28,6 +28,7 @@ import reactor.core.publisher.Operators;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.format;
 import static java.util.Objects.isNull;
@@ -76,6 +77,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                 throw new NotFoundException(format("Fant ikke testident: %s i gruppe med id: %d", bestilling.getIdent(), bestilling.getGruppe().getId()));
             }
 
+            var countEmptyBestillinger = new AtomicInteger(0);
             Flux.just(tIdent)
                     .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
@@ -92,6 +94,9 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                             .flatMap(pdlSync -> isTrue(pdlSync) ?
                                                                     Flux.fromIterable(coBestillinger)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                            .filter(cobestilling -> (nonNull(cobestilling.getBestkriterier()) &&
+                                                                                    !cobestilling.getBestkriterier().equals("{}")) ||
+                                                                                    countEmptyBestillinger.getAndIncrement() == 0)
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
