@@ -25,8 +25,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class IdportenSecurityConfig {
 
 
-    @Value("${spring.security.oauth2.resourceserver.tokenx.issuer-uri}")
-    private String tokenXIssuer;
+    @Value("${spring.security.oauth2.resourceserver.idporten.issuer-uri}")
+    private String idportenIssuer;
 
     @SneakyThrows
     @Bean
@@ -43,6 +43,6 @@ public class IdportenSecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
-        return ReactiveJwtDecoders.fromOidcIssuerLocation(tokenXIssuer);
+        return ReactiveJwtDecoders.fromOidcIssuerLocation(idportenIssuer);
     }
 }
