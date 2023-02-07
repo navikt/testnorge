@@ -5,6 +5,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
@@ -55,6 +56,9 @@ class AaregClientTest {
 
     @Mock
     private AccessToken accessToken;
+
+    @Mock
+    private Bruker bruker;
 
     @Mock
     private TransactionHelperService transactionHelperService;
@@ -121,6 +125,7 @@ class AaregClientTest {
         request.setEnvironments(singleton(ENV));
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
+                                .bruker(bruker)
                                 .build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
@@ -140,7 +145,8 @@ class AaregClientTest {
         request.setEnvironments(singleton(ENV));
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
-                               .build(), new BestillingProgress(), false)
+                                .bruker(bruker)
+                                .build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
@@ -171,6 +177,7 @@ class AaregClientTest {
 
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
+                                        .bruker(bruker)
                                         .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
@@ -205,6 +212,7 @@ class AaregClientTest {
         var progress = new BestillingProgress();
 
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                                .bruker(bruker)
                                 .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
@@ -212,5 +220,4 @@ class AaregClientTest {
                         .build())
                 .verifyComplete();
     }
-
 }
