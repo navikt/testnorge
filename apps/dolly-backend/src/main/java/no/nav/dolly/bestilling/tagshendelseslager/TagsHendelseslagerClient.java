@@ -9,6 +9,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
@@ -41,19 +42,22 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
-            return Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent()))
+            Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent())))
                     .collectList()
                     .flatMap(identer -> sendTags(identer, dollyPerson.getTags()))
-                    .doOnNext(log::info)
-                    .map(resultat -> futurePersist(progress)));
+                    .subscribe(log::info);
+        }
+
+        if (dollyPerson.getMaster() == Testident.Master.PDL) {
+
+            getPdlIdenter(List.of(dollyPerson.getIdent()))
+                    .collectList()
+                    .map(tagsHendelseslagerConsumer::publish)
+                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
+                            dollyPerson.getIdent(), response));
         }
 
         return Flux.empty();
-    }
-
-    private ClientFuture futurePersist(BestillingProgress progress) {
-
-        return () -> progress;
     }
 
     @Override
