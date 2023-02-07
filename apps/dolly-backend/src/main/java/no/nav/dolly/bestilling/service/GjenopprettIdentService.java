@@ -94,9 +94,9 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                             .flatMap(pdlSync -> isTrue(pdlSync) ?
                                                                     Flux.fromIterable(coBestillinger)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                            .filter(cobestilling -> (nonNull(cobestilling.getBestkriterier()) &&
-                                                                                    !cobestilling.getBestkriterier().equals("{}")) ||
-                                                                                    countEmptyBestillinger.getAndIncrement() == 0)
+                                                                            .filter(cobestilling -> countEmptyBestillinger.getAndIncrement() == 0 ||
+                                                                                    (nonNull(cobestilling.getBestkriterier()) &&
+                                                                                            !cobestilling.getBestkriterier().equals("{}")))
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .flatMap(bestillingRequest -> Flux.concat(

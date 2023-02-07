@@ -26,9 +26,11 @@ import reactor.core.publisher.Operators;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
+import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -67,6 +69,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
+            var emptyBestillingCounter = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
@@ -83,6 +86,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             .flatMap(pdlSync -> isTrue(pdlSync) ?
                                                                     Flux.fromIterable(coBestillinger)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                            .filter(cobestilling -> isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)) ||
+                                                                                    (nonNull(cobestilling.getBestkriterier()) &&
+                                                                                            !cobestilling.getBestkriterier().equals("{}")))
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
