@@ -15,13 +15,18 @@ spec:
     application:
       enabled: true
       tenant: nav.no
-      replyURLs:
-        - https://dolly-idporten.ekstern.dev.nav.no/login/oauth2/code/idporten
   idporten:
     enabled: true
     sidecar:
       enabled: true
-    errorPath: /login
+      autoLogin: true
+  replicas:
+    min: 1
+    max: 3
+  port: 8080
+  ingresses:
+    - https://dolly-idporten.dev.intern.nav.no
+    - https://dolly-idporten.ekstern.dev.nav.no
   accessPolicy:
     outbound:
       rules:
@@ -30,35 +35,31 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-forvalter
-        - application: testnorge-profil-api-dev
+        - application: testnorge-profil-api
+        - application: testnav-organisasjon-tilgang-service
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service
-        - application: testnav-varslinger-service-dev
-        - application: dolly-dev-redis-session
-        - application: testnav-person-organisasjon-tilgang-service-dev
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-bruker-service-dev
+        - application: testnav-varslinger-service
+        - application: dolly-redis-session
+        - application: testnav-person-organisasjon-tilgang-service
+        - application: testnav-pdl-forvalter
+        - application: testnav-bruker-service
         - application: testnav-person-search-service
         - application: testnav-inst-service
-        - application: dolly-backend-dev
+        - application: dolly-backend
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-aaregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-  replicas:
-    min: 1
-    max: 2
-  port: 8080
-  ingresses:
-    - https://dolly-idporten.ekstern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -80,7 +81,8 @@ spec:
       cpu: 1500m
       memory: 2048Mi
   image: {{image}}
+  envFrom:
+    - secret: idporten-dolly-dev-gcp
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: idporten
-      

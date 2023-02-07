@@ -15,8 +15,6 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
 
 consumers:
-  # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
-  # Konsumenter for prod
   testnorge-profil-api:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-varslinger-service:
