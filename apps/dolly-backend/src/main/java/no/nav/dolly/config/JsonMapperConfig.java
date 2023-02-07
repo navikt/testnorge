@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
@@ -32,25 +33,23 @@ public class JsonMapperConfig {
 
     @Bean
     public ObjectMapper objectMapper() {
-
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-        objectMapper.enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS);
-        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
-
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer());
-        simpleModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
-        simpleModule.addDeserializer(LocalDate.class, new DollyLocalDateDeserializer());
-        simpleModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE));
-        simpleModule.addDeserializer(YearMonth.class, new DollyYearMonthDeserializer());
-        simpleModule.addSerializer(YearMonth.class, new YearMonthSerializer(DateTimeFormatter.ofPattern(YEAR_MONTH)));
-        simpleModule.addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer());
-        simpleModule.addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
-
-        objectMapper.registerModule(simpleModule);
-        return objectMapper;
+        var simpleModule = new SimpleModule()
+                .addDeserializer(LocalDateTime.class, new DollyLocalDateTimeDeserializer())
+                .addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME))
+                .addDeserializer(LocalDate.class, new DollyLocalDateDeserializer())
+                .addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ISO_DATE))
+                .addDeserializer(YearMonth.class, new DollyYearMonthDeserializer())
+                .addSerializer(YearMonth.class, new YearMonthSerializer(DateTimeFormatter.ofPattern(YEAR_MONTH)))
+                .addDeserializer(ZonedDateTime.class, new DollyZonedDateTimeDeserializer())
+                .addSerializer(ZonedDateTime.class, new ZonedDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
+        return JsonMapper
+                .builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true)
+                .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build()
+                .registerModule(simpleModule);
     }
 
     private static class DollyYearMonthDeserializer extends JsonDeserializer<YearMonth> {
