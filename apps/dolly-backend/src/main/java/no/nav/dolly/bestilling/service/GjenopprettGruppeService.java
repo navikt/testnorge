@@ -21,7 +21,6 @@ import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -64,12 +63,10 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                     ExecutorService dollyForkJoinPool,
                                     PdlPersonConsumer pdlPersonConsumer,
                                     PdlDataConsumer pdlDataConsumer,
-                                    TransactionHelperService transactionHelperService,
-                                    AutentisertBrukerService bruker,
-                                    GetUserInfo userInfo) {
+                                    TransactionHelperService transactionHelperService) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, bruker, userInfo);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -119,7 +116,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     Optional<DollyPerson> dollyPerson = prepareDollyPerson(progress);
 
                     if (dollyPerson.isPresent()) {
-                        gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson.get(), bestKriterier, progress, false);
+                        gjenopprettNonTpsf(bestilling.getBruker(), dollyPerson.get(), bestKriterier, progress, false);
 
                         coBestillinger.stream()
                                 .filter(gruppe -> gruppe.getIdent().equals(testident.getIdent()))
@@ -129,13 +126,22 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                 !(register instanceof PdlForvalterClient ||
                                                         register instanceof PdlDataClient ))
                                         .forEach(register ->
-                                                register.gjenopprett(getAutentisertBruker(), getDollyBestillingRequest(
-                                                        Bestilling.builder()
+                                                register.gjenopprett(
+                                                        bestilling.getBruker(),
+                                                        getDollyBestillingRequest(
+                                                        Bestilling
+                                                                .builder()
                                                                 .bestKriterier(coBestilling.getBestkriterier())
                                                                 .miljoer(isNotBlank(bestilling.getMiljoer()) ?
                                                                         bestilling.getMiljoer() :
                                                                         coBestilling.getMiljoer())
-                                                                .build()), dollyPerson.get(), progress, false)));
+                                                                .build()),
+                                                        dollyPerson.get(),
+                                                        progress,
+                                                        false
+                                                )
+                                        )
+                                );
 
                     } else {
                         progress.setFeil("NA:Feil= Finner ikke personen i database");

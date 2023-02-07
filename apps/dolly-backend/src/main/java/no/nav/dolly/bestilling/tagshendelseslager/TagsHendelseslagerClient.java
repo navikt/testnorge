@@ -19,6 +19,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.core.annotation.Order;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -42,7 +43,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!dollyPerson.getTags().isEmpty()) {
 

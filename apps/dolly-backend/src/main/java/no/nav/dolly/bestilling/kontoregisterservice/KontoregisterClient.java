@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -34,7 +35,7 @@ public class KontoregisterClient implements ClientRegister {
     private final MapperFacade mapperFacade;
 
     @Override
-    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
 

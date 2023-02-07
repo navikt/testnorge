@@ -18,7 +18,6 @@ import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.*;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -66,12 +65,10 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                              ExecutorService dollyForkJoinPool,
                                              PdlPersonConsumer pdlPersonConsumer,
                                              PdlDataConsumer pdlDataConsumer,
-                                             TransactionHelperService transactionHelperService,
-                                             AutentisertBrukerService bruker,
-                                             GetUserInfo userInfo) {
+                                             TransactionHelperService transactionHelperService) {
         super(tpsfService, dollyPersonCache, identService, bestillingProgressService,
                 bestillingService, mapperFacade, cacheManager, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder, bruker, userInfo);
+                pdlPersonConsumer, pdlDataConsumer, errorStatusDecoder);
 
         this.bestillingService = bestillingService;
         this.errorStatusDecoder = errorStatusDecoder;
@@ -163,7 +160,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
                     identService.saveIdentTilGruppe(dollyPerson.getHovedperson(), bestilling.getGruppe(),
                             originator.getMaster(), bestKriterier.getBeskrivelse());
-                    gjenopprettNonTpsf(getAutentisertBruker(), dollyPerson, bestKriterier, progress, true);
+                    gjenopprettNonTpsf(bestilling.getBruker(), dollyPerson, bestKriterier, progress, true);
 
                 } catch (RuntimeException e) {
                     progress = buildProgress(bestilling, originator.getMaster(),

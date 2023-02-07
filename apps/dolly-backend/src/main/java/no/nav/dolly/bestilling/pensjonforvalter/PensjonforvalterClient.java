@@ -32,6 +32,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -100,7 +101,7 @@ public class PensjonforvalterClient implements ClientRegister {
     }
 
     @Override
-    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         var bestilteMiljoer = new HashSet<>(bestilling.getEnvironments()).stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)

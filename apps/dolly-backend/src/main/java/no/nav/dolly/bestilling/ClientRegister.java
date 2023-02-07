@@ -6,13 +6,14 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import org.springframework.lang.Nullable;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 
 public interface ClientRegister {
 
-    Flux<Void> gjenopprett(Bruker bruker, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
+    Flux<Void> gjenopprett(@Nullable Bruker bestiller, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre);
 
     void release(List<String> identer);
 

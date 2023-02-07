@@ -15,12 +15,10 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.service.BrukerService;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.core.annotation.Order;
+import org.springframework.lang.Nullable;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
@@ -58,10 +56,9 @@ public class AaregClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
-    private final GetUserInfo userInfo;
 
     @Override
-    public Flux<Void> gjenopprett(Bruker bruker, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker bestiller, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
@@ -73,17 +70,10 @@ public class AaregClient implements ClientRegister {
             }
 
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
-            // TODO: Fjern testkode
-            log.info("A: Bruker {} = {} {} {} {}", bruker.getBrukernavn(), bruker.getBrukertype(), bruker.getBrukerId(), bruker.getId(), bruker.getNavIdent());
-            if (bruker.getBrukertype() == Bruker.Brukertype.BANKID) {
+            if (bestiller != null && bestiller.getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
-            var user = CurrentAuthentication.getAuthUser(userInfo);
-            log.info("B: Bruker {} = {} {} {} {}", user.getBrukernavn(), user.getBrukertype(), user.getBrukerId(), user.getId(), user.getNavIdent());
-            var v = CurrentAuthentication.getAuthUser(userInfo);
-            log.info("C: {}/{} = {}", v.getBrukernavn(), v.getNavIdent(), v.getBrukertype());
-            log.info("Trace:", new NullPointerException("Trace"));
-            //
+
             progress.setAaregStatus((bestilling.getAareg().stream()
                     .map(RsAareg::getAmelding)
                     .anyMatch(amelding -> !amelding.isEmpty()) ?
@@ -93,13 +83,6 @@ public class AaregClient implements ClientRegister {
             ).block());
         }
         return Flux.just();
-    }
-
-    Mono<Void> getItems() {
-        return ReactiveSecurityContextHolder.getContext()
-                .map(SecurityContext::getAuthentication)
-                .doOnNext(auth -> log.info(String.valueOf(auth)))
-                .then();
     }
 
     @Override
@@ -169,15 +152,12 @@ public class AaregClient implements ClientRegister {
     }
 
     private String decodeStatus(String miljoe, ArbeidsforholdRespons reply) {
-
         log.info("AAREG respons fra miljø {} : {} ", miljoe, reply);
-        return new StringBuilder()
-                .append(miljoe)
-                .append(": arbforhold=")
-                .append(reply.getArbeidsforholdId())
-                .append('$')
-                .append(isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError()))
-                .toString();
+        return "%s: arbforhold=%s$%s".formatted(
+                miljoe,
+                reply.getArbeidsforholdId(),
+                isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError())
+        );
     }
 
 }

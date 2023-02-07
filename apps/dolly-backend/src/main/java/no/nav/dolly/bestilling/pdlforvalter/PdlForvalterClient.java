@@ -50,6 +50,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
@@ -83,7 +84,7 @@ public class PdlForvalterClient implements ClientRegister {
     private final PdlDataConsumer pdlDataConsumer;
 
     @Override
-    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (progress.isTpsf() &&
                 (isNull(bestilling.getPdldata()) || isNull(bestilling.getPdldata().getOpprettNyPerson()))) {

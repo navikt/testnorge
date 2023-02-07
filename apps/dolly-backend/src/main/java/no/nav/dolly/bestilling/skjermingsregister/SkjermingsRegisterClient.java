@@ -16,6 +16,7 @@ import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -41,7 +42,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {

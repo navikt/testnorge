@@ -22,10 +22,8 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.*;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Async;
@@ -68,16 +66,10 @@ public class DollyBestillingService {
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final AutentisertBrukerService bruker;
-    private final GetUserInfo userInfo;
 
     protected static Boolean isSyntetisk(String ident) {
 
         return Integer.parseInt(String.valueOf(ident.charAt(2))) >= 4;
-    }
-
-    Bruker getAutentisertBruker() {
-        return bruker.get();
     }
 
     public static Set<String> getEnvironments(String miljoer) {
@@ -110,11 +102,9 @@ public class DollyBestillingService {
     }
 
     @Async
-    public void oppdaterPersonAsync(
-            RsDollyUpdateRequest request,
-            Bestilling bestilling) {
-
+    public void oppdaterPersonAsync(RsDollyUpdateRequest request, Bestilling bestilling) {
         try {
+
             log.info("Bestilling med id=#{} med type={} er startet ...", bestilling.getId(), getBestillingType(bestilling));
             MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
@@ -173,7 +163,6 @@ public class DollyBestillingService {
         } catch (Exception e) {
             log.error("Bestilling med id={} til ident={} ble avsluttet med feil={}", bestilling.getId(), bestilling.getIdent(), e.getMessage(), e);
             bestilling.setFeil(format(FEIL_KUNNE_IKKE_UTFORES, e.getMessage()));
-
         } finally {
             oppdaterBestillingFerdig(bestilling);
             MDC.remove(MDC_KEY_BESTILLING);
@@ -208,13 +197,13 @@ public class DollyBestillingService {
         }
     }
 
-    protected void gjenopprettNonTpsf(Bruker bruker, DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
+    protected void gjenopprettNonTpsf(Bruker bestiller, DollyPerson dollyPerson, RsDollyBestillingRequest bestKriterier,
                                       BestillingProgress progress, boolean isOpprettEndre) {
 
         counterCustomRegistry.invoke(bestKriterier);
         Flux.fromIterable(clientRegisters)
                 .flatMap(clientRegister ->
-                        clientRegister.gjenopprett(bruker, bestKriterier, dollyPerson, progress, isOpprettEndre))
+                        clientRegister.gjenopprett(bestiller, bestKriterier, dollyPerson, progress, isOpprettEndre))
                 .collectList()
                 .block();
     }

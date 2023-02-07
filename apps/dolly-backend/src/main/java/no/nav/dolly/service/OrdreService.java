@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
@@ -47,7 +46,6 @@ public class OrdreService {
     private final PensjonforvalterClient pensjonforvalterClient;
     private final ExecutorService dollyForkJoinPool;
     private final ObjectMapper objectMapper;
-    private final AutentisertBrukerService bruker;
 
     private static RsStatusRapport getStatus(List<RsStatusRapport> status) {
 
@@ -77,9 +75,9 @@ public class OrdreService {
         List.of(CompletableFuture.supplyAsync(
                                 () -> sendPdlData(testident, progress), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
-                                () -> sendTpsMessaging(bruker.get(), dollyPerson, progress), dollyForkJoinPool),
+                                () -> sendTpsMessaging(dollyPerson, progress), dollyForkJoinPool),
                         CompletableFuture.supplyAsync(
-                                () -> sendPensjonPersoninfo(bruker.get(), dollyPerson, progress), dollyForkJoinPool)
+                                () -> sendPensjonPersoninfo(dollyPerson, progress), dollyForkJoinPool)
                         )
                 .forEach(future -> {
                     try {
@@ -107,21 +105,13 @@ public class OrdreService {
         return progress.getTpsMessagingStatus();
     }
 
-    private String sendTpsMessaging(Bruker bruker, DollyPerson dollyPerson, BestillingProgress progress) {
-
-        tpsMessagingClient.gjenopprett(bruker, new RsDollyUtvidetBestilling(),
-                dollyPerson,
-                progress, false);
-
+    private String sendTpsMessaging(DollyPerson dollyPerson, BestillingProgress progress) {
+        tpsMessagingClient.gjenopprett(null, new RsDollyUtvidetBestilling(), dollyPerson, progress, false);
         return progress.getTpsMessagingStatus();
     }
 
-    private String sendPensjonPersoninfo(Bruker bruker, DollyPerson dollyPerson, BestillingProgress progress) {
-
-        pensjonforvalterClient.gjenopprett(bruker, new RsDollyUtvidetBestilling(),
-                dollyPerson,
-                progress, false);
-
+    private String sendPensjonPersoninfo(DollyPerson dollyPerson, BestillingProgress progress) {
+        pensjonforvalterClient.gjenopprett(null, new RsDollyUtvidetBestilling(), dollyPerson, progress, false);
         return progress.getPensjonforvalterStatus();
     }
 }

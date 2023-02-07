@@ -143,7 +143,6 @@ public class TestpersonController {
     @Transactional
     @PostMapping("/ident/{ident}/ordre")
     public RsOrdreStatus sendOrdre(@PathVariable String ident) {
-
         return ordreService.sendOrdre(ident);
     }
 }

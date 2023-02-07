@@ -49,11 +49,8 @@ class InstdataClientTest {
 
     @Test
     void gjenopprettUtenInstdata_TomRetur() {
-
         BestillingProgress progress = new BestillingProgress();
-
         instdataClient.gjenopprett(null, new RsDollyBestillingRequest(), TPS_IDENT, progress, false);
-
         assertThat(progress.getInstdataStatus(), is(nullValue()));
     }
 

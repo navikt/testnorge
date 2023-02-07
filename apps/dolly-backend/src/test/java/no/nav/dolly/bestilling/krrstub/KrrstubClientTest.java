@@ -56,7 +56,6 @@ class KrrstubClientTest {
     @Test
     void gjenopprett_ingendata() {
         krrstubClient.gjenopprett(null, new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false);
-
         verify(krrstubConsumer, times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class));
     }
 

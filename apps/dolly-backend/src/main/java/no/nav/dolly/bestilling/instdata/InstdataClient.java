@@ -15,13 +15,11 @@ import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -41,14 +39,14 @@ public class InstdataClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Flux<Void> gjenopprett(Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<Void> gjenopprett(@Nullable Bruker ignored, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getInstdata().isEmpty()) {
 
             StringBuilder status = new StringBuilder();
             List<String> availEnvironments = instdataConsumer.getMiljoer();
 
-            List<String> environments = new ArrayList<>(List.copyOf(availEnvironments));
+            Set<String> environments = new HashSet<>(Set.copyOf(availEnvironments));
             environments.retainAll(bestilling.getEnvironments().isEmpty() ? environments : bestilling.getEnvironments());
 
             if (!environments.isEmpty()) {

@@ -16,8 +16,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -96,7 +94,7 @@ class SigrunStubClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        when(mapperFacade.mapAsList(any(List.class), eq(OpprettSkattegrunnlag.class))).thenReturn(request.getSigrunstub());
+        when(mapperFacade.mapAsList(anyList(), eq(OpprettSkattegrunnlag.class))).thenReturn(request.getSigrunstub());
         BestillingProgress progress = new BestillingProgress();
 
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(ResponseEntity.ok(new SigrunResponse()));
