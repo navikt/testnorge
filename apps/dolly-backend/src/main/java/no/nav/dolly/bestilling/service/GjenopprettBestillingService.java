@@ -8,15 +8,16 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -37,6 +38,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
     private BestillingProgressService bestillingProgressService;
     private PersonServiceClient personServiceClient;
+    private GetUserInfo getUserInfo;
 
     public GjenopprettBestillingService(IdentService identService, BestillingProgressService bestillingProgressService,
                                         BestillingService bestillingService,
@@ -45,13 +47,15 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                         ErrorStatusDecoder errorStatusDecoder,
                                         PdlDataConsumer pdlDataConsumer,
                                         TransactionHelperService transactionHelperService,
-                                        PersonServiceClient personServiceClient) {
+                                        PersonServiceClient personServiceClient,
+                                        GetUserInfo getUserInfo) {
         super(identService, bestillingService,
                 objectMapper, clientRegisters, counterCustomRegistry, pdlDataConsumer,
                 errorStatusDecoder, transactionHelperService);
 
         this.bestillingProgressService = bestillingProgressService;
         this.personServiceClient = personServiceClient;
+        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -60,7 +64,8 @@ public class GjenopprettBestillingService extends DollyBestillingService {
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
-        RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var bestKriterier = getDollyBestillingRequest(bestilling);
+        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
 
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
@@ -71,7 +76,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                     .filter(gmlProgress -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(gmlProgress -> opprettProgress(bestilling, gmlProgress.getMaster(), gmlProgress.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, gmlProgress.getIdent())
-                                    .flatMap(ident -> opprettDollyPerson(ident, progress)
+                                    .flatMap(ident -> opprettDollyPerson(ident, progress, userInfo)
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
@@ -94,7 +99,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                        progress.getId(), error);
+                                                        progress.getId(), error, throwable);
                                                 progress.setFeil(error);
                                                 transactionHelperService.persister(progress);
                                                 return Flux.just(progress);

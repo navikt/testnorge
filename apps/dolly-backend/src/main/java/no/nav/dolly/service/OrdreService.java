@@ -62,7 +62,7 @@ public class OrdreService {
                                 .build())
                         .build())
                 .flatMap(progress -> Flux.just(DollyPerson.builder()
-                                .hovedperson(ident)
+                                .ident(ident)
                                 .master(progress.getMaster())
                                 .isOrdre(true)
                                 .build())
@@ -90,7 +90,7 @@ public class OrdreService {
 
     private Flux<BestillingProgress> sendOrdre(DollyPerson dollyPerson, BestillingProgress progress) {
 
-        return pdlDataConsumer.sendOrdre(dollyPerson.getHovedperson(), false)
+        return pdlDataConsumer.sendOrdre(dollyPerson.getIdent(), false)
                 .map(response -> {
                     progress.setPdlDataStatus(response.getStatus().is2xxSuccessful() ?
                             response.getJsonNode() : response.getFeilmelding());

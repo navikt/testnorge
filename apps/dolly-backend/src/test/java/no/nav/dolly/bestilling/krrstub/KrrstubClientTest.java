@@ -53,7 +53,7 @@ class KrrstubClientTest {
     void gjenopprett_ingendata() {
 
         krrstubClient.gjenopprett(new RsDollyBestillingRequest(),
-                        DollyPerson.builder().hovedperson(IDENT).build(), new BestillingProgress(), false)
+                        DollyPerson.builder().ident(IDENT).build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(krrstubConsumer,
                                 times(0)).createDigitalKontaktdata(any(DigitalKontaktdata.class)));
@@ -71,7 +71,7 @@ class KrrstubClientTest {
         var request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
         krrstubClient.gjenopprett(request,
-                        DollyPerson.builder().hovedperson(IDENT).build(),
+                        DollyPerson.builder().ident(IDENT).build(),
                         BestillingProgress.builder()
                                 .bestilling(Bestilling.builder().id(BESTILLING_ID).build())
                                 .build(), false)
@@ -95,7 +95,7 @@ class KrrstubClientTest {
         var request = new RsDollyBestillingRequest();
         request.setKrrstub(RsDigitalKontaktdata.builder().build());
 
-        StepVerifier.create(krrstubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(),
+        StepVerifier.create(krrstubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()

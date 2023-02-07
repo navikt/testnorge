@@ -194,7 +194,7 @@ public class DollyPersonCache {
     public DollyPerson preparePerson(Testident testident, List<Tags> tags) {
 
         return DollyPerson.builder()
-                .hovedperson(testident.getIdent())
+                .ident(testident.getIdent())
                 .master(testident.getMaster())
                 .tags(tags)
                 .build();

@@ -14,6 +14,7 @@ import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -33,8 +34,8 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Stream;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import static java.util.Collections.emptySet;
 import static java.util.Objects.nonNull;
@@ -145,15 +146,16 @@ public class DollyBestillingService {
         log.info("Ident {} lagt til gruppe {}", ident, progress.getBestilling().getGruppe().getId());
     }
 
-    protected Flux<DollyPerson> opprettDollyPerson(String ident, BestillingProgress progress) {
+    protected Flux<DollyPerson> opprettDollyPerson(String ident, BestillingProgress progress, Bruker bruker) {
 
         return Flux.just(DollyPerson.builder()
-                .hovedperson(ident)
+                .ident(ident)
                 .master(progress.getMaster())
                 .tags(Stream.concat(progress.getBestilling().getGruppe().getTags().stream(),
                                 Stream.of(Tags.DOLLY)
                                         .filter(tag -> progress.getMaster() == PDL))
                         .toList())
+                .bruker(bruker)
                 .build());
     }
 

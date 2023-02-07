@@ -44,9 +44,9 @@ public class BrregstubClient implements ClientRegister {
 
         if (nonNull(bestilling.getBrregstub())) {
 
-            return Flux.from(getPersonData(dollyPerson.getHovedperson())
+            return Flux.from(getPersonData(dollyPerson.getIdent())
                             .flatMap(personBolk -> mapRolleoversikt(bestilling.getBrregstub(), personBolk)
-                                    .map(nyRolleoversikt -> brregstubConsumer.getRolleoversikt(dollyPerson.getHovedperson())
+                                    .map(nyRolleoversikt -> brregstubConsumer.getRolleoversikt(dollyPerson.getIdent())
                                             .map(eksisterendeRoller -> BrregstubMergeUtil.merge(nyRolleoversikt, eksisterendeRoller))
                                             .flatMap(this::postRolleutskrift)))
                             .flatMap(Flux::from)

@@ -16,10 +16,12 @@ import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private PersonServiceClient personServiceClient;
     private MapperFacade mapperFacade;
     private BestillingProgressService bestillingProgressService;
+    private GetUserInfo getUserInfo;
 
     public LeggTilPaaGruppeService(IdentService identService,
                                    BestillingProgressService bestillingProgressService,
@@ -50,7 +53,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                    ErrorStatusDecoder errorStatusDecoder,
                                    PdlDataConsumer pdlDataConsumer,
                                    TransactionHelperService transactionHelperService,
-                                   PersonServiceClient personServiceClient) {
+                                   PersonServiceClient personServiceClient,
+                                   GetUserInfo getUserInfo) {
 
         super(identService, bestillingService, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlDataConsumer, errorStatusDecoder, transactionHelperService);
@@ -58,6 +62,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
+        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -67,6 +72,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
 
         if (nonNull(bestKriterier)) {
 
@@ -77,8 +83,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                             oppdaterPdlPerson(originator, testident.getIdent())
                                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                             Flux.just(testident.getIdent()))
-                                            .flatMap(ident -> opprettDollyPerson(testident.getIdent(), progress)
-                                                    .flatMap(dollyPerson -> (!dollyPerson.getHovedperson().equals(bestilling.getIdent()) ?
+                                            .flatMap(ident -> opprettDollyPerson(testident.getIdent(), progress, userInfo)
+                                                    .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
                                                             updateIdent(dollyPerson, progress) : Flux.just(ident))
                                                             .doOnNext(nyident -> counterCustomRegistry.invoke(bestKriterier))
                                                             .flatMap(nyIdent -> Flux.concat(
@@ -102,7 +108,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                         var error = errorStatusDecoder.getErrorText(
                                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                                progress.getId(), error);
+                                                                progress.getId(), error, throwable);
                                                         bestilling.setFeil(error);
                                                         return Flux.just(progress);
                                                     })))))
@@ -129,12 +135,12 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
     private Flux<String> updateIdent(DollyPerson dollyPerson, BestillingProgress progress) {
 
-        progress.setIdent(dollyPerson.getHovedperson());
+        progress.setIdent(dollyPerson.getIdent());
         transactionHelperService.persister(progress);
-        identService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getHovedperson());
-        bestillingProgressService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getHovedperson());
-        bestillingService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getHovedperson());
+        identService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent());
+        bestillingProgressService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent());
+        bestillingService.swapIdent(progress.getBestilling().getIdent(), dollyPerson.getIdent());
 
-        return Flux.just(dollyPerson.getHovedperson());
+        return Flux.just(dollyPerson.getIdent());
     }
 }

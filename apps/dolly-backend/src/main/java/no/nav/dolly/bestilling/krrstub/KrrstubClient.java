@@ -47,14 +47,14 @@ public class KrrstubClient implements ClientRegister {
                 (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode()))) {
 
             var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", dollyPerson.getHovedperson());
+            context.setProperty("ident", dollyPerson.getIdent());
             context.setProperty("bestilling", bestilling);
 
             var digitalKontaktdataRequest = mapperFacade.map(
                     nonNull(bestilling.getKrrstub()) ? bestilling.getKrrstub() : new RsDigitalKontaktdata(),
                     DigitalKontaktdata.class, context);
 
-            return Flux.from(deleteKontaktdataPerson(dollyPerson.getHovedperson(), isOpprettEndre)
+            return Flux.from(deleteKontaktdataPerson(dollyPerson.getIdent(), isOpprettEndre)
                     .flatMap(slettetStatus -> krrstubConsumer.createDigitalKontaktdata(digitalKontaktdataRequest))
                     .map(this::getStatus)
                     .map(status -> futurePersist(progress, status)));

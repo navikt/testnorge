@@ -60,7 +60,7 @@ public class SykemeldingClient implements ClientRegister {
 
         if (nonNull(bestilling.getSykemelding())) {
 
-            if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getHovedperson(), null) && !isOpprettEndre) {
+            if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null) && !isOpprettEndre) {
                 setProgress(progress, "OK");
 
             } else {
@@ -70,7 +70,7 @@ public class SykemeldingClient implements ClientRegister {
                 return Flux.just(1)
                         .flatMap(index -> {
                             setProgress(progress, "Info: Venter på generering av sykemelding ...");
-                            return getPerson(dollyPerson.getHovedperson())
+                            return getPerson(dollyPerson.getIdent())
                                     .flatMap(persondata -> Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"),
                                                     getNorgenhet(persondata))
                                             .flatMap(zip -> Flux.concat(postSyntSykemelding(bestilling, persondata),

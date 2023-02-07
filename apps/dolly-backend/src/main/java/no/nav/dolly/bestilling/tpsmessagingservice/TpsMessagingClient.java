@@ -86,35 +86,35 @@ public class TpsMessagingClient implements ClientRegister {
                                 transactionHelperService.persister(progress);
                             }
 
-                            return getIdenterHovedpersonOgPartner(dollyPerson.getHovedperson())
+                            return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
                                     .flatMap(this::getPersonData)
                                     .collectList()
                                     .map(personer -> tpsMessagingConsumer.getToken()
                                             .flatMapMany(token -> Flux.concat(
-                                                    sendSpraakkode(bestilling, dollyPerson.getHovedperson(), token)
+                                                    sendSpraakkode(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("SpråkKode", respons)),
-                                                    sendBankkontonummerNorge(bestilling, dollyPerson.getHovedperson(), token)
+                                                    sendBankkontonummerNorge(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("NorskBankkonto", respons)),
-                                                    sendBankkontonummerUtenland(bestilling, dollyPerson.getHovedperson(), token)
+                                                    sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("UtenlandskBankkonto", respons)),
-                                                    sendEgenansattSlett(bestilling, dollyPerson.getHovedperson(), token)
+                                                    sendEgenansattSlett(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("Egenansatt_slett", respons)),
-                                                    sendEgenansatt(bestilling, dollyPerson.getHovedperson(), token)
+                                                    sendEgenansatt(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("Egenansatt_opprett", respons)),
                                                     sendSikkerhetstiltakSlett(personer.stream()
-                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getHovedperson()))
+                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
                                                             .findFirst(), token)
                                                             .map(respons -> Map.of("Sikkerhetstiltak_slett", respons)),
                                                     sendSikkerhetstiltakOpprett(personer.stream()
-                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getHovedperson()))
+                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
                                                             .findFirst(), token)
                                                             .map(respons -> Map.of("Sikkerhetstiltak_opprett", respons)),
                                                     sendTelefonnumreSlett(personer.stream()
-                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getHovedperson()))
+                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
                                                             .findFirst(), token)
                                                             .map(respons -> Map.of("Telefonnummer_slett", respons)),
                                                     sendTelefonnumreOpprett(personer.stream()
-                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getHovedperson()))
+                                                            .filter(personBolk -> personBolk.getIdent().equals(dollyPerson.getIdent()))
                                                             .findFirst(), token)
                                                             .map(respons -> Map.of("Telefonnummer_opprett", respons)),
                                                     sendBostedsadresseUtland(personer, token)

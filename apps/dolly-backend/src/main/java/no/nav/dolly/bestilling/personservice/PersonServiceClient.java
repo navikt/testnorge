@@ -42,7 +42,7 @@ public class PersonServiceClient {
         }
         var startTime = System.currentTimeMillis();
         return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
-                new PersonServiceResponse(), dollyPerson.getHovedperson())
+                new PersonServiceResponse(), dollyPerson.getIdent())
                 .flatMap(status -> logStatus(status, startTime)
                         .map(status2 -> futurePersist(dollyPerson, progress, status, status2)));
     }

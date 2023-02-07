@@ -54,7 +54,7 @@ class SigrunStubClientTest {
     void gjenopprett_ingendata() {
 
         BestillingProgress progress = new BestillingProgress();
-        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(),
+        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().ident(IDENT).build(),
                 new BestillingProgress(), false);
 
         assertThat(progress.getSigrunstubStatus(), is(nullValue()));
@@ -74,7 +74,7 @@ class SigrunStubClientTest {
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
-                                DollyPerson.builder().hovedperson(IDENT).build(), progress, false)
+                                DollyPerson.builder().ident(IDENT).build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
                         .sigrunstubStatus("Feil:")
@@ -97,7 +97,7 @@ class SigrunStubClientTest {
 
         when(sigrunStubConsumer.deleteSkattegrunnlag(IDENT)).thenReturn(Mono.just(new SigrunstubResponse()));
 
-        StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(),
+        StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), true)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()

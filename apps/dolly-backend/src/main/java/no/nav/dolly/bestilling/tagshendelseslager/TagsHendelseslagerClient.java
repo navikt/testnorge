@@ -41,7 +41,7 @@ public class TagsHendelseslagerClient implements ClientRegister {
 
         if (!dollyPerson.getTags().isEmpty()) {
 
-            return Flux.from(getPdlIdenter(List.of(dollyPerson.getHovedperson()))
+            return Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent()))
                     .collectList()
                     .flatMap(identer -> sendTags(identer, dollyPerson.getTags()))
                     .doOnNext(log::info)

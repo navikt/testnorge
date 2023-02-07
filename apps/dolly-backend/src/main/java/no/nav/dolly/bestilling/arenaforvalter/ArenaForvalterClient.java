@@ -79,7 +79,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     .collect(Collectors.joining(",")));
             transactionHelperService.persister(progress);
 
-            return Flux.from(getIdenterFamilie(dollyPerson.getHovedperson())
+            return Flux.from(getIdenterFamilie(dollyPerson.getIdent())
                     .flatMap(personServiceConsumer::getPdlSyncReady)
                     .collectList()
                     .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
@@ -103,9 +103,9 @@ public class ArenaForvalterClient implements ClientRegister {
                         .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
                                 .filter(miljo -> bestilling.getEnvironments().contains(miljo))
                                 .parallel()
-                                .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
-                                        sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
-                                        sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+                                .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
+                                        sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
+                                        sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token))))
                         .filter(StringUtils::isNotBlank)
                         .collect(Collectors.joining(",")) :
 

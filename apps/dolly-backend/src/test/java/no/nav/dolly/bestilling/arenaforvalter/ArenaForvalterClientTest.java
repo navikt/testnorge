@@ -93,7 +93,7 @@ class ArenaForvalterClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
@@ -130,7 +130,7 @@ class ArenaForvalterClientTest {
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
 
-        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
@@ -152,7 +152,7 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton(ENV));
 
         Assertions.assertThrows(NullPointerException.class, () ->
-                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                         .build(), progress, false));
     }
 
@@ -168,7 +168,7 @@ class ArenaForvalterClientTest {
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
         when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
-        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(),
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
@@ -184,7 +184,7 @@ class ArenaForvalterClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                         .build(), progress, false)
                 .subscribe();
 

@@ -34,7 +34,9 @@ import java.util.Map;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -118,7 +120,7 @@ class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singleton(ENV));
         aaregClient.gjenopprett(request,
-                        DollyPerson.builder().hovedperson(IDENT)
+                        DollyPerson.builder().ident(IDENT)
                                 .build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
@@ -137,7 +139,7 @@ class AaregClientTest {
         request.setAareg(singletonList(RsAareg.builder().build()));
         request.setEnvironments(singleton(ENV));
         aaregClient.gjenopprett(request,
-                        DollyPerson.builder().hovedperson(IDENT)
+                        DollyPerson.builder().ident(IDENT)
                                .build(), new BestillingProgress(), false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
@@ -168,7 +170,7 @@ class AaregClientTest {
         var progress = new BestillingProgress();
 
         StepVerifier.create(aaregClient.gjenopprett(request,
-                                DollyPerson.builder().hovedperson(IDENT)
+                                DollyPerson.builder().ident(IDENT)
                                         .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()
@@ -202,7 +204,7 @@ class AaregClientTest {
 
         var progress = new BestillingProgress();
 
-        StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
+        StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false)
                         .map(ClientFuture::get))
                 .expectNext(BestillingProgress.builder()

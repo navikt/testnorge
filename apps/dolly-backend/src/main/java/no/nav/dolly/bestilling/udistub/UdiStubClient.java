@@ -45,8 +45,8 @@ public class UdiStubClient implements ClientRegister {
             progress.setUdistubStatus(encodeStatus(getInfoVenter("UdiStub")));
             transactionHelperService.persister(progress);
 
-            return Flux.from(getPersonData(List.of(dollyPerson.getHovedperson()))
-                            .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getHovedperson())
+            return Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
+                            .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getIdent())
                                     .map(eksisterende -> udiMergeService.merge(bestilling.getUdistub(),
                                             eksisterende, persondata))
                                     .flatMap(this::sendUdiPerson)

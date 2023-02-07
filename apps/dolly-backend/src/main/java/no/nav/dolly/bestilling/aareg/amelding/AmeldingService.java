@@ -45,7 +45,7 @@ public class AmeldingService {
                 .map(miljoe -> organisasjonServiceConsumer.getOrganisasjoner(orgnumre, miljoe)
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
-                                prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getHovedperson(),
+                                prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getIdent(),
                                         organisasjon, miljoe))
                         .collect(Collectors.joining(",")))
                 .flatMap(Flux::from)

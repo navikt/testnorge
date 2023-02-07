@@ -13,9 +13,11 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -38,6 +40,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
     private static final String FEIL = "FEIL: Feilet å importere identer fra Testnorge";
 
     private PersonServiceClient personServiceClient;
+    private GetUserInfo getUserInfo;
 
     public ImportAvPersonerFraPdlService(IdentService identService,
                                          BestillingService bestillingService,
@@ -47,12 +50,14 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                          ErrorStatusDecoder errorStatusDecoder,
                                          PdlDataConsumer pdlDataConsumer,
                                          TransactionHelperService transactionHelperService,
-                                         PersonServiceClient personServiceClient) {
+                                         PersonServiceClient personServiceClient,
+                                         GetUserInfo getUserInfo) {
 
         super(identService, bestillingService, objectMapper, clientRegisters, counterCustomRegistry,
                 pdlDataConsumer, errorStatusDecoder, transactionHelperService);
 
         this.personServiceClient = personServiceClient;
+        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -63,13 +68,14 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
 
         if (nonNull(bestKriterier)) {
 
             Flux.fromArray(bestilling.getPdlImport().split(","))
                     .filter(testnorgeIdent -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testnorgeIdent -> opprettProgress(bestilling, PDL, testnorgeIdent)
-                            .flatMap(progress -> opprettDollyPerson(testnorgeIdent, progress)
+                            .flatMap(progress -> opprettDollyPerson(testnorgeIdent, progress, userInfo)
                                     .doOnNext(dollyPerson -> leggIdentTilGruppe(testnorgeIdent,
                                             progress, bestKriterier.getBeskrivelse()))
                                     .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
@@ -94,7 +100,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                         var error = errorStatusDecoder.getErrorText(
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                progress.getId(), error);
+                                                progress.getId(), error, throwable);
                                         bestilling.setFeil(error);
                                     })
                                     .doOnNext(status -> oppdaterStatus(progress))))

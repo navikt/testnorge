@@ -37,7 +37,7 @@ public class KontoregisterClient implements ClientRegister {
 
         if (nonNull(bestilling.getBankkonto())) {
 
-            var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
+            var request = prepareRequest(bestilling, dollyPerson.getIdent());
             if (nonNull(request)) {
                 return Flux.from(kontoregisterConsumer.postKontonummerRegister(request)
                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :

@@ -256,7 +256,7 @@ class PensjonforvalterClientTest {
                 .ident("000")
                 .build();
         var dollyPerson = DollyPerson.builder()
-                .hovedperson(IDENT)
+                .ident(IDENT)
                 .build();
 
         var progress = new BestillingProgress();
@@ -331,7 +331,7 @@ class PensjonforvalterClientTest {
         bestilling.setPensjonforvalter(pensjonData);
 
         var dollyPerson = DollyPerson.builder()
-                .hovedperson(IDENT)
+                .ident(IDENT)
                 .build();
 
         var progress = new BestillingProgress();
@@ -414,7 +414,7 @@ class PensjonforvalterClientTest {
                 .build());
 
         var dollyPerson = DollyPerson.builder()
-                .hovedperson(IDENT)
+                .ident(IDENT)
                 .build();
 
         var dbBestilling = Bestilling.builder().id(1L).build();

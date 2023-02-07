@@ -35,12 +35,12 @@ public class SigrunStubClient implements ClientRegister {
         if (!bestilling.getSigrunstub().isEmpty()) {
 
             var context = MappingContextUtils.getMappingContext();
-            context.setProperty("ident", dollyPerson.getHovedperson());
+            context.setProperty("ident", dollyPerson.getIdent());
 
             var skattegrunnlag =
                     mapperFacade.mapAsList(bestilling.getSigrunstub(), OpprettSkattegrunnlag.class, context);
 
-            return Flux.from(deleteSkattegrunnlag(dollyPerson.getHovedperson(), isOpprettEndre)
+            return Flux.from(deleteSkattegrunnlag(dollyPerson.getIdent(), isOpprettEndre)
                     .flatMap(deletedStatus -> sigrunStubConsumer.createSkattegrunnlag(skattegrunnlag))
                     .map(this::getStatus)
                     .map(resultat -> futurePersist(progress, resultat)));

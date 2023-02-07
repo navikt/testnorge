@@ -15,9 +15,11 @@ import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
+import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -41,6 +43,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class GjenopprettIdentService extends DollyBestillingService {
 
     private PersonServiceClient personServiceClient;
+    private GetUserInfo getUserInfo;
 
     public GjenopprettIdentService(IdentService identService,
                                    BestillingService bestillingService,
@@ -50,12 +53,14 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                    ErrorStatusDecoder errorStatusDecoder,
                                    PdlDataConsumer pdlDataConsumer,
                                    TransactionHelperService transactionHelperService,
-                                   PersonServiceClient personServiceClient) {
+                                   PersonServiceClient personServiceClient,
+                                   GetUserInfo getUserInfo) {
 
         super(identService, bestillingService, objectMapper, clientRegisters,
                 counterCustomRegistry, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
 
         this.personServiceClient = personServiceClient;
+        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -66,6 +71,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
 
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
@@ -82,7 +88,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                     .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
-                                    .flatMap(ident -> opprettDollyPerson(ident, progress)
+                                    .flatMap(ident -> opprettDollyPerson(ident, progress, userInfo)
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,
@@ -112,7 +118,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                        progress.getId(), error);
+                                                        progress.getId(), error, throwable);
                                                 progress.setFeil(error);
                                                 transactionHelperService.persister(progress);
                                                 return Flux.just(progress);

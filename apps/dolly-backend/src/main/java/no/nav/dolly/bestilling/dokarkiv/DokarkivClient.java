@@ -53,15 +53,15 @@ public class DokarkivClient implements ClientRegister {
         if (nonNull(bestilling.getDokarkiv())) {
 
             var bestillingId = progress.getBestilling().getId();
-            return Flux.from(getPersonData(List.of(dollyPerson.getHovedperson()))
+            return Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
                             .map(person -> buildRequest(bestilling.getDokarkiv(), person))
                             .flatMap(request -> dokarkivConsumer.getEnvironments()
                                     .flatMapIterable(env -> env)
                                     .filter(env -> bestilling.getEnvironments().contains(env))
                                     .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
-                                            dollyPerson.getHovedperson(), env) || isOpprettEndre)
+                                            dollyPerson.getIdent(), env) || isOpprettEndre)
                                     .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
-                                            .map(status -> getStatus(dollyPerson.getHovedperson(), bestillingId, status))))
+                                            .map(status -> getStatus(dollyPerson.getIdent(), bestillingId, status))))
                             .collect(Collectors.joining(",")))
                     .map(status -> futurePersist(progress, status));
         }

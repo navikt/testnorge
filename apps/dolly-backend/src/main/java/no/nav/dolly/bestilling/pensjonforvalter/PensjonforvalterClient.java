@@ -112,29 +112,29 @@ public class PensjonforvalterClient implements ClientRegister {
                             .collect(Collectors.toSet()));
 
                     return pensjonforvalterConsumer.getAccessToken()
-                            .flatMapMany(token -> getIdenterRelasjoner(dollyPerson.getHovedperson())
+                            .flatMapMany(token -> getIdenterRelasjoner(dollyPerson.getIdent())
                                     .flatMap(this::getPersonData)
                                     .collectList()
                                     .map(relasjoner -> Flux.concat(
-                                            opprettPersoner(dollyPerson.getHovedperson(), tilgjengeligeMiljoer,
+                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer,
                                                     relasjoner, token)
-                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getHovedperson())),
+                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
 
                                             lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
-                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getHovedperson())),
+                                                            .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
 
                                             lagreAlderspensjon(
                                                             bestilling.getPensjonforvalter(),
                                                             relasjoner,
-                                                            dollyPerson.getHovedperson(),
+                                                            dollyPerson.getIdent(),
                                                             bestilteMiljoer.get(),
                                                             token,
                                                             isOpprettEndre,
                                                             bestillingId)
-                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getHovedperson())),
+                                                            .map(response -> PEN_ALDERSPENSJON + decodeStatus(response, dollyPerson.getIdent())),
 
                                                     lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
-                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getHovedperson())))))
+                                                            .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())))))
                                     .flatMap(Flux::from)
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining("$"));
@@ -268,7 +268,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         if (nonNull(pensjonData) && nonNull(pensjonData.getInntekt())) {
             var poppInntektRequest = mapperFacade.map(pensjonData.getInntekt(), PensjonPoppInntektRequest.class);
-            poppInntektRequest.setFnr(dollyPerson.getHovedperson());
+            poppInntektRequest.setFnr(dollyPerson.getIdent());
 
             return pensjonforvalterConsumer.lagreInntekter(poppInntektRequest, miljoer, token);
 
@@ -284,7 +284,7 @@ public class PensjonforvalterClient implements ClientRegister {
                         .map(tp -> {
 
                             var context = new MappingContext.Factory().getContext();
-                            context.setProperty("ident", dollyPerson.getHovedperson());
+                            context.setProperty("ident", dollyPerson.getIdent());
                             context.setProperty("miljoer", miljoer);
 
                             var tpForholdRequest = mapperFacade.map(tp, PensjonTpForholdRequest.class, context);

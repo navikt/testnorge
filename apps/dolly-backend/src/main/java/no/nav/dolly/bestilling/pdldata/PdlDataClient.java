@@ -31,7 +31,7 @@ public class PdlDataClient implements ClientRegister {
 
         try {
             if (progress.isTpsf() && nonNull(bestilling.getPdldata()) && isOpprettEndre) {
-                pdlDataConsumer.oppdaterPdl(dollyPerson.getHovedperson(),
+                pdlDataConsumer.oppdaterPdl(dollyPerson.getIdent(),
                         PersonUpdateRequestDTO.builder()
                                 .person(bestilling.getPdldata().getPerson())
                                 .build());

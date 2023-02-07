@@ -14,11 +14,9 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -58,15 +56,13 @@ public class AaregClient implements ClientRegister {
     private final AmeldingService ameldingService;
     private final TransactionHelperService transactionHelperService;
 
-    private final GetUserInfo getUserInfo;
-
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (!bestilling.getAareg().isEmpty()) {
 
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
-            if (CurrentAuthentication.getAuthUser(getUserInfo).getBrukertype() == Bruker.Brukertype.BANKID) {
+            if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
             var miljoerTrygg = new AtomicReference<>(miljoer);
@@ -111,13 +107,13 @@ public class AaregClient implements ClientRegister {
                                             Set<String> miljoer, boolean isOpprettEndre) {
 
         MappingContext context = new MappingContext.Factory().getContext();
-        context.setProperty(IDENT, dollyPerson.getHovedperson());
+        context.setProperty(IDENT, dollyPerson.getIdent());
         var arbeidsforholdRequest = mapperFacade.mapAsList(bestilling.getAareg(), Arbeidsforhold.class, context);
 
         return aaregConsumer.getAccessToken()
                 .flatMapMany(token -> Flux.fromIterable(miljoer)
                         .parallel()
-                        .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getHovedperson(), miljoe, token)
+                        .flatMap(miljoe -> aaregConsumer.hentArbeidsforhold(dollyPerson.getIdent(), miljoe, token)
                                 .flatMapMany(response -> doInsertOrUpdate(response, arbeidsforholdRequest, miljoe, token, isOpprettEndre))))
                 .collect(Collectors.joining(","));
     }

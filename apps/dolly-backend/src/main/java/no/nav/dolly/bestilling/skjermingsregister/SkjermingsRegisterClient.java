@@ -46,7 +46,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
 
         if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
 
-            return Flux.from(getPersonData(dollyPerson.getHovedperson())
+            return Flux.from(getPersonData(dollyPerson.getIdent())
                             .map(person -> prepRequest(bestilling, person))
                             .flatMap(request -> skjermingsRegisterConsumer.oppdaterPerson(request)
                                     .map(this::getStatus))

@@ -39,7 +39,7 @@ public class InstdataClient implements ClientRegister {
         if (!bestilling.getInstdata().isEmpty()) {
 
             var context = MappingContextUtils.getMappingContext();
-            context.setProperty("ident", dollyPerson.getHovedperson());
+            context.setProperty("ident", dollyPerson.getIdent());
             var instdata = mapperFacade.mapAsList(bestilling.getInstdata(), Instdata.class, context);
 
             return Flux.from(instdataConsumer.getMiljoer()

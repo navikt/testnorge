@@ -40,12 +40,12 @@ public class InntektstubClient implements ClientRegister {
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
             var context = MappingContextUtils.getMappingContext();
-            context.setProperty("ident", dollyPerson.getHovedperson());
+            context.setProperty("ident", dollyPerson.getIdent());
 
             var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
                     InntektsinformasjonWrapper.class, context);
 
-            return Flux.from(inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
+            return Flux.from(inntektstubConsumer.getInntekter(dollyPerson.getIdent())
                     .collectList()
                     .flatMap(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                             .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->

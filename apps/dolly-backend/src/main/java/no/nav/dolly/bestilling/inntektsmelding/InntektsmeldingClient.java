@@ -47,7 +47,7 @@ public class InntektsmeldingClient implements ClientRegister {
         if (nonNull(bestilling.getInntektsmelding())) {
 
             var context = MappingContextUtils.getMappingContext();
-            context.setProperty("ident", dollyPerson.getHovedperson());
+            context.setProperty("ident", dollyPerson.getIdent());
 
             var inntektsmeldingRequest = mapperFacade.map(bestilling.getInntektsmelding(), InntektsmeldingRequest.class, context);
 
@@ -57,7 +57,7 @@ public class InntektsmeldingClient implements ClientRegister {
 
                                 inntektsmeldingRequest.setMiljoe(environment);
                                 return postInntektsmelding(isOpprettEndre ||
-                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getHovedperson(), environment),
+                                                !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment),
                                         inntektsmeldingRequest, progress.getBestilling().getId());
                             })
                             .filter(StringUtils::isNotBlank)

@@ -56,7 +56,7 @@ class InstdataClientTest {
     @Test
     void gjenopprettUtenInstdata_TomRetur() {
 
-        var dollyPerson = DollyPerson.builder().hovedperson(IDENT).build();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         StepVerifier.create(instdataClient.gjenopprett(new RsDollyBestillingRequest(), dollyPerson,
                                 new BestillingProgress(), false)
@@ -69,7 +69,7 @@ class InstdataClientTest {
     void gjenopprettNaarInstdataIkkeFinnesFraFoer_SkalGiOk() {
 
         var progress = new BestillingProgress();
-        var dollyPerson = DollyPerson.builder().hovedperson(IDENT).build();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(List.of("q2")));
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder()
@@ -95,7 +95,7 @@ class InstdataClientTest {
     void gjenopprettNaarInstdataFinnesFraFoer_SkalGiOk() {
 
         var progress = new BestillingProgress();
-        var dollyPerson = DollyPerson.builder().hovedperson(IDENT).build();
+        var dollyPerson = DollyPerson.builder().ident(IDENT).build();
 
         when(instdataConsumer.getMiljoer()).thenReturn(Mono.just(List.of("q2")));
         when(mapperFacade.mapAsList(anyList(), eq(Instdata.class), any(MappingContext.class))).thenReturn(List.of(Instdata.builder()
