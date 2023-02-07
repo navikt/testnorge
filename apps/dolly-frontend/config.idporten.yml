@@ -17,9 +17,6 @@ spec:
       tenant: nav.no
   idporten:
     enabled: true
-    sidecar:
-      enabled: true
-      errorPath: /login
   accessPolicy:
     outbound:
       rules:
