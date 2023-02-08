@@ -11,8 +11,8 @@ spring:
         idporten:
           issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
         tokenx:
-          issuer-uri: https://tokendings.dev-gcp.nais.io
-          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
 
 consumers:
   testnorge-profil-api:
