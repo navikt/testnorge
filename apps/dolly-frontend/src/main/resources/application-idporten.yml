@@ -1,3 +1,5 @@
+REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
+
 spring:
   redis:
     host: ${REDIS_HOST}
@@ -8,7 +10,7 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: ${IDPORTEN_REDIRECT_URI}
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
             post-logout-redirect-uri: ${IDPORTEN_REDIRECT_URI}
             scope: openid
             client-authentication-method: private_key_jwt
