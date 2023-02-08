@@ -8,7 +8,7 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            redirect-uri: ${IDPORTEN_REDIRECT_URI}
             post-logout-redirect-uri: ${IDPORTEN_REDIRECT_URI}
             scope: openid
             client-authentication-method: private_key_jwt
