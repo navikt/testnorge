@@ -2,11 +2,12 @@ package no.nav.dolly.bestilling.tagshendelseslager.command;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -17,7 +18,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class HendelseslagerPublishCommand implements Callable<Flux<String>> {
+public class HendelseslagerPublishCommand implements Callable<Mono<HendelselagerResponse>> {
 
     private static final String PDL_PUBLISH = "/internal/publish";
     private static final String PDL_IDENTHENDELSE = "/pdl-identhendelse";
@@ -27,7 +28,7 @@ public class HendelseslagerPublishCommand implements Callable<Flux<String>> {
     private final List<String> identer;
     private final String token;
 
-    public Flux<String> call() {
+    public Mono<HendelselagerResponse> call() {
 
         return webClient
                 .get()
@@ -39,7 +40,16 @@ public class HendelseslagerPublishCommand implements Callable<Flux<String>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(PERSON_IDENTER, String.join(",", identer))
                 .retrieve()
-                .bodyToFlux(String.class)
+                .toEntity(String.class)
+                .map(resultat -> HendelselagerResponse.builder()
+                        .status(resultat.getStatusCode())
+                        .body(resultat.getBody())
+                        .build())
+                .onErrorResume(throwable -> Mono.just(HendelselagerResponse.builder()
+                        .status(WebClientFilter.getStatus(throwable))
+                        .feilmelding(WebClientFilter.getMessage(throwable))
+                        .build()))
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
@@ -18,7 +19,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
 
 @Slf4j
@@ -40,24 +41,27 @@ public class TagsHendelseslagerClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (!dollyPerson.getTags().isEmpty()) {
+        return Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent()))
+                .collectList()
+                .flatMap(identer -> Flux.concat(
+                                Flux.just(dollyPerson.getTags())
+                                        .filter(tags -> !tags.isEmpty())
+                                        .flatMap(tags -> tagsHendelseslagerConsumer.createTags(identer, tags)
+                                                .map(resultat -> getTagStatus(identer, tags, resultat))),
+                                Flux.just(identer)
+                                        .filter(identer1 -> dollyPerson.getMaster() == Testident.Master.PDL)
+                                        .flatMap(tagsHendelseslagerConsumer::publish)
+                                        .map(status -> getPublishStatus(identer, status)))
+                        .collect(Collectors.joining(", og ")))
+                .map(status -> futureComplete(progress, status)));
+    }
 
-            Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent())))
-                    .collectList()
-                    .flatMap(identer -> sendTags(identer, dollyPerson.getTags()))
-                    .subscribe(log::info);
-        }
+    private ClientFuture futureComplete(BestillingProgress progress, String status) {
 
-        if (dollyPerson.getMaster() == Testident.Master.PDL) {
-
-            getPdlIdenter(List.of(dollyPerson.getIdent()))
-                    .collectList()
-                    .map(tagsHendelseslagerConsumer::publish)
-                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-                            dollyPerson.getIdent(), response));
-        }
-
-        return Flux.empty();
+        return () -> {
+            log.info(status);
+            return progress;
+        };
     }
 
     @Override
@@ -69,19 +73,21 @@ public class TagsHendelseslagerClient implements ClientRegister {
                 .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
     }
 
-    private Mono<String> sendTags(List<String> identer, List<Tags> tags) {
-
-        return tagsHendelseslagerConsumer.createTags(identer, tags)
-                .map(resultat -> getTagStatus(identer, tags, resultat));
-    }
-
     private String getTagStatus(List<String> identer, List<Tags> tags, TagsOpprettingResponse resultat) {
 
         return resultat.getStatus().is2xxSuccessful() ?
-                String.format("Lagt til tag(s) %s for ident(er) %s",
+                format("Lagt til tag(s) %s for ident(er) %s",
                         tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
-                        String.join(",", identer)) :
+                        String.join(", ", identer)) :
                 resultat.getMessage();
+    }
+
+    private String getPublishStatus(List<String> identer, HendelselagerResponse resultat) {
+
+        return resultat.getStatus().is2xxSuccessful() ?
+                format("Publish sendt til hendelselager for identer: %s med status: %s %s",
+                        String.join(", ", identer), resultat.getStatus(), resultat.getBody()) :
+                resultat.getFeilmelding();
     }
 
     private Flux<String> getPdlIdenter(List<String> identer) {

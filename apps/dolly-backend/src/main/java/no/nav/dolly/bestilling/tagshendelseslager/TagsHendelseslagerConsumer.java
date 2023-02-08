@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.tagshendelseslager.command.HendelseslagerPublishC
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHenteCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
 import no.nav.dolly.domain.resultset.Tags;
@@ -71,9 +72,9 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
-    public Flux<String> publish(List<String> identer) {
+    public Mono<HendelselagerResponse> publish(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
+                .flatMap(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
     }
 }
