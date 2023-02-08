@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
 import redis.clients.jedis.Jedis;
 
 @Configuration
-@Profile({ "prod", "dev", "idporten" })
+@Profile({ "prod", "dev" })
 @Import({
         OicdRedisSessionConfiguration.class
 })

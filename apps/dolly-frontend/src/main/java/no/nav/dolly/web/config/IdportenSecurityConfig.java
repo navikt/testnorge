@@ -3,9 +3,11 @@ package no.nav.dolly.web.config;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OicdInMemorySessionConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -16,13 +18,14 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Slf4j
 @Configuration
+@Import(OicdInMemorySessionConfiguration.class)
 @Profile("idporten")
 @EnableWebFluxSecurity
 @RequiredArgsConstructor
 public class IdportenSecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.tokenx.jwk-set-uri}")
-    private String jwkSetUri;
+    private String jwkSetUri; //TODO SLETT MEG: Endre til denne
 
     @SneakyThrows
     @Bean
@@ -39,6 +42,6 @@ public class IdportenSecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
-        return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
+        return NimbusReactiveJwtDecoder.withJwkSetUri("testytest").build();
     }
 }

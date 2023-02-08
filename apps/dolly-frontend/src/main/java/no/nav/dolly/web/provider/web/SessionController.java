@@ -48,7 +48,7 @@ public class SessionController {
                 .hasAccess(organisasjonsnummer, exchange)
                 .flatMap(hasAccess -> {
                     if (Boolean.FALSE.equals(hasAccess)) {
-                        log.error("Bruker mangler tilgang til org.. \n{}", exchange.getRequest().getHeaders());
+                        log.error("Bruker mangler tilgang til org {}", organisasjonsnummer);
                         return Mono.just(ResponseEntity
                                 .status(HttpStatus.FORBIDDEN)
                                 .build());

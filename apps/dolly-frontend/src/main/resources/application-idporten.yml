@@ -1,9 +1,4 @@
-REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
-
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
   security:
     oauth2:
       resourceserver:
