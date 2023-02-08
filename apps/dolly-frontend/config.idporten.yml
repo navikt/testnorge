@@ -17,6 +17,10 @@ spec:
       tenant: nav.no
   idporten:
     enabled: true
+    sidecar:
+      enabled: true
+      autoLogin: true
+      errorPath: /login
   replicas:
     min: 1
     max: 3
@@ -77,8 +81,6 @@ spec:
       cpu: 1500m
       memory: 2048Mi
   image: {{image}}
-  envFrom:
-    - secret: idporten-dolly-dev-gcp
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: idporten

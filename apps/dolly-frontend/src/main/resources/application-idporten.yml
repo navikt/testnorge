@@ -5,18 +5,10 @@ spring:
     host: ${REDIS_HOST}
     port: 6379
   security:
-    oauth2:
-      client:
-        registration:
-          idporten:
-            client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            post-logout-redirect-uri: ${IDPORTEN_REDIRECT_URI}
-            scope: openid
-            client-authentication-method: private_key_jwt
-        provider:
-          idporten:
-            issuer-uri: ${IDPORTEN_ISSUER}
+    resourceserver:
+      tokenx:
+        issuer-uri: https://tokendings.dev-gcp.nais.io
+        jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
 
 consumers:
   testnorge-profil-api:
