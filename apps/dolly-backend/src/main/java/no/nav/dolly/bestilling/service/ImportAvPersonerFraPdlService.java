@@ -37,8 +37,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
-    private static final String FEIL = "FEIL: Feilet å importere identer fra Testnorge";
-
     private PersonServiceClient personServiceClient;
     private GetUserInfo getUserInfo;
 
@@ -101,7 +99,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                 progress.getId(), error, throwable);
-                                        bestilling.setFeil(error);
+                                        progress.setFeil(error);
                                     })
                                     .doOnNext(status -> oppdaterStatus(progress))))
                     .collectList()
@@ -115,7 +113,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
     private void oppdaterStatus(BestillingProgress progress) {
 
-        progress.setPdlImportStatus(progress.isPdlSync() ? SUCCESS : FEIL);
+        progress.setPdlImportStatus("OK");
         transactionHelperService.persister(progress);
     }
 }

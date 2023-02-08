@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
+import static no.nav.dolly.mapper.AnnenFeilStatusMapper.buildAnnenFeilStatusMap;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
@@ -97,6 +98,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(bestilling.getProgresser()));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .pdldata(bestillingRequest.getPdldata())

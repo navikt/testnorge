@@ -29,6 +29,7 @@ import java.util.stream.Stream;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -59,7 +60,9 @@ public class TagsHendelseslagerClient implements ClientRegister {
     private ClientFuture futureComplete(BestillingProgress progress, String status) {
 
         return () -> {
-            log.info(status);
+            if (isNotBlank(status)) {
+                log.info(status);
+            }
             return progress;
         };
     }

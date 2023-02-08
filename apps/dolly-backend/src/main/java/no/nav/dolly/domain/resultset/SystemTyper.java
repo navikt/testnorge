@@ -37,7 +37,8 @@ public enum SystemTyper {
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDL_DATA("Persondataløsning (PDL) ny"),
     KONTOREGISTER("Bankkontoregister"),
-    PDL_PERSONSTATUS("PDL-Synkronisering");
+    PDL_PERSONSTATUS("PDL-Synkronisering"),
+    ANNEN_FEIL("Annen Feil");
 
     private String beskrivelse;
 

@@ -107,7 +107,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
-                                                bestilling.setFeil(error);
+                                                progress.setFeil(error);
                                                 return Flux.just(progress);
                                             }))))
                     .collectList()
