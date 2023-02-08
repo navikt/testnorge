@@ -61,16 +61,10 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
-                        List<BestillingProgress> progresser;
                         var ident = (String) context.getProperty("ident");
-                        if (isBlank(ident)) {
-                            progresser = bestilling.getProgresser();
-
-                        } else {
-                            progresser = bestilling.getProgresser().stream()
-                                    .filter(progress -> ident.equals(progress.getIdent()))
-                                    .toList();
-                        }
+                        var progresser = bestilling.getProgresser().stream()
+                                .filter(progress -> isBlank(ident) || ident.equals(progress.getIdent()))
+                                .toList();
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper
                                 .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
@@ -80,25 +74,25 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.setAntallIdenter(bestillingStatus.getAntallLevert()); // midlertidig til TPSF har blitt fjernet
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
-                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(bestilling.getProgresser(), objectMapper));
-                        bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildAaregStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildArenaStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildInstdataStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(bestilling.getProgresser()));
-                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser, objectMapper));
+                        bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildAaregStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildArenaStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildInstdataStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildPensjonforvalterStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(bestilling.getProgresser()));
+                        bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .pdldata(bestillingRequest.getPdldata())
@@ -115,7 +109,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .skjerming(bestillingRequest.getSkjerming())
-//                                .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
                                 .importFraTps(mapIdents(bestilling.getTpsImport()))
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .bankkonto(bestillingRequest.getBankkonto())

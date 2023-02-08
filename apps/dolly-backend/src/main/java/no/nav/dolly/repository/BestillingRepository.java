@@ -64,9 +64,7 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
     Optional<List<Bestilling>> findMalBestillingByUser(@Param("bruker") Bruker bruker);
 
     @Query(value = "select distinct(b) from Bestilling b " +
-            "join BestillingProgress bp on bp.bestilling.id = b.id " +
-            "where b.gruppe = :gruppe " +
-            "and exists (select b1 from BestillingProgress b1 where b1.bestilling.id = b.id and (b1.master = 'PDL' or b1.master = 'PDLF')) " +
+            "where exists (select bp from BestillingProgress bp where bp.bestilling.id = b.id and (bp.master = 'PDL' or bp.master = 'PDLF')) " +
             "order by b.id desc")
     Page<Bestilling> getBestillingerFromGruppe(@Param(value = "gruppe") Testgruppe testgruppe, Pageable pageable);
 
