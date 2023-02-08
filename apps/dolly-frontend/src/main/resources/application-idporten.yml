@@ -17,7 +17,7 @@ spring:
             client-authentication-method: private_key_jwt
         provider:
           idporten:
-            issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
+            issuer-uri: ${IDPORTEN_ISSUER_URI}
 
 consumers:
   testnorge-profil-api:
