@@ -12,13 +12,11 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
-
 
 @Service
 @RequiredArgsConstructor
 public class AccessService {
-    private static final List<String> SESSION_PROFILES = singletonList("local");
+    private static final List<String> SESSION_PROFILES = List.of("local", "idporten");
     private final TokenExchange tokenExchange;
 
     private final Environment environment;
