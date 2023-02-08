@@ -161,10 +161,20 @@ export const AaregVisning = ({
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
+	const gyldigeAaregBestillinger = bestillingListe.filter((bestilling) => {
+		const gyldigAareg =
+			bestilling?.data?.aareg?.length > 0 &&
+			bestilling?.status?.some(
+				(reg) => reg?.id === 'AAREG' && reg?.statuser?.some((s) => s?.melding === 'OK')
+			)
+		if (gyldigAareg) return bestilling
+	})
+
 	// Faar ikke hente tilbake a-meldinger, viser derfor bestillingsdata
-	const amelding = bestillingListe
-		.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
+	const amelding = gyldigeAaregBestillinger
+		?.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
 		?.filter((amelding) => amelding)
+
 	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
 
 	const filteredData =
