@@ -1,6 +1,7 @@
 package no.nav.dolly.web.provider.web;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.consumers.PersonOrganisasjonTilgangConsumer;
 import no.nav.dolly.web.service.BrukerService;
 import no.nav.testnav.libs.securitycore.config.UserSessionConstant;
@@ -17,6 +18,7 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/session")
+@Slf4j
 @RequiredArgsConstructor
 public class SessionController {
 
@@ -46,6 +48,7 @@ public class SessionController {
                 .hasAccess(organisasjonsnummer, exchange)
                 .flatMap(hasAccess -> {
                     if (Boolean.FALSE.equals(hasAccess)) {
+                        log.error("Bruker mangler tilgang til org.. \n{}", exchange.getRequest().getHeaders());
                         return Mono.just(ResponseEntity
                                 .status(HttpStatus.FORBIDDEN)
                                 .build());
