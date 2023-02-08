@@ -15,12 +15,12 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.Nullable;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -38,6 +38,7 @@ import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
+import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
@@ -57,6 +58,10 @@ public class AaregClient implements ClientRegister {
     private final MapperFacade mapperFacade;
     private final AmeldingService ameldingService;
 
+    private final BrukerService brukerService;
+
+    private final GetUserInfo userInfo;
+
     @Override
     public Flux<Void> gjenopprett(@Nullable Bruker bestiller, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
@@ -69,6 +74,8 @@ public class AaregClient implements ClientRegister {
                 return Flux.just();
             }
 
+            var bruker = brukerService.fetchBruker(getUserId(userInfo));
+            log.info("\nBestiller: {}\nBruker: {}", bestiller, bruker);
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
             if (bestiller != null && bestiller.getBrukertype() == Bruker.Brukertype.BANKID) {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);

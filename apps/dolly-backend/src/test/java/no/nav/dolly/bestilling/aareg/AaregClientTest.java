@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAktoerPerson;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.service.BrukerService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.dto.aareg.v1.OrdinaerArbeidsavtale;
 import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
@@ -54,6 +55,10 @@ class AaregClientTest {
 
     @Mock
     private AccessToken accessToken;
+
+    @Mock
+    @SuppressWarnings("unused")
+    private BrukerService brukerService;
 
     @InjectMocks
     private AaregClient aaregClient;
