@@ -96,7 +96,7 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
-        - application: dolly-frontend-idporten
+        - application: dolly-idporten
         - application: dolly-redis-session-redisexporter
 ---
 apiVersion: "nais.io/v1alpha1"
