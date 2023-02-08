@@ -17,7 +17,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,7 +33,6 @@ import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.appendPermisjonPermitteringId;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.doEksistenssjekk;
 import static no.nav.dolly.bestilling.aareg.util.AaregUtility.isEqualArbeidsforhold;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q1_AND_Q2;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.Type.Q4_TO_Q1;
 import static no.nav.dolly.util.EnvironmentsCrossConnect.crossConnect;
@@ -42,7 +40,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
-@Order(6)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
@@ -66,11 +63,6 @@ public class AaregClient implements ClientRegister {
                 miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
             var miljoerTrygg = new AtomicReference<>(miljoer);
-
-            progress.setAaregStatus(miljoer.stream()
-                    .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
-                    .collect(Collectors.joining(",")));
-            transactionHelperService.persister(progress);
 
             return Flux.just(1)
                     .flatMap(index -> {

@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
@@ -73,11 +72,6 @@ public class ArenaForvalterClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
-
-            progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
-                    .collect(Collectors.joining(",")));
-            transactionHelperService.persister(progress);
 
             return Flux.from(getIdenterFamilie(dollyPerson.getIdent())
                     .flatMap(personServiceConsumer::getPdlSyncReady)

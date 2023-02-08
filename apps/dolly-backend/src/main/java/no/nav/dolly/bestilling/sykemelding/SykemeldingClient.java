@@ -36,7 +36,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -64,7 +63,6 @@ public class SykemeldingClient implements ClientRegister {
                 setProgress(progress, "OK");
 
             } else {
-                setProgress(progress, getInfoVenter("Sykemelding"));
                 long bestillingId = progress.getBestilling().getId();
 
                 return Flux.just(1)
