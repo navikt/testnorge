@@ -10,7 +10,7 @@ spring:
     oauth2:
       resourceserver:
         idporten:
-          issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
+          issuer-uri: ${IDPORTEN_ISSUER}
         aad:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
