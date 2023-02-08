@@ -39,6 +39,7 @@ public class IdportenSecurityConfig {
 
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
+
         return NimbusReactiveJwtDecoder.withJwkSetUri("testytest").build();
     }
 }

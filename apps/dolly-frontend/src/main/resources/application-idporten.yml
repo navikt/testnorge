@@ -1,4 +1,7 @@
 spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
   security:
     oauth2:
       resourceserver:
