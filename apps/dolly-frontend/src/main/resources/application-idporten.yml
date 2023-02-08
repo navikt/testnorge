@@ -1,6 +1,3 @@
-POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.nav.no/login
-REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
-
 spring:
   redis:
     host: ${REDIS_HOST}
@@ -11,13 +8,13 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
+            redirect-uri: ${IDPORTEN_REDIRECT_URI}
+            post-logout-redirect-uri: ${IDPORTEN_REDIRECT_URI}
             scope: openid
             client-authentication-method: private_key_jwt
         provider:
           idporten:
-            issuer-uri: ${IDPORTEN_ISSUER_DEV_URI}
+            issuer-uri: ${IDPORTEN_ISSUER}
 
 consumers:
   testnorge-profil-api:
