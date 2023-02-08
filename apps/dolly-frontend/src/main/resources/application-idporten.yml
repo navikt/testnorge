@@ -5,10 +5,11 @@ spring:
     host: ${REDIS_HOST}
     port: 6379
   security:
-    resourceserver:
-      tokenx:
-        issuer-uri: https://tokendings.dev-gcp.nais.io
-        jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+    oauth2:
+      resourceserver:
+        tokenx:
+          issuer-uri: ${TOKEN_X_ISSUER}
+          jwk-set-uri: ${TOKEN_X_JWKS_URI}
 
 consumers:
   testnorge-profil-api:
