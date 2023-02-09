@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.reactivesessionsecurity.resolver;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,9 +14,8 @@ import java.time.ZonedDateTime;
 
 @Slf4j
 @Component
-abstract class JwtAuthToken {
-    @Bean
-    Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
+public class JwtAuthToken {
+    public Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
         return ReactiveSecurityContextHolder
                 .getContext()
                 .switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))

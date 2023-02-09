@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class RedisTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
     private final ServerOAuth2AuthorizedClientRepository clientRepository;
-    private final Mono<JwtAuthenticationToken> jwtAuthenticationToken;
+    private final JwtAuthToken jwtAuthToken;
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
@@ -57,7 +57,7 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                         });
                             } else if (authentication instanceof JwtAuthenticationToken) {
 
-                                return jwtAuthenticationToken
+                                return jwtAuthToken.getJwtAuthenticationToken()
                                         .map(jwt -> Token.builder()
                                                 .clientCredentials(false)
                                                 .userId(jwt.getTokenAttributes().get("pid").toString())
@@ -65,7 +65,7 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                                 .expiresAt(jwt.getToken().getExpiresAt())
                                                 .build());
                             }
-                            return null;
+                            return Mono.error(new RuntimeException("Klarte ikke å caste authentication til token"));
                         }
                 );
     }
