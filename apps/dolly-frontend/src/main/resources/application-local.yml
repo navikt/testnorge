@@ -1,3 +1,5 @@
+IDPORTEN_ISSUER: https://oidc-ver2.difi.no/idporten-oidc-provider/
+
 server:
   port: 8020
 
