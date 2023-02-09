@@ -10,3 +10,6 @@ alter table bestilling_progress
 
 alter table bestilling
     alter column miljoer drop not null;
+
+alter table bestilling
+    add column VERSJON smallint not null default 0;

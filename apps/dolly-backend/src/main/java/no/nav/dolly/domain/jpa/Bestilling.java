@@ -19,6 +19,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -44,6 +45,10 @@ public class Bestilling implements Serializable {
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
+
+    @Version
+    @Column(name="VERSJON")
+    private Long versjon;
 
     @ManyToOne
     @JoinColumn(name = "GRUPPE_ID", nullable = false)

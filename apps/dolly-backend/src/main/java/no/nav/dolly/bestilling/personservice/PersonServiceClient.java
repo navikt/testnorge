@@ -24,7 +24,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class PersonServiceClient {
 
-    private static final String PDL_SYNC_START = "Synkronisering mot PDL startet ...";
+    private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
     private static final int TIMEOUT = 100;
     private static final int MAX_SEKUNDER = 30;
 

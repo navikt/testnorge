@@ -92,11 +92,12 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             .map(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> isTrue(pdlSync) ?
                                                                     Flux.fromIterable(coBestillinger)
-                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                            .filter(cobestilling -> isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)) ||
-                                                                                    (nonNull(cobestilling.getBestkriterier()) &&
-                                                                                            !cobestilling.getBestkriterier().equals("{}")))
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                            .filter(cobestilling ->
+                                                                                    isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)) ||
+                                                                                            (nonNull(cobestilling.getBestkriterier()) &&
+                                                                                                    !cobestilling.getBestkriterier().equals("{}")))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
