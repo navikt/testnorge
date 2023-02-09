@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.BoAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoGateadresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.BoMatrikkeladresse;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.dolly.util.DatoFraIdentUtil;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DoedsfallDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -26,6 +27,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
@@ -227,7 +229,13 @@ public final class PdlPersonStrategyMapper implements MappingStrategy {
                                         .orElse(null)
                         );
                         person.setAlder(personDto.getFoedsel().stream()
-                                .map(foedselDTO -> ChronoUnit.YEARS.between(foedselDTO.getFoedselsdato(), LocalDateTime.now()))
+                                .map(foedselDTO -> ChronoUnit.YEARS.between(
+                                        nonNull(foedselDTO.getFoedselsdato()) ?
+                                                foedselDTO.getFoedselsdato() :
+                                                LocalDate.of(foedselDTO.getFoedselsaar(),
+                                                                DatoFraIdentUtil.getDato(personDto.getIdent()).getMonthValue(),
+                                                                DatoFraIdentUtil.getDato(personDto.getIdent()).getDayOfMonth())
+                                                        .atStartOfDay(), LocalDateTime.now()))
                                 .map(Long::intValue)
                                 .findFirst()
                                 .orElse(null)

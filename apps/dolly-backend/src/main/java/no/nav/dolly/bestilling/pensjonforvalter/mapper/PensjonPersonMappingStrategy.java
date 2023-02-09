@@ -44,6 +44,7 @@ public class PensjonPersonMappingStrategy implements MappingStrategy {
 
                         pensjonPersonRequest.setFodselsDato(getFoedselsdato(person.getPerson().getFoedsel().stream()
                                 .map(PdlPerson.Foedsel::getFoedselsdato)
+                                .filter(Objects::nonNull)
                                 .findFirst().orElse(null), pensjonPersonRequest.getFnr()));
 
                         pensjonPersonRequest.setDodsDato(convertDato(person.getPerson().getDoedsfall().stream()
