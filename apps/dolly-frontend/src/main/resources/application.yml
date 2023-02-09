@@ -12,8 +12,6 @@ spring:
   main:
     banner-mode: off
     allow-circular-references: true
-  session:
-    timeout: 60m
 
 consumers:
   testnav-tps-messaging-service:
