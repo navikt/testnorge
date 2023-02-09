@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AccessService {
-    private static final List<String> SESSION_PROFILES = List.of("local");
+    private static final List<String> SESSION_PROFILES = List.of("local", "idporten");
     private final TokenExchange tokenExchange;
 
     private final Environment environment;

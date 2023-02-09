@@ -37,15 +37,20 @@ const getAdvarsel: () => string = () => {
 	return null
 }
 
+export const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+	const idporten = path.includes('idporten')
+	event.preventDefault()
+	location.replace(
+		idporten
+			? 'https://dolly-idporten.dev.nav.no/oauth2/login'
+			: location.protocol + '//' + location.host + path
+	)
+}
+
 export default () => {
 	const advarsel = getAdvarsel()
 	const modalHeight = advarsel ? 400 + ((advarsel.length + 70) / 88) * 20 : 350
 	const runningLocal = window.location.hostname.includes('localhost')
-
-	const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-		event.preventDefault()
-		location.replace(location.protocol + '//' + location.host + path)
-	}
 
 	return (
 		<div className="login-container">

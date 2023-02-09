@@ -20,6 +20,8 @@ spec:
     sidecar:
       enabled: true
       autoLogin: true
+      autoLoginIgnorePaths:
+        - /login
       errorPath: /login
   replicas:
     min: 1

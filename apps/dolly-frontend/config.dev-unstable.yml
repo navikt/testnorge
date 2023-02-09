@@ -14,6 +14,9 @@ spec:
   azure:
     sidecar:
       enabled: true
+      autoLogin: true
+      autoLoginIgnorePaths:
+        - /login
       errorPath: /login
     application:
       enabled: true
