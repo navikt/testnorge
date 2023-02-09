@@ -22,7 +22,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 public class IdportenSecurityConfig {
 
     @Value("${spring.security.oauth2.resourceserver.tokenx.jwk-set-uri}")
-    private String jwkSetUri; //TODO SLETT MEG: Endre til denne
+    private String jwkSetUri;
 
     @SneakyThrows
     @Bean
@@ -40,6 +40,6 @@ public class IdportenSecurityConfig {
     @Bean
     public ReactiveJwtDecoder jwtDecoder() {
 
-        return NimbusReactiveJwtDecoder.withJwkSetUri("testytest").build();
+        return NimbusReactiveJwtDecoder.withJwkSetUri(jwkSetUri).build();
     }
 }
