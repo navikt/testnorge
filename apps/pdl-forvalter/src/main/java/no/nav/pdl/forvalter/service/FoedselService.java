@@ -45,15 +45,12 @@ public class FoedselService implements BiValidation<FoedselDTO, PersonDTO> {
 
     private void handle(FoedselDTO foedsel, String ident, BostedadresseDTO bostedadresse, InnflyttingDTO innflytting) {
 
-        if (isNull(foedsel.getFoedselsdato()) && isNull(foedsel.getFoedselsaar())) {
-            foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
-            foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
-
-        } else if (nonNull(foedsel.getFoedselsdato())) {
-            foedsel.setFoedselsaar(foedsel.getFoedselsdato().getYear());
-
-        } else {
+        if (isNull(foedsel.getFoedselsaar())) {
             foedsel.setFoedselsaar(DatoFraIdentUtility.getDato(ident).getYear());
+
+            if (isNull(foedsel.getFoedselsdato())) {
+                foedsel.setFoedselsdato(DatoFraIdentUtility.getDato(ident).atStartOfDay());
+            }
         }
 
         setFoedeland(foedsel, ident, bostedadresse, innflytting);
