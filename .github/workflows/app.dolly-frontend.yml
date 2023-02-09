@@ -44,6 +44,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         uses: cypress-io/github-action@v5
         with:
+          config: video=false
           working-directory: 'apps/dolly-frontend/src/main/js'
           browser: chrome
           build: npm run build
@@ -60,7 +61,7 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      
+  
   deploy-idporten:
     name: Deploy Dolly Idporten
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
