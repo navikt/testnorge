@@ -17,6 +17,9 @@ spec:
       tenant: nav.no
   idporten:
     enabled: true
+    postLogoutRedirectURIs:
+      - https://dolly-idporten.dev.nav.no
+    clientURI: https://dolly-idporten.dev.nav.no
     sidecar:
       enabled: true
       autoLogin: true
