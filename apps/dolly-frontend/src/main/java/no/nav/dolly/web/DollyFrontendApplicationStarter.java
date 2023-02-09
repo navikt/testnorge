@@ -176,5 +176,4 @@ public class DollyFrontendApplicationStarter {
                         .filters(filter, addUserJwtHeaderFilter())
                 ).uri(host);
     }
-
 }
