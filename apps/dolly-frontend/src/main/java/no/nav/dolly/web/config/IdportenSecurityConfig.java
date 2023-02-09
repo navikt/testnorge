@@ -21,7 +21,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @RequiredArgsConstructor
 public class IdportenSecurityConfig {
 
-    @Value("${spring.security.oauth2.resourceserver.tokenx.jwk-set-uri}")
+    @Value("${spring.security.oauth2.resourceserver.idporten.jwk-set-uri}")
     private String jwkSetUri;
 
     @SneakyThrows

@@ -8,6 +8,10 @@ spring:
         tokenx:
           issuer-uri: ${TOKEN_X_ISSUER}
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
+        idporten:
+          issuer-uri: ${IDPORTEN_ISSUER}
+          jwk-set-uri: ${IDPORTEN_JWKS_URI}
+
 
 consumers:
   testnorge-profil-api:
