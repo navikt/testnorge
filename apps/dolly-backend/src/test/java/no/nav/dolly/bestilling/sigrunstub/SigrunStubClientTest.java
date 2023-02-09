@@ -16,22 +16,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.HttpClientErrorException;
 import reactor.core.publisher.Mono;
 
-import java.util.List;
-
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SigrunStubClientTest {
+class SigrunStubClientTest {
 
     private static final String IDENT = "11111111";
 
@@ -51,16 +47,21 @@ public class SigrunStubClientTest {
     private SigrunStubClient sigrunStubClient;
 
     @Test
-    public void gjenopprett_ingendata() {
+    void gjenopprett_ingendata() {
         BestillingProgress progress = new BestillingProgress();
-        sigrunStubClient.gjenopprett(new RsDollyBestillingRequest(), DollyPerson.builder().hovedperson(IDENT).build(),
-                new BestillingProgress(), false);
+        sigrunStubClient
+                .gjenopprett(
+                        new RsDollyBestillingRequest(),
+                        DollyPerson.builder().hovedperson(IDENT).build(),
+                        new BestillingProgress(),
+                        false)
+                .blockLast();
 
         assertThat(progress.getSigrunstubStatus(), is(nullValue()));
     }
 
     @Test
-    public void gjenopprett_sigrunstub_feiler() {
+    void gjenopprett_sigrunstub_feiler() {
 
         BestillingProgress progress = new BestillingProgress();
         when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
@@ -70,18 +71,24 @@ public class SigrunStubClientTest {
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        sigrunStubClient
+                .gjenopprett(
+                        request,
+                        DollyPerson.builder().hovedperson(IDENT).build(),
+                        progress,
+                        false)
+                .blockLast();
 
         assertThat(progress.getSigrunstubStatus(), containsString("Feil:"));
     }
 
     @Test
-    public void gjenopprett_sigrunstub_ok() {
+    void gjenopprett_sigrunstub_ok() {
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setSigrunstub(singletonList(new OpprettSkattegrunnlag()));
 
-        when(mapperFacade.mapAsList(any(List.class), eq(OpprettSkattegrunnlag.class))).thenReturn(request.getSigrunstub());
+        when(mapperFacade.mapAsList(anyList(), eq(OpprettSkattegrunnlag.class))).thenReturn(request.getSigrunstub());
         BestillingProgress progress = new BestillingProgress();
 
         when(sigrunStubConsumer.createSkattegrunnlag(anyList())).thenReturn(ResponseEntity.ok(new SigrunResponse()));
@@ -89,7 +96,13 @@ public class SigrunStubClientTest {
 
         when(sigrunStubConsumer.deleteSkattegrunnlag(anyList())).thenReturn(Mono.just(emptyList()));
 
-        sigrunStubClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT).build(), progress, false);
+        sigrunStubClient
+                .gjenopprett(
+                        request,
+                        DollyPerson.builder().hovedperson(IDENT).build(),
+                        progress,
+                        false)
+                .blockLast();
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());
         verify(sigrunStubResponseHandler).extractResponse(any());
