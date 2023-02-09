@@ -3,16 +3,19 @@ package no.nav.testnav.libs.reactivesessionsecurity.resolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.Token;
+import org.springframework.security.authentication.CredentialsExpiredException;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.client.web.server.ServerOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
+import java.time.Instant;
 import java.time.ZonedDateTime;
 
 import static java.util.Objects.nonNull;
@@ -23,7 +26,6 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class RedisTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
     private final ServerOAuth2AuthorizedClientRepository clientRepository;
-    private final JwtAuthToken jwtAuthToken;
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
@@ -57,7 +59,7 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                         });
                             } else if (authentication instanceof JwtAuthenticationToken) {
 
-                                return jwtAuthToken.getJwtAuthenticationToken()
+                                return getJwtAuthenticationToken()
                                         .map(jwt -> Token.builder()
                                                 .clientCredentials(false)
                                                 .userId(jwt.getTokenAttributes().get("pid").toString())
@@ -68,5 +70,21 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                             return Mono.error(new RuntimeException("Klarte ikke å caste authentication til token"));
                         }
                 );
+    }
+
+    private Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
+        return ReactiveSecurityContextHolder
+                .getContext()
+                .switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))
+                .map(SecurityContext::getAuthentication)
+                .map(JwtAuthenticationToken.class::cast)
+                .doOnError(throwable -> log.error("Klarte ikke hente Jwt Auth Token: ", throwable))
+                .doOnSuccess(jwtAuthenticationToken -> {
+                    Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
+                    Instant expiresAt = credentials.getExpiresAt();
+                    if (expiresAt == null || expiresAt.isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
+                        throw new CredentialsExpiredException("Jwt er utløpt eller utløper innen kort tid");
+                    }
+                });
     }
 }
