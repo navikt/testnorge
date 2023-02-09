@@ -14,6 +14,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -24,6 +25,7 @@ import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
+@Order(8)
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
 

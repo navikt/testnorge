@@ -20,6 +20,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -36,10 +37,14 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigNorskBankkonto;
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigUtlandskBankkonto;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
+@Order(3)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
@@ -75,6 +80,11 @@ public class TpsMessagingClient implements ClientRegister {
 
         return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
                         .flatMap(miljoer -> {
+
+                            progress.setTpsMessagingStatus(prepTpsMessagingStatus(miljoer, false));
+                            if (!dollyPerson.isOrdre()) {
+                                transactionHelperService.persister(progress);
+                            }
 
                             return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
                                     .flatMap(this::getPersonData)
@@ -131,6 +141,14 @@ public class TpsMessagingClient implements ClientRegister {
             }
             return progress;
         };
+    }
+
+    private String prepTpsMessagingStatus(List<String> miljoer, boolean isFinal) {
+
+        return miljoer.stream()
+                .map(miljo -> String.format("%s:%s", miljo, encodeStatus(isFinal ?
+                        getVarselSlutt(TPS_MESSAGING) : getInfoVenter(TPS_MESSAGING))))
+                .collect(Collectors.joining(","));
     }
 
     @Override

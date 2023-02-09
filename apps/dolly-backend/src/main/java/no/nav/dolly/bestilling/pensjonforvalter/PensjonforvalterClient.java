@@ -28,6 +28,7 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -50,6 +51,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
 
 @Slf4j
 @Service
+@Order(7)
 @RequiredArgsConstructor
 public class PensjonforvalterClient implements ClientRegister {
 
@@ -101,7 +103,10 @@ public class PensjonforvalterClient implements ClientRegister {
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer()
                 .flatMap(tilgjengeligeMiljoer -> {
-
+                    progress.setPensjonforvalterStatus(prepInitStatus(tilgjengeligeMiljoer));
+                    if (!dollyPerson.isOrdre()) {
+                        transactionHelperService.persister(progress);
+                    }
                     bestilteMiljoer.set(bestilteMiljoer.get().stream()
                             .filter(tilgjengeligeMiljoer::contains)
                             .collect(Collectors.toSet()));
