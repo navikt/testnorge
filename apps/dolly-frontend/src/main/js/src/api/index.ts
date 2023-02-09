@@ -126,8 +126,8 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		retryOn: (attempt, _error, response) => {
 			if (!response.ok && !runningCypressE2E()) {
 				if (response.status === 401) {
-					console.error('Auth feilet, reloader siden for å få ny auth client.')
-					window.location.reload()
+					console.error('Auth feilet, navigerer til login')
+					navigateToLogin()
 				}
 				if (attempt < 4) {
 					return true
