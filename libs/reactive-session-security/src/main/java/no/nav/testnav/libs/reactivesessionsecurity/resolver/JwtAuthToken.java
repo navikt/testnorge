@@ -6,12 +6,14 @@ import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @Slf4j
+@Component
 abstract class JwtAuthToken {
     Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
         return ReactiveSecurityContextHolder
