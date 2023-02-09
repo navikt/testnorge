@@ -23,7 +23,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class RedisTokenResolver extends Oauth2AuthenticationToken implements TokenResolver {
     private final ServerOAuth2AuthorizedClientRepository clientRepository;
-    private final JwtAuthToken jwtAuthToken;
+    private final Mono<JwtAuthenticationToken> jwtAuthenticationToken;
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
@@ -57,7 +57,7 @@ public class RedisTokenResolver extends Oauth2AuthenticationToken implements Tok
                                         });
                             } else if (authentication instanceof JwtAuthenticationToken) {
 
-                                return jwtAuthToken.getJwtAuthenticationToken()
+                                return jwtAuthenticationToken
                                         .map(jwt -> Token.builder()
                                                 .clientCredentials(false)
                                                 .userId(jwt.getTokenAttributes().get("pid").toString())
