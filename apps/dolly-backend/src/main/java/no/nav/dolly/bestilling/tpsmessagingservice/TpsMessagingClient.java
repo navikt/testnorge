@@ -126,9 +126,8 @@ public class TpsMessagingClient implements ClientRegister {
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setTpsMessagingStatus(status);
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress);
+                transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus, status);
             }
             return progress;
         };

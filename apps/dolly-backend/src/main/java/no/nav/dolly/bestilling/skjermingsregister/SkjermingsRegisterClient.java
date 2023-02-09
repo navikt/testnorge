@@ -59,8 +59,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setSkjermingsregisterStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setSkjermingsregisterStatus, status);
             return progress;
         };
     }

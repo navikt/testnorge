@@ -36,9 +36,8 @@ public class PersonServiceClient {
 
     public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
 
-        progress.setPdlPersonStatus(PDL_SYNC_START);
         if (!dollyPerson.isOrdre()) {
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, PDL_SYNC_START);
         }
         var startTime = System.currentTimeMillis();
         return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
@@ -51,11 +50,11 @@ public class PersonServiceClient {
 
         return () -> {
             progress.setPdlSync(status.getStatus().is2xxSuccessful() && isTrue(status.getExists()));
-            progress.setPdlPersonStatus(status2);
-            progress.setFeil(isNotBlank(status.getFeilmelding()) ?
-                    errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()) : null);
+            var error = isNotBlank(status.getFeilmelding()) ?
+                    errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()) : null;
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress);
+                transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, status2);
+                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
             }
             return progress;
         };

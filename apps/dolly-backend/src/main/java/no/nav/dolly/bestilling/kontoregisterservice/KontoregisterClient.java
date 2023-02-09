@@ -52,8 +52,7 @@ public class KontoregisterClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setKontoregisterStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setKontoregisterStatus, status);
             return progress;
         };
     }

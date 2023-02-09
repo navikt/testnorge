@@ -83,8 +83,7 @@ public class AaregClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setAaregStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setAaregStatus, status);
             return progress;
         };
     }

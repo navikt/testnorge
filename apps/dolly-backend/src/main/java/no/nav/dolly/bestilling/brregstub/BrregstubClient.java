@@ -91,8 +91,7 @@ public class BrregstubClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setBrregstubStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setBrregstubStatus, status);
             return progress;
         };
     }

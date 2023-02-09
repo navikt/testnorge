@@ -148,9 +148,8 @@ public class PensjonforvalterClient implements ClientRegister {
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setPensjonforvalterStatus(status);
             if (!dollyPerson.isOrdre()) {
-                transactionHelperService.persister(progress);
+                transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus, status);
             }
             return progress;
         };

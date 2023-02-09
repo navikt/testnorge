@@ -78,6 +78,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             var emptyBestillingCounter = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
+                    .filter(testident -> testident.isPdl() || testident.isPdlf())
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, userInfo)
@@ -111,8 +112,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
-                                                progress.setFeil(error);
-                                                transactionHelperService.persister(progress);
+                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                                 return Flux.just(progress);
                                             }))))
                     .collectList()

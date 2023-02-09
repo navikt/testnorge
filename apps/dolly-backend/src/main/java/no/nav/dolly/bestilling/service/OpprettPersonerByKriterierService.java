@@ -106,7 +106,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                 progress.getId(), error, throwable);
-                                        progress.setFeil(error);
+                                        transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                         return Flux.just(progress);
                                     })))
                     .collectList()

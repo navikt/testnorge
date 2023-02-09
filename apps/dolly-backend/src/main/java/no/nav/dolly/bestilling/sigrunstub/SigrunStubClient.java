@@ -51,8 +51,7 @@ public class SigrunStubClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setSigrunstubStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setSigrunstubStatus, status);
             return progress;
         };
     }

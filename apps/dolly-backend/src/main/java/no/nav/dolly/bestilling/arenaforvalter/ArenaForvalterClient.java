@@ -109,8 +109,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setArenaforvalterStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, status);
             return progress;
         };
     }

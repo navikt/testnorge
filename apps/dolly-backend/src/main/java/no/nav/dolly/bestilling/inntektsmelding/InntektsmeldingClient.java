@@ -70,8 +70,7 @@ public class InntektsmeldingClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setInntektsmeldingStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setInntektsmeldingStatus, status);
             return progress;
         };
     }

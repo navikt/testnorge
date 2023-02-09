@@ -99,7 +99,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
                                         log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                 progress.getId(), error, throwable);
-                                        progress.setFeil(error);
+                                        transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                     })
                                     .doOnNext(status -> oppdaterStatus(progress))))
                     .collectList()
@@ -113,7 +113,6 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
     private void oppdaterStatus(BestillingProgress progress) {
 
-        progress.setPdlImportStatus("OK");
-        transactionHelperService.persister(progress);
+        transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
     }
 }

@@ -55,8 +55,7 @@ public class InstdataClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setInstdataStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setInstdataStatus, status);
             return progress;
         };
     }

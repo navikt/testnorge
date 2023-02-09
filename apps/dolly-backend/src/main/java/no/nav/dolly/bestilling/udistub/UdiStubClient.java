@@ -87,8 +87,7 @@ public class UdiStubClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setUdistubStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, status);
             return progress;
         };
     }

@@ -89,8 +89,7 @@ public class SykemeldingClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setSykemeldingStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setSykemeldingStatus, status);
             return progress;
         };
     }
@@ -110,8 +109,7 @@ public class SykemeldingClient implements ClientRegister {
 
     private void setProgress(BestillingProgress progress, String status) {
 
-        progress.setSykemeldingStatus(status);
-        transactionHelperService.persister(progress);
+        transactionHelperService.persister(progress, BestillingProgress::setSykemeldingStatus, status);
     }
 
     private Flux<PdlPersonBolk.Data> getPerson(String ident) {

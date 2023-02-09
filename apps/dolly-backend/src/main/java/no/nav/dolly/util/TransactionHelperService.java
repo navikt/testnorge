@@ -8,6 +8,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
+import java.util.function.BiConsumer;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
@@ -22,9 +23,7 @@ public class TransactionHelperService {
     private final EntityManager entityManager;
     private final CacheManager cacheManager;
 
-    public TransactionHelperService(PlatformTransactionManager transactionManager,
-                                    EntityManager entityManager,
-                                    CacheManager cacheManager) {
+    public TransactionHelperService(PlatformTransactionManager transactionManager, EntityManager entityManager, CacheManager cacheManager) {
 
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.entityManager = entityManager;
@@ -44,9 +43,12 @@ public class TransactionHelperService {
         });
     }
 
-    public BestillingProgress persister(BestillingProgress progress) {
+    public BestillingProgress persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
-        return transactionTemplate.execute(status -> {
+        return transactionTemplate.execute(status1 -> {
+            var progress = entityManager.find(BestillingProgress.class, bestillingProgress.getId());
+
+            this.setField(progress, status, setter);
             entityManager.merge(progress);
             clearCache();
             return progress;
@@ -76,9 +78,7 @@ public class TransactionHelperService {
         }
     }
 
-    public BestillingProgress getProgress(Long id) {
-
-        return transactionTemplate.execute(status ->
-                entityManager.find(BestillingProgress.class, id));
+    private <BestillingProgress, String> void setField(BestillingProgress obj, String value, BiConsumer<BestillingProgress, String> setter) {
+        setter.accept(obj, value);
     }
 }

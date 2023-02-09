@@ -66,8 +66,7 @@ public class KrrstubClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setKrrstubStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setKrrstubStatus, status);
             return progress;
         };
     }

@@ -101,7 +101,7 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                 log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
                                                         progress.getId(), error, throwable);
                                                 progress.setFeil(error);
-                                                transactionHelperService.persister(progress);
+                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                                 return Flux.just(progress);
                                             }))))
                     .collectList()

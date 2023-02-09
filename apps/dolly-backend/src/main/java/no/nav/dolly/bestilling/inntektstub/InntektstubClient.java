@@ -70,8 +70,7 @@ public class InntektstubClient implements ClientRegister {
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
 
         return () -> {
-            progress.setInntektstubStatus(status);
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setInntektstubStatus, status);
             return progress;
         };
     }
