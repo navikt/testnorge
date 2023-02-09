@@ -20,7 +20,6 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TpsMeldingResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -44,7 +43,6 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
-@Order(3)
 @RequiredArgsConstructor
 public class TpsMessagingClient implements ClientRegister {
 
@@ -81,9 +79,9 @@ public class TpsMessagingClient implements ClientRegister {
         return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
                         .flatMap(miljoer -> {
 
-                            progress.setTpsMessagingStatus(prepTpsMessagingStatus(miljoer, false));
                             if (!dollyPerson.isOrdre()) {
-                                transactionHelperService.persister(progress);
+                                transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus,
+                                        prepTpsMessagingStatus(miljoer, false));
                             }
 
                             return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())

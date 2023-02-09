@@ -8,7 +8,6 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -22,7 +21,6 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@Order(5)
 @RequiredArgsConstructor
 public class PersonServiceClient {
 

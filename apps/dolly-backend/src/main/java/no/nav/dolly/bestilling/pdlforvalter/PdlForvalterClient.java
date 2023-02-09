@@ -11,13 +11,11 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
-import org.springframework.core.annotation.Order;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 
 @Slf4j
-@Order(1)
 //@Service
 @RequiredArgsConstructor
 public class PdlForvalterClient implements ClientRegister {

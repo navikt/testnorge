@@ -74,10 +74,10 @@ public class ArenaForvalterClient implements ClientRegister {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
-            progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
+            var initStatus = bestilling.getEnvironments().stream()
                     .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
-                    .collect(Collectors.joining(",")));
-            transactionHelperService.persister(progress);
+                    .collect(Collectors.joining(","));
+            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
 
             return Flux.from(getIdenterFamilie(dollyPerson.getIdent())
                     .flatMap(personServiceConsumer::getPdlSyncReady)

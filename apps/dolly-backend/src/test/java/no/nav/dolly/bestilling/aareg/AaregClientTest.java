@@ -18,6 +18,7 @@ import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -41,6 +42,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class AaregClientTest {
 

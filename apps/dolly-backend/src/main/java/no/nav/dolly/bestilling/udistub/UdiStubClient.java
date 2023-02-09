@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
@@ -42,8 +41,7 @@ public class UdiStubClient implements ClientRegister {
 
         if (nonNull(bestilling.getUdistub())) {
 
-            progress.setUdistubStatus(encodeStatus(getInfoVenter("UdiStub")));
-            transactionHelperService.persister(progress);
+            transactionHelperService.persister(progress, BestillingProgress::setUdistubStatus, getInfoVenter("UdiStub"));
 
             return Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
                             .flatMap(persondata -> udiStubConsumer.getUdiPerson(dollyPerson.getIdent())

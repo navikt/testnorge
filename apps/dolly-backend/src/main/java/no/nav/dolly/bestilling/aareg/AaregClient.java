@@ -17,7 +17,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,7 +41,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
-@Order(6)
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
@@ -67,10 +65,10 @@ public class AaregClient implements ClientRegister {
             }
             var miljoerTrygg = new AtomicReference<>(miljoer);
 
-            progress.setAaregStatus(miljoer.stream()
+            var initStatus = miljoer.stream()
                     .map(miljo -> String.format("%s:%s", miljo, getInfoVenter(SYSTEM)))
-                    .collect(Collectors.joining(",")));
-            transactionHelperService.persister(progress);
+                    .collect(Collectors.joining(","));
+            transactionHelperService.persister(progress, BestillingProgress::setAaregStatus, initStatus);
 
             return Flux.just(1)
                     .flatMap(index -> {
