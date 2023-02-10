@@ -11,13 +11,14 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
 @Service
 @RequiredArgsConstructor
 public class AccessService {
-    private static final List<String> SESSION_PROFILE = List.of("local", "idporten");
+    private static final List<String> SESSION_PROFILE = Collections.singletonList("local");
     //    private static final List<String> IDPORTEN_PROFILE = singletonList("idporten");
     private final TokenExchange tokenExchange;
     private final TokenXExchange tokenXExchange;
