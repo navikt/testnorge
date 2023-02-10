@@ -49,7 +49,7 @@ public class TransactionHelperService {
             var progress = entityManager.find(BestillingProgress.class, bestillingProgress.getId());
 
             this.setField(progress, status, setter);
-            entityManager.merge(progress);
+            entityManager.persist(progress);
             clearCache();
             return progress;
         });
@@ -63,7 +63,7 @@ public class TransactionHelperService {
             best.setSistOppdatert(now());
             best.setFerdig(true);
             best.setFeil(bestilling.getFeil());
-            entityManager.merge(best);
+            entityManager.persist(best);
             clearCache();
             return best;
         });
