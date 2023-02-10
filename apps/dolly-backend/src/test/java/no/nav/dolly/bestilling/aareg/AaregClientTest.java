@@ -4,7 +4,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -26,27 +25,17 @@ import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
-
-import java.time.Instant;
-import java.util.Map;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AaregClientTest {
@@ -73,9 +62,6 @@ class AaregClientTest {
     @Mock
     private BestillingProgress bestillingProgress;
 
-    @Mock
-    private Bestilling bestilling;
-
     @Captor
     ArgumentCaptor<String> statusCaptor;
 
@@ -84,25 +70,9 @@ class AaregClientTest {
 
     @BeforeEach
     void setup() {
-        when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
-        when(bestillingProgress.getBestilling()).thenReturn(bestilling);
-        when(bestilling.getBruker()).thenReturn(new Bruker());
-
+        when(aaregConsumer.getAccessToken())
+                .thenReturn(Mono.just(accessToken));
         statusCaptor = ArgumentCaptor.forClass(String.class);
-
-        SecurityContextHolder
-                .getContext()
-                .setAuthentication(
-                        new JwtAuthenticationToken(
-                                new Jwt(
-                                        "token",
-                                        Instant.now(),
-                                        Instant.now().plusSeconds(1000),
-                                        Map.of("alg", "none"),
-                                        Map.of("sub", "n/a")
-                                )
-                        )
-                );
     }
 
     private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
@@ -133,8 +103,10 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_OK() {
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any())).thenReturn(singletonList(new Arbeidsforhold()));
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(singletonList(new Arbeidsforhold()));
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+                .thenReturn(Mono.just(new ArbeidsforholdRespons()));
         when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
                 .thenReturn(Flux.just(new ArbeidsforholdRespons()));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
@@ -153,8 +125,10 @@ class AaregClientTest {
 
     @Test
     void gjenopprettArbeidsforhold_intetTidligereArbeidsforholdFinnes_lesKasterException() {
-        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any())).thenReturn(singletonList(new Arbeidsforhold()));
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(new ArbeidsforholdRespons()));
+        when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any()))
+                .thenReturn(singletonList(new Arbeidsforhold()));
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+                .thenReturn(Mono.just(new ArbeidsforholdRespons()));
         when(aaregConsumer.opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)))
                 .thenReturn(Flux.just(new ArbeidsforholdRespons()));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
@@ -180,8 +154,9 @@ class AaregClientTest {
                 .build()));
         request.setEnvironments(singleton(ENV));
 
-        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken)).thenReturn(Mono.just(
-                buildArbeidsforhold(false)));
+        when(aaregConsumer.hentArbeidsforhold(IDENT, ENV, accessToken))
+                .thenReturn(Mono.just(
+                        buildArbeidsforhold(false)));
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class), any(MappingContext.class)))
                 .thenReturn(buildArbeidsforhold(false)
                         .getEksisterendeArbeidsforhold());
