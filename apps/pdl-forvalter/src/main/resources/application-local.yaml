@@ -1,5 +1,3 @@
-azure.app.client.id: ${local.client.id}
-azure.app.client.secret: ${local.client.secret}
 
 spring:
   application:
