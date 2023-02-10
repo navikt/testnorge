@@ -5,143 +5,19 @@ import { Miljostatus, Status } from '@/components/bestilling/sammendrag/miljoeSt
 import Spinner from '@/components/ui/loading/Spinner'
 import * as React from 'react'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
+import styled from 'styled-components'
 
-const statusTest = [
-	{
-		id: 'PDL_FORVALTER',
-		navn: 'Persondataløsningen (PDL)',
-		statuser: [
-			{
-				melding: 'OK',
-				identer: ['03498146707'],
-			},
-		],
-	},
-	{
-		id: 'PDL_PERSONSTATUS',
-		navn: 'PDL-Synkronisering',
-		statuser: [
-			{
-				melding: 'OK',
-				identer: ['03498146707'],
-			},
-		],
-	},
-	{
-		id: 'AAREG',
-		navn: 'Arbeidsregister (AAREG)',
-		statuser: [
-			{
-				melding: 'OK',
-				detaljert: [
-					{
-						miljo: 'q1',
-						identer: ['03498146707'],
-					},
-				],
-			},
-		],
-	},
-	{
-		id: 'ARENA',
-		navn: 'Arena fagsystem',
-		statuser: [
-			{
-				melding: 'Info: Oppretting startet mot Arena ...',
-				detaljert: [
-					{
-						miljo: 'q1',
-						identer: ['03498146707'],
-					},
-				],
-			},
-		],
-	},
-	{
-		id: 'UDISTUB',
-		navn: 'Utlendingsdirektoratet (UDI)',
-		statuser: [
-			{
-				melding: 'Info: Oppretting startet mot UdiStub ...',
-				identer: ['03498146707'],
-			},
-		],
-	},
-	{
-		id: 'INNTK',
-		navn: 'Inntektskomponenten (INNTK)',
-		statuser: [
-			{
-				melding: 'OK',
-				identer: ['03498146707'],
-			},
-		],
-	},
-	{
-		id: 'PEN_INNTEKT',
-		navn: 'Pensjonsopptjening (POPP)',
-		statuser: [
-			{
-				melding: 'OK',
-				detaljert: [
-					{
-						miljo: 'q1',
-						identer: ['03498146707'],
-					},
-				],
-			},
-		],
-	},
-	{
-		id: 'TP_FORVALTER',
-		navn: 'Tjenestepensjon (TP)',
-		statuser: [
-			{
-				melding: 'OK',
-				detaljert: [
-					{
-						miljo: 'q1',
-						identer: ['03498146707'],
-					},
-				],
-			},
-		],
-	},
-	{
-		id: 'PEN_FORVALTER',
-		navn: 'Pensjon (PEN)',
-		statuser: [
-			{
-				melding: 'OK',
-				detaljert: [
-					{
-						miljo: 'q1',
-						identer: ['03498146707'],
-					},
-					{
-						miljo: 'q2',
-						identer: ['03498146707'],
-					},
-				],
-			},
-		],
-	},
-	{
-		id: 'PEN_AP',
-		navn: 'Alderspensjon (AP)',
-		statuser: [
-			{
-				melding: 'Feil:',
-				detaljert: [
-					{
-						miljo: 'q1',
-						identer: ['03498146707'],
-					},
-				],
-			},
-		],
-	},
-]
+const StatusIcon = styled.div`
+	min-width: 24px;
+	margin-right: 7px;
+
+	&& {
+		.svg-icon {
+			margin-right: 0;
+		}
+	}
+`
+
 export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 	const IconTypes = {
 		oppretter: 'loading-spinner',
@@ -194,17 +70,18 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 				console.log('getMelding(): ', getMelding()) //TODO - SLETT MEG
 
 				const marginBottom = getMelding() ? '8px' : '15px'
-				// const oppretter = statusTest.some((status) => status?.melding?.includes('Info:'))
+
 				return (
 					<div className="fagsystem-status_kind" key={idx} style={{ alignItems: 'flex-start' }}>
-						{oppretter ? (
-							<Spinner size={23} margin="5px" />
-						) : (
-							<Icon kind={iconType(fagsystem.statuser, bestilling.feil)} />
-							// <Icon kind={iconType(statusTest, bestilling.feil)} />
-						)}
-						<div style={{ marginBottom: marginBottom, paddingTop: '5px' }}>
-							<h5>{fagsystem.navn}</h5>
+						<StatusIcon>
+							{oppretter ? (
+								<Spinner size={23} margin="0px" />
+							) : (
+								<Icon kind={iconType(fagsystem.statuser, bestilling.feil)} />
+							)}
+						</StatusIcon>
+						<div style={{ marginBottom: marginBottom, paddingTop: '5px', maxWidth: '96%' }}>
+							<h5 style={{ fontSize: '0.9em' }}>{fagsystem.navn}</h5>
 							{getMelding()?.map((status) => {
 								return <ApiFeilmelding feilmelding={status?.melding} />
 							})}
@@ -217,6 +94,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 					</div>
 				)
 			})}
+			{bestilling?.status?.length > 0 && <hr style={{ marginBottom: '15px' }} />}
 		</div>
 	)
 }

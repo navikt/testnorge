@@ -66,12 +66,12 @@ export const BestillingProgresjon = ({
 
 	const ferdigstillBestilling = () => {
 		onFinishBestilling(bestilling || bestillingStatus)
-		// 	if (erOrganisasjon) {
-		// 		mutate(REGEX_BACKEND_ORGANISASJONER)
-		// 	} else {
-		// 		mutate(REGEX_BACKEND_GRUPPER)
-		// 		mutate(REGEX_BACKEND_BESTILLINGER)
-		// 	}
+		if (erOrganisasjon) {
+			mutate(REGEX_BACKEND_ORGANISASJONER)
+		} else {
+			mutate(REGEX_BACKEND_GRUPPER)
+			mutate(REGEX_BACKEND_BESTILLINGER)
+		}
 	}
 
 	const calculateStatus = () => {
@@ -96,7 +96,8 @@ export const BestillingProgresjon = ({
 			// ferdigstillBestilling()
 		}
 		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
-		const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
+		const title = percent === 100 ? 'OPPRETTER BLABLA...' : aktivBestillingStatusText
+		// const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
 
 		return {
 			percentFinished: percent,
@@ -107,14 +108,14 @@ export const BestillingProgresjon = ({
 
 	const handleCancelBtn = () => {
 		cancelBestilling(bestillingID, erOrganisasjon)
-		// ferdigstillBestilling()
+		ferdigstillBestilling()
 	}
 
 	const SECONDS_BEFORE_WARNING_MESSAGE = 120
 	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
 
-	// const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
-	const bestilling = bestilling8098[0]
+	const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
+	// const bestilling = bestilling8098[0]
 	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestillingID, erOrganisasjon, true)
 
 	const [timedOut, setTimedOut] = useState(false)
@@ -130,16 +131,16 @@ export const BestillingProgresjon = ({
 		harBestillingFeilet(sistOppdatert)
 	}, [bestilling, bestillingStatus])
 
-	// if (loading) {
-	// 	return null
-	// }
+	if (loading) {
+		return null
+	}
 
 	const { percentFinished, tittel, description } = calculateStatus()
 
-	// if (percentFinished === 100) {
-	// 	onFinishBestilling(bestilling || bestillingStatus)
-	// 	return null
-	// }
+	if (percentFinished === 100 && bestilling?.ferdig === true) {
+		onFinishBestilling(bestilling || bestillingStatus)
+		return null
+	}
 
 	// console.log('percentFinished: ', percentFinished) //TODO - SLETT MEG
 	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
@@ -165,7 +166,7 @@ export const BestillingProgresjon = ({
 				{/*<FagsystemStatus bestilling={bestilling} />*/}
 				<BestillingStatus bestilling={bestilling} />
 			</div>
-			<hr style={{ marginBottom: '15px' }} />
+			{/*<hr style={{ marginBottom: '15px' }} />*/}
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}

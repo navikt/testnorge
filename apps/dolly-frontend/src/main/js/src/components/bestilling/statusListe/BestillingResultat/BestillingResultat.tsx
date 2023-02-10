@@ -10,6 +10,7 @@ import GjenopprettConnector from '@/components/bestilling/gjenopprett/Gjenoppret
 import useBoolean from '@/utils/hooks/useBoolean'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
+import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus
@@ -40,7 +41,8 @@ export default function BestillingResultat({ bestilling, lukkBestilling }: Resul
 				</div>
 				<hr />
 				{/*// @ts-ignore*/}
-				<FagsystemStatus bestilling={bestilling} />
+				{/*<FagsystemStatus bestilling={bestilling} />*/}
+				<BestillingStatus bestilling={bestilling} />
 				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				<Feedback

@@ -61,9 +61,9 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 	const ferdig = ferdigBestillinger.map((ferdig) => (
 		<BestillingResultat key={ferdig.id} bestilling={ferdig} lukkBestilling={lukkBestilling} />
 	))
-	console.log('nyeBestillinger: ', nyeBestillinger) //TODO - SLETT MEG
-	console.log('ferdigBestillinger: ', ferdigBestillinger) //TODO - SLETT MEG
-	// return ikkeFerdig.concat(...ferdig)
-	return ikkeFerdig
+	// console.log('nyeBestillinger: ', nyeBestillinger) //TODO - SLETT MEG
+	// console.log('ferdigBestillinger: ', ferdigBestillinger) //TODO - SLETT MEG
+	return ikkeFerdig.concat(...ferdig)
+	// return ikkeFerdig
 }
 export default StatusListe

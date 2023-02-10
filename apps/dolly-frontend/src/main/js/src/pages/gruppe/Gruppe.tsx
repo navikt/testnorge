@@ -545,11 +545,11 @@ export default ({
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppe={gruppe} />
-			{/*{ikkeFerdigBestillinger && (*/}
-			{/*// @ts-ignore*/}
-			{/*<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />*/}
-			<StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestilling8098} />
-			{/*)}*/}
+			{ikkeFerdigBestillinger && (
+				// @ts-ignore
+				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
+				// <StatusListeConnector gruppeId={gruppe.id} bestillingListe={bestilling8098} />
+			)}
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
 					{!bankIdBruker && (
