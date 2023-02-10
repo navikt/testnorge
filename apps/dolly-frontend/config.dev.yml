@@ -11,13 +11,24 @@ metadata:
 spec:
   tokenx:
     enabled: true
-  azure:
+  idporten: #TODO FJERN START
+    enabled: true
+    postLogoutRedirectURIs:
+      - https://dolly-frontend-dev.dev.intern.nav.no
+    clientURI: https://dolly-frontend-dev.dev.intern.nav.no
     sidecar:
       enabled: true
-      autologin: true
-      autologinignorepaths:
+      autoLogin: true
+      autoLoginIgnorePaths:
         - /login
-      errorPath: /login
+      errorPath: /login #TODO FJERN SLETT
+  azure:
+    #    sidecar:
+    #      enabled: true
+    #      autologin: true
+    #      autologinignorepaths:
+    #        - /login
+    #      errorPath: /login
     application:
       enabled: true
       tenant: nav.no
