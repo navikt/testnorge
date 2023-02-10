@@ -86,4 +86,4 @@ spec:
   image: {{image}}
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
+      value: idporten #TODO: ENDRE DENNE TIL DEV!!!
