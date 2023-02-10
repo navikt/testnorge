@@ -26,10 +26,10 @@ consumers:
     cluster: dev-gcp
   testnav-person-organisasjon-tilgang-service: #TODO: Endre til prod hvis det funker
     name: testnav-person-organisasjon-tilgang-service-dev
-    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
+    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
   testnav-bruker-service: #TODO: Endre til prod hvis det funker
     name: testnav-bruker-service-dev
-    url: http://testnav-bruker-service-dev.dolly.svc.cluster.local
+    url: https://testnav-bruker-service-dev.dev.intern.nav.no
   testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   dolly-backend:
