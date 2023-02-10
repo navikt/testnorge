@@ -76,7 +76,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
             return arenaForvalterConsumer.getToken()
                     .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                            .filter(env -> bestilling.getEnvironments().stream().anyMatch(miljoe -> env.equals(miljoe)))
+                            .filter(env -> bestilling.getEnvironments().stream().anyMatch(env::equals))
                             .collectList()
                             .doOnNext(miljoer -> {
                                 var initStatus = miljoer.stream()

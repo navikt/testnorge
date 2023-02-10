@@ -144,7 +144,7 @@ public class TpsMessagingClient implements ClientRegister {
     private String prepTpsMessagingStatus(List<String> miljoer, boolean isFinal) {
 
         return miljoer.stream()
-                .map(miljo -> String.format("%s:%s", miljo, encodeStatus(isFinal ?
+                .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(isFinal ?
                         getVarselSlutt(TPS_MESSAGING) : getInfoVenter(TPS_MESSAGING))))
                 .collect(Collectors.joining(","));
     }
