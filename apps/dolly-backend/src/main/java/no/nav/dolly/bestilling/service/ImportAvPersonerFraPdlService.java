@@ -13,11 +13,9 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,6 @@ import reactor.core.publisher.Operators;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
@@ -38,8 +35,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class ImportAvPersonerFraPdlService extends DollyBestillingService {
 
-    private PersonServiceClient personServiceClient;
-    private GetUserInfo getUserInfo;
+    private final PersonServiceClient personServiceClient;
 
     public ImportAvPersonerFraPdlService(IdentService identService,
                                          BestillingService bestillingService,
@@ -49,14 +45,18 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                          ErrorStatusDecoder errorStatusDecoder,
                                          PdlDataConsumer pdlDataConsumer,
                                          TransactionHelperService transactionHelperService,
-                                         PersonServiceClient personServiceClient,
-                                         GetUserInfo getUserInfo) {
-
-        super(identService, bestillingService, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
-
+                                         PersonServiceClient personServiceClient) {
+        super(
+                identService,
+                bestillingService,
+                objectMapper,
+                clientRegisters,
+                counterCustomRegistry,
+                pdlDataConsumer,
+                errorStatusDecoder,
+                transactionHelperService
+        );
         this.personServiceClient = personServiceClient;
-        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -67,16 +67,12 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
-        var userInfo = Optional
-                .ofNullable(bestilling.getBruker())
-                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
-
         if (nonNull(bestKriterier)) {
 
             Flux.fromArray(bestilling.getPdlImport().split(","))
                     .filter(testnorgeIdent -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testnorgeIdent -> opprettProgress(bestilling, PDL, testnorgeIdent)
-                            .flatMap(progress -> opprettDollyPerson(testnorgeIdent, progress, userInfo)
+                            .flatMap(progress -> opprettDollyPerson(testnorgeIdent, progress, bestilling.getBruker())
                                     .doOnNext(dollyPerson -> leggIdentTilGruppe(testnorgeIdent,
                                             progress, bestKriterier.getBeskrivelse()))
                                     .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))

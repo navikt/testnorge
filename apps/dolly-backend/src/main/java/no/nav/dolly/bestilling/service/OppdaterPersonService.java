@@ -16,11 +16,9 @@ import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -28,7 +26,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -38,29 +35,35 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class OppdaterPersonService extends DollyBestillingService {
 
-    private PersonServiceClient personServiceClient;
-    private MapperFacade mapperFacade;
-    private BestillingProgressService bestillingProgressService;
-    private GetUserInfo getUserInfo;
+    private final PersonServiceClient personServiceClient;
+    private final MapperFacade mapperFacade;
+    private final BestillingProgressService bestillingProgressService;
 
-    public OppdaterPersonService(IdentService identService,
-                                 BestillingProgressService bestillingProgressService,
-                                 BestillingService bestillingService, MapperFacade mapperFacade,
-                                 ObjectMapper objectMapper,
-                                 List<ClientRegister> clientRegisters, CounterCustomRegistry counterCustomRegistry,
-                                 ErrorStatusDecoder errorStatusDecoder,
-                                 PdlDataConsumer pdlDataConsumer,
-                                 TransactionHelperService transactionHelperService,
-                                 PersonServiceClient personServiceClient,
-                                 GetUserInfo getUserInfo) {
-        super(identService,
-                bestillingService, objectMapper, clientRegisters, counterCustomRegistry,
-                pdlDataConsumer, errorStatusDecoder, transactionHelperService);
-
+    public OppdaterPersonService(
+            IdentService identService,
+            BestillingProgressService bestillingProgressService,
+            BestillingService bestillingService,
+            MapperFacade mapperFacade,
+            ObjectMapper objectMapper,
+            List<ClientRegister> clientRegisters,
+            CounterCustomRegistry counterCustomRegistry,
+            ErrorStatusDecoder errorStatusDecoder,
+            PdlDataConsumer pdlDataConsumer,
+            TransactionHelperService transactionHelperService,
+            PersonServiceClient personServiceClient) {
+        super(
+                identService,
+                bestillingService,
+                objectMapper,
+                clientRegisters,
+                counterCustomRegistry,
+                pdlDataConsumer,
+                errorStatusDecoder,
+                transactionHelperService
+        );
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
-        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -70,17 +73,13 @@ public class OppdaterPersonService extends DollyBestillingService {
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
         var testident = identService.getTestIdent(bestilling.getIdent());
-        var userInfo = Optional
-                .ofNullable(bestilling.getBruker())
-                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
-
         Flux.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
                 .flatMap(originator -> opprettProgress(bestilling, originator.getMaster())
                         .flatMap(progress -> (originator.isPdlf() ?
                                 oppdaterPdlPerson(originator, testident.getIdent())
                                         .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                 Flux.just(testident.getIdent()))
-                                .flatMap(ident -> opprettDollyPerson(testident.getIdent(), progress, userInfo)
+                                .flatMap(ident -> opprettDollyPerson(testident.getIdent(), progress, bestilling.getBruker())
                                         .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
                                                 updateIdent(dollyPerson, progress) : Flux.just(ident))
                                                 .doOnNext(nyident -> counterCustomRegistry.invoke(request))

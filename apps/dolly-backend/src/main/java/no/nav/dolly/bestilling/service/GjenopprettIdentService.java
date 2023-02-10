@@ -15,11 +15,9 @@ import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
-import no.nav.dolly.util.CurrentAuthentication;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -30,7 +28,6 @@ import reactor.core.publisher.Operators;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.format;
@@ -43,25 +40,30 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @Service
 public class GjenopprettIdentService extends DollyBestillingService {
 
-    private PersonServiceClient personServiceClient;
-    private GetUserInfo getUserInfo;
+    private final PersonServiceClient personServiceClient;
 
-    public GjenopprettIdentService(IdentService identService,
-                                   BestillingService bestillingService,
-                                   ObjectMapper objectMapper,
-                                   List<ClientRegister> clientRegisters,
-                                   CounterCustomRegistry counterCustomRegistry,
-                                   ErrorStatusDecoder errorStatusDecoder,
-                                   PdlDataConsumer pdlDataConsumer,
-                                   TransactionHelperService transactionHelperService,
-                                   PersonServiceClient personServiceClient,
-                                   GetUserInfo getUserInfo) {
-
-        super(identService, bestillingService, objectMapper, clientRegisters,
-                counterCustomRegistry, pdlDataConsumer, errorStatusDecoder, transactionHelperService);
-
+    public GjenopprettIdentService(
+            IdentService identService,
+            BestillingService bestillingService,
+            ObjectMapper objectMapper,
+            List<ClientRegister> clientRegisters,
+            CounterCustomRegistry counterCustomRegistry,
+            ErrorStatusDecoder errorStatusDecoder,
+            PdlDataConsumer pdlDataConsumer,
+            TransactionHelperService transactionHelperService,
+            PersonServiceClient personServiceClient
+    ) {
+        super(
+                identService,
+                bestillingService,
+                objectMapper,
+                clientRegisters,
+                counterCustomRegistry,
+                pdlDataConsumer,
+                errorStatusDecoder,
+                transactionHelperService
+        );
         this.personServiceClient = personServiceClient;
-        this.getUserInfo = getUserInfo;
     }
 
     @Async
@@ -72,10 +74,6 @@ public class GjenopprettIdentService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
-        var userInfo = Optional
-                .ofNullable(bestilling.getBruker())
-                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
-
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);
 
@@ -91,7 +89,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
                     .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
-                                    .flatMap(ident -> opprettDollyPerson(ident, progress, userInfo)
+                                    .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
                                                     gjenopprettKlienter(dollyPerson, bestKriterier,

@@ -14,6 +14,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -44,6 +45,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class AaregClient implements ClientRegister {
+    private final BestillingProgressRepository bestillingProgressRepository;
 
     public static final String IDENT = "Ident";
     private static final String SYSTEM = "AAREG";
@@ -60,13 +62,10 @@ public class AaregClient implements ClientRegister {
         if (!bestilling.getAareg().isEmpty()) {
 
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
-            log.info("dollyPerson: {}", dollyPerson, new NullPointerException("Stack trace"));
-            if (dollyPerson.getBruker() != null) {
-                log.info("dollyPerson.getBruker(): {}", dollyPerson.getBruker());
-                log.info("dollyPerson.getBruker().getBrukertype(): {}", dollyPerson.getBruker().getBrukertype());
-                if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
-                    miljoer = crossConnect(miljoer, Q1_AND_Q2);
-                }
+            var bruker = dollyPerson.getBruker();
+            log.info("dollyPerson: {}/{} progress: {}/{}", bruker.getId(), bruker.getBrukertype(), progress.getBestilling().getBruker().getId(), progress.getBestilling().getBruker().getBrukertype());
+            if (bruker.getBrukertype() == Bruker.Brukertype.BANKID) {
+                miljoer = crossConnect(miljoer, Q1_AND_Q2);
             }
             var miljoerTrygg = new AtomicReference<>(miljoer);
 
