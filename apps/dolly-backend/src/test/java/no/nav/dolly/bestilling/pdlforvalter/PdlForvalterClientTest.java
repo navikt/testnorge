@@ -22,6 +22,7 @@ import no.nav.dolly.domain.resultset.pdlforvalter.utenlandsid.PdlUtenlandskIdent
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.DollyPersonCache;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;

@@ -18,6 +18,7 @@ import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.hamcrest.CoreMatchers;

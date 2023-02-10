@@ -78,8 +78,7 @@ public class TransactionHelperService {
         }
     }
 
-    private <T, R> void setField(T object, R value, BiConsumer<T, R> setter) {
-
-        setter.accept(object, value);
+    private <BestillingProgress, String> void setField(BestillingProgress obj, String value, BiConsumer<BestillingProgress, String> setter) {
+        setter.accept(obj, value);
     }
 }

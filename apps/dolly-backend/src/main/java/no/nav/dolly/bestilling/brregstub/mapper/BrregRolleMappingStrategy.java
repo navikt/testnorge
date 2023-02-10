@@ -12,6 +12,9 @@ import no.nav.dolly.mapper.MappingStrategy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -25,6 +28,11 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @Slf4j
 @Component
 public class BrregRolleMappingStrategy implements MappingStrategy {
+
+    private static LocalDate toDate(LocalDateTime dateTime) {
+
+            return nonNull(dateTime) ? dateTime.toLocalDate() : null;
+    }
 
     @Override
     public void register(MapperFactory factory) {
