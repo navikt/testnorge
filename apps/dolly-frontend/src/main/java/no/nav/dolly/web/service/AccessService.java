@@ -13,14 +13,12 @@ import reactor.core.publisher.Mono;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.util.Collections.singletonList;
-
 
 @Service
 @RequiredArgsConstructor
 public class AccessService {
-    private static final List<String> SESSION_PROFILE = singletonList("local");
-    private static final List<String> IDPORTEN_PROFILE = singletonList("idporten");
+    private static final List<String> SESSION_PROFILE = List.of("local", "idporten");
+    //    private static final List<String> IDPORTEN_PROFILE = singletonList("idporten");
     private final TokenExchange tokenExchange;
     private final TokenXExchange tokenXExchange;
 
@@ -35,13 +33,13 @@ public class AccessService {
             return sessionTokenExchange
                     .exchange(serverProperties, exchange)
                     .map(AccessToken::getTokenValue);
-        } else if (Arrays.stream(environment.getActiveProfiles()).anyMatch(IDPORTEN_PROFILE::contains)) {
-
-            return tokenXExchange
-                    .exchange(serverProperties, exchange)
-                    .map(AccessToken::getTokenValue);
+//        } else if (Arrays.stream(environment.getActiveProfiles()).anyMatch(IDPORTEN_PROFILE::contains)) {
+//
+//            return tokenXExchange
+//                    .exchange(serverProperties, exchange)
+//                    .map(AccessToken::getTokenValue);
         } else {
-           
+
             return tokenExchange
                     .exchange(serverProperties)
                     .map(AccessToken::getTokenValue);
