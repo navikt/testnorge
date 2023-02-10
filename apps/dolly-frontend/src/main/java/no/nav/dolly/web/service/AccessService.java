@@ -34,19 +34,16 @@ public class AccessService {
 
         if (Arrays.stream(environment.getActiveProfiles()).anyMatch(SESSION_PROFILE::contains)) {
 
-            log.info("Bruker session exchange for token henting");
             return sessionTokenExchange
                     .exchange(serverProperties, exchange)
                     .map(AccessToken::getTokenValue);
         } else if (Arrays.stream(environment.getActiveProfiles()).anyMatch(IDPORTEN_PROFILE::contains)) {
 
-            log.info("Bruker token X exchange for token henting");
             return tokenXExchange
                     .exchange(serverProperties, exchange)
                     .map(AccessToken::getTokenValue);
         } else {
 
-            log.info("Bruker token exchange for token henting");
             return tokenExchange
                     .exchange(serverProperties)
                     .map(AccessToken::getTokenValue);
