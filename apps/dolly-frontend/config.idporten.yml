@@ -1,8 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: dolly-frontend-dev
-#  name: dolly-idporten
+  name: dolly-idporten
   namespace: dolly
   labels:
     team: dolly
@@ -19,10 +18,8 @@ spec:
   idporten:
     enabled: true
     postLogoutRedirectURIs:
-      #      - https://dolly-idporten.dev.nav.no
-      - https://dolly-frontend-dev.dev.intern.nav.no
-    #    clientURI: https://dolly-idporten.dev.nav.no
-    clientURI: https://dolly-frontend-dev.dev.intern.nav.no
+      - https://dolly-idporten.dev.nav.no
+    clientURI: https://dolly-idporten.dev.nav.no
     sidecar:
       enabled: true
       autoLogin: true
@@ -34,8 +31,7 @@ spec:
     max: 3
   port: 8080
   ingresses:
-    #    - https://dolly-idporten.dev.nav.no
-    - https://dolly-frontend-dev.dev.intern.nav.no
+    - https://dolly-idporten.dev.nav.no
   accessPolicy:
     outbound:
       rules:
@@ -46,6 +42,7 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnorge-profil-api
         - application: testnav-organisasjon-tilgang-service
+        - application: testnav-organisasjon-tilgang-service-dev
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service

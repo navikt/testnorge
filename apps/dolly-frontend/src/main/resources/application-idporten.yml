@@ -20,8 +20,10 @@ consumers:
     url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-varslinger-service:
     url: http://testnav-varslinger-service.dolly.svc.cluster.local
+  #  testnav-person-organisasjon-tilgang-service:
+  #    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-person-organisasjon-tilgang-service:
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
   testnav-bruker-service:
     url: http://testnav-bruker-service.dolly.svc.cluster.local
   testnav-pdl-forvalter:
