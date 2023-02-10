@@ -1,7 +1,8 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: dolly-idporten
+  name: dolly-frontend-dev
+#  name: dolly-idporten
   namespace: dolly
   labels:
     team: dolly
