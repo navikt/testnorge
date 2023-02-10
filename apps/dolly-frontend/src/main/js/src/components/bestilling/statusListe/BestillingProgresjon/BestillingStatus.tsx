@@ -4,6 +4,7 @@ import '../BestillingResultat/FagsystemStatus/FagsystemStatus.less'
 import { Miljostatus, Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import Spinner from '@/components/ui/loading/Spinner'
 import * as React from 'react'
+import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 
 const statusTest = [
 	{
@@ -177,19 +178,42 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 			{bestilling.status?.map((fagsystem, idx) => {
 				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info:'))
 				console.log('fagsystem: ', fagsystem) //TODO - SLETT MEG
+
+				const infoListe = fagsystem?.statuser?.filter((s) => s?.melding?.includes('Info:'))
+				const feilListe = fagsystem?.statuser?.filter((s) => s?.melding?.includes('Feil'))
+				const getMelding = () => {
+					if (fagsystem?.statuser?.every((s) => s?.melding === 'OK')) {
+						return null
+						// } else if (fagsystem?.statuser?.some((s) => s?.melding?.includes('Info:'))) {
+					} else {
+						return infoListe.concat(feilListe)
+					}
+				}
+
+				//TODO fortsett her!
+				console.log('getMelding(): ', getMelding()) //TODO - SLETT MEG
+
+				const marginBottom = getMelding() ? '8px' : '15px'
 				// const oppretter = statusTest.some((status) => status?.melding?.includes('Info:'))
 				return (
-					<div className="fagsystem-status_kind" key={idx}>
+					<div className="fagsystem-status_kind" key={idx} style={{ alignItems: 'flex-start' }}>
 						{oppretter ? (
-							<Spinner size={19} />
+							<Spinner size={23} margin="5px" />
 						) : (
 							<Icon kind={iconType(fagsystem.statuser, bestilling.feil)} />
 							// <Icon kind={iconType(statusTest, bestilling.feil)} />
 						)}
-						<p>
-							<b>{fagsystem.navn}</b>
-						</p>
-						<p> - {fagsystem.statuser[0].melding}</p>
+						<div style={{ marginBottom: marginBottom, paddingTop: '5px' }}>
+							<h5>{fagsystem.navn}</h5>
+							{getMelding()?.map((status) => {
+								return <ApiFeilmelding feilmelding={status?.melding} />
+							})}
+							{/*<ApiFeilmelding feilmelding={fagsystem.statuser[0].melding} />*/}
+						</div>
+						{/*<p>*/}
+						{/*	<b>{fagsystem.navn}</b>*/}
+						{/*</p>*/}
+						{/*<p> - {fagsystem.statuser[0].melding}</p>*/}
 					</div>
 				)
 			})}

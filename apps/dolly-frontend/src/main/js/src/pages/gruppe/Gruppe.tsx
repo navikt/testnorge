@@ -159,7 +159,16 @@ export const bestilling8098 = [
 				navn: 'Alderspensjon (AP)',
 				statuser: [
 					{
-						melding: 'Feil:',
+						melding: 'Feil: blablabla',
+						detaljert: [
+							{
+								miljo: 'q1',
+								identer: ['02488508388'],
+							},
+						],
+					},
+					{
+						melding: 'Info: Oppretting startet mot PEN ...',
 						detaljert: [
 							{
 								miljo: 'q1',

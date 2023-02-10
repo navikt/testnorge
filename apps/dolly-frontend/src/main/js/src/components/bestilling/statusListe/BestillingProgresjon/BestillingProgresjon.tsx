@@ -151,12 +151,12 @@ export const BestillingProgresjon = ({
 					<p>Bestilling #{bestilling?.id}</p>
 					<h3>Bestillingsstatus</h3>
 					<div className="status-header_button-wrap">
-						<Button
-							kind="remove-circle"
-							onClick={() => {
-								lukkBestilling(bestilling?.id)
-							}}
-						/>
+						{/*<Button*/}
+						{/*	kind="remove-circle"*/}
+						{/*	onClick={() => {*/}
+						{/*		lukkBestilling(bestilling?.id)*/}
+						{/*	}}*/}
+						{/*/>*/}
 					</div>
 				</div>
 				<hr />
@@ -165,6 +165,7 @@ export const BestillingProgresjon = ({
 				{/*<FagsystemStatus bestilling={bestilling} />*/}
 				<BestillingStatus bestilling={bestilling} />
 			</div>
+			<hr style={{ marginBottom: '15px' }} />
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}
