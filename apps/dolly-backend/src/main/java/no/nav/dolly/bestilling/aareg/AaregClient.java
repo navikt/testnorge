@@ -60,8 +60,14 @@ public class AaregClient implements ClientRegister {
         if (!bestilling.getAareg().isEmpty()) {
 
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
-            if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
-                miljoer = crossConnect(miljoer, Q1_AND_Q2);
+            log.info("dollyPerson: {}", dollyPerson, new NullPointerException("Stack trace"));
+            if (dollyPerson.getBruker() != null) {
+                log.info("dollyPerson.getBruker().getBrukerId(): {}", dollyPerson.getBruker().getBrukerId());
+                log.info("dollyPerson.getBruker().getBrukernavn(): {}", dollyPerson.getBruker().getBrukernavn());
+                log.info("dollyPerson.getBruker().getBrukertype(): {}", dollyPerson.getBruker().getBrukertype());
+                if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
+                    miljoer = crossConnect(miljoer, Q1_AND_Q2);
+                }
             }
             var miljoerTrygg = new AtomicReference<>(miljoer);
 
@@ -153,15 +159,12 @@ public class AaregClient implements ClientRegister {
     }
 
     private String decodeStatus(String miljoe, ArbeidsforholdRespons reply) {
-
         log.info("AAREG respons fra miljø {} : {} ", miljoe, reply);
-        return new StringBuilder()
-                .append(miljoe)
-                .append(": arbforhold=")
-                .append(reply.getArbeidsforholdId())
-                .append('$')
-                .append(isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError()))
-                .toString();
+        return "%s: arbforhold=%s$%s".formatted(
+                miljoe,
+                reply.getArbeidsforholdId(),
+                isNull(reply.getError()) ? "OK" : errorStatusDecoder.decodeThrowable(reply.getError())
+        );
     }
 
 }
