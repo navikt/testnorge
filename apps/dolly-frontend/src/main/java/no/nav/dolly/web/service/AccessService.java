@@ -1,6 +1,7 @@
 package no.nav.dolly.web.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -11,15 +12,17 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.singletonList;
 
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class AccessService {
-    private static final List<String> SESSION_PROFILE = Collections.singletonList("local");
-    //    private static final List<String> IDPORTEN_PROFILE = singletonList("idporten");
+    private static final List<String> SESSION_PROFILE = singletonList("local");
+    private static final List<String> IDPORTEN_PROFILE = singletonList("idporten");
     private final TokenExchange tokenExchange;
     private final TokenXExchange tokenXExchange;
 
@@ -31,16 +34,19 @@ public class AccessService {
 
         if (Arrays.stream(environment.getActiveProfiles()).anyMatch(SESSION_PROFILE::contains)) {
 
+            log.info("Bruker session exchange for token henting");
             return sessionTokenExchange
                     .exchange(serverProperties, exchange)
                     .map(AccessToken::getTokenValue);
-//        } else if (Arrays.stream(environment.getActiveProfiles()).anyMatch(IDPORTEN_PROFILE::contains)) {
-//
-//            return tokenXExchange
-//                    .exchange(serverProperties, exchange)
-//                    .map(AccessToken::getTokenValue);
+        } else if (Arrays.stream(environment.getActiveProfiles()).anyMatch(IDPORTEN_PROFILE::contains)) {
+
+            log.info("Bruker token X exchange for token henting");
+            return tokenXExchange
+                    .exchange(serverProperties, exchange)
+                    .map(AccessToken::getTokenValue);
         } else {
 
+            log.info("Bruker token exchange for token henting");
             return tokenExchange
                     .exchange(serverProperties)
                     .map(AccessToken::getTokenValue);
