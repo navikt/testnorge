@@ -10,8 +10,9 @@
                     <shortenedClassNameLength>20</shortenedClassNameLength>
                     <exclude>^sun\.reflect\..*\.invoke</exclude>
                     <exclude>^net\.sf\.cglib\.proxy\.MethodProxy\.invoke</exclude>
-                    <exclude>java\.util\.concurrent\..*</exclude>
+                    <exclude>java\..*</exclude>
                     <exclude>org\.apache\.catalina\..*</exclude>
+                    <exclude>reactor\.core\.publisher\..*</exclude>
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.tomcat\..*</exclude>
                 </throwableConverter>
@@ -36,7 +37,7 @@
         </root>
     </springProfile>
 
-<!--    <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">-->
-<!--        <level value="TRACE"/>-->
-<!--    </logger>-->
+    <!--    <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">-->
+    <!--        <level value="TRACE"/>-->
+    <!--    </logger>-->
 </configuration>

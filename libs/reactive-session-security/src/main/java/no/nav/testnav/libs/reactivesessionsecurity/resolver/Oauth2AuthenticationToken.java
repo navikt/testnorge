@@ -11,9 +11,7 @@ abstract class Oauth2AuthenticationToken {
     Mono<OAuth2AuthenticationToken> oauth2AuthenticationToken(Mono<Authentication> authentication) {
         return authentication
                 .map(OAuth2AuthenticationToken.class::cast)
-                .doOnError(throwable -> {
-                    log.error("Feilet med å hente accessToken", throwable);
-                })
+                .doOnError(throwable -> log.error("Feilet med å hente accessToken", throwable))
                 .doOnSuccess(oAuth2AuthenticationToken -> {
                     if (!oAuth2AuthenticationToken.isAuthenticated()) {
                         throw new CredentialsExpiredException("Token er utløpt");

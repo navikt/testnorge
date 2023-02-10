@@ -41,6 +41,7 @@ public class AccessService {
                     .exchange(serverProperties, exchange)
                     .map(AccessToken::getTokenValue);
         } else {
+           
             return tokenExchange
                     .exchange(serverProperties)
                     .map(AccessToken::getTokenValue);

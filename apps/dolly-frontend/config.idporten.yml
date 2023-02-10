@@ -51,9 +51,11 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter
         - application: testnav-bruker-service
+        - application: testnav-bruker-service-dev
         - application: testnav-person-search-service
         - application: testnav-inst-service
         - application: dolly-backend
+        - application: dolly-backend-dev
       external:
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
