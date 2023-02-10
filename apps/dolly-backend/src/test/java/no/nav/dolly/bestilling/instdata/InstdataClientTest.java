@@ -12,9 +12,10 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -27,13 +28,16 @@ import java.util.List;
 import java.util.Map;
 
 import static java.util.Collections.singleton;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class InstdataClientTest {
 
@@ -52,8 +56,15 @@ class InstdataClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Captor
+    ArgumentCaptor<String> statusCaptor;
+
     @InjectMocks
     private InstdataClient instdataClient;
+
+    void setup() {
+        statusCaptor = ArgumentCaptor.forClass(String.class);
+    }
 
     @Test
     void gjenopprettUtenInstdata_TomRetur() {
@@ -87,9 +98,11 @@ class InstdataClientTest {
 
         StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, true)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .instdataStatus("q2:opphold=1$OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService)
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), is(equalTo("q2:opphold=1$OK")));
+                })
                 .verifyComplete();
     }
 
@@ -116,9 +129,11 @@ class InstdataClientTest {
 
         StepVerifier.create(instdataClient.gjenopprett(request, dollyPerson, progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .instdataStatus("q2:opphold=1$OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService)
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), is(equalTo("q2:opphold=1$OK")));
+                })
                 .verifyComplete();
     }
 }

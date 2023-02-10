@@ -21,12 +21,14 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.DollyPersonCache;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.hamcrest.CoreMatchers;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -44,6 +46,7 @@ import java.util.Set;
 
 import static no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterClient.mergePensjonforvalterResponses;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasSize;
@@ -53,8 +56,10 @@ import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anySet;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-@Disabled
+
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 class PensjonforvalterClientTest {
@@ -85,11 +90,15 @@ class PensjonforvalterClientTest {
     @Mock
     private PdlPersonBolk pdlPersonBolk;
 
+    @Captor
+    ArgumentCaptor<String> statusCaptor;
+
     @InjectMocks
     private PensjonforvalterClient pensjonforvalterClient;
 
     @BeforeEach
     void setup() {
+        statusCaptor = ArgumentCaptor.forClass(String.class);
         when(mapperFacade.map(any(PdlPersonBolk.PersonBolk.class), eq(PensjonPersonRequest.class))).thenReturn(new PensjonPersonRequest());
         when(pensjonforvalterConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
         when(accessToken.getTokenValue()).thenReturn("123");
@@ -311,10 +320,14 @@ class PensjonforvalterClientTest {
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .bestilling(dbBestilling)
-                        .pensjonforvalterStatus("PensjonForvalter#TEST1:OK$TpForhold#TEST2:OK,TEST1:OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
+                    assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));
+                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK$TpForhold#TEST2:OK,TEST1:OK")));
+                })
                 .verifyComplete();
     }
 
@@ -397,10 +410,13 @@ class PensjonforvalterClientTest {
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .bestilling(dbBestilling)
-                        .pensjonforvalterStatus("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
+                    assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));                    assertThat(statusCaptor.getAllValues().get(1), is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$TpForhold#TEST2:Feil= ytelse2 feil on TEST2,TEST1:OK")));
+                })
                 .verifyComplete();
     }
 
@@ -482,11 +498,16 @@ class PensjonforvalterClientTest {
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .bestilling(dbBestilling)
-                        .pensjonforvalterStatus("PensjonForvalter#TEST1:OK,TEST2:OK$" +
-                                "TpForhold#TEST2:Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon),TEST1:OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0).split("#")[0], is(equalTo("PensjonForvalter")));
+                    assertThat(Arrays.asList(statusCaptor.getAllValues().get(0).split("#")[1].split(",")),
+                            containsInAnyOrder("TEST1:Info= Oppretting startet mot PESYS ...","TEST2:Info= Oppretting startet mot PESYS ..."));
+                    assertThat(statusCaptor.getAllValues().get(1),
+                            is(CoreMatchers.equalTo("PensjonForvalter#TEST1:OK,TEST2:OK$" +
+                                    "TpForhold#TEST2:Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon),TEST1:OK")));
+                })
                 .verifyComplete();
     }
 

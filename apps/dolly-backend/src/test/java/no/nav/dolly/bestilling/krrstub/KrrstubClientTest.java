@@ -12,9 +12,11 @@ import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import org.junit.jupiter.api.Disabled;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,13 +24,14 @@ import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class KrrstubClientTest {
 
@@ -47,8 +50,15 @@ class KrrstubClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Captor
+    ArgumentCaptor<String> statusCaptor;
+
     @InjectMocks
     private KrrstubClient krrstubClient;
+
+    void setup() {
+        statusCaptor = ArgumentCaptor.forClass(String.class);
+    }
 
     @Test
     void gjenopprett_ingendata() {
@@ -99,9 +109,11 @@ class KrrstubClientTest {
         StepVerifier.create(krrstubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .krrstubStatus("Feil:")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(1))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("Feil:")));
+                })
                 .verifyComplete();
 
         verify(krrstubConsumer).createDigitalKontaktdata(any(DigitalKontaktdata.class));

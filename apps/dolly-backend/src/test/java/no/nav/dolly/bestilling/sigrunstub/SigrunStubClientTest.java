@@ -10,9 +10,11 @@ import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import org.junit.jupiter.api.Disabled;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -21,6 +23,7 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.core.IsNull.nullValue;
@@ -28,10 +31,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class SigrunStubClientTest {
 
@@ -49,8 +52,15 @@ class SigrunStubClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Captor
+    ArgumentCaptor<String> statusCaptor;
+
     @InjectMocks
     private SigrunStubClient sigrunStubClient;
+
+    void setup() {
+        statusCaptor = ArgumentCaptor.forClass(String.class);
+    }
 
     @Test
     void gjenopprett_ingendata() {
@@ -78,9 +88,11 @@ class SigrunStubClientTest {
         StepVerifier.create(sigrunStubClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT).build(), progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .sigrunstubStatus("Feil:")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(1))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("Feil:")));
+                })
                 .verifyComplete();
     }
 
@@ -102,9 +114,11 @@ class SigrunStubClientTest {
         StepVerifier.create(sigrunStubClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 new BestillingProgress(), true)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .sigrunstubStatus("OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(1))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getValue(), Matchers.is(equalTo("OK")));
+                })
                 .verifyComplete();
 
         verify(sigrunStubConsumer).createSkattegrunnlag(anyList());

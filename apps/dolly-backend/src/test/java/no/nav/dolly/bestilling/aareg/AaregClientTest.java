@@ -18,9 +18,10 @@ import no.nav.testnav.libs.dto.aareg.v1.Organisasjon;
 import no.nav.testnav.libs.dto.aareg.v1.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -36,13 +37,16 @@ import java.util.Map;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(MockitoExtension.class)
 class AaregClientTest {
 
@@ -65,12 +69,17 @@ class AaregClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Captor
+    ArgumentCaptor<String> statusCaptor;
+
     @InjectMocks
     private AaregClient aaregClient;
 
     @BeforeEach
     void setup() {
         when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+
+        statusCaptor = ArgumentCaptor.forClass(String.class);
 
         SecurityContextHolder
                 .getContext()
@@ -87,7 +96,7 @@ class AaregClientTest {
                 );
     }
 
-    private ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
+    private static ArbeidsforholdRespons buildArbeidsforhold(boolean isOrgnummer) {
 
         return ArbeidsforholdRespons.builder()
                 .eksisterendeArbeidsforhold(singletonList(
@@ -182,9 +191,12 @@ class AaregClientTest {
                                         .bruker(bruker)
                                         .build(), progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .aaregStatus("u2: arbforhold=1$OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("u2:Info= Oppretting startet mot AAREG ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("u2: arbforhold=1$OK")));
+                })
                 .verifyComplete();
     }
 
@@ -217,9 +229,12 @@ class AaregClientTest {
                                 .bruker(bruker)
                                 .build(), progress, false)
                         .map(ClientFuture::get))
-                .expectNext(BestillingProgress.builder()
-                        .aaregStatus("u2: arbforhold=1$OK")
-                        .build())
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), is(equalTo("u2:Info= Oppretting startet mot AAREG ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), is(equalTo("u2: arbforhold=1$OK")));
+                })
                 .verifyComplete();
     }
 }

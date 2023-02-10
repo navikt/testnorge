@@ -74,18 +74,23 @@ public class ArenaForvalterClient implements ClientRegister {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
-            var initStatus = bestilling.getEnvironments().stream()
-                    .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
-                    .collect(Collectors.joining(","));
-            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
-
-            return Flux.from(getIdenterFamilie(dollyPerson.getIdent())
-                    .flatMap(personServiceConsumer::getPdlSyncReady)
-                    .collectList()
-                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
-                    .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, bestilling, dollyPerson))
-                    .flatMap(Mono::from)
-                    .map(status -> futurePersist(progress, status)));
+            return arenaForvalterConsumer.getToken()
+                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                            .filter(env -> bestilling.getEnvironments().stream().anyMatch(miljoe -> env.equals(miljoe)))
+                            .collectList()
+                            .doOnNext(miljoer -> {
+                                var initStatus = miljoer.stream()
+                                        .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
+                                        .collect(Collectors.joining(","));
+                                transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
+                            })
+                            .flatMap(miljoer -> getIdenterFamilie(dollyPerson.getIdent())
+                                    .flatMap(personServiceConsumer::getPdlSyncReady)
+                                    .collectList()
+                                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
+                                    .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, miljoer, token, bestilling, dollyPerson))
+                                    .flatMap(Mono::from)
+                                    .map(status -> futurePersist(progress, status))));
         }
         return Flux.empty();
     }
@@ -96,16 +101,14 @@ public class ArenaForvalterClient implements ClientRegister {
                 .collect(Collectors.joining(",")));
     }
 
-    private Mono<String> doArenaOpprett(Boolean isPdlReady, RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+    private Mono<String> doArenaOpprett(Boolean isPdlReady, List<String> miljoer, AccessToken token,
+                                        RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
 
         return isTrue(isPdlReady) ?
-                arenaForvalterConsumer.getToken()
-                        .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                                .filter(miljo -> bestilling.getEnvironments().contains(miljo))
-                                .parallel()
-                                .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
-                                        sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
-                                        sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token))))
+                Flux.fromIterable(miljoer)
+                        .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
+                                sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
+                                sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token)))
                         .filter(StringUtils::isNotBlank)
                         .collect(Collectors.joining(",")) :
 
@@ -169,7 +172,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 .map(respons -> {
                     log.info("Arena respons {}", respons);
                     return respons.getArbeidsokerList().stream()
-                            .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
+                            .filter(arbeidsoker -> "OK" .equals(arbeidsoker.getStatus()))
                             .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
                             .map(arbeidsoker -> String.format(STATUS_FMT, arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
                             .collect(Collectors.joining(","))
@@ -202,7 +205,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                     .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
                                     .filter(Objects::nonNull)
                                     .map(dagp -> String.format(STATUS_FMT, miljoe,
-                                            ("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
+                                            ("JA" .equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
                                                     errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))))
                                     .collect(Collectors.joining(",")) +
 
