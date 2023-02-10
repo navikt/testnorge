@@ -4,6 +4,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -69,6 +70,12 @@ class AaregClientTest {
     @Mock
     private TransactionHelperService transactionHelperService;
 
+    @Mock
+    private BestillingProgress bestillingProgress;
+
+    @Mock
+    private Bestilling bestilling;
+
     @Captor
     ArgumentCaptor<String> statusCaptor;
 
@@ -78,6 +85,8 @@ class AaregClientTest {
     @BeforeEach
     void setup() {
         when(aaregConsumer.getAccessToken()).thenReturn(Mono.just(accessToken));
+        when(bestillingProgress.getBestilling()).thenReturn(bestilling);
+        when(bestilling.getBruker()).thenReturn(new Bruker());
 
         statusCaptor = ArgumentCaptor.forClass(String.class);
 
@@ -137,7 +146,7 @@ class AaregClientTest {
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
-                                .build(), new BestillingProgress(), false)
+                                .build(), bestillingProgress, false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
@@ -157,7 +166,7 @@ class AaregClientTest {
         aaregClient.gjenopprett(request,
                         DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
-                                .build(), new BestillingProgress(), false)
+                                .build(), bestillingProgress, false)
                 .subscribe(resultat ->
                         verify(aaregConsumer).opprettArbeidsforhold(any(Arbeidsforhold.class), eq(ENV), eq(accessToken)));
     }
@@ -184,12 +193,10 @@ class AaregClientTest {
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
                 .thenReturn(buildArbeidsforhold(false).getEksisterendeArbeidsforhold());
 
-        var progress = new BestillingProgress();
-
         StepVerifier.create(aaregClient.gjenopprett(request,
                                 DollyPerson.builder().ident(IDENT)
                                         .bruker(bruker)
-                                        .build(), progress, false)
+                                        .build(), bestillingProgress, false)
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
@@ -223,11 +230,9 @@ class AaregClientTest {
         when(mapperFacade.mapAsList(anyList(), eq(Arbeidsforhold.class)))
                 .thenReturn(buildArbeidsforhold(true).getEksisterendeArbeidsforhold());
 
-        var progress = new BestillingProgress();
-
         StepVerifier.create(aaregClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .bruker(bruker)
-                                .build(), progress, false)
+                                .build(), bestillingProgress, false)
                         .map(ClientFuture::get))
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
