@@ -18,8 +18,10 @@ spec:
   idporten:
     enabled: true
     postLogoutRedirectURIs:
-      - https://dolly-idporten.dev.nav.no
-    clientURI: https://dolly-idporten.dev.nav.no
+      #      - https://dolly-idporten.dev.nav.no
+      - https://dolly-frontend-dev.dev.intern.nav.no
+    #    clientURI: https://dolly-idporten.dev.nav.no
+    clientURI: https://dolly-frontend-dev.dev.intern.nav.no
     sidecar:
       enabled: true
       autoLogin: true
@@ -31,7 +33,8 @@ spec:
     max: 3
   port: 8080
   ingresses:
-    - https://dolly-idporten.dev.nav.no
+    #    - https://dolly-idporten.dev.nav.no
+    - https://dolly-frontend-dev.dev.intern.nav.no
   accessPolicy:
     outbound:
       rules:

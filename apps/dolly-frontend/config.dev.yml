@@ -11,24 +11,13 @@ metadata:
 spec:
   tokenx:
     enabled: true
-  idporten: #TODO FJERN START
-    enabled: true
-    postLogoutRedirectURIs:
-      - https://dolly-frontend-dev.dev.intern.nav.no
-    clientURI: https://dolly-frontend-dev.dev.intern.nav.no
+  azure:
     sidecar:
       enabled: true
-      autoLogin: true
-      autoLoginIgnorePaths:
+      autologin: true
+      autologinignorepaths:
         - /login
-      errorPath: /login #TODO FJERN SLETT
-  azure:
-    #    sidecar:
-    #      enabled: true
-    #      autologin: true
-    #      autologinignorepaths:
-    #        - /login
-    #      errorPath: /login
+      errorPath: /login
     application:
       enabled: true
       tenant: nav.no
@@ -97,4 +86,4 @@ spec:
   image: {{image}}
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: idporten #TODO: ENDRE DENNE TIL DEV!!!
+      value: dev
