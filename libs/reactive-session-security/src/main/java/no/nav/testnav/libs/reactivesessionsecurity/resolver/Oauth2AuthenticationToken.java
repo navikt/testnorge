@@ -10,7 +10,12 @@ import reactor.core.publisher.Mono;
 abstract class Oauth2AuthenticationToken {
     Mono<OAuth2AuthenticationToken> oauth2AuthenticationToken(Mono<Authentication> authentication) {
         return authentication
-                .map(OAuth2AuthenticationToken.class::cast)
+                .map(auth -> {
+                    if (auth instanceof OAuth2AuthenticationToken) {
+                        return (OAuth2AuthenticationToken) auth;
+                    }
+                    throw new RuntimeException("Auth er ikke av type Oauth2AuthenticationToken");
+                })
                 .doOnError(throwable -> log.error("Feilet med å hente accessToken", throwable))
                 .doOnSuccess(oAuth2AuthenticationToken -> {
                     if (!oAuth2AuthenticationToken.isAuthenticated()) {
