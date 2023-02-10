@@ -24,7 +24,7 @@ public class ClientRegistrationIdResolver extends Oauth2AuthenticationToken {
                                 .map(OAuth2AuthenticationToken::getAuthorizedClientRegistrationId)
                                 .doOnError(throwable -> log.error("Feilet å hente Client Registration ID for auth: ", throwable));
                     }
-                    return Mono.error(new RuntimeException("Feilet å hente Client Registration ID"));
+                    return Mono.empty();
                 }
         );
     }
