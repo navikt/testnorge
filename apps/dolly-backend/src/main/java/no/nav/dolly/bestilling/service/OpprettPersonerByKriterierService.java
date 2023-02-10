@@ -27,6 +27,7 @@ import reactor.core.publisher.Operators;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
@@ -68,7 +69,9 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
-        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
+        var userInfo = Optional
+                .ofNullable(bestilling.getBruker())
+                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
 
         if (nonNull(bestKriterier)) {
 

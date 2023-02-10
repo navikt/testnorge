@@ -28,6 +28,7 @@ import reactor.core.publisher.Operators;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import static java.util.Objects.nonNull;
@@ -68,7 +69,9 @@ public class GjenopprettGruppeService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         var bestKriterier = getDollyBestillingRequest(bestilling);
-        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
+        var userInfo = Optional
+                .ofNullable(bestilling.getBruker())
+                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
 
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);

@@ -30,6 +30,7 @@ import reactor.core.publisher.Operators;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.lang.String.format;
@@ -71,7 +72,9 @@ public class GjenopprettIdentService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
-        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
+        var userInfo = Optional
+                .ofNullable(bestilling.getBruker())
+                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
 
         if (nonNull(bestKriterier)) {
             bestKriterier.setEkskluderEksternePersoner(true);

@@ -31,6 +31,7 @@ import reactor.core.publisher.Operators;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -72,7 +73,9 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
-        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
+        var userInfo = Optional
+                .ofNullable(bestilling.getBruker())
+                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
 
         if (nonNull(bestKriterier)) {
 

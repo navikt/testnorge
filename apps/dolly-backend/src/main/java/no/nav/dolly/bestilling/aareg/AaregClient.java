@@ -62,8 +62,7 @@ public class AaregClient implements ClientRegister {
             var miljoer = crossConnect(bestilling.getEnvironments(), Q4_TO_Q1);
             log.info("dollyPerson: {}", dollyPerson, new NullPointerException("Stack trace"));
             if (dollyPerson.getBruker() != null) {
-                log.info("dollyPerson.getBruker().getBrukerId(): {}", dollyPerson.getBruker().getBrukerId());
-                log.info("dollyPerson.getBruker().getBrukernavn(): {}", dollyPerson.getBruker().getBrukernavn());
+                log.info("dollyPerson.getBruker(): {}", dollyPerson.getBruker());
                 log.info("dollyPerson.getBruker().getBrukertype(): {}", dollyPerson.getBruker().getBrukertype());
                 if (dollyPerson.getBruker().getBrukertype() == Bruker.Brukertype.BANKID) {
                     miljoer = crossConnect(miljoer, Q1_AND_Q2);

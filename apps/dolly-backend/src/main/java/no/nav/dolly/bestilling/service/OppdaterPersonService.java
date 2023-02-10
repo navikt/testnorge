@@ -28,6 +28,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -69,7 +70,9 @@ public class OppdaterPersonService extends DollyBestillingService {
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
 
         var testident = identService.getTestIdent(bestilling.getIdent());
-        var userInfo = CurrentAuthentication.getAuthUser(getUserInfo);
+        var userInfo = Optional
+                .ofNullable(bestilling.getBruker())
+                .orElseGet(() -> CurrentAuthentication.getAuthUser(getUserInfo));
 
         Flux.just(OriginatorUtility.prepOriginator(request, testident, mapperFacade))
                 .flatMap(originator -> opprettProgress(bestilling, originator.getMaster())
