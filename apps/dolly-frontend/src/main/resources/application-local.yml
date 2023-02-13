@@ -2,8 +2,6 @@ server:
   port: 8020
 
 spring:
-  session:
-    timeout: 60m
   security:
     oauth2:
       client:

@@ -20,7 +20,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-idporten.dev.nav.no
+    - https://dolly-idporten.ekstern.dev.nav.no
   accessPolicy:
     outbound:
       rules:
@@ -31,7 +31,6 @@ spec:
         - application: testnav-organisasjon-forvalter
         - application: testnorge-profil-api
         - application: testnav-organisasjon-tilgang-service
-        - application: testnav-organisasjon-tilgang-service-dev
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service
@@ -40,7 +39,6 @@ spec:
         - application: testnav-person-organisasjon-tilgang-service
         - application: testnav-pdl-forvalter
         - application: testnav-bruker-service
-        - application: testnav-bruker-service-dev
         - application: testnav-person-search-service
         - application: testnav-inst-service
         - application: dolly-backend
