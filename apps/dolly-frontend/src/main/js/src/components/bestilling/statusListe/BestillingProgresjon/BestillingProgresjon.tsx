@@ -96,7 +96,8 @@ export const BestillingProgresjon = ({
 			// ferdigstillBestilling()
 		}
 		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
-		const title = percent === 100 ? 'OPPRETTER BLABLA...' : aktivBestillingStatusText
+
+		const title = bestilling?.ferdig ? 'FERDIG' : aktivBestillingStatusText
 		// const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
 
 		return {

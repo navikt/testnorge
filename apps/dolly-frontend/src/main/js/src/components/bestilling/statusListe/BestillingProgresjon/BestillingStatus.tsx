@@ -18,6 +18,23 @@ const StatusIcon = styled.div`
 	}
 `
 
+const FagsystemText = styled.div`
+	padding-top: 5px;
+	max-width: 96%;
+	//min-width: 96%;
+	display: flex;
+	flex-wrap: wrap;
+
+	h5 {
+		font-size: 0.9em;
+	}
+
+	p {
+		margin: 0 0 0 10px;
+		font-size: 0.9em;
+	}
+`
+
 export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 	const IconTypes = {
 		oppretter: 'loading-spinner',
@@ -50,7 +67,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 	}
 
 	return (
-		<div className="fagsystem-status">
+		<div className="fagsystem-status" style={{ marginTop: '15px' }}>
 			{bestilling.status?.map((fagsystem, idx) => {
 				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info:'))
 				console.log('fagsystem: ', fagsystem) //TODO - SLETT MEG
@@ -65,11 +82,25 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 						return infoListe.concat(feilListe)
 					}
 				}
-
-				//TODO fortsett her!
 				console.log('getMelding(): ', getMelding()) //TODO - SLETT MEG
+				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
 
-				const marginBottom = getMelding() ? '8px' : '15px'
+				const antallBestilteIdenter = bestilling?.antallIdenter
+
+				const getOkIdenter = () => {
+					const miljouavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.identer
+					const miljoavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.detaljert
+					if (miljouavhengig) {
+						return miljouavhengig.filter((ident) => ident)
+					}
+					if (miljoavhengig) {
+						// return [].concat(miljoavhengig.flatMap((miljo) => miljo?.identer))
+						return [...new Set(miljoavhengig.flatMap((miljo) => miljo?.identer))]?.filter(
+							(ident) => ident
+						)
+					}
+					return []
+				}
 
 				return (
 					<div className="fagsystem-status_kind" key={idx} style={{ alignItems: 'flex-start' }}>
@@ -80,12 +111,20 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 								<Icon kind={iconType(fagsystem.statuser, bestilling.feil)} />
 							)}
 						</StatusIcon>
-						<div style={{ marginBottom: marginBottom, paddingTop: '5px', maxWidth: '96%' }}>
-							<h5 style={{ fontSize: '0.9em' }}>{fagsystem.navn}</h5>
+						<div style={{ width: '96%', marginBottom: marginBottom }}>
+							<FagsystemText>
+								<h5>{fagsystem.navn}</h5>
+								{fagsystem.id !== 'ANNEN_FEIL' && (
+									<p>
+										{getOkIdenter()?.length} av {antallBestilteIdenter} identer opprettet
+									</p>
+								)}
+
+								{/*<ApiFeilmelding feilmelding={fagsystem.statuser[0].melding} />*/}
+							</FagsystemText>
 							{getMelding()?.map((status) => {
 								return <ApiFeilmelding feilmelding={status?.melding} />
 							})}
-							{/*<ApiFeilmelding feilmelding={fagsystem.statuser[0].melding} />*/}
 						</div>
 						{/*<p>*/}
 						{/*	<b>{fagsystem.navn}</b>*/}
