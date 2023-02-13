@@ -69,9 +69,6 @@ class PensjonforvalterClientTest {
     private PensjonforvalterConsumer pensjonforvalterConsumer;
 
     @Mock
-    private DollyPersonCache dollyPersonCache;
-
-    @Mock
     private MapperFacade mapperFacade;
 
     @Mock

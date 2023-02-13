@@ -67,9 +67,6 @@ class PdlForvalterClientTest {
     private PdlForvalterConsumer pdlForvalterConsumer;
 
     @Mock
-    private DollyPersonCache dollyPersonCache;
-
-    @Mock
     private MapperFacade mapperFacade;
 
     @Mock
