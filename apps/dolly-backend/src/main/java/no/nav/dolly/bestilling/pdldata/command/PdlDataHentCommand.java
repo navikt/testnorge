@@ -50,6 +50,7 @@ public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty());
+                        throwable -> Mono.empty())
+                .cache(Duration.ofMillis(5000));
     }
 }
