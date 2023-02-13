@@ -1,5 +1,6 @@
 package no.nav.dolly.mapper;
 
+import lombok.experimental.UtilityClass;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
 
@@ -14,6 +15,7 @@ import static no.nav.dolly.domain.resultset.SystemTyper.ANNEN_FEIL;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
+@UtilityClass
 public class AnnenFeilStatusMapper {
 
     public static List<RsStatusRapport> buildAnnenFeilStatusMap(List<BestillingProgress> progresser) {
