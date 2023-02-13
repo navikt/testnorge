@@ -29,6 +29,7 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend-dev
+        - application: team-dolly-lokal-app
         - application: dolly-frontend-dev-unstable
         - application: dolly-dev-redis-session-redisexporter
 ---

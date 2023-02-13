@@ -10,4 +10,5 @@ public class DollyBackendApplicationStarter {
 
         SpringApplication.run(DollyBackendApplicationStarter.class, args);
     }
+
 }
