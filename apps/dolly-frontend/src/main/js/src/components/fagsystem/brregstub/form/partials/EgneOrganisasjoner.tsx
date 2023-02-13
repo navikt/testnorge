@@ -118,9 +118,7 @@ export const EgneOrganisasjoner = ({
 	const [miljoeError, setMiljoeError] = useState(false)
 	const [miljoeLoading, setMiljoeLoading] = useState(false)
 
-	const {
-		currentBruker: { brukerId },
-	} = useCurrentBruker()
+	const { currentBruker } = useCurrentBruker()
 	const formikBag = useFormikContext()
 
 	useEffect(() => {
@@ -143,7 +141,7 @@ export const EgneOrganisasjoner = ({
 		}
 	}, [orgnr])
 
-	const { organisasjoner, loading, error } = useOrganisasjoner(brukerId)
+	const { organisasjoner, loading, error } = useOrganisasjoner(currentBruker?.brukerId)
 	const egneOrganisasjoner = getEgneOrganisasjoner(organisasjoner)
 	const harEgneOrganisasjoner = egneOrganisasjoner && egneOrganisasjoner.length > 0
 	const validEnhetstyper = ['BEDR', 'AAFY']

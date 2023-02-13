@@ -15,17 +15,6 @@ spec:
     application:
       enabled: true
       tenant: nav.no
-  idporten:
-    enabled: true
-    postLogoutRedirectURIs:
-      - https://dolly-idporten.dev.nav.no
-    clientURI: https://dolly-idporten.dev.nav.no
-    sidecar:
-      enabled: true
-      autoLogin: true
-      autoLoginIgnorePaths:
-        - /login
-      errorPath: /login
   replicas:
     min: 1
     max: 3

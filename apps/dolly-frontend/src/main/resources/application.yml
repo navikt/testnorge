@@ -4,6 +4,9 @@ POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.dev.intern.nav.no/login
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
+  redis:
+    host: ${REDIS_HOST}
+    port: 6379
   cloud:
     vault:
       enabled: false

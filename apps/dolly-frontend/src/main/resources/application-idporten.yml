@@ -1,4 +1,6 @@
+POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.nav.no/login
 IDPORTEN_ISSUER_PROD: https://oidc.difi.no/idporten-oidc-provider
+
 
 spring:
   session:
@@ -8,13 +10,17 @@ spring:
     port: 6379
   security:
     oauth2:
-      resourceserver:
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-        idporten:
-          issuer-uri: ${IDPORTEN_ISSUER_PROD}
-          jwk-set-uri: ${IDPORTEN_ISSUER_PROD}/jwk
+      client:
+        registration:
+          idporten:
+            client-id: ${IDPORTEN_CLIENT_ID}
+            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
+            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
+            scope: openid
+            client-authentication-method: private_key_jwt
+        provider:
+          idporten:
+            issuer-uri: ${IDPORTEN_ISSUER}
 
 
 consumers:

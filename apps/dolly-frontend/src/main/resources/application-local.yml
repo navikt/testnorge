@@ -1,4 +1,4 @@
-IDPORTEN_ISSUER: https://oidc-ver2.difi.no/idporten-oidc-provider/
+IDPORTEN_ISSUER: https://oidc-ver2.difi.no/idporten-oidc-provider
 
 server:
   port: 8020
@@ -11,12 +11,6 @@ spring:
     oauth2:
       client:
         registration:
-          idporten:
-            client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: '{baseUrl}/login/oauth2/code/{registrationId}'
-            post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
-            scope: openid
-            client-authentication-method: private_key_jwt
           aad:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
@@ -28,8 +22,6 @@ spring:
             authorization-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/authorize
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          idporten:
-            issuer-uri: ${IDPORTEN_ISSUER}
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
 

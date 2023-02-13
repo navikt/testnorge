@@ -38,13 +38,23 @@ const getAdvarsel: () => string = () => {
 }
 
 export const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-	const idporten = path.includes('idporten')
 	event.preventDefault()
-	location.replace(
-		idporten
-			? 'https://dolly-idporten.dev.nav.no/oauth2/login'
-			: location.protocol + '//' + location.host + path
-	)
+	redirectTo(path)
+}
+
+const redirectTo = (path: string) => {
+	const toIdporten = path.includes('idporten') && !window.location.hostname?.includes('localhost')
+	const isIdporten =
+		window.location.hostname?.includes('idporten') &&
+		!window.location.hostname?.includes('localhost')
+
+	if (toIdporten && !isIdporten) {
+		location.replace('https://dolly-idporten.ekstern.dev.nav.no/login')
+	}
+	if (!toIdporten && isIdporten) {
+		location.replace('https://dolly.ekstern.dev.nav.no/login')
+	}
+	location.replace(location.protocol + '//' + location.host + path)
 }
 
 export default () => {
