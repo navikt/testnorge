@@ -9,6 +9,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
+import javax.transaction.Transactional;
 import java.util.function.BiConsumer;
 
 import static java.time.LocalDateTime.now;
@@ -31,6 +32,7 @@ public class TransactionHelperService {
         this.cacheManager = cacheManager;
     }
 
+    @Transactional
     @SuppressWarnings("java:S1143")
     public BestillingProgress oppdaterProgress(BestillingProgress progress) {
 
@@ -44,6 +46,7 @@ public class TransactionHelperService {
         });
     }
 
+    @Transactional
     public BestillingProgress persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
         return transactionTemplate.execute(status1 -> {
@@ -56,6 +59,7 @@ public class TransactionHelperService {
         });
     }
 
+    @Transactional
     @SuppressWarnings("java:S1143")
     public Bestilling oppdaterBestillingFerdig(Bestilling bestilling) {
 
