@@ -7,14 +7,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -23,7 +22,6 @@ import javax.persistence.Transient;
 import javax.persistence.Version;
 import java.io.Serializable;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
@@ -37,16 +35,11 @@ public class BestillingProgress implements Serializable {
     private static final int MAX_DOKARKIV_STATUS_LENGTH = 2000;
 
     @Id
-    @GeneratedValue(generator = "bestillingProgressIdGenerator")
-    @GenericGenerator(name = "bestillingProgressIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "BESTILLING_PROGRESS_SEQ"),
-            @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "1")
-    })
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Version
-    @Column(name="VERSJON")
+    @Column(name = "VERSJON")
     private Long versjon;
 
     @ManyToOne
