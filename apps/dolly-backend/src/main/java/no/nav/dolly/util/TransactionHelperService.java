@@ -37,7 +37,7 @@ public class TransactionHelperService {
     public BestillingProgress oppdaterProgress(BestillingProgress progress) {
 
         return transactionTemplate.execute(status -> {
-            var best = entityManager.find(Bestilling.class, progress.getBestilling().getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            var best = entityManager.find(Bestilling.class, progress.getBestilling().getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
             entityManager.persist(progress);
             best.setSistOppdatert(now());
             entityManager.merge(best);
@@ -50,7 +50,7 @@ public class TransactionHelperService {
     public BestillingProgress persister(BestillingProgress bestillingProgress, BiConsumer<BestillingProgress, String> setter, String status) {
 
         return transactionTemplate.execute(status1 -> {
-            var progress = entityManager.find(BestillingProgress.class, bestillingProgress.getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            var progress = entityManager.find(BestillingProgress.class, bestillingProgress.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
 
             this.setField(progress, status, setter);
             entityManager.persist(progress);
@@ -64,7 +64,7 @@ public class TransactionHelperService {
     public Bestilling oppdaterBestillingFerdig(Bestilling bestilling) {
 
         return transactionTemplate.execute(status -> {
-            var best = entityManager.find(Bestilling.class, bestilling.getId(), LockModeType.OPTIMISTIC_FORCE_INCREMENT);
+            var best = entityManager.find(Bestilling.class, bestilling.getId(), LockModeType.PESSIMISTIC_FORCE_INCREMENT);
             best.setSistOppdatert(now());
             best.setFerdig(true);
             best.setFeil(bestilling.getFeil());
