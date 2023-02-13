@@ -42,13 +42,14 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
     implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:reactive-session-security'
     implementation 'no.nav.testnav.libs:reactive-core'
     implementation 'no.nav.testnav.libs:reactive-proxy'
+    implementation 'no.nav.testnav.libs:reactive-session-security'
     implementation 'no.nav.testnav.libs:reactive-security'
     implementation 'no.nav.testnav.libs:reactive-frontend'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
 
+    // Session
     implementation 'redis.clients:jedis'
     implementation 'org.springframework.session:spring-session-core'
     implementation 'org.springframework.session:spring-session-data-redis'

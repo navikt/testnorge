@@ -71,6 +71,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
     private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
+    private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
     private final TestnavAaregProxyProperties testnavAaregProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
@@ -88,7 +89,6 @@ public class DollyFrontendApplicationStarter {
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
-    private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavOrganisasjonTilgangServiceProperties testnavOrganisasjonTilgangServiceProperties;
     private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
     private final KontoregisterProxyProperties kontoregisterProxyProperties;

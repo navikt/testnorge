@@ -123,7 +123,7 @@ type Config = {
 
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
-		retryOn: (attempt, error, response) => {
+		retryOn: (attempt, _error, response) => {
 			if (!response.ok && !runningCypressE2E()) {
 				if (response.status === 401) {
 					console.error('Auth feilet, navigerer til login')
@@ -132,7 +132,7 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 				if (attempt < 4) {
 					return true
 				}
-				throw new Error('Response fra endepunkt var ikke ok! ' + error?.message)
+				throw new Error('Response fra endepunkt var ikke ok')
 			}
 			return false
 		},
