@@ -1,3 +1,5 @@
+REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
+
 spring:
   redis:
     host: ${REDIS_HOST}
