@@ -1,3 +1,5 @@
+IDPORTEN_ISSUER_PROD: https://oidc.difi.no/idporten-oidc-provider
+
 spring:
   session:
     timeout: 60m
@@ -11,8 +13,8 @@ spring:
           issuer-uri: ${TOKEN_X_ISSUER}
           jwk-set-uri: ${TOKEN_X_JWKS_URI}
         idporten:
-          issuer-uri: ${IDPORTEN_ISSUER}
-          jwk-set-uri: ${IDPORTEN_JWKS_URI}
+          issuer-uri: ${IDPORTEN_ISSUER_PROD}
+          jwk-set-uri: ${IDPORTEN_ISSUER_PROD}/jwk
 
 
 consumers:
@@ -24,18 +26,17 @@ consumers:
     name: testnav-organisasjon-tilgang-service
     url: https://testnav-organisasjon-tilgang-service.dolly.svc.cluster.local
     cluster: dev-gcp
-  testnav-person-organisasjon-tilgang-service: #TODO: Endre til prod hvis det funker
-    name: testnav-person-organisasjon-tilgang-service-dev
-    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
-  testnav-bruker-service: #TODO: Endre til prod hvis det funker
-    name: testnav-bruker-service-dev
-    url: https://testnav-bruker-service-dev.dev.intern.nav.no
+  testnav-person-organisasjon-tilgang-service:
+    name: testnav-person-organisasjon-tilgang-service
+    url: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+  testnav-bruker-service:
+    name: testnav-bruker-service
+    url: https://testnav-bruker-service.dev.intern.nav.no
   testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   dolly-backend:
-    name: dolly-backend-dev
-    url: https://dolly-backend-dev.dev.intern.nav.no
-  #    url: http://dolly-backend.dolly.svc.cluster.local
+    name: dolly-backend
+    url: https://dolly-backend.dev.intern.nav.no
   # Konsumenter felles
   testnav-tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
