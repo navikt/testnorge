@@ -20,7 +20,7 @@ spring:
             client-authentication-method: private_key_jwt
         provider:
           idporten:
-            issuer-uri: ${IDPORTEN_ISSUER}
+            issuer-uri: ${IDPORTEN_ISSUER_PROD}
 
 
 consumers:

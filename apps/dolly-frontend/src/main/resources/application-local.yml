@@ -1,12 +1,9 @@
-IDPORTEN_ISSUER: https://oidc-ver2.difi.no/idporten-oidc-provider
-
 server:
   port: 8020
 
 spring:
-  redis:
-    host: localhost
-    port: 6379
+  session:
+    timeout: 60m
   security:
     oauth2:
       client:
