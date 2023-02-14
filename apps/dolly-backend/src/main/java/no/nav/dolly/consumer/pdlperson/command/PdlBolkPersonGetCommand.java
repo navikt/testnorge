@@ -4,10 +4,15 @@ import lombok.RequiredArgsConstructor;
 import no.nav.dolly.consumer.pdlperson.GraphQLRequest;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.util.CallIdUtil;
+import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Callable;
@@ -48,6 +53,12 @@ public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
                         .fromValue(new GraphQLRequest(hentQueryResource(MULTI_PERSON_QUERY),
                                 Map.of("identer", identer))))
                 .retrieve()
-                .bodyToFlux(PdlPersonBolk.class);
+                .bodyToFlux(PdlPersonBolk.class)
+                .doOnError(WebClientFilter::logErrorMessage)
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
+                        throwable -> Mono.empty())
+                .cache(Duration.ofMillis(5000));
     }
 }

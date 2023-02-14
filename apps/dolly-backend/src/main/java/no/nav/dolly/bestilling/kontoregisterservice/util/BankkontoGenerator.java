@@ -57,7 +57,7 @@ public class BankkontoGenerator {
 
         } while (checkDigit == '-');
 
-        return kontonummer + BankkontoGenerator.getCheckDigit(kontonummer);
+        return kontonummer + checkDigit;
     }
 
     public static String tilfeldigUtlandskBankkonto(String landkode) {
