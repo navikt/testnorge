@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class InntektsmeldingResponse {
 
     private String fnr;
     private List<Dokument> dokumenter;
+    private HttpStatus status;
     private String error;
     private String miljoe;
 

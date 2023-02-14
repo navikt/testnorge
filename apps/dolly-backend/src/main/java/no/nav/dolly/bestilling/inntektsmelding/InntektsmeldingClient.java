@@ -12,6 +12,7 @@ import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.TransactionHelperService;
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -40,6 +40,8 @@ public class InntektsmeldingClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
+
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -107,7 +109,8 @@ public class InntektsmeldingClient implements ClientRegister {
                             log.error("Feilet å legge inn person: {} til Inntektsmelding miljø: {} feilmelding {}",
                                     inntektsmeldingRequest.getArbeidstakerFnr(), inntektsmeldingRequest.getMiljoe(), response.getError());
 
-                            return String.format(STATUS_FMT, inntektsmeldingRequest.getMiljoe(), encodeStatus(response.getError()));
+                            return String.format(STATUS_FMT, inntektsmeldingRequest.getMiljoe(),
+                                    errorStatusDecoder.getErrorText(response.getStatus(), response.getError()));
 
                         }
                     });

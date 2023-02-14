@@ -39,6 +39,7 @@ public class OpprettInntektsmeldingCommand implements Callable<Flux<Inntektsmeld
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Flux.just(InntektsmeldingResponse.builder()
                         .fnr(request.getArbeidstakerFnr())
+                        .status(WebClientFilter.getStatus(error))
                         .error(WebClientFilter.getMessage(error))
                         .miljoe(request.getMiljoe())
                         .build()))
