@@ -21,6 +21,7 @@ import { ifPresent } from '@/utils/YupValidations'
 import { Alert } from '@navikt/ds-react'
 import { useFormikContext } from 'formik'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
+import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -87,6 +88,7 @@ Steg2.validation = Yup.object({
 	...KrrstubForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,
+	...SkjermingForm.validation,
 	...DokarkivForm.validation,
 	...OrganisasjonForm.validation,
 	pensjonforvalter: ifPresent(
