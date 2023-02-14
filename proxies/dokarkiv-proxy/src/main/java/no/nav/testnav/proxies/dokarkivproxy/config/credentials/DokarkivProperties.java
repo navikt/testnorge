@@ -11,7 +11,7 @@ public class DokarkivProperties extends ServerProperties {
 
         var replacement = "q2" .equals(env) ? "" : '-' + env;
         return new ServerProperties(
-                getUrl().replace("-{env}", env),
+                getUrl().replace("{env}", env),
                 getCluster(),
                 getName().replace("-{env}", replacement),
                 getNamespace());
