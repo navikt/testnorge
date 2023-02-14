@@ -38,7 +38,8 @@ public class DokarkivProxyApplicationStarter {
 
         var routes = builder.routes();
         Arrays.asList(miljoer)
-                .forEach(miljoe -> routes.route(createRoute(miljoe, AddAuthenticationRequestGatewayFilterFactory
+                .forEach(miljoe -> routes.route(createRoute(miljoe, dokarkivProperties.forEnvironment(miljoe).getUrl(),
+                        AddAuthenticationRequestGatewayFilterFactory
                         .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivProperties.forEnvironment(miljoe))
                                 .map(AccessToken::getTokenValue)))));
 
@@ -49,14 +50,13 @@ public class DokarkivProxyApplicationStarter {
         SpringApplication.run(DokarkivProxyApplicationStarter.class, args);
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, GatewayFilter filter) {
+    private Function<PredicateSpec, Buildable<Route>> createRoute(String miljo, String url, GatewayFilter filter) {
         return spec -> spec
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/rest/journalpostapi/${segment}")
                         .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
                         .filter(filter)
-                ).uri("https://dokarkiv-" + miljo + ".dev.adeo.no");
+                ).uri(url);
     }
-
 }
