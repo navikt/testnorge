@@ -7,7 +7,6 @@ import no.nav.testnav.libs.reactivesecurity.config.SecureOAuth2ServerToServerCon
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.dokarkivproxy.config.credentials.DokarkivProperties;
-import no.nav.testnav.proxies.dokarkivproxy.config.credentials.DokarkivQ1Properties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -19,6 +18,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
+import java.util.Arrays;
 import java.util.function.Function;
 
 @Import({
@@ -28,30 +28,21 @@ import java.util.function.Function;
 })
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
+
+    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
+
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            TrygdeetatenAzureAdTokenService tokenService,
-                                           DokarkivProperties dokarkivProperties,
-                                           DokarkivQ1Properties dokarkivQ1Properties) {
+                                           DokarkivProperties dokarkivProperties) {
 
-        var addAuthenticationHeaderFilter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivProperties)
-                        .map(AccessToken::getTokenValue));
+        var routes = builder.routes();
+        Arrays.asList(miljoer)
+                .forEach(miljoe -> routes.route(createRoute(miljoe, AddAuthenticationRequestGatewayFilterFactory
+                        .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivProperties.forEnvironment(miljoe))
+                                .map(AccessToken::getTokenValue)))));
 
-        var addAuthenticationHeaderQ1Filter = AddAuthenticationRequestGatewayFilterFactory
-                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivQ1Properties)
-                        .map(AccessToken::getTokenValue));
-
-        return builder
-                .routes()
-                .route(createRoute("q1", addAuthenticationHeaderQ1Filter))
-                .route(createRoute("q2", addAuthenticationHeaderFilter))
-                .route(createRoute("q4", addAuthenticationHeaderFilter))
-                .route(createRoute("q5", addAuthenticationHeaderFilter))
-                .route(createRoute("qx", addAuthenticationHeaderFilter))
-                .route(createRoute("t3", addAuthenticationHeaderFilter))
-                .route(createRoute("t13", addAuthenticationHeaderFilter))
-                .build();
+        return routes.build();
     }
 
     public static void main(String[] args) {
