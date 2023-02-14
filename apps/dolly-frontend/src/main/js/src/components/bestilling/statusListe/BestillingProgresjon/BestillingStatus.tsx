@@ -1,27 +1,23 @@
 import Icon from '@/components/ui/icon/Icon'
-
-import '../BestillingResultat/FagsystemStatus/FagsystemStatus.less'
 import { Miljostatus, Status } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import Spinner from '@/components/ui/loading/Spinner'
 import * as React from 'react'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
 import styled from 'styled-components'
 
+const FagsystemStatus = styled.div`
+	display: flex;
+	align-items: center;
+`
+
 const StatusIcon = styled.div`
 	min-width: 24px;
 	margin-right: 7px;
-
-	&& {
-		.svg-icon {
-			margin-right: 0;
-		}
-	}
 `
 
 const FagsystemText = styled.div`
 	padding-top: 5px;
 	max-width: 96%;
-	//min-width: 96%;
 	display: flex;
 	flex-wrap: wrap;
 
@@ -67,7 +63,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 	}
 
 	return (
-		<div className="fagsystem-status" style={{ marginTop: '15px' }}>
+		<div style={{ marginTop: '15px' }}>
 			{bestilling.status?.map((fagsystem, idx) => {
 				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info:'))
 				console.log('fagsystem: ', fagsystem) //TODO - SLETT MEG
@@ -103,7 +99,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 				}
 
 				return (
-					<div className="fagsystem-status_kind" key={idx} style={{ alignItems: 'flex-start' }}>
+					<FagsystemStatus key={idx} style={{ alignItems: 'flex-start' }}>
 						<StatusIcon>
 							{oppretter ? (
 								<Spinner size={23} margin="0px" />
@@ -130,7 +126,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 						{/*	<b>{fagsystem.navn}</b>*/}
 						{/*</p>*/}
 						{/*<p> - {fagsystem.statuser[0].melding}</p>*/}
-					</div>
+					</FagsystemStatus>
 				)
 			})}
 			{bestilling?.status?.length > 0 && <hr style={{ marginBottom: '15px' }} />}

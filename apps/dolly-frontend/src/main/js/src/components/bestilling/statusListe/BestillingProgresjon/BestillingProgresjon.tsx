@@ -13,7 +13,7 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
-import FagsystemStatus from '@/components/bestilling/statusListe/BestillingResultat/FagsystemStatus/FagsystemStatus'
+// import FagsystemStatus from '@/components/bestilling/statusListe/BestillingResultat/FagsystemStatus/FagsystemStatus'
 import Button from '@/components/ui/button/Button'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 import { bestilling8098 } from '@/pages/gruppe/Gruppe'
@@ -91,9 +91,10 @@ export const BestillingProgresjon = ({
 			percent += 10
 		}
 
-		if (antallLevert === total || bestilling?.ferdig || bestillingStatus?.ferdig) {
+		// if (antallLevert === total || bestilling?.ferdig || bestillingStatus?.ferdig) {
+		if (bestilling?.ferdig || bestillingStatus?.ferdig) {
 			text = `Ferdigstiller bestilling`
-			// ferdigstillBestilling()
+			ferdigstillBestilling()
 		}
 		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
 

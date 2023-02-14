@@ -1,7 +1,6 @@
 import Button from '@/components/ui/button/Button'
 import { Feedback } from '@/components/feedback'
 import ApiFeilmelding from '@/components/ui/apiFeilmelding/ApiFeilmelding'
-import FagsystemStatus from './FagsystemStatus/FagsystemStatus'
 import antallIdenterOpprettet from '@/components/bestilling/utils/antallIdenterOpprettet'
 import { BestillingSammendragModal } from '@/components/bestilling/sammendrag/BestillingSammendragModal'
 
@@ -41,7 +40,6 @@ export default function BestillingResultat({ bestilling, lukkBestilling }: Resul
 				</div>
 				<hr />
 				{/*// @ts-ignore*/}
-				{/*<FagsystemStatus bestilling={bestilling} />*/}
 				<BestillingStatus bestilling={bestilling} />
 				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
