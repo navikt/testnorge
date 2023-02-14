@@ -91,6 +91,13 @@ public class BestillingController {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId), RsBestillingStatus.class);
     }
 
+    @GetMapping("/gruppe/{gruppeId}/miljoer")
+    @Operation(description = "Hent alle bestilte miljøer for en gruppe med gruppeId")
+    public List<String> getAlleBestilteMiljoer(@PathVariable("gruppeId") Long gruppeId) {
+        return bestillingService.fetchBestilteMiljoerByGruppeId(gruppeId).stream()
+                .toList();
+    }
+
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)
     @DeleteMapping("/stop/{bestillingId}")
     @Operation(description = "Stopp en Bestilling med bestillingsId")
