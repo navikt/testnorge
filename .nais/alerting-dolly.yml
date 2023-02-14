@@ -3,6 +3,8 @@ kind: PrometheusRule
 metadata:
   name: dolly-alert
   namespace: dolly
+  labels:
+    team: dolly
 spec:
   receivers:
     slack:
