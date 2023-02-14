@@ -26,7 +26,6 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class KontoregisterClient implements ClientRegister {
 
-    private static final String SYSTEM = "Kontoregister";
     private final KontoregisterConsumer kontoregisterConsumer;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;

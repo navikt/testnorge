@@ -43,21 +43,19 @@ public class BankkontoGenerator {
     }
 
     public static String tilfeldigNorskBankkonto() {
-        var kontonummerLengde = NORSK_ACCOUNT_LENGTH - 1;
 
-        var kontonummer = random.ints(kontonummerLengde, 0, 9)
-                .boxed()
-                .map(Integer::toUnsignedString)
-                .collect(Collectors.joining());
+        String kontonummer;
+        Character checkDigit;
 
-        var checkDigit = BankkontoGenerator.getCheckDigit(kontonummer);
-
-        if (checkDigit == '-') {
-            kontonummer = random.ints(kontonummerLengde, 0, 9)
+        do {
+            kontonummer = random.ints(NORSK_ACCOUNT_LENGTH - 1, 0, 9)
                     .boxed()
                     .map(Integer::toUnsignedString)
                     .collect(Collectors.joining());
-        }
+
+            checkDigit = BankkontoGenerator.getCheckDigit(kontonummer);
+
+        } while (checkDigit == '-');
 
         return kontonummer + BankkontoGenerator.getCheckDigit(kontonummer);
     }
