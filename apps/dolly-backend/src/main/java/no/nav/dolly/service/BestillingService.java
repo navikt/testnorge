@@ -15,14 +15,11 @@ import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
-import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
-import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -64,6 +61,7 @@ import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 @RequiredArgsConstructor
 public class BestillingService {
 
+    private static final String NOT_FOUND = "Finner ikke gruppe basert på gruppeID: ";
     private final BestillingRepository bestillingRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final IdentRepository identRepository;
@@ -177,25 +175,6 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(String ident, RsDollyRelasjonRequest request) {
-
-        Testident testident = identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
-
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(testident.getTestgruppe())
-                        .ident(ident)
-                        .antallIdenter(1)
-                        .sistOppdatert(now())
-                        .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsf()))
-                        .bestKriterier("{}")
-                        .bruker(fetchOrCreateBruker())
-                        .build());
-    }
-
-    @Transactional
     public Bestilling saveBestilling(RsDollyUpdateRequest request, String ident) {
 
         Testident testident = identRepository.findByIdent(ident)
@@ -211,7 +190,6 @@ public class BestillingService {
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier(getBestKriterier(request))
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .bruker(fetchOrCreateBruker())
@@ -219,9 +197,9 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
+    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
                                      List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
@@ -231,7 +209,6 @@ public class BestillingService {
                         .navSyntetiskIdent(navSyntetiskIdent)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(tpsf))
                         .bestKriterier(getBestKriterier(request))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
@@ -258,7 +235,6 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
-                        .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
                         .bruker(fetchOrCreateBruker())
                         .build());
@@ -279,7 +255,6 @@ public class BestillingService {
                         .gruppe(testgruppe)
                         .ident(ident)
                         .antallIdenter(1)
-                        .tpsfKriterier("{}")
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(isNull(miljoer) || miljoer.isEmpty() ? "" : join(",", miljoer))
@@ -301,8 +276,9 @@ public class BestillingService {
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe.get())
-                        .antallIdenter(testgruppe.get().getTestidenter().size())
-                        .tpsfKriterier("{}")
+                        .antallIdenter((int) testgruppe.get().getTestidenter().stream()
+                                .filter(testident -> testident.isPdlf() || testident.isPdl())
+                                .count())
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(miljoer)
@@ -312,28 +288,9 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraTpsRequest request) {
-
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
-        fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(gruppe)
-                        .kildeMiljoe(request.getKildeMiljoe())
-                        .miljoer(join(",", request.getEnvironments()))
-                        .sistOppdatert(now())
-                        .bruker(fetchOrCreateBruker())
-                        .antallIdenter(request.getIdenter().size())
-                        .bestKriterier(getBestKriterier(request))
-                        .tpsImport(join(",", request.getIdenter()))
-                        .build());
-    }
-
-    @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
@@ -352,7 +309,7 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
         fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
@@ -361,7 +318,10 @@ public class BestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
                         .bruker(fetchOrCreateBruker())
-                        .antallIdenter(gruppe.getTestidenter().size())
+                        .antallIdenter((int) gruppe.getTestidenter().stream()
+                                .filter(testident -> testident.isPdl() ||
+                                        testident.isPdlf())
+                                .count())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
                         .build());
