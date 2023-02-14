@@ -1,10 +1,8 @@
-apiVersion: "nais.io/v1"
+apiVersion: monitoring.coreos.com/v1
 kind: PrometheusRule
 metadata:
   name: dolly-alert
   namespace: dolly
-  labels:
-    team: dolly
 spec:
   receivers:
     slack:
