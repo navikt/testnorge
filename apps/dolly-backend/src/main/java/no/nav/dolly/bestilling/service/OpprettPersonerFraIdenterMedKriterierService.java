@@ -78,7 +78,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                     .filter(availStatus -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(availStatus -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
                                     availStatus.getIdent(), mapperFacade))
-                            .flatMap(originator -> opprettProgress(bestilling, PDLF)
+                            .flatMap(originator -> opprettProgress(bestilling, PDLF, availStatus.getIdent())
                                     .flatMap(progress -> opprettPerson(originator)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                             .filter(Objects::nonNull)

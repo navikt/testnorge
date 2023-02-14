@@ -27,7 +27,6 @@ import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -48,8 +47,6 @@ import static org.apache.logging.log4j.util.Strings.isNotBlank;
 @Service
 @RequiredArgsConstructor
 public class DollyBestillingService {
-
-    protected static final String SUCCESS = "OK";
 
     protected final IdentService identService;
     protected final BestillingService bestillingService;
@@ -166,9 +163,9 @@ public class DollyBestillingService {
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
-    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
+    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, PdlResponse pdlResponse) {
 
-        return opprettProgress(bestilling, master, null);
+        return opprettProgress(bestilling, master, pdlResponse.getStatus().is2xxSuccessful() ? pdlResponse.getIdent() : "?");
     }
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
@@ -190,8 +187,6 @@ public class DollyBestillingService {
 
         if (response.getStatus().is2xxSuccessful()) {
 
-            var ident = Strings.isNotBlank(response.getIdent()) ? response.getIdent() : "?";
-            transactionHelperService.persister(progress, BestillingProgress::setIdent, ident);
             return pdlDataConsumer.sendOrdre(response.getIdent(), false)
                     .map(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?
@@ -203,7 +198,6 @@ public class DollyBestillingService {
                     });
 
         } else {
-            transactionHelperService.persister(progress, BestillingProgress::setIdent, "?");
             var error = errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding());
             transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, error);
             return Flux.empty();

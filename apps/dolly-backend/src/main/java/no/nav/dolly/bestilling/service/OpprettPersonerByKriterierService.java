@@ -77,39 +77,39 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
 
             Flux.range(0, bestilling.getAntallIdenter())
                     .filter(index -> !bestillingService.isStoppet(bestilling.getId()))
-                    .flatMap(index -> opprettProgress(bestilling, PDLF)
-                            .flatMap(progress -> opprettPerson(originator)
-                                    .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
-                                    .filter(Objects::nonNull)
-                                    .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
-                                            .doOnNext(dollyPerson -> leggIdentTilGruppe(ident, progress,
-                                                    bestKriterier.getBeskrivelse()))
-                                            .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
-                                            .flatMap(dollyPerson -> Flux.concat(
-                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                            fase1Klienter(),
-                                                            progress, true),
-                                                    personServiceClient.syncPerson(dollyPerson, progress)
-                                                            .map(ClientFuture::get)
-                                                            .map(BestillingProgress::isPdlSync)
-                                                            .flatMap(pdlSync -> isTrue(pdlSync) ?
-                                                                    Flux.concat(
-                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase2Klienter(),
-                                                                                    progress, true),
-                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase3Klienter(),
-                                                                                    progress, true)) :
-                                                                    Flux.empty())
-                                                            .filter(Objects::nonNull))))
-                                    .onErrorResume(throwable -> {
-                                        var error = errorStatusDecoder.getErrorText(
-                                                WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
-                                        log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
-                                                progress.getId(), error, throwable);
-                                        transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
-                                        return Flux.just(progress);
-                                    })))
+                    .flatMap(index -> opprettPerson(originator)
+                            .flatMap(pdlResponse -> opprettProgress(bestilling, PDLF, pdlResponse)
+                                    .flatMap(progress -> sendOrdrePerson(progress, pdlResponse)
+                                            .filter(Objects::nonNull)
+                                            .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
+                                                    .doOnNext(dollyPerson -> leggIdentTilGruppe(ident, progress,
+                                                            bestKriterier.getBeskrivelse()))
+                                                    .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
+                                                    .flatMap(dollyPerson -> Flux.concat(
+                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                    fase1Klienter(),
+                                                                    progress, true),
+                                                            personServiceClient.syncPerson(dollyPerson, progress)
+                                                                    .map(ClientFuture::get)
+                                                                    .map(BestillingProgress::isPdlSync)
+                                                                    .flatMap(pdlSync -> isTrue(pdlSync) ?
+                                                                            Flux.concat(
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase2Klienter(),
+                                                                                            progress, true),
+                                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                                            fase3Klienter(),
+                                                                                            progress, true)) :
+                                                                            Flux.empty())
+                                                                    .filter(Objects::nonNull))))
+                                            .onErrorResume(throwable -> {
+                                                var error = errorStatusDecoder.getErrorText(
+                                                        WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
+                                                log.error("Feil oppsto ved utføring av bestilling, progressId {} {}",
+                                                        progress.getId(), error, throwable);
+                                                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
+                                                return Flux.just(progress);
+                                            }))))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));
 

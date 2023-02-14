@@ -80,7 +80,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
 
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
-                            .flatMap(originator -> opprettProgress(bestilling, originator.getMaster())
+                            .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
                                     .flatMap(progress -> (originator.isPdlf() ?
                                             oppdaterPdlPerson(originator, testident.getIdent())
                                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
