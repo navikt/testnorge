@@ -56,11 +56,11 @@ public class InntektsmeldingClient implements ClientRegister {
             return Flux.from(
                     Flux.fromIterable(bestilling.getEnvironments())
                             .flatMap(environment -> {
-
-                                inntektsmeldingRequest.setMiljoe(environment);
+                                var request = mapperFacade.map(inntektsmeldingRequest, InntektsmeldingRequest.class);
+                                request.setMiljoe(environment);
                                 return postInntektsmelding(isOpprettEndre ||
                                                 !transaksjonMappingService.existAlready(INNTKMELD, dollyPerson.getIdent(), environment),
-                                        inntektsmeldingRequest, progress.getBestilling().getId());
+                                        request, progress.getBestilling().getId());
                             })
                             .filter(StringUtils::isNotBlank)
                             .collect(Collectors.joining(","))
