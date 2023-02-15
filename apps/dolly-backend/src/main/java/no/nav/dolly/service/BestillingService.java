@@ -29,9 +29,11 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import org.hibernate.StaleStateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -155,7 +157,9 @@ public class BestillingService {
     }
 
     @Transactional
+    @Retryable(StaleStateException.class)
     public Bestilling cancelBestilling(Long bestillingId) {
+
         var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
         if (bestillingKontroll.isEmpty()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
@@ -169,6 +173,7 @@ public class BestillingService {
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
         bestilling.setBruker(fetchOrCreateBruker());
+        this.cleanBestilling().accept(bestilling);
 
         return bestilling;
     }
