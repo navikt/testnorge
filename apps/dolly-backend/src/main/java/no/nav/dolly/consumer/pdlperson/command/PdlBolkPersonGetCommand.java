@@ -58,7 +58,6 @@ public class PdlBolkPersonGetCommand implements Callable<Flux<PdlPersonBolk>> {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty())
-                .cache(Duration.ofMillis(5000));
+                        throwable -> Mono.empty());
     }
 }

@@ -61,7 +61,6 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
-                        throwable -> Mono.empty())
-                .cache(Duration.ofMillis(5000));
+                        throwable -> Mono.empty());
     }
 }
