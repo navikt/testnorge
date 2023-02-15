@@ -13,6 +13,7 @@ export type Miljostatus = {
 		antallLevert?: number
 		opprettetFraGruppeId?: number
 	}
+	erOrganisasjon?: boolean
 }
 
 export type Bestillingsinformasjon = {

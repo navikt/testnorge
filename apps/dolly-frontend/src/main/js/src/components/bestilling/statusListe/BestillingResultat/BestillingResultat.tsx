@@ -14,9 +14,14 @@ import { BestillingStatus } from '@/components/bestilling/statusListe/Bestilling
 type ResultatProps = {
 	bestilling: Bestillingsstatus
 	lukkBestilling: Function
+	erOrganisasjon: boolean
 }
 
-export default function BestillingResultat({ bestilling, lukkBestilling }: ResultatProps) {
+export default function BestillingResultat({
+	bestilling,
+	lukkBestilling,
+	erOrganisasjon,
+}: ResultatProps) {
 	const brukerId = bestilling?.bruker?.brukerId
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
@@ -40,7 +45,7 @@ export default function BestillingResultat({ bestilling, lukkBestilling }: Resul
 				</div>
 				<hr />
 				{/*// @ts-ignore*/}
-				<BestillingStatus bestilling={bestilling} />
+				<BestillingStatus bestilling={bestilling} erOrganisasjon={erOrganisasjon} />
 				{antallOpprettet.harMangler && <span>{antallOpprettet.tekst}</span>}
 				{bestilling.feil && <ApiFeilmelding feilmelding={bestilling.feil} container />}
 				<Feedback

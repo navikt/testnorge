@@ -31,14 +31,14 @@ const FagsystemText = styled.div`
 	}
 `
 
-export const BestillingStatus = ({ bestilling }: Miljostatus) => {
+export const BestillingStatus = ({ bestilling, erOrganisasjon = false}: Miljostatus) => {
 	const IconTypes = {
 		oppretter: 'loading-spinner',
 		suksess: 'feedback-check-circle',
 		avvik: 'report-problem-circle',
 		feil: 'report-problem-triangle',
 	}
-
+	console.log('erOrganisasjon: ', erOrganisasjon) //TODO - SLETT MEG
 	const iconType = (statuser: Status[], feil: string) => {
 		if (feil) {
 			return IconTypes.feil
@@ -64,7 +64,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 
 	return (
 		<div style={{ marginTop: '15px' }}>
-			{bestilling.status?.map((fagsystem, idx) => {
+			{bestilling?.status?.map((fagsystem, idx) => {
 				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info'))
 
 				const infoString = ['Info', 'INFO', 'info']
@@ -89,11 +89,11 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 						return infoListe.concat(advarselListe, feilListe)
 					}
 				}
-
+				console.log('fagsystem: ', fagsystem) //TODO - SLETT MEG
 				// @ts-ignore
 				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
 
-				const antallBestilteIdenter = bestilling?.antallIdenter
+				const antallBestilteIdenter = erOrganisasjon ? 1 : bestilling?.antallIdenter
 
 				const getOkIdenter = () => {
 					const miljouavhengig = fagsystem?.statuser?.find((s) => s?.melding === 'OK')?.identer
@@ -121,7 +121,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 						<div style={{ width: '96%', marginBottom: marginBottom }}>
 							<FagsystemText>
 								<h5>{fagsystem.navn}</h5>
-								{fagsystem.id !== 'ANNEN_FEIL' && (
+								{fagsystem.id !== 'ANNEN_FEIL' && !erOrganisasjon && (
 									<p>
 										{getOkIdenter()?.length}{' '}
 										{!bestilling.opprettetFraGruppeId && `av ${antallBestilteIdenter} `}identer
