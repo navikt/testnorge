@@ -43,7 +43,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 		if (feil) {
 			return IconTypes.feil
 		}
-		// Alle er OK
+		// Alle statuser er OK
 		if (statuser.every((status) => status.melding === 'OK')) {
 			return IconTypes.suksess
 		}
