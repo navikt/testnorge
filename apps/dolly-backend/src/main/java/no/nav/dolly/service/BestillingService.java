@@ -116,14 +116,23 @@ public class BestillingService {
     public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId, Integer page, Integer pageSize) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (page == null || pageSize == null) {
-            return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
+            return testgruppe
+                    .map(Testgruppe::getBestillinger).orElse(emptySet());
         }
-        return testgruppe.map(value -> value.getBestillinger().stream().skip(page.longValue() * pageSize).limit(pageSize).collect(toSet())).orElse(emptySet());
+        return testgruppe
+                .map(value -> value.getBestillinger().stream()
+                        .skip(page.longValue() * pageSize).limit(pageSize)
+                        .collect(toSet()))
+                .orElse(emptySet());
     }
 
     public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.map(value -> value.getBestillinger().stream().filter(b -> !b.isFerdig()).collect(toSet())).orElse(emptySet());
+        return testgruppe
+                .map(value -> value.getBestillinger().stream()
+                        .filter(b -> !b.isFerdig())
+                        .collect(toSet()))
+                .orElse(emptySet());
     }
 
     public Set<String> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
