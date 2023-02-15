@@ -13,10 +13,7 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
-// import FagsystemStatus from '@/components/bestilling/statusListe/BestillingResultat/FagsystemStatus/FagsystemStatus'
-import Button from '@/components/ui/button/Button'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
-import { bestilling8098 } from '@/pages/gruppe/Gruppe'
 
 type ProgresjonProps = {
 	bestillingID: string
@@ -75,12 +72,11 @@ export const BestillingProgresjon = ({
 	}
 
 	const calculateStatus = () => {
-		console.log('bestilling: ', bestilling) //TODO - SLETT MEG
-		const total = erOrganisasjon ? 1 : bestilling.antallIdenter
+		const total = erOrganisasjon ? 1 : bestilling?.antallIdenter
 		const sykemelding =
 			!erOrganisasjon &&
-			bestilling.bestilling.sykemelding != null &&
-			bestilling.bestilling.sykemelding.syntSykemelding != null
+			bestilling?.bestilling?.sykemelding != null &&
+			bestilling?.bestilling?.sykemelding?.syntSykemelding != null
 		const antallLevert = erOrganisasjon ? bestillingStatus?.antallLevert : bestilling?.antallLevert
 
 		let percent = (100 / total) * antallLevert
@@ -91,7 +87,6 @@ export const BestillingProgresjon = ({
 			percent += 10
 		}
 
-		// if (antallLevert === total || bestilling?.ferdig || bestillingStatus?.ferdig) {
 		if (bestilling?.ferdig || bestillingStatus?.ferdig) {
 			text = `Ferdigstiller bestilling`
 			ferdigstillBestilling()
@@ -99,7 +94,6 @@ export const BestillingProgresjon = ({
 		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
 
 		const title = bestilling?.ferdig ? 'FERDIG' : aktivBestillingStatusText
-		// const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
 
 		return {
 			percentFinished: percent,
@@ -117,7 +111,6 @@ export const BestillingProgresjon = ({
 	const SECONDS_BEFORE_WARNING_MESSAGE_ORGANISASJON = 300
 
 	const { bestilling, loading } = useBestillingById(bestillingID, erOrganisasjon, true)
-	// const bestilling = bestilling8098[0]
 	const { bestillingStatus } = useOrganisasjonBestillingStatus(bestillingID, erOrganisasjon, true)
 
 	const [timedOut, setTimedOut] = useState(false)
@@ -144,31 +137,19 @@ export const BestillingProgresjon = ({
 		return null
 	}
 
-	// console.log('percentFinished: ', percentFinished) //TODO - SLETT MEG
-	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
-
 	return (
 		<div className="bestilling-status">
 			<div className="bestilling-resultat">
 				<div className="status-header">
 					<p>Bestilling #{bestilling?.id}</p>
 					<h3>Bestillingsstatus</h3>
-					<div className="status-header_button-wrap">
-						{/*<Button*/}
-						{/*	kind="remove-circle"*/}
-						{/*	onClick={() => {*/}
-						{/*		lukkBestilling(bestilling?.id)*/}
-						{/*	}}*/}
-						{/*/>*/}
-					</div>
+					<div className="status-header_button-wrap" />
 				</div>
 				<hr />
 			</div>
 			<div>
-				{/*<FagsystemStatus bestilling={bestilling} />*/}
 				<BestillingStatus bestilling={bestilling} />
 			</div>
-			{/*<hr style={{ marginBottom: '15px' }} />*/}
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}

@@ -58,12 +58,11 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 200)}
 		/>
 	))
+
 	const ferdig = ferdigBestillinger.map((ferdig) => (
 		<BestillingResultat key={ferdig.id} bestilling={ferdig} lukkBestilling={lukkBestilling} />
 	))
-	// console.log('nyeBestillinger: ', nyeBestillinger) //TODO - SLETT MEG
-	// console.log('ferdigBestillinger: ', ferdigBestillinger) //TODO - SLETT MEG
+
 	return ikkeFerdig.concat(...ferdig)
-	// return ikkeFerdig
 }
 export default StatusListe

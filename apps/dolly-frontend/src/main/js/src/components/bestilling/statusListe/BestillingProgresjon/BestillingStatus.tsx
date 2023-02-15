@@ -66,19 +66,19 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 		<div style={{ marginTop: '15px' }}>
 			{bestilling.status?.map((fagsystem, idx) => {
 				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info:'))
-				console.log('fagsystem: ', fagsystem) //TODO - SLETT MEG
 
 				const infoListe = fagsystem?.statuser?.filter((s) => s?.melding?.includes('Info:'))
 				const feilListe = fagsystem?.statuser?.filter((s) => s?.melding?.includes('Feil'))
+
 				const getMelding = () => {
 					if (fagsystem?.statuser?.every((s) => s?.melding === 'OK')) {
 						return null
-						// } else if (fagsystem?.statuser?.some((s) => s?.melding?.includes('Info:'))) {
 					} else {
 						return infoListe.concat(feilListe)
 					}
 				}
-				console.log('getMelding(): ', getMelding()) //TODO - SLETT MEG
+
+				// @ts-ignore
 				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
 
 				const antallBestilteIdenter = bestilling?.antallIdenter
@@ -90,7 +90,6 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 						return miljouavhengig.filter((ident) => ident)
 					}
 					if (miljoavhengig) {
-						// return [].concat(miljoavhengig.flatMap((miljo) => miljo?.identer))
 						return [...new Set(miljoavhengig.flatMap((miljo) => miljo?.identer))]?.filter(
 							(ident) => ident
 						)
@@ -115,17 +114,11 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 										{getOkIdenter()?.length} av {antallBestilteIdenter} identer opprettet
 									</p>
 								)}
-
-								{/*<ApiFeilmelding feilmelding={fagsystem.statuser[0].melding} />*/}
 							</FagsystemText>
 							{getMelding()?.map((status) => {
 								return <ApiFeilmelding feilmelding={status?.melding} />
 							})}
 						</div>
-						{/*<p>*/}
-						{/*	<b>{fagsystem.navn}</b>*/}
-						{/*</p>*/}
-						{/*<p> - {fagsystem.statuser[0].melding}</p>*/}
 					</FagsystemStatus>
 				)
 			})}

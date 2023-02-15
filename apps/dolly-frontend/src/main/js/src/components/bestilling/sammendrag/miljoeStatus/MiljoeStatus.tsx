@@ -9,6 +9,8 @@ export type Miljostatus = {
 		status: Bestillingsinformasjon[]
 		systeminfo: string
 		feil: string
+		antallIdenter?: number
+		antallLevert?: number
 	}
 }
 
