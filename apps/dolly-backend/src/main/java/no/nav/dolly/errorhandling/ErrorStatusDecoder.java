@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -120,20 +121,21 @@ public class ErrorStatusDecoder {
                 Map<String, Object> status = objectMapper.readValue(json, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
                     builder.append("error=").append(status.get(ERROR)).append("; ");
-                }
-                if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
+                } else if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
-                }
-                if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
+                } else if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
                     builder.append(encodeStatus((String) status.get(MELDING)));
-                }
-                if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
+                } else if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                     StringBuilder meldinger = new StringBuilder("=");
                     List<Map<String, String>> details = (List) status.get(DETAILS);
                     details.forEach(entry ->
                             entry.forEach((key, value) ->
                                     meldinger.append(' ').append(key).append("= ").append(value)));
                     builder.append("details=").append(encodeStatus(meldinger.toString()));
+                } else {
+                    builder.append(status.entrySet().stream()
+                            .map(entry -> entry.getKey() + ": " + entry.getValue())
+                            .collect(Collectors.joining(",")));
                 }
 
             } catch (IOException ioe) {
