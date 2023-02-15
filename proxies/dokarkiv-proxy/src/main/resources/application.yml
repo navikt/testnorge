@@ -35,12 +35,9 @@ sts:
 
 consumers:
   dokarkiv:
+    url: https://dokarkiv-{env}.dev.adeo.no
     cluster: dev-fss
-    name: dokarkiv
-    namespace: teamdokumenthandtering
-  dokarkivq1:
-    cluster: dev-fss
-    name: dokarkiv-q1
+    name: dokarkiv-{env}
     namespace: teamdokumenthandtering
 
-environments: q1,q2
+environments: q1,q2,q4,q5

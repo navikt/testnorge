@@ -39,6 +39,7 @@ spec:
       memory: 2048Mi
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   accessPolicy:
