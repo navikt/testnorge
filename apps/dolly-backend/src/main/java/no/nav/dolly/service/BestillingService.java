@@ -28,7 +28,6 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -75,8 +74,6 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
-
-    private final TransactionHelperService transactionHelperService;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)

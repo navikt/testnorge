@@ -15,7 +15,7 @@ public class BankkontoGenerator {
 
     private static final int IBAN_COUNTRY_LENGTH = 2;
     private static final int DEFAULT_ACCOUNT_LENGTH = 15;
-    private static final int NORSK_ACCOUNT_LENGTH = 11;
+    private static final long NORSK_ACCOUNT_LENGTH = 11;
 
     private static final Random random = new SecureRandom();
 
