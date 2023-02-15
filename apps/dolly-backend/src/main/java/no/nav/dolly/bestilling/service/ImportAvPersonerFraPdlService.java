@@ -100,6 +100,7 @@ public class ImportAvPersonerFraPdlService extends DollyBestillingService {
                                         transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                     })
                                     .doOnNext(status -> oppdaterStatus(progress))))
+                    .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));
 

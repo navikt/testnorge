@@ -28,6 +28,7 @@ import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -73,6 +75,8 @@ public class BestillingService {
     private final TestgruppeRepository testgruppeRepository;
     private final BrukerService brukerService;
     private final GetUserInfo getUserInfo;
+
+    private final TransactionHelperService transactionHelperService;
 
     public Bestilling fetchBestillingById(Long bestillingId) {
         return bestillingRepository.findById(bestillingId)
@@ -168,24 +172,37 @@ public class BestillingService {
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
         bestilling.setBruker(fetchOrCreateBruker());
-        bestilling.getProgresser()
-                .forEach(progress -> Arrays.stream(progress.getClass().getMethods())
-                        .filter(method -> method.getName().contains("get"))
-                        .forEach(metode -> {
-                            try {
-                                var verdi = metode.invoke(progress, null);
-                                if (verdi instanceof String verdiString &&
-                                        isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
-                                    var oppdaterMetode = progress.getClass()
-                                            .getMethod("set" + metode.getName().substring(3), String.class);
-                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
-                                }
-                            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                                log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}", bestillingId, e.getMessage(), e);
-                            }
-                        }));
 
         return bestilling;
+    }
+
+    public boolean isStoppet(Long bestillingId) {
+
+        return bestillingKontrollRepository.findByBestillingId(bestillingId)
+                .orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
+    }
+
+    public Consumer<Bestilling> cleanBestilling() {
+
+        return bestilling ->
+                bestilling.getProgresser()
+                        .forEach(progress -> Arrays.stream(progress.getClass().getMethods())
+                                .filter(method -> method.getName().contains("get"))
+                                .forEach(metode -> {
+                                    try {
+                                        var verdi = metode.invoke(progress, null);
+                                        if (verdi instanceof String verdiString &&
+                                                isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
+                                            var oppdaterMetode = progress.getClass()
+                                                    .getMethod("set" + metode.getName().substring(3), String.class);
+                                            oppdaterMetode.invoke(progress, DEFAULT_VALUE);
+                                        }
+                                    } catch (NoSuchMethodException | IllegalAccessException |
+                                             InvocationTargetException e) {
+                                        log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
+                                                bestilling.getId(), e.getMessage(), e);
+                                    }
+                                }));
     }
 
     @Transactional

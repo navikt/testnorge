@@ -110,6 +110,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                                 transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                                 return Flux.just(progress);
                                             }))))
+                    .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
                     .subscribe(done -> doFerdig(bestilling));
 

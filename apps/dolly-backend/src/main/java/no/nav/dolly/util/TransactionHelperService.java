@@ -2,7 +2,9 @@ package no.nav.dolly.util;
 
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import org.hibernate.StaleStateException;
 import org.springframework.cache.CacheManager;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -11,6 +13,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.LockModeType;
 import javax.transaction.Transactional;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static java.time.LocalDateTime.now;
 import static java.util.Objects.nonNull;
@@ -59,18 +62,18 @@ public class TransactionHelperService {
         });
     }
 
-    @Transactional
+    @Retryable(StaleStateException.class)
     @SuppressWarnings("java:S1143")
-    public Bestilling oppdaterBestillingFerdig(Bestilling bestilling) {
+    public Bestilling oppdaterBestillingFerdig(Long id, Consumer<Bestilling> bestillingFunksjon) {
 
         return transactionTemplate.execute(status -> {
-            var best = entityManager.find(Bestilling.class, bestilling.getId(), LockModeType.PESSIMISTIC_WRITE);
-            best.setSistOppdatert(now());
-            best.setFerdig(true);
-            best.setFeil(bestilling.getFeil());
-            entityManager.persist(best);
+            var bestilling = entityManager.find(Bestilling.class, id, LockModeType.PESSIMISTIC_WRITE);
+            bestilling.setSistOppdatert(now());
+            bestilling.setFerdig(true);
+            bestillingFunksjon.accept(bestilling);
+            entityManager.persist(bestilling);
             clearCache();
-            return best;
+            return bestilling;
         });
     }
 

@@ -108,6 +108,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                                     transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
                                     return Flux.just(progress);
                                 })))
+                .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                 .collectList()
                 .subscribe(done -> doFerdig(bestilling));
     }
