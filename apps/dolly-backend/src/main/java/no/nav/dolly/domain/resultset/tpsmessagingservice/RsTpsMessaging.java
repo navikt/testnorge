@@ -9,6 +9,8 @@ import lombok.Setter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 
+import java.time.LocalDate;
+
 @Getter
 @Setter
 @Builder
@@ -18,6 +20,8 @@ import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 public class RsTpsMessaging {
 
     private String spraakKode;
+    private LocalDate egenAnsattDatoFom;
+    private LocalDate egenAnsattDatoTom;
     private BankkontonrUtlandDTO utenlandskBankkonto;
     private BankkontonrNorskDTO norskBankkonto;
 }

@@ -85,6 +85,8 @@ public class TpsMessagingClient implements ClientRegister {
                                 .map(respons -> Map.of("UtenlandskBankkonto", respons)),
                         sendEgenansattSlett(bestilling, dollyPerson.getHovedperson(), token)
                                 .map(respons -> Map.of("Egenansatt_slett", respons)),
+                        sendEgenansatt(bestilling, dollyPerson.getHovedperson(), token)
+                                .map(respons -> Map.of("Egenansatt_opprett", respons)),
                         sendSikkerhetstiltakSlett(dollyPerson, token)
                                 .map(respons -> Map.of("Sikkerhetstiltak_slett", respons)),
                         sendSikkerhetstiltakOpprett(dollyPerson, token)
@@ -247,6 +249,18 @@ public class TpsMessagingClient implements ClientRegister {
         return nonNull(SkjermingUtil.getEgenansattDatoTom(bestilling)) ?
 
                 tpsMessagingConsumer.deleteEgenansattRequest(ident, null, token)
+                        .collectList() :
+
+                Mono.just(emptyList());
+    }
+
+    private Mono<List<TpsMeldingResponseDTO>> sendEgenansatt(RsDollyUtvidetBestilling bestilling,
+                                                             String ident, AccessToken token) {
+
+        return nonNull(SkjermingUtil.getEgenansattDatoFom(bestilling)) ?
+
+                tpsMessagingConsumer.sendEgenansattRequest(ident, null,
+                                SkjermingUtil.getEgenansattDatoFom(bestilling).toLocalDate(), token)
                         .collectList() :
 
                 Mono.just(emptyList());
