@@ -11,6 +11,7 @@ spec:
   port: 8080
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
       replyURLs:

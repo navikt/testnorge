@@ -19,6 +19,7 @@ spec:
       - https://dolly-frontend-dev.dev.intern.nav.no/login
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
       replyURLs:

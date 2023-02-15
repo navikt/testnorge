@@ -14,7 +14,11 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import static java.lang.String.format;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.AdresseTo;
 import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.NavnTo;
 import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.RolleTo;
@@ -22,6 +26,11 @@ import static no.nav.dolly.bestilling.brregstub.domain.RolleoversiktTo.RolleTo;
 @Slf4j
 @Component
 public class BrregRolleMappingStrategy implements MappingStrategy {
+
+    private static LocalDate toDate(LocalDateTime dateTime) {
+
+            return nonNull(dateTime) ? dateTime.toLocalDate() : null;
+    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -35,7 +44,7 @@ public class BrregRolleMappingStrategy implements MappingStrategy {
                         rolleoversiktTo.setAdresse(mapperFacade.map(rollePerson, AdresseTo.class));
                         rolleoversiktTo.setEnheter(mapperFacade.mapAsList(bregPerson.getBregdata().getEnheter(), RolleTo.class));
                         rolleoversiktTo.setFnr(bregPerson.getDollyPerson().getHovedperson());
-                        rolleoversiktTo.setFodselsdato(rollePerson.getFoedselsdato().toLocalDate());
+                        rolleoversiktTo.setFodselsdato(toDate(rollePerson.getFoedselsdato()));
                         rolleoversiktTo.setHovedstatus(0);
                         rolleoversiktTo.setNavn(mapperFacade.map(rollePerson, NavnTo.class));
                         rolleoversiktTo.setUnderstatuser(bregPerson.getBregdata().getUnderstatuser());

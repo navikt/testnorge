@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DeltBostedDTO;
@@ -26,6 +27,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.util.Objects.isNull;
@@ -65,7 +67,7 @@ public class MetadataTidspunkterService {
         person.getDoedsfall()
                 .forEach(this::fixDoedsfall);
         person.getFoedsel()
-                .forEach(this::fixFoedsel);
+                .forEach(foedsel -> fixFoedsel(foedsel, person));
         person.getFalskIdentitet()
                 .forEach(this::fixFalskIdentitet);
         person.getFolkeregisterPersonstatus()
@@ -115,7 +117,10 @@ public class MetadataTidspunkterService {
         if (kjoennDTO.getId() == 1) {
 
             kjoennDTO.getFolkeregistermetadata().setAjourholdstidspunkt(personDTO.getFoedsel().stream()
-                    .map(FoedselDTO::getFoedselsdato)
+                    .map(foedsel -> nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
+                            LocalDate.of(foedsel.getFoedselsaar(),
+                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
+                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay())
                     .findFirst().orElse(LocalDateTime.now().minusHours(1)));
 
         } else {
@@ -242,7 +247,10 @@ public class MetadataTidspunkterService {
         if (navnDTO.getId() == 1) {
 
             navnDTO.setGyldigFraOgMed(personDTO.getFoedsel().stream()
-                    .map(FoedselDTO::getFoedselsdato)
+                    .map(foedsel -> nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
+                            LocalDate.of(foedsel.getFoedselsaar(),
+                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
+                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay())
                     .findFirst().orElse(LocalDateTime.now().minusHours(1)));
 
         } else {
@@ -261,12 +269,17 @@ public class MetadataTidspunkterService {
         doedsfallDTO.getFolkeregistermetadata().setGyldighetstidspunkt(doedsfallDTO.getDoedsdato());
     }
 
-    private void fixFoedsel(FoedselDTO foedselDTO) {
+    private void fixFoedsel(FoedselDTO foedselDTO, PersonDTO personDTO) {
 
         fixFolkeregisterMetadata(foedselDTO);
 
-        foedselDTO.getFolkeregistermetadata().setAjourholdstidspunkt(foedselDTO.getFoedselsdato());
-        foedselDTO.getFolkeregistermetadata().setGyldighetstidspunkt(foedselDTO.getFoedselsdato());
+        var dato = nonNull(foedselDTO.getFoedselsdato()) ? foedselDTO.getFoedselsdato() :
+                LocalDate.of(foedselDTO.getFoedselsaar(),
+                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
+                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay();
+
+        foedselDTO.getFolkeregistermetadata().setAjourholdstidspunkt(dato);
+        foedselDTO.getFolkeregistermetadata().setGyldighetstidspunkt(dato);
     }
 
     private void fixAdresser(AdresseDTO adresseDTO) {

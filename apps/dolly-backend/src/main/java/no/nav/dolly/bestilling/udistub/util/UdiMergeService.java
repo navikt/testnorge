@@ -16,11 +16,14 @@ import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import no.nav.dolly.service.DollyPersonCache;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Slf4j
 @Service
@@ -29,6 +32,11 @@ public class UdiMergeService {
 
     private final DollyPersonCache dollyPersonCache;
     private final MapperFacade mapperFacade;
+
+    private static LocalDate toDate(LocalDateTime dateTime) {
+
+        return nonNull(dateTime) ? dateTime.toLocalDate() : null;
+    }
 
     public UdiPersonWrapper merge(RsUdiPerson nyUdiPerson, UdiPersonResponse eksisterendeUdiPerson,
                                   boolean isLeggTil, DollyPerson dollyPerson) {
@@ -59,7 +67,7 @@ public class UdiMergeService {
 
         udiPerson.setIdent(dollyPerson.getHovedperson());
         udiPerson.setNavn(mapperFacade.map(dollyPerson.getPerson(dollyPerson.getHovedperson()), UdiPersonNavn.class));
-        udiPerson.setFoedselsDato(dollyPerson.getPerson(dollyPerson.getHovedperson()).getFoedselsdato().toLocalDate());
+        udiPerson.setFoedselsDato(toDate(dollyPerson.getPerson(dollyPerson.getHovedperson()).getFoedselsdato()));
 
         return UdiPersonWrapper.builder()
                 .udiPerson(udiPerson)
