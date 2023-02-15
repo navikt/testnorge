@@ -34,7 +34,7 @@ export const BestillingProgresjon = ({
 			setOrgStatus(detaljertStatus)
 		}
 	}
-	console.log('erOrganisasjon: ', erOrganisasjon) //TODO - SLETT MEG
+
 	const harBestillingFeilet = (sistOppdatertState: Date) => {
 		const liveTimeStamp = new Date().getTime()
 		const oldTimeStamp = new Date(sistOppdatertState).getTime()
@@ -136,9 +136,7 @@ export const BestillingProgresjon = ({
 		onFinishBestilling(bestilling || bestillingStatus)
 		return null
 	}
-	console.log("bestillingStatus: ", bestillingStatus) //TODO - SLETT MEG
-	console.log('bestilling: ', bestilling) //TODO - SLETT MEG
-	// console.log('orgStatus: ', orgStatus) //TODO - SLETT MEG
+
 	return (
 		<div className="bestilling-status">
 			<div className="bestilling-resultat">

@@ -38,7 +38,7 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false}: Miljosta
 		avvik: 'report-problem-circle',
 		feil: 'report-problem-triangle',
 	}
-	console.log('erOrganisasjon: ', erOrganisasjon) //TODO - SLETT MEG
+
 	const iconType = (statuser: Status[], feil: string) => {
 		if (feil) {
 			return IconTypes.feil
@@ -89,7 +89,7 @@ export const BestillingStatus = ({ bestilling, erOrganisasjon = false}: Miljosta
 						return infoListe.concat(advarselListe, feilListe)
 					}
 				}
-				console.log('fagsystem: ', fagsystem) //TODO - SLETT MEG
+
 				// @ts-ignore
 				const marginBottom = getMelding()?.length > 0 ? '8px' : '15px'
 
