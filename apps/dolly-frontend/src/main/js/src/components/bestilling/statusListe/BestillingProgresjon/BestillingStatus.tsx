@@ -58,7 +58,7 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 		) {
 			return IconTypes.avvik
 		}
-		// Avvik eller Error
+		// Avvik eller error
 		return statuser.some((status) => status?.melding === 'OK') ? IconTypes.avvik : IconTypes.feil
 	}
 
