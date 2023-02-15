@@ -11,6 +11,7 @@ export type Miljostatus = {
 		feil: string
 		antallIdenter?: number
 		antallLevert?: number
+		opprettetFraGruppeId?: number
 	}
 }
 

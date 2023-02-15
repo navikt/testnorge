@@ -65,16 +65,28 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 	return (
 		<div style={{ marginTop: '15px' }}>
 			{bestilling.status?.map((fagsystem, idx) => {
-				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info:'))
+				const oppretter = fagsystem?.statuser?.some((status) => status?.melding?.includes('Info'))
 
-				const infoListe = fagsystem?.statuser?.filter((s) => s?.melding?.includes('Info:'))
-				const feilListe = fagsystem?.statuser?.filter((s) => s?.melding?.includes('Feil'))
+				const infoString = ['Info', 'INFO', 'info']
+				const infoListe = fagsystem?.statuser?.filter((s) =>
+					infoString.some((i) => s?.melding?.includes(i))
+				)
+
+				const advarselString = ['Advarsel', 'ADVARSEL', 'advarsel']
+				const advarselListe = fagsystem?.statuser?.filter((s) =>
+					advarselString.some((i) => s?.melding?.includes(i))
+				)
+
+				const feilString = ['Feil', 'FEIL', 'feil']
+				const feilListe = fagsystem?.statuser?.filter((s) =>
+					feilString.some((i) => s?.melding?.includes(i))
+				)
 
 				const getMelding = () => {
 					if (fagsystem?.statuser?.every((s) => s?.melding === 'OK')) {
 						return null
 					} else {
-						return infoListe.concat(feilListe)
+						return infoListe.concat(advarselListe, feilListe)
 					}
 				}
 
@@ -111,12 +123,14 @@ export const BestillingStatus = ({ bestilling }: Miljostatus) => {
 								<h5>{fagsystem.navn}</h5>
 								{fagsystem.id !== 'ANNEN_FEIL' && (
 									<p>
-										{getOkIdenter()?.length} av {antallBestilteIdenter} identer opprettet
+										{getOkIdenter()?.length}{' '}
+										{!bestilling.opprettetFraGruppeId && `av ${antallBestilteIdenter} `}identer
+										opprettet
 									</p>
 								)}
 							</FagsystemText>
-							{getMelding()?.map((status) => {
-								return <ApiFeilmelding feilmelding={status?.melding} />
+							{getMelding()?.map((status, idx) => {
+								return <ApiFeilmelding feilmelding={status?.melding} key={`Feilmelding-${idx}`} />
 							})}
 						</div>
 					</FagsystemStatus>
