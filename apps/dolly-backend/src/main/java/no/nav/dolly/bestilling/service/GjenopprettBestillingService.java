@@ -75,7 +75,6 @@ public class GjenopprettBestillingService extends DollyBestillingService {
             var gamleProgresser = bestillingProgressService.fetchBestillingProgressByBestillingId(bestilling.getOpprettetFraId());
 
             Flux.fromIterable(gamleProgresser)
-                    .filter(gmlProgress -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(gmlProgress -> opprettProgress(bestilling, gmlProgress.getMaster(), gmlProgress.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, gmlProgress.getIdent())
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())

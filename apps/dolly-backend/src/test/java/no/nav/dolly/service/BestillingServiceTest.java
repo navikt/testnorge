@@ -188,14 +188,6 @@ class BestillingServiceTest {
                 bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1")));
     }
 
-    @Test
-    void isStoppet_OK() {
-
-        bestillingService.isStoppet(BEST_ID);
-
-        verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
-    }
-
     @BeforeEach
     public void setup() {
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")

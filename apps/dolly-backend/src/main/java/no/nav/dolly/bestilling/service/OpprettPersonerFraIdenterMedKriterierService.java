@@ -75,7 +75,6 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         if (nonNull(bestKriterier)) {
 
             new AvailCheckCommand(bestilling.getOpprettFraIdenter(), pdlDataConsumer).call()
-                    .filter(availStatus -> !bestillingService.isStoppet(bestilling.getId()))
                     .flatMap(availStatus -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
                                     availStatus.getIdent(), mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, PDLF, availStatus.getIdent())

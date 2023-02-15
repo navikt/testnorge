@@ -78,7 +78,6 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var emptyBestillingCounter = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .filter(testident -> !bestillingService.isStoppet(bestilling.getId()))
                     .filter(testident -> testident.isPdl() || testident.isPdlf())
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())

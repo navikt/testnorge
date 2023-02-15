@@ -35,6 +35,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +62,9 @@ import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 @RequiredArgsConstructor
 public class BestillingService {
 
-    private static final String NOT_FOUND = "Finner ikke gruppe basert på gruppeID: ";
+    private static final String NOT_FOUND = "Finner ikke gruppe basert på gruppeId: ";
+    private static final String SEARCH_STRING = "info:";
+    private static final String DEFAULT_VALUE = null;
     private final BestillingRepository bestillingRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final IdentRepository identRepository;
@@ -160,18 +163,29 @@ public class BestillingService {
                     .build());
         }
 
-        Bestilling bestilling = fetchBestillingById(bestillingId);
+        var bestilling = fetchBestillingById(bestillingId);
         bestilling.setStoppet(true);
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
         bestilling.setBruker(fetchOrCreateBruker());
-        saveBestillingToDB(bestilling);
-        return bestilling;
-    }
+        bestilling.getProgresser()
+                .forEach(progress -> Arrays.stream(progress.getClass().getMethods())
+                        .filter(method -> method.getName().contains("get"))
+                        .forEach(metode -> {
+                            try {
+                                var verdi = metode.invoke(progress, null);
+                                if (verdi instanceof String verdiString &&
+                                        isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
+                                    var oppdaterMetode = progress.getClass()
+                                            .getMethod("set" + metode.getName().substring(3), String.class);
+                                    oppdaterMetode.invoke(progress, DEFAULT_VALUE);
+                                }
+                            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                                log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}", bestillingId, e.getMessage(), e);
+                            }
+                        }));
 
-    public boolean isStoppet(Long bestillingId) {
-        return bestillingKontrollRepository.findByBestillingId(bestillingId)
-                .orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
+        return bestilling;
     }
 
     @Transactional
