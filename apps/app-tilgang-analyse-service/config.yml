@@ -10,6 +10,7 @@ spec:
     enabled: true
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   image: {{ image }}

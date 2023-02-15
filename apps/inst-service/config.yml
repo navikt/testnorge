@@ -54,6 +54,7 @@ spec:
         - host: https://testnav-inst-proxy.dev-fss-pub.nais.io
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   ingresses:
