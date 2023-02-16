@@ -128,8 +128,8 @@ export const useBestillingById = (
 		}
 	}
 	const { data, error } = useSWR<Bestilling, Error>(getBestillingByIdUrl(bestillingId), fetcher, {
-		refreshInterval: autoRefresh ? 2000 : null,
-		dedupingInterval: autoRefresh ? 2000 : null,
+		refreshInterval: autoRefresh ? 1000 : null,
+		dedupingInterval: autoRefresh ? 1000 : null,
 	})
 
 	return {

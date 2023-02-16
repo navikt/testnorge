@@ -13,6 +13,7 @@ import {
 	REGEX_BACKEND_ORGANISASJONER,
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
+import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
 
 type ProgresjonProps = {
 	bestillingID: string
@@ -71,11 +72,11 @@ export const BestillingProgresjon = ({
 	}
 
 	const calculateStatus = () => {
-		const total = erOrganisasjon ? 1 : bestilling.antallIdenter
+		const total = erOrganisasjon ? 1 : bestilling?.antallIdenter
 		const sykemelding =
 			!erOrganisasjon &&
-			bestilling.bestilling.sykemelding != null &&
-			bestilling.bestilling.sykemelding.syntSykemelding != null
+			bestilling?.bestilling?.sykemelding != null &&
+			bestilling?.bestilling?.sykemelding?.syntSykemelding != null
 		const antallLevert = erOrganisasjon ? bestillingStatus?.antallLevert : bestilling?.antallLevert
 
 		let percent = (100 / total) * antallLevert
@@ -86,12 +87,13 @@ export const BestillingProgresjon = ({
 			percent += 10
 		}
 
-		if (antallLevert === total || bestilling?.ferdig || bestillingStatus?.ferdig) {
+		if (bestilling?.ferdig || bestillingStatus?.ferdig) {
 			text = `Ferdigstiller bestilling`
 			ferdigstillBestilling()
 		}
 		const aktivBestillingStatusText = getBestillingStatusText(sykemelding)
-		const title = percent === 100 ? 'FERDIG' : aktivBestillingStatusText
+
+		const title = bestilling?.ferdig ? 'FERDIG' : aktivBestillingStatusText
 
 		return {
 			percentFinished: percent,
@@ -130,13 +132,24 @@ export const BestillingProgresjon = ({
 
 	const { percentFinished, tittel, description } = calculateStatus()
 
-	if (percentFinished === 100) {
+	if (percentFinished === 100 && bestilling?.ferdig === true) {
 		onFinishBestilling(bestilling || bestillingStatus)
 		return null
 	}
 
 	return (
 		<div className="bestilling-status">
+			<div className="bestilling-resultat">
+				<div className="status-header">
+					<p>Bestilling #{bestilling?.id || bestillingStatus?.id}</p>
+					<h3>Bestillingsstatus</h3>
+					<div className="status-header_button-wrap" />
+				</div>
+				<hr />
+			</div>
+			<div>
+				{!erOrganisasjon && <BestillingStatus bestilling={bestilling}/>}
+			</div>
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}

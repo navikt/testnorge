@@ -17,7 +17,7 @@ export default function FagsystemStatus({ statusrapport }: { statusrapport: Stat
 	const getIconType = (status: Status) => {
 		const melding = status.melding
 		if (melding && !melding.includes('OK')) {
-			if (melding.includes('ADVARSEL')) {
+			if (melding.includes('ADVARSEL') || melding.includes('Info')) {
 				return 'report-problem-circle'
 			}
 			return problemCircleFeil.includes(melding) || (status.orgnummer && status.orgnummer !== 'NA')
