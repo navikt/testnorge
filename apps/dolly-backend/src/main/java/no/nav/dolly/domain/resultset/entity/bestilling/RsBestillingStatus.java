@@ -17,7 +17,6 @@ import no.nav.dolly.domain.resultset.inst.RsInstdata;
 import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
@@ -85,8 +84,6 @@ public class RsBestillingStatus {
         private List<String> importFraTps;
         private List<String> importFraPdl;
         private String kildeMiljoe;
-
-        private RsPdldata pdlforvalter;
         private RsDigitalKontaktdata krrstub;
         private List<RsInstdata> instdata;
         private List<RsAareg> aareg;

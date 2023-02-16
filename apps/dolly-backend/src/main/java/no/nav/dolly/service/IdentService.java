@@ -5,14 +5,11 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
-import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
-import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -37,17 +34,6 @@ public class IdentService {
     @Transactional(readOnly = true)
     public boolean exists(String ident) {
         return identRepository.existsByIdent(ident);
-    }
-
-    @Transactional
-    public void persisterTestidenter(List<RsTestident> personIdentListe) {
-
-        List<Testident> testidentList = mapperFacade.mapAsList(personIdentListe, Testident.class);
-        try {
-            identRepository.saveAll(testidentList);
-        } catch (DataIntegrityViolationException e) {
-            throw new ConstraintViolationException("En Ident DB constraint er brutt! Kan ikke lagre Identer. Error: " + e.getMessage(), e);
-        }
     }
 
     @Transactional

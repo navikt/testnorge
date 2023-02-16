@@ -1,14 +1,10 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
-import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -16,10 +12,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.dao.DataIntegrityViolationException;
-
-import java.util.Arrays;
-import java.util.List;
 
 import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static org.hamcrest.CoreMatchers.is;
@@ -52,36 +44,6 @@ public class IdentServiceTest {
     @BeforeEach
     public void setup() {
         testgruppe.setId(1L);
-    }
-
-    @Test
-    public void persisterTestidenter_kallerSavePaaAlleTestidenter() {
-        RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
-        RsTestident rsi2 = RsTestident.builder().ident(STANDAR_IDENTER_2).build();
-        List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
-
-        Testident i1 = TestidentBuilder.builder().ident(STANDARD_IDENTER_1).build().convertToRealTestident();
-        Testident i2 = TestidentBuilder.builder().ident(STANDAR_IDENTER_2).build().convertToRealTestident();
-        List<Testident> testidenter = Arrays.asList(i1, i2);
-
-        when(mapperFacade.mapAsList(rsTestidenter, Testident.class)).thenReturn(testidenter);
-
-        identService.persisterTestidenter(rsTestidenter);
-
-        verify(identRepository).saveAll(testidenter);
-    }
-
-    @Test
-    public void persisterTestidenter_shouldThrowExceptionWhenADBConstraintIsBroken() {
-
-        RsTestident rsi1 = RsTestident.builder().ident(STANDARD_IDENTER_1).build();
-        RsTestident rsi2 = RsTestident.builder().ident(STANDAR_IDENTER_2).build();
-        List<RsTestident> rsTestidenter = Arrays.asList(rsi1, rsi2);
-
-        when(identRepository.saveAll(any())).thenThrow(DataIntegrityViolationException.class);
-
-        Assertions.assertThrows(ConstraintViolationException.class, () ->
-                identService.persisterTestidenter(rsTestidenter));
     }
 
     @Test

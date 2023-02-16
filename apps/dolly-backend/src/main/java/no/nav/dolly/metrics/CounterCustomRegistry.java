@@ -30,12 +30,6 @@ public class CounterCustomRegistry {
 
         List<String> tags = new ArrayList<>();
 
-        if (nonNull(bestilling.getPdlforvalter())) {
-            addTag(tags, nonNull(bestilling.getPdlforvalter().getFalskIdentitet()), "FALSKID");
-            addTag(tags, nonNull(bestilling.getPdlforvalter().getKontaktinformasjonForDoedsbo()), "KONTAKTDØDSBO");
-            addTag(tags, nonNull(bestilling.getPdlforvalter().getUtenlandskIdentifikasjonsnummer()), "UTENLANDSID");
-        }
-
         if (nonNull(bestilling.getPensjonforvalter())) {
             addTag(tags, nonNull(bestilling.getPensjonforvalter().getInntekt()), "POPPINNTEKT");
             addTag(tags, null != bestilling.getPensjonforvalter().getTp() && !bestilling.getPensjonforvalter().getTp().isEmpty(), "TP-ORDNING");
