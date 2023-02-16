@@ -106,10 +106,12 @@ public final class BestillingTpsMessagingStatusMapper {
     private static String formatMsg(String message) {
 
         if (message.contains(ADVARSEL)) {
-            return decodeMsg(ADVARSEL + message.replace(" ADVARSEL", ""));
+            return decodeMsg(ADVARSEL + message.replace(" ADVARSEL", "")
+                    .replace("_"," "));
         }
         if (message.contains(FEIL)) {
-            return decodeMsg(FEIL + message.replace(" FEIL", ""));
+            return decodeMsg(FEIL + message.replace(" FEIL", "")
+                    .replace("_"," "));
         }
         return message;
     }
