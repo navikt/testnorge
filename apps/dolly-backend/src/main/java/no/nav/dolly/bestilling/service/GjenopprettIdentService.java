@@ -88,6 +88,7 @@ public class GjenopprettIdentService extends DollyBestillingService {
             Flux.just(tIdent)
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
+                                    .filter(Objects::nonNull)
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(

@@ -87,6 +87,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                             oppdaterPdlPerson(originator, testident.getIdent())
                                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                             Flux.just(testident.getIdent()))
+                                            .filter(Objects::nonNull)
                                             .flatMap(ident -> opprettDollyPerson(testident.getIdent(), progress, bestilling.getBruker())
                                                     .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
                                                             updateIdent(dollyPerson, progress) : Flux.just(ident))

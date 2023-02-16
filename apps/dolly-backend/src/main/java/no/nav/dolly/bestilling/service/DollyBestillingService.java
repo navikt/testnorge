@@ -194,14 +194,14 @@ public class DollyBestillingService {
         if (forvalterStatus.getStatus().is2xxSuccessful()) {
 
             return pdlDataConsumer.sendOrdre(forvalterStatus.getIdent(), false)
-                    .map(resultat -> {
+                    .doOnNext(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
                         transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
                         log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
-                        return forvalterStatus.getIdent();
-                    });
+                    })
+                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : null);
 
         } else {
 
@@ -211,7 +211,6 @@ public class DollyBestillingService {
 
     protected Flux<String> sendOrdrePerson(BestillingProgress progress, String ident) {
 
-        transactionHelperService.persister(progress, BestillingProgress::setIdent, ident);
         if (progress.getMaster() == PDLF) {
             return pdlDataConsumer.sendOrdre(ident, true)
                     .map(resultat -> {
