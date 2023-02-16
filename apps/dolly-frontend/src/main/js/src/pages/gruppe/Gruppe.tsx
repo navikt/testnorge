@@ -100,12 +100,10 @@ export default ({
 	return (
 		<div className="gruppe-container">
 			<GruppeHeaderConnector gruppe={gruppe} />
-
 			{ikkeFerdigBestillinger && (
 				// @ts-ignore
 				<StatusListeConnector gruppeId={gruppe.id} bestillingListe={ikkeFerdigBestillinger} />
 			)}
-
 			<div className="gruppe-toolbar">
 				<div className="gruppe--full gruppe--flex-row-center">
 					{!bankIdBruker && (
@@ -121,7 +119,6 @@ export default ({
 							Opprett personer
 						</NavButton>
 					)}
-
 					<NavButton
 						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
@@ -137,9 +134,7 @@ export default ({
 					>
 						Importer personer
 					</NavButton>
-
 					<div style={{ flexGrow: '2' }}></div>
-
 					{!bankIdBruker && <FinnPersonBestillingConnector />}
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
@@ -169,7 +164,6 @@ export default ({
 					</ToggleGroup>
 				</div>
 			</div>
-
 			{startBestillingAktiv && (
 				<BestillingsveilederModal
 					onSubmit={startBestilling}
@@ -177,7 +171,6 @@ export default ({
 					brukernavn={brukernavn}
 				/>
 			)}
-
 			{visning === VisningType.VISNING_PERSONER && (
 				<PersonListeConnector
 					iLaastGruppe={erLaast}

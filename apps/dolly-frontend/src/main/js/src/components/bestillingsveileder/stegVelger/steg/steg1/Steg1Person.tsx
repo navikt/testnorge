@@ -55,7 +55,11 @@ export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
+			<PersoninformasjonPanel
+				stateModifier={stateModifier}
+				testnorgeIdent={testnorgeIdent}
+				formikBag={formikBag}
+			/>
 			{!testnorgeIdent && <AdressePanel stateModifier={stateModifier} formikBag={formikBag} />}
 			{!testnorgeIdent && !tpsfIdent && (
 				<FamilierelasjonPanel stateModifier={stateModifier} formikBag={formikBag} />

@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
@@ -18,11 +19,7 @@ import reactor.core.publisher.Flux;
 
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -31,24 +28,32 @@ public class KontoregisterClient implements ClientRegister {
 
     private final KontoregisterConsumer kontoregisterConsumer;
     private final MapperFacade mapperFacade;
+    private final TransactionHelperService transactionHelperService;
+    private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getBankkonto())) {
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setKontoregisterStatus(encodeStatus(getVarsel("Kontoregister")));
-                return Flux.just();
-            }
-
-            var request = prepareRequest(bestilling, dollyPerson.getHovedperson());
+            var request = prepareRequest(bestilling, dollyPerson.getIdent());
             if (nonNull(request)) {
-                progress.setKontoregisterStatus(kontoregisterConsumer.postKontonummerRegister(request)
-                        .block());
+                return Flux.from(kontoregisterConsumer.postKontonummerRegister(request)
+                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                        errorStatusDecoder.getErrorText(status.getStatus(),
+                                                status.getFeilmelding())))
+                        .map(status -> futurePersist(progress, status));
             }
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setKontoregisterStatus, status);
+            return progress;
+        };
     }
 
     private OppdaterKontoRequestDTO prepareRequest(RsDollyUtvidetBestilling bestilling, String ident) {
@@ -87,14 +92,7 @@ public class KontoregisterClient implements ClientRegister {
     public void release(List<String> identer) {
 
         kontoregisterConsumer.deleteKontonumre(identer)
+                .collectList()
                 .subscribe(response -> log.info("Slettet kontoer fra Kontoregister"));
-    }
-
-    @Override
-    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
-
-        return isNull(kriterier.getBankkonto()) ||
-                bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getKontoregisterStatus()));
     }
 }

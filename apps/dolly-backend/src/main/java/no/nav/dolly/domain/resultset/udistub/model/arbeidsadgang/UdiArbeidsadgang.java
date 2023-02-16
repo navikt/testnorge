@@ -3,17 +3,15 @@ package no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPeriode;
 
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
-@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UdiArbeidsadgang {
 

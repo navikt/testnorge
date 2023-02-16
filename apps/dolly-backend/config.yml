@@ -6,8 +6,9 @@ metadata:
   labels:
     team: dolly
   annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   tokenx:
     enabled: true
@@ -50,6 +51,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
+        - application: testnav-miljoer-service
       external:
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io

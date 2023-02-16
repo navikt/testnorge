@@ -62,7 +62,7 @@ public final class BestillingPdlForvalterStatusMapper {
                             .melding("OK")
                             .identer(progressList.stream()
                                     .map(BestillingProgress::getIdent)
-                                    .collect(Collectors.toList()))
+                                    .toList())
                             .build())))
                     .build());
         }

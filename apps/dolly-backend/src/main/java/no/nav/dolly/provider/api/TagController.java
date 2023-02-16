@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.tagshendelseslager.TagsHendelseslagerConsumer;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -72,8 +74,8 @@ public class TagController {
     @PostMapping("/gruppe/{gruppeId}")
     @Transactional
     @Operation(description = "Send tags på gruppe")
-    public Flux<String> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
-                                          @PathVariable("gruppeId") Long gruppeId) {
+    public Mono<TagsOpprettingResponse> sendTagsPaaGruppe(@RequestBody List<Tags> tags,
+                                                          @PathVariable("gruppeId") Long gruppeId) {
 
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException(String.format("Fant ikke gruppe på id: %s", gruppeId)));

@@ -59,13 +59,11 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
-    public Set<String> getMiljoer() {
+    @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
+    public Mono<Set<String>> getMiljoer() {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call())
-                .filter(miljoer -> miljoer.removeAll(Set.of("q4")))
-                .block();
+                .flatMap(token -> new GetMiljoerCommand(webClient, token.getTokenValue()).call());
     }
 
     public Mono<AccessToken> getAccessToken() {
@@ -74,16 +72,16 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
-    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest lagreInntektRequest,
+    public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest,
                                                          Set<String> miljoer, AccessToken token) {
 
-        log.info("Popp lagre inntekt {}", lagreInntektRequest);
+        log.info("Popp lagre inntekt {}", pensjonPoppInntektRequest);
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> new LagrePoppInntektCommand(webClient, token.getTokenValue(),
-                        lagreInntektRequest, miljoe).call());
+                        pensjonPoppInntektRequest, miljoe).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
+    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
     public Flux<PensjonforvalterResponse> opprettPerson(PensjonPersonRequest pensjonPersonRequest,
                                                         Set<String> miljoer, AccessToken token) {
 
@@ -92,14 +90,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return new OpprettPersonCommand(webClient, token.getTokenValue(), pensjonPersonRequest).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_lagreAlderspensjon" })
+    @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
     public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request, AccessToken token) {
 
         log.info("Pensjon lagre alderspensjon {}", request);
         return new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getInntekter" })
+    @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
     public JsonNode getInntekter(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
@@ -114,7 +112,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return new LagreTpForholdCommand(webClient, token.getTokenValue(), pensjonTpForholdRequest).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_sletteTpForhold" })
+    @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
     public void sletteTpForhold(List<String> identer) {
 
         tokenService.exchange(serviceProperties)
@@ -126,7 +124,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .subscribe(response -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
     }
 
-    @Timed(name = "providers", tags = { "operation", "pen_getTpForhold" })
+    @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
     public JsonNode getTpForhold(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
@@ -135,10 +133,10 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "pen_lagreTpYtelse" })
-    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest lagreTpYtelseRequest, AccessToken token) {
+    public Flux<PensjonforvalterResponse> lagreTpYtelse(PensjonTpYtelseRequest pensjonTpYtelseRequest, AccessToken token) {
 
-        log.info("Pensjon lagre TP-ytelse {}", lagreTpYtelseRequest);
-        return new LagreTpYtelseCommand(webClient, token.getTokenValue(), lagreTpYtelseRequest).call();
+        log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
+        return new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call();
     }
 
     public Map<String, String> checkAlive() {

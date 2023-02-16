@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
@@ -21,7 +22,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 @RequiredArgsConstructor
 public class ErrorStatusDecoder {
 
-    private static final String VARSEL = "Varsel: Sending til %s er ikke utført, da personen ennå ikke finnes i PDL. " +
+    private static final String INFO_VENTER = "Info: Oppretting startet mot %s ...";
+
+    private static final String VARSEL_SLUTT = "Varsel: Sending til %s ble gitt opp da personen ikke kunne leses tilbake fra PDL. " +
             "Forsøk gjenopprett for å fikse dette!";
 
     private static final String TEKNISK_FEIL = "Teknisk feil {} mottatt fra system";
@@ -34,9 +37,14 @@ public class ErrorStatusDecoder {
 
     private final ObjectMapper objectMapper;
 
-    public static String getVarsel(String system) {
+    public static String getInfoVenter(String system) {
 
-        return String.format(VARSEL, system);
+        return encodeStatus(String.format(INFO_VENTER, system));
+    }
+
+    public static String getVarselSlutt(String system) {
+
+        return String.format(VARSEL_SLUTT, system);
     }
 
     public static String encodeStatus(String toBeEncoded) {
@@ -50,30 +58,16 @@ public class ErrorStatusDecoder {
 
     public String getErrorText(HttpStatus errorStatus, String errorMsg) {
 
-        StringBuilder builder = new StringBuilder()
+        var builder = new StringBuilder()
                 .append(FEIL);
 
         if (isBlank(errorMsg)) {
-
             builder.append(errorStatus);
 
         } else if (errorMsg.contains("{")) {
-
-            try {
-                builder.append(encodeStatus((String) objectMapper.readValue(errorMsg, Map.class).get("message")));
-
-            } catch (IOException e) {
-
-                builder.append(errorStatus.value())
-                        .append(" (")
-                        .append(encodeStatus(errorStatus.getReasonPhrase()))
-                        .append(')');
-
-                log.warn("Parsing av melding '{}' feilet", errorMsg, e);
-            }
+            builder.append(encodeStatus(getStatusMessage(errorMsg)));
 
         } else {
-
             builder.append(encodeStatus(errorMsg));
         }
 
@@ -127,20 +121,21 @@ public class ErrorStatusDecoder {
                 Map<String, Object> status = objectMapper.readValue(json, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
                     builder.append("error=").append(status.get(ERROR)).append("; ");
-                }
-                if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
+                } else if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
-                }
-                if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
+                } else if (status.containsKey(MELDING) && isNotBlank((String) status.get(MELDING))) {
                     builder.append(encodeStatus((String) status.get(MELDING)));
-                }
-                if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
+                } else if (status.containsKey(DETAILS) && status.get(DETAILS) instanceof List) {
                     StringBuilder meldinger = new StringBuilder("=");
                     List<Map<String, String>> details = (List) status.get(DETAILS);
                     details.forEach(entry ->
                             entry.forEach((key, value) ->
                                     meldinger.append(' ').append(key).append("= ").append(value)));
                     builder.append("details=").append(encodeStatus(meldinger.toString()));
+                } else {
+                    builder.append(status.entrySet().stream()
+                            .map(entry -> entry.getKey() + ": " + entry.getValue())
+                            .collect(Collectors.joining(",")));
                 }
 
             } catch (IOException ioe) {

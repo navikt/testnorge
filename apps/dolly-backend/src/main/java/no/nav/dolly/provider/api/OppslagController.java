@@ -9,7 +9,7 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.skjermingsregister.SkjermingsRegisterConsumer;
-import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
 import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
@@ -131,7 +131,7 @@ public class OppslagController {
 
     @GetMapping("/skjerming/{ident}")
     @Operation(description = "Hent skjerming på ident")
-    public SkjermingsDataResponse getSkjerming(@PathVariable String ident) {
+    public SkjermingDataResponse getSkjerming(@PathVariable String ident) {
 
         var response = skjermingsRegisterConsumer.getSkjerming(ident);
         if (response.isEksistererIkke()) {
@@ -143,7 +143,7 @@ public class OppslagController {
     @GetMapping("/udistub/{ident}")
     @Operation(description = "Hent udistub ident")
     public UdiPersonResponse getUdistubIdent(@PathVariable String ident) {
-        return udiStubConsumer.getUdiPerson(ident);
+        return udiStubConsumer.getUdiPerson(ident).block();
     }
 
     @Cacheable(CACHE_HELSEPERSONELL)
@@ -186,7 +186,7 @@ public class OppslagController {
     @GetMapping("/tp/miljoe")
     @Operation(description = "Hent tilgjengelige miljøer for TP-register")
     public Set<String> getTpMiljoer() {
-        return pensjonforvalterConsumer.getMiljoer();
+        return pensjonforvalterConsumer.getMiljoer().block();
     }
 
     @GetMapping("/personnavn")

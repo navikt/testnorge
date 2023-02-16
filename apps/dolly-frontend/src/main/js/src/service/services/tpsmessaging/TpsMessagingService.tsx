@@ -18,7 +18,4 @@ export default {
 	deleteBankkontoUtenlandsk(ident) {
 		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/bankkonto-utenlandsk`)
 	},
-	deleteSkjerming(ident) {
-		return Request.delete(`${TPS_MESSAGING_URL}/${ident}/egenansatt`)
-	},
 }
