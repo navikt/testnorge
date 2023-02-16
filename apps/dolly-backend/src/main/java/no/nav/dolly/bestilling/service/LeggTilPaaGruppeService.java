@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -21,6 +22,7 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.slf4j.MDC;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -120,7 +122,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         }
     }
 
-    private Flux<String> oppdaterPdlPerson(OriginatorUtility.Originator originator, String ident) {
+    private Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, String ident) {
 
         if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
 
@@ -128,11 +130,13 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                             PersonUpdateRequestDTO.builder()
                                     .person(originator.getPdlBestilling().getPerson())
                                     .build())
-                    .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response))
-                    .map(response -> response.getStatus().is2xxSuccessful() ? response.getIdent() : "?");
+                    .doOnNext(response -> log.info("Oppdatert person til PDL-forvalter med response {}", response));
 
         } else {
-            return Flux.just(ident);
+            return Flux.just(PdlResponse.builder()
+                    .ident(ident)
+                    .status(HttpStatus.OK)
+                    .build());
         }
     }
 

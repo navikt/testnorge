@@ -35,7 +35,7 @@ public class PdlDataOppdateringCommand implements Callable<Flux<PdlResponse>> {
         return webClient
                 .put()
                 .uri(PDL_FORVALTER_PERSONER_URL, ident)
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(body))

@@ -17,7 +17,7 @@ public enum SystemTyper {
     ARENA("Arena fagsystem"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
     INNTK("Inntektskomponenten (INNTK)"),
-    PEN_FORVALTER("Pensjon (PEN)"),
+    PEN_FORVALTER("Pensjon persondata (PEN)"),
     PEN_INNTEKT("Pensjonsopptjening (POPP)"),
     TP_FORVALTER("Tjenestepensjon (TP)"),
     PEN_AP("Alderspensjon (AP)"),
@@ -30,9 +30,10 @@ public enum SystemTyper {
     SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
-    PDL_FORVALTER("Persondataløsning (PDL)"),
+    PDL_FORVALTER("Opprettet person"),
+    PDL_ORDRE("Ordre til PDL"),
     KONTOREGISTER("Bankkontoregister"),
-    PDL_PERSONSTATUS("PDL-Synkronisering"),
+    PDL_PERSONSTATUS("Person finnes i PDL"),
     ANNEN_FEIL("Annen Feil");
 
     private String beskrivelse;

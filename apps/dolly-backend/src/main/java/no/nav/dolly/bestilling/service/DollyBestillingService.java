@@ -183,23 +183,28 @@ public class DollyBestillingService {
                 .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
     }
 
-    protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse response) {
+    protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse forvalterStatus) {
 
-        if (response.getStatus().is2xxSuccessful()) {
 
-            return pdlDataConsumer.sendOrdre(response.getIdent(), false)
+        transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
+                        errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
+        );
+
+        if (forvalterStatus.getStatus().is2xxSuccessful()) {
+
+            return pdlDataConsumer.sendOrdre(forvalterStatus.getIdent(), false)
                     .map(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, status);
-                        log.info("Sendt ordre til PDL for ident {} ", response.getIdent());
-                        return response.getIdent();
+                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
+                        log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
+                        return forvalterStatus.getIdent();
                     });
 
         } else {
-            var error = errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding());
-            transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, error);
+
             return Flux.empty();
         }
     }
@@ -213,7 +218,7 @@ public class DollyBestillingService {
                         var status = resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, status);
+                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
                         log.info("Sendt ordre til PDL for ident {} ", ident);
                         return ident;
                     });

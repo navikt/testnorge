@@ -15,7 +15,7 @@ import no.nav.dolly.domain.resultset.RsStatusRapport;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrdreStatus;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.mapper.BestillingPdlDataStatusMapper;
+import no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper;
 import no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper;
 import no.nav.dolly.mapper.BestillingTpsMessagingStatusMapper;
 import no.nav.dolly.repository.IdentRepository;
@@ -79,7 +79,7 @@ public class OrdreService {
                                                 .map(ClientFuture::get)
                                                 .collectList()
                                                 .map(status -> RsOrdreStatus.builder()
-                                                        .status(Stream.of(getStatus(BestillingPdlDataStatusMapper.buildPdlDataStatusMap(List.of(progress), objectMapper)),
+                                                        .status(Stream.of(getStatus(BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap(List.of(progress), objectMapper)),
                                                                         getStatus(BestillingTpsMessagingStatusMapper.buildTpsMessagingStatusMap(List.of(progress))),
                                                                         getStatus(BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap(List.of(progress))))
                                                                 .filter(Objects::nonNull)
@@ -92,9 +92,9 @@ public class OrdreService {
 
         return pdlDataConsumer.sendOrdre(dollyPerson.getIdent(), false)
                 .map(response -> {
-                    progress.setPdlDataStatus(response.getStatus().is2xxSuccessful() ?
+                    progress.setPdlOrdreStatus(response.getStatus().is2xxSuccessful() ?
                             response.getJsonNode() : response.getFeilmelding());
-                    log.info("Pdl-forvalter status: {}", progress.getPdlDataStatus());
+                    log.info("Pdl-forvalter status: {}", progress.getPdlOrdreStatus());
                     return progress;
                 });
     }

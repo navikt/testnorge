@@ -81,7 +81,6 @@ public class RsBestillingStatus {
     public static class RsBestilling {
 
         private Boolean navSyntetiskIdent;
-        private List<String> importFraTps;
         private List<String> importFraPdl;
         private String kildeMiljoe;
         private RsDigitalKontaktdata krrstub;
