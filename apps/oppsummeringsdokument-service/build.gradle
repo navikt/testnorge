@@ -1,3 +1,10 @@
+buildscript {
+    ext {
+        set('elasticsearch.version', '7.12.1')
+    }
+}
+
+
 plugins {
     id 'java'
     id "org.sonarqube" version "3.5.0.2730"
@@ -48,6 +55,11 @@ repositories {
 }
 
 dependencies {
+
+    compileOnly(
+            //downgrade to spring-data-elasticsearch:4.2.7 and avoid the OpenSearch error "Elasticsearch version 6 or more is required"
+            "org.springframework.data:spring-data-elasticsearch:4.2.7",
+    )
     implementation('com.google.guava:guava') {
         version {
             strictly '20.0'
