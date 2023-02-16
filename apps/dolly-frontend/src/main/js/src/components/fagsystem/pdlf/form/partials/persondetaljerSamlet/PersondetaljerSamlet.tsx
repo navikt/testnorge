@@ -12,25 +12,14 @@ type PersondetaljerSamletTypes = {
 			sprakKode: string
 		}
 	}
-	harSkjerming?: string
 }
 
-export const PersondetaljerSamlet = ({
-	formikBag,
-	tpsMessaging,
-	harSkjerming,
-}: PersondetaljerSamletTypes) => {
+export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: PersondetaljerSamletTypes) => {
 	const sprak = tpsMessaging?.tpsMessagingData?.sprakKode
 
 	const getTekst = () => {
 		if (sprak) {
-			if (harSkjerming) {
-				return ', språk og skjerming'
-			} else {
-				return ' og språk'
-			}
-		} else if (harSkjerming) {
-			return ' og skjerming'
+			return ' og språk'
 		} else {
 			return ''
 		}

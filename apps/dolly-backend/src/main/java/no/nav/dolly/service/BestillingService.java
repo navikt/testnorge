@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -115,18 +116,32 @@ public class BestillingService {
     public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId, Integer page, Integer pageSize) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (page == null || pageSize == null) {
-            return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
+            return testgruppe
+                    .map(Testgruppe::getBestillinger).orElse(emptySet());
         }
-        return testgruppe.isPresent()
-                ? testgruppe.get().getBestillinger().stream().skip(page.longValue() * pageSize).limit(pageSize).collect(toSet())
-                : emptySet();
+        return testgruppe
+                .map(value -> value.getBestillinger().stream()
+                        .skip(page.longValue() * pageSize).limit(pageSize)
+                        .collect(toSet()))
+                .orElse(emptySet());
     }
 
     public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.isPresent()
-                ? testgruppe.get().getBestillinger().stream().filter(b -> !b.isFerdig()).collect(toSet())
-                : emptySet();
+        return testgruppe
+                .map(value -> value.getBestillinger().stream()
+                        .filter(b -> !b.isFerdig())
+                        .collect(toSet()))
+                .orElse(emptySet());
+    }
+
+    public Set<String> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
+        return testgruppe.map(value -> value.getBestillinger().stream()
+                .map(Bestilling::getMiljoer)
+                .flatMap(miljoer -> Arrays.stream(miljoer.split(",")))
+                .filter(StringUtils::isNotBlank)
+                .collect(toSet())).orElse(emptySet());
     }
 
     public List<Bestilling> fetchMalBestillinger() {

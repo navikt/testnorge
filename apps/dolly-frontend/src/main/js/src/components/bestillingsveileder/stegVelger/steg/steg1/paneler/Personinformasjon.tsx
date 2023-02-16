@@ -309,16 +309,12 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',
-			checked: has(paths.egenAnsattDatoFom.tpsf) || has(paths.egenAnsattDatoFom.tpsM),
+			checked:
+				has(paths.egenAnsattDatoFom.tpsf) ||
+				has(paths.egenAnsattDatoFom.tpsM) ||
+				has(paths.egenAnsattDatoFom.skjerming),
 			add() {
 				setMulti(
-					[
-						paths.egenAnsattDatoFom.tpsM,
-						_.get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
-							_.get(personFoerLeggTil, paths.egenAnsattDatoFom.tpsM) ||
-							new Date(),
-					],
-					[paths.egenAnsattDatoTom.tpsM, undefined],
 					[
 						paths.egenAnsattDatoFom.skjerming,
 						_.get(personFoerLeggTil, paths.skjermetFra)?.substring(0, 10) ||
@@ -329,13 +325,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 				)
 			},
 			remove() {
-				del([
-					paths.egenAnsattDatoFom.tpsM,
-					paths.egenAnsattDatoTom.tpsM,
-					paths.egenAnsattDatoFom.tpsf,
-					paths.egenAnsattDatoTom.tpsf,
-					'skjerming',
-				])
+				del('skjerming')
 			},
 		},
 		telefonnummer: {
