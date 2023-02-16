@@ -80,7 +80,7 @@ export const BestillingProgresjon = ({
 		const antallLevert = erOrganisasjon ? bestillingStatus?.antallLevert : bestilling?.antallLevert
 
 		let percent = (100 / total) * antallLevert
-		let text = `Opprettet ${antallLevert || 0} av ${total}`
+		let text = `Oppretter ${antallLevert || 0} av ${total}`
 
 		// Indikerer progress hvis ingenting har skjedd enda
 		if (percent === 0) {
