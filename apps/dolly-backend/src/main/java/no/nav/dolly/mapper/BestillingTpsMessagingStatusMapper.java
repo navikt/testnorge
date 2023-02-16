@@ -29,6 +29,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public final class BestillingTpsMessagingStatusMapper {
 
     private static final String OKEY = "OK";
+    private static final String ADVARSEL = "ADVARSEL: ";
+    private static final String FEIL = "FEIL= ";
 
     public static List<RsStatusRapport> buildTpsMessagingStatusMap(List<BestillingProgress> progressList) {
 
@@ -82,7 +84,7 @@ public final class BestillingTpsMessagingStatusMapper {
                     .navn(TPS_MESSAGING.getBeskrivelse())
                     .statuser(statusMap.entrySet().stream()
                             .map(status -> RsStatusRapport.Status.builder()
-                                    .melding(decodeMsg(status.getKey()))
+                                    .melding(formatMsg(status.getKey()))
                                     .detaljert(status.getValue().entrySet().stream()
                                             .map(miljoIdenter -> RsStatusRapport.Detaljert.builder()
                                                     .miljo(miljoIdenter.getKey())
@@ -99,6 +101,17 @@ public final class BestillingTpsMessagingStatusMapper {
             log.error(e.getMessage(), e);
             return emptyList();
         }
+    }
+
+    private static String formatMsg(String message) {
+
+        if (message.contains(ADVARSEL)) {
+            return decodeMsg(ADVARSEL + message.replace(" ADVARSEL", ""));
+        }
+        if (message.contains(FEIL)) {
+            return decodeMsg(FEIL + message.replace(" FEIL", ""));
+        }
+        return message;
     }
 
     private static String getStatus(String status) {
