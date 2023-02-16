@@ -2,7 +2,7 @@ package no.nav.dolly.bestilling;
 
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
