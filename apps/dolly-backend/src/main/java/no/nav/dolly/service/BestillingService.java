@@ -173,7 +173,6 @@ public class BestillingService {
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
         bestilling.setBruker(fetchOrCreateBruker());
-        this.cleanBestilling().accept(bestilling);
 
         return bestilling;
     }
