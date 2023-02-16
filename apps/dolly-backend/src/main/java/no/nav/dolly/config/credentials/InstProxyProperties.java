@@ -7,5 +7,5 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-inst-proxy")
-public class InstServiceProperties extends NaisServerProperties {
+public class InstProxyProperties extends NaisServerProperties {
 }

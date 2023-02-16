@@ -45,7 +45,6 @@ spec:
         - application: generer-navn-service
         - application: testnorge-profil-api
         - application: testnav-person-service
-        - application: testnav-inst-service
         - application: testnav-pdl-forvalter
         - application: testnav-arbeidsforhold-service
         - application: testnav-amelding-service
@@ -58,7 +57,6 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-inst-service.dev.intern.nav.no
         - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
