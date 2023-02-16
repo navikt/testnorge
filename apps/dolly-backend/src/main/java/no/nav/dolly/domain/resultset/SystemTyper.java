@@ -11,15 +11,10 @@ import lombok.Setter;
 public enum SystemTyper {
 
     AAREG("Arbeidsregister (AAREG)"),
-    TPSF("Tjenestebasert personsystem (TPS)"),
     INST2("Institusjonsopphold (INST2)"),
     KRRSTUB("Digital kontaktinformasjon (DKIF)"),
     SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),
     ARENA("Arena fagsystem"),
-    PDL_FORVALTER("Persondataløsningen (PDL)"),
-    PDL_FALSKID("Falsk identitet (PDL)"),
-    PDL_DODSBO("Kontaktinformasjon dødsbo (PDL)"),
-    PDL_UTENLANDSID("Utenlandsk id (PDL)"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
     INNTK("Inntektskomponenten (INNTK)"),
     PEN_FORVALTER("Pensjon (PEN)"),
@@ -35,7 +30,7 @@ public enum SystemTyper {
     SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
-    PDL_DATA("Persondataløsning (PDL) ny"),
+    PDL_FORVALTER("Persondataløsning (PDL)"),
     KONTOREGISTER("Bankkontoregister"),
     PDL_PERSONSTATUS("PDL-Synkronisering"),
     ANNEN_FEIL("Annen Feil");

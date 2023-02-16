@@ -21,7 +21,7 @@ import java.util.Map;
 
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
-import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DATA;
+import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -49,7 +49,7 @@ public final class BestillingPdlDataStatusMapper {
             }
         });
 
-        return meldingIdents.isEmpty() ? emptyList() : formatStatus(meldingIdents, PDL_DATA);
+        return meldingIdents.isEmpty() ? emptyList() : formatStatus(meldingIdents, PDL_FORVALTER);
     }
 
     private static void extractStatus(Map<String, List<String>> meldingIdents, BestillingProgress progress, ObjectMapper objectMapper) {
