@@ -206,7 +206,7 @@ public class BestillingService {
                                 .filter(method -> method.getName().contains("get"))
                                 .forEach(metode -> {
                                     try {
-                                        var verdi = metode.invoke(progress, null);
+                                        var verdi = metode.invoke(progress, (Object[]) null);
                                         if (verdi instanceof String verdiString &&
                                                 isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
                                             var oppdaterMetode = progress.getClass()
