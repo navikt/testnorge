@@ -94,7 +94,7 @@ const GruppeHeader = ({
 							REDIGER
 						</Button>
 					)}
-					{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner}/> }
+					{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id}/> }
 					{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
 					<Button
 						onClick={visGjenopprettModal}

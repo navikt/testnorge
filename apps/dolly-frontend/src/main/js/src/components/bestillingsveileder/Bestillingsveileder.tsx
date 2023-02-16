@@ -27,6 +27,8 @@ export const Bestillingsveileder = ({ error, sendBestilling }) => {
 		return null
 	}
 
+	console.log("location.state: ", location.state) //TODO - SLETT MEG
+	console.log("gruppeId: ", gruppeId) //TODO - SLETT MEG
 	const options = BVOptions(location.state, gruppeId)
 	const handleSubmit = (values) => {
 		sendBestilling(values, options, gruppeId, navigate)
