@@ -4,10 +4,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
@@ -16,31 +19,40 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarsel;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
+    private static final String STATUS_FMT = "%s$%s";
+    private static final String SYSTEM = "Arena";
+
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
+    private final PersonServiceConsumer personServiceConsumer;
+    private final TransactionHelperService transactionHelperService;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     private static ArenaNyeBrukere filtrerEksisterendeBrukere(ArenaNyeBrukere arenaNyeBrukere) {
 
@@ -58,32 +70,57 @@ public class ArenaForvalterClient implements ClientRegister {
     }
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getArenaforvalter())) {
 
-            if (!dollyPerson.isOpprettetIPDL()) {
-                progress.setArenaforvalterStatus(bestilling.getEnvironments().stream()
-                        .map(miljo -> String.format("%s$%s", miljo, encodeStatus(getVarsel("Arena"))))
-                        .collect(Collectors.joining(",")));
-                return Flux.just();
-            }
-
-            progress.setArenaforvalterStatus(
-                    requireNonNull(arenaForvalterConsumer.getToken()
-                            .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
-                                    .filter(miljo -> bestilling.getEnvironments().contains(miljo))
-                                    .parallel()
-                                    .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getHovedperson(), miljo, token),
-                                            sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token),
-                                            sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getHovedperson(), miljo, token))))
+            return arenaForvalterConsumer.getToken()
+                    .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                            .filter(env -> bestilling.getEnvironments().stream().anyMatch(env::equals))
                             .collectList()
-                            .block())
-                            .stream()
-                            .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining(",")));
+                            .doOnNext(miljoer -> {
+                                var initStatus = miljoer.stream()
+                                        .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
+                                        .collect(Collectors.joining(","));
+                                transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
+                            })
+                            .flatMap(miljoer -> getIdenterFamilie(dollyPerson.getIdent())
+                                    .flatMap(personServiceConsumer::getPdlSyncReady)
+                                    .collectList()
+                                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
+                                    .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, miljoer, token, bestilling, dollyPerson))
+                                    .flatMap(Mono::from)
+                                    .map(status -> futurePersist(progress, status))));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private Mono<String> doFeilmelding(RsDollyUtvidetBestilling bestilling) {
+        return Mono.just(bestilling.getEnvironments().stream()
+                .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getVarselSlutt(SYSTEM))))
+                .collect(Collectors.joining(",")));
+    }
+
+    private Mono<String> doArenaOpprett(Boolean isPdlReady, List<String> miljoer, AccessToken token,
+                                        RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
+
+        return isTrue(isPdlReady) ?
+                Flux.fromIterable(miljoer)
+                        .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
+                                sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
+                                sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token)))
+                        .filter(StringUtils::isNotBlank)
+                        .collect(Collectors.joining(",")) :
+
+                doFeilmelding(bestilling);
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, status);
+            return progress;
+        };
     }
 
     @Override
@@ -93,12 +130,28 @@ public class ArenaForvalterClient implements ClientRegister {
                 .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
     }
 
-    @Override
-    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+    private Flux<String> getIdenterFamilie(String ident) {
 
-        return isNull(kriterier.getArenaforvalter()) ||
-                bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getArenaforvalterStatus()));
+        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
+                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                .map(PdlPersonBolk::getData)
+                .map(PdlPersonBolk.Data::getHentPersonBolk)
+                .flatMap(Flux::fromIterable)
+                .filter(personBolk -> nonNull(personBolk.getPerson()))
+                .map(PdlPersonBolk.PersonBolk::getPerson)
+                .map(person -> Stream.of(
+                                person.getSivilstand().stream()
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull)
+                                        .toList(),
+                                person.getForelderBarnRelasjon().stream()
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull)
+                                        .toList())
+                        .flatMap(Collection::stream)
+                        .distinct()
+                        .toList())
+                .flatMap(Flux::fromIterable);
     }
 
     private Flux<String> sendArenadata(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
@@ -119,9 +172,9 @@ public class ArenaForvalterClient implements ClientRegister {
                 .map(respons -> {
                     log.info("Arena respons {}", respons);
                     return respons.getArbeidsokerList().stream()
-                            .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
+                            .filter(arbeidsoker -> "OK" .equals(arbeidsoker.getStatus()))
                             .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
-                            .map(arbeidsoker -> String.format("%s$%s", arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
+                            .map(arbeidsoker -> String.format(STATUS_FMT, arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
                             .collect(Collectors.joining(","))
                             +
                             respons.getNyBrukerFeilList().stream()
@@ -151,9 +204,9 @@ public class ArenaForvalterClient implements ClientRegister {
                             response.getNyeDagp().stream()
                                     .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
                                     .filter(Objects::nonNull)
-                                    .map(dagp -> new StringBuilder().append(miljoe).append('$')
-                                            .append("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " + dagp.getBegrunnelse()))
-                                            .toString())
+                                    .map(dagp -> String.format(STATUS_FMT, miljoe,
+                                            ("JA" .equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
+                                                    errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))))
                                     .collect(Collectors.joining(",")) +
 
                             response.getNyeDagp().stream()

@@ -8,6 +8,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -56,7 +57,10 @@ public class PdlPersonGetCommand implements Callable<Mono<JsonNode>> {
                                 Map.of("ident", ident, "historikk", true))))
                 .retrieve()
                 .bodyToMono(JsonNode.class)
+                .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.NotFound,
+                        throwable -> Mono.empty());
     }
 }

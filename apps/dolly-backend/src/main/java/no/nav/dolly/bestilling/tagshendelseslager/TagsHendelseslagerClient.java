@@ -2,94 +2,98 @@ package no.nav.dolly.bestilling.tagshendelseslager;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.service.DollyPersonCache;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static java.lang.String.format;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@Order(4)
 @RequiredArgsConstructor
 public class TagsHendelseslagerClient implements ClientRegister {
 
     private final TagsHendelseslagerConsumer tagsHendelseslagerConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
-    private final DollyPersonCache dollyPersonCache;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (dollyPerson.getMaster() == Testident.Master.PDL) { // Midlertidig
-            dollyPerson.setTags(Stream.of(dollyPerson.getTags(),
-                            List.of(Tags.DOLLY))
-                    .flatMap(Collection::stream)
-                    .distinct()
-                    .toList());
-        }
+        return Flux.from(getPdlIdenter(List.of(dollyPerson.getIdent()))
+                .collectList()
+                .flatMap(identer -> Flux.concat(
+                                Flux.just(dollyPerson.getTags())
+                                        .filter(tags -> !tags.isEmpty())
+                                        .flatMap(tags -> tagsHendelseslagerConsumer.createTags(identer, tags)
+                                                .map(resultat -> getTagStatus(identer, tags, resultat))),
+                                Flux.just(identer)
+                                        .filter(identer1 -> dollyPerson.getMaster() == Testident.Master.PDL)
+                                        .flatMap(tagsHendelseslagerConsumer::publish)
+                                        .map(status -> getPublishStatus(identer, status)))
+                        .collect(Collectors.joining(", og ")))
+                .map(status -> futureComplete(progress, status)));
+    }
 
-        if (!dollyPerson.getTags().isEmpty()) {
+    private ClientFuture futureComplete(BestillingProgress progress, String status) {
 
-            dollyPersonCache.fetchIfEmpty(dollyPerson);
-            tagsHendelseslagerConsumer.createTags(Stream.of(List.of(dollyPerson.getHovedperson()),
-                                    dollyPerson.getPartnere(), dollyPerson.getForeldre(), dollyPerson.getBarn(),
-                                    dollyPerson.getFullmektige(), dollyPerson.getVerger())
-                            .flatMap(Collection::stream)
-                            .toList(), dollyPerson.getTags())
-                    .collectList()
-                    .subscribe(response -> log.info("Lagt til tag(s) {} for ident {}",
-                            dollyPerson.getTags().stream().map(Enum::name).collect(Collectors.joining(", ")),
-                            dollyPerson.getHovedperson()));
-        }
-
-        if (dollyPerson.getMaster() == Testident.Master.PDL) {
-            getPdlIdenter(List.of(dollyPerson.getHovedperson()))
-                    .flatMap(tagsHendelseslagerConsumer::publish)
-                    .subscribe(response -> log.info("Publish sendt til hendelselager for ident: {} med status: {}",
-                            dollyPerson.getHovedperson(), response));
-        }
-
-        return Flux.just();
+        return () -> {
+            if (isNotBlank(status)) {
+                log.info(status);
+            }
+            return progress;
+        };
     }
 
     @Override
     public void release(List<String> identer) {
 
         getPdlIdenter(identer)
-                .flatMap(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
+                .collectList()
+                .flatMapMany(idents -> tagsHendelseslagerConsumer.deleteTags(idents, Arrays.asList(Tags.values())))
                 .subscribe(response -> log.info("Slettet fra TagsHendelselager"));
     }
 
-    @Override
-    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
+    private String getTagStatus(List<String> identer, List<Tags> tags, TagsOpprettingResponse resultat) {
 
-        return true;
+        return resultat.getStatus().is2xxSuccessful() ?
+                format("Lagt til tag(s) %s for ident(er) %s",
+                        tags.stream().map(Tags::getBeskrivelse).collect(Collectors.joining(",")),
+                        String.join(", ", identer)) :
+                resultat.getMessage();
     }
 
-    private Flux<List<String>> getPdlIdenter(List<String> identer) {
+    private String getPublishStatus(List<String> identer, HendelselagerResponse resultat) {
+
+        return resultat.getStatus().is2xxSuccessful() ?
+                format("Publish sendt til hendelselager for identer: %s med status: %s %s",
+                        String.join(", ", identer), resultat.getStatus(), resultat.getBody()) :
+                resultat.getFeilmelding();
+    }
+
+    private Flux<String> getPdlIdenter(List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersoner(identer)
                 .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
@@ -97,36 +101,28 @@ public class TagsHendelseslagerClient implements ClientRegister {
                 .map(PdlPersonBolk.Data::getHentPersonBolk)
                 .flatMap(Flux::fromIterable)
                 .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(person -> Stream.of(List.of(person.getIdent()),
+                .flatMap(person -> Flux.fromStream(Stream.of(Stream.of(person.getIdent()),
                                 person.getPerson().getSivilstand().stream()
                                         .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getForelderBarnRelasjon().stream()
                                         .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getForeldreansvar().stream()
                                         .map(ForeldreansvarDTO::getAnsvarlig)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getFullmakt().stream()
                                         .map(FullmaktDTO::getMotpartsPersonident)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
                                         .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
                                         .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getKontaktinformasjonForDoedsbo().stream()
                                         .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
                                         .filter(Objects::nonNull)
                                         .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                        .filter(Objects::nonNull)
-                                        .toList())
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .toList());
+                                        .filter(Objects::nonNull))
+                        .flatMap(Function.identity())));
     }
 }

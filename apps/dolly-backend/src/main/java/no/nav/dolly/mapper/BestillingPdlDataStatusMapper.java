@@ -81,7 +81,7 @@ public final class BestillingPdlDataStatusMapper {
             rapport.get(melding).add(ident);
 
         } else {
-            rapport.put(melding, new ArrayList<>(List.of(ident)));
+            rapport.put(melding, new ArrayList<>(List.of(isNotBlank(ident) ? ident : "?")));
         }
     }
 

@@ -47,7 +47,7 @@ import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class PdlForvalterConsumerTest {
+class PdlForvalterConsumerTest {
 
     private static final String IDENT = "11111111111";
 
@@ -64,13 +64,13 @@ public class PdlForvalterConsumerTest {
     private PdlForvalterConsumer pdlForvalterConsumer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
         when(tokenService.exchange(ArgumentMatchers.any(PdlProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
-    public void postKontaktinformasjonForDoedsbo_OK() {
+    void postKontaktinformasjonForDoedsbo_OK() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/bestilling/kontaktinformasjonfordoedsbo"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, equalTo(IDENT))
@@ -84,7 +84,7 @@ public class PdlForvalterConsumerTest {
     }
 
     @Test
-    public void postUtenlandskIdentifikasjonsnummer_OK() {
+    void postUtenlandskIdentifikasjonsnummer_OK() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/bestilling/utenlandsidentifikasjonsnummer"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, equalTo(IDENT))
@@ -98,7 +98,7 @@ public class PdlForvalterConsumerTest {
     }
 
     @Test
-    public void postFalskIdenitet_OK() {
+    void postFalskIdenitet_OK() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/bestilling/falskidentitet"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, equalTo(IDENT))
@@ -112,7 +112,7 @@ public class PdlForvalterConsumerTest {
     }
 
     @Test
-    public void deleteIdent() {
+    void deleteIdent() {
 
         stubFor(delete(urlPathMatching("(.*)/api/v1/personident"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, equalTo(IDENT))
@@ -125,7 +125,7 @@ public class PdlForvalterConsumerTest {
     }
 
     @Test
-    public void opprettPerson() {
+    void opprettPerson() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/bestilling/opprettperson"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, equalTo(IDENT))
@@ -140,7 +140,7 @@ public class PdlForvalterConsumerTest {
     }
 
     @Test
-    public void opprettPersonMedIdentHistorikk() {
+    void opprettPersonMedIdentHistorikk() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/bestilling/opprettperson"))
                 .withQueryParam("historiskePersonidenter", matching("Person(1|2)"))
@@ -161,7 +161,7 @@ public class PdlForvalterConsumerTest {
     }
 
     @Test
-    public void leggTillNavn() {
+    void leggTillNavn() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/bestilling/navn"))
                 .withHeader(HEADER_NAV_PERSON_IDENT, equalTo(IDENT))

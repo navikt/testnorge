@@ -1,6 +1,10 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.bestilling.ClientFuture;
+import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
@@ -9,15 +13,21 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import static java.util.Collections.singleton;
 import static java.util.Collections.singletonList;
@@ -26,10 +36,11 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
@@ -43,6 +54,15 @@ class ArenaForvalterClientTest {
     @Mock
     private ArenaForvalterConsumer arenaForvalterConsumer;
 
+    @Mock
+    private TransactionHelperService transactionHelperService;
+
+    @Mock
+    private PersonServiceConsumer personServiceConsumer;
+
+    @Mock
+    private PdlPersonConsumer pdlPersonConsumer;
+
     @InjectMocks
     private ArenaForvalterClient arenaForvalterClient;
 
@@ -51,6 +71,17 @@ class ArenaForvalterClientTest {
 
     @Mock
     private AccessToken accessToken;
+
+    @Mock
+    private PdlPersonBolk pdlPersonBolk;
+
+    @Captor
+    ArgumentCaptor<String> statusCaptor;
+
+    @BeforeEach
+    void setup() {
+        statusCaptor = ArgumentCaptor.forClass(String.class);
+    }
 
     @Test
     void gjenopprett_Ok() {
@@ -71,14 +102,22 @@ class ArenaForvalterClientTest {
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$OK")));
+                })
+                .verifyComplete();
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$OK")));
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
     }
@@ -102,14 +141,23 @@ class ArenaForvalterClientTest {
                                 .build()));
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
 
-        assertThat(progress.getArenaforvalterStatus(), is(equalTo("q2$Feil: DUPLIKAT. Se detaljer i logg. ")));
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                                .build(), progress, false)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$Feil: DUPLIKAT. Se detaljer i logg. ")));
+                })
+                .verifyComplete();
+
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
         verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
     }
@@ -124,8 +172,8 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton(ENV));
 
         Assertions.assertThrows(NullPointerException.class, () ->
-                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                        .opprettetIPDL(true).build(), progress, false));
+                arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                        .build(), progress, false));
     }
 
     @Test
@@ -138,11 +186,18 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton("t3"));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
+        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
-
-        assertThat(progress.getArenaforvalterStatus(), is(emptyString()));
+        StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
+                                progress, false)
+                        .map(ClientFuture::get))
+                .assertNext(status -> {
+                    verify(transactionHelperService, times(2))
+                            .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("")));
+                })
+                .verifyComplete();
     }
 
     @Test
@@ -152,8 +207,9 @@ class ArenaForvalterClientTest {
 
         var request = new RsDollyBestillingRequest();
         request.setEnvironments(singleton(ENV));
-        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().hovedperson(IDENT)
-                .opprettetIPDL(true).build(), progress, false);
+        arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
+                        .build(), progress, false)
+                .subscribe();
 
         verifyNoInteractions(arenaForvalterConsumer);
         assertThat(progress.getArenaforvalterStatus(), is(nullValue()));

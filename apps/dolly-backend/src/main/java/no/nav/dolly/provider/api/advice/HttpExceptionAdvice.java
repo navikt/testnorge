@@ -56,7 +56,7 @@ public class HttpExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler({NotFoundException.class, WebClientResponseException.NotFound.class})
-    @ResponseStatus(value = HttpStatus.OK)
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
     ExceptionInformation notFoundRequest(RuntimeException exception) {
         return informationForException(exception, HttpStatus.NOT_FOUND);
     }

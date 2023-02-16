@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.krrstub.command;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
-import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
@@ -31,7 +30,6 @@ public class GetKontaktdataCommand implements Callable<Flux<DigitalKontaktdata>>
     private final String ident;
     private final String token;
 
-    @Timed(name = "providers", tags = { "operation", "krrstub_getKontaktdata" })
     public Flux<DigitalKontaktdata> call() {
 
         return webClient.get()

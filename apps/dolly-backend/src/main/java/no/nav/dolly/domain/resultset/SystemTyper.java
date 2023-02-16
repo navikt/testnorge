@@ -30,14 +30,15 @@ public enum SystemTyper {
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
     TPS_MESSAGING("Meldinger til TPS"),
-    SYKEMELDING("Testnorge Sykemelding"),
-    TPSIMPORT("Import av identer (MINI-NORGE)"),
+    SYKEMELDING("NAV Sykemelding"),
     PDLIMPORT("Import av identer (TESTNORGE)"),
     SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
     PDL_DATA("Persondataløsning (PDL) ny"),
-    KONTOREGISTER("Bankkontoregister");
+    KONTOREGISTER("Bankkontoregister"),
+    PDL_PERSONSTATUS("PDL-Synkronisering"),
+    ANNEN_FEIL("Annen Feil");
 
     private String beskrivelse;
 

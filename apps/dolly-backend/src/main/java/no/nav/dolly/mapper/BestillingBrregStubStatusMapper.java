@@ -24,7 +24,7 @@ public final class BestillingBrregStubStatusMapper {
         Map<String, List<String>> statusMap = new HashMap<>();
 
         progressList.forEach(progress -> {
-            if (isNotBlank(progress.getBrregstubStatus())) {
+            if (isNotBlank(progress.getBrregstubStatus()) && isNotBlank(progress.getIdent())) {
                 if (statusMap.containsKey(progress.getBrregstubStatus())) {
                     statusMap.get(progress.getBrregstubStatus()).add(progress.getIdent());
                 } else {

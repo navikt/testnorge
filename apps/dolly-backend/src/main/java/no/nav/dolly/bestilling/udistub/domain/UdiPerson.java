@@ -3,9 +3,8 @@ package no.nav.dolly.bestilling.udistub.domain;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.resultset.udistub.model.UdiHarType;
 import no.nav.dolly.domain.resultset.udistub.model.UdiPersonNavn;
 import no.nav.dolly.domain.resultset.udistub.model.arbeidsadgang.UdiArbeidsadgang;
@@ -14,11 +13,10 @@ import no.nav.dolly.domain.resultset.udistub.model.opphold.UdiOppholdStatus;
 import java.time.LocalDate;
 import java.util.List;
 
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
-@Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UdiPerson {
 
@@ -34,11 +32,10 @@ public class UdiPerson {
     private UdiHarType soeknadOmBeskyttelseUnderBehandling;
     private LocalDate soknadDato;
 
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @Getter
-    @Setter
+    @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class UdiAlias {
 
