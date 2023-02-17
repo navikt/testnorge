@@ -1,4 +1,17 @@
-﻿apiVersion: "nais.io/v1alpha1"
+﻿---
+apiVersion: nais.io/v1
+kind: AzureAdApplication
+metadata:
+  name: testnav-saf-proxy-trygdeetaten
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  secretName: azure-trygdeetaten-testnav-saf-proxy-trygdeetaten
+  secretKeyPrefix: "AZURE_TRYGDEETATEN"
+  tenant: trygdeetaten.no
+---
+apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   name: testnav-saf-proxy
@@ -54,6 +67,8 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
+  envFrom:
+    - secret: azure-trygdeetaten-testnav-saf-proxy-trygdeetaten
   ingresses:
     - "https://testnav-saf-proxy.dev-fss-pub.nais.io"
     - "https://testnav-saf-proxy.dev.intern.nav.no"
