@@ -18,10 +18,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.hentQueryResource;
+import static no.nav.dolly.consumer.pdlperson.TemaGrunnlag.GEN;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
 import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.domain.resultset.pdlforvalter.TemaGrunnlag.GEN;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor

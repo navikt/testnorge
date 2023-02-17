@@ -24,10 +24,7 @@ public class DigitalKontaktMappingStrategy implements MappingStrategy {
 
         String maalform = null;
 
-        if (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) {
-            maalform = bestilling.getTpsf().getSprakKode();
-
-        } else if (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode())) {
+        if (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode())) {
             maalform = bestilling.getTpsMessaging().getSpraakKode();
         }
 

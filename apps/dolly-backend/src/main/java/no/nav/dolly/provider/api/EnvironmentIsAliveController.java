@@ -14,7 +14,6 @@ import no.nav.dolly.bestilling.instdata.InstdataConsumer;
 import no.nav.dolly.bestilling.krrstub.KrrstubConsumer;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonConsumer;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.PensjonforvalterConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
 import no.nav.dolly.bestilling.sigrunstub.SigrunStubConsumer;
@@ -64,7 +63,6 @@ public class EnvironmentIsAliveController {
     private final PersonServiceConsumer personServiceConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final PdlDataConsumer pdlDataConsumer;
-    private final PdlForvalterConsumer pdlForvalterConsumer;
     private final SykemeldingConsumer sykemeldingConsumer;
     private final SyntSykemeldingConsumer syntSykemeldingConsumer;
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
@@ -93,7 +91,6 @@ public class EnvironmentIsAliveController {
                         organisasjonServiceConsumer.checkAlive().entrySet(),
                         pdlDataConsumer.checkAlive().entrySet(),
                         personServiceConsumer.checkAlive().entrySet(),
-                        pdlForvalterConsumer.checkAlive().entrySet(),
                         pdlPersonConsumer.checkAlive().entrySet(),
                         pensjonforvalterConsumer.checkAlive().entrySet(),
                         sigrunStubConsumer.checkAlive().entrySet(),

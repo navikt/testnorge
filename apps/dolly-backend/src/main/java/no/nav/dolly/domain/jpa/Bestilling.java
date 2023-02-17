@@ -69,9 +69,6 @@ public class Bestilling implements Serializable {
     @Column(name = "OPPRETTET_FRA_ID")
     private Long opprettetFraId;
 
-    @Column(name = "TPSF_KRITERIER")
-    private String tpsfKriterier;
-
     @Column(name = "BEST_KRITERIER")
     private String bestKriterier;
 
@@ -93,9 +90,6 @@ public class Bestilling implements Serializable {
     @ManyToOne
     @JoinColumn(name = "BRUKER_ID")
     private Bruker bruker;
-
-    @Column(name = "TPS_IMPORT")
-    private String tpsImport;
 
     @Column(name = "PDL_IMPORT")
     private String pdlImport;
