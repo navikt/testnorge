@@ -72,6 +72,6 @@ public class SafProxyApplicationStarter {
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/" + miljo + "/(?<segment>.*)", "/${segment}")
                         .filter(filter)
-                ).uri("https://saf-" + miljo + ".dev.adeo.no/");
+                ).uri("https://saf-" + miljo + ".dev.intern.nav.no");
     }
 }
