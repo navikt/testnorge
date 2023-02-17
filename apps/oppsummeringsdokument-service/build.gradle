@@ -1,14 +1,8 @@
-buildscript {
-    ext {
-        set('elasticsearch.version', '7.13.1')
-    }
-}
-
-
 plugins {
     id 'java'
     id "org.sonarqube" version "3.5.0.2730"
-    id 'org.springframework.boot' version "2.7.8"
+    //Appen har mismatch med nye ElasticSearch versjoner i spring, tilsynelatende mye knot for å oppgradere spring boot versjon
+    id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -55,11 +49,6 @@ repositories {
 }
 
 dependencies {
-
-    compileOnly(
-            //downgrade to spring-data-elasticsearch:4.2.7 and avoid the OpenSearch error "Elasticsearch version 6 or more is required"
-            "org.springframework.data:spring-data-elasticsearch:4.2.7",
-    )
     implementation('com.google.guava:guava') {
         version {
             strictly '20.0'
@@ -85,7 +74,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-elasticsearch'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
