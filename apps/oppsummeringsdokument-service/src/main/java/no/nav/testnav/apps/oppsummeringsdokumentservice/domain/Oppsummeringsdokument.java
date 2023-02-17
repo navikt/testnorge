@@ -1,44 +1,11 @@
 package no.nav.testnav.apps.oppsummeringsdokumentservice.domain;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Alvorlighetsgrad;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Avvik;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Fartoey;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntekt;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Loennsinntekt;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.ObjectFactory;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Permisjon;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Spesifikasjon;
-import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.AvvikModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.FartoeyModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.InntektModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.PermisjonModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.PersonModel;
-import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.StringWriter;
@@ -57,6 +24,40 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.ArbeidsforholdModel;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.FartoeyModel;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.VirksomhetModel;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.ArbeidsforholdDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.AvvikDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.FartoeyDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.InntektDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PermisjonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.AvvikModel;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.InntektModel;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.PermisjonModel;
+import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.PersonModel;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Alvorlighetsgrad;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Arbeidsforhold;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Avvik;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.EDAGM;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Fartoey;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntekt;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Inntektsmottaker;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.JuridiskEntitet;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Kilde;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranse;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Leveranseinformasjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Loennsinntekt;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.ObjectFactory;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Permisjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Spesifikasjon;
+import no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Virksomhet;
 
 @Slf4j
 public class Oppsummeringsdokument {
@@ -98,82 +99,6 @@ public class Oppsummeringsdokument {
                 .stream()
                 .flatMap(virksomhet -> virksomhet.getPersoner().stream().map(PersonDTO::getIdent))
                 .collect(Collectors.toSet());
-    }
-
-    public OppsummeringsdokumentModel toModel(String miljo, String origin) {
-        var model = new OppsummeringsdokumentModel();
-        model.setKalendermaaned(dto.getKalendermaaned());
-        model.setMiljo(miljo);
-        model.setOpplysningspliktigOrganisajonsnummer(dto.getOpplysningspliktigOrganisajonsnummer());
-        model.setVersion(dto.getVersion());
-        model.setOrigin(origin);
-        model.setPopulasjon(populasjon);
-        model.setVirksomheter(dto.getVirksomheter().stream().map(mapVirksomhetModel()).collect(Collectors.toList()));
-        return model;
-    }
-
-    public OppsummeringsdokumentDTO toDTO() {
-        return dto;
-    }
-
-    @SneakyThrows
-    public String toXml() {
-        JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
-        ObjectFactory objectFactory = new ObjectFactory();
-        JAXBElement<EDAGM> melding = objectFactory.createMelding(toEDAGM());
-        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
-        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        StringWriter sw = new StringWriter();
-        jaxbMarshaller.marshal(melding, sw);
-        return sw.toString();
-    }
-
-    @SneakyThrows
-    public EDAGM toEDAGM() {
-        List<Virksomhet> virksomheter = dto
-                .getVirksomheter()
-                .stream()
-                .map(value -> create(value, dto.getVersion()))
-                .collect(Collectors.toList());
-
-
-        var opplysningspliktig = new no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Opplysningspliktig();
-
-        opplysningspliktig.setNorskIdentifikator(dto.getOpplysningspliktigOrganisajonsnummer());
-
-        JuridiskEntitet juridiskEntitet = new JuridiskEntitet();
-        juridiskEntitet.getVirksomhet().addAll(virksomheter);
-
-        Leveranse leveranse = new Leveranse();
-        leveranse.setKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()));
-        leveranse.setOpplysningspliktig(opplysningspliktig);
-
-        Leveranseinformasjon leveranseinformasjon = new Leveranseinformasjon();
-        leveranseinformasjon.setAltinnreferanse("Dummy");
-
-        ZonedDateTime zoneDateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
-        GregorianCalendar gregorianCalendar = GregorianCalendar.from(zoneDateTime);
-        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory
-                .newInstance()
-                .newXMLGregorianCalendar(gregorianCalendar);
-
-        leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
-        leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
-        leveranseinformasjon.setKildesystem("oppsummeringsdokument-service");
-        leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
-
-        leveranse.getLeveranseinformasjon().add(leveranseinformasjon);
-        Kilde value = new Kilde();
-        value.setKildenavn("Team Dolly");
-        value.setKildereferanse(UUID.randomUUID().toString());
-        value.setKildeversjon(BigInteger.valueOf(dto.getVersion()));
-        leveranse.setKilde(value);
-        leveranse.setOppgave(juridiskEntitet);
-
-        EDAGM edagm = new EDAGM();
-        edagm.setLeveranse(leveranse);
-
-        return edagm;
     }
 
     private Function<VirksomhetModel, VirksomhetDTO> mapVirksomhetDTO() {
@@ -227,6 +152,7 @@ public class Oppsummeringsdokument {
                 .build();
     }
 
+
     private Function<PermisjonModel, PermisjonDTO> mapPermisjonDTO() {
         return value -> PermisjonDTO
                 .builder()
@@ -236,6 +162,19 @@ public class Oppsummeringsdokument {
                 .sluttdato(value.getSluttdato())
                 .startdato(value.getStartdato())
                 .build();
+    }
+
+
+    public OppsummeringsdokumentModel toModel(String miljo, String origin) {
+        var model = new OppsummeringsdokumentModel();
+        model.setKalendermaaned(dto.getKalendermaaned());
+        model.setMiljo(miljo);
+        model.setOpplysningspliktigOrganisajonsnummer(dto.getOpplysningspliktigOrganisajonsnummer());
+        model.setVersion(dto.getVersion());
+        model.setOrigin(origin);
+        model.setPopulasjon(populasjon);
+        model.setVirksomheter(dto.getVirksomheter().stream().map(mapVirksomhetModel()).collect(Collectors.toList()));
+        return model;
     }
 
     private Function<VirksomhetDTO, VirksomhetModel> mapVirksomhetModel() {
@@ -317,6 +256,71 @@ public class Oppsummeringsdokument {
             return model;
         };
     }
+
+    public OppsummeringsdokumentDTO toDTO() {
+        return dto;
+    }
+
+    @SneakyThrows
+    public String toXml() {
+        JAXBContext jaxbContext = JAXBContext.newInstance(ObjectFactory.class);
+        ObjectFactory objectFactory = new ObjectFactory();
+        JAXBElement<EDAGM> melding = objectFactory.createMelding(toEDAGM());
+        Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+        jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        StringWriter sw = new StringWriter();
+        jaxbMarshaller.marshal(melding, sw);
+        return sw.toString();
+    }
+
+    @SneakyThrows
+    public EDAGM toEDAGM() {
+        List<Virksomhet> virksomheter = dto
+                .getVirksomheter()
+                .stream()
+                .map(value -> create(value, dto.getVersion()))
+                .collect(Collectors.toList());
+
+
+        var opplysningspliktig = new no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Opplysningspliktig();
+
+        opplysningspliktig.setNorskIdentifikator(dto.getOpplysningspliktigOrganisajonsnummer());
+
+        JuridiskEntitet juridiskEntitet = new JuridiskEntitet();
+        juridiskEntitet.getVirksomhet().addAll(virksomheter);
+
+        Leveranse leveranse = new Leveranse();
+        leveranse.setKalendermaaned(toXMLGregorianCalendar(dto.getKalendermaaned()));
+        leveranse.setOpplysningspliktig(opplysningspliktig);
+
+        Leveranseinformasjon leveranseinformasjon = new Leveranseinformasjon();
+        leveranseinformasjon.setAltinnreferanse("Dummy");
+
+        ZonedDateTime zoneDateTime = ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault());
+        GregorianCalendar gregorianCalendar = GregorianCalendar.from(zoneDateTime);
+        XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory
+                .newInstance()
+                .newXMLGregorianCalendar(gregorianCalendar);
+
+        leveranseinformasjon.setInnleveringstidspunkt(xmlGregorianCalendar);
+        leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
+        leveranseinformasjon.setKildesystem("oppsummeringsdokument-service");
+        leveranseinformasjon.setMeldingsId(UUID.randomUUID().toString());
+
+        leveranse.getLeveranseinformasjon().add(leveranseinformasjon);
+        Kilde value = new Kilde();
+        value.setKildenavn("Team Dolly");
+        value.setKildereferanse(UUID.randomUUID().toString());
+        value.setKildeversjon(BigInteger.valueOf(dto.getVersion()));
+        leveranse.setKilde(value);
+        leveranse.setOppgave(juridiskEntitet);
+
+        EDAGM edagm = new EDAGM();
+        edagm.setLeveranse(leveranse);
+
+        return edagm;
+    }
+
 
     private static Virksomhet create(VirksomhetDTO dto, Long version) {
         Virksomhet virksomhet = new Virksomhet();

@@ -9,12 +9,11 @@ import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.Oppsummeringsdoku
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
-import org.opensearch.data.client.orhlc.NativeSearchQueryBuilder;
-import org.opensearch.index.query.QueryBuilder;
-import org.opensearch.index.query.QueryBuilders;
-import org.opensearch.index.query.RangeQueryBuilder;
-import org.opensearch.search.sort.SortBuilders;
-import org.opensearch.search.sort.SortOrder;
+import org.elasticsearch.index.query.QueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.RangeQueryBuilder;
+import org.elasticsearch.search.sort.SortBuilders;
+import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,6 +21,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.UncategorizedElasticsearchException;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -69,6 +69,31 @@ public class OppsummeringsdokumentAdapter {
         return repository.findById(id).map(Oppsummeringsdokument::new).orElse(null);
     }
 
+    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder, Pageable pageable) {
+
+        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
+        var searchHist = operations.search(
+                builder.build(),
+                OppsummeringsdokumentModel.class
+        );
+
+        var list = searchHist.get().map(SearchHit::getContent).collect(Collectors.toList());
+        return new PageImpl<>(
+                filterOnVersion(list),
+                pageable,
+                searchHist.getTotalHits()
+        );
+    }
+
+    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
+        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
+        var list = operations.search(
+                builder.build(),
+                OppsummeringsdokumentModel.class
+        ).get().map(SearchHit::getContent).collect(Collectors.toList());
+        return filterOnVersion(list);
+    }
+
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo) {
         return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder()
                 .withQuery(
@@ -87,6 +112,7 @@ public class OppsummeringsdokumentAdapter {
         );
     }
 
+
     public List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String ident) {
         var queryBuilders = new ArrayList<QueryBuilder>();
         queryBuilders.add(QueryBuilders.matchQuery("miljo", miljo));
@@ -95,6 +121,7 @@ public class OppsummeringsdokumentAdapter {
 
         return getAllCurrentDocumentsBy(new NativeSearchQueryBuilder().withQuery(combinedOnANDOperator(queryBuilders)));
     }
+
 
     public Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(
             String miljo,
@@ -123,48 +150,6 @@ public class OppsummeringsdokumentAdapter {
         );
     }
 
-    public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer, String miljo) {
-        var list = getAllCurrentDocumentsBy(
-                miljo,
-                orgnummer,
-                kalendermaaned.withDayOfMonth(1),
-                kalendermaaned.withDayOfMonth(kalendermaaned.lengthOfMonth())
-        );
-
-        if (list.size() > 1) {
-            log.warn(
-                    "Fant flere med samme versjon for kalendermaaned: {} og orgnummer: {}. Velger den først i listen.",
-                    kalendermaaned,
-                    orgnummer
-            );
-        }
-        return list.stream().findFirst().orElse(null);
-    }
-
-    private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder, Pageable pageable) {
-
-        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
-        var searchHist = operations.search(
-                builder.build(),
-                OppsummeringsdokumentModel.class
-        );
-
-        var list = searchHist.get().map(SearchHit::getContent).collect(Collectors.toList());
-        return new PageImpl<>(
-                filterOnVersion(list),
-                pageable,
-                searchHist.getTotalHits()
-        );
-    }
-
-    private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
-        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
-        var list = operations.search(
-                builder.build(),
-                OppsummeringsdokumentModel.class
-        ).get().map(SearchHit::getContent).collect(Collectors.toList());
-        return filterOnVersion(list);
-    }
 
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(String miljo, String orgnummer, LocalDate fom, LocalDate tom) {
         var queryBuilders = new ArrayList<QueryBuilder>();
@@ -178,6 +163,7 @@ public class OppsummeringsdokumentAdapter {
                 .withQuery(combinedOnANDOperator(queryBuilders))
         );
     }
+
 
     private Optional<RangeQueryBuilder> getKalendermaanedBetween(LocalDate fom, LocalDate tom) {
         if (fom == null && tom == null) {
@@ -220,5 +206,24 @@ public class OppsummeringsdokumentAdapter {
                 }))
                 .map(Oppsummeringsdokument::new)
                 .collect(Collectors.toList());
+    }
+
+
+    public Oppsummeringsdokument getCurrentDocumentBy(LocalDate kalendermaaned, String orgnummer, String miljo) {
+        var list = getAllCurrentDocumentsBy(
+                miljo,
+                orgnummer,
+                kalendermaaned.withDayOfMonth(1),
+                kalendermaaned.withDayOfMonth(kalendermaaned.lengthOfMonth())
+        );
+
+        if (list.size() > 1) {
+            log.warn(
+                    "Fant flere med samme versjon for kalendermaaned: {} og orgnummer: {}. Velger den først i listen.",
+                    kalendermaaned,
+                    orgnummer
+            );
+        }
+        return list.stream().findFirst().orElse(null);
     }
 }
