@@ -32,7 +32,6 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Service
 public class PdlPersonConsumer implements ConsumerStatus {
 
-    private static final String PDL_API_URL = "/pdl-api";
     private static final int BLOCK_SIZE = 50;
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
@@ -50,11 +49,6 @@ public class PdlPersonConsumer implements ConsumerStatus {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .filter(metricsWebClientFilterFunction)
                 .build();
-    }
-
-    public JsonNode getPdlPerson(String ident) {
-
-        return getPdlPerson(ident, PDL_MILJOER.Q2);
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
