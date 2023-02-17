@@ -17,7 +17,7 @@ spring:
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
-  dokarkiv:
+  saf:
     url: https://saf-{env}.dev.intern.nav.no
     cluster: dev-fss
     name: saf-redis-{env}
