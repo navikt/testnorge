@@ -20,8 +20,6 @@ export const BestillingsveilederHeader = () => {
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 	const importFra = getImportFra(opts)
 
-	console.log('opts: ', opts) //TODO - SLETT MEG
-
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
 		return (

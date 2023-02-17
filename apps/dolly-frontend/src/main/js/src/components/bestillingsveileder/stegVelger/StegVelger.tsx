@@ -25,7 +25,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 
 	const opts = useContext(BestillingsveilederContext)
 	const mutate = useMatchMutate()
-	const { personFoerLeggTil, tidligereBestillinger } = opts
+	const { personFoerLeggTil, tidligereBestillinger, leggTilPaaGruppe } = opts
 
 	const isLastStep = () => step === STEPS.length - 1
 	const handleNext = () => setStep(step + 1)
@@ -63,6 +63,7 @@ export const StegVelger = ({ initialValues, onSubmit }) => {
 				...values,
 				personFoerLeggTil: personFoerLeggTil,
 				tidligereBestillinger: tidligereBestillinger,
+				leggTilPaaGruppe: leggTilPaaGruppe,
 			},
 			CurrentStepComponent.validation
 		)

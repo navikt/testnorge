@@ -110,7 +110,7 @@ export const BVOptions = (
 		bestType = TYPE.LEGG_TIL
 		initialValues = initialValuesLeggTil
 	}
-	console.log('leggTilPaaGruppe: ', leggTilPaaGruppe) //TODO - SLETT MEG
+
 	if (leggTilPaaGruppe) {
 		bestType = TYPE.LEGG_TIL_PAA_GRUPPE
 		initialValues = initialValuesLeggTilPaaGruppe
