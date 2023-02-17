@@ -29,7 +29,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-saf-proxy'}}
     with:
       resource: 'proxies/saf-proxy/config.yml'
       app-name: 'saf-proxy'
