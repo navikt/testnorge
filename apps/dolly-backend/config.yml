@@ -6,8 +6,9 @@ metadata:
   labels:
     team: dolly
   annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   tokenx:
     enabled: true
@@ -15,6 +16,8 @@ spec:
     inbound:
       rules:
         - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
@@ -48,6 +51,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
+        - application: testnav-miljoer-service
       external:
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
@@ -67,6 +71,7 @@ spec:
   webproxy: true
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   image: {{image}}

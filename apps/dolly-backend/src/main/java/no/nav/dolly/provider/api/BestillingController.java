@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -67,7 +68,7 @@ public class BestillingController {
     @Operation(description = "Naviger til ønsket bestilling")
     @Transactional
     @GetMapping("/naviger/{bestillingId}")
-    public RsWhereAmI navigerTilBestilling(@PathVariable Long bestillingId) {
+    public Mono<RsWhereAmI> navigerTilBestilling(@PathVariable Long bestillingId) {
 
         return navigasjonService.navigerTilBestilling(bestillingId);
     }
@@ -89,6 +90,13 @@ public class BestillingController {
     @Operation(description = "Hent Bestillinger tilhørende en gruppe med gruppeId")
     public List<RsBestillingStatus> getIkkeFerdigBestillinger(@PathVariable("gruppeId") Long gruppeId) {
         return mapperFacade.mapAsList(bestillingService.fetchBestillingerByGruppeIdOgIkkeFerdig(gruppeId), RsBestillingStatus.class);
+    }
+
+    @GetMapping("/gruppe/{gruppeId}/miljoer")
+    @Operation(description = "Hent alle bestilte miljøer for en gruppe med gruppeId")
+    public List<String> getAlleBestilteMiljoer(@PathVariable("gruppeId") Long gruppeId) {
+        return bestillingService.fetchBestilteMiljoerByGruppeId(gruppeId).stream()
+                .toList();
     }
 
     @CacheEvict(value = { CACHE_BESTILLING, CACHE_GRUPPE }, allEntries = true)

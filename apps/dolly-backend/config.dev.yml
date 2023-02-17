@@ -18,6 +18,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: dolly-frontend-dev-unstable
           cluster: dev-gcp
         - application: testnav-batch-bestilling-service
@@ -63,6 +65,7 @@ spec:
   webproxy: true
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   image: {{image}}

@@ -1,13 +1,11 @@
 package no.nav.dolly.domain.resultset.entity.testgruppe;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
 
@@ -17,12 +15,10 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@JsonInclude(value = JsonInclude.Include.NON_EMPTY)
 public class RsTestgruppe {
     private Long id;
     private String navn;

@@ -13,6 +13,7 @@ spec:
     enabled: true
   azure:
     application:
+      allowAllUsers: true
       tenant: nav.no
       enabled: true
   accessPolicy:

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class PdlPersonBolk {
@@ -15,6 +16,7 @@ public class PdlPersonBolk {
     private Data data;
 
     @lombok.Data
+    @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Data {

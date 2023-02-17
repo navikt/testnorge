@@ -7,6 +7,8 @@ import no.nav.dolly.bestilling.tagshendelseslager.command.HendelseslagerPublishC
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsHenteCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsOpprettingCommand;
 import no.nav.dolly.bestilling.tagshendelseslager.command.TagsSlettingCommand;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
+import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.metrics.Timed;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -44,14 +47,11 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "tags_create"})
-    public Flux<String> createTags(List<String> identer, List<Tags> tags) {
+    public Mono<TagsOpprettingResponse> createTags(List<String> identer, List<Tags> tags) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size() / BLOCK_SIZE + 1)
-                        .map(index -> new TagsOpprettingCommand(webClient,
-                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
-                                tags, token.getTokenValue()).call())
-                        .flatMap(Flux::from));
+                .flatMap(token -> new TagsOpprettingCommand(webClient,
+                        identer, tags, token.getTokenValue()).call());
     }
 
     @Timed(name = "providers", tags = {"operation", "tags_delete"})
@@ -72,9 +72,9 @@ public class TagsHendelseslagerConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})
-    public Flux<String> publish(List<String> identer) {
+    public Mono<HendelselagerResponse> publish(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
+                .flatMap(token -> new HendelseslagerPublishCommand(webClient, identer, token.getTokenValue()).call());
     }
 }

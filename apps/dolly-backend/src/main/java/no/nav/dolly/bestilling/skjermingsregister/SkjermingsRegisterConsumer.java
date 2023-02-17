@@ -7,8 +7,8 @@ import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterDele
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterGetCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPostCommand;
 import no.nav.dolly.bestilling.skjermingsregister.command.SkjermingsregisterPutCommand;
-import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataRequest;
-import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingsDataResponse;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataRequest;
+import no.nav.dolly.bestilling.skjermingsregister.domain.SkjermingDataResponse;
 import no.nav.dolly.config.credentials.SkjermingsregisterProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
@@ -24,6 +24,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -49,7 +50,7 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-hent"})
-    public SkjermingsDataResponse getSkjerming(String ident) {
+    public SkjermingDataResponse getSkjerming(String ident) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, ident, token.getTokenValue()).call())
@@ -69,26 +70,33 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "skjermingsdata-oppdater"})
-    public void oppdaterPerson(SkjermingsDataRequest skjerming) {
+    public Mono<SkjermingDataResponse> oppdaterPerson(SkjermingDataRequest skjerming) {
 
-        tokenService.exchange(serviceProperties)
+        return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new SkjermingsregisterGetCommand(webClient, skjerming.getPersonident(), token.getTokenValue()).call()
                         .flatMap(response -> {
                             if (response.isEksistererIkke()) {
                                 return new SkjermingsregisterPostCommand(webClient, List.of(skjerming),
                                         token.getTokenValue()).call()
+                                        .collectList()
                                         .map(status -> {
-                                            log.info("Opprettet skjerming på ident {} fraDato {} tilDato {}", status[0].getPersonident(), status[0].getSkjermetFra(), status[0].getSkjermetTil());
-                                            return status;
+                                            log.info("Opprettet skjerming på ident {} fraDato {} tilDato {}",
+                                                    status.get(0).getPersonident(), status.get(0).getSkjermetFra(), status.get(0).getSkjermetTil());
+                                            return status.get(0);
                                         });
                             } else {
-                                var status = new SkjermingsregisterPutCommand(webClient, skjerming.getPersonident(),
-                                        skjerming.getSkjermetTil(), token.getTokenValue()).call();
-                                log.info("Oppdatert skjerming for ident {}, ny tilDato {}", skjerming.getPersonident(), skjerming.getSkjermetTil());
-                                return status;
+                                return nonNull(skjerming.getSkjermetTil()) ?
+
+                                        new SkjermingsregisterPutCommand(webClient, skjerming.getPersonident(),
+                                        skjerming.getSkjermetTil(), token.getTokenValue()).call()
+                                                .map(status -> {
+                                                    log.info("Oppdatert skjerming for ident {}, ny tilDato {}", skjerming.getPersonident(), skjerming.getSkjermetTil());
+                                                    return status;
+                                                }) :
+
+                                        Mono.just(new SkjermingDataResponse());
                             }
-                        }))
-                .block();
+                        }));
     }
 
     public Map<String, String> checkAlive() {

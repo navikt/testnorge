@@ -16,16 +16,9 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
 
-sts:
-  preprod:
-    token:
-      provider:
-        url: https://security-token-service.dev.adeo.no/rest/v1/sts/token
-        username: ${STS_PREPROD_PROVIDER_USERNAME}
-        password: ${STS_PREPROD_PROVIDER_PASSWORD}
-  test:
-    token:
-      provider:
-        url: http://security-token-service.t4.svc.nais.local/rest/v1/sts/token
-        username: ${STS_TEST_PROVIDER_USERNAME}
-        password: ${STS_TEST_PROVIDER_PASSWORD}
+consumers:
+  saf:
+    url: https://saf-{env}.dev.intern.nav.no
+    cluster: dev-fss
+    name: saf-{env}
+    namespace: teamdokumenthandtering

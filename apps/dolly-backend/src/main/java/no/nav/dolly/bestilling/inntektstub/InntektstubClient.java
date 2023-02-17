@@ -3,61 +3,54 @@ package no.nav.dolly.bestilling.inntektstub;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
-import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.InntektsinformasjonWrapper;
-import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.mapper.MappingContextUtils;
+import no.nav.dolly.util.TransactionHelperService;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
-@Order(8)
 @RequiredArgsConstructor
 public class InntektstubClient implements ClientRegister {
 
     private final InntektstubConsumer inntektstubConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final MapperFacade mapperFacade;
+    private final TransactionHelperService transactionHelperService;
 
     @Override
-    public Flux<Void> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
+    public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getInntektstub()) && !bestilling.getInntektstub().getInntektsinformasjon().isEmpty()) {
 
-            var context = new MappingContext.Factory().getContext();
-            context.setProperty("ident", dollyPerson.getHovedperson());
+            var context = MappingContextUtils.getMappingContext();
+            context.setProperty("ident", dollyPerson.getIdent());
 
             var inntektsinformasjonWrapper = mapperFacade.map(bestilling.getInntektstub(),
                     InntektsinformasjonWrapper.class, context);
 
-            progress.setInntektstubStatus(
-                    inntektstubConsumer.getInntekter(dollyPerson.getHovedperson())
+            return Flux.from(inntektstubConsumer.getInntekter(dollyPerson.getIdent())
+                    .collectList()
+                    .flatMap(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
+                            .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
+                                    entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
                             .collectList()
-                            .map(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
-                                    .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
-                                            entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
-                                    .collectList()
-                                    .map(inntekter -> inntektstubConsumer.postInntekter(inntekter)
-                                            .collectList())
-                                    .flatMap(Mono::from))
-                            .flatMap(Mono::from)
+                            .flatMapMany(inntektstubConsumer::postInntekter)
+                            .collectList()
                             .map(inntekter -> {
                                 log.info("Inntektstub respons {}", inntekter);
                                 return inntekter.stream()
@@ -69,9 +62,17 @@ public class InntektstubClient implements ClientRegister {
                                                 .map(feil -> ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(feil)))
                                                 .collect(Collectors.joining(","));
                             })
-                            .block());
+                            .map(status -> futurePersist(progress, status))));
         }
-        return Flux.just();
+        return Flux.empty();
+    }
+
+    private ClientFuture futurePersist(BestillingProgress progress, String status) {
+
+        return () -> {
+            transactionHelperService.persister(progress, BestillingProgress::setInntektstubStatus, status);
+            return progress;
+        };
     }
 
     @Override
@@ -79,13 +80,5 @@ public class InntektstubClient implements ClientRegister {
 
         inntektstubConsumer.deleteInntekter(identer)
                 .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
-    }
-
-    @Override
-    public boolean isDone(RsDollyBestilling kriterier, Bestilling bestilling) {
-
-        return isNull(kriterier.getInntektstub()) ||
-                bestilling.getProgresser().stream()
-                        .allMatch(entry -> isNotBlank(entry.getInntektstubStatus()));
     }
 }

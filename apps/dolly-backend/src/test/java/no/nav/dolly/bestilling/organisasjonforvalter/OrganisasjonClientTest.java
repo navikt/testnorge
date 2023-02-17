@@ -64,7 +64,7 @@ class OrganisasjonClientTest {
     private RsOrganisasjonBestilling bestilling;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
 
         DeployResponse deployResponse = DeployResponse.builder()
                 .build();

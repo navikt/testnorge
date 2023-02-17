@@ -19,7 +19,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class InntektsinformasjonMappingStrategyTest {
+class InntektsinformasjonMappingStrategyTest {
 
     private static final LocalDate AAR_MAANED = LocalDate.of(2016, 1, 1);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM");
@@ -36,12 +36,12 @@ public class InntektsinformasjonMappingStrategyTest {
     private MapperFacade mapperFacade;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         mapperFacade = MapperTestUtils.createMapperFacadeForMappingStrategy(new LocalDateCustomMapping(), new InntektsinformasjonMappingStrategy());
     }
 
     @Test
-    public void mapInntektsinformasjon_HappyPath() {
+    void mapInntektsinformasjon_HappyPath() {
 
         InntektsinformasjonWrapper result = mapperFacade.map(prepInntektMultiplierWrapper(), InntektsinformasjonWrapper.class);
 
@@ -64,7 +64,7 @@ public class InntektsinformasjonMappingStrategyTest {
     }
 
     @Test
-    public void mapInntektsinformasjonWithMulitiplier_HappyPath() {
+    void mapInntektsinformasjonWithMulitiplier_HappyPath() {
 
         InntektMultiplierWrapper inntektMultiplierWrapper = prepInntektMultiplierWrapper();
 

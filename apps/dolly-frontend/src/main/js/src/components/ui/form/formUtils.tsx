@@ -35,6 +35,8 @@ const getValgteAttributter = (values) => {
 		'tpsMessaging.spraakKode',
 		'tpsMessaging.egenAnsattDatoFom',
 		'tpsMessaging.egenAnsattDatoTom',
+		'skjerming.egenAnsattDatoFom',
+		'skjerming.egenAnsattDatoTom',
 		'tpsMessaging.utenlandskBankkonto',
 		'tpsMessaging.norskBankkonto',
 		'bankkonto.utenlandskBankkonto',

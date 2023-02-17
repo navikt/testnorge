@@ -155,7 +155,7 @@ export const PersonVisning = ({
 		) {
 			return true
 		}
-		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold)) {
+		if (arbeidsforhold && sjekkManglerAaregData(arbeidsforhold) && visArbeidsforhold) {
 			return true
 		}
 		if (poppData && sjekkManglerPensjonData(poppData)) {

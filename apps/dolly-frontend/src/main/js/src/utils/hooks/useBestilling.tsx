@@ -6,6 +6,9 @@ import * as _ from 'lodash-es'
 const getBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}`
 
+const getMiljoerForGruppeUrl = (gruppeId: string | number) =>
+	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}/miljoer`
+
 const getIkkeFerdigBestillingerGruppeUrl = (gruppeId: string | number) =>
 	`/dolly-backend/api/v1/bestilling/gruppe/${gruppeId}/ikkeferdig`
 
@@ -32,6 +35,23 @@ export type Bestilling = {
 	stoppet: boolean
 	environments: string[]
 	status: System[]
+}
+
+export const useBestilteMiljoerForGruppe = (gruppeId: string | number) => {
+	if (!gruppeId) {
+		return {
+			loading: false,
+			error: 'GruppeId mangler!',
+		}
+	}
+
+	const { data, error } = useSWR<string[], Error>(getMiljoerForGruppeUrl(gruppeId), fetcher)
+
+	return {
+		miljoer: data,
+		loading: !error && !data,
+		error: error,
+	}
 }
 
 export const useBestillingerGruppe = (gruppeId: string | number) => {
@@ -108,8 +128,8 @@ export const useBestillingById = (
 		}
 	}
 	const { data, error } = useSWR<Bestilling, Error>(getBestillingByIdUrl(bestillingId), fetcher, {
-		refreshInterval: autoRefresh ? 2000 : null,
-		dedupingInterval: autoRefresh ? 2000 : null,
+		refreshInterval: autoRefresh ? 1000 : null,
+		dedupingInterval: autoRefresh ? 1000 : null,
 	})
 
 	return {

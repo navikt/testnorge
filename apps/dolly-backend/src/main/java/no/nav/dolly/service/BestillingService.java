@@ -3,6 +3,7 @@ package no.nav.dolly.service;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.micrometer.core.instrument.util.StringUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
@@ -15,14 +16,10 @@ import no.nav.dolly.domain.resultset.BestilteKriterier;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingLeggTilPaaGruppe;
 import no.nav.dolly.domain.resultset.RsDollyImportFraPdlRequest;
-import no.nav.dolly.domain.resultset.RsDollyImportFraTpsRequest;
-import no.nav.dolly.domain.resultset.RsDollyRelasjonRequest;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
-import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfBasisBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -32,16 +29,20 @@ import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import org.hibernate.StaleStateException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -64,6 +65,9 @@ import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
 @RequiredArgsConstructor
 public class BestillingService {
 
+    private static final String NOT_FOUND = "Finner ikke gruppe basert på gruppeId: ";
+    private static final String SEARCH_STRING = "info:";
+    private static final String DEFAULT_VALUE = null;
     private final BestillingRepository bestillingRepository;
     private final BestillingKontrollRepository bestillingKontrollRepository;
     private final IdentRepository identRepository;
@@ -115,18 +119,32 @@ public class BestillingService {
     public Set<Bestilling> fetchBestillingerByGruppeId(Long gruppeId, Integer page, Integer pageSize) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
         if (page == null || pageSize == null) {
-            return testgruppe.isPresent() ? testgruppe.get().getBestillinger() : emptySet();
+            return testgruppe
+                    .map(Testgruppe::getBestillinger).orElse(emptySet());
         }
-        return testgruppe.isPresent()
-                ? testgruppe.get().getBestillinger().stream().skip(page.longValue() * pageSize).limit(pageSize).collect(toSet())
-                : emptySet();
+        return testgruppe
+                .map(value -> value.getBestillinger().stream()
+                        .skip(page.longValue() * pageSize).limit(pageSize)
+                        .collect(toSet()))
+                .orElse(emptySet());
     }
 
     public Set<Bestilling> fetchBestillingerByGruppeIdOgIkkeFerdig(Long gruppeId) {
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        return testgruppe.isPresent()
-                ? testgruppe.get().getBestillinger().stream().filter(b -> !b.isFerdig()).collect(toSet())
-                : emptySet();
+        return testgruppe
+                .map(value -> value.getBestillinger().stream()
+                        .filter(b -> !b.isFerdig())
+                        .collect(toSet()))
+                .orElse(emptySet());
+    }
+
+    public Set<String> fetchBestilteMiljoerByGruppeId(Long gruppeId) {
+        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
+        return testgruppe.map(value -> value.getBestillinger().stream()
+                .map(Bestilling::getMiljoer)
+                .flatMap(miljoer -> Arrays.stream(miljoer.split(",")))
+                .filter(StringUtils::isNotBlank)
+                .collect(toSet())).orElse(emptySet());
     }
 
     public List<Bestilling> fetchMalBestillinger() {
@@ -153,7 +171,9 @@ public class BestillingService {
     }
 
     @Transactional
+    @Retryable(StaleStateException.class)
     public Bestilling cancelBestilling(Long bestillingId) {
+
         var bestillingKontroll = bestillingKontrollRepository.findByBestillingId(bestillingId);
         if (bestillingKontroll.isEmpty()) {
             bestillingKontrollRepository.save(BestillingKontroll.builder()
@@ -162,37 +182,42 @@ public class BestillingService {
                     .build());
         }
 
-        Bestilling bestilling = fetchBestillingById(bestillingId);
+        var bestilling = fetchBestillingById(bestillingId);
         bestilling.setStoppet(true);
         bestilling.setFerdig(true);
         bestilling.setSistOppdatert(now());
         bestilling.setBruker(fetchOrCreateBruker());
-        saveBestillingToDB(bestilling);
+
         return bestilling;
     }
 
     public boolean isStoppet(Long bestillingId) {
+
         return bestillingKontrollRepository.findByBestillingId(bestillingId)
                 .orElse(BestillingKontroll.builder().stoppet(false).build()).isStoppet();
     }
 
-    @Transactional
-    public Bestilling saveBestilling(String ident, RsDollyRelasjonRequest request) {
+    public Consumer<Bestilling> cleanBestilling() {
 
-        Testident testident = identRepository.findByIdent(ident)
-                .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
-
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(testident.getTestgruppe())
-                        .ident(ident)
-                        .antallIdenter(1)
-                        .sistOppdatert(now())
-                        .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsf()))
-                        .bestKriterier("{}")
-                        .bruker(fetchOrCreateBruker())
-                        .build());
+        return bestilling ->
+                bestilling.getProgresser()
+                        .forEach(progress -> Arrays.stream(progress.getClass().getMethods())
+                                .filter(method -> method.getName().contains("get"))
+                                .forEach(metode -> {
+                                    try {
+                                        var verdi = metode.invoke(progress, null);
+                                        if (verdi instanceof String verdiString &&
+                                                isNotBlank(verdiString) && verdiString.toLowerCase().contains(SEARCH_STRING)) {
+                                            var oppdaterMetode = progress.getClass()
+                                                    .getMethod("set" + metode.getName().substring(3), String.class);
+                                            oppdaterMetode.invoke(progress, DEFAULT_VALUE);
+                                        }
+                                    } catch (NoSuchMethodException | IllegalAccessException |
+                                             InvocationTargetException e) {
+                                        log.error("Oppdatering av bestilling {} feilet ved stopp-kommando {}",
+                                                bestilling.getId(), e.getMessage(), e);
+                                    }
+                                }));
     }
 
     @Transactional
@@ -202,7 +227,6 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
 
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testident.getTestgruppe())
@@ -211,7 +235,6 @@ public class BestillingService {
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(request.getTpsf()))
                         .bestKriterier(getBestKriterier(request))
                         .malBestillingNavn(request.getMalBestillingNavn())
                         .bruker(fetchOrCreateBruker())
@@ -219,11 +242,10 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, RsTpsfBasisBestilling tpsf, Integer antall,
+    public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
                                      List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -231,7 +253,6 @@ public class BestillingService {
                         .navSyntetiskIdent(navSyntetiskIdent)
                         .sistOppdatert(now())
                         .miljoer(join(",", request.getEnvironments()))
-                        .tpsfKriterier(toJson(tpsf))
                         .bestKriterier(getBestKriterier(request))
                         .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
                         .malBestillingNavn(request.getMalBestillingNavn())
@@ -258,7 +279,6 @@ public class BestillingService {
                         .sistOppdatert(now())
                         .miljoer(isNull(miljoer) || miljoer.isEmpty() ? bestilling.getMiljoer() : join(",", miljoer))
                         .opprettetFraId(bestillingId)
-                        .tpsfKriterier(bestilling.getTpsfKriterier())
                         .bestKriterier(bestilling.getBestKriterier())
                         .bruker(fetchOrCreateBruker())
                         .build());
@@ -279,7 +299,6 @@ public class BestillingService {
                         .gruppe(testgruppe)
                         .ident(ident)
                         .antallIdenter(1)
-                        .tpsfKriterier("{}")
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(isNull(miljoer) || miljoer.isEmpty() ? "" : join(",", miljoer))
@@ -301,8 +320,9 @@ public class BestillingService {
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe.get())
-                        .antallIdenter(testgruppe.get().getTestidenter().size())
-                        .tpsfKriterier("{}")
+                        .antallIdenter((int) testgruppe.get().getTestidenter().stream()
+                                .filter(testident -> testident.isPdlf() || testident.isPdl())
+                                .count())
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(miljoer)
@@ -312,30 +332,10 @@ public class BestillingService {
     }
 
     @Transactional
-    public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraTpsRequest request) {
-
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
-        fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(gruppe)
-                        .kildeMiljoe(request.getKildeMiljoe())
-                        .miljoer(join(",", request.getEnvironments()))
-                        .sistOppdatert(now())
-                        .bruker(fetchOrCreateBruker())
-                        .antallIdenter(request.getIdenter().size())
-                        .bestKriterier(getBestKriterier(request))
-                        .tpsImport(join(",", request.getIdenter()))
-                        .build());
-    }
-
-    @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -352,16 +352,18 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException("Finner ikke gruppe basert på gruppeID: " + gruppeId));
+        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
                         .bruker(fetchOrCreateBruker())
-                        .antallIdenter(gruppe.getTestidenter().size())
+                        .antallIdenter((int) gruppe.getTestidenter().stream()
+                                .filter(testident -> testident.isPdl() ||
+                                        testident.isPdlf())
+                                .count())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
                         .build());
@@ -448,7 +450,6 @@ public class BestillingService {
                 .udistub(request.getUdistub())
                 .sigrunstub(request.getSigrunstub())
                 .arenaforvalter(request.getArenaforvalter())
-                .pdlforvalter(request.getPdlforvalter())
                 .pdldata(request.getPdldata())
                 .instdata(request.getInstdata())
                 .inntektstub(request.getInntektstub())
@@ -471,17 +472,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
     }
 }

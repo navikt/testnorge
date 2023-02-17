@@ -57,6 +57,7 @@ export const rootPaths = [
 	'pdldata.opprettNyPerson.foedtFoer',
 	'pdlforvalter',
 	'aareg',
+	'skjerming',
 	'sigrunstub',
 	'pensjonforvalter',
 	'inntektstub',
@@ -72,7 +73,9 @@ export const rootPaths = [
 ]
 
 export const harAvhukedeAttributter = (values) => {
-	return rootPaths.some((path) => _.has(values, path))
+	return rootPaths.some((path) => {
+		return _.has(values, path)
+	})
 }
 
 export const getLeggTilIdent = (personFoerLeggTil, identMaster) => {

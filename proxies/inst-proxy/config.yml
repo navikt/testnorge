@@ -13,14 +13,31 @@ spec:
     enabled: true
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   accessPolicy:
     inbound:
       rules:
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: testnav-inst-service
+          cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-backend-dev
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp

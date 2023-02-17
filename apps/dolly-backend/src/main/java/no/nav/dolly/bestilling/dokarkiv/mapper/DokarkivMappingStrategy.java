@@ -5,6 +5,8 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -21,6 +23,7 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 @Component
 public class DokarkivMappingStrategy implements MappingStrategy {
 
+    private static final String PERSON_BOLK = "personBolk";
     private static final String KANAL = "SKAN_IM";
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
@@ -37,15 +40,24 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(RsDokarkiv dokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
 
+                        dokarkivRequest.setTittel(dokarkiv.getTittel());
+                        dokarkivRequest.setJournalfoerendeEnhet(dokarkiv.getJournalfoerendeEnhet());
+                        dokarkivRequest.setTema(dokarkiv.getTema());
+
                         dokarkivRequest.setKanal(isBlank(dokarkiv.getKanal()) ? KANAL : dokarkiv.getKanal());
                         dokarkivRequest.setJournalpostType(isNull(dokarkiv.getJournalpostType()) ? INNGAAENDE : dokarkiv.getJournalpostType());
                         dokarkivRequest.setBehandlingstema(isNull(dokarkiv.getBehandlingstema()) ? BEHANDLINGSTEMA : dokarkiv.getBehandlingstema());
+
+                        dokarkivRequest.setAvsenderMottaker(mapperFacade.map(dokarkiv.getAvsenderMottaker(),
+                                DokarkivRequest.AvsenderMottaker.class));
                         if (isNull(dokarkiv.getAvsenderMottaker())
                                 || isBlank(dokarkiv.getAvsenderMottaker().getId())
                                 || Arrays.stream(RsDokarkiv.IdType.values())
                                 .noneMatch(type -> type.equals(dokarkiv.getAvsenderMottaker().getIdType()))) {
                             dokarkivRequest.setAvsenderMottaker(DokarkivRequest.AvsenderMottaker.builder()
                                     .idType(FNR)
+                                    .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
+                                            .navn(getNavn((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)))
                                     .build());
                         }
                         dokarkivRequest.setSak(DokarkivRequest.Sak.builder()
@@ -55,11 +67,21 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                                 .build());
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
+                                .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
                                 .build());
+
+                        dokarkivRequest.getDokumenter()
+                                .addAll(mapperFacade.mapAsList(dokarkiv.getDokumenter(), DokarkivRequest.Dokument.class));
                         fyllDokarkivDokument(dokarkivRequest);
                     }
+
+                    private String getNavn(PdlPersonBolk.PersonBolk personBolk) {
+
+                        var navn = personBolk.getPerson().getNavn().stream().findFirst().orElse(new PdlPerson.Navn());
+                        return String.format("%s, %s%s", navn.getFornavn(), navn.getEtternavn(),
+                                isNull(navn.getMellomnavn()) ? "" : ", " + navn.getMellomnavn());
+                    }
                 })
-                .byDefault()
                 .register();
     }
 

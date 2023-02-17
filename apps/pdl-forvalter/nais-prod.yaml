@@ -4,9 +4,9 @@ metadata:
   name: testnav-pdl-forvalter
   namespace: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
   labels:
     team: dolly
 spec:
@@ -19,6 +19,7 @@ spec:
     enabled: true
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   ingresses:

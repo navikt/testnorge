@@ -4,6 +4,7 @@ import Loading from '@/components/ui/loading/Loading'
 import BestillingResultat from './BestillingResultat/BestillingResultat'
 import { BestillingProgresjon } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingProgresjon'
 import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
+import _has from 'lodash/has'
 
 type StatusProps = {
 	gruppeId: string
@@ -53,14 +54,19 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 		<BestillingProgresjon
 			key={bestilling.sistOppdatert}
 			bestillingID={bestilling.id}
-			erOrganisasjon={bestilling.organisasjonNummer}
+			erOrganisasjon={_has(bestilling, 'organisasjonNummer')}
 			cancelBestilling={cancelBestilling}
 			onFinishBestilling={(bestilling) => setTimeout(() => onFinishBestilling(bestilling), 200)}
 		/>
 	))
 
 	const ferdig = ferdigBestillinger.map((ferdig) => (
-		<BestillingResultat key={ferdig.id} bestilling={ferdig} lukkBestilling={lukkBestilling} />
+		<BestillingResultat
+			key={ferdig.id}
+			bestilling={ferdig}
+			lukkBestilling={lukkBestilling}
+			erOrganisasjon={_has(ferdig, 'organisasjonNummer')}
+		/>
 	))
 
 	return ikkeFerdig.concat(...ferdig)

@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,14 +69,14 @@ public class Testgruppe implements Serializable {
     @Column(name = "DATO_ENDRET", nullable = false)
     private LocalDate datoEndret;
 
-    @OneToMany(mappedBy = "testgruppe", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "testgruppe", fetch = FetchType.EAGER)
     @Column(unique = true)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @OrderBy("id DESC")
     private List<Testident> testidenter;
 
-    @ManyToMany(mappedBy = "favoritter", fetch = FetchType.LAZY)
+    @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Set<Bruker> favorisertAv;
@@ -112,10 +111,12 @@ public class Testgruppe implements Serializable {
     }
 
     public List<Tags> getTags() {
-        if (isBlank(tags)) {
-            return Collections.emptyList();
-        }
-        return Arrays.stream(tags.split(",")).map(Tags::valueOf).toList();
+
+        return isBlank(tags) ?
+                new ArrayList<>() :
+                new ArrayList<>(Arrays.stream(tags.split(","))
+                        .map(Tags::valueOf)
+                        .toList());
     }
 
     @Override
