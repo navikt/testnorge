@@ -39,38 +39,40 @@ export const Arbeidsadgang = ({ formikBag }) => {
 	return (
 		<>
 			<Kategori title="Arbeidsadgang" vis="udistub.arbeidsadgang">
-				<FormikSelect
-					name="udistub.arbeidsadgang.harArbeidsAdgang"
-					label="Har arbeidsadgang"
-					options={Options('jaNeiUavklart')}
-					value={harArbeidsAdgang}
-					onChange={endreArbeidsadgang}
-					isClearable={false}
-				/>
-				{harArbeidsAdgang === 'JA' && (
-					<React.Fragment>
-						<FormikSelect
-							name="udistub.arbeidsadgang.typeArbeidsadgang"
-							label="Type arbeidsadgang"
-							options={Options('typeArbeidsadgang')}
-							size="xxlarge"
-						/>
-						<FormikSelect
-							name="udistub.arbeidsadgang.arbeidsOmfang"
-							label="Arbeidsomfang"
-							options={Options('arbeidsOmfang')}
-							size="medium"
-						/>
-						<FormikDatepicker
-							name="udistub.arbeidsadgang.periode.fra"
-							label="Arbeidsadgang fra dato"
-						/>
-						<FormikDatepicker
-							name="udistub.arbeidsadgang.periode.til"
-							label="Arbeidsadgang til dato"
-						/>
-					</React.Fragment>
-				)}
+				<div className="flexbox--flex-wrap">
+					<FormikSelect
+						name="udistub.arbeidsadgang.harArbeidsAdgang"
+						label="Har arbeidsadgang"
+						options={Options('jaNeiUavklart')}
+						value={harArbeidsAdgang}
+						onChange={endreArbeidsadgang}
+						isClearable={false}
+					/>
+					{harArbeidsAdgang === 'JA' && (
+						<React.Fragment>
+							<FormikSelect
+								name="udistub.arbeidsadgang.typeArbeidsadgang"
+								label="Type arbeidsadgang"
+								options={Options('typeArbeidsadgang')}
+								size="xxlarge"
+							/>
+							<FormikSelect
+								name="udistub.arbeidsadgang.arbeidsOmfang"
+								label="Arbeidsomfang"
+								options={Options('arbeidsOmfang')}
+								size="medium"
+							/>
+							<FormikDatepicker
+								name="udistub.arbeidsadgang.periode.fra"
+								label="Arbeidsadgang fra dato"
+							/>
+							<FormikDatepicker
+								name="udistub.arbeidsadgang.periode.til"
+								label="Arbeidsadgang til dato"
+							/>
+						</React.Fragment>
+					)}
+				</div>
 			</Kategori>
 			<Kategori title="Innhent vedtakshjemmel" vis="udistub.arbeidsadgang.hjemmel">
 				<FormikTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
