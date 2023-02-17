@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        set('elasticsearch.version', '7.12.1')
+        set('elasticsearch.version', '7.13.1')
     }
 }
 
