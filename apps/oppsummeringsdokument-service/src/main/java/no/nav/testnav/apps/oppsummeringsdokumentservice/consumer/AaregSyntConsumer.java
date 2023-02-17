@@ -8,6 +8,7 @@ import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.Oppsummeringsdoku
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.webjars.NotFoundException;
 
@@ -21,13 +22,15 @@ public class AaregSyntConsumer {
     private final ServerProperties properties;
 
     public AaregSyntConsumer(TokenExchange tokenExchange,
-                             AaregSyntServiceProperties properties) {
+                             AaregSyntServiceProperties properties,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
+                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
