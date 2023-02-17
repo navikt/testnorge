@@ -19,7 +19,7 @@ export const LeggTilPaaGruppe = ({ antallPersoner, gruppeId }) => {
 			disabled={antallPersoner < 1}
 			title={antallPersoner < 1 ? 'Gruppen inneholder ingen personer å endre på' : null}
 		>
-			LEGG TIL
+			LEGG TIL PÅ ALLE
 		</Button>
 	)
 }
