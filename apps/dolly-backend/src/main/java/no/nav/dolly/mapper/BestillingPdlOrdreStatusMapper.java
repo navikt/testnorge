@@ -62,10 +62,9 @@ public final class BestillingPdlOrdreStatusMapper {
                 addElement(meldingIdents, "OK", progress.getIdent());
 
             } else {
-                errors.forEach(error -> {
-                            addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
-                                    error.getArtifact(), error.getId(), error.getError()), progress.getIdent());
-                        }
+                errors.forEach(error ->
+                        addElement(meldingIdents, format(ELEMENT_ERROR_FMT,
+                                error.getArtifact(), error.getId(), error.getError()), progress.getIdent())
                 );
             }
 
