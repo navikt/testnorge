@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
@@ -185,13 +186,14 @@ public class DollyBestillingService {
 
     protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse forvalterStatus) {
 
+        if (nonNull(forvalterStatus.getStatus())) {
+            transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                    forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
+                            errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
+            );
+        }
 
-        transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
-                forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
-                        errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
-        );
-
-        if (forvalterStatus.getStatus().is2xxSuccessful()) {
+        if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
 
             return pdlDataConsumer.sendOrdre(forvalterStatus.getIdent(), false)
                     .doOnNext(resultat -> {
