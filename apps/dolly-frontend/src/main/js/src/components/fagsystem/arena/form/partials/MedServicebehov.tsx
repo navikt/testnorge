@@ -61,8 +61,10 @@ export const MedServicebehov = ({ formikBag, path }) => {
 
 			{arenaforvalter.aap && (
 				<Kategori title="AAP-vedtak UA - positivt utfall">
-					<FormikDatepicker name={`${path}.aap[0].fraDato`} label="Fra dato" />
-					<FormikDatepicker name={`${path}.aap[0].tilDato`} label="Til dato" />
+					<div className="flexbox--flex-wrap">
+						<FormikDatepicker name={`${path}.aap[0].fraDato`} label="Fra dato" />
+						<FormikDatepicker name={`${path}.aap[0].tilDato`} label="Til dato" />
+					</div>
 				</Kategori>
 			)}
 
@@ -71,17 +73,19 @@ export const MedServicebehov = ({ formikBag, path }) => {
 					hjelpetekst={'Foreløpig er kun ordinære dagpenger støttet'}
 					title="Dagpengevedtak"
 				>
-					<FormikSelect
-						name={`${path}.dagpenger[0].rettighetKode`}
-						options={Options('rettighetKode')}
-						isDisabled={true}
-						value={'DAGO'} // Endre disabled og denne når flere koder blir støttet
-						label="Rettighetskode"
-						size={'xlarge'}
-					/>
-					<FormikDatepicker name={`${path}.dagpenger[0].fraDato`} label="Fra dato" />
-					<FormikDatepicker name={`${path}.dagpenger[0].tilDato`} label="Til dato" />
-					<FormikDatepicker name={`${path}.dagpenger[0].mottattDato`} label="Mottatt dato" />
+					<div className="flexbox--flex-wrap">
+						<FormikSelect
+							name={`${path}.dagpenger[0].rettighetKode`}
+							options={Options('rettighetKode')}
+							isDisabled={true}
+							value={'DAGO'} // Endre disabled og denne når flere koder blir støttet
+							label="Rettighetskode"
+							size={'xlarge'}
+						/>
+						<FormikDatepicker name={`${path}.dagpenger[0].fraDato`} label="Fra dato" />
+						<FormikDatepicker name={`${path}.dagpenger[0].tilDato`} label="Til dato" />
+						<FormikDatepicker name={`${path}.dagpenger[0].mottattDato`} label="Mottatt dato" />
+					</div>
 				</Kategori>
 			)}
 		</React.Fragment>
