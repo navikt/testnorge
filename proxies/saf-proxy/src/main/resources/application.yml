@@ -20,5 +20,5 @@ consumers:
   saf:
     url: https://saf-{env}.dev.intern.nav.no
     cluster: dev-fss
-    name: saf-redis-{env}
+    name: saf-{env}
     namespace: teamdokumenthandtering
