@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
-    id 'org.springframework.boot' version "2.7.5"
+    id 'org.springframework.boot' version "3.0.2"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -24,7 +24,7 @@ bootJar {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
 }
 
@@ -60,7 +60,9 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webflux-ui', version: '2.0.2'
+
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -79,7 +81,7 @@ dependencies {
     implementation 'org.flywaydb:flyway-core'
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'org.codehaus.jettison:jettison:1.5.1'
+    implementation 'org.codehaus.jettison:jettison:1.5.2'
     implementation 'net.sf.ehcache:ehcache-core:2.6.11'
     implementation 'org.apache.poi:poi:5.2.2'
     implementation 'org.apache.poi:poi-ooxml:5.2.2'
