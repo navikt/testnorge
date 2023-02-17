@@ -31,7 +31,7 @@ public record GetProfilCommand(WebClient webClient,
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PROFIL_URL)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)

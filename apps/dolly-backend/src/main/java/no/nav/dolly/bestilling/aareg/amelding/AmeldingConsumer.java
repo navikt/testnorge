@@ -6,10 +6,9 @@ import no.nav.dolly.bestilling.aareg.command.AmeldingPutCommand;
 import no.nav.dolly.config.credentials.AmeldingServiceProperties;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -19,7 +18,6 @@ import reactor.core.publisher.Mono;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.bestilling.aareg.command.OrganisasjonGetCommand.NOT_FOUND;
@@ -34,7 +32,7 @@ public class AmeldingConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     public AmeldingConsumer(TokenExchange tokenService,
@@ -72,9 +70,5 @@ public class AmeldingConsumer {
                                                 errorStatusDecoder.getErrorText(status.getStatusCode(), status.getBody()));
                             }
                         }));
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 }

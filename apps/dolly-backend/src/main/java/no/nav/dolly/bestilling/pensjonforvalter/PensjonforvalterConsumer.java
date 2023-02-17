@@ -21,9 +21,8 @@ import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonforvalterResponse;
 import no.nav.dolly.config.credentials.PensjonforvalterProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -32,7 +31,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -43,7 +41,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public PensjonforvalterConsumer(TokenExchange tokenService,
                                     PensjonforvalterProxyProperties serverProperties,
@@ -137,10 +135,6 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
         log.info("Pensjon lagre TP-ytelse {}", pensjonTpYtelseRequest);
         return new LagreTpYtelseCommand(webClient, token.getTokenValue(), pensjonTpYtelseRequest).call();
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override

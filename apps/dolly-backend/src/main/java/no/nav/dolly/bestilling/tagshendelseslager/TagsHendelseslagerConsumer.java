@@ -12,8 +12,8 @@ import no.nav.dolly.bestilling.tagshendelseslager.dto.TagsOpprettingResponse;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.JacksonExchangeStrategyUtil;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -30,7 +30,7 @@ public class TagsHendelseslagerConsumer {
     private static final int BLOCK_SIZE = 100;
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public TagsHendelseslagerConsumer(TokenExchange tokenService,
                                       PdlProxyProperties serviceProperties,
@@ -68,7 +68,8 @@ public class TagsHendelseslagerConsumer {
     @Timed(name = "providers", tags = {"operation", "tags_get"})
     public JsonNode getTag(String ident) {
 
-        return new TagsHenteCommand(webClient, ident, serviceProperties.getAccessToken(tokenService)).call().block();
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> new TagsHenteCommand(webClient, ident, token.getTokenValue()).call()).block();
     }
 
     @Timed(name = "providers", tags = {"operation", "hendelselager_publish"})

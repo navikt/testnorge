@@ -9,8 +9,7 @@ import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivRequest;
 import no.nav.dolly.bestilling.dokarkiv.domain.DokarkivResponse;
 import no.nav.dolly.config.credentials.DokarkivProxyServiceProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
@@ -19,7 +18,6 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -32,7 +30,7 @@ public class DokarkivConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public DokarkivConsumer(DokarkivProxyServiceProperties properties,
                             TokenExchange tokenService,
@@ -68,10 +66,6 @@ public class DokarkivConsumer implements ConsumerStatus {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new DokarkivGetMiljoeCommand(webClient, token.getTokenValue()).call());
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override
