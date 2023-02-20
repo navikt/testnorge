@@ -3,6 +3,7 @@ plugins {
     id "org.sonarqube" version "4.0.0.2929"
     id 'org.springframework.boot' version "3.0.2"
     id 'io.spring.dependency-management' version "1.1.0"
+    id("org.springdoc.openapi-gradle-plugin") version "1.6.0"
 }
 
 sonarqube {
@@ -62,6 +63,7 @@ dependencies {
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation group: 'org.springdoc', name: 'springdoc-openapi-starter-webflux-ui', version: '2.0.2'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.8'
 
 
     implementation 'org.springframework.boot:spring-boot-starter-web'

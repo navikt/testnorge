@@ -29,7 +29,6 @@ public class SecurityConfig {
                         "/swagger-ui.html"
                 ).permitAll()
                 .requestMatchers("/api/**").fullyAuthenticated()
-                .anyRequest().denyAll()
                 .and()
                 .oauth2ResourceServer()
                 .jwt();
