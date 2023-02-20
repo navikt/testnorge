@@ -230,7 +230,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 			return ident
 		})
 	}
-	console.log('newPdldata: ', newPdldata) //TODO - SLETT MEG
+
 	return newPdldata
 }
 
