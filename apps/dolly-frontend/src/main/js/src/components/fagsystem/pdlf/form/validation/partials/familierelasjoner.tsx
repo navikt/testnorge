@@ -130,9 +130,8 @@ export const nyPerson = Yup.object({
 		'foedtEtter',
 		'Dato må være etter født etter-dato'
 	),
-	syntetisk: Yup.boolean(),
 	nyttNavn: Yup.object({
-		hasMellomnavn: Yup.boolean(),
+		hasMellomnavn: Yup.boolean().nullable(),
 	}),
 	statsborgerskapLandkode: Yup.string().nullable(),
 	gradering: Yup.string().nullable(),
