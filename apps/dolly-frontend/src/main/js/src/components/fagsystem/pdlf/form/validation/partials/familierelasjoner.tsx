@@ -132,7 +132,7 @@ export const nyPerson = Yup.object({
 	),
 	nyttNavn: Yup.object({
 		hasMellomnavn: Yup.boolean().nullable(),
-	}),
+	}).nullable(),
 	statsborgerskapLandkode: Yup.string().nullable(),
 	gradering: Yup.string().nullable(),
 })
