@@ -46,9 +46,6 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.pdldata) {
 		initialValuesMal.pdldata = getUpdatedPdldata(initialValuesMal.pdldata)
 	}
-	if (initialValuesMal.skjerming) {
-		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
-	}
 	if (initialValuesMal.bankkonto) {
 		initialValuesMal.bankkonto = getUpdatedBankkonto(initialValuesMal.bankkonto)
 	}

@@ -189,16 +189,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		kjoenn: 'pdldata.person.kjoenn',
 		navn: 'pdldata.person.navn',
 		spraakKode: {
-			tpsf: 'tpsf.spraakKode',
 			tpsM: 'tpsMessaging.spraakKode',
 		},
 		egenAnsattDatoFom: {
-			tpsf: 'tpsf.egenAnsattDatoFom',
 			tpsM: 'tpsMessaging.egenAnsattDatoFom',
 			skjerming: 'skjerming.egenAnsattDatoFom',
 		},
 		egenAnsattDatoTom: {
-			tpsf: 'tpsf.egenAnsattDatoTom',
 			tpsM: 'tpsMessaging.egenAnsattDatoTom',
 			skjerming: 'skjerming.egenAnsattDatoTom',
 		},
@@ -303,16 +300,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sprakKode: {
 			label: 'Språk',
-			checked: has(paths.spraakKode.tpsf) || has(paths.spraakKode.tpsM),
+			checked: has(paths.spraakKode.tpsM),
 			add: () => set(paths.spraakKode.tpsM, ''),
-			remove: () => del([paths.spraakKode.tpsM, paths.spraakKode.tpsf]),
+			remove: () => del(paths.spraakKode.tpsM),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',
-			checked:
-				has(paths.egenAnsattDatoFom.tpsf) ||
-				has(paths.egenAnsattDatoFom.tpsM) ||
-				has(paths.egenAnsattDatoFom.skjerming),
+			checked: has(paths.egenAnsattDatoFom.tpsM) || has(paths.egenAnsattDatoFom.skjerming),
 			add() {
 				setMulti(
 					[

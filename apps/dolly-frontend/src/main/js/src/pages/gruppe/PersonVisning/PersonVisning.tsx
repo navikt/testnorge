@@ -278,14 +278,7 @@ export const PersonVisning = ({
 						dersom problemet vedvarer.
 					</StyledAlert>
 				)}
-				{ident.master !== 'PDL' && (
-					<PdlfVisningConnector
-						fagsystemData={data}
-						bestillingListe={bestillingListe}
-						loading={loading}
-						master={ident.master}
-					/>
-				)}
+				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (
 					<PdlVisning pdlData={data.pdl} fagsystemData={data} loading={loading} />
 				)}
