@@ -17,8 +17,8 @@ sonarqube {
 }
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:2.7.5'
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.2'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
 }
 
