@@ -35,9 +35,8 @@ class TestgruppeMappingStrategyTest {
 
     private MapperFacade mapper;
 
-    private
     @BeforeEach
-    void setUpHappyPath() {
+    public void setUpHappyPath() {
         mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy")));
 
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")

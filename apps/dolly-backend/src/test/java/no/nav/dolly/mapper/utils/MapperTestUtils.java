@@ -13,7 +13,7 @@ public class MapperTestUtils {
         return createMapperFacadeForMappingStrategy(null, strategies);
     }
 
-    public static MapperFacade createMapperFacadeForMappingStrategy(CustomConverter converter, MappingStrategy... strategies) {
+    public static MapperFacade createMapperFacadeForMappingStrategy(CustomConverter<Object, Object> converter, MappingStrategy... strategies) {
         DefaultMapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
 
         for (MappingStrategy strategy : strategies) {
