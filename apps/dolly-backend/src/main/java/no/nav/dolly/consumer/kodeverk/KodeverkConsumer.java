@@ -4,10 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.credentials.KodeverkProxyProperties;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
@@ -42,7 +41,7 @@ public class KodeverkConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public KodeverkConsumer(TokenExchange tokenService,
                             KodeverkProxyProperties serverProperties,
@@ -88,10 +87,6 @@ public class KodeverkConsumer {
                 .filter(entry -> LocalDate.now().isAfter(entry.getValue().get(0).getGyldigFra()))
                 .filter(entry -> LocalDate.now().isBefore(entry.getValue().get(0).getGyldigTil()))
                 .collect(Collectors.toMap(Entry::getKey, KodeverkConsumer::getNorskBokmaal));
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private Flux<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {

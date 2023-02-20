@@ -1,13 +1,11 @@
 package no.nav.dolly.consumer.generernavn;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.config.credentials.GenererNavnServiceProperties;
 import no.nav.dolly.consumer.generernavn.command.GenererNavnCommand;
 import no.nav.dolly.domain.PdlPerson.Navn;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +15,6 @@ import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -30,7 +27,7 @@ public class GenererNavnConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final MapperFacade mapper;
 
     public GenererNavnConsumer(TokenExchange tokenService,
@@ -50,8 +47,9 @@ public class GenererNavnConsumer {
     public ResponseEntity<List<Navn>> getPersonnavn(Integer antall) {
 
 
-        ResponseEntity<JsonNode> response =
-                new GenererNavnCommand(webClient, serviceProperties.getAccessToken(tokenService), antall, getNavCallId()).call().block();
+        var response = tokenService.exchange(serviceProperties)
+                .flatMap(token -> new GenererNavnCommand(webClient, token.getTokenValue(), antall, getNavCallId()).call())
+                .block();
 
         if (!response.hasBody()) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
@@ -59,10 +57,6 @@ public class GenererNavnConsumer {
 
         return ResponseEntity.ok().body(mapper.mapAsList(response.getBody(), Navn.class));
 
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private static String getNavCallId() {
