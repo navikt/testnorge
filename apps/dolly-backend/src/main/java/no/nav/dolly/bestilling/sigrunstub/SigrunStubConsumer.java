@@ -13,7 +13,6 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,15 +33,14 @@ public class SigrunStubConsumer implements ConsumerStatus {
 
     public SigrunStubConsumer(TokenExchange tokenService,
                               SigrunstubProxyProperties serverProperties,
-                              ObjectMapper objectMapper,
-                              ExchangeFilterFunction metricsWebClientFilterFunction) {
+                              ObjectMapper objectMapper
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

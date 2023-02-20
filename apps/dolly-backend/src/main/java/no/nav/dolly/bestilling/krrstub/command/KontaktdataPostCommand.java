@@ -7,6 +7,7 @@ import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -45,7 +46,7 @@ public class KontaktdataPostCommand implements Callable<Mono<DigitalKontaktdataR
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> DigitalKontaktdataResponse.builder()
-                        .status(response.getStatusCode())
+                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(DigitalKontaktdataResponse.builder()

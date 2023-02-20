@@ -11,8 +11,8 @@ import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.ameldingservice.v1.VirksomhetDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -40,20 +40,19 @@ public class AmeldingConsumer {
     public AmeldingConsumer(TokenExchange tokenService,
                             AmeldingServiceProperties serviceProperties,
                             ObjectMapper objectMapper,
-                            ErrorStatusDecoder errorStatusDecoder,
-                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+                            ErrorStatusDecoder errorStatusDecoder
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.errorStatusDecoder = errorStatusDecoder;
     }
 
-    @Timed(name = "providers", tags = {"operation", "amelding_put"})
+    @Timed(name = "providers", tags = { "operation", "amelding_put" })
     public Flux<String> sendAmeldinger(List<AMeldingDTO> ameldinger, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
@@ -69,7 +68,7 @@ public class AmeldingConsumer {
                                         amelding.getKalendermaaned().format(YEAR_MONTH), miljoe, amelding);
                                 return new AmeldingPutCommand(webClient, amelding, miljoe, token.getTokenValue()).call()
                                         .map(status -> status.getStatusCode().is2xxSuccessful() ? "OK" :
-                                                errorStatusDecoder.getErrorText(status.getStatusCode(), status.getBody()));
+                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatusCode().value()), status.getBody()));
                             }
                         }));
     }

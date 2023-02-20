@@ -12,7 +12,6 @@ import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -31,15 +30,14 @@ public class SykemeldingConsumer implements ConsumerStatus {
     public SykemeldingConsumer(
             TokenExchange accessTokenService,
             SykemeldingApiProxyProperties serverProperties,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper
+    ) {
 
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

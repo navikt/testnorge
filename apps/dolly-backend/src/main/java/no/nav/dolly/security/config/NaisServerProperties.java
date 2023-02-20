@@ -42,7 +42,7 @@ public class NaisServerProperties extends ServerProperties {
                     .retrieve().toBodilessEntity()
                     .block();
             if (nonNull(response) && response.getStatusCode().is2xxSuccessful()) {
-                return response.getStatusCode().name();
+                return "OK";
             }
         } catch (WebClientResponseException ex) {
             String feilmelding = String.format("%s, URL: %s", ex.getStatusCode(), getUrl());

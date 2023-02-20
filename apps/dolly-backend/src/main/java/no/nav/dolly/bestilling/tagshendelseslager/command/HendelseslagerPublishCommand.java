@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.tagshendelseslager.dto.HendelselagerResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -42,7 +43,7 @@ public class HendelseslagerPublishCommand implements Callable<Mono<Hendelselager
                 .retrieve()
                 .toEntity(String.class)
                 .map(resultat -> HendelselagerResponse.builder()
-                        .status(resultat.getStatusCode())
+                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .body(resultat.getBody())
                         .build())
                 .onErrorResume(throwable -> Mono.just(HendelselagerResponse.builder()

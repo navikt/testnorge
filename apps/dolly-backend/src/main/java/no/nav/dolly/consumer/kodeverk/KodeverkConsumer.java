@@ -12,7 +12,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -45,8 +44,8 @@ public class KodeverkConsumer {
     private final NaisServerProperties serviceProperties;
 
     public KodeverkConsumer(TokenExchange tokenService,
-                            KodeverkProxyProperties serverProperties,
-                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+                            KodeverkProxyProperties serverProperties
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
@@ -57,7 +56,6 @@ public class KodeverkConsumer {
                                 .maxInMemorySize(32 * 1024 * 1024))
                         .build())
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

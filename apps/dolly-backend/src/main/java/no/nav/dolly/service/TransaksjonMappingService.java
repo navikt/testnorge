@@ -17,8 +17,12 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.resultset.SystemTyper.*;
-import static org.apache.http.util.TextUtils.isBlank;
+import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
+import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
+import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Service
 @RequiredArgsConstructor

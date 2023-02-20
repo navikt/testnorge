@@ -37,13 +37,11 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.metrics.Timed;
 import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.util.retry.Retry;
@@ -106,8 +104,8 @@ public class PdlForvalterConsumer implements ConsumerStatus {
     public PdlForvalterConsumer(TokenExchange tokenService,
                                 PdlProxyProperties serverProperties,
                                 ErrorStatusDecoder errorStatusDecoder,
-                                ObjectMapper objectMapper,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                ObjectMapper objectMapper
+    ) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
@@ -116,7 +114,6 @@ public class PdlForvalterConsumer implements ConsumerStatus {
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

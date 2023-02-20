@@ -1,23 +1,19 @@
 package no.nav.dolly.config;
 
-import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.observation.ObservationRegistry;
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.meter.WebClientTagsProvider;
-import org.springframework.boot.actuate.metrics.AutoTimer;
-import org.springframework.boot.actuate.metrics.web.reactive.client.MetricsWebClientFilterFunction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+import org.springframework.web.filter.reactive.ServerHttpObservationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 public class MeterConfig {
 
-    private final MeterRegistry meterRegistry;
+    private final ObservationRegistry observationRegistry;
 
     @Bean
-    public ExchangeFilterFunction metricsWebClientFilterFunction() {
-        return new MetricsWebClientFilterFunction(meterRegistry, new WebClientTagsProvider(),
-                "webClientMetrics", AutoTimer.ENABLED);
+    public ServerHttpObservationFilter metricsWebClientFilterFunction() {
+        return new ServerHttpObservationFilter(observationRegistry);
     }
 }

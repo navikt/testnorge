@@ -1,12 +1,11 @@
 package no.nav.dolly.domain.resultset;
 
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import javax.persistence.Embeddable;
 
 @Getter
 @Embeddable
@@ -20,7 +19,6 @@ public enum Tags {
     Tags(String beskrivelse) {
         this.beskrivelse = beskrivelse;
     }
-
 
     @Getter
     @Setter

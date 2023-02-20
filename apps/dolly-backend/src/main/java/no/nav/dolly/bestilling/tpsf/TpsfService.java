@@ -18,7 +18,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import org.springframework.web.server.ResponseStatusException;
@@ -56,8 +55,8 @@ public class TpsfService {
 
     public TpsfService(TokenExchange tokenService,
                        TpsForvalterenProxyProperties serverProperties,
-                       ObjectMapper objectMapper,
-                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+                       ObjectMapper objectMapper
+    ) {
 
         this.tokenService = tokenService;
         this.objectMapper = objectMapper;
@@ -65,25 +64,17 @@ public class TpsfService {
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    protected static String getMessage(Throwable error) {
-
-        return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
-                error.getMessage();
-    }
-
-    @Timed(name = "providers", tags = {"operation", "tpsf_opprettIdenter"})
+    @Timed(name = "providers", tags = { "operation", "tpsf_opprettIdenter" })
     public List<String> opprettIdenterTpsf(TpsfBestilling request) {
 
         var response = postToTpsf(TPSF_OPPRETT_URL, request);
         return isNull(response) ? null : objectMapper.convertValue(response, List.class);
     }
 
-    @Timed(name = "providers", tags = {"operation", "tpsf_hentTestpersoner"})
+    @Timed(name = "providers", tags = { "operation", "tpsf_hentTestpersoner" })
     public List<Person> hentTestpersoner(List<String> identer) {
 
         if (identer.isEmpty()) {
@@ -95,7 +86,7 @@ public class TpsfService {
                 new ArrayList<>(List.of(objectMapper.convertValue(response, Person[].class)));
     }
 
-    @Timed(name = "providers", tags = {"operation", "tpsf_leggTIlPaaPerson"})
+    @Timed(name = "providers", tags = { "operation", "tpsf_leggTIlPaaPerson" })
     public RsOppdaterPersonResponse endreLeggTilPaaPerson(String ident, TpsfBestilling tpsfBestilling) {
 
         var response = webClient.post().uri(uriBuilder -> uriBuilder
@@ -151,5 +142,12 @@ public class TpsfService {
                     }
                 })
                 .block();
+    }
+
+    protected static String getMessage(Throwable error) {
+
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
+                error.getMessage();
     }
 }

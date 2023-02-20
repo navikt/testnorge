@@ -45,7 +45,7 @@ public class LagrePoppInntektCommand implements Callable<Mono<PensjonforvalterRe
                 .bodyValue(pensjonPoppInntektRequest)
                 .retrieve()
                 .toBodilessEntity()
-                .map(response -> pensjonforvalterResponse(miljoe, response.getStatusCode()))
+                .map(response -> pensjonforvalterResponse(miljoe, HttpStatus.valueOf(response.getStatusCode().value())))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))

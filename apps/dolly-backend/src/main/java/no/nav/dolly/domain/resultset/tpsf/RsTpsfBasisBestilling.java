@@ -2,6 +2,7 @@ package no.nav.dolly.domain.resultset.tpsf;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,6 @@ import no.nav.dolly.domain.resultset.tpsf.adresse.RsAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsMidlertidigAdresse;
 import no.nav.dolly.domain.resultset.tpsf.adresse.RsPostadresse;
 
-import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 

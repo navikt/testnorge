@@ -12,7 +12,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.util.retry.Retry;
 
@@ -35,14 +34,13 @@ public class FasteDatasettConsumer {
     private final NaisServerProperties serviceProperties;
 
     public FasteDatasettConsumer(TokenExchange tokenService,
-                                 StatiskDataForvalterProxyProperties serverProperties,
-                                 ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                 StatiskDataForvalterProxyProperties serverProperties
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

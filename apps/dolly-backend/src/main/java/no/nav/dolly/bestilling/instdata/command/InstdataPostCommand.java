@@ -6,6 +6,7 @@ import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -43,7 +44,7 @@ public class InstdataPostCommand implements Callable<Mono<InstdataResponse>> {
                 .map(resultat -> InstdataResponse.builder()
                         .personident(instdata.getNorskident())
                         .instdata(instdata)
-                        .status(resultat.getStatusCode())
+                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .environments(List.of(miljoe))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
