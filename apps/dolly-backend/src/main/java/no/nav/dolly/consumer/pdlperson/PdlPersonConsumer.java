@@ -10,21 +10,20 @@ import no.nav.dolly.consumer.pdlperson.command.PdlBolkPersonGetCommand;
 import no.nav.dolly.consumer.pdlperson.command.PdlPersonGetCommand;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -33,27 +32,23 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Service
 public class PdlPersonConsumer implements ConsumerStatus {
 
-    private static final String PDL_API_URL = "/pdl-api";
     private static final int BLOCK_SIZE = 50;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
     public PdlPersonConsumer(TokenExchange tokenService,
                              PdlProxyProperties serverProperties,
-                             ObjectMapper objectMapper) {
+                             ObjectMapper objectMapper,
+                             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+                .filter(metricsWebClientFilterFunction)
                 .build();
-    }
-
-    public JsonNode getPdlPerson(String ident) {
-
-        return getPdlPerson(ident, PDL_MILJOER.Q2);
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
@@ -75,28 +70,9 @@ public class PdlPersonConsumer implements ConsumerStatus {
                         ).call()));
     }
 
-    public Map<String, String> checkAlive() {
-        try {
-            return Map.of(serviceProperties.getName() + PDL_API_URL, serviceProperties.checkIsAlive(webClient, serviceProperties.getAccessToken(tokenService)));
-        } catch (SecurityException | WebClientResponseException ex) {
-            log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
-            return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
-        }
-    }
-
-    @Override
-    public String serviceUrl() {
-        return serviceProperties.getUrl();
-    }
-
-    @Override
-    public String consumerName() {
-        return "testnav-pdl-proxy";
-    }
-
     public static String hentQueryResource(String pathResource) {
         val resource = new ClassPathResource(pathResource);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), StandardCharsets.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
 
         } catch (IOException e) {
@@ -107,6 +83,16 @@ public class PdlPersonConsumer implements ConsumerStatus {
 
     public enum PDL_MILJOER {
         Q1, Q2
+    }
+
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-pdl-proxy";
     }
 
 }

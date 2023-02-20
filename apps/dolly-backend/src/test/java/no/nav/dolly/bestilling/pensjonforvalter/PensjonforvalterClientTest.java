@@ -14,9 +14,8 @@ import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
-import no.nav.dolly.domain.resultset.tpsf.Person;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -258,9 +257,6 @@ class PensjonforvalterClientTest {
         bestilling.setEnvironments(Set.of("TEST1", "TEST2"));
         bestilling.setPensjonforvalter(pensjonData);
 
-        var person = Person.builder()
-                .ident("000")
-                .build();
         var dollyPerson = DollyPerson.builder()
                 .ident(IDENT)
                 .build();

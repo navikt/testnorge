@@ -10,10 +10,9 @@ import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
 import no.nav.dolly.config.credentials.InntektstubProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +24,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -40,7 +38,7 @@ public class InntektstubConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public InntektstubConsumer(TokenExchange tokenService,
                                InntektstubProxyProperties serverProperties,
@@ -87,22 +85,19 @@ public class InntektstubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "inntk_validerInntekt"})
     public ResponseEntity<Object> validerInntekter(ValiderInntekt validerInntekt) {
 
-        return webClient.post()
-                .uri(uriBuilder -> uriBuilder
-                        .path(VALIDER_INNTEKTER_URL)
-                        .build())
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .bodyValue(validerInntekt)
-                .retrieve()
-                .toEntity(Object.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient.post()
+                        .uri(uriBuilder -> uriBuilder
+                                .path(VALIDER_INNTEKTER_URL)
+                                .build())
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .bodyValue(validerInntekt)
+                        .retrieve()
+                        .toEntity(Object.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
                 .block();
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override

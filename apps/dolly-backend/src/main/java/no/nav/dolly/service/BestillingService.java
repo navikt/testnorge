@@ -20,7 +20,6 @@ import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsOrganisasjon;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
-import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -228,7 +227,6 @@ public class BestillingService {
                 .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
 
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testident.getTestgruppe())
@@ -248,7 +246,6 @@ public class BestillingService {
                                      List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -339,7 +336,6 @@ public class BestillingService {
 
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -358,7 +354,6 @@ public class BestillingService {
 
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
         fixAaregAbstractClassProblem(request.getAareg());
-        fixPdlAbstractClassProblem(request.getPdlforvalter());
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(gruppe)
@@ -455,7 +450,6 @@ public class BestillingService {
                 .udistub(request.getUdistub())
                 .sigrunstub(request.getSigrunstub())
                 .arenaforvalter(request.getArenaforvalter())
-                .pdlforvalter(request.getPdlforvalter())
                 .pdldata(request.getPdldata())
                 .instdata(request.getInstdata())
                 .inntektstub(request.getInntektstub())
@@ -478,17 +472,5 @@ public class BestillingService {
                         arbeidforhold.getArbeidsgiver() instanceof RsOrganisasjon ? "ORG" : "PERS");
             }
         });
-    }
-
-    private static void fixPdlAbstractClassProblem(RsPdldata pdldata) {
-
-        if (nonNull(pdldata)) {
-            if (nonNull(pdldata.getKontaktinformasjonForDoedsbo())) {
-                pdldata.getKontaktinformasjonForDoedsbo().setAdressat(pdldata.getKontaktinformasjonForDoedsbo().getAdressat());
-            }
-            if (nonNull(pdldata.getFalskIdentitet())) {
-                pdldata.getFalskIdentitet().setRettIdentitet(pdldata.getFalskIdentitet().getRettIdentitet());
-            }
-        }
     }
 }

@@ -19,7 +19,7 @@ import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository;
@@ -37,6 +37,7 @@ import java.util.Set;
 import java.util.stream.Stream;
 
 import static java.util.Collections.emptySet;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
@@ -183,37 +184,42 @@ public class DollyBestillingService {
                 .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
     }
 
-    protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse response) {
+    protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse forvalterStatus) {
 
-        if (response.getStatus().is2xxSuccessful()) {
+        if (nonNull(forvalterStatus.getStatus())) {
+            transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                    forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
+                            errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
+            );
+        }
 
-            return pdlDataConsumer.sendOrdre(response.getIdent(), false)
-                    .map(resultat -> {
+        if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
+
+            return pdlDataConsumer.sendOrdre(forvalterStatus.getIdent(), false)
+                    .doOnNext(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, status);
-                        log.info("Sendt ordre til PDL for ident {} ", response.getIdent());
-                        return response.getIdent();
-                    });
+                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
+                        log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
+                    })
+                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : null);
 
         } else {
-            var error = errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding());
-            transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, error);
+
             return Flux.empty();
         }
     }
 
     protected Flux<String> sendOrdrePerson(BestillingProgress progress, String ident) {
 
-        transactionHelperService.persister(progress, BestillingProgress::setIdent, ident);
         if (progress.getMaster() == PDLF) {
             return pdlDataConsumer.sendOrdre(ident, true)
                     .map(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?
                                 resultat.getJsonNode() :
                                 errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlDataStatus, status);
+                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
                         log.info("Sendt ordre til PDL for ident {} ", ident);
                         return ident;
                     });

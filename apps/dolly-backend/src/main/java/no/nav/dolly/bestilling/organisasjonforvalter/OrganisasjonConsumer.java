@@ -11,7 +11,6 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDeploySt
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.config.credentials.OrganisasjonForvalterProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -23,7 +22,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -41,6 +39,7 @@ public class OrganisasjonConsumer {
     private static final String ORGANISASJON_FORVALTER_URL = "/api/v2/organisasjoner";
     private static final String ORGANISASJON_DEPLOYMENT_URL = ORGANISASJON_FORVALTER_URL + "/ordre";
     private static final String ORGANISASJON_STATUS_URL = ORGANISASJON_FORVALTER_URL + "/ordrestatus";
+    private static final String BEARER = "Bearer ";
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -59,55 +58,58 @@ public class OrganisasjonConsumer {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-hent"})
     public Flux<OrganisasjonDetaljer> hentOrganisasjon(List<String> orgnumre) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new GetOrganisasjonCommand(webClient, orgnumre, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-hent" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-hent"})
     public OrganisasjonDeployStatus hentOrganisasjonStatus(List<String> orgnumre) {
         var navCallId = getNavCallId();
         log.info("Organisasjon hent request sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
 
-        return webClient
-                .get()
-                .uri(uriBuilder ->
-                        uriBuilder.path(ORGANISASJON_STATUS_URL)
-                                .queryParam("orgnumre", orgnumre)
-                                .build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, navCallId)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .retrieve()
-                .bodyToMono(OrganisasjonDeployStatus.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient
+                        .get()
+                        .uri(uriBuilder ->
+                                uriBuilder.path(ORGANISASJON_STATUS_URL)
+                                        .queryParam("orgnumre", orgnumre)
+                                        .build())
+                        .header(AUTHORIZATION, BEARER + token.getTokenValue())
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .header(HEADER_NAV_CALL_ID, navCallId)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .retrieve()
+                        .bodyToMono(OrganisasjonDeployStatus.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-opprett" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-opprett"})
     public ResponseEntity<BestillingResponse> postOrganisasjon(BestillingRequest bestillingRequest) {
+
         var navCallId = getNavCallId();
         log.info("Organisasjon oppretting sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
-        return webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, navCallId)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(bestillingRequest)
-                .retrieve()
-                .toEntity(BestillingResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient
+                        .post()
+                        .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_FORVALTER_URL).build())
+                        .header(AUTHORIZATION, BEARER + token.getTokenValue())
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .header(HEADER_NAV_CALL_ID, navCallId)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .bodyValue(bestillingRequest)
+                        .retrieve()
+                        .toEntity(BestillingResponse.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
                 .block();
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-deploy" })
+    @Timed(name = "providers", tags = {"operation", "organisasjon-deploy"})
     public ResponseEntity<DeployResponse> deployOrganisasjon(DeployRequest request) {
         var navCallId = getNavCallId();
         log.info("Organisasjon deploy sendt, callId: {}, consumerId: {}", navCallId, CONSUMER);
@@ -115,24 +117,21 @@ public class OrganisasjonConsumer {
         return sendDeployOrganisasjonRequest(request, navCallId);
     }
 
-    @Timed(name = "providers", tags = { "operation", "organisasjon-alive" })
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-    }
-
     private ResponseEntity<DeployResponse> sendDeployOrganisasjonRequest(DeployRequest deployRequest, String callId) {
-        return webClient
-                .post()
-                .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
-                .header(AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .bodyValue(deployRequest)
-                .retrieve()
-                .toEntity(DeployResponse.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+
+        return tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient
+                        .post()
+                        .uri(uriBuilder -> uriBuilder.path(ORGANISASJON_DEPLOYMENT_URL).build())
+                        .header(AUTHORIZATION, BEARER + token.getTokenValue())
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .header(HEADER_NAV_CALL_ID, callId)
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .bodyValue(deployRequest)
+                        .retrieve()
+                        .toEntity(DeployResponse.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
                 .block();
     }
 

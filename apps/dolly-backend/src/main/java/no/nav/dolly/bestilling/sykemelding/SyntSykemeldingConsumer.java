@@ -8,14 +8,11 @@ import no.nav.dolly.bestilling.sykemelding.domain.SyntSykemeldingRequest;
 import no.nav.dolly.bestilling.sykemelding.dto.SykemeldingResponse;
 import no.nav.dolly.config.credentials.SyntSykemeldingApiProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -48,10 +45,6 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties)
                 .flatMap(accessToken -> new
                         SyntSykemeldingPostCommand(webClient, sykemeldingRequest, accessToken.getTokenValue()).call());
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override

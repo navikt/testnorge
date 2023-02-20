@@ -7,14 +7,11 @@ import no.nav.dolly.bestilling.sykemelding.command.Norg2GetCommand;
 import no.nav.dolly.bestilling.sykemelding.dto.Norg2EnhetResponse;
 import no.nav.dolly.config.credentials.Norg2ProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -24,7 +21,7 @@ public class Norg2Consumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public Norg2Consumer(
             TokenExchange accessTokenService,
@@ -46,10 +43,6 @@ public class Norg2Consumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new Norg2GetCommand(webClient, geografiskTilhoerighet,
                         token.getTokenValue()).call());
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override

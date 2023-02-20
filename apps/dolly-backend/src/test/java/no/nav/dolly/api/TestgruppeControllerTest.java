@@ -7,7 +7,6 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.provider.api.TestgruppeController;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.TestgruppeService;
@@ -80,7 +79,6 @@ class TestgruppeControllerTest {
         Set<String> envir = singleton("u");
 
         RsDollyBestillingRequest dollyBestillingRequest = new RsDollyBestillingRequest();
-        dollyBestillingRequest.setTpsf(RsTpsfUtvidetBestilling.builder().build());
         dollyBestillingRequest.setAntall(ant);
         dollyBestillingRequest.setEnvironments(envir);
 
