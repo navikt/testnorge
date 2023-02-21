@@ -57,7 +57,7 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'

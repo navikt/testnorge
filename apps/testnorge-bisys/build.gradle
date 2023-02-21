@@ -52,7 +52,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-insecure-security'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'org.springframework.boot:spring-boot-starter-web'

@@ -42,7 +42,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'

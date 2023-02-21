@@ -46,7 +46,7 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
 
     implementation 'io.r2dbc:r2dbc-h2'
     implementation 'org.postgresql:r2dbc-postgresql'
