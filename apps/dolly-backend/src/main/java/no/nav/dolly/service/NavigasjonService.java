@@ -52,6 +52,7 @@ public class NavigasjonService {
         var securityContext = SecurityContextHolder.getContext();
         return Flux.merge(getPdlForvalterIdenter(ident),
                         getPdlPersonIdenter(ident))
+                .filter(Objects::nonNull)
                 .distinct()
                 .flatMap(ident1 -> Mono.just(identRepository.findByIdent(ident1))
                         .filter(Optional::isPresent)
