@@ -11,8 +11,8 @@ public interface BrukerFavoritterRepository extends Repository<BrukerFavoritter,
     BrukerFavoritter save(BrukerFavoritter brukerFavoritter);
 
     @Modifying
-    @Query(value = "update bruker_favoritter b set b.bruker_id = :newBruker " +
-            "where b.bruker_id = :oldBruker", nativeQuery = true)
+    @Query(value = "update bruker_favoritter set bruker_id = :newBruker " +
+            "where bruker_id = :oldBruker", nativeQuery = true)
     void updateBrukerFavoritter(@Param("oldBruker") Long oldBruker,
                                 @Param("newBruker") Long newBruker);
 }
