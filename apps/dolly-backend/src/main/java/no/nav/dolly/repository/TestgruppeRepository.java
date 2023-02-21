@@ -5,6 +5,7 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.projection.TestgruppeUtenIdenter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
@@ -37,4 +38,9 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
             "and b.eidAv is null " +
             "and b.migrert is null")
     List<Testgruppe> getIkkemigrerteTestgrupperByNavId(@Param("navId") String navId);
+
+    @Modifying
+    @Query(value = "update Testgruppe b set b.opprettetAv.id = :newBruker, b.sistEndretAv.id = :newBruker " +
+            "where b.opprettetAv.id = :oldBruker")
+    void updateGruppeBruker(@Param("oldBruker") Long oldBruker, @Param("newBruker") Long newBruker);
 }

@@ -18,6 +18,10 @@ import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppePage;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.provider.api.BrukerController;
+import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
@@ -27,6 +31,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -54,6 +59,12 @@ public class TestgruppeService {
     private final PersonService personService;
     private final GetUserInfo getUserInfo;
     private final PdlDataConsumer pdlDataConsumer;
+
+    private final BestillingRepository bestillingRepository;
+
+    private final BrukerFavoritterRepository brukerFavoritterRepository;
+
+    private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -234,5 +245,16 @@ public class TestgruppeService {
                                         .toList())
                         .build())
                 .toList();
+    }
+
+    @Transactional
+    public String oppdaterBruker(BrukerController.ZBrukerDTO zBrukerDTO) {
+
+        bestillingRepository.updateBestillingBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        testgruppeRepository.updateGruppeBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        brukerFavoritterRepository.updateBrukerFavoritter(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        organisasjonBestillingRepository.updateOrganisasjonBestillingBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+
+        return zBrukerDTO.getNavn();
     }
 }

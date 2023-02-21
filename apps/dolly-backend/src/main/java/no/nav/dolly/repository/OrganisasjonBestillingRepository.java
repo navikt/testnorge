@@ -31,4 +31,8 @@ public interface OrganisasjonBestillingRepository extends Repository<Organisasjo
     int deleteBestillingWithNoChildren(@Param("bestilling") OrganisasjonBestilling bestilling);
 
     List<OrganisasjonBestilling> findByBruker(Bruker bruker);
+
+    @Modifying
+    @Query(value = "update OrganisasjonBestilling ob set ob.bruker.id = :newBruker where ob.bruker.id = :oldBruker")
+    void updateOrganisasjonBestillingBruker(@Param("oldBruker") Long oldBruker, @Param("newBruker") Long newBruker);
 }

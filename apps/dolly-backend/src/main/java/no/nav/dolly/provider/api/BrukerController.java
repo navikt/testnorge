@@ -1,6 +1,10 @@
 package no.nav.dolly.provider.api;
 
 import io.swagger.v3.oas.annotations.Operation;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
@@ -120,5 +124,41 @@ public class BrukerController {
 
         log.info("Slettet antall Z-identer: {}", slettedeBrukere);
         return slettedeGrupper;
+    }
+
+    @Transactional
+    @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
+    @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(description = "Oppdatere migrerte brukere <br>" +
+            "Angi file som identifiserer Z-id brukere som skal oppdateres " +
+            "tre kolonner: fra-bruker;Z-ident-navn;til-bruker")
+    public List<String> oppdatereBrukere(
+            @RequestParam("zBrukere") MultipartFile zBrukere) throws IOException {
+
+        var brukere = new BufferedReader(new InputStreamReader(zBrukere.getInputStream(), StandardCharsets.UTF_8))
+                .lines()
+                .map(line -> line.split(";"))
+                .map(felter -> ZBrukerDTO.builder()
+                        .fraBruker(Long.getLong(felter[0]))
+                        .navn(felter[1])
+                        .tilBruker(Long.getLong(felter[2]))
+                        .build())
+                .map(testgruppeService::oppdaterBruker)
+                .peek(ident -> log.info("Oppdatert Z-ident: {}", ident))
+                .toList();
+
+        log.info("Oppdatert antall Z-identer: {}", brukere.size());
+        return brukere;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ZBrukerDTO {
+
+        private Long fraBruker;
+        private String navn;
+        private Long tilBruker;
     }
 }
