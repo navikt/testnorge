@@ -43,8 +43,7 @@ public class PersonConsumer {
     public PersonConsumer(
             ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
             PersonServiceProperties personServiceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = personServiceProperties;
         this.tokenExchange = tokenExchange;
@@ -61,7 +60,6 @@ public class PersonConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(personServiceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
 
         this.executor = Executors.newFixedThreadPool(threads);

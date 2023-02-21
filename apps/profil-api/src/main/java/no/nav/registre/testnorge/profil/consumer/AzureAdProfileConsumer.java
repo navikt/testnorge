@@ -8,7 +8,6 @@ import no.nav.registre.testnorge.profil.service.AzureAdTokenService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
@@ -28,8 +27,7 @@ public class AzureAdProfileConsumer {
     public AzureAdProfileConsumer(
             @Value("${http.proxy:#{null}}") String proxyHost,
             @Value("${api.azuread.url}") String url,
-            AzureAdTokenService azureAdTokenService,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            AzureAdTokenService azureAdTokenService) {
 
         this.url = url;
         this.azureAdTokenService = azureAdTokenService;
@@ -54,9 +52,7 @@ public class AzureAdProfileConsumer {
                         .port(uri.getPort()))
             ));
         }
-        this.webClient = builder
-                .filter(metricsWebClientFilterFunction)
-                .build();
+        this.webClient = builder.build();
     }
 
     public Profil getProfil() {

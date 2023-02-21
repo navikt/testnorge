@@ -1,20 +1,19 @@
 package no.nav.brregstub.endpoint.ws;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
+import no.nav.common.cxf.CXFClient;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import no.nav.brregstub.tjenestekontrakter.ws.ErFr;
-import no.nav.common.cxf.CXFClient;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -23,17 +22,10 @@ import no.nav.common.cxf.CXFClient;
 @Disabled
 public class BrregEndpointTest {
 
-    @LocalServerPort
+    @Value("${server.port}")
     private int randomServerPort;
 
     private ErFr client;
-
-    @BeforeAll
-    void onSetup() {
-        client = (ErFr) new CXFClient(ErFr.class)
-                .address("http://localhost:" + randomServerPort + "/ws")
-                .build();
-    }
 
     @Test
     @Disabled
@@ -51,5 +43,12 @@ public class BrregEndpointTest {
         var rolleUtskrift = client.hentRoller("bruker", "pwd", "321");
         assertThat(rolleUtskrift).contains("tjeneste=\"hentRoller\">");
         assertThat(rolleUtskrift).contains("<orgnr>321</orgnr>");
+    }
+
+    @BeforeAll
+    void onSetup() {
+        client = (ErFr) new CXFClient(ErFr.class)
+                .address("http://localhost:" + randomServerPort + "/ws")
+                .build();
     }
 }

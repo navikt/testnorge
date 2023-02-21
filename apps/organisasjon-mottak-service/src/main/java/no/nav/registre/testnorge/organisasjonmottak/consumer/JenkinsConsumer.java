@@ -30,8 +30,7 @@ public class JenkinsConsumer {
             JenkinsServiceProperties properties,
             TokenExchange tokenExchange,
             JenkinsBatchStatusConsumer jenkinsBatchStatusConsumer,
-            OrganisasjonBestillingConsumer organisasjonBestillingConsumer,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            OrganisasjonBestillingConsumer organisasjonBestillingConsumer) {
 
         this.organisasjonBestillingConsumer = organisasjonBestillingConsumer;
         this.properties = properties;
@@ -41,7 +40,6 @@ public class JenkinsConsumer {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

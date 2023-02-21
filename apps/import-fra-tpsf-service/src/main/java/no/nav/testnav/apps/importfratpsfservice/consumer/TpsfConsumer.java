@@ -22,15 +22,13 @@ public class TpsfConsumer {
     private final ServerProperties properties;
 
     public TpsfConsumer(TokenExchange tokenExchange,
-                        TpsfProperties properties,
-                        ExchangeFilterFunction metricsWebClientFilterFunction) {
+                        TpsfProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

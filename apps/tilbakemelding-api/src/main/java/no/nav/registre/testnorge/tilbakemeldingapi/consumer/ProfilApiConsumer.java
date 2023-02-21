@@ -23,14 +23,12 @@ public class ProfilApiConsumer {
 
     public ProfilApiConsumer(
             ProfilServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

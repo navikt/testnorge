@@ -28,8 +28,7 @@ public class TpsForvalterenConsumer {
     public TpsForvalterenConsumer(
             TpsForvalterenProxyServiceProperties serviceProperties,
             TokenExchange accessTokenService,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = accessTokenService;
@@ -45,7 +44,6 @@ public class TpsForvalterenConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

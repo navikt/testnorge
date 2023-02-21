@@ -8,7 +8,6 @@ import no.nav.registre.testnorge.batchbestillingservice.request.RsDollyBestillin
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -25,15 +24,13 @@ public class DollyBackendConsumer {
     private final ServerProperties serviceProperties;
 
     public DollyBackendConsumer(DollyBackendServiceProperties properties,
-                                TokenExchange tokenService,
-                                ExchangeFilterFunction metricsWebClientFilterFunction
+                                TokenExchange tokenService
     ) {
 
         this.serviceProperties = properties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

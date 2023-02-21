@@ -15,7 +15,7 @@ import java.util.Map;
 
 @XmlRootElement(name = "melding")
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlSeeAlso({XMLInntektsmeldingM.class, LocalDate.class, LocalDateTime.class})
+@XmlSeeAlso({ XMLInntektsmeldingM.class, LocalDate.class, LocalDateTime.class })
 public class Melding extends XMLInntektsmeldingM {
 
     public Melding() {

@@ -25,15 +25,13 @@ public class AdresseServiceConsumer {
     private final ServerProperties properties;
 
     public AdresseServiceConsumer(TokenExchange tokenExchange,
-                                  AdresseServiceProperties properties,
-                                  ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                  AdresseServiceProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

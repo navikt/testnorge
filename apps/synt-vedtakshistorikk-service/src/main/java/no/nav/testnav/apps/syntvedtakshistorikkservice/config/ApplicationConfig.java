@@ -10,7 +10,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.config.InsecureJwtServerTo
 import org.springframework.security.concurrent.DelegatingSecurityContextExecutorService;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.annotation.PostConstruct;
+import jakarta.annotation.PostConstruct;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ForkJoinPool;
 

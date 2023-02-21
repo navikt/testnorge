@@ -20,15 +20,13 @@ public class PdlForvalterConsumer {
     private final ServerProperties properties;
 
     public PdlForvalterConsumer(TokenExchange tokenExchange,
-                                PdlForvalterProperties properties,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                PdlForvalterProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

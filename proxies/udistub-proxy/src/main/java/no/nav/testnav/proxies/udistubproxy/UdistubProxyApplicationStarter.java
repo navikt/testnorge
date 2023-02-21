@@ -15,7 +15,7 @@ import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 
-import static org.apache.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 
 @Import({
         CoreConfig.class,
@@ -33,10 +33,6 @@ public class UdistubProxyApplicationStarter {
         this.udistubServiceProperties = udistubServiceProperties;
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(UdistubProxyApplicationStarter.class, args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
 
@@ -51,5 +47,9 @@ public class UdistubProxyApplicationStarter {
                                 .filter(addAuthenticationHeaderFilter))
                         .uri(udistubServiceProperties.getUrl()))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(UdistubProxyApplicationStarter.class, args);
     }
 }

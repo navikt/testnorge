@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -31,8 +30,7 @@ public class PdlTestdataConsumer {
     public PdlTestdataConsumer(
             PdlServiceProperties serviceProperties,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
@@ -48,7 +46,6 @@ public class PdlTestdataConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

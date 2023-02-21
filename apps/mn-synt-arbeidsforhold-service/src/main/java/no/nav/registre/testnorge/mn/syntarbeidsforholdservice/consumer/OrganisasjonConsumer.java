@@ -32,8 +32,7 @@ public class OrganisasjonConsumer {
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
@@ -41,7 +40,6 @@ public class OrganisasjonConsumer {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

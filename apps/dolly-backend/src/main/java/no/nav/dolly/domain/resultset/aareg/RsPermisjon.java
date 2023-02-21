@@ -16,10 +16,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class RsPermisjon {
 
-    @Schema(required = true)
+    @Schema
     private RsPeriodeAareg permisjonsPeriode;
 
-    @Schema(required = true)
+    @Schema
     private BigDecimal permisjonsprosent;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'PermisjonsOgPermitteringsBeskrivelse'",

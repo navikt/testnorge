@@ -34,11 +34,9 @@ public class MaskinportenConsumer {
     private final MaskinportenConfig maskinportenConfig;
     private final Mono<AccessToken> accessToken;
 
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig) {
 
         this.webClient = WebClient.builder()
-                .filter(metricsWebClientFilterFunction)
                 .build();
 
         this.maskinportenConfig = maskinportenConfig;

@@ -22,15 +22,13 @@ public class OrganisasjonForvalterConsumer {
     private final ServerProperties properties;
 
     public OrganisasjonForvalterConsumer(TokenExchange tokenExchange,
-                                         OrgForvalterServiceProperties properties,
-                                         ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                         OrgForvalterServiceProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

@@ -30,8 +30,7 @@ public class AltinnConsumer {
     public AltinnConsumer(
             AltinnConfig altinnConfig,
             MaskinportenConsumer maskinportenConsumer,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper) {
 
         this.altinnConfig = altinnConfig;
         this.maskinportenConsumer = maskinportenConsumer;
@@ -46,7 +45,6 @@ public class AltinnConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper));
                 })
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

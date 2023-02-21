@@ -57,9 +57,10 @@ public class JSONUserType implements UserType {
         objectMapper.registerModule(simpleModule);
     }
 
+
     @Override
-    public int[] sqlTypes() {
-        return new int[]{Types.JAVA_OBJECT};
+    public int getSqlType() {
+        return Types.JAVA_OBJECT;
     }
 
     @Override
@@ -82,10 +83,10 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+    public Object nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner)
             throws HibernateException, SQLException {
 
-        var cellContent = rs.getString(names[0]);
+        var cellContent = rs.getString(position);
         if (cellContent == null) {
             return null;
         }

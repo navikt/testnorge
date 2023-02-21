@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.altinn.v1.dto.DeleteStatus;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +33,7 @@ public class DeleteOrganisasjonAccessCommand implements Callable<Mono<DeleteStat
                 .retrieve()
                 .toBodilessEntity()
                 .map(resultat -> DeleteStatus.builder()
-                        .status(resultat.getStatusCode())
+                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
                 .doOnSuccess(value -> log.info("Organiasjon tilgang {} slettet.", id));
     }

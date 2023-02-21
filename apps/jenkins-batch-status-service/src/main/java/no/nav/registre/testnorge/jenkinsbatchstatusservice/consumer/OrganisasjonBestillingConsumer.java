@@ -28,8 +28,7 @@ public class OrganisasjonBestillingConsumer {
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
@@ -44,7 +43,6 @@ public class OrganisasjonBestillingConsumer {
                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_SECONDS))
                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_SECONDS)))
             ))
-            .filter(metricsWebClientFilterFunction)
             .build();
     }
 

@@ -29,8 +29,7 @@ public class KodeverkConsumer {
 
     public KodeverkConsumer(
             TokenExchange tokenExchange,
-            KodeverkProperties serviceProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            KodeverkProperties serviceProperties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = serviceProperties;
@@ -39,7 +38,6 @@ public class KodeverkConsumer {
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(16 * 1024 * 1024))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

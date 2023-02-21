@@ -19,15 +19,13 @@ public class ArbeidsforholdConsumer {
 
     public ArbeidsforholdConsumer(
             TokenExchange tokenExchange,
-            ArbeidsforholdServiceProperties serviceProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ArbeidsforholdServiceProperties serviceProperties) {
 
         this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

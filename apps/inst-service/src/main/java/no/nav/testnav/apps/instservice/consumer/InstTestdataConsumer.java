@@ -14,7 +14,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -34,14 +33,12 @@ public class InstTestdataConsumer {
 
     public InstTestdataConsumer(
             TokenExchange tokenExchange,
-            InstTestdataProperties instTestdataProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            InstTestdataProperties instTestdataProperties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = instTestdataProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(instTestdataProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

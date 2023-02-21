@@ -23,15 +23,13 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(
             TokenExchange tokenExchange,
-            HelsepersonellServiceProperties serviceProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            HelsepersonellServiceProperties serviceProperties) {
 
         this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

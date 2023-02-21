@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 
 import no.nav.testnav.apps.personexportapi.adapter.SlackAdapter;
 import no.nav.testnav.apps.personexportapi.consumer.TpsfConsumer;

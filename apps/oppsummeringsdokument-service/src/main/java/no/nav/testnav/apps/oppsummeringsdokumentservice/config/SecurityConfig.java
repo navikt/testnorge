@@ -20,8 +20,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/api/**")
+                .authorizeHttpRequests()
+                .requestMatchers("/api/**")
                 .fullyAuthenticated()
                 .and().oauth2ResourceServer().jwt();
     }

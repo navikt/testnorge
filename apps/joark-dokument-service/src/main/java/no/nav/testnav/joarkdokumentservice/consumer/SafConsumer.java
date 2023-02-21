@@ -25,8 +25,7 @@ public class SafConsumer {
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
@@ -35,7 +34,6 @@ public class SafConsumer {
                         ExchangeStrategies.builder()
                                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

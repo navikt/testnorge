@@ -28,8 +28,7 @@ public class SyntElsamConsumer {
 
     public SyntElsamConsumer(
             SyntSykemeldingProperties syntProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = syntProperties;
         this.tokenExchange = tokenExchange;
@@ -40,7 +39,6 @@ public class SyntElsamConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(syntProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

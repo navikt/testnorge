@@ -19,15 +19,13 @@ public class BrukerConsumer {
     private final TokenExchange tokenExchange;
 
     public BrukerConsumer(TestnavBrukerServiceProperties serviceProperties,
-                          TokenExchange tokenExchange,
-                          ExchangeFilterFunction metricsWebClientFilterFunction) {
+                          TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

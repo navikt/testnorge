@@ -2,11 +2,11 @@ package no.nav.testnav.apps.instservice.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.testnav.apps.instservice.consumer.InstTestdataConsumer;
 import no.nav.testnav.apps.instservice.domain.InstitusjonResponse;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -56,7 +56,7 @@ public class IdentService {
             var response = slettOppholdMedIdent(miljoe, ident);
             sletteOppholdResponses.add(OppholdResponse.builder()
                     .personident(ident)
-                    .status(response.getStatusCode())
+                    .status(HttpStatus.valueOf(response.getStatusCode().value()))
                     .feilmelding(response.hasBody() ? String.valueOf(response.getBody()) : null)
                     .build());
         }

@@ -33,8 +33,7 @@ public class PdlProxyConsumer {
 
     public PdlProxyConsumer(
             PdlProxyProperties pdlProxyProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = pdlProxyProperties;
         this.tokenExchange = tokenExchange;
@@ -45,7 +44,6 @@ public class PdlProxyConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(pdlProxyProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

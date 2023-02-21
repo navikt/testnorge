@@ -30,15 +30,13 @@ public class GeografiskeKodeverkConsumer {
     private Flux<GeografiskeKodeverkDTO> landkodeverkFlux;
 
     public GeografiskeKodeverkConsumer(TokenExchange tokenExchange,
-                                       GeografiskeKodeverkServiceProperties properties,
-                                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                       GeografiskeKodeverkServiceProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

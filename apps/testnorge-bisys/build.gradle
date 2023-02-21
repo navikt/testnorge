@@ -62,6 +62,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     implementation 'org.springframework.data:spring-data-elasticsearch'
+    implementation 'org.elasticsearch:elasticsearch:7.17.9'
+    implementation 'org.elasticsearch.client:elasticsearch-rest-high-level-client:7.17.9'
+
 
     implementation 'no.nav.bidrag.ui:bisys-ui-connect:2020.09.23-11.42-60270558f930'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
@@ -70,6 +73,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'

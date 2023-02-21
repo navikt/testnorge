@@ -28,12 +28,10 @@ public class ElasticSearchConsumer {
 
     public ElasticSearchConsumer(TokenExchange tokenExchange,
                                  PdlProxyProperties pdlProxyProperties,
-                                 ObjectMapper objectMapper,
-                                 ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                 ObjectMapper objectMapper) {
 
         this.webClient = WebClient.builder()
                 .baseUrl(pdlProxyProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
         this.tokenExchange = tokenExchange;

@@ -1,11 +1,8 @@
 package no.nav.testnav.apps.instservice.consumer.command;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import no.nav.testnav.apps.instservice.domain.Institusjonsopphold;
 import no.nav.testnav.apps.instservice.domain.InstitusjonsoppholdV2;
 import no.nav.testnav.apps.instservice.provider.responses.OppholdResponse;
 import no.nav.testnav.apps.instservice.util.WebClientFilter;
@@ -28,12 +25,6 @@ public class PostInstitusjonsoppholdCommand implements Callable<Mono<OppholdResp
     private final String token;
     private final String miljoe;
     private final InstitusjonsoppholdV2 institusjonsopphold;
-
-    protected static String getMessage(Throwable error) {
-        return error instanceof WebClientResponseException webClientResponseException ?
-                webClientResponseException.getResponseBodyAsString() :
-                error.getMessage();
-    }
 
     @SneakyThrows
     @Override
@@ -60,12 +51,18 @@ public class PostInstitusjonsoppholdCommand implements Callable<Mono<OppholdResp
 
                     var status = HttpStatus.INTERNAL_SERVER_ERROR;
                     if (throwable instanceof WebClientResponseException) {
-                        status = ((WebClientResponseException) throwable).getStatusCode();
+                        status = HttpStatus.valueOf(((WebClientResponseException) throwable).getStatusCode().value());
                     }
                     return Mono.just(OppholdResponse.builder()
                             .status(status)
                             .feilmelding(message)
                             .build());
                 });
+    }
+
+    protected static String getMessage(Throwable error) {
+        return error instanceof WebClientResponseException webClientResponseException ?
+                webClientResponseException.getResponseBodyAsString() :
+                error.getMessage();
     }
 }

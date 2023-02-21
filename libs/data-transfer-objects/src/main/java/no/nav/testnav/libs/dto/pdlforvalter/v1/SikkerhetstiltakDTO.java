@@ -18,21 +18,17 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class SikkerhetstiltakDTO extends DbVersjonDTO {
 
-    public enum Tiltakstype {FYUS, TFUS, FTUS, DIUS, TOAN}
-
-    @Schema(required = true)
+    @Schema
     private Tiltakstype tiltakstype;
-
-    @Schema(required = true)
+    @Schema
     private String beskrivelse;
-
     private Kontaktperson kontaktperson;
-
-    @Schema(required = true)
+    @Schema
     private LocalDateTime gyldigFraOgMed;
-
-    @Schema(required = true)
+    @Schema
     private LocalDateTime gyldigTilOgMed;
+
+    public enum Tiltakstype {FYUS, TFUS, FTUS, DIUS, TOAN}
 
     @Data
     @Builder

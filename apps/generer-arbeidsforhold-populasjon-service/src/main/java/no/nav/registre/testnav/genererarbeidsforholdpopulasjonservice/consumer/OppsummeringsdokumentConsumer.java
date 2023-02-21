@@ -43,8 +43,7 @@ public class OppsummeringsdokumentConsumer {
             TokenExchange tokenExchange,
             OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ApplicationProperties applicationProperties) {
 
         this.applicationProperties = applicationProperties;
         this.tokenExchange = tokenExchange;
@@ -63,7 +62,6 @@ public class OppsummeringsdokumentConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

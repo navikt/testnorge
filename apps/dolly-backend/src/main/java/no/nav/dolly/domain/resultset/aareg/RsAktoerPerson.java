@@ -14,11 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsAktoerPerson extends RsAktoer {
 
-    @Schema(required = true,
+    @Schema(
             description = "Personident/fødselsnummer")
     private String ident;
 
-    @Schema(required = true,
+    @Schema(
             description = "Gyldige verdier finnes i kodeverk 'Personidenter'")
     private String identtype;
 

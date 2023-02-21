@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.consumer.rs.tpsf;
 
 import lombok.extern.slf4j.Slf4j;
-
 import no.nav.registre.sdforvalter.config.credentials.TpsfProxyProperties;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.command.GetMeldingsIdsCommand;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.command.PostSendSkdMeldingerTpsCommand;
@@ -9,7 +8,6 @@ import no.nav.registre.sdforvalter.consumer.rs.tpsf.request.SendToTpsRequest;
 import no.nav.registre.sdforvalter.consumer.rs.tpsf.response.SkdMeldingerTilTpsRespons;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -24,13 +22,11 @@ public class TpsfConsumer {
 
     public TpsfConsumer(
             TpsfProxyProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

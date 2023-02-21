@@ -5,7 +5,6 @@ import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.c
 import no.nav.registre.testnav.genererarbeidsforholdpopulasjonservice.consumer.credentials.HodejegerenServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -18,14 +17,12 @@ public class HodejegerenConsumer {
 
     public HodejegerenConsumer(
             TokenExchange tokenExchange,
-            HodejegerenServerProperties serverProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            HodejegerenServerProperties serverProperties) {
 
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

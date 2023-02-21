@@ -23,8 +23,7 @@ public class PersonOrganisasjonTilgangConsumer {
     public PersonOrganisasjonTilgangConsumer(
             PersonOrganisasjonTilgangServiceProperties properties,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
@@ -41,7 +40,6 @@ public class PersonOrganisasjonTilgangConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

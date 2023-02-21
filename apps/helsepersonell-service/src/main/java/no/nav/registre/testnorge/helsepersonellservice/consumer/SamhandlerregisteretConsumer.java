@@ -24,8 +24,7 @@ public class SamhandlerregisteretConsumer {
 
     public SamhandlerregisteretConsumer(
             TokenExchange tokenExchange,
-            SamhandlerregisteretServerProperties serverProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            SamhandlerregisteretServerProperties serverProperties) {
 
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
@@ -33,7 +32,6 @@ public class SamhandlerregisteretConsumer {
                 .builder()
                 .exchangeStrategies(biggerMemorySizeExchangeStrategy())
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

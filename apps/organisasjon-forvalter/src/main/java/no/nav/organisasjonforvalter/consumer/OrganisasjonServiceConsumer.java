@@ -35,13 +35,11 @@ public class OrganisasjonServiceConsumer {
 
     public OrganisasjonServiceConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());

@@ -7,7 +7,7 @@ import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.OppsummeringsdokumentDTO;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -37,8 +37,9 @@ public class GetOppsummeringsdokumenterByIdentCommand implements Callable<Mono<L
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", this.miljo)
                 .retrieve()
-                .onStatus(HttpStatus::isError, response -> Mono.error(new RuntimeException("Noe gikk galt med henting av oppsummeringsdokumenteter for " + ident)))
-                .bodyToMono(new ParameterizedTypeReference<List<OppsummeringsdokumentDTO>>() {})
+                .onStatus(HttpStatusCode::isError, response -> Mono.error(new RuntimeException("Noe gikk galt med henting av oppsummeringsdokumenteter for " + ident)))
+                .bodyToMono(new ParameterizedTypeReference<List<OppsummeringsdokumentDTO>>() {
+                })
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .map(value -> {
