@@ -7,13 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableRetry
-@EnableTransactionManagement
 @Import({ApplicationCoreConfig.class,
         SecureOAuth2ServerToServerConfiguration.class,
         InsecureJwtServerToServerConfiguration.class})

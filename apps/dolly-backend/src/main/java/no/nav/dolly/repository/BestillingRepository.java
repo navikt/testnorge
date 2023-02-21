@@ -93,7 +93,7 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
     @Query(value = "update Bestilling b set b.ident = :newIdent where b.ident = :oldIdent")
     void swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
 
-    @Modifying(flushAutomatically = true)
+    @Modifying
     @Query(value = "update Bestilling b set b.bruker.id = :newBruker where b.bruker.id = :oldBruker")
     void updateBestillingBruker(@Param("oldBruker") Long oldBruker, @Param("newBruker") Long newBruker);
 }

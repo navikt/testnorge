@@ -20,6 +20,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.provider.api.BrukerController;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
@@ -61,6 +62,8 @@ public class TestgruppeService {
     private final PdlDataConsumer pdlDataConsumer;
 
     private final BestillingRepository bestillingRepository;
+
+    private final BrukerFavoritterRepository brukerFavoritterRepository;
 
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
 
@@ -250,18 +253,10 @@ public class TestgruppeService {
     @Transactional
     public String oppdaterBruker(BrukerController.ZBrukerDTO zBrukerDTO) {
 
-        brukerRepository.findById(zBrukerDTO.getTilBruker())
-                .ifPresent(bruker -> {
-                    bestillingRepository.findById(zBrukerDTO.getFraBruker())
-                            .ifPresent(bestilling -> bestilling.setBruker(bruker));
-                    testgruppeRepository.findById(zBrukerDTO.getFraBruker())
-                            .ifPresent(gruppe -> {
-                                gruppe.setOpprettetAv(bruker);
-                                gruppe.setSistEndretAv(bruker);
-                            });
-                    organisasjonBestillingRepository.findById(zBrukerDTO.getFraBruker())
-                            .ifPresent(orgBestilling -> orgBestilling.setBruker(bruker));
-                });
+        bestillingRepository.updateBestillingBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        testgruppeRepository.updateGruppeBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        brukerFavoritterRepository.updateBrukerFavoritter(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        organisasjonBestillingRepository.updateOrganisasjonBestillingBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
 
         return zBrukerDTO.getNavn();
     }
