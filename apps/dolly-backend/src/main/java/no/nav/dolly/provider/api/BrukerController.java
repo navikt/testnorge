@@ -126,7 +126,6 @@ public class BrukerController {
         return slettedeGrupper;
     }
 
-    @Transactional
     @CacheEvict(value = {CACHE_BRUKER, CACHE_GRUPPE, CACHE_BESTILLING}, allEntries = true)
     @PutMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(description = "Oppdatere migrerte brukere <br>" +
