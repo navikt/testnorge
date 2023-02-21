@@ -134,10 +134,6 @@ export default {
 		return Request.post(Endpoints.gjenopprettPerson(ident))
 	},
 
-	importerPersoner: (gruppeId, request) => {
-		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
-	},
-
 	importerPersonerFraPdl: (gruppeId, request) => {
 		return Request.post(Endpoints.gruppeBestillingImportFraPdl(gruppeId), request)
 	},
