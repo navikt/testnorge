@@ -15,11 +15,10 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +31,6 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -49,7 +47,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
     public ArenaForvalterConsumer(ArenaforvalterProxyProperties serverProperties,
@@ -66,23 +64,24 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_getIdent" })
+    @Timed(name = "providers", tags = {"operation", "arena_getIdent"})
     public ResponseEntity<ArenaArbeidssokerBruker> getIdent(String ident) {
 
         log.info("Henter bruker på ident: {} fra arena-forvalteren", ident);
-        ResponseEntity<ArenaArbeidssokerBruker> response = webClient.get().uri(
-                        uriBuilder -> uriBuilder
-                                .path(ARENAFORVALTER_BRUKER)
-                                .queryParam("filter-personident", ident)
-                                .build())
-                .header(HEADER_NAV_CALL_ID, generateCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                .header(HttpHeaders.AUTHORIZATION, serviceProperties.getAccessToken(tokenService))
-                .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .retrieve()
-                .toEntity(ArenaArbeidssokerBruker.class)
-                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException))
+        var response = tokenService.exchange(serviceProperties)
+                .flatMap(token -> webClient.get().uri(
+                                uriBuilder -> uriBuilder
+                                        .path(ARENAFORVALTER_BRUKER)
+                                        .queryParam("filter-personident", ident)
+                                        .build())
+                        .header(HEADER_NAV_CALL_ID, generateCallId())
+                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
+                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
+                        .retrieve()
+                        .toEntity(ArenaArbeidssokerBruker.class)
+                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                                .filter(WebClientFilter::is5xxException)))
                 .block();
 
         if (nonNull(response) && response.hasBody()) {
@@ -91,7 +90,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
         return response;
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_deleteIdent" })
+    @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
     public Mono<List<String>> deleteIdenter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -104,7 +103,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_deleteIdent" })
+    @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
     public Flux<String> deleteIdent(String ident, String miljoe, AccessToken token) {
 
         return new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call();
@@ -115,28 +114,24 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties);
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_postBruker" })
+    @Timed(name = "providers", tags = {"operation", "arena_postBruker"})
     public Flux<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
 
         log.info("Arena opprett {}", arenaNyeBrukere);
         return new ArenaforvalterPostArenadata(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_postDagpenger" })
+    @Timed(name = "providers", tags = {"operation", "arena_postDagpenger"})
     public Flux<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger, AccessToken accessToken) {
 
         log.info("Arena opprett {}", arenaDagpenger);
         return new ArenaforvalterPostArenadagpenger(webClient, arenaDagpenger, accessToken.getTokenValue()).call();
     }
 
-    @Timed(name = "providers", tags = { "operation", "arena_getEnvironments" })
+    @Timed(name = "providers", tags = {"operation", "arena_getEnvironments"})
     public Flux<String> getEnvironments(AccessToken token) {
 
         return new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call();
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override

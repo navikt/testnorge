@@ -31,7 +31,6 @@ public class MalBestillingMappingStrategy implements MappingStrategy {
                                 .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
                         mapperFacade.map(bestillingRequest, malBestilling);
                         malBestilling.setEnvironments(getEnvironments(bestilling.getMiljoer()));
-                        malBestilling.setTpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()));
                         malBestilling.setNavSyntetiskIdent(bestilling.getNavSyntetiskIdent());
                     }
                 })

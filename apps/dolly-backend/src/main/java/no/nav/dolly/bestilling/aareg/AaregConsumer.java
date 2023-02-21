@@ -7,9 +7,8 @@ import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdGetCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPostCommand;
 import no.nav.dolly.bestilling.aareg.command.ArbeidsforholdPutCommand;
 import no.nav.dolly.bestilling.aareg.domain.ArbeidsforholdRespons;
-import no.nav.dolly.config.credentials.TestnavAaregProxyProperties;
+import no.nav.dolly.config.credentials.AaregProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-
-import java.util.Map;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
@@ -31,7 +28,7 @@ public class AaregConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
-    public AaregConsumer(TestnavAaregProxyProperties serverProperties, TokenExchange tokenService, ObjectMapper objectMapper) {
+    public AaregConsumer(AaregProxyProperties serverProperties, TokenExchange tokenService, ObjectMapper objectMapper) {
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.webClient = WebClient
@@ -65,10 +62,6 @@ public class AaregConsumer implements ConsumerStatus {
 
         log.info("AAREG: Henting av arbeidsforhold, miljø {} ident {}", miljoe, ident);
         return new ArbeidsforholdGetCommand(webClient, miljoe, ident, token.getTokenValue()).call();
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     @Override

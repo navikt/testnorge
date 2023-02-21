@@ -8,7 +8,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdAareg;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;

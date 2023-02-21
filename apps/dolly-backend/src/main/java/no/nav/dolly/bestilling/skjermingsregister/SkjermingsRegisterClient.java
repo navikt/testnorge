@@ -13,7 +13,7 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
@@ -27,7 +27,6 @@ import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenan
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.getEgenansattDatoTom;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isSkjerming;
 import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsMessagingEgenansatt;
-import static no.nav.dolly.bestilling.skjermingsregister.SkjermingUtil.isTpsfEgenansatt;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
@@ -44,7 +43,7 @@ public class SkjermingsRegisterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling) || isTpsfEgenansatt(bestilling)) {
+        if (isSkjerming(bestilling) || isTpsMessagingEgenansatt(bestilling)) {
 
             return Flux.from(getPersonData(dollyPerson.getIdent())
                             .map(person -> prepRequest(bestilling, person))

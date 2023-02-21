@@ -9,9 +9,9 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.krrstub.dto.DigitalKontaktdataResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.krrstub.DigitalKontaktdata;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
@@ -43,7 +43,6 @@ public class KrrstubClient implements ClientRegister {
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         if (nonNull(bestilling.getKrrstub()) ||
-                (nonNull(bestilling.getTpsf()) && isKrrMaalform(bestilling.getTpsf().getSprakKode())) ||
                 (nonNull(bestilling.getTpsMessaging()) && isKrrMaalform(bestilling.getTpsMessaging().getSpraakKode()))) {
 
             var context = new MappingContext.Factory().getContext();

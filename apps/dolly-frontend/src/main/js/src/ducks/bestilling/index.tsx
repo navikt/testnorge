@@ -11,6 +11,7 @@ export const actions = createActions(
 	{
 		postBestillingLeggTilPaaPerson: DollyApi.createBestillingLeggTilPaaPerson,
 		postBestillingFraEksisterendeIdenter: DollyApi.createBestillingFraEksisterendeIdenter,
+		postBestillingLeggTilPaaGruppe: DollyApi.createBestillingLeggTilPaaGruppe,
 		postBestilling: DollyApi.createBestilling,
 		postOrganisasjonBestilling: DollyApi.createOrganisasjonBestilling,
 		postTestnorgeBestilling: DollyApi.importerPersonerFraPdl,
@@ -53,6 +54,8 @@ export const sendBestilling = (values, opts, gruppeId, navigate) => async (dispa
 	if (opts.is.leggTil) {
 		const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 		bestillingAction = actions.postBestillingLeggTilPaaPerson(ident, values)
+	} else if (opts.is.leggTilPaaGruppe) {
+		bestillingAction = actions.postBestillingLeggTilPaaGruppe(gruppeId, values)
 	} else if (opts.is.opprettFraIdenter) {
 		values = _set('opprettFraIdenter', opts.opprettFraIdenter, values)
 		bestillingAction = actions.postBestillingFraEksisterendeIdenter(gruppeId, values)

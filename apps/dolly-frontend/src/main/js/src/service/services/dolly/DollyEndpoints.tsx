@@ -195,6 +195,10 @@ export default class DollyEndpoints {
 		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
 	}
 
+	static leggTilPaaGruppe(gruppeId) {
+		return `${groupBase}/${gruppeId}/leggtilpaagruppe`
+	}
+
 	static leggTilPersonIGruppe(gruppeId, ident, master) {
 		return `${groupBase}/${gruppeId}/ident/${ident}?master=${master}`
 	}

@@ -8,21 +8,23 @@ export const Annet = () => (
 		title="Annet"
 		vis={['udistub.flyktning', 'udistub.soeknadOmBeskyttelseUnderBehandling']}
 	>
-		<Vis attributt="udistub.flyktning">
-			<FormikSelect
-				name="udistub.flyktning"
-				label="Flyktningstatus"
-				options={Options('boolean')}
-				isClearable={false}
-			/>
-		</Vis>
-		<Vis attributt="udistub.soeknadOmBeskyttelseUnderBehandling">
-			<FormikSelect
-				name="udistub.soeknadOmBeskyttelseUnderBehandling"
-				label="Asylsøker"
-				options={Options('jaNeiUavklart')}
-				isClearable={false}
-			/>
-		</Vis>
+		<div className="flexbox--flex-wrap">
+			<Vis attributt="udistub.flyktning">
+				<FormikSelect
+					name="udistub.flyktning"
+					label="Flyktningstatus"
+					options={Options('boolean')}
+					isClearable={false}
+				/>
+			</Vis>
+			<Vis attributt="udistub.soeknadOmBeskyttelseUnderBehandling">
+				<FormikSelect
+					name="udistub.soeknadOmBeskyttelseUnderBehandling"
+					label="Asylsøker"
+					options={Options('jaNeiUavklart')}
+					isClearable={false}
+				/>
+			</Vis>
+		</div>
 	</Kategori>
 )

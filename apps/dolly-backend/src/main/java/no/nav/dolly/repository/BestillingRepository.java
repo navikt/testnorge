@@ -78,7 +78,7 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
 
     @Modifying
     @Query(value = "update Bestilling b " +
-            "set b.gruppe = null, b.opprettetFraGruppeId = null " +
+            "set b.gruppe = null, b.opprettetFraGruppeId = null, b.bruker.id = null " +
             "where b.gruppe.id = :gruppeId")
     int updateBestillingNullifyGruppe(@Param("gruppeId") Long gruppeId);
 

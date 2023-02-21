@@ -10,23 +10,20 @@ import no.nav.dolly.consumer.pdlperson.command.PdlBolkPersonGetCommand;
 import no.nav.dolly.consumer.pdlperson.command.PdlPersonGetCommand;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
@@ -35,10 +32,9 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Service
 public class PdlPersonConsumer implements ConsumerStatus {
 
-    private static final String PDL_API_URL = "/pdl-api";
     private static final int BLOCK_SIZE = 50;
     private final TokenExchange tokenService;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
     public PdlPersonConsumer(TokenExchange tokenService,
@@ -53,11 +49,6 @@ public class PdlPersonConsumer implements ConsumerStatus {
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .filter(metricsWebClientFilterFunction)
                 .build();
-    }
-
-    public JsonNode getPdlPerson(String ident) {
-
-        return getPdlPerson(ident, PDL_MILJOER.Q2);
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPerson" })
@@ -77,15 +68,6 @@ public class PdlPersonConsumer implements ConsumerStatus {
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()
                         ).call()));
-    }
-
-    public Map<String, String> checkAlive() {
-        try {
-            return Map.of(serviceProperties.getName() + PDL_API_URL, serviceProperties.checkIsAlive(webClient, serviceProperties.getAccessToken(tokenService)));
-        } catch (SecurityException | WebClientResponseException ex) {
-            log.error("{} feilet mot URL: {}", serviceProperties.getName(), serviceProperties.getUrl(), ex);
-            return Map.of(serviceProperties.getName(), String.format("%s, URL: %s", ex.getMessage(), serviceProperties.getUrl()));
-        }
     }
 
     public static String hentQueryResource(String pathResource) {

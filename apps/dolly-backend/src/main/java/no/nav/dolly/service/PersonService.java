@@ -4,18 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.bestilling.tpsf.TpsfService;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.tpsf.Person;
-import no.nav.dolly.domain.resultset.tpsf.Relasjon;
-import no.nav.dolly.domain.resultset.tpsf.RsFullmakt;
-import no.nav.dolly.domain.resultset.tpsf.RsSimplePerson;
-import no.nav.dolly.domain.resultset.tpsf.RsVergemaal;
-import no.nav.dolly.domain.resultset.tpsf.adresse.IdentHistorikk;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
@@ -41,7 +34,6 @@ public class PersonService {
 
     private static final int PAGE_SIZE = 100;
 
-    private final TpsfService tpsfService;
     private final List<ClientRegister> clientRegister;
     private final PdlDataConsumer pdlDataConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
@@ -51,49 +43,6 @@ public class PersonService {
     @Async
     @Transactional
     public void recyclePersoner(List<TestidentDTO> testidenter) {
-
-        var tpsfPersoner = tpsfService.hentTestpersoner(testidenter.stream()
-                .filter(TestidentDTO::isTpsf)
-                .map(TestidentDTO::getIdent)
-                .toList());
-
-        if (testidenter.stream().anyMatch(TestidentDTO::isTpsf)) {
-
-            var identerInkludertRelasjoner = Stream.of(testidenter.stream()
-                                    .filter(TestidentDTO::isTpsf)
-                                    .map(TestidentDTO::getIdent)
-                                    .toList(),
-                            tpsfPersoner.stream()
-                                    .map(Person::getRelasjoner)
-                                    .flatMap(Collection::stream)
-                                    .map(Relasjon::getPersonRelasjonMed)
-                                    .map(Person::getIdent)
-                                    .toList(),
-                            tpsfPersoner.stream()
-                                    .map(Person::getVergemaal)
-                                    .flatMap(Collection::stream)
-                                    .map(RsVergemaal::getVerge)
-                                    .map(RsSimplePerson::getIdent)
-                                    .toList(),
-                            tpsfPersoner.stream()
-                                    .map(Person::getFullmakt)
-                                    .flatMap(Collection::stream)
-                                    .map(RsFullmakt::getFullmektig)
-                                    .map(RsSimplePerson::getIdent)
-                                    .toList(),
-                            tpsfPersoner.stream()
-                                    .map(Person::getIdentHistorikk)
-                                    .flatMap(Collection::stream)
-                                    .map(IdentHistorikk::getAliasPerson)
-                                    .map(Person::getIdent)
-                                    .toList())
-                    .flatMap(Collection::stream)
-                    .distinct()
-                    .toList();
-
-            pdlDataConsumer.slettPdlUtenom(identerInkludertRelasjoner)
-                    .subscribe(response -> log.info("Slettet antall {} identer (master TPS) mot PDL-forvalter", identerInkludertRelasjoner.size()));
-        }
 
         if (testidenter.stream().anyMatch(TestidentDTO::isPdlf)) {
 

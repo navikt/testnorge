@@ -48,9 +48,6 @@ public class BestillingProgress implements Serializable {
 
     private String ident;
 
-    @Column(name = "TPSF_SUCCESS_ENVIRONMENTS")
-    private String tpsfSuccessEnv;
-
     @Column(name = "SIGRUNSTUB_STATUS")
     private String sigrunstubStatus;
 
@@ -65,9 +62,6 @@ public class BestillingProgress implements Serializable {
 
     @Column(name = "ARENAFORVALTER_STATUS")
     private String arenaforvalterStatus;
-
-    @Column(name = "PDLFORVALTER_STATUS")
-    private String pdlforvalterStatus;
 
     @Column(name = "INSTDATA_STATUS")
     private String instdataStatus;
@@ -93,17 +87,17 @@ public class BestillingProgress implements Serializable {
     @Column(name = "SKJERMINGSREGISTER_STATUS")
     private String skjermingsregisterStatus;
 
-    @Column(name = "TPS_IMPORT_STATUS")
-    private String tpsImportStatus;
-
     @Column(name = "TPS_MESSAGING_STATUS")
     private String tpsMessagingStatus;
 
     @Column(name = "PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
-    @Column(name = "PDL_DATA_STATUS")
-    private String pdlDataStatus;
+    @Column(name = "PDL_FORVALTER_STATUS")
+    private String pdlForvalterStatus;
+
+    @Column(name = "PDL_ORDRE_STATUS")
+    private String pdlOrdreStatus;
 
     @Column(name = "KONTOREGISTER_STATUS")
     private String kontoregisterStatus;

@@ -81,6 +81,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                     .filter(testident -> testident.isPdl() || testident.isPdlf())
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
+                                    .filter(Objects::nonNull)
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
                                             .flatMap(dollyPerson -> Flux.concat(
