@@ -28,7 +28,7 @@ const alderspensjonPath = 'pensjonforvalter.alderspensjon'
 
 export const AlderspensjonForm = ({ formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
-	const { nyBestilling, leggTil, importTestnorge } = opts?.is
+	const { nyBestilling, leggTil, importTestnorge, leggTilPaaGruppe } = opts?.is
 
 	const harAlder =
 		_has(formikBag.values, 'pdldata.opprettNyPerson.alder') &&
@@ -186,7 +186,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 							inntekt (POPP) ved å huke av for dette valget på forrige side.
 						</StyledAlert>
 					)}
-				{!harNorskBankkonto && (
+				{!leggTilPaaGruppe && !harNorskBankkonto && (
 					<StyledAlert variant={'info'} size={'small'}>
 						Personen må ha norsk bankkontonummer for at det skal fattes vedtak og for at vedtaksbrev
 						skal kunne opprettes automatisk.
@@ -199,6 +199,7 @@ export const AlderspensjonForm = ({ formikBag }) => {
 					</StyledAlert>
 				)}
 				{_get(formikBag.values, `${alderspensjonPath}.relasjoner[0].sumAvForvArbKapPenInntekt`) &&
+					!leggTilPaaGruppe &&
 					!harPartner &&
 					!harPartnerImportertPerson() && (
 						<StyledAlert variant={'info'} size={'small'}>

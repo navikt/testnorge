@@ -44,7 +44,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	const nyAnsvarlig = 'nyAnsvarlig'
 	const typeAnsvarlig = 'typeAnsvarlig'
 
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
 	const handleChangeTypeAnsvarlig = (target: Target, path: string) => {
 		const foreldreansvar = _.get(formikBag.values, path)
@@ -105,7 +105,7 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 
 	return (
 		<>
-			{!harBarn() && (
+			{!leggTilPaaGruppe && !harBarn() && (
 				<StyledAlert variant={'warning'} size={'small'}>
 					For å sette foreldreansvar må personen også ha et barn. Det kan du legge til ved å huke av
 					for Har barn/foreldre under Familierelasjoner på forrige side, og sette en relasjon av

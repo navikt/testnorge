@@ -9,6 +9,8 @@ const testForeldreansvar = (val) => {
 		let feilmelding = null
 		const values = this.options.context
 
+		if (values.leggTilPaaGruppe) return true
+
 		const foreldrerelasjoner = []
 			.concat(
 				_.get(values, 'pdldata.person.forelderBarnRelasjon'),

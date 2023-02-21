@@ -111,7 +111,7 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 	}
 
 	return (
-		<React.Fragment>
+		<div className="flexbox--flex-wrap">
 			<DollySelect
 				name="oppholdsstatus"
 				label="Innenfor eller utenfor EØS"
@@ -183,6 +183,6 @@ export const Oppholdsstatus = ({ formikBag }: { formikBag: FormikProps<any> }) =
 					)}
 				</React.Fragment>
 			)}
-		</React.Fragment>
+		</div>
 	)
 }

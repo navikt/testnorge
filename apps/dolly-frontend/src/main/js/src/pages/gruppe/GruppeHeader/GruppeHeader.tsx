@@ -17,6 +17,9 @@ import { bottom } from '@popperjs/core'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
 import { FlyttPersonButton } from '@/components/ui/button/FlyttPersonButton/FlyttPersonButton'
+import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGruppe'
+import cn from 'classnames'
+import Icon from '@/components/ui/icon/Icon'
 
 type GruppeHeaderProps = {
 	gruppe: Gruppe
@@ -66,78 +69,85 @@ const GruppeHeader = ({
 					</Hjelpetekst>
 				)}
 			</div>
-			<Header className={headerClass} icon={iconType}>
-				<div className="flexbox">
-					<Header.TitleValue
-						title="Eier"
-						value={gruppe.opprettetAv?.brukernavn || gruppe.opprettetAv?.navIdent}
-					/>
-					<Header.TitleValue title="Antall personer" value={antallPersoner} />
-					<Header.TitleValue
-						title="Sist endret"
-						value={Formatters.formatStringDates(gruppe.datoEndret)}
-					/>
-					<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
-					{gruppe.tags && (
+			<header className={cn('content-header', headerClass)}>
+				<div className="content-header_content">
+					<div className="flexbox">
+						<div className={`content-header_icon ${headerClass}`}>
+							<Icon kind={iconType} size={38} />
+						</div>
 						<Header.TitleValue
-							title="Tags"
-							value={Formatters.arrayToString(
-								gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags
-							)}
+							title="Eier"
+							value={gruppe.opprettetAv?.brukernavn || gruppe.opprettetAv?.navIdent}
 						/>
-					)}
-				</div>
-				<div className="gruppe-header__actions">
-					{gruppe.erEierAvGruppe && !erLaast && (
-						<Button kind="edit" onClick={visRediger}>
-							REDIGER
-						</Button>
-					)}
-					{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
-					<Button
-						onClick={visGjenopprettModal}
-						kind="synchronize"
-						disabled={antallPersoner < 1}
-						title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
-					>
-						GJENOPPRETT
-					</Button>
-					{!erLaast && (
-						<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
-							Er du sikker på at du vil låse denne gruppen? <br />
-							En gruppe som er låst kan ikke endres, og blir heller ikke <br />
-							påvirket av prodlast i samhandlermiljøet (Q1). <br />
-							Når gruppen er låst må du kontakte Team Dolly <br />
-							dersom du ønsker å låse den opp igjen.
-						</LaasButton>
-					)}
-					{!erLaast && (
-						<SlettButton
-							gruppeId={gruppe.id}
-							action={deleteGruppe}
-							loading={isDeletingGruppe}
-							navigateHome={true}
+						<Header.TitleValue title="Antall personer" value={antallPersoner} />
+						<Header.TitleValue
+							title="Sist endret"
+							value={Formatters.formatStringDates(gruppe.datoEndret)}
+						/>
+						<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
+						{gruppe.tags && (
+							<Header.TitleValue
+								title="Tags"
+								value={Formatters.arrayToString(
+									gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags
+								)}
+							/>
+						)}
+					</div>
+					<div className="gruppe-header__border" />
+					<div className="gruppe-header__actions">
+						{!erLaast && <LeggTilPaaGruppe antallPersoner={antallPersoner} gruppeId={gruppe.id} />}
+						{!erLaast && <FlyttPersonButton gruppeId={gruppe?.id} disabled={antallPersoner < 1} />}
+						{gruppe.erEierAvGruppe && !erLaast && (
+							<Button kind="edit" onClick={visRediger}>
+								REDIGER
+							</Button>
+						)}
+						<Button
+							onClick={visGjenopprettModal}
+							kind="synchronize"
+							disabled={antallPersoner < 1}
+							title={antallPersoner < 1 ? 'Kan ikke gjenopprette en tom gruppe' : null}
 						>
-							Er du sikker på at du vil slette denne gruppen?
-						</SlettButton>
-					)}
-					<EksporterExcel
-						exportId={gruppe.id}
-						filPrefix={gruppe.id}
-						action={getGruppeExcelFil}
-						loading={isFetchingExcel}
-					/>
-					{brukertype !== 'BANKID' && (
-						<TagsButton
-							loading={isSendingTags}
-							action={sendTags}
-							gruppeId={gruppe.id}
-							eksisterendeTags={gruppe.tags}
+							GJENOPPRETT
+						</Button>
+						{!erLaast && (
+							<LaasButton gruppeId={gruppe.id} action={laasGruppe} loading={isLockingGruppe}>
+								Er du sikker på at du vil låse denne gruppen? <br />
+								En gruppe som er låst kan ikke endres, og blir heller ikke <br />
+								påvirket av prodlast i samhandlermiljøet (Q1). <br />
+								Når gruppen er låst må du kontakte Team Dolly <br />
+								dersom du ønsker å låse den opp igjen.
+							</LaasButton>
+						)}
+						{!erLaast && (
+							<SlettButton
+								gruppeId={gruppe.id}
+								action={deleteGruppe}
+								loading={isDeletingGruppe}
+								navigateHome={true}
+							>
+								Er du sikker på at du vil slette denne gruppen?
+							</SlettButton>
+						)}
+						{brukertype !== 'BANKID' && (
+							<TagsButton
+								loading={isSendingTags}
+								action={sendTags}
+								gruppeId={gruppe.id}
+								eksisterendeTags={gruppe.tags}
+							/>
+						)}
+						<EksporterExcel
+							exportId={gruppe.id}
+							filPrefix={gruppe.id}
+							action={getGruppeExcelFil}
+							loading={isFetchingExcel}
 						/>
-					)}
-					{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+						{!gruppe.erEierAvGruppe && <FavoriteButtonConnector groupId={gruppe.id} />}
+					</div>
 				</div>
-			</Header>
+			</header>
 
 			{visRedigerState && <RedigerGruppeConnector gruppe={gruppe} onCancel={skjulRediger} />}
 			{viserGjenopprettModal && (
