@@ -39,7 +39,7 @@ public interface TestgruppeRepository extends PagingAndSortingRepository<Testgru
             "and b.migrert is null")
     List<Testgruppe> getIkkemigrerteTestgrupperByNavId(@Param("navId") String navId);
 
-    @Modifying
+    @Modifying(flushAutomatically = true)
     @Query(value = "update Testgruppe b set b.opprettetAv.id = :newBruker, b.sistEndretAv.id = :newBruker " +
             "where b.opprettetAv.id = :oldBruker")
     void updateGruppeBruker(@Param("oldBruker") Long oldBruker, @Param("newBruker") Long newBruker);

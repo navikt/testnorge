@@ -32,7 +32,7 @@ public interface OrganisasjonBestillingRepository extends Repository<Organisasjo
 
     List<OrganisasjonBestilling> findByBruker(Bruker bruker);
 
-    @Modifying
+    @Modifying(flushAutomatically = true)
     @Query(value = "update OrganisasjonBestilling ob set ob.bruker.id = :newBruker where ob.bruker.id = :oldBruker")
     void updateOrganisasjonBestillingBruker(@Param("oldBruker") Long oldBruker, @Param("newBruker") Long newBruker);
 }
