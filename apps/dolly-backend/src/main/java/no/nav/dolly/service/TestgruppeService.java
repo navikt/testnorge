@@ -20,7 +20,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.provider.api.BrukerController;
 import no.nav.dolly.repository.BestillingRepository;
-import no.nav.dolly.repository.BrukerFavoritterRepository;
+import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
@@ -62,9 +62,9 @@ public class TestgruppeService {
 
     private final BestillingRepository bestillingRepository;
 
-    private final BrukerFavoritterRepository brukerFavoritterRepository;
-
     private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
+
+    private final BrukerRepository brukerRepository;
 
     public Testgruppe opprettTestgruppe(RsOpprettEndreTestgruppe rsTestgruppe) {
         Bruker bruker = brukerService.fetchBruker(getUserId(getUserInfo));
@@ -250,10 +250,18 @@ public class TestgruppeService {
     @Transactional
     public String oppdaterBruker(BrukerController.ZBrukerDTO zBrukerDTO) {
 
-        bestillingRepository.updateBestillingBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
-        testgruppeRepository.updateGruppeBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
-        brukerFavoritterRepository.updateBrukerFavoritter(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
-        organisasjonBestillingRepository.updateOrganisasjonBestillingBruker(zBrukerDTO.getFraBruker(), zBrukerDTO.getTilBruker());
+        brukerRepository.findById(zBrukerDTO.getTilBruker())
+                .ifPresent(bruker -> {
+                    bestillingRepository.findById(zBrukerDTO.getFraBruker())
+                            .ifPresent(bestilling -> bestilling.setBruker(bruker));
+                    testgruppeRepository.findById(zBrukerDTO.getFraBruker())
+                            .ifPresent(gruppe -> {
+                                gruppe.setOpprettetAv(bruker);
+                                gruppe.setSistEndretAv(bruker);
+                            });
+                    organisasjonBestillingRepository.findById(zBrukerDTO.getFraBruker())
+                            .ifPresent(orgBestilling -> orgBestilling.setBruker(bruker));
+                });
 
         return zBrukerDTO.getNavn();
     }
