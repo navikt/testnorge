@@ -89,8 +89,8 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 					)}
 				</div>
 				{registrert && (
-					<div className="flexbox--flex-wrap">
-						<Kategori title={'Sikker digital postkasse'}>
+					<Kategori title={'Sikker digital postkasse'}>
+						<div className="flexbox--flex-wrap">
 							<FormikTextInput name="krrstub.sdpAdresse" label="Adresse" />
 							<FormikSelect
 								fastfield={false}
@@ -98,8 +98,8 @@ export const KrrstubForm = ({ formikBag }: KrrstubFormProps) => {
 								label="Leverandør"
 								options={leverandoerOptions}
 							/>
-						</Kategori>
-					</div>
+						</div>
+					</Kategori>
 				)}
 			</Panel>
 		</Vis>
@@ -112,7 +112,7 @@ KrrstubForm.validation = {
 		gyldigFra: Yup.date().nullable(),
 		mobil: Yup.string().matches(/^\d*$/, 'Ugyldig mobilnummer'),
 		sdpAdresse: Yup.string(),
-		sdpLeverandoer: Yup.string(),
+		sdpLeverandoer: Yup.string().nullable(),
 		spraak: Yup.string(),
 		registrert: ifPresent('$krrstub.registrert', requiredBoolean),
 		reservert: Yup.boolean().nullable(),
