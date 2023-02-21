@@ -181,10 +181,6 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static getFasteDatasettTPSGruppe(gruppe) {
-		return `${fasteDatasettBase}/tps/${gruppe}`
-	}
-
 	static getPersonnavn() {
 		return `${uri}/personnavn`
 	}

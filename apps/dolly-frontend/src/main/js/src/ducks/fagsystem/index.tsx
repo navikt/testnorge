@@ -229,19 +229,6 @@ const deleteIdentState = (state, ident) => {
 	delete state.tpsMessaging[ident]
 }
 
-// Thunk
-export const fetchTpsfPersoner = (identer) => (dispatch) => {
-	const tpsIdenter = identer
-		.map((person) => {
-			if (!person.master || (person.master !== 'PDLF' && person.master !== 'PDL')) {
-				return person.ident
-			}
-		})
-		.filter((person) => !_.isNil(person))
-
-	if (tpsIdenter && tpsIdenter.length >= 1) dispatch(actions.getTpsf(tpsIdenter))
-}
-
 export const fetchPdlPersoner = (identer) => (dispatch) => {
 	const pdlIdenter = identer.map((person) => {
 		return person.ident
@@ -339,26 +326,18 @@ const hentPersonStatus = (ident, bestillingStatus) => {
 }
 
 export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
-	if (
-		!identer ||
-		(_.isEmpty(fagsystem.tpsf) && _.isEmpty(fagsystem.pdlforvalter) && _.isEmpty(fagsystem.pdl))
-	) {
+	if (!identer || (_.isEmpty(fagsystem.pdlforvalter) && _.isEmpty(fagsystem.pdl))) {
 		return null
 	}
 
 	const identListe = Object.values(identer).filter(
 		(gruppeIdent) =>
-			Object.keys(fagsystem.tpsf).includes(gruppeIdent.ident) ||
 			Object.keys(fagsystem.pdlforvalter).includes(gruppeIdent.ident) ||
 			Object.keys(fagsystem.pdl).includes(gruppeIdent.ident)
 	)
 
 	return identListe.map((ident) => {
-		if (ident.master === 'TPSF') {
-			const tpsfIdent = fagsystem.tpsf[ident.ident]
-			const pdlfIdent = fagsystem.pdlforvalter?.[ident.ident]?.person
-			return getTpsfIdentInfo(ident, bestillingStatuser, tpsfIdent, pdlfIdent)
-		} else if (ident.master === 'PDLF') {
+		if (ident.master === 'PDLF') {
 			const pdlfIdent = fagsystem.pdlforvalter[ident.ident]?.person
 			return getPdlfIdentInfo(ident, bestillingStatuser, pdlfIdent)
 		} else if (ident.master === 'PDL') {
@@ -368,28 +347,6 @@ export const selectPersonListe = (identer, bestillingStatuser, fagsystem) => {
 			return null
 		}
 	})
-}
-
-const getTpsfIdentInfo = (ident, bestillingStatuser, tpsfIdent, pdlfIdent) => {
-	if (!tpsfIdent) {
-		return getDefaultInfo(ident, bestillingStatuser, 'TPS')
-	}
-	const mellomnavn = tpsfIdent?.mellomnavn ? `${tpsfIdent.mellomnavn.charAt(0)}.` : ''
-	return {
-		ident,
-		identNr: tpsfIdent.ident,
-		bestillingId: ident.bestillingId,
-		importFra: tpsfIdent.importFra,
-		identtype: tpsfIdent.identtype,
-		kilde: 'TPS',
-		navn: `${tpsfIdent.fornavn} ${mellomnavn} ${tpsfIdent.etternavn}`,
-		kjonn: Formatters.kjonn(tpsfIdent.kjonn, tpsfIdent.alder),
-		alder: Formatters.formatAlder(
-			tpsfIdent.alder,
-			tpsfIdent.doedsdato ? tpsfIdent.doedsdato : getPdlDoedsdato(pdlfIdent)
-		),
-		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
-	}
 }
 
 const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
