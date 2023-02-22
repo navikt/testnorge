@@ -25,8 +25,17 @@ public class SecurityConfig {
                 .csrf()
                 .disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/**")
-                .fullyAuthenticated()
+                .requestMatchers(
+                        "/internal/**",
+                        "/webjars/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/error",
+                        "/swagger-ui.html"
+                ).permitAll()
+                .requestMatchers("/api/**").fullyAuthenticated()
                 .and()
                 .oauth2ResourceServer()
                 .jwt();
