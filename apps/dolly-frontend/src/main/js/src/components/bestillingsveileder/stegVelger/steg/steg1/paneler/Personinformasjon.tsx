@@ -45,7 +45,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const leggTil = opts.is.leggTil
 
 	const harFnr = opts.identtype === 'FNR'
-	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
+	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
 		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
