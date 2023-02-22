@@ -39,7 +39,7 @@ const arbeidsadgang = Yup.object({
 
 const oppholdSammeVilkaar = Yup.object({
 	oppholdSammeVilkaarPeriode: Yup.object({
-		fra: testDatoFom(requiredDate.nullable(), 'til'),
+		fra: testDatoFom(Yup.date().nullable(), 'til'),
 		til: testDatoTom(Yup.date().nullable(), 'fra'),
 	}),
 	oppholdSammeVilkaarEffektuering: Yup.date().nullable(),
@@ -56,26 +56,8 @@ const ikkeOppholdSammeVilkaar = Yup.object({
 const oppholdStatus = Yup.object()
 	.shape({
 		eosEllerEFTABeslutningOmOppholdsrett: Yup.lazy(checkUndefined),
-		eosEllerEFTABeslutningOmOppholdsrettPeriode: ifPresent(
-			'$udistub.oppholdStatus.eosEllerEFTABeslutningOmOppholdsrettPeriode',
-			Yup.object({
-				fra: requiredDate.nullable(),
-			})
-		),
 		eosEllerEFTAVedtakOmVarigOppholdsrett: Yup.lazy(checkUndefined),
-		eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: ifPresent(
-			'$udistub.oppholdStatus.eosEllerEFTAVedtakOmVarigOppholdsrettPeriode',
-			Yup.object({
-				fra: requiredDate.nullable(),
-			})
-		),
 		eosEllerEFTAOppholdstillatelse: Yup.lazy(checkUndefined),
-		eosEllerEFTAOppholdstillatelsePeriode: ifPresent(
-			'$udistub.oppholdStatus.eosEllerEFTAOppholdstillatelsePeriode',
-			Yup.object({
-				fra: requiredDate.nullable(),
-			})
-		),
 		ikkeOppholdSammeVilkaar: Yup.lazy((value) => {
 			if (value !== undefined) {
 				return ikkeOppholdSammeVilkaar

@@ -20,7 +20,8 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 	}
 
 	const oppholdsstatus = opphold.oppholdsstatus
-
+console.log("opphold: ", opphold) //TODO - SLETT MEG
+	console.log("oppholdsstatus: ", oppholdsstatus) //TODO - SLETT MEG
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
 		'eosEllerEFTAVedtakOmVarigOppholdsrett',
@@ -58,15 +59,17 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 				<TitleValue
 					title="Oppholdstillatelse fra"
 					value={Formatters.formatStringDates(
-						_.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`) ||
-							_.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+                        tredjelandsborger ?
+                            _.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra') :
+						    _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`)
 					)}
 				/>
 				<TitleValue
 					title="Oppholdstillatelse til"
 					value={Formatters.formatStringDates(
-						_.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`) ||
-							_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+                        tredjelandsborger ?
+                            _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til') :
+						    _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`)
 					)}
 				/>
 				<TitleValue
