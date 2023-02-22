@@ -1,13 +1,11 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sdforvalter.database.model.GruppeModel;
+import no.nav.registre.sdforvalter.database.model.KrrModel;
+import no.nav.registre.sdforvalter.database.repository.KrrRepository;
+import no.nav.registre.sdforvalter.domain.Krr;
+import no.nav.registre.sdforvalter.domain.KrrListe;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,11 +22,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.Arrays;
 
-import no.nav.registre.sdforvalter.database.model.GruppeModel;
-import no.nav.registre.sdforvalter.database.model.KrrModel;
-import no.nav.registre.sdforvalter.database.repository.KrrRepository;
-import no.nav.registre.sdforvalter.domain.Krr;
-import no.nav.registre.sdforvalter.domain.KrrListe;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -54,7 +53,7 @@ class StaticDataControllerV1KrrIntegrationTest {
     void shouldGetKrr() throws Exception {
         KrrModel model = createKrrModel("0101011236");
         repository.save(model);
-        String json = mvc.perform(get("/api/v1/faste-data/krr/")
+        String json = mvc.perform(get("/api/v1/faste-data/krr")
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -69,7 +68,7 @@ class StaticDataControllerV1KrrIntegrationTest {
     @Test
     void shouldCreateKrr() throws Exception {
         Krr krr = createKrr("0101011236");
-        mvc.perform(post("/api/v1/faste-data/krr/")
+        mvc.perform(post("/api/v1/faste-data/krr")
                         .content(objectMapper.writeValueAsString(createKrrListe(krr)))
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))
                 .andExpect(status().isOk());
@@ -83,7 +82,7 @@ class StaticDataControllerV1KrrIntegrationTest {
         Krr krr = createKrr("0101011236");
         Krr krrGruppeDolly = createKrr("0101011236", "DOLLY");
 
-        mvc.perform(post("/api/v1/faste-data/krr/")
+        mvc.perform(post("/api/v1/faste-data/krr")
                         .param("gruppe", "DOLLY")
                         .content(objectMapper.writeValueAsString(createKrrListe(krr, krrGruppeDolly)))
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))

@@ -1,10 +1,11 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.registre.sdforvalter.consumer.rs.krr.request.KrrRequest;
+import no.nav.registre.sdforvalter.database.model.KrrModel;
+import no.nav.registre.sdforvalter.database.repository.KrrRepository;
+import no.nav.registre.sdforvalter.domain.Krr;
+import no.nav.testnav.libs.testing.JsonWiremockHelper;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -19,11 +20,9 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
-import no.nav.registre.sdforvalter.consumer.rs.krr.request.KrrRequest;
-import no.nav.registre.sdforvalter.database.model.KrrModel;
-import no.nav.registre.sdforvalter.database.repository.KrrRepository;
-import no.nav.registre.sdforvalter.domain.Krr;
-import no.nav.testnav.libs.testing.JsonWiremockHelper;
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -46,28 +45,10 @@ class OrkestreringsControllerKrrIntegrationTest {
     @Autowired
     private KrrRepository repository;
 
-    @Test
-    void shouldInitiateKrrFromDatabase() throws Exception {
-        KrrModel model = createKrr("01010112365");
-        repository.save(model);
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
-                .stubPost();
-
-
-        mvc.perform(post("/api/v1/orkestrering/krr/")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        KrrRequest request = createKrrRequest(model);
-
-        JsonWiremockHelper
-                .builder(objectMapper)
-                .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
-                .withRequestBody(request, "gyldigFra")
-                .verifyPost();
+    @AfterEach
+    public void cleanUp() {
+        reset();
+        repository.deleteAll();
     }
 
     private KrrModel createKrr(String fnr) {
@@ -80,9 +61,27 @@ class OrkestreringsControllerKrrIntegrationTest {
         return new KrrRequest(new Krr(model));
     }
 
-    @AfterEach
-    public void cleanUp() {
-        reset();
-        repository.deleteAll();
+    @Test
+    void shouldInitiateKrrFromDatabase() throws Exception {
+        KrrModel model = createKrr("01010112365");
+        repository.save(model);
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
+                .stubPost();
+
+
+        mvc.perform(post("/api/v1/orkestrering/krr")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        KrrRequest request = createKrrRequest(model);
+
+        JsonWiremockHelper
+                .builder(objectMapper)
+                .withUrlPathMatching("(.*)/v1/kontaktinformasjon")
+                .withRequestBody(request, "gyldigFra")
+                .verifyPost();
     }
 }
