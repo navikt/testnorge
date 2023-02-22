@@ -79,6 +79,7 @@ public class InntektstubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         inntektstubConsumer.deleteInntekter(identer)
+                .collectList()
                 .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
     }
 }

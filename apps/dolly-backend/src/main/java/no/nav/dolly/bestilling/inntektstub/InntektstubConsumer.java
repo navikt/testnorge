@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -63,16 +62,14 @@ public class InntektstubConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})
-    public Mono<List<String>> deleteInntekter(List<String> identer) {
+    public Flux<String> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> Flux.range(0, (identer.size() / BLOCK_SIZE) + 1)
+                .flatMapMany(token -> Flux.fromIterable(identer)
                         .delayElements(Duration.ofMillis(100))
-                        .map(index -> new InntektstubDeleteCommand(webClient,
-                                identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
+                        .map(ident -> new InntektstubDeleteCommand(webClient, ident,
                                 token.getTokenValue()).call())
-                        .flatMap(Flux::from))
-                .collectList();
+                        .flatMap(Flux::from));
     }
 
     @Timed(name = "providers", tags = {"operation", "inntk_postInntekter"})

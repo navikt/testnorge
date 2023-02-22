@@ -9,7 +9,6 @@ import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
@@ -21,7 +20,7 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
     private static final String NORSKE_IDENTER_QUERY = "norske-identer";
 
     private final WebClient webClient;
-    private final List<String> identer;
+    private final String ident;
     private final String token;
 
     public Flux<String> call() {
@@ -29,7 +28,7 @@ public class InntektstubDeleteCommand implements Callable<Flux<String>> {
         return webClient.delete()
                 .uri(uriBuilder -> uriBuilder
                         .path(DELETE_INNTEKTER_URL)
-                        .queryParam(NORSKE_IDENTER_QUERY, identer)
+                        .queryParam(NORSKE_IDENTER_QUERY, ident)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
