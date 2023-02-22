@@ -168,11 +168,13 @@ public class TestpersonController {
     public Mono<List<String>> sletteTpsfIdenter(@RequestParam("tpsfIdenter") MultipartFile tpsfIdenter) throws IOException {
 
         return Flux.fromStream(new BufferedReader(new InputStreamReader(tpsfIdenter.getInputStream(), StandardCharsets.UTF_8))
-                .lines())
+                        .lines())
                 .map(this::slettIdent)
                 .filter(Objects::nonNull)
                 .doOnNext(ident -> log.info("Slettet TPSF-ident {}", ident))
                 .delayElements(Duration.ofMillis(50))
+                .doOnError(throwable -> log.error("Sletting av ident feilet", throwable.getMessage(), throwable))
+                .onErrorResume(throwable -> Mono.just(throwable.getMessage()))
                 .collectList();
     }
 
