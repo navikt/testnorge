@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherFagsystemer, multiFetcherPensjon } from '@/api'
+import { multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
@@ -22,7 +22,7 @@ const tpUrl = (ident, miljoer) =>
 
 const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
-		url: `/testnav-inst-service/api/v1/ident?identer=${ident}&miljoe=${miljo}`,
+		url: `/testnav-inst-proxy/api/v1/institusjonsopphold/person?environments=${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -96,8 +96,8 @@ export const useInstData = (ident, harInstBestilling) => {
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		instUrl(ident, instEnvironments),
-		multiFetcherFagsystemer
+		[instUrl(ident, instEnvironments), { norskident: ident }],
+		([url, headers]) => multiFetcherInst(url, headers)
 	)
 
 	return {
