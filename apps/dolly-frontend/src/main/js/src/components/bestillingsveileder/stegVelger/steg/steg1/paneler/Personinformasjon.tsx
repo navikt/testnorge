@@ -135,10 +135,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt
-					attr={sm.attrs.innvandretFraLand}
-					disabled={disabledInnUtflyttingField === innvandret}
-				/>
+				<Attributt attr={sm.attrs.innvandretFraLand} />
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
 					disabled={!harFnr || disabledInnUtflyttingField === utvandret}
