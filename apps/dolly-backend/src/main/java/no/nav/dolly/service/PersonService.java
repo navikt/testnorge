@@ -92,7 +92,16 @@ public class PersonService {
             pdlDataConsumer.slettPdl(pdlfIdenter.stream()
                             .filter(ident -> pdlfRelasjoner.stream().noneMatch(relasjon -> relasjon.equals(ident)))
                             .toList())
-                    .subscribe(response -> log.info("Slettet antall {} identer mot PDL-forvalter", pdlfIdenter.size()));
+                    .subscribe(response -> log.info("Slettet identer mot PDL-forvalter", pdlfIdenter.size()));
+        }
+
+        if (testidenter.stream().anyMatch(TestidentDTO::isTpsf)) {
+
+            pdlDataConsumer.slettPdl(testidenter.stream()
+                            .filter(TestidentDTO::isTpsf)
+                            .map(TestidentDTO::getIdent)
+                            .toList())
+                    .subscribe(response -> log.info("Slettet TPSF-ident {} mot PDL-forvalter", testidenter.get(0).getIdent()));
         }
 
         slettTestnorgeRelasjonerIntern(testidenter);

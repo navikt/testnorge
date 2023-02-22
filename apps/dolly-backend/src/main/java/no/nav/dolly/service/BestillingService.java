@@ -385,6 +385,7 @@ public class BestillingService {
         bestillingRepository.updateBestillingNullifyGruppe(gruppeId);
     }
 
+    @Transactional
     public void slettBestillingByTestIdent(String ident) {
 
         var bestillingProgresses = bestillingProgressRepository.findByIdent(ident);

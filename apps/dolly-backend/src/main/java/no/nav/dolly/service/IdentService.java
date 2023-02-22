@@ -50,9 +50,9 @@ public class IdentService {
         return identRepository.save(testident);
     }
 
+    @Transactional
     public int slettTestident(String ident) {
 
-        transaksjonMappingRepository.deleteAllByIdent(ident);
         return identRepository.deleteTestidentByIdent(ident);
     }
 
