@@ -193,6 +193,6 @@ public class TestpersonController {
             personService.recyclePersoner(new ArrayList<>(List.of(testIdent)));
             return ident;
         }
-        return null;
+        return "";
     }
 }
