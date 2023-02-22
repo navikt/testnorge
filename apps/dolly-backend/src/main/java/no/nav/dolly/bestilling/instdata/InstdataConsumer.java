@@ -10,7 +10,7 @@ import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
-import no.nav.dolly.config.credentials.InstServiceProperties;
+import no.nav.dolly.config.credentials.InstProxyProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -34,7 +34,7 @@ public class InstdataConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
 
     public InstdataConsumer(TokenExchange tokenService,
-                            InstServiceProperties serverProperties,
+                            InstProxyProperties serverProperties,
                             ObjectMapper objectMapper,
                             ExchangeFilterFunction metricsWebClientFilterFunction) {
 
@@ -89,7 +89,7 @@ public class InstdataConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-inst-service";
+        return "testnav-inst-proxy";
     }
 
 }

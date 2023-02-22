@@ -5,14 +5,19 @@ import useSWR from 'swr'
 const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
 const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
 const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
-const getInstMiljoerUrl = '/testnav-inst-service/api/v1/miljoer'
+const getInstMiljoerUrl = '/testnav-inst-proxy/api/v1/environment'
 const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/internal/miljoe'
 
 const prefetchedMiljoer = ['t3', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
-const prefetchedInstMiljoer = ['q1', 'q2']
+const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
 const prefetchedDokarkivMiljoer = ['q1', 'q2']
+
+type InstResponse = {
+	institusjonsoppholdEnvironments: string[]
+	kdiEnvironments?: string[]
+}
 
 export const useDollyEnvironments = () => {
 	const { data, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
@@ -57,12 +62,12 @@ export const useArenaEnvironments = () => {
 }
 
 export const useInstEnvironments = () => {
-	const { data, error } = useSWR<string[], Error>(getInstMiljoerUrl, fetcher, {
+	const { data, error } = useSWR<InstResponse, Error>(getInstMiljoerUrl, fetcher, {
 		fallbackData: prefetchedInstMiljoer,
 	})
 
 	return {
-		instEnvironments: data,
+		instEnvironments: data?.institusjonsoppholdEnvironments,
 		loading: !error && !data,
 		error: error,
 	}
