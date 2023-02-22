@@ -21,6 +21,7 @@ import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrdreService;
 import no.nav.dolly.service.PersonService;
 import no.nav.dolly.service.TransaksjonMappingService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -46,7 +47,6 @@ import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
@@ -169,8 +169,9 @@ public class TestpersonController {
 
         return Flux.fromStream(new BufferedReader(new InputStreamReader(tpsfIdenter.getInputStream(), StandardCharsets.UTF_8))
                         .lines())
+                .filter(StringUtils::isNotBlank)
                 .map(this::slettIdent)
-                .filter(Objects::nonNull)
+                .filter(StringUtils::isNotBlank)
                 .doOnNext(ident -> log.info("Slettet TPSF-ident {}", ident))
                 .delayElements(Duration.ofMillis(50))
                 .doOnError(throwable -> log.error("Sletting av ident feilet", throwable.getMessage(), throwable))
