@@ -2,9 +2,11 @@ package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.SystemTyper;
+import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -17,7 +19,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
-import static no.nav.dolly.domain.resultset.SystemTyper.*;
+import static no.nav.dolly.domain.resultset.SystemTyper.AAREG;
+import static no.nav.dolly.domain.resultset.SystemTyper.DOKARKIV;
+import static no.nav.dolly.domain.resultset.SystemTyper.INNTKMELD;
+import static no.nav.dolly.domain.resultset.SystemTyper.PEN_AP;
+import static no.nav.dolly.domain.resultset.SystemTyper.SYKEMELDING;
 import static org.apache.http.util.TextUtils.isBlank;
 
 @Service
@@ -26,6 +32,9 @@ public class TransaksjonMappingService {
 
     private final TransaksjonMappingRepository transaksjonMappingRepository;
     private final BestillingProgressService bestillingProgressService;
+
+    private final BestillingProgressRepository bestillingProgressRepository;
+
     private final MapperFacade mapperFacade;
 
     public List<RsTransaksjonMapping> getTransaksjonMapping(String system, String ident, Long bestillingId) {
@@ -69,6 +78,12 @@ public class TransaksjonMappingService {
     public void slettTransaksjonMappingByTestident(String ident) {
 
         transaksjonMappingRepository.deleteAllByIdent(ident);
+
+        bestillingProgressRepository.findByIdent(ident).stream()
+                .map(BestillingProgress::getBestilling)
+                .map(Bestilling::getId)
+                .distinct()
+                .forEach(transaksjonMappingRepository::deleteAllByBestillingId);
     }
 
     private String hentSystemFeilFraBestillingProgress(List<BestillingProgress> progress, String system) {
