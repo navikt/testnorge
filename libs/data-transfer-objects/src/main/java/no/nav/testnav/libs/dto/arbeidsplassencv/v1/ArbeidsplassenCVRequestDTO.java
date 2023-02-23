@@ -57,11 +57,19 @@ public class ArbeidsplassenCVRequestDTO {
         private String field;
         private String nuskode;
         private Boolean hasAuthorization;
-        private String vocationalCollege; //TBD "SVENNEBREV_FAGBREV"
+        private Yrkesskole vocationalCollege;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
         private String description;
         private Boolean ongoing;
+    }
+
+    public enum VocationalCertification {
+        SVENNEBREV_FAGBREV, MESTERBREV, AUTORISASJON
+    }
+
+    public enum Yrkesskole {
+        SVENNEBREV_FAGBREV, MESTERBREV, INGEN
     }
 
     @Data
@@ -111,8 +119,16 @@ public class ArbeidsplassenCVRequestDTO {
         private String title;
         private String issuer;
         private Long duration;
-        private String durationUnit; //"UKJENT",
+        private Tidsenhet durationUnit;
         private LocalDateTime date;
+    }
+
+    public enum Tidsenhet {
+        UKJENT,
+        TIME,
+        DAG,
+        UKE,
+        MND
     }
 
     @Data
@@ -122,8 +138,16 @@ public class ArbeidsplassenCVRequestDTO {
     public static class Spraak extends CVFelles {
 
         private String language;
-        private String oralProficiency; //TBD "IKKE_OPPGITT",
-        private String writtenProficiency; //TBD "IKKE_OPPGITT",
+        private Sprakferdighetsniva oralProficiency;
+        private Sprakferdighetsniva writtenProficiency;
+    }
+
+    public enum Sprakferdighetsniva {
+        IKKE_OPPGITT,
+        NYBEGYNNER,
+        GODT,
+        VELDIG_GODT,
+        FOERSTESPRAAK
     }
 
     @Data
@@ -147,7 +171,7 @@ public class ArbeidsplassenCVRequestDTO {
 
         private String title;
         private String conceptId;
-        private String type; //TBD  "SVENNEBREV_FAGBREV",
+        private VocationalCertification type;
     }
 
     @Data
@@ -166,16 +190,42 @@ public class ArbeidsplassenCVRequestDTO {
     @AllArgsConstructor
     public static class Jobboensker {
         private Boolean active;
-        private String startOption; //TBD "LEDIG_NAA"
+        private StartOption startOption;
         private List<Occupation> occupations;
         private List<OccupationDraft> occupationDrafts;
         private List<Location> locations;
-        private List<String> occupationTypes; // TBD "FAST"
-        private List<String> workLoadTypes;   // TBD  "HELTID"
-        private List<String> workScheduleTypes; // TBD "DAGTID"
-
+        private List<OccupationType> occupationTypes;
+        private List<Omfang> workLoadTypes;
+        private List<Arbeidstid> workScheduleTypes;
         private Boolean sistEndretAvNav;
         private LocalDateTime sistEndret;
+    }
+
+    public enum StartOption {
+        LEDIG_NAA,
+        ETTER_TRE_MND,
+        ETTER_AVTALE
+    }
+
+    public enum OccupationType {
+        FAST,
+        VIKARIAT,
+        ENGASJEMENT,
+        PROSJEKT,
+        SESONG,
+        TRAINEE,
+        LAERLING,
+        SELVSTENDIG_NAERINGSDRIVENDE,
+        FERIEJOBB,
+        ANNET
+    }
+
+    public enum Omfang {
+        HELTID, DELTID;
+    }
+
+    public enum Arbeidstid {
+        DAGTID, KVELD, NATT;
     }
 
     @Data
