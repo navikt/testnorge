@@ -1,0 +1,28 @@
+AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
+
+spring:
+  application:
+    name: testnav-arbeidsplassencv-proxy
+    desciption: Proxy for brregstub som legger på sikkerhet.
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 30s
+
+consumer:
+  arbeidsplassencv-proxy:
+    name: pam-cv-api
+    namespace: teampam
+    url: https://pam-cv-api.dev-fss-pub.nais.io
+    cluster: dev-fss

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <springProfile name="prod,dev">
+    <springProfile name="prod">
         <appender name="stdout_json" class="ch.qos.logback.core.ConsoleAppender">
             <encoder class="net.logstash.logback.encoder.LogstashEncoder">
                 <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
@@ -15,7 +15,6 @@
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.tomcat\..*</exclude>
                 </throwableConverter>
-                <includeMdcKeyName>bestillingId</includeMdcKeyName>
             </encoder>
         </appender>
         <root level="INFO">
@@ -23,13 +22,13 @@
         </root>
     </springProfile>
 
-    <springProfile name="local">
+    <springProfile name="dev">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <charset>UTF-8</charset>
+            <encoder>
                 <pattern>
-                    %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
+                    %d{HH:mm:ss.SSS} | %5p | %logger{25} | %m%n
                 </pattern>
+                <charset>utf8</charset>
             </encoder>
         </appender>
         <root level="INFO">
@@ -38,9 +37,6 @@
     </springProfile>
 
     <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">
-        <level value="TRACE"/>
-    </logger>
-    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
         <level value="TRACE"/>
     </logger>
 </configuration>
