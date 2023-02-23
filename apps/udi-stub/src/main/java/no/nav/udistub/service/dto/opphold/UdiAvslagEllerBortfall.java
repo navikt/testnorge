@@ -17,7 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiAvslagEllerBortfall {
 
     private LocalDate avgjorelsesDato;
