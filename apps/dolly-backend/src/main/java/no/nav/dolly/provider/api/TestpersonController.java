@@ -170,7 +170,7 @@ public class TestpersonController {
                         .lines())
                 .mapNotNull(this::slettIdent)
                 .doOnNext(ident -> log.info("Slettet TPSF-ident {}", ident))
-                .delayElements(Duration.ofMillis(50))
+                .delayElements(Duration.ofMillis(200))
                 .doOnError(throwable -> log.error("Sletting av ident feilet", throwable.getMessage(), throwable))
                 .onErrorResume(throwable -> Mono.just(throwable.getMessage()))
                 .collectList();
