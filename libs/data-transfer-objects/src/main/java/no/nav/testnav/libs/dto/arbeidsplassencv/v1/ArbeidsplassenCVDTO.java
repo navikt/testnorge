@@ -12,7 +12,7 @@ import java.util.List;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArbeidsplassenCVRequestDTO {
+public class ArbeidsplassenCVDTO {
 
     private Boolean harBil;
     private List<Arbeidserfaring> arbeidserfaring;
