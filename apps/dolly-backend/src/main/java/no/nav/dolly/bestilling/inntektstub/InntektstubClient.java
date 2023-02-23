@@ -78,8 +78,8 @@ public class InntektstubClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        inntektstubConsumer.deleteInntekter(identer)
-                .collectList()
-                .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
+//        inntektstubConsumer.deleteInntekter(identer)
+//                .collectList()
+//                .subscribe(response -> log.info("Slettet identer fra Inntektstub"));
     }
 }

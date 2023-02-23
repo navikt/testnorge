@@ -107,28 +107,35 @@ public class PersonService {
         var startTime = currentTimeMillis();
 
         checkAlias(ident);
-        var dbPerson = personRepository.findByIdent(ident).orElseThrow(() ->
-                new NotFoundException(format("Ident %s ble ikke funnet", ident)));
+        Set<String> identer;
+        if (personRepository.existsByIdent(ident)) {
 
-        unhookEksternePersonerService.unhook(dbPerson);
+            var dbPerson = personRepository.findByIdent(ident).get();
 
-        var identer = Stream.of(List.of(dbPerson.getIdent()),
-                        dbPerson.getRelasjoner().stream()
-                                .map(DbRelasjon::getRelatertPerson)
-                                .map(DbPerson::getPerson)
-                                .map(PersonDTO::getIdent)
-                                .toList(),
-                        dbPerson.getRelasjoner().stream()
-                                .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
-                                .map(DbRelasjon::getRelatertPerson)
-                                .map(DbPerson::getPerson)
-                                .map(PersonDTO::getForeldreansvar)
-                                .flatMap(Collection::stream)
-                                .filter(ansvar -> !ansvar.isEksisterendePerson())
-                                .map(ForeldreansvarDTO::getAnsvarlig)
-                                .toList())
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
+            unhookEksternePersonerService.unhook(dbPerson);
+
+            identer = Stream.of(List.of(dbPerson.getIdent()),
+                            dbPerson.getRelasjoner().stream()
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(PersonDTO::getIdent)
+                                    .toList(),
+                            dbPerson.getRelasjoner().stream()
+                                    .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
+                                    .map(DbRelasjon::getRelatertPerson)
+                                    .map(DbPerson::getPerson)
+                                    .map(PersonDTO::getForeldreansvar)
+                                    .flatMap(Collection::stream)
+                                    .filter(ansvar -> !ansvar.isEksisterendePerson())
+                                    .map(ForeldreansvarDTO::getAnsvarlig)
+                                    .toList())
+                    .flatMap(Collection::stream)
+                    .collect(Collectors.toSet());
+
+        } else {
+
+            identer = Set.of(ident);
+        }
 
         Stream.of(
                         pdlTestdataConsumer.delete(identer),
