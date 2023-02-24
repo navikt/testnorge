@@ -19,6 +19,8 @@ spring:
     gateway:
       httpclient:
         response-timeout: 30s
+    vault:
+      enabled: false
 
 consumer:
   arbeidsplassencv-proxy:
