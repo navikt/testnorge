@@ -8,14 +8,11 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testident.RsTestident;
-import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.dolly.mapper.utils.MapperTestUtils;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.springframework.security.authentication.TestingAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,6 +21,7 @@ import static java.util.Collections.singletonList;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@SpringBootTest
 class TestgruppeMappingStrategyTest {
 
     private final static String BRUKERID = "123";
@@ -36,7 +34,6 @@ class TestgruppeMappingStrategyTest {
         JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
-    @Disabled("Tatt ut pga bug i Orika-rammeverk der setting av context ikke virker")
     @Test
     void mappingFromTestgruppeToRsTestgruppe() {
         Bruker bruker = Bruker.builder().brukerId(BRUKERID).build();
@@ -54,11 +51,7 @@ class TestgruppeMappingStrategyTest {
 
         testident.setTestgruppe(testgruppe);
 
-        SecurityContextHolder.getContext().setAuthentication(new TestingAuthenticationToken(BRUKERID, null));
-        var context = MappingContextUtils.getMappingContext();
-        context.setProperty("securityContext", SecurityContextHolder.getContext());
-
-        List<RsTestident> rsIdenter = mapper.mapAsList(identer, RsTestident.class, context);
+        List<RsTestident> rsIdenter = mapper.mapAsList(identer, RsTestident.class);
         RsTestgruppe rs = mapper.map(testgruppe, RsTestgruppe.class);
 
         assertThat(rs.getNavn(), is("gruppe"));
