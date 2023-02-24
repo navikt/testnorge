@@ -1,117 +1,161 @@
 package no.nav.dolly.provider.api.testgruppe;
 
+import no.nav.dolly.JwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
-import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import org.junit.jupiter.api.Disabled;
+import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.IdentRepository;
+import no.nav.dolly.repository.TestgruppeRepository;
+import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.util.UriComponentsBuilder;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Random;
+import java.util.Set;
 
-import static org.hamcrest.CoreMatchers.both;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.hasProperty;
+import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
+import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@DisplayName("GET /api/v1/gruppe")
-@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class,
-        OAuth2ResourceServerAutoConfiguration.class,
-        OAuth2ClientAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class})
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
+@DisplayName("POST /api/v1/gruppe")
+@Testcontainers
+@EnableAutoConfiguration
+@ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-@Disabled
-class TestgruppeControllerGetTest extends TestgruppeTestBase {
+class TestgruppeControllerGetTest {
 
-    private static final ParameterizedTypeReference<List<RsTestgruppe>> expectedResponseRsTestgruppe =
-            new ParameterizedTypeReference<List<RsTestgruppe>>() {
-            };
+    @Autowired
+    private MockMvc mockMvc;
 
-    @Disabled
-    @Test
-    @DisplayName("Returnerer Testgrupper tilknyttet til brukerId gjennom favoritter og medlemskap")
-    void shouldGetTestgrupperWithNavIdent() {
-        Bruker bruker = dataFactory.createBruker("NAVIDENT");
-        Bruker annenBruker = dataFactory.createBruker("OTHER");
+    @Autowired
+    private TestgruppeRepository testgruppeRepository;
 
-        Testgruppe testgruppe = dataFactory.createTestgruppe("gruppe", bruker);
-        Testgruppe testgruppe2 = dataFactory.createTestgruppe("gruppe2", annenBruker);
-        Testgruppe testgruppe3 = dataFactory.createTestgruppe("gruppe3", annenBruker);
+    @Autowired
+    private BrukerRepository brukerRepository;
 
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe.getId());
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe2.getId());
-        dataFactory.addToBrukerFavourites(bruker.getBrukerId(), testgruppe3.getId());
+    @Autowired
+    private IdentRepository identRepository;
 
-        String url = UriComponentsBuilder.fromUriString(ENDPOINT_BASE_URI).queryParam("brukerId", bruker.getNavIdent()).toUriString();
-        List<RsTestgruppe> resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpectList(HttpStatus.OK, expectedResponseRsTestgruppe);
+    @Autowired
+    private Flyway flyway;
 
-        assertThat(resp.size(), is(3));
+    @BeforeEach
+    public void beforeEach() {
+        flyway.migrate();
+        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+    }
 
-        assertThat(resp, hasItem(both(
-                hasProperty("navn", equalTo("gruppe2"))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
-        ));
-
-        assertThat(resp, hasItem(both(
-                hasProperty("navn", equalTo("gruppe3"))).and(
-                hasProperty("opprettetAvNavIdent", equalTo(annenBruker.getNavIdent())))
-        ));
-
-        //Cleanup
-        dataFactory.clearFavourites(bruker.getNavIdent());
+    @AfterEach
+    public void afterEach() {
+        flyway.clean();
+        JwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
     @Test
-    @Disabled
-    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body")
-    void shouldFail404NotFound() {
-        String url = ENDPOINT_BASE_URI + "/123";
+    @DisplayName("Returnerer testgrupper tilknyttet til bruker-ID gjennom favoritter")
+    void shouldGetTestgrupperWithNavIdent()
+            throws Exception {
 
-        LinkedHashMap resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
+        var bruker = createBruker();
+        var testgruppe1 = createTestgruppe("Gruppen er ikke en favoritt", bruker);
+        var testgruppe2 = createTestgruppe("Gruppen er en favoritt", bruker);
+        bruker.setFavoritter(Set.of(testgruppe2));
+        bruker = brukerRepository.save(bruker);
 
-        assertThat(getErrMsg(resp), is("Gruppe med id 123 ble ikke funnet."));
+        mockMvc
+                .perform(get("/api/v1/gruppe?brukerId={brukerId}", bruker.getBrukerId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.antallElementer").value(2))
+                .andExpect(jsonPath("$.contents.length()").value(2))
+                .andExpect(jsonPath("$.contents[?(@.favorittIGruppen == false)].navn").value(testgruppe1.getNavn()))
+                .andExpect(jsonPath("$.contents[?(@.favorittIGruppen == true)].navn").value(testgruppe2.getNavn()))
+                .andExpect(jsonPath("$.favoritter.length()").value(1))
+                .andExpect(jsonPath("$.favoritter..navn").value(testgruppe2.getNavn()))
+                .andExpect(jsonPath("$.favoritter..favorittIGruppen").value(true));
+
     }
 
-    @Disabled
+    @Test
+    @DisplayName("Returnerer HTTP 404 med korrekt feilmelding i body")
+    void shouldFail404NotFound()
+            throws Exception {
+
+        var id = new Random().nextLong();
+        mockMvc
+                .perform(get("/api/v1/gruppe/{gruppeId}", id))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Gruppe med id " + id + " ble ikke funnet."));
+
+    }
+
     @Test
     @DisplayName("Returnerer Testgruppe")
-    void shouldReturnTestgruppe() {
-        String ident1 = "10";
-        String ident2 = "20";
-        Testgruppe testgruppe = dataFactory.createTestgruppe("Test gruppe");
+    void shouldReturnTestgruppe()
+            throws Exception {
 
-        Testident testident1 = dataFactory.createTestident(ident1, testgruppe);
-        Testident testident2 = dataFactory.createTestident(ident2, testgruppe);
+        var testgruppe = createTestgruppe("Testgruppe", createBruker());
+        for (var i = 1; i < 11; i++) {
+            createTestident("Ident " + i, testgruppe);
+        }
 
-        testgruppe = dataFactory.addTestidenterToTestgruppe(testgruppe, testident1, testident2);
+        mockMvc
+                .perform(get("/api/v1/gruppe/{gruppeId}", testgruppe.getId()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.navn").value("Testgruppe"))
+                .andExpect(jsonPath("$.antallIdenter").value(10));
 
-        String url = ENDPOINT_BASE_URI + "/" + testgruppe.getId();
-
-        RsTestgruppeMedBestillingId resp = sendRequest()
-                .to(HttpMethod.GET, url)
-                .andExpect(HttpStatus.OK, RsTestgruppeMedBestillingId.class);
-
-        assertThat(resp.getNavn(), is("Test gruppe"));
-        assertThat(resp.getAntallIdenter(), is(5)); //3 stk laget i createTestgruppe + 2 i addTestidenterToTestgruppe
     }
+
+    private Bruker createBruker() {
+        return brukerRepository.save(
+                Bruker
+                        .builder()
+                        .brukerId("Bruker")
+                        .brukertype(AZURE)
+                        .build()
+        );
+    }
+
+    private Testgruppe createTestgruppe(String navn, Bruker bruker) {
+        return testgruppeRepository.save(
+                Testgruppe
+                        .builder()
+                        .navn(navn)
+                        .hensikt("Testing")
+                        .opprettetAv(bruker)
+                        .datoEndret(LocalDate.now())
+                        .sistEndretAv(bruker)
+                        .build()
+        );
+    }
+
+    private void createTestident(String ident, Testgruppe testgruppe) {
+        identRepository.save(
+                Testident
+                        .builder()
+                        .ident(ident)
+                        .testgruppe(testgruppe)
+                        .master(PDL)
+                        .build()
+        );
+    }
+
 }
 
