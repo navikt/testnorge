@@ -46,6 +46,13 @@ repositories {
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 
+configurations {
+    configureEach {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+        exclude group: 'ch.qos.logback', module: 'logback-classic'
+    }
+}
+
 dependencies {
 
     implementation 'no.nav.testnav.libs:kafka-config'

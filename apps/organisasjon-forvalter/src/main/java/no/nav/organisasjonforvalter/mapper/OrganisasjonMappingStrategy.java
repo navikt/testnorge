@@ -25,34 +25,10 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.organisasjonforvalter.dto.responses.RsAdresse.AdresseType.FADR;
 import static no.nav.organisasjonforvalter.dto.responses.RsAdresse.AdresseType.PADR;
-import static org.apache.logging.log4j.util.Strings.isNotBlank;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 public class OrganisasjonMappingStrategy implements MappingStrategy {
-
-    private static Dato getDate(LocalDate date) {
-        LocalDate fixDate = nonNull(date) ? date : LocalDate.now();
-        return Dato.newBuilder()
-                .setAar(fixDate.getYear())
-                .setMaaned(fixDate.getMonthValue())
-                .setDag(fixDate.getDayOfMonth())
-                .build();
-    }
-
-    private static Internettadresse getNettside(String nettSide) {
-        return isNotBlank(nettSide) ? Internettadresse.newBuilder().setInternettadresse(nettSide).build() : null;
-    }
-
-    private static Telefon getTelefonnr(String telefonnr) {
-        return isNotBlank(telefonnr) ? Telefon.newBuilder().setTlf(telefonnr).build() : null;
-    }
-
-    private static Naeringskode getNaeringskode(Organisasjon source) {
-        return isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
-                .setHjelpeenhet(false)
-                .setGyldighetsdato(getDate(source.getStiftelsesdato()))
-                .build() : null;
-    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -120,5 +96,29 @@ public class OrganisasjonMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static Dato getDate(LocalDate date) {
+        LocalDate fixDate = nonNull(date) ? date : LocalDate.now();
+        return Dato.newBuilder()
+                .setAar(fixDate.getYear())
+                .setMaaned(fixDate.getMonthValue())
+                .setDag(fixDate.getDayOfMonth())
+                .build();
+    }
+
+    private static Internettadresse getNettside(String nettSide) {
+        return isNotBlank(nettSide) ? Internettadresse.newBuilder().setInternettadresse(nettSide).build() : null;
+    }
+
+    private static Telefon getTelefonnr(String telefonnr) {
+        return isNotBlank(telefonnr) ? Telefon.newBuilder().setTlf(telefonnr).build() : null;
+    }
+
+    private static Naeringskode getNaeringskode(Organisasjon source) {
+        return isNotBlank(source.getNaeringskode()) ? Naeringskode.newBuilder().setKode(source.getNaeringskode())
+                .setHjelpeenhet(false)
+                .setGyldighetsdato(getDate(source.getStiftelsesdato()))
+                .build() : null;
     }
 }

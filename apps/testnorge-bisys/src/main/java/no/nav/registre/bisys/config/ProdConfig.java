@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.elasticsearch.client.ClientConfiguration;
-import org.springframework.data.elasticsearch.client.erhlc.RestClients;
+import org.springframework.data.elasticsearch.client.RestClients;
 
 import java.io.IOException;
 
@@ -29,7 +29,7 @@ public class ProdConfig {
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
 
-        try (RestClients.ElasticsearchRestClient client = RestClients.create(clientConfiguration)) {
+        try (RestClients.ElasticsearchRestClient client = RestClients.create(clientConfiguration)){
             return client.rest();
         }
     }
