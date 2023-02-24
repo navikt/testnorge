@@ -1,12 +1,12 @@
 package no.nav.dolly.service;
 
+import no.nav.dolly.JwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BrukerRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
-import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -163,11 +159,6 @@ public class BrukerServiceTest {
 
     @BeforeEach
     public void setup() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
-                .claim("oid", BRUKERID)
-                .claim("name", BRUKERNAVN)
-                .claim("epost", EPOST)
-                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
-                .build()));
+        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

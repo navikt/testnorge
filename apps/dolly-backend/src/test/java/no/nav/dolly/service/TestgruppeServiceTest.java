@@ -1,6 +1,7 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.JwtAuthenticationTokenUtils;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -11,7 +12,6 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.TestgruppeRepository;
 import no.nav.dolly.repository.TransaksjonMappingRepository;
-import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,10 +27,6 @@ import org.springframework.dao.NonTransientDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.HashSet;
 import java.util.List;
@@ -235,11 +231,6 @@ public class TestgruppeServiceTest {
 
     @BeforeEach
     public void establishSecurity() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
-                .claim("oid", BRUKERID)
-                .claim("name", BRUKERNAVN)
-                .claim("epost", EPOST)
-                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
-                .build()));
+        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

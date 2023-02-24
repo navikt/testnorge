@@ -1,12 +1,12 @@
 package no.nav.dolly.provider.api;
 
 import ma.glasnost.orika.MapperFacade;
+import no.nav.dolly.JwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUpdateFavoritterReq;
 import no.nav.dolly.service.BrukerService;
-import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,10 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockito.junit.jupiter.MockitoSettings;
 import org.mockito.quality.Strictness;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.jwt.Jwt;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
@@ -92,11 +88,6 @@ public class BrukerControllerTest {
 
     @BeforeEach
     public void setup() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(Jwt.withTokenValue("test")
-                .claim("oid", BRUKERID)
-                .claim("name", BRUKERNAVN)
-                .claim("epost", EPOST)
-                .header(HttpHeaders.CONTENT_TYPE, ContentType.APPLICATION_JSON)
-                .build()));
+        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }
