@@ -33,8 +33,8 @@ public class ArbeidsplassenCVClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        arbeidplassenCVConsumer.deleteCVer(identer)
-                .collectList()
-                .subscribe(response -> log.info("Slettet utført mot ArbeidsplassenCV"));
+//        arbeidplassenCVConsumer.deleteCVer(identer)
+//                .collectList()
+//                .subscribe(response -> log.info("Slettet utført mot ArbeidsplassenCV"));
     }
 }
