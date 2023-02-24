@@ -1,89 +1,33 @@
 package no.nav.dolly.provider.api.testgruppe;
 
-import no.nav.dolly.JwtAuthenticationTokenUtils;
-import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.IdentRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
-import org.flywaydb.core.Flyway;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
 import java.util.Random;
 import java.util.Set;
 
-import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = RANDOM_PORT)
-@ActiveProfiles("test")
-@DisplayName("POST /api/v1/gruppe")
-@Testcontainers
-@EnableAutoConfiguration
-@ComponentScan("no.nav.dolly")
-@AutoConfigureMockMvc(addFilters = false)
-class TestgruppeControllerGetTest {
+@DisplayName("GET /api/v1/gruppe")
+class TestgruppeControllerGetTest extends TestgruppeControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
-    private TestgruppeRepository testgruppeRepository;
-
-    @Autowired
-    private BrukerRepository brukerRepository;
-
-    @Autowired
-    private IdentRepository identRepository;
-
-    @Autowired
-    private Flyway flyway;
-
-    @BeforeEach
-    public void beforeEach() {
-        flyway.migrate();
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
-    }
-
-    @AfterEach
-    public void afterEach() {
-        flyway.clean();
-        JwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
-    }
-
-    @MockBean
-    @SuppressWarnings("unused")
-    private JwtDecoder jwtDecoder;
 
     @Test
     @DisplayName("Returnerer testgrupper tilknyttet til bruker-ID gjennom favoritter")
     void shouldGetTestgrupperWithNavIdent()
             throws Exception {
 
-        var bruker = createBruker();
-        var testgruppe1 = createTestgruppe("Gruppen er ikke en favoritt", bruker);
-        var testgruppe2 = createTestgruppe("Gruppen er en favoritt", bruker);
+        var bruker = super.createBruker();
+        var testgruppe1 = super.createTestgruppe("Gruppen er ikke en favoritt", bruker);
+        var testgruppe2 = super.createTestgruppe("Gruppen er en favoritt", bruker);
         bruker.setFavoritter(Set.of(testgruppe2));
-        bruker = brukerRepository.save(bruker);
+        bruker = super.saveBruker(bruker);
 
         mockMvc
                 .perform(get("/api/v1/gruppe?brukerId={brukerId}", bruker.getBrukerId()))
@@ -116,9 +60,9 @@ class TestgruppeControllerGetTest {
     void shouldReturnTestgruppe()
             throws Exception {
 
-        var testgruppe = createTestgruppe("Testgruppe", createBruker());
+        var testgruppe = super.createTestgruppe("Testgruppe", super.createBruker());
         for (var i = 1; i < 11; i++) {
-            createTestident("Ident " + i, testgruppe);
+            super.createTestident("Ident " + i, testgruppe);
         }
 
         mockMvc
@@ -127,40 +71,6 @@ class TestgruppeControllerGetTest {
                 .andExpect(jsonPath("$.navn").value("Testgruppe"))
                 .andExpect(jsonPath("$.antallIdenter").value(10));
 
-    }
-
-    private Bruker createBruker() {
-        return brukerRepository.save(
-                Bruker
-                        .builder()
-                        .brukerId("Bruker")
-                        .brukertype(AZURE)
-                        .build()
-        );
-    }
-
-    private Testgruppe createTestgruppe(String navn, Bruker bruker) {
-        return testgruppeRepository.save(
-                Testgruppe
-                        .builder()
-                        .navn(navn)
-                        .hensikt("Testing")
-                        .opprettetAv(bruker)
-                        .datoEndret(LocalDate.now())
-                        .sistEndretAv(bruker)
-                        .build()
-        );
-    }
-
-    private void createTestident(String ident, Testgruppe testgruppe) {
-        identRepository.save(
-                Testident
-                        .builder()
-                        .ident(ident)
-                        .testgruppe(testgruppe)
-                        .master(PDL)
-                        .build()
-        );
     }
 
 }
