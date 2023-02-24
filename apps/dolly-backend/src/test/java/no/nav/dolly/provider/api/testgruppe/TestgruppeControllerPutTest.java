@@ -1,70 +1,89 @@
 package no.nav.dolly.provider.api.testgruppe;
 
-import no.nav.dolly.domain.jpa.Testgruppe;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
-import org.junit.jupiter.api.Disabled;
+import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
+import no.nav.testnav.libs.securitycore.domain.UserInfo;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 
-import java.util.LinkedHashMap;
+import java.util.Optional;
+import java.util.Random;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @DisplayName("PUT /api/v1/gruppe")
-@EnableAutoConfiguration(exclude = {SecurityAutoConfiguration.class,
-        OAuth2ResourceServerAutoConfiguration.class,
-        OAuth2ClientAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class})
-@AutoConfigureMockMvc(addFilters = false)
-@Disabled
-class TestgruppeControllerPutTest extends TestgruppeTestBase {
+class TestgruppeControllerPutTest extends TestgruppeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private GetUserInfo getUserInfo;
 
     @Test
-    @Disabled
-    @DisplayName("Returnerer HTTP 200 med feilmelding Not Found i body når Testgruppe ikke finnes")
-    void shouldFail404WhenTestgruppeDontExist() {
+    @DisplayName("Returnerer HTTP 404 med korrekt feilmelding hvis Testgruppe ikke finnes")
+    void shouldFail404WhenTestgruppeDontExist()
+            throws Exception {
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
+        var request = RsOpprettEndreTestgruppe
+                .builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
                 .build();
+        var id = new Random().nextLong();
+        mockMvc
+                .perform(
+                        put("/api/v1/gruppe/{id}", id)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andDo(print())
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Gruppe med id " + id + " ble ikke funnet."));
 
-        LinkedHashMap resp = sendRequest(rsOpprettEndreTestgruppe)
-                .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/123")
-                .andExpect(HttpStatus.OK, LinkedHashMap.class);
-
-        assertThat(getErrMsg(resp), is("Gruppe med id 123 ble ikke funnet."));
     }
 
-    @Disabled
     @Test
     @DisplayName("Oppdaterer informasjon om Testgruppe")
-    void updateTestgruppe() {
-        Testgruppe testgruppe = dataFactory.createTestgruppe("Testgruppe");
+    void updateTestgruppe()
+            throws Exception {
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
-                .navn("mingruppe")
-                .hensikt("hensikt")
+        var bruker = super.createBruker();
+        var testgruppe = super.createTestgruppe("Opprinnelig gruppe", bruker);
+        var request = RsOpprettEndreTestgruppe
+                .builder()
+                .navn("Endret gruppe")
+                .hensikt("Endret hensikt")
                 .build();
+        when(getUserInfo.call())
+                .thenReturn(Optional.of(new UserInfo(bruker.getBrukerId(), "", "", bruker.getBrukernavn())));
+        mockMvc
+                .perform(
+                        put("/api/v1/gruppe/{id}", testgruppe.getId())
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(result -> {
+                    var response = objectMapper.readValue(result.getResponse().getContentAsString(), RsTestgruppeMedBestillingId.class);
+                    assertThat(response.getId()).isEqualTo(testgruppe.getId());
+                    assertThat(response.getNavn()).isEqualTo("Endret gruppe");
+                    assertThat(response.getHensikt()).isEqualTo("Endret hensikt");
+                });
 
-        Testgruppe resp = sendRequest(rsOpprettEndreTestgruppe)
-                .to(HttpMethod.PUT, ENDPOINT_BASE_URI + "/" + testgruppe.getId())
-                .andExpect(HttpStatus.OK, Testgruppe.class);
-
-        assertThat(resp.getId(), is(notNullValue()));
-        assertThat(resp.getNavn(), is("mingruppe"));
-        assertThat(resp.getHensikt(), is("hensikt"));
     }
 
 }

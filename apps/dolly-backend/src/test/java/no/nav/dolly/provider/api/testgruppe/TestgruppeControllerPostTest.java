@@ -45,13 +45,11 @@ class TestgruppeControllerPostTest extends TestgruppeControllerTest {
                 .navn("mingruppe")
                 .hensikt("hensikt")
                 .build();
-        var json = objectMapper.writeValueAsString(request);
         mockMvc
                 .perform(
                         post("/api/v1/gruppe")
                                 .contentType(APPLICATION_JSON)
-                                .content(json)
-                )
+                                .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(result -> {
                     var response = objectMapper.readValue(result.getResponse().getContentAsString(), RsTestgruppeMedBestillingId.class);
