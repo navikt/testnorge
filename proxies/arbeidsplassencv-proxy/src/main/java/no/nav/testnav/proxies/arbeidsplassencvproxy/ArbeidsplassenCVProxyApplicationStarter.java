@@ -48,7 +48,7 @@ public class ArbeidsplassenCVProxyApplicationStarter {
         return spec -> spec
                 .path("/**")
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("(?<segment>.*)", "/pam-cv-api/${segment}")
+                        .rewritePath("/(?<segment>.*)", "/pam-cv-api/${segment}")
                         .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
                         .filter(filter)
                 ).uri(url);
