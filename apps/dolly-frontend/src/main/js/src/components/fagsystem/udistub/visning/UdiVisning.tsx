@@ -9,7 +9,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { hasProperty } from 'dot-prop'
 import { Alert } from '@navikt/ds-react'
 
-export const sjekkManglerUdiData = (udiData) => {
+const kunTommeObjekter = (udiData) => {
 	const { oppholdStatus, arbeidsadgang, aliaser } = udiData
 	return (
 		(!oppholdStatus || Object.keys(oppholdStatus)?.length < 1) &&
@@ -19,12 +19,16 @@ export const sjekkManglerUdiData = (udiData) => {
 		!hasProperty(udiData, 'soeknadOmBeskyttelseUnderBehandling')
 	)
 }
+export const sjekkManglerUdiData = (udiData) => {
+	return kunTommeObjekter(udiData) && !udiData?.harOppholdsTillatelse
+}
 
 export const UdiVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster UDI-data" />
 	if (!data || Object.keys(data).length === 0) return false
 
 	const manglerFagsystemdata = sjekkManglerUdiData(data)
+	const visHarOppholdstillatelse = kunTommeObjekter(data) && data.harOppholdsTillatelse
 
 	return (
 		<div>
@@ -36,7 +40,10 @@ export const UdiVisning = ({ data, loading }) => {
 					</Alert>
 				) : (
 					<div className="person-visning">
-						<Oppholdsstatus oppholdsstatus={data.oppholdStatus} />
+						<Oppholdsstatus
+							oppholdsstatus={data.oppholdStatus}
+							oppholdstillatelse={visHarOppholdstillatelse}
+						/>
 						<Arbeidsadgang arbeidsadgang={data.arbeidsadgang} />
 						<Aliaser aliaser={data.aliaser} />
 						<Annet data={data} />

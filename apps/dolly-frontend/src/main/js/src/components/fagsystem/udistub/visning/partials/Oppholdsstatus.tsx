@@ -14,12 +14,10 @@ type Opphold = {
 	oppholdstillatelse: boolean
 }
 
-export const Oppholdsstatus = (opphold: Opphold) => {
-	if (!opphold || !opphold.oppholdsstatus) {
+export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) => {
+	if (!oppholdsstatus && !oppholdstillatelse) {
 		return null
 	}
-
-	const oppholdsstatus = opphold.oppholdsstatus
 
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
@@ -106,6 +104,7 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 						Formatters.showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
 					}
 				/>
+				{oppholdstillatelse && <TitleValue title="Har oppholdstillatelse" value="Ja" />}
 			</div>
 			<AvslagEllerBortfallVisning
 				// @ts-ignore
