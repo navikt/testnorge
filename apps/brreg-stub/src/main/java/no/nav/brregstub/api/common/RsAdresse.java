@@ -3,7 +3,7 @@ package no.nav.brregstub.api.common;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.validation.constraints.NotBlank;
+import javax.validation.constraints.NotBlank;
 
 @Data
 @NoArgsConstructor
