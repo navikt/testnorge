@@ -46,7 +46,7 @@ public class ArbeidsplassenCVProxyApplicationStarter {
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String url, GatewayFilter filter) {
         return spec -> spec
-                .path("**")
+                .path("/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("(?<segment>.*)", "/pam-cv-api/${segment}")
                         .setResponseHeader("Content-Type", "application/json; charset=UTF-8")
