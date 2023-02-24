@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id "org.sonarqube" version "4.0.0.2929"
-    id 'org.springframework.boot' version "3.0.2"
+    id 'org.springframework.boot' version "3.0.3"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -28,6 +28,8 @@ dependencyManagement {
     }
 }
 
+
+
 properties {
     compileJava.options.encoding = 'UTF-8'
 }
@@ -41,6 +43,8 @@ repositories {
     mavenCentral()
     mavenLocal()
 }
+
+
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 
