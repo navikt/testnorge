@@ -1,50 +1,66 @@
 package no.nav.dolly.provider.api.testgruppe;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppeMedBestillingId;
-import org.junit.jupiter.api.Disabled;
+import no.nav.testnav.libs.securitycore.domain.UserInfo;
+import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
+import java.util.Optional;
 
-@Disabled
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.mockito.Mockito.when;
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @DisplayName("POST /api/v1/gruppe")
-@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class,
-        OAuth2ResourceServerAutoConfiguration.class,
-        OAuth2ClientAutoConfiguration.class,
-        ManagementWebSecurityAutoConfiguration.class })
-@AutoConfigureMockMvc(addFilters = false)
-class TestgruppeControllerPostTest extends TestgruppeTestBase {
+class TestgruppeControllerPostTest extends TestgruppeControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @MockBean
+    private GetUserInfo getUserInfo;
 
     @Test
     @DisplayName("Returnerer opprettet Testgruppe med innlogget bruker som eier")
-    void createTestgruppeAndSetCurrentUserAsOwner() {
+    void createTestgruppeAndSetCurrentUserAsOwner()
+            throws Exception {
 
-        dataFactory.createBruker("NAVIDENT");
+        var bruker = super.createBruker();
+        when(getUserInfo.call())
+                .thenReturn(Optional.of(new UserInfo(bruker.getBrukerId(), "", "", bruker.getBrukernavn())));
 
-        RsOpprettEndreTestgruppe rsOpprettEndreTestgruppe = RsOpprettEndreTestgruppe.builder()
+        var request = RsOpprettEndreTestgruppe
+                .builder()
                 .navn("mingruppe")
                 .hensikt("hensikt")
                 .build();
+        var json = objectMapper.writeValueAsString(request);
+        mockMvc
+                .perform(
+                        post("/api/v1/gruppe")
+                                .contentType(APPLICATION_JSON)
+                                .content(json)
+                )
+                .andExpect(status().isCreated())
+                .andExpect(result -> {
+                    var response = objectMapper.readValue(result.getResponse().getContentAsString(), RsTestgruppeMedBestillingId.class);
+                    assertThat(response.getId()).isNotNull();
+                    assertThat(response.getNavn()).isEqualTo("mingruppe");
+                    assertThat(response.getHensikt()).isEqualTo("hensikt");
+                    assertThat(response.getOpprettetAv().getBrukerId()).isEqualTo(bruker.getBrukerId());
+                    assertThat(response.getSistEndretAv().getBrukerId()).isEqualTo(bruker.getBrukerId());
+                });
 
-        RsTestgruppeMedBestillingId resp = sendRequest(rsOpprettEndreTestgruppe)
-                .to(HttpMethod.POST, ENDPOINT_BASE_URI)
-                .andExpect(HttpStatus.CREATED, RsTestgruppeMedBestillingId.class);
-
-        assertThat(resp.getId(), is(notNullValue()));
-        assertThat(resp.getNavn(), is("mingruppe"));
-        assertThat(resp.getHensikt(), is("hensikt"));
-        assertThat(resp.getOpprettetAv().getBrukerId(), is("NAVIDENT"));
     }
 }
