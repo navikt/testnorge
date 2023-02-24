@@ -31,7 +31,8 @@ public class DbRelasjon {
     @Id
     @GeneratedValue(generator = "relasjonIdGenerator")
     @GenericGenerator(name = "relasjonIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "relasjon_sequence")
+            @Parameter(name = "sequence_name", value = "relasjon_sequence"),
+            @Parameter(name = "increment_size", value = "1"),
     })
     private Long id;
 

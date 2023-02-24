@@ -28,7 +28,8 @@ public class DbAlias {
     @Id
     @GeneratedValue(generator = "aliasIdGenerator")
     @GenericGenerator(name = "aliasIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "alias_sequence")
+            @Parameter(name = "sequence_name", value = "alias_sequence"),
+            @Parameter(name = "increment_size", value = "1"),
     })
     private Long id;
 
