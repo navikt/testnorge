@@ -22,6 +22,7 @@ import { Alert } from '@navikt/ds-react'
 import { useFormikContext } from 'formik'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
+import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -56,6 +57,7 @@ export const Steg2 = () => {
 		<div>
 			<PdlfForm formikBag={formikBag} />
 			<AaregForm />
+			<ArbeidsplassenForm formikBag={formikBag} />
 			<SigrunstubForm formikBag={formikBag} />
 			<InntektstubForm formikBag={formikBag} />
 			<InntektsmeldingForm formikBag={formikBag} />
@@ -79,6 +81,7 @@ Steg2.label = 'Velg verdier'
 Steg2.validation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
+	// ...ArbeidsplassenForm.validation,
 	...SigrunstubForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,

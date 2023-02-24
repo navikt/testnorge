@@ -57,6 +57,7 @@ export const rootPaths = [
 	'pdldata.opprettNyPerson.foedtFoer',
 	'pdlforvalter',
 	'aareg',
+	'arbeidsplassenCV',
 	'skjerming',
 	'sigrunstub',
 	'pensjonforvalter',
