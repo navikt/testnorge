@@ -31,15 +31,11 @@
                 <charset>utf8</charset>
             </encoder>
         </appender>
-        <logger name="no.nav.testnav.libs.servletsecurity.service.AccessTokenService">
-            <level value="ERROR"/>
-        </logger>
+        <logger level="ERROR" name="no.nav.testnav.libs.servletsecurity.service.AccessTokenService" />
         <root level="INFO">
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
 
-    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
-        <level value="TRACE"/>
-    </logger>
+    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
 </configuration>

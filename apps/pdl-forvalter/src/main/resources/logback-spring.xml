@@ -36,7 +36,6 @@
             <appender-ref ref="CONSOLE"/>
         </root>
     </springProfile>
-    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
-        <level value="TRACE"/>
+    <logger level="trace" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
     </logger>
 </configuration>
