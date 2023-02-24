@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsTestgruppe;
 import no.nav.dolly.mapper.MappingStrategy;
@@ -47,11 +46,8 @@ public class TestgruppeMappingStrategy implements MappingStrategy {
                             SecurityContextHolder.setContext(securityContext);
                         }
 
-                        rsTestgruppe.setAntallIdenter((int) testgruppe.getTestidenter().stream()
-                                .filter(testident -> testident.getMaster() != Testident.Master.TPSF)
-                                .count());
+                        rsTestgruppe.setAntallIdenter(testgruppe.getTestidenter().size());
                         rsTestgruppe.setAntallIBruk((int) testgruppe.getTestidenter().stream()
-                                .filter(testident -> testident.getMaster() != Testident.Master.TPSF)
                                 .filter(ident -> isTrue(ident.getIBruk()))
                                 .count());
                         rsTestgruppe.setFavorittIGruppen(!testgruppe.getFavorisertAv().isEmpty());

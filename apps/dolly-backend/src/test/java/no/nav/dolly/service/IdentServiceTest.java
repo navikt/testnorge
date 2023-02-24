@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static no.nav.dolly.domain.jpa.Testident.Master.TPSF;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,7 +23,6 @@ import static org.mockito.Mockito.when;
 public class IdentServiceTest {
 
     private static final String STANDARD_IDENTER_1 = "en";
-    private static final String STANDAR_IDENTER_2 = "to";
 
     @Mock
     private IdentRepository identRepository;
@@ -50,7 +48,7 @@ public class IdentServiceTest {
     public void saveIdentTilGruppe_saveAvIdentInnholderInputIdentstringOgTestgruppe() {
         when(identRepository.save(any())).thenReturn(new Testident());
 
-        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, TPSF, null);
+        identService.saveIdentTilGruppe(STANDARD_IDENTER_1, standardGruppe, Testident.Master.PDLF, null);
 
         ArgumentCaptor<Testident> cap = ArgumentCaptor.forClass(Testident.class);
         verify(identRepository).save(cap.capture());
