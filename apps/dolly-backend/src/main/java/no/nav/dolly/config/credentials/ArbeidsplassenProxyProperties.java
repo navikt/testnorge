@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnav-arena-forvalteren-proxy")
+@ConfigurationProperties(prefix = "consumers.testnav-arbeidsplassencv-proxy")
 public class ArbeidsplassenProxyProperties extends ServerProperties {
 }
