@@ -116,14 +116,6 @@ const InnvandringVisning = ({
 			redigertAttributt={redigertInnvandringValues}
 			path="innflytting"
 			ident={ident}
-			disableSlett={new Date(innvandringData.innflyttingsdato) < sisteDato}
-			personFoerLeggTil={{
-				pdldata: {
-					person: {
-						utflytting: utflyttingData,
-					},
-				},
-			}}
 		/>
 	)
 }

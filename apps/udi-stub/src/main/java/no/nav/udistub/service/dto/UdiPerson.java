@@ -1,6 +1,5 @@
 package no.nav.udistub.service.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +19,6 @@ import static java.util.Objects.isNull;
 @Setter
 @Getter
 @Builder
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiPerson {
 
     private String ident;

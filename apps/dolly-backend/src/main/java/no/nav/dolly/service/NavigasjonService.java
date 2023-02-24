@@ -52,6 +52,7 @@ public class NavigasjonService {
         var securityContext = SecurityContextHolder.getContext();
         return Flux.merge(getPdlForvalterIdenter(ident),
                         getPdlPersonIdenter(ident))
+                .filter(Objects::nonNull)
                 .distinct()
                 .flatMap(ident1 -> Mono.just(identRepository.findByIdent(ident1))
                         .filter(Optional::isPresent)
@@ -98,21 +99,26 @@ public class NavigasjonService {
                 .filter(personBolk -> nonNull(personBolk.getPerson()))
                 .flatMap(personBolk -> Flux.fromStream(Stream.of(Stream.of(ident),
                                 personBolk.getPerson().getSivilstand().stream()
-                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand),
+                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull),
                                 personBolk.getPerson().getForelderBarnRelasjon().stream()
-                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent),
+                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                        .filter(Objects::nonNull),
                                 personBolk.getPerson().getForeldreansvar().stream()
-                                        .map(ForeldreansvarDTO::getAnsvarlig),
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull),
                                 personBolk.getPerson().getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident),
+                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                        .filter(Objects::nonNull),
                                 personBolk.getPerson().getVergemaalEllerFremtidsfullmakt().stream()
                                         .map(PdlPerson.Vergemaal::getVergeEllerFullmektig)
-                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident),
+                                        .map(PdlPerson.VergeEllerFullmektig::getMotpartsPersonident)
+                                        .filter(Objects::nonNull),
                                 personBolk.getPerson().getKontaktinformasjonForDoedsbo().stream()
                                         .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
                                         .filter(Objects::nonNull)
-                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer))
-                        .filter(Objects::nonNull)
+                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .filter(Objects::nonNull))
                         .flatMap(Function.identity())));
     }
 
@@ -121,20 +127,25 @@ public class NavigasjonService {
         return pdlDataConsumer.getPersoner(List.of(ident))
                 .flatMap(person -> Flux.fromStream(Stream.of(Stream.of(ident),
                                 person.getPerson().getSivilstand().stream()
-                                        .map(SivilstandDTO::getRelatertVedSivilstand),
+                                        .map(SivilstandDTO::getRelatertVedSivilstand)
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getForelderBarnRelasjon().stream()
-                                        .map(ForelderBarnRelasjonDTO::getRelatertPerson),
+                                        .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getForeldreansvar().stream()
-                                        .map(ForeldreansvarDTO::getAnsvarlig),
+                                        .map(ForeldreansvarDTO::getAnsvarlig)
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident),
+                                        .map(FullmaktDTO::getMotpartsPersonident)
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getVergemaal().stream()
-                                        .map(VergemaalDTO::getVergeIdent),
+                                        .map(VergemaalDTO::getVergeIdent)
+                                        .filter(Objects::nonNull),
                                 person.getPerson().getKontaktinformasjonForDoedsbo().stream()
                                         .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
                                         .filter(Objects::nonNull)
-                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer))
-                        .filter(Objects::nonNull)
+                                        .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
+                                        .filter(Objects::nonNull))
                         .flatMap(Function.identity())));
     }
 }

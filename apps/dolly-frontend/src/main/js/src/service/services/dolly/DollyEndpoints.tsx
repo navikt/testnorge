@@ -41,10 +41,6 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/fraidenter`
 	}
 
-	static gruppeBestillingImport(gruppeId) {
-		return `${groupBase}/${gruppeId}/bestilling/importFraTps`
-	}
-
 	static gruppeBestillingImportFraPdl(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling/importfrapdl`
 	}
@@ -181,10 +177,6 @@ export default class DollyEndpoints {
 		return `${identBase}/${ident}/relasjon`
 	}
 
-	static getFasteDatasettTPSGruppe(gruppe) {
-		return `${fasteDatasettBase}/tps/${gruppe}`
-	}
-
 	static getPersonnavn() {
 		return `${uri}/personnavn`
 	}
@@ -193,6 +185,10 @@ export default class DollyEndpoints {
 		if (bestillingsid) {
 			return `${uri}/transaksjonid?system=${system}&ident=${ident}&bestillingId=${bestillingsid}`
 		} else return `${uri}/transaksjonid?ident=${ident}&system=${system}`
+	}
+
+	static leggTilPaaGruppe(gruppeId) {
+		return `${groupBase}/${gruppeId}/leggtilpaagruppe`
 	}
 
 	static leggTilPersonIGruppe(gruppeId, ident, master) {

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React from 'react'
 // @ts-ignore
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
@@ -6,16 +6,6 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
-import { Innflytting } from '@/components/fagsystem/pdlf/PdlTypes'
-import { getSisteDato } from '@/components/bestillingsveileder/utils'
-import { FormikProps } from 'formik'
-import * as _ from 'lodash-es'
-
-import {
-	getFirstDateAfter,
-	getLastDateBefore,
-} from '@/components/fagsystem/pdlf/form/partials/utvandring/utils'
 
 type UtvandringTypes = {
 	path: string
@@ -23,23 +13,7 @@ type UtvandringTypes = {
 	maxDate?: Date
 }
 
-type RedigerTypes = {
-	formikBag: FormikProps<{}>
-	path: string
-	personFoerLeggTil: any
-}
-
-export const RedigerUtvandringForm = ({ formikBag, path, personFoerLeggTil }: RedigerTypes) => {
-	const hoveddato = new Date(_.get(formikBag.values, path)?.utflyttingsdato)
-	const datoer = personFoerLeggTil?.pdldata?.person?.innflytting?.map(
-		(innflytting: any) => new Date(innflytting.innflyttingsdato)
-	)
-	const minDate = getLastDateBefore(hoveddato, datoer)
-	const maxDate = getFirstDateAfter(hoveddato, datoer)
-	return <UtvandringForm path={path} minDate={minDate} maxDate={maxDate} />
-}
-
-const UtvandringForm = ({ path, minDate, maxDate }: UtvandringTypes) => {
+export const UtvandringForm = ({ path }: UtvandringTypes) => {
 	return (
 		<>
 			<FormikSelect
@@ -54,8 +28,7 @@ const UtvandringForm = ({ path, minDate, maxDate }: UtvandringTypes) => {
 				<FormikDatepicker
 					name={`${path}.utflyttingsdato`}
 					label="Utflyttingsdato"
-					minDate={minDate}
-					maxDate={maxDate}
+					maxDate={new Date()}
 				/>
 			</DatepickerWrapper>
 			<AvansertForm path={path} kanVelgeMaster={false} />
@@ -64,32 +37,9 @@ const UtvandringForm = ({ path, minDate, maxDate }: UtvandringTypes) => {
 }
 
 export const Utvandring = () => {
-	const opts = useContext(BestillingsveilederContext)
-
-	const sisteDatoInnflytting = () => {
-		if (opts.is.leggTil) {
-			const innflytting = opts?.personFoerLeggTil?.pdlforvalter?.person?.innflytting
-			if (innflytting) {
-				let siste = getSisteDato(
-					innflytting.map((val: Innflytting) => new Date(val.innflyttingsdato))
-				)
-				if (siste !== null) {
-					siste.setDate(siste.getDate() + 1)
-				}
-				return siste
-			}
-		}
-		return null
-	}
-
-	const datoBegresning = sisteDatoInnflytting()
 	return (
 		<div className="person-visning_content">
-			<UtvandringForm
-				path={'pdldata.person.utflytting[0]'}
-				minDate={datoBegresning}
-				maxDate={new Date()}
-			/>
+			<UtvandringForm path={'pdldata.person.utflytting[0]'} />
 		</div>
 	)
 }

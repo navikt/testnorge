@@ -9,6 +9,8 @@ const testForeldreansvar = (val) => {
 		let feilmelding = null
 		const values = this.options.context
 
+		if (values.leggTilPaaGruppe) return true
+
 		const foreldrerelasjoner = []
 			.concat(
 				_.get(values, 'pdldata.person.forelderBarnRelasjon'),
@@ -130,10 +132,9 @@ export const nyPerson = Yup.object({
 		'foedtEtter',
 		'Dato må være etter født etter-dato'
 	),
-	syntetisk: Yup.boolean(),
 	nyttNavn: Yup.object({
-		hasMellomnavn: Yup.boolean(),
-	}),
+		hasMellomnavn: Yup.boolean().nullable(),
+	}).nullable(),
 	statsborgerskapLandkode: Yup.string().nullable(),
 	gradering: Yup.string().nullable(),
 })

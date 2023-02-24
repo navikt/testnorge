@@ -1,6 +1,5 @@
 package no.nav.udistub.provider.rs;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -72,7 +71,6 @@ public class PersonController {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class PersonControllerResponse {
 
         private UdiPerson person;

@@ -63,6 +63,10 @@ export default {
 		return Request.put(Endpoints.leggTilPaaPerson(ident), data)
 	},
 
+	createBestillingLeggTilPaaGruppe(gruppeId, data) {
+		return Request.put(Endpoints.leggTilPaaGruppe(gruppeId), data)
+	},
+
 	navigerTilPerson(ident) {
 		return Request.get(Endpoints.navigerTilIdent(ident))
 	},
@@ -132,10 +136,6 @@ export default {
 
 	gjenopprettPerson(ident) {
 		return Request.post(Endpoints.gjenopprettPerson(ident))
-	},
-
-	importerPersoner: (gruppeId, request) => {
-		return Request.post(Endpoints.gruppeBestillingImport(gruppeId), request)
 	},
 
 	importerPersonerFraPdl: (gruppeId, request) => {

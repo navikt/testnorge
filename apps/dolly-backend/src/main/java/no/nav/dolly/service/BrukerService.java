@@ -18,15 +18,12 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.CurrentAuthentication.getAuthUser;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
-import static org.apache.commons.lang3.BooleanUtils.isFalse;
 
 @Slf4j
 @Service
@@ -106,7 +103,7 @@ public class BrukerService {
         brukereMap.values().stream()
                 .filter(bruker -> nonNull(bruker.getEidAv()))
                 .forEach(bruker -> brukereMap.get(bruker.getEidAv().getId()).getFavoritter().addAll(bruker.getFavoritter()));
-        return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).collect(Collectors.toList());
+        return brukereMap.values().stream().filter(bruker -> isNull(bruker.getEidAv())).toList();
     }
 
     public int sletteBrukerFavoritterByGroupId(Long groupId) {
@@ -124,30 +121,8 @@ public class BrukerService {
         }
     }
 
-    public int migrerBruker(Collection<String> navIdenter, String brukerId) {
-
-        fetchOrCreateBruker(brukerId);
-        brukerRepository.saveBrukerIdMigrert(brukerId);
-        return brukerRepository.saveNavIdentToBruker(navIdenter, brukerId);
-    }
-
-    public int fjernMigreringAvBruker(String brukerId) {
-
-        Bruker bruker = fetchOrCreateBruker(brukerId);
-        if (isFalse(bruker.getMigrert())) {
-            throw new DollyFunctionalException(format("Bruker %s er ikke migrert enda", bruker.getBrukernavn()));
-        }
-        brukerRepository.deleteBrukerIdMigrert(brukerId);
-        return brukerRepository.deleteNavIdentToBruker(bruker);
-    }
-
     public List<Bruker> fetchEidAv(Bruker bruker) {
         return brukerRepository.fetchEidAv(bruker);
-    }
-
-    public int slettNavIdentBrukere(Set<String> brukere) {
-
-        return brukerRepository.deleteByNavIdentIn(brukere);
     }
 
     private void oppdaterBrukernavn(Bruker bruker) {

@@ -5,6 +5,7 @@ const TYPE = Object.freeze({
 	NY_BESTILLING_FRA_MAL: 'NY_BESTILLING_FRA_MAL',
 	OPPRETT_FRA_IDENTER: 'OPPRETT_FRA_IDENTER',
 	LEGG_TIL: 'LEGG_TIL',
+	LEGG_TIL_PAA_GRUPPE: 'LEGG_TIL_PAA_GRUPPE',
 	NY_ORGANISASJON: 'NY_ORGANISASJON',
 	NY_ORGANISASJON_FRA_MAL: 'NY_ORGANISASJON_FRA_MAL',
 	NY_STANDARD_ORGANISASJON: 'NY_STANDARD_ORGANISASJON',
@@ -22,6 +23,7 @@ export const BVOptions = (
 		importPersoner,
 		identMaster,
 		opprettOrganisasjon = null,
+		leggTilPaaGruppe = null,
 		gruppe,
 	} = {},
 	gruppeId
@@ -42,6 +44,13 @@ export const BVOptions = (
 		antall: antall || 1,
 		environments: [],
 		beskrivelse: null,
+		pdldata: {
+			opprettNyPerson: null,
+		},
+	}
+
+	let initialValuesLeggTilPaaGruppe = {
+		environments: [],
 		pdldata: {
 			opprettNyPerson: null,
 		},
@@ -102,6 +111,11 @@ export const BVOptions = (
 		initialValues = initialValuesLeggTil
 	}
 
+	if (leggTilPaaGruppe) {
+		bestType = TYPE.LEGG_TIL_PAA_GRUPPE
+		initialValues = initialValuesLeggTilPaaGruppe
+	}
+
 	if (importPersoner) {
 		bestType = TYPE.IMPORT_TESTNORGE
 		initialValues.antall = importPersoner.length
@@ -131,6 +145,7 @@ export const BVOptions = (
 		mal,
 		opprettFraIdenter,
 		personFoerLeggTil,
+		leggTilPaaGruppe,
 		importPersoner,
 		identMaster,
 		tidligereBestillinger,
@@ -140,6 +155,7 @@ export const BVOptions = (
 			nyBestillingFraMal: bestType === TYPE.NY_BESTILLING_FRA_MAL,
 			opprettFraIdenter: bestType === TYPE.OPPRETT_FRA_IDENTER,
 			leggTil: bestType === TYPE.LEGG_TIL,
+			leggTilPaaGruppe: bestType === TYPE.LEGG_TIL_PAA_GRUPPE,
 			nyOrganisasjon: bestType === TYPE.NY_ORGANISASJON,
 			nyOrganisasjonFraMal: bestType === TYPE.NY_ORGANISASJON_FRA_MAL,
 			nyStandardOrganisasjon: bestType === TYPE.NY_STANDARD_ORGANISASJON,
