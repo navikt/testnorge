@@ -27,6 +27,8 @@ public class ArbeidsplassenCVDTO {
     private List<Kompetanse> kompetanser;
     private String sammendrag;
     private Jobboensker jobboensker;
+    private Boolean sistEndretAvNav;
+    private LocalDateTime sistEndret;
 
     @Data
     @SuperBuilder
@@ -197,8 +199,6 @@ public class ArbeidsplassenCVDTO {
         private List<OccupationType> occupationTypes;
         private List<Omfang> workLoadTypes;
         private List<Arbeidstid> workScheduleTypes;
-        private Boolean sistEndretAvNav;
-        private LocalDateTime sistEndret;
     }
 
     public enum StartOption {
@@ -224,10 +224,17 @@ public class ArbeidsplassenCVDTO {
         HELTID, DELTID;
     }
 
-    public enum Arbeidstid {
-        DAGTID, KVELD, NATT;
+    enum Arbeidstid {
+        DAGTID,
+        KVELD,
+        NATT,
+        UKEDAGER,
+        LOERDAG,
+        SOENDAG,
+        SKIFT,
+        VAKT,
+        TURNUS;
     }
-
     @Data
     @SuperBuilder
     @NoArgsConstructor
