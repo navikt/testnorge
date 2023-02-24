@@ -2,7 +2,7 @@ import './FinnPerson.less'
 import { useAsyncFn } from 'react-use'
 import AsyncSelect from 'react-select/async'
 import { components } from 'react-select'
-import { DollyApi, PdlforvalterApi, TpsfApi } from '@/service/Api'
+import { DollyApi, PdlforvalterApi } from '@/service/Api'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Icon from '@/components/ui/icon/Icon'
@@ -55,7 +55,6 @@ const FinnPersonBestilling = ({
 	const [fragment, setFragment] = useState('')
 	const [error, setError] = useState(feilmelding)
 
-	const [tpsfIdenter, setTpsfIdenter] = useState([])
 	const [pdlfIdenter, setPdlfIdenter] = useState([])
 	const [pdlIdenter, setPdlIdenter] = useState([])
 	const [pdlAktoerer, setPdlAktoerer] = useState([])
@@ -77,14 +76,10 @@ const FinnPersonBestilling = ({
 
 	useEffect(() => {
 		const feilmeldingIdent = feilmelding?.substring(0, 11)
-		let finnesTpsf = false
 		let finnesPdlf = false
 		let finnesPdl = false
 
 		if (feilmelding) {
-			if (tpsfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
-				finnesTpsf = true
-			}
 			if (pdlfIdenter?.find((element) => element.ident === feilmeldingIdent)) {
 				finnesPdlf = true
 			}
@@ -98,14 +93,11 @@ const FinnPersonBestilling = ({
 
 		let beskrivendeFeilmelding = feilmelding
 
-		if (finnesTpsf || finnesPdlf || finnesPdl) {
-			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master:
-			${finnesTpsf ? ' TPS' : ''}
-			${finnesTpsf && finnesPdlf ? ', ' : ''}
-			${finnesPdlf ? 'PDL' : ''}
-			${(finnesTpsf || finnesPdlf) && finnesPdl ? ', ' : ''}
-			${finnesPdl ? 'Test-Norge' : ''}
-			, og eksisterer ikke i Dolly.`
+		if (finnesPdlf || finnesPdl) {
+			beskrivendeFeilmelding = `${feilmelding}. Personen er opprettet i et annet system med master
+			${finnesPdlf ? ' PDL' : ''}${finnesPdlf && finnesPdl ? ' og' : ''}${
+				finnesPdl ? ' Test-Norge' : ''
+			}, og eksisterer ikke i Dolly.`
 		}
 
 		setError(beskrivendeFeilmelding)
@@ -165,8 +157,7 @@ const FinnPersonBestilling = ({
 			return []
 		}
 
-		const [tpsfValues, pdlfValues, pdlValues, pdlAktoerValues] = (await Promise.allSettled([
-			TpsfApi.soekPersoner(tekst),
+		const [pdlfValues, pdlValues, pdlAktoerValues] = (await Promise.allSettled([
 			PdlforvalterApi.soekPersoner(tekst),
 			PersonSearch.searchPdlFragment(tekst),
 			DollyApi.getAktoerFraPdl(tekst),
@@ -181,19 +172,6 @@ const FinnPersonBestilling = ({
 			setPdlfIdenter(pdlfPersoner)
 		} else {
 			setError(pdlfValues?.reason?.message)
-		}
-
-		if (tpsfValues?.status === 'fulfilled') {
-			let tpsfPersoner = tpsfValues.value?.data
-			if (Array.isArray(tpsfPersoner) && Array.isArray(pdlfPersoner)) {
-				tpsfPersoner = tpsfPersoner.filter(
-					(person: Person) => !pdlfPersoner.map((p: Person) => p.ident).includes(person.ident)
-				)
-			}
-			mapToPersoner(tpsfPersoner, personer)
-			setTpsfIdenter(tpsfPersoner)
-		} else {
-			setError(tpsfValues?.reason?.message)
 		}
 
 		if (pdlValues?.status === 'fulfilled') {

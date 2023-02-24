@@ -2,12 +2,6 @@ export type Bestillingsdata = {
 	antall: number
 	environments: Array<string>
 	beskrivelse: string
-	tpsf?: {
-		egenAnsattDatoFom?: string
-		egenAnsattDatoTom?: string
-		spesreg?: string
-		relasjoner?: Relasjoner
-	}
 	pensjonforvalter?: any
 	// TODO: Lage types for alle fagsystemer
 }

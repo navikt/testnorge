@@ -4,21 +4,10 @@ import Formatter from '@/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 
-const getImportFra = (opts) => {
-	if (opts.is.leggTil) {
-		if (opts.identMaster === 'PDL') {
-			return 'Test-Norge'
-		} else if (opts.personFoerLeggTil?.tpsf?.importFra) {
-			return opts.personFoerLeggTil.tpsf.importFra
-		}
-	}
-	return undefined
-}
-
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
-	const importFra = getImportFra(opts)
+	const importFra = opts.is.leggTil && opts.identMaster === 'PDL' ? 'Test-Norge' : undefined
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'

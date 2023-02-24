@@ -27,44 +27,6 @@ const expandable = (expandableHeader, vis, objects) => ({
 	objects,
 })
 
-const _getTpsfBestillingData = (data) => {
-	return [
-		obj('Identtype', data.identtype),
-		obj('Født etter', Formatters.formatDate(data.foedtEtter)),
-		obj('Født før', Formatters.formatDate(data.foedtFoer)),
-		obj('Alder', data.alder),
-		obj('Dødsdato', data.doedsdato === null ? 'Ingen' : Formatters.formatDate(data.doedsdato)),
-		obj('Statsborgerskap', data.statsborgerskap, AdresseKodeverk.StatsborgerskapLand),
-		obj('Statsborgerskap fra', Formatters.formatDate(data.statsborgerskapRegdato)),
-		obj('Statsborgerskap til', Formatters.formatDate(data.statsborgerskapTildato)),
-		obj('Kjønn', Formatters.kjonn(data.kjonn, data.alder)),
-		obj('Har mellomnavn', Formatters.oversettBoolean(data.harMellomnavn)),
-		obj('Har nytt navn', Formatters.oversettBoolean(data.harNyttNavn)),
-		obj('Sivilstand', data.sivilstand, PersoninformasjonKodeverk.Sivilstander),
-		obj('Diskresjonskoder', data.spesreg !== 'UFB' && data.spesreg, 'Diskresjonskoder'),
-		obj('Uten fast bopel', (data.utenFastBopel || data.spesreg === 'UFB') && 'JA'),
-		obj('Språk', data.sprakKode, PersoninformasjonKodeverk.Spraak),
-		obj('Innvandret fra land', data.innvandretFraLand, AdresseKodeverk.InnvandretUtvandretLand),
-		obj('Innvandret dato', Formatters.formatDate(data.innvandretFraLandFlyttedato)),
-		obj('Utvandret til land', data.utvandretTilLand, AdresseKodeverk.InnvandretUtvandretLand),
-		obj('Utvandret dato', Formatters.formatDate(data.utvandretTilLandFlyttedato)),
-		obj('Er forsvunnet', Formatters.oversettBoolean(data.erForsvunnet)),
-		obj('Forsvunnet dato', Formatters.formatDate(data.forsvunnetDato)),
-		obj('Har bankkontonummer', Formatters.oversettBoolean(data.harBankkontonr)),
-		obj('Bankkonto opprettet', Formatters.formatDate(data.bankkontonrRegdato)),
-		obj('Skjerming fra', Formatters.formatDate(data.egenAnsattDatoFom)),
-		obj('Skjerming til', Formatters.formatDate(data.egenAnsattDatoTom)),
-		obj(
-			'Type sikkerhetstiltak',
-			data.beskrSikkerhetTiltak === 'Opphørt'
-				? data.beskrSikkerhetTiltak
-				: data.typeSikkerhetTiltak && `${data.typeSikkerhetTiltak} - ${data.beskrSikkerhetTiltak}`
-		),
-		obj('Sikkerhetstiltak starter', Formatters.formatDate(data.sikkerhetTiltakDatoFom)),
-		obj('Sikkerhetstiltak opphører', Formatters.formatDate(data.sikkerhetTiltakDatoTom)),
-	]
-}
-
 const mapBestillingsinformasjon = (bestillingsinformasjon, data, identtype) => {
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
@@ -94,56 +56,6 @@ const mapBestillingsinformasjon = (bestillingsinformasjon, data, identtype) => {
 			],
 		}
 		data.push(bestillingsInfo)
-	}
-}
-
-const mapTpsfBestillingsinformasjon = (bestillingData, data) => {
-	if (bestillingData.tpsf) {
-		const { identHistorikk, relasjoner, vergemaal, fullmakt, harIngenAdresse, ...persondetaljer } =
-			bestillingData.tpsf
-
-		if (!_.isEmpty(persondetaljer)) {
-			const personinfo = {
-				header: 'Persondetaljer',
-				items: _getTpsfBestillingData(bestillingData.tpsf),
-			}
-
-			data.push(personinfo)
-		}
-
-		if (identHistorikk) {
-			const identhistorikkData = {
-				header: 'Identhistorikk',
-				itemRows: identHistorikk.map((ident, idx) => {
-					return [
-						{
-							numberHeader: `Identhistorikk ${idx + 1}`,
-						},
-						obj('Identtype', ident.identtype),
-						obj('Kjønn', Formatters.kjonnToString(ident.kjonn)),
-						obj('Utgått dato', Formatters.formatDate(ident.regdato)),
-						obj('Født før', Formatters.formatDate(ident.foedtFoer)),
-						obj('Født Etter', Formatters.formatDate(ident.foedtEtter)),
-					]
-				}),
-			}
-			data.push(identhistorikkData)
-		}
-
-		if (vergemaal) {
-			const vergemaalKriterier = {
-				header: 'Vergemål',
-				items: [
-					obj('Fylkesmannsembete', vergemaal.embete, VergemaalKodeverk.Fylkesmannsembeter),
-					obj('Sakstype', vergemaal.sakType, VergemaalKodeverk.Sakstype),
-					obj('Mandattype', vergemaal.mandatType, VergemaalKodeverk.Mandattype),
-					obj('Vedtaksdato', Formatters.formatDate(vergemaal.vedtakDato)),
-					obj('Verges identtype', vergemaal.identType),
-					obj('Verge har mellomnavn', Formatters.oversettBoolean(vergemaal.harMellomnavn)),
-				],
-			}
-			data.push(vergemaalKriterier)
-		}
 	}
 }
 
@@ -1917,33 +1829,15 @@ const mapOrganisasjon = (bestillingData, data) => {
 	}
 }
 
-const mapImportFraTps = (bestillingData, data) => {
-	const importFraTps = bestillingData.importFraTps
-
-	if (importFraTps) {
-		const importData = {
-			header: 'Import',
-			items: [
-				obj('Identer', Formatters.arrayToString(importFraTps)),
-				obj('Importert fra', bestillingData.kildeMiljoe.toUpperCase()),
-			],
-		}
-
-		data.push(importData)
-	}
-}
-
 export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	if (!bestillingData) {
 		return null
 	}
 
 	const data = []
-	const identtype =
-		bestillingData.pdldata?.opprettNyPerson?.identtype || bestillingData.tpsf?.identtype
+	const identtype = bestillingData.pdldata?.opprettNyPerson?.identtype
 
 	mapBestillingsinformasjon(bestillingsinformasjon, data, identtype)
-	mapTpsfBestillingsinformasjon(bestillingData, data)
 	mapPdlNyPerson(bestillingData, data)
 
 	const pdldataKriterier = bestillingData.pdldata?.person
@@ -2015,7 +1909,6 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapInntektsmelding(bestillingData, data)
 	mapDokarkiv(bestillingData, data)
 	mapOrganisasjon(bestillingData, data)
-	mapImportFraTps(bestillingData, data)
 
 	return data
 }

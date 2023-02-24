@@ -18,8 +18,6 @@ export const getFoedselsdatoer = (values) => {
 	const importPersoner = values?.importPersoner
 	if (values?.pdldata?.person?.foedsel?.[0]?.foedselsdato) {
 		return [values.pdldata.person.foedsel[0].foedselsdato]
-	} else if (personFoerLeggTil?.tpsf?.foedselsdato) {
-		return [personFoerLeggTil.tpsf.foedselsdato]
 	} else if (personFoerLeggTil?.pdlforvalter?.person?.foedsel) {
 		const foedselsdatoer = personFoerLeggTil.pdlforvalter.person.foedsel
 			.map((foedsel) => foedsel.foedselsdato)
