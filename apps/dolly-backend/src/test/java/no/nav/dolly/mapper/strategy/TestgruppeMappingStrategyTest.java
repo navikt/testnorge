@@ -13,8 +13,6 @@ import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,10 +27,6 @@ class TestgruppeMappingStrategyTest {
     private final static String BRUKERID = "123";
 
     private MapperFacade mapper;
-
-    @MockBean
-    @SuppressWarnings("unused")
-    private JwtDecoder jwtDecoder;
 
     @BeforeEach
     public void setUpHappyPath() {
