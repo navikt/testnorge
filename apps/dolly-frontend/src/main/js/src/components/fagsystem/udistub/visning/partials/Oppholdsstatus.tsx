@@ -14,12 +14,10 @@ type Opphold = {
 	oppholdstillatelse: boolean
 }
 
-export const Oppholdsstatus = (opphold: Opphold) => {
-	if (!opphold || !opphold.oppholdsstatus) {
+export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) => {
+	if (!oppholdsstatus && !oppholdstillatelse) {
 		return null
 	}
-
-	const oppholdsstatus = opphold.oppholdsstatus
 
 	const oppholdsrettTyper = [
 		'eosEllerEFTABeslutningOmOppholdsrett',
@@ -28,13 +26,20 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 	]
 	// @ts-ignore
 	const currentOppholdsrettType = oppholdsrettTyper.find((type) => oppholdsstatus[type])
-	const currentTredjelandsborgereStatus = oppholdsstatus.oppholdSammeVilkaar
-		? 'Oppholdstillatelse eller opphold på samme vilkår'
-		: oppholdsstatus.uavklart
-		? 'Uavklart'
-		: 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
+
+	const currentTredjelandsborgereStatus = () => {
+		if (oppholdsstatus.oppholdSammeVilkaar) {
+			return 'Oppholdstillatelse eller opphold på samme vilkår'
+		} else if (oppholdsstatus.ikkeOppholdstilatelseIkkeVilkaarIkkeVisum) {
+			return 'Ikke oppholdstillatelse eller ikke opphold på samme vilkår'
+		} else if (oppholdsstatus.uavklart) {
+			return 'Uavklart'
+		}
+		return null
+	}
+
 	const oppholdsrett = Boolean(currentOppholdsrettType)
-	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus)
+	const tredjelandsborger = Boolean(currentTredjelandsborgereStatus())
 
 	return (
 		<div>
@@ -54,19 +59,21 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 					title="Type opphold"
 					value={Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)}
 				/>
-				<TitleValue title="Status" value={currentTredjelandsborgereStatus} />
+				<TitleValue title="Status" value={currentTredjelandsborgereStatus()} />
 				<TitleValue
 					title="Oppholdstillatelse fra"
 					value={Formatters.formatStringDates(
-						_.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`) ||
-							_.get(opphold, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+						tredjelandsborger
+							? _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
+							: _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`)
 					)}
 				/>
 				<TitleValue
 					title="Oppholdstillatelse til"
 					value={Formatters.formatStringDates(
-						_.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`) ||
-							_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+						tredjelandsborger
+							? _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
+							: _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`)
 					)}
 				/>
 				<TitleValue
@@ -97,6 +104,7 @@ export const Oppholdsstatus = (opphold: Opphold) => {
 						Formatters.showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
 					}
 				/>
+				{oppholdstillatelse && <TitleValue title="Har oppholdstillatelse" value="Ja" />}
 			</div>
 			<AvslagEllerBortfallVisning
 				// @ts-ignore
