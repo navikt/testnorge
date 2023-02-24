@@ -21,12 +21,19 @@ public class SecurityConfig {
 
         httpSecurity.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .csrf()
-                .disable()
+                .and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/api/**")
-                .fullyAuthenticated()
+                .requestMatchers(
+                        "/internal/**",
+                        "/webjars/**",
+                        "/swagger-resources/**",
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger",
+                        "/error",
+                        "/swagger-ui.html"
+                ).permitAll()
+                .requestMatchers("/api/**").fullyAuthenticated()
                 .and()
                 .oauth2ResourceServer()
                 .jwt();
