@@ -14,9 +14,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import no.nav.pdl.forvalter.database.JSONUserType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class DbPerson {
     private String mellomnavn;
     private String etternavn;
 
+
+    @Type(JSONUserType.class)
     private PersonDTO person;
 
     @OrderBy("relasjonType desc, id desc")
