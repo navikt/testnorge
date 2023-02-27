@@ -10,7 +10,6 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.KodeverkException;
 import no.nav.dolly.exceptions.MissingHttpHeaderException;
 import no.nav.dolly.exceptions.NotFoundException;
-import no.nav.dolly.exceptions.TpsfException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -37,13 +36,6 @@ public class HttpExceptionAdvice {
                 .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                 .timestamp(LocalDateTime.now())
                 .build();
-    }
-
-    @ResponseBody
-    @ExceptionHandler({TpsfException.class})
-    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
-    ExceptionInformation internalServerError(RuntimeException exception) {
-        return informationForException(exception, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ResponseBody

@@ -35,7 +35,7 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @Table(name = "TEST_IDENT")
 public class Testident implements Serializable {
 
-    public enum Master {PDL, PDLF, TPSF}
+    public enum Master {PDL, PDLF}
 
     @Id
     @GeneratedValue(generator = "gruppeIdGenerator")
@@ -77,11 +77,6 @@ public class Testident implements Serializable {
             bestillingProgress = new ArrayList<>();
         }
         return bestillingProgress;
-    }
-
-    @JsonIgnore
-    public boolean isTpsf() {
-        return getMaster() == Master.TPSF;
     }
 
     @JsonIgnore
