@@ -1,8 +1,13 @@
 config:
   mq:
     test:
-      user: 'n/a'
-      password: 'n/a'
+      user: 'test_user'
+      password: 'test_password'
     preprod:
-      user: 'n/a'
-      password: 'n/a'
+      user: 'preprod_user'
+      password: 'preprod_password'
+
+mq:
+  dev:
+    username: 'dev_username'
+    password: 'dev_password'
