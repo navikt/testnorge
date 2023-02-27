@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.credentials.*;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
+import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
 import no.nav.testnav.libs.reactivefrontend.filter.AddAuthenticationHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivefrontend.filter.AddUserJwtHeaderToRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
@@ -30,7 +31,7 @@ import java.util.function.Function;
 @Slf4j
 @Import({
         CoreConfig.class,
-//        FrontendConfig.class
+        FrontendConfig.class
 })
 @SpringBootApplication
 @RequiredArgsConstructor
