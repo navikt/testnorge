@@ -6,28 +6,8 @@ import * as React from 'react'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { ArbeidKodeverk } from '@/config/kodeverk'
-import { Textarea } from '@navikt/ds-react'
-import styled from 'styled-components'
 import _get from 'lodash/get'
-
-const Fritekstfelt = styled(Textarea)`
-	width: 100%;
-	margin-bottom: 1rem;
-	margin-right: 20px;
-
-	textarea {
-		font-size: 1em;
-	}
-
-	&& {
-		label {
-			font-size: 0.75em;
-			text-transform: uppercase;
-			font-weight: 400;
-			margin-bottom: -8px;
-		}
-	}
-`
+import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 
 export const ArbeidserfaringForm = ({ formikBag }) => {
 	return (
@@ -60,7 +40,13 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 					<Fritekstfelt
 						label="Arbeidsoppgaver"
 						placeholder="Beskrivelse av arbeidsoppgaver"
-						autoFocus
+						value={_get(formikBag.values, `${arbeidsforholdPath}.description`)}
+						onChange={(beskrivelse) =>
+							formikBag.setFieldValue(
+								`${arbeidsforholdPath}.description`,
+								beskrivelse?.target?.value
+							)
+						}
 						size="small"
 					/>
 					<FormikDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />

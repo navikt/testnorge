@@ -504,6 +504,17 @@ const selectOptions = {
 		{ value: 40, label: '40%' },
 		{ value: 20, label: '20%' },
 	],
+
+	// Arbeidsplassen:
+	nusKoder: [
+		{ value: 2, label: 'Grunnskole' },
+		{ value: 3, label: 'Folkehøgskole' },
+		{ value: 4, label: 'Videregående/yrkesskole' },
+		{ value: 5, label: 'Fagskole' },
+		{ value: 6, label: 'Høyere utdanning, 1-4 år' },
+		{ value: 7, label: 'Høyere utdanning, 4+ år' },
+		{ value: 8, label: 'Doktorgrad' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
