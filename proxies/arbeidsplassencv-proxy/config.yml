@@ -22,6 +22,8 @@ spec:
   image: {{ image }}
   port: 8080
   webproxy: true
+  idporten:
+    enabled: true
   tokenx:
     enabled: true
   azure:
