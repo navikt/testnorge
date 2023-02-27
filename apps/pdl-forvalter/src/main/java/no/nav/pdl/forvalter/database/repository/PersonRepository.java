@@ -22,6 +22,7 @@ public interface PersonRepository extends JpaRepository<DbPerson, Long> {
 
     List<DbPerson> findByIdIn(List<Long> identer);
 
+
     @Modifying
     int deleteByIdentIn(Set<String> ident);
 

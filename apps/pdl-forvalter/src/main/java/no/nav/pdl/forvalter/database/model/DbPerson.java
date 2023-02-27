@@ -12,29 +12,23 @@ import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.isNull;
 
-@Getter
-@Setter
-@ToString
-@RequiredArgsConstructor
+@Data
 @Entity
 @Table(name = "person")
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
 public class DbPerson {
 
@@ -64,7 +58,6 @@ public class DbPerson {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     private List<DbAlias> alias;
 
     public List<DbRelasjon> getRelasjoner() {
@@ -79,18 +72,5 @@ public class DbPerson {
             alias = new ArrayList<>();
         }
         return alias;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        DbPerson dbPerson = (DbPerson) o;
-        return id != null && Objects.equals(id, dbPerson.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }
