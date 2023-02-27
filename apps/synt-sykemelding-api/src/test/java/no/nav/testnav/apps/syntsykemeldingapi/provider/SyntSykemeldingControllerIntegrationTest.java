@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.MediaType;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import reactor.core.publisher.Mono;
@@ -38,6 +39,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc(addFilters = false)
 @AutoConfigureWireMock(port = 0)
 class SyntSykemeldingControllerIntegrationTest {
+
+    @MockBean
+    @SuppressWarnings("unused")
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private MockMvc mockMvc;
