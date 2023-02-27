@@ -30,7 +30,7 @@ public final class BestillingTpsMessagingStatusMapper {
 
     private static final String OKEY = "OK";
     private static final String ADVARSEL = "ADVARSEL: ";
-    private static final String FEIL = "FEIL= ";
+    private static final String FEIL = "FEIL: ";
 
     public static List<RsStatusRapport> buildTpsMessagingStatusMap(List<BestillingProgress> progressList) {
 
@@ -106,11 +106,11 @@ public final class BestillingTpsMessagingStatusMapper {
     private static String formatMsg(String message) {
 
         if (message.contains(ADVARSEL)) {
-            return decodeMsg(ADVARSEL + message.replace(" ADVARSEL", "")
+            return decodeMsg(ADVARSEL + message.replace(" Advarsel", "")
                     .replace("_"," "));
         }
         if (message.contains(FEIL)) {
-            return decodeMsg(FEIL + message.replace(" FEIL", "")
+            return decodeMsg(FEIL + message.replace(" Feil", "")
                     .replace("_"," "));
         }
         return message;
@@ -125,7 +125,8 @@ public final class BestillingTpsMessagingStatusMapper {
             return status.contains(OKEY) ||
                     status.toLowerCase().contains("person ikke funnet i tps") ||
                     status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
-                    status.toLowerCase().contains("det finnes allerede en lik putl-adresse")
+                    status.toLowerCase().contains("det finnes allerede en lik putl-adresse") ||
+                    status.toLowerCase().contains("utgått fødselsnr")
                     ? OKEY
                     : status;
         }
