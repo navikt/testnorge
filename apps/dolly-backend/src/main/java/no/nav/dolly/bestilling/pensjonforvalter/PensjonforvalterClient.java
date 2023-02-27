@@ -19,11 +19,13 @@ import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
+import no.nav.dolly.domain.resultset.IdentType;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -93,6 +95,10 @@ public class PensjonforvalterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
+        if (IdentTypeUtil.getIdentType(dollyPerson.getIdent()) == IdentType.NPID) {
+            return Flux.empty();
+        }
+
         var bestilteMiljoer = new AtomicReference<>(bestilling.getEnvironments().stream()
                 .map(miljoe -> miljoe.equals("q4") ? "q1" : miljoe)
                 .collect(Collectors.toSet()));
@@ -100,29 +106,29 @@ public class PensjonforvalterClient implements ClientRegister {
         var bestillingId = progress.getBestilling().getId();
 
         return Flux.from(pensjonforvalterConsumer.getMiljoer()
-                .flatMap(tilgjengeligeMiljoer -> {
+                        .flatMap(tilgjengeligeMiljoer -> {
 
-                    if (!dollyPerson.isOrdre()) {
-                        transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
-                                prepInitStatus(tilgjengeligeMiljoer));
-                    }
-                    bestilteMiljoer.set(bestilteMiljoer.get().stream()
-                            .filter(tilgjengeligeMiljoer::contains)
-                            .collect(Collectors.toSet()));
+                            if (!dollyPerson.isOrdre()) {
+                                transactionHelperService.persister(progress, BestillingProgress::setPensjonforvalterStatus,
+                                        prepInitStatus(tilgjengeligeMiljoer));
+                            }
+                            bestilteMiljoer.set(bestilteMiljoer.get().stream()
+                                    .filter(tilgjengeligeMiljoer::contains)
+                                    .collect(Collectors.toSet()));
 
-                    return pensjonforvalterConsumer.getAccessToken()
-                            .flatMapMany(token -> getIdenterRelasjoner(dollyPerson.getIdent())
-                                    .flatMap(this::getPersonData)
-                                    .collectList()
-                                    .map(relasjoner -> Flux.concat(
-                                            opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer,
-                                                    relasjoner, token)
-                                                    .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
+                            return pensjonforvalterConsumer.getAccessToken()
+                                    .flatMapMany(token -> getIdenterRelasjoner(dollyPerson.getIdent())
+                                            .flatMap(this::getPersonData)
+                                            .collectList()
+                                            .map(relasjoner -> Flux.concat(
+                                                    opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer,
+                                                            relasjoner, token)
+                                                            .map(response -> PENSJON_FORVALTER + decodeStatus(response, dollyPerson.getIdent())),
 
-                                            lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
+                                                    lagreTpForhold(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
                                                             .map(response -> TP_FORHOLD + decodeStatus(response, dollyPerson.getIdent())),
 
-                                            lagreAlderspensjon(
+                                                    lagreAlderspensjon(
                                                             bestilling.getPensjonforvalter(),
                                                             relasjoner,
                                                             dollyPerson.getIdent(),
@@ -135,9 +141,9 @@ public class PensjonforvalterClient implements ClientRegister {
                                                     lagreInntekt(bestilling.getPensjonforvalter(), dollyPerson, bestilteMiljoer.get(), token)
                                                             .map(response -> POPP_INNTEKTSREGISTER + decodeStatus(response, dollyPerson.getIdent())))))
                                     .flatMap(Flux::from)
-                            .filter(StringUtils::isNotBlank)
-                            .collect(Collectors.joining("$"));
-                }))
+                                    .filter(StringUtils::isNotBlank)
+                                    .collect(Collectors.joining("$"));
+                        }))
                 .map(status -> futurePersist(dollyPerson, progress, status));
     }
 

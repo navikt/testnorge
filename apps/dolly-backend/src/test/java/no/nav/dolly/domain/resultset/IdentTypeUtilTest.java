@@ -14,8 +14,7 @@ public class IdentTypeUtilTest {
 
     private static final String FNR_IDENT = "10101020312";
     private static final String DNR_IDENT = "40101020312";
-    private static final String BOST_IDENT = "10301020312";
-    private static final String FDAT_IDENT = "10101000000";
+    private static final String NPID_IDENT = "10301020312";
 
     @Test
     public void getIdentTypeFNR_OK() {
@@ -32,12 +31,6 @@ public class IdentTypeUtilTest {
     @Test
     public void getIdentTypeBOST_OK() {
 
-        assertThat(IdentTypeUtil.getIdentType(BOST_IDENT), is(equalTo(IdentType.BOST)));
-    }
-
-    @Test
-    public void getIdentTypeFDAT_OK() {
-
-        assertThat(IdentTypeUtil.getIdentType(FDAT_IDENT), is(equalTo(IdentType.FDAT)));
+        assertThat(IdentTypeUtil.getIdentType(NPID_IDENT), is(equalTo(IdentType.NPID)));
     }
 }
