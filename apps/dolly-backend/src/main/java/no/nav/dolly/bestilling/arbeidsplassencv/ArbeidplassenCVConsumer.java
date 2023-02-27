@@ -55,7 +55,7 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arbeidsplassen_putCV"})
     public Flux<ArbeidsplassenCVDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
 
-        log.info("Henter CV på ident: {} fra arbeidsplassenCV", ident);
+        log.info("Oppdaterer CV på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArbeidsplassenPutCommand(webClient, ident, arbeidsplassenCV, token.getTokenValue()).call());
     }
