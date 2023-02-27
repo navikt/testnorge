@@ -1,13 +1,6 @@
 package no.nav.pdl.forvalter.database.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,9 +9,23 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import org.hibernate.Hibernate;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Parameter;
 
-@Data
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "relasjon")
 @Builder
@@ -36,6 +43,7 @@ public class DbRelasjon {
     })
     private Long id;
 
+    @Column(name = "sist_oppdatert")
     private LocalDateTime sistOppdatert;
 
     @Enumerated(EnumType.STRING)
@@ -48,4 +56,17 @@ public class DbRelasjon {
     @ManyToOne
     @JoinColumn(name = "relatert_person_id", nullable = false, updatable = false)
     private DbPerson relatertPerson;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DbRelasjon that = (DbRelasjon) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

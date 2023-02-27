@@ -5,6 +5,7 @@ import no.nav.testnav.libs.database.config.VaultHikariConfiguration;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
 import org.springframework.vault.authentication.TokenAuthentication;
@@ -13,6 +14,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
 @Profile("local")
+@Order(2)
 @Import({
         FlywayConfiguration.class,
         VaultHikariConfiguration.class
