@@ -1,8 +1,8 @@
-
-mq:
-  dev:
-    username: nada
-    password: nada
-  test:
-    username: nada
-    password: nada
+config:
+  mq:
+    test:
+      user: 'n/a'
+      password: 'n/a'
+    preprod:
+      user: 'n/a'
+      password: 'n/a'
