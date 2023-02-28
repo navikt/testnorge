@@ -6,6 +6,7 @@ import Panel from '@/components/ui/panel/Panel'
 import { UtdanningForm } from '@/components/fagsystem/arbeidsplassen/form/partials/UtdanningForm'
 import { JobboenskerForm } from '@/components/fagsystem/arbeidsplassen/form/partials/JobboenskerForm'
 import { FagbrevForm } from '@/components/fagsystem/arbeidsplassen/form/partials/FagbrevForm'
+import { AnnenErfaringForm } from '@/components/fagsystem/arbeidsplassen/form/partials/AnnenErfaringForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -20,8 +21,9 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 				<div className="flexbox--flex-wrap">
 					<JobboenskerForm formikBag={formikBag} />
 					<UtdanningForm formikBag={formikBag} />
-					<ArbeidserfaringForm formikBag={formikBag} />
 					<FagbrevForm formikBag={formikBag} />
+					<ArbeidserfaringForm formikBag={formikBag} />
+					<AnnenErfaringForm formikBag={formikBag} />
 				</div>
 			</Panel>
 		</Vis>

@@ -59,6 +59,16 @@ export const initialFagbrev = {
 	// updatedAt: null,
 }
 
+export const initialAnnenErfaring = {
+	// uuid: '',
+	description: '',
+	role: '',
+	fromDate: null,
+	toDate: null,
+	ongoing: false,
+	// updatedAt: null
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',
