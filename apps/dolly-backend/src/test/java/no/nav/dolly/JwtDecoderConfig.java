@@ -15,7 +15,7 @@ public class JwtDecoderConfig {
 
     @Bean
     public JwtDecoder jwtDecoder() {
-        log.info("Using a mocked JWTDecoder");
+        log.info("Using a mocked JwtDecoder");
         return jwtDecoder;
     }
 
