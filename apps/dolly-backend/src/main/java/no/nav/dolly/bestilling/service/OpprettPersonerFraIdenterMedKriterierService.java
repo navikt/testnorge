@@ -17,6 +17,7 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                             .flatMap(originator -> opprettProgress(bestilling, PDLF, availStatus.getIdent())
                                     .flatMap(progress -> opprettPerson(originator)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
-                                            .filter(Objects::nonNull)
+                                            .filter(StringUtils::isNotBlank)
                                             .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                                     .doOnNext(dollyPerson ->
                                                             leggIdentTilGruppe(ident, progress, bestKriterier.getBeskrivelse()))

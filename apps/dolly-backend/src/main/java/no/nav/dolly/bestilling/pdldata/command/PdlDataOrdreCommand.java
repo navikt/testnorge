@@ -49,6 +49,7 @@ public class PdlDataOrdreCommand implements Callable<Flux<PdlResponse>> {
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
                 .onErrorResume(throwable -> Flux.just(PdlResponse.builder()
+                        .ident(ident)
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
                         .build()));

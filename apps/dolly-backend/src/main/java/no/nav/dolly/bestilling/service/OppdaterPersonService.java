@@ -20,6 +20,7 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -80,7 +81,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                                 oppdaterPdlPerson(originator, testident.getIdent())
                                         .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                 Flux.just(testident.getIdent()))
-                                .filter(Objects::nonNull)
+                                .filter(StringUtils::isNotBlank)
                                 .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                         .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
                                                 updateIdent(dollyPerson, progress) : Flux.just(ident))

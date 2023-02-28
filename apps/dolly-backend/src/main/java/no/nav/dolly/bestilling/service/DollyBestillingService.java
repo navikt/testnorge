@@ -203,11 +203,11 @@ public class DollyBestillingService {
                         transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
                         log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
                     })
-                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : null);
+                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : "");
 
         } else {
 
-            return Flux.empty();
+            return Flux.just("");
         }
     }
 
