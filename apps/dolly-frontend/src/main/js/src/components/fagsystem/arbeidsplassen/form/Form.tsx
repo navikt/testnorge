@@ -4,6 +4,7 @@ import React from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { UtdanningForm } from '@/components/fagsystem/arbeidsplassen/form/partials/UtdanningForm'
+import { JobboenskerForm } from '@/components/fagsystem/arbeidsplassen/form/partials/JobboenskerForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -16,8 +17,9 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 				startOpen={erForsteEllerTest(formikBag.values, [arbeidsplassenAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
-					<ArbeidserfaringForm formikBag={formikBag} />
+					<JobboenskerForm formikBag={formikBag} />
 					<UtdanningForm formikBag={formikBag} />
+					<ArbeidserfaringForm formikBag={formikBag} />
 				</div>
 			</Panel>
 		</Vis>

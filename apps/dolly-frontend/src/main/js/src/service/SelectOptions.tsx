@@ -515,6 +515,42 @@ const selectOptions = {
 		{ value: 7, label: 'Høyere utdanning, 4+ år' },
 		{ value: 8, label: 'Doktorgrad' },
 	],
+
+	oppstart: [
+		{ value: 'LEDIG_NAA', label: 'Kan begynne nå' },
+		{ value: 'ETTER_TRE_MND', label: 'Har 3 måneders oppsigelse' },
+		{ value: 'ETTER_AVTALE', label: 'Kan begynne etter nærmere avtale' },
+	],
+
+	arbeidsmengde: [
+		{ value: 'HELTID', label: 'Heltid' },
+		{ value: 'DELTID', label: 'Deltid' },
+	],
+
+	arbeidstid: [
+		{ value: 'DAGTID', label: 'Dagtid' },
+		{ value: 'KVELD', label: 'Kveld' },
+		{ value: 'NATT', label: 'Natt' },
+		{ value: 'UKEDAGER', label: 'Ukedager' },
+		{ value: 'LOERDAG', label: 'Lørdag' },
+		{ value: 'SOENDAG', label: 'Søndag' },
+		{ value: 'SKIFT', label: 'Skift' },
+		{ value: 'VAKT', label: 'Vakt' },
+		{ value: 'TURNUS', label: 'Turnus' },
+	],
+
+	ansettelsestype: [
+		{ value: 'FAST', label: 'Fast' },
+		{ value: 'VIKARIAT', label: 'Vikariat' },
+		{ value: 'ENGASJEMENT', label: 'Engasjement' },
+		{ value: 'PROSJEKT', label: 'Prosjekt' },
+		{ value: 'SESONG', label: 'Sesong' },
+		{ value: 'TRAINEE', label: 'Trainee' },
+		{ value: 'LAERLING', label: 'Lærling' },
+		{ value: 'SELVSTENDIG_NAERINGSDRIVENDE', label: 'Selvstendig næringsdrivende' },
+		{ value: 'FERIEJOBB', label: 'Feriejobb' },
+		{ value: 'ANNET', label: 'Annet' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]

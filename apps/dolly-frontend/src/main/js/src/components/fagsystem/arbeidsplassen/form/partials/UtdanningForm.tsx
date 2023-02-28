@@ -40,7 +40,7 @@ export const UtdanningForm = ({ formikBag }) => {
 					/>
 					<Fritekstfelt
 						label="Beskrivelse"
-						placeholder="Beskrivelse av xxx"
+						placeholder="Beskrivelse av utdanning"
 						value={_get(formikBag.values, `${utdanningPath}.description`)}
 						onChange={(beskrivelse) =>
 							formikBag.setFieldValue(`${utdanningPath}.description`, beskrivelse?.target?.value)

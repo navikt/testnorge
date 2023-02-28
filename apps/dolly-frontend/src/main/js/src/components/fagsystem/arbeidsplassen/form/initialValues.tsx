@@ -1,3 +1,14 @@
+export const initialJobboensker = {
+	// active: false,
+	startOption: null,
+	occupations: [],
+	// occupationDrafts: [],
+	locations: [],
+	occupationTypes: [],
+	workLoadTypes: [],
+	workScheduleTypes: [],
+}
+
 export const initialCV = {
 	arbeidserfaring: [],
 	utdanning: [],
@@ -9,7 +20,7 @@ export const initialCV = {
 	offentligeGodkjenninger: [],
 	fagbrev: [],
 	kompetanser: [],
-	jobboensker: {},
+	jobboensker: initialJobboensker,
 	sammendrag: '',
 	harBil: false,
 }
@@ -38,4 +49,18 @@ export const initialUtdanning = {
 	endDate: null,
 	description: '',
 	ongoing: false,
+}
+
+export const initialJobboenskerOmråde = {
+	// id: '',
+	location: '',
+	code: '',
+	// conceptId: null,
+}
+
+export const initialJobboenskerYrke = {
+	// id: '',
+	title: '',
+	// conceptId: null,
+	styrk08: '',
 }
