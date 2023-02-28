@@ -69,6 +69,13 @@ export const initialAnnenErfaring = {
 	// updatedAt: null
 }
 
+export const initialKompetanser = {
+	// uuid: '',
+	title: '',
+	// conceptId: '',
+	// updatedAt: null,
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',
