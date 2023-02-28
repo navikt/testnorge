@@ -3,13 +3,13 @@ kind: "Application"
 metadata:
   labels:
     team: dolly
-  name: dolly-redis-session
+  name: dolly-dev-redis-session
   namespace: dolly
   annotations:
     nais.io/run-as-user: "999"
     nais.io/read-only-file-system: "false"
 spec:
-  image: redis:6.2.5
+  image: redis:7-alpine
   port: 6379
   replicas:
     min: 1
@@ -27,19 +27,19 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend
-        - application: dolly-idporten
-        - application: dolly-redis-session-redisexporter
+        - application: dolly-frontend-dev
+        - application: dolly-frontend-dev-unstable
+        - application: dolly-dev-redis-session-redisexporter
 ---
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
   labels:
     team: dolly
-  name: dolly-redis-session-redisexporter
+  name: dolly-dev-redis-session-redisexporter
   namespace: dolly
 spec:
-  image: oliver006/redis_exporter:v1.27.0
+  image: oliver006/redis_exporter:v1.47.0
   port: 9121
   prometheus:
     enabled: true
@@ -55,12 +55,12 @@ spec:
       memory: 128Mi
   liveness:
     path: /health
-  accessPolicy:
+  accessPolicy: # for GCP
     outbound:
       rules:
-        - application: dolly-redis-session
+        - application: dolly-dev-redis-session
   env:
     - name: REDIS_ADDR
-      value: dolly-redis-session:6379
+      value: dolly-dev-redis-session:6379
     - name: REDIS_EXPORTER_LOG_FORMAT
       value: json
