@@ -551,6 +551,14 @@ const selectOptions = {
 		{ value: 'FERIEJOBB', label: 'Feriejobb' },
 		{ value: 'ANNET', label: 'Annet' },
 	],
+
+	spraakNivaa: [
+		{ value: 'IKKE_OPPGITT', label: 'Ikke oppgitt' },
+		{ value: 'NYBEGYNNER', label: 'Nybegynner' },
+		{ value: 'GODT', label: 'Godt' },
+		{ value: 'VELDIG_GODT', label: 'Veldig godt' },
+		{ value: 'FOERSTESPRAAK', label: 'Førstespråk (morsmål)' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]

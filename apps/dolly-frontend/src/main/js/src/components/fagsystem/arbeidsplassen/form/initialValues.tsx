@@ -97,6 +97,14 @@ export const initialAndreGodkjenninger = {
 	// updatedAt: null,
 }
 
+export const initialSpraak = {
+	// uuid: '',
+	language: '',
+	oralProficiency: 'IKKE_OPPGITT',
+	writtenProficiency: 'IKKE_OPPGITT',
+	// updatedAt: null,
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',
