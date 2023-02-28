@@ -51,6 +51,14 @@ export const initialUtdanning = {
 	ongoing: false,
 }
 
+export const initialFagbrev = {
+	// uuid: '',
+	title: '',
+	// conceptId: '',
+	type: '',
+	// updatedAt: null,
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',

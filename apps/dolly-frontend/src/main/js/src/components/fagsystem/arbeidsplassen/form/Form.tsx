@@ -5,6 +5,7 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import Panel from '@/components/ui/panel/Panel'
 import { UtdanningForm } from '@/components/fagsystem/arbeidsplassen/form/partials/UtdanningForm'
 import { JobboenskerForm } from '@/components/fagsystem/arbeidsplassen/form/partials/JobboenskerForm'
+import { FagbrevForm } from '@/components/fagsystem/arbeidsplassen/form/partials/FagbrevForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -20,6 +21,7 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 					<JobboenskerForm formikBag={formikBag} />
 					<UtdanningForm formikBag={formikBag} />
 					<ArbeidserfaringForm formikBag={formikBag} />
+					<FagbrevForm formikBag={formikBag} />
 				</div>
 			</Panel>
 		</Vis>
