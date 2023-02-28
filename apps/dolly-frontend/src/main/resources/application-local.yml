@@ -29,6 +29,7 @@ spring:
 #          idporten:
 #            issuer-uri: ${IDPORTEN_ISSUER_URI}
 
+
 server:
   port: 8020
 
