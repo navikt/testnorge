@@ -6,8 +6,3 @@ config:
     preprod:
       user: 'preprod_user'
       password: 'preprod_password'
-
-mq:
-  dev:
-    username: 'dev_username'
-    password: 'dev_password'
