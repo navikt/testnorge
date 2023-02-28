@@ -76,6 +76,16 @@ export const initialKompetanser = {
 	// updatedAt: null,
 }
 
+export const initialOffentligeGodkjenninger = {
+	// uui: '',
+	title: '',
+	// conceptId: '',
+	issuer: '',
+	fromDate: null,
+	toDate: null,
+	// updatedAt: null
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',
