@@ -11,7 +11,7 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
+            redirect-uri: 'http://127.0.0.1:3000/login/oauth2/code/{registrationId}'
             post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
             scope: openid
             client-authentication-method: private_key_jwt
@@ -19,7 +19,7 @@ spring:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
-            redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
+            redirect-uri: 'http://127.0.0.1:3000/login/oauth2/code/{registrationId}'
             scope: openid, offline_access, ${azure.app.client.id}/.default
         provider:
           aad:
