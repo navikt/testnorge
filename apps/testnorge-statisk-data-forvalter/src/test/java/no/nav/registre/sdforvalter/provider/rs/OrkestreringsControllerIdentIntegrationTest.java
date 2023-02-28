@@ -24,8 +24,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -56,9 +56,6 @@ class OrkestreringsControllerIdentIntegrationTest {
     private MockMvc mvc;
 
     @MockBean
-    public JwtDecoder jwtDecoder;
-
-    @MockBean
     private TokenExchange tokenExchange;
 
     @Autowired
@@ -84,7 +81,7 @@ class OrkestreringsControllerIdentIntegrationTest {
         tpsfSendSkdmeldingerUrlPattern = "(.*)/tpsf/api/v1/endringsmelding/skd/send/" + staticDataPlaygroup;
         tpOpprettPersonerUrlPattern = "(.*)/testnorge-tp/api/v1/orkestrering/opprettPersoner/" + ENVIRONMENT;
 
-        JsonWiremockHelper.builder(objectMapper).withUrlPathMatching("(.*)/v1/orkestrering/opprettPersoner/(.*)").stubPost();
+        JsonWiremockHelper.builder(objectMapper).withUrlPathMatching("(.*)/v1/orkestrering/opprettPersoner/(.*)").stubPost(HttpStatus.OK);
     }
 
 
@@ -118,7 +115,7 @@ class OrkestreringsControllerIdentIntegrationTest {
                 .withUrlPathMatching(tpsfSendSkdmeldingerUrlPattern)
                 .withRequestBody(sendToTpsfRequest)
                 .withResponseBody(skdResponse)
-                .stubPost();
+                .stubPost(HttpStatus.OK);
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -131,7 +128,7 @@ class OrkestreringsControllerIdentIntegrationTest {
                 .withUrlPathMatching(tpOpprettPersonerUrlPattern)
                 .withRequestBody(identer)
                 .withResponseBody(identer)
-                .stubPost();
+                .stubPost(HttpStatus.OK);
 
         mvc.perform(post("/api/v1/orkestrering/tps/" + ENVIRONMENT)
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))

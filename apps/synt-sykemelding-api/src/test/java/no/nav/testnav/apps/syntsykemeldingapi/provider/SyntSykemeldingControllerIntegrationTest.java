@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
@@ -86,7 +87,7 @@ class SyntSykemeldingControllerIntegrationTest {
                 .withUrlPathMatching("(.*)/synt/api/v1/generate_sykmeldings_history_json")
                 .withRequestBody(Map.of(ident, LocalDate.now().toString()))
                 .withResponseBody(getTestHistorikk(ident))
-                .stubPost();
+                .stubPost(HttpStatus.OK);
 
         var request = SyntSykemeldingDTO
                 .builder()

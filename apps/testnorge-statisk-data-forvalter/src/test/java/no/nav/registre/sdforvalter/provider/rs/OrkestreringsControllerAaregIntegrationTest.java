@@ -1,6 +1,5 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.any;
 import static com.github.tomakehurst.wiremock.client.WireMock.reset;
 import static no.nav.registre.sdforvalter.ResourceUtils.getResourceFileContent;
 import static org.mockito.Mockito.when;
@@ -25,8 +24,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -53,9 +52,6 @@ class OrkestreringsControllerAaregIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenExchange;
@@ -101,7 +97,7 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .withUrlPathMatching("(.*)/synt-aareg/api/v1/generate_aareg")
                 .withRequestBody(Collections.singletonList(FNR))
                 .withResponseBody(arbeidsforholdmelding)
-                .stubPost();
+                .stubPost(HttpStatus.OK);
 
         JsonWiremockHelper
                 .builder(objectMapper)
@@ -113,7 +109,7 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .builder(objectMapper)
                 .withUrlPathMatching("(.*)/aareg/test/api/v1/arbeidsforhold")
                 .withResponseBody(Arbeidsforhold.builder().build())
-                .stubPost();
+                .stubPost(HttpStatus.OK);
 
         mvc.perform(post("/api/v1/orkestrering/aareg/" + MILJOE)
                         .contentType(MediaType.APPLICATION_JSON).with(jwt()))
@@ -192,7 +188,7 @@ class OrkestreringsControllerAaregIntegrationTest {
                 .withUrlPathMatching("(.*)/synt-aareg/api/v1/generate_aareg")
                 .withRequestBody(Collections.singletonList(FNR))
                 .withResponseBody("error")
-                .stubPost();
+                .stubPost(HttpStatus.OK);
 
         JsonWiremockHelper
                 .builder(objectMapper)
