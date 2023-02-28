@@ -18,7 +18,7 @@ export const OffentligeGodkjenningerForm = ({ formikBag }) => {
 		>
 			{(offentligGodkjenningPath, idx) => (
 				<div key={idx} className="flexbox--flex-wrap">
-					{/*TODO: Må kanskje sette styrkkode også. Og finn ut hvilke data som er riktig å bruke i lista*/}
+					{/*// TODO: Må ha riktige data til lista. Sette title*/}
 					<FormikSelect
 						name={`${offentligGodkjenningPath}.title`}
 						label="Offentlig godkjenning"

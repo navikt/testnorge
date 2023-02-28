@@ -9,6 +9,7 @@ import { FagbrevForm } from '@/components/fagsystem/arbeidsplassen/form/partials
 import { AnnenErfaringForm } from '@/components/fagsystem/arbeidsplassen/form/partials/AnnenErfaringForm'
 import { KompetanserForm } from '@/components/fagsystem/arbeidsplassen/form/partials/KompetanserForm'
 import { OffentligeGodkjenningerForm } from '@/components/fagsystem/arbeidsplassen/form/partials/OffentligeGodkjenningerForm'
+import { AndreGodkjenningerForm } from '@/components/fagsystem/arbeidsplassen/form/partials/AndreGodkjenningerForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -28,6 +29,7 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 					<AnnenErfaringForm formikBag={formikBag} />
 					<KompetanserForm formikBag={formikBag} />
 					<OffentligeGodkjenningerForm formikBag={formikBag} />
+					<AndreGodkjenningerForm formikBag={formikBag} />
 				</div>
 			</Panel>
 		</Vis>

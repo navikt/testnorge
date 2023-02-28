@@ -86,6 +86,17 @@ export const initialOffentligeGodkjenninger = {
 	// updatedAt: null
 }
 
+export const initialAndreGodkjenninger = {
+	// uuid: '',
+	certificateName: '',
+	// alternativeName: '',
+	// conceptId: '',
+	issuer: '',
+	fromDate: null,
+	toDate: null,
+	// updatedAt: null,
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',
