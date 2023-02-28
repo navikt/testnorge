@@ -18,7 +18,7 @@ sonarqube {
 
 dependencyManagement {
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.2'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.3'
     }
 }
 
@@ -32,7 +32,7 @@ repositories {
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    implementation 'com.auth0:java-jwt:3.18.2'
+    implementation 'com.auth0:java-jwt:4.3.0'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
