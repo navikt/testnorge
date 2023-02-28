@@ -11,7 +11,7 @@ spring:
         registration:
           idporten:
             client-id: ${IDPORTEN_CLIENT_ID}
-            redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
+            redirect-uri: ${REDIRECT_URL_IDPORTEN}
             post-logout-redirect-uri: ${POST_LOGOUT_REDIRECT_URI}
             scope: openid
             client-authentication-method: private_key_jwt
@@ -19,7 +19,7 @@ spring:
             client-id: ${azure.app.client.id}
             client-secret: ${azure.app.client.secret}
             authorization-grant-type: authorization_code
-            redirect-uri: 'http://localhost:3000/login/oauth2/code/{registrationId}'
+            redirect-uri: ${REDIRECT_URL_AZURE}
             scope: openid, offline_access, ${azure.app.client.id}/.default
         provider:
           aad:
@@ -33,6 +33,8 @@ server:
   port: 8020
 
 POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+REDIRECT_URL_AZURE: 'http://localhost:3000/login/oauth2/code/aad'
+REDIRECT_URL_IDPORTEN: 'http://localhost:3000/login/oauth2/code/idporten'
 IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:
