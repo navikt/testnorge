@@ -75,10 +75,10 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
 
-            new AvailCheckCommand(bestilling.getOpprettFraIdenter(), pdlDataConsumer).call()
-                    .flatMap(availStatus -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
-                                    availStatus.getIdent(), mapperFacade))
-                            .flatMap(originator -> opprettProgress(bestilling, PDLF, availStatus.getIdent())
+            Flux.fromArray(bestilling.getOpprettFraIdenter().split(","))
+                    .flatMap(opprettIdent -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
+                                    opprettIdent, mapperFacade))
+                            .flatMap(originator -> opprettProgress(bestilling, PDLF, opprettIdent)
                                     .flatMap(progress -> opprettPerson(originator)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                             .filter(StringUtils::isNotBlank)

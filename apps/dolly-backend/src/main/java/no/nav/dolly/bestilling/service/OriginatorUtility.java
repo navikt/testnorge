@@ -13,11 +13,9 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
 import no.nav.dolly.mapper.MappingContextUtils;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
@@ -41,12 +39,10 @@ public class OriginatorUtility {
     public static Originator prepOriginator(RsDollyUtvidetBestilling bestillingRequest, Testident testident,
                                             String ident, MapperFacade mapperFacade) {
 
-        if (isNull(bestillingRequest.getPdldata()) && isNull(testident) && isBlank(ident)) {
+        if (isNull(bestillingRequest.getPdldata()) && (isNull(testident) || isNotBlank(ident))) {
 
             bestillingRequest.setPdldata(PdlPersondata.builder()
                     .opprettNyPerson(PdlPersondata.PdlPerson.builder()
-                            .syntetisk(bestillingRequest.getNavSyntetiskIdent())
-                            .identtype(Identtype.FNR)
                             .build())
                     .build());
         }
@@ -54,7 +50,6 @@ public class OriginatorUtility {
         if (nonNull(testident) && testident.isPdlf() ||
                 nonNull(bestillingRequest.getPdldata()) && nonNull((bestillingRequest.getPdldata().getOpprettNyPerson())) ||
                 isNotBlank(ident)) {
-
 
             var context = MappingContextUtils.getMappingContext();
             context.setProperty("navSyntetiskIdent", bestillingRequest.getNavSyntetiskIdent());
