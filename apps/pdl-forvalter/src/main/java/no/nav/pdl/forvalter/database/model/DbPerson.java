@@ -14,7 +14,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import no.nav.pdl.forvalter.database.JSONUserType;
@@ -25,13 +24,15 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import static java.util.Objects.isNull;
 
 @Getter
 @Setter
 @ToString
-@RequiredArgsConstructor
 @Entity
 @Table(name = "person")
 @Builder
@@ -64,11 +65,24 @@ public class DbPerson {
     @OrderBy("relasjonType desc, id desc")
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DbRelasjon> relasjoner;
-
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<DbAlias> alias;
+
+    public List<DbRelasjon> getRelasjoner() {
+        if (isNull(relasjoner)) {
+            relasjoner = new ArrayList<>();
+        }
+        return relasjoner;
+    }
+
+    public List<DbAlias> getAlias() {
+        if (isNull(alias)) {
+            alias = new ArrayList<>();
+        }
+        return alias;
+    }
 
     @Override
     public boolean equals(Object o) {
