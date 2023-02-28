@@ -22,7 +22,6 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(PdlPersondata kilde, BestillingRequestDTO destinasjon, MappingContext context) {
 
-                        destinasjon.setPerson(kilde.getPerson());
                         if (nonNull(kilde.getOpprettNyPerson())) {
                             mapperFacade.map(kilde.getOpprettNyPerson(), destinasjon);
                         }
@@ -32,7 +31,6 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                         destinasjon.setOpprettFraIdent((String) context.getProperty("opprettFraIdent"));
                     }
                 })
-                .exclude("person")
                 .byDefault()
                 .register();
     }

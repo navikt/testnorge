@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
@@ -15,6 +16,7 @@ public class WebClientFilter {
 
         return (throwable instanceof WebClientResponseException wce &&
                 wce.getStatusCode().is5xxServerError()) ||
+                throwable instanceof UnknownHostException ||
                 throwable.getMessage().contains("nested exception is java.net.SocketException");
     }
 

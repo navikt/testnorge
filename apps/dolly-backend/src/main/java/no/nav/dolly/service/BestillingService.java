@@ -351,6 +351,7 @@ public class BestillingService {
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        log.info("Antall testidenter {} i gruppe {} :", gruppe.getTestidenter().size(), gruppeId);
         fixAaregAbstractClassProblem(request.getAareg());
         return saveBestillingToDB(
                 Bestilling.builder()
