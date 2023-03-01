@@ -120,7 +120,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                     })))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .subscribe(done -> doFerdig(bestilling));
+                    .doFinally(done -> doFerdig(bestilling))
+                    .subscribe();
         }
     }
 

@@ -108,7 +108,8 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .subscribe(done -> doFerdig(bestilling));
+                    .doFinally(done -> doFerdig(bestilling))
+                    .subscribe();
 
         } else {
             bestilling.setFeil("Feil: kunne ikke mappe JSON request, se logg!");

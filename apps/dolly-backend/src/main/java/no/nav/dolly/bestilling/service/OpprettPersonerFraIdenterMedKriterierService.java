@@ -75,10 +75,12 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
 
-            Flux.fromArray(bestilling.getOpprettFraIdenter().split(","))
-                    .flatMap(opprettIdent -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
-                                    opprettIdent, mapperFacade))
-                            .flatMap(originator -> opprettProgress(bestilling, PDLF, opprettIdent)
+            new AvailCheckCommand(bestilling.getOpprettFraIdenter(), pdlDataConsumer).call()
+                    .filter(AvailCheckCommand.AvailStatus::isAvailable)
+                    .map(AvailCheckCommand.AvailStatus::getIdent)
+                    .flatMap(availIdent -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
+                                    availIdent, mapperFacade))
+                            .flatMap(originator -> opprettProgress(bestilling, PDLF, availIdent)
                                     .flatMap(progress -> opprettPerson(originator)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                             .filter(StringUtils::isNotBlank)
@@ -113,7 +115,8 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .subscribe(done -> doFerdig(bestilling));
+                    .doFinally(done -> doFerdig(bestilling))
+                    .subscribe();
 
         } else {
 

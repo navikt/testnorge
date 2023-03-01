@@ -113,7 +113,8 @@ public class OppdaterPersonService extends DollyBestillingService {
                                 })))
                 .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                 .collectList()
-                .subscribe(done -> doFerdig(bestilling));
+                .doFinally(done -> doFerdig(bestilling))
+                .subscribe();
     }
 
     private Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, String ident) {

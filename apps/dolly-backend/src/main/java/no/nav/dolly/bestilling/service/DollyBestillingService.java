@@ -131,6 +131,7 @@ public class DollyBestillingService {
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.from(Flux.fromIterable(clientRegisters)
+                .parallel()
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
