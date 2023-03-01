@@ -3,48 +3,46 @@ package no.nav.udistub.converter.itest;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.udistub.database.model.Person;
 import no.nav.udistub.database.repository.PersonRepository;
-import no.nav.udistub.provider.rs.PersonController;
+import no.nav.udistub.service.dto.UdiPerson;
+import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.actuate.autoconfigure.security.servlet.ManagementWebSecurityAutoConfiguration;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
-import javax.inject.Inject;
-import java.util.Optional;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 
-import static no.nav.udistub.converter.DefaultTestData.TEST_DATE;
-import static no.nav.udistub.converter.DefaultTestData.TEST_FLYKTNINGSTATUS;
-import static no.nav.udistub.converter.DefaultTestData.TEST_INNREISEFORBUD;
-import static no.nav.udistub.converter.DefaultTestData.TEST_NAVN;
-import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDSTILLATELSE;
-import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDS_GRUNNLAG_KATEGORI;
-import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_ALIAS_FNR;
-import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_FNR;
-import static no.nav.udistub.converter.DefaultTestData.TEST_ovrigIkkeOppholdsKategori;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
+import static no.nav.udistub.converter.DefaultTestData.*;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
+import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
-@Disabled
-@EnableAutoConfiguration(exclude = { SecurityAutoConfiguration.class, ManagementWebSecurityAutoConfiguration.class })
-class UdiStubITest extends ITestBase {
+@SpringBootTest(webEnvironment = RANDOM_PORT)
+@ActiveProfiles("test")
+@AutoConfigureWireMock(port = 0)
+@AutoConfigureMockMvc(addFilters = false)
+@Testcontainers
+class UdiStubITest {
 
-    private static final String PERSON_URI = "/api/v1/person";
-    private static final String NAV_PERSON_IDENT = "Nav-Personident";
-    private static final String NAV_CONSUMER_ID = "Nav-Consumer-Id";
-    @Inject
-    protected TestRestTemplate restTemplate;
+    @MockBean
+    @SuppressWarnings("unused")
+    private JwtDecoder jwtDecoder;
 
     @Autowired
     private PersonRepository personRepository;
@@ -52,60 +50,98 @@ class UdiStubITest extends ITestBase {
     @Autowired
     private MapperFacade mapperFacade;
 
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private Flyway flyway;
+
+    protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
+
+    @BeforeEach
+    public void setUp()
+            throws IOException {
+
+        flyway.migrate();
+        stubFor(
+                get(urlMatching("/tpsfstuburl/.*"))
+                        .withHeader(AUTHORIZATION, matching("test"))
+                        .willReturn(
+                                aResponse()
+                                        .withBody(readFile("tpsfResponse-happy.json"))
+                                        .withStatus(200)
+                        )
+        );
+
+    }
+
     @BeforeEach
     void mapToTestPerson() {
+
         Person personEntity = mapperFacade.map(TESTPERSON_UDI, Person.class);
         personEntity.getAliaser().forEach(aliasTo -> aliasTo.setPerson(personEntity));
         personEntity.getOppholdStatus().setPerson(personEntity);
         personEntity.getArbeidsadgang().setPerson(personEntity);
+
     }
 
     @Test
     @Transactional
-    void shouldOpprettPersonAndStoreInDb() throws Exception {
-        String requestBody = getJsonContentsAsString("opprettPersonRequest-happy.json");
-        ResponseEntity<PersonController.PersonControllerResponse> response = callOpprettPerson(requestBody);
+    void shouldOpprettPersonAndStoreInDb()
+            throws Exception {
 
-        assertNotNull(response);
-        assertEquals(HttpStatus.CREATED, response.getStatusCode());
+        mockMvc
+                .perform(
+                        MockMvcRequestBuilders.post("/api/v1/person")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(readFile("opprettPersonRequest-happy.json"))
+                                .header("Nav-Personident", TEST_PERSON_FNR)
+                                .header("Nav-Consumer-Id", "test"))
+                .andExpect(MockMvcResultMatchers.status().isCreated());
 
-        Optional<Person> storedPersonOptional = personRepository.findByIdent(TEST_PERSON_FNR);
+        var person = personRepository
+                .findByIdent(TEST_PERSON_FNR)
+                .orElseThrow(() -> new AssertionError("Person %s not found".formatted(TEST_PERSON_FNR)));
 
-        assertTrue(storedPersonOptional.isPresent());
-        Person storedPerson = storedPersonOptional.get();
+        assertThat(person.getFoedselsDato()).isEqualTo(TEST_DATE);
+        assertThat(person.getIdent()).isEqualTo(TEST_PERSON_FNR);
+        assertThat(person.getNavn().getFornavn()).isEqualTo(TEST_NAVN.getFornavn());
+        assertThat(person.getNavn().getMellomnavn()).isEqualTo(TEST_NAVN.getMellomnavn());
+        assertThat(person.getNavn().getEtternavn()).isEqualTo(TEST_NAVN.getEtternavn());
+        assertThat(person.getFlyktning()).isEqualTo(TEST_FLYKTNINGSTATUS);
+        assertThat(person.getHarOppholdsTillatelse()).isEqualTo(TEST_OPPHOLDSTILLATELSE);
+        assertThat(person.getAliaser()).hasSize(1);
+        assertThat(person.getAliaser().get(0).getFnr()).isEqualTo(TEST_PERSON_ALIAS_FNR);
+        assertThat(person.getOppholdStatus()).isNotNull();
+        assertThat(
+                person
+                        .getOppholdStatus()
+                        .getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()
+                        .getAvslagEllerBortfall()
+                        .getAvslagOppholdstillatelseBehandletGrunnlagOvrig())
+                .isEqualTo(TEST_OPPHOLDS_GRUNNLAG_KATEGORI);
+        assertThat(
+                person
+                        .getOppholdStatus()
+                        .getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()
+                        .getOvrigIkkeOppholdsKategoriArsak())
+                .isEqualTo(TEST_ovrigIkkeOppholdsKategori);
+        assertThat(
+                person
+                        .getOppholdStatus()
+                        .getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()
+                        .getUtvistMedInnreiseForbud()
+                        .getInnreiseForbud())
+                .isEqualTo(TEST_INNREISEFORBUD);
 
-        assertNotNull(storedPerson);
-        assertEquals(TEST_DATE, storedPerson.getFoedselsDato());
-        assertEquals(TEST_PERSON_FNR, storedPerson.getIdent());
-        assertEquals(TEST_NAVN.getFornavn(), storedPerson.getNavn().getFornavn());
-        assertEquals(TEST_NAVN.getMellomnavn(), storedPerson.getNavn().getMellomnavn());
-        assertEquals(TEST_NAVN.getEtternavn(), storedPerson.getNavn().getEtternavn());
-        assertEquals(TEST_FLYKTNINGSTATUS, storedPerson.getFlyktning());
-        assertEquals(TEST_OPPHOLDSTILLATELSE, storedPerson.getHarOppholdsTillatelse());
-
-        assertNotNull(storedPerson.getAliaser());
-        assertEquals(1, storedPerson.getAliaser().size());
-        assertEquals(TEST_PERSON_ALIAS_FNR, storedPerson.getAliaser().get(0).getFnr());
-
-        assertNotNull(storedPerson.getOppholdStatus());
-        assertEquals(TEST_OPPHOLDS_GRUNNLAG_KATEGORI, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getAvslagEllerBortfall().getAvslagOppholdstillatelseBehandletGrunnlagOvrig());
-        assertEquals(TEST_ovrigIkkeOppholdsKategori, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getOvrigIkkeOppholdsKategoriArsak());
-        assertEquals(TEST_INNREISEFORBUD, storedPerson.getOppholdStatus().getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum().getUtvistMedInnreiseForbud().getInnreiseForbud());
     }
 
-    private ResponseEntity<PersonController.PersonControllerResponse> callOpprettPerson(String body) {
-        return restTemplate.exchange(PERSON_URI, HttpMethod.POST, createHttpEntityWithBody(body), PersonController.PersonControllerResponse.class);
+    private static String readFile(String filename)
+            throws IOException {
+        return Files.readString(
+                new ClassPathResource(filename).getFile().toPath(),
+                StandardCharsets.UTF_8
+        );
     }
 
-    private HttpEntity createHttpEntityWithBody(String body) {
-        return new HttpEntity(body, createHeaders());
-    }
-
-    private HttpHeaders createHeaders() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.add(NAV_PERSON_IDENT, TEST_PERSON_FNR);
-        headers.add(NAV_CONSUMER_ID, "test");
-        return headers;
-    }
 }

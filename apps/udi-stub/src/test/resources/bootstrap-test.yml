@@ -1,0 +1,8 @@
+spring:
+  cloud:
+    vault:
+      database:
+        enabled: false
+  flyway:
+    enabled: false
+
