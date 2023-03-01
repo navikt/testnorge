@@ -38,6 +38,7 @@ import java.util.function.Function;
 public class DollyFrontendApplicationStarter {
 
     private final TokenExchange tokenExchange;
+
     private final UserJwtExchange userJwtExchange;
 
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
