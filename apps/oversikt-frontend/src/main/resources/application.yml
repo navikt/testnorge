@@ -11,6 +11,9 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+  cloud:
+    vault:
+      enabled: false
 consumers:
   testnorge-profil-api:
     cluster: dev-gcp
