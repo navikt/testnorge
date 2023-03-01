@@ -3,6 +3,8 @@ spring:
     vault:
       database:
         enabled: false
+      token: "test"
+      enabled: false
   flyway:
     enabled: false
 
