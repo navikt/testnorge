@@ -105,6 +105,14 @@ export const initialSpraak = {
 	// updatedAt: null,
 }
 
+export const initialFoererkort = {
+	// uuid: '',
+	type: '',
+	acquiredDate: null,
+	expiryDate: null,
+	// updatedAt: null
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',

@@ -559,6 +559,25 @@ const selectOptions = {
 		{ value: 'VELDIG_GODT', label: 'Veldig godt' },
 		{ value: 'FOERSTESPRAAK', label: 'Førstespråk (morsmål)' },
 	],
+
+	foererkortTyper: [
+		{ value: 'A - Motorsykkel', label: 'A - Motorsykkel' },
+		{ value: 'A1 - Lett motorsykkel', label: 'A1 - Lett motorsykkel' },
+		{ value: 'A2 - Mellomtung motorsykkel', label: 'A2 - Mellomtung motorsykkel' },
+		{ value: 'AM - Moped', label: 'AM - Moped' },
+		{ value: 'B - Personbil', label: 'B - Personbil' },
+		{ value: 'BE - Personbil med tilhenger', label: 'BE - Personbil med tilhenger' },
+		{ value: 'C - Lastebil', label: 'C - Lastebil' },
+		{ value: 'C1 - Lett lastebil', label: 'C1 - Lett lastebil' },
+		{ value: 'C1E - Lett lastebil med tilhenger', label: 'C1E - Lett lastebil med tilhenger' },
+		{ value: 'CE - Lastebil med tilhenger', label: 'CE - Lastebil med tilhenger' },
+		{ value: 'D - Buss', label: 'D - Buss' },
+		{ value: 'D1 - Minibuss', label: 'D1 - Minibuss' },
+		{ value: 'T - Traktor', label: 'T - Traktor' },
+		{ value: 'D1E - Minibuss med tilhenger', label: 'D1E - Minibuss med tilhenger' },
+		{ value: 'DE - Buss med tilhenger', label: 'DE - Buss med tilhenger' },
+		{ value: 'S - Snøscooter', label: 'S - Snøscooter' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
