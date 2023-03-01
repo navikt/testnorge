@@ -56,7 +56,7 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.hibernate.validator:hibernate-validator'
 
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5

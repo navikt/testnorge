@@ -58,7 +58,7 @@ dependencies {
 
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
 
     testImplementation 'no.nav.testnav.libs:testing'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'

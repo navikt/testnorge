@@ -70,7 +70,7 @@ dependencies {
     implementation 'org.hibernate.validator:hibernate-validator'
 
     implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
 
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
