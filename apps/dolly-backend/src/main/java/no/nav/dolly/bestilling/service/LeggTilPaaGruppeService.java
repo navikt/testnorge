@@ -10,10 +10,10 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -30,6 +30,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.time.Duration;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -42,6 +43,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private final PersonServiceClient personServiceClient;
     private final MapperFacade mapperFacade;
     private final BestillingProgressService bestillingProgressService;
+    private final IdentRepository identRepository;
 
     public LeggTilPaaGruppeService(
             IdentService identService,
@@ -54,7 +56,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient) {
+            PersonServiceClient personServiceClient,
+            IdentRepository identRepository) {
         super(
                 identService,
                 bestillingService,
@@ -68,6 +71,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
+        this.identRepository = identRepository;
     }
 
     @Async
@@ -76,10 +80,14 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
-        RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
+        var bestKriterier = getDollyBestillingRequest(bestilling);
+        var testidenter = identRepository.findTestidentByTestgruppe(bestilling.getGruppe().getId());
+        log.info("Antall identer {} lest fra gruppe {}", testidenter.size(), bestilling.getGruppe().getId());
+
         if (nonNull(bestKriterier)) {
 
-            Flux.fromIterable(bestilling.getGruppe().getTestidenter())
+            Flux.fromIterable(testidenter)
+                    .delaySequence(Duration.ofMillis(200))
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
                                     .flatMap(progress -> (originator.isPdlf() ?

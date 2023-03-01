@@ -75,4 +75,6 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
 
         String getMiljoer();
     }
+
+    List<Testident> findTestidentByTestgruppe(Long gruppeId);
 }

@@ -17,7 +17,6 @@ import java.time.LocalTime;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -48,11 +47,8 @@ public class PersonServiceClient {
 
         return () -> {
             progress.setPdlSync(status.getStatus().is2xxSuccessful() && isTrue(status.getExists()));
-            var error = isNotBlank(status.getFeilmelding()) ?
-                    errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()) : null;
             if (!dollyPerson.isOrdre()) {
                 transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, status2);
-                transactionHelperService.persister(progress, BestillingProgress::setFeil, error);
             }
             return progress;
         };

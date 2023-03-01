@@ -23,6 +23,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -77,7 +78,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var emptyBestillingCounter = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .filter(testident -> testident.isPdl() || testident.isPdlf())
+                    .delaySequence(Duration.ofMillis(200))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
                                     .filter(Objects::nonNull)

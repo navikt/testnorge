@@ -1,5 +1,6 @@
 package no.nav.dolly.util;
 
+import io.netty.channel.ChannelException;
 import io.netty.resolver.dns.DnsNameResolverException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +20,8 @@ public class WebClientFilter {
                 wce.getStatusCode().is5xxServerError()) &&
                 !wce.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ||
                 throwable instanceof DnsNameResolverException ||
-                throwable instanceof IOException;
+                throwable instanceof IOException ||
+                throwable instanceof ChannelException;
     }
 
     public static String getMessage(Throwable throwable) {
