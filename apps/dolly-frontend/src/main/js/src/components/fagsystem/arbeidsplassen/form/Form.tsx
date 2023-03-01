@@ -13,6 +13,7 @@ import { AndreGodkjenningerForm } from '@/components/fagsystem/arbeidsplassen/fo
 import { SpraakForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SpraakForm'
 import { FoererkortForm } from '@/components/fagsystem/arbeidsplassen/form/partials/FoererkortForm'
 import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/KursForm'
+import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -36,6 +37,7 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 					<SpraakForm formikBag={formikBag} />
 					<FoererkortForm formikBag={formikBag} />
 					<KursForm formikBag={formikBag} />
+					<SammendragForm formikBag={formikBag} />
 				</div>
 			</Panel>
 		</Vis>
