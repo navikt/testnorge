@@ -113,6 +113,16 @@ export const initialFoererkort = {
 	// updatedAt: null
 }
 
+export const initialKurs = {
+	// uuid: '',
+	title: '',
+	issuer: '',
+	duration: 0,
+	durationUnit: '',
+	date: null,
+	// updatedAt: null,
+}
+
 export const initialJobboenskerOmråde = {
 	// id: '',
 	location: '',

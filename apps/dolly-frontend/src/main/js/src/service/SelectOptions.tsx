@@ -578,6 +578,14 @@ const selectOptions = {
 		{ value: 'DE - Buss med tilhenger', label: 'DE - Buss med tilhenger' },
 		{ value: 'S - Snøscooter', label: 'S - Snøscooter' },
 	],
+
+	kursLengde: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'TIME', label: 'Timer' },
+		{ value: 'DAG', label: 'Dager' },
+		{ value: 'UKE', label: 'Uker' },
+		{ value: 'MND', label: 'Måneder' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
