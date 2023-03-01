@@ -1,11 +1,12 @@
 package no.nav.dolly.util;
 
+import io.netty.resolver.dns.DnsNameResolverException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
-import java.net.UnknownHostException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
 @Slf4j
@@ -15,10 +16,10 @@ public class WebClientFilter {
     public static boolean is5xxException(Throwable throwable) {
 
         return (throwable instanceof WebClientResponseException wce &&
-                wce.getStatusCode().is5xxServerError()) && !
-                wce.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ||
-                throwable instanceof UnknownHostException ||
-                throwable.getMessage().contains("nested exception is java.net.SocketException");
+                wce.getStatusCode().is5xxServerError()) &&
+                !wce.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ||
+                throwable instanceof DnsNameResolverException ||
+                throwable instanceof IOException;
     }
 
     public static String getMessage(Throwable throwable) {
