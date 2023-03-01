@@ -10,6 +10,7 @@ import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
@@ -80,13 +81,10 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         MDC.put(MDC_KEY_BESTILLING, bestilling.getId().toString());
         Hooks.onEachOperator(Operators.lift(new ThreadLocalContextLifter<>()));
 
-        var bestKriterier = getDollyBestillingRequest(bestilling);
-        var testidenter = identRepository.findTestidentByTestgruppe(bestilling.getGruppe().getId());
-        log.info("Antall identer {} lest fra gruppe {}", testidenter.size(), bestilling.getGruppe().getId());
-
+        RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
 
-            Flux.fromIterable(testidenter)
+            Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .delaySequence(Duration.ofMillis(200))
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
