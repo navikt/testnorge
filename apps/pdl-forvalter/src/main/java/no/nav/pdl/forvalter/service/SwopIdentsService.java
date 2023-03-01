@@ -68,9 +68,12 @@ public class SwopIdentsService {
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
         person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
-        person1.getPerson().setBostedsadresse(person2.getPerson().getBostedsadresse());
-        person1.getPerson().setKontaktadresse(person2.getPerson().getKontaktadresse());
-        person1.getPerson().setOppholdsadresse(person2.getPerson().getOppholdsadresse());
+        person1.getPerson().setBostedsadresse(person1.getPerson().getAdressebeskyttelse().isEmpty() ?
+                person2.getPerson().getBostedsadresse() : null);
+        person1.getPerson().setKontaktadresse(person1.getPerson().getAdressebeskyttelse().isEmpty() ?
+                person2.getPerson().getKontaktadresse() : null);
+        person1.getPerson().setOppholdsadresse(person1.getPerson().getAdressebeskyttelse().isEmpty() ?
+                person2.getPerson().getOppholdsadresse() : null);
 
         var foedsel = person2.getPerson().getFoedsel().stream().findFirst().orElse(new FoedselDTO());
         person1.getPerson().getFoedsel()
