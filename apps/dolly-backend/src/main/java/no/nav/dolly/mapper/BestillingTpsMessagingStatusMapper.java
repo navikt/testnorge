@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.util.Strings;
 
 import java.util.ArrayList;
@@ -29,8 +30,8 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 public final class BestillingTpsMessagingStatusMapper {
 
     private static final String OKEY = "OK";
-    private static final String ADVARSEL = "ADVARSEL: ";
-    private static final String FEIL = "FEIL= ";
+    private static final String ADVARSEL = "Advarsel: ";
+    private static final String FEIL = "Feil: ";
 
     public static List<RsStatusRapport> buildTpsMessagingStatusMap(List<BestillingProgress> progressList) {
 
@@ -105,13 +106,13 @@ public final class BestillingTpsMessagingStatusMapper {
 
     private static String formatMsg(String message) {
 
-        if (message.contains(ADVARSEL)) {
+        if (StringUtils.containsIgnoreCase(message, ADVARSEL)) {
             return decodeMsg(ADVARSEL + message.replace(" ADVARSEL", "")
-                    .replace("_"," "));
+                    .replace("_", " "));
         }
-        if (message.contains(FEIL)) {
+        if (StringUtils.containsIgnoreCase(message, FEIL)) {
             return decodeMsg(FEIL + message.replace(" FEIL", "")
-                    .replace("_"," "));
+                    .replace("_", " "));
         }
         return message;
     }
@@ -125,7 +126,8 @@ public final class BestillingTpsMessagingStatusMapper {
             return status.contains(OKEY) ||
                     status.toLowerCase().contains("person ikke funnet i tps") ||
                     status.toLowerCase().contains("dette er data som allerede er registrert i tps") ||
-                    status.toLowerCase().contains("det finnes allerede en lik putl-adresse")
+                    status.toLowerCase().contains("det finnes allerede en lik putl-adresse") ||
+                    status.toLowerCase().contains("utgått fødselsnr")
                     ? OKEY
                     : status;
         }
