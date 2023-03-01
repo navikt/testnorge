@@ -85,8 +85,8 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
     public Flux<ArbeidsplassenCVDTO> deleteCVer(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(tokenService -> Flux.fromIterable(identer)
+                .flatMapMany(token -> Flux.fromIterable(identer)
                         .flatMap(ident -> new ArbeidsplassenDeleteCommand(webClient, ident, null,
-                                tokenService.getTokenValue()).call()));
+                                token.getTokenValue()).call()));
     }
 }
