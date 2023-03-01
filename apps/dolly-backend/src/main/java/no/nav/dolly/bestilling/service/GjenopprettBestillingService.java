@@ -28,7 +28,6 @@ import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -86,17 +85,14 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                             progress, false),
                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                             .map(ClientFuture::get)
-                                                            .map(BestillingProgress::isPdlSync)
-                                                            .flatMap(pdlSync -> isTrue(pdlSync) ?
-                                                                    Flux.concat(
+                                                            .filter(BestillingProgress::isPdlSync)
+                                                            .flatMap(pdlSync -> Flux.concat(
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase2Klienter(),
                                                                                     progress, false),
                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                     fase3Klienter(),
-                                                                                    progress, false)) :
-                                                                    Flux.empty())
-                                                            .filter(Objects::nonNull)))
+                                                                                    progress, false)))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

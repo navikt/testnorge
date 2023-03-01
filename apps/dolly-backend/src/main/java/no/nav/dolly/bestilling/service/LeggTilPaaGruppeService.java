@@ -31,11 +31,9 @@ import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -99,17 +97,15 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                                             progress, true),
                                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                                             .map(ClientFuture::get)
-                                                                            .map(BestillingProgress::isPdlSync)
-                                                                            .flatMap(pdlSync -> (isTrue(pdlSync) ?
+                                                                            .filter(BestillingProgress::isPdlSync)
+                                                                            .flatMap(pdlSync ->
                                                                                     Flux.concat(
                                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                                     fase2Klienter(),
                                                                                                     progress, true),
                                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                                     fase3Klienter(),
-                                                                                                    progress, true)) :
-                                                                                    Flux.empty())))))
-                                                    .filter(Objects::nonNull)
+                                                                                                    progress, true))))))
                                                     .onErrorResume(throwable -> {
                                                         var error = errorStatusDecoder.getErrorText(
                                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
