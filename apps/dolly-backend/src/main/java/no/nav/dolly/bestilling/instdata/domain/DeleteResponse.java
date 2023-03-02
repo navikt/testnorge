@@ -1,23 +1,18 @@
 package no.nav.dolly.bestilling.instdata.domain;
 
-import java.time.LocalDateTime;
-
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Getter
-@Setter
+@Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class DeleteResponse {
 
-    private LocalDateTime timestamp;
+    private String ident;
     private HttpStatus status;
     private String error;
-    private String message;
-    private String path;
 }

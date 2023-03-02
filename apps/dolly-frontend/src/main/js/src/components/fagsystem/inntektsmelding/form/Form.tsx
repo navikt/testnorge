@@ -84,7 +84,7 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 			: TypeArbeidsgiver.VIRKSOMHET
 	)
 
-	const { personFoerLeggTil } = useContext(BestillingsveilederContext)
+	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
 	const handleArbeidsgiverChange = (type: TypeArbeidsgiver) => {
 		setTypeArbeidsgiver(type)
@@ -118,9 +118,11 @@ export const InntektsmeldingForm = ({ formikBag }: InntektsmeldingFormProps) => 
 				informasjonstekst={informasjonstekst}
 				startOpen={erForsteEllerTest(formikBag.values, [inntektsmeldingAttributt])}
 			>
-				{!_.has(formikBag.values, 'aareg') && !_.has(personFoerLeggTil, 'aareg') && (
-					<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
-				)}
+				{!leggTilPaaGruppe &&
+					!_.has(formikBag.values, 'aareg') &&
+					!_.has(personFoerLeggTil, 'aareg') && (
+						<AlertAaregRequired meldingSkjema="Inntektsmeldingen" />
+					)}
 
 				<DollySelect
 					name="inntektsmelding.typeArbeidsgiver"

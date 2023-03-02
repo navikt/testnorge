@@ -15,7 +15,7 @@ public class BankkontoGenerator {
 
     private static final int IBAN_COUNTRY_LENGTH = 2;
     private static final int DEFAULT_ACCOUNT_LENGTH = 15;
-    private static final int NORSK_ACCOUNT_LENGTH = 11;
+    private static final long NORSK_ACCOUNT_LENGTH = 11;
 
     private static final Random random = new SecureRandom();
 
@@ -43,23 +43,21 @@ public class BankkontoGenerator {
     }
 
     public static String tilfeldigNorskBankkonto() {
-        var kontonummerLengde = NORSK_ACCOUNT_LENGTH - 1;
 
-        var kontonummer = random.ints(kontonummerLengde, 0, 9)
-                .boxed()
-                .map(Integer::toUnsignedString)
-                .collect(Collectors.joining());
+        String kontonummer;
+        Character checkDigit;
 
-        var checkDigit = BankkontoGenerator.getCheckDigit(kontonummer);
-
-        if (checkDigit == '-') {
-            kontonummer = random.ints(kontonummerLengde, 0, 9)
+        do {
+            kontonummer = random.ints(NORSK_ACCOUNT_LENGTH - 1, 0, 9)
                     .boxed()
                     .map(Integer::toUnsignedString)
                     .collect(Collectors.joining());
-        }
 
-        return kontonummer + BankkontoGenerator.getCheckDigit(kontonummer);
+            checkDigit = BankkontoGenerator.getCheckDigit(kontonummer);
+
+        } while (checkDigit == '-');
+
+        return kontonummer + checkDigit;
     }
 
     public static String tilfeldigUtlandskBankkonto(String landkode) {

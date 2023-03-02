@@ -23,14 +23,9 @@ export const identFraTestnorge = (opts: any) => {
 	return opts?.is?.leggTil && opts?.identMaster === 'PDL'
 }
 
-const leggTilPaaTpsfIdent = (opts: any) => {
-	return opts?.is?.leggTil && opts?.identMaster === 'TPSF'
-}
-
 export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 	const opts = useContext(BestillingsveilederContext)
 	const testnorgeIdent = identFraTestnorge(opts)
-	const tpsfIdent = leggTilPaaTpsfIdent(opts)
 	const checked = [
 		PersoninformasjonPanel,
 		AdressePanel,
@@ -55,16 +50,18 @@ export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 
 	return (
 		<AttributtVelger checked={checked}>
-			<PersoninformasjonPanel stateModifier={stateModifier} testnorgeIdent={testnorgeIdent} />
-			{!testnorgeIdent && <AdressePanel stateModifier={stateModifier} formikBag={formikBag} />}
-			{!testnorgeIdent && !tpsfIdent && (
-				<FamilierelasjonPanel stateModifier={stateModifier} formikBag={formikBag} />
-			)}
+			<PersoninformasjonPanel
+				stateModifier={stateModifier}
+				testnorgeIdent={testnorgeIdent}
+				formikBag={formikBag}
+			/>
 			{!testnorgeIdent && (
-				<IdentifikasjonPanel stateModifier={stateModifier} formikBag={formikBag} />
-			)}
-			{!testnorgeIdent && (
-				<KontaktDoedsboPanel stateModifier={stateModifier} formikBag={formikBag} />
+				<>
+					<AdressePanel stateModifier={stateModifier} formikBag={formikBag} />
+					<FamilierelasjonPanel stateModifier={stateModifier} formikBag={formikBag} />
+					<IdentifikasjonPanel stateModifier={stateModifier} formikBag={formikBag} />
+					<KontaktDoedsboPanel stateModifier={stateModifier} formikBag={formikBag} />
+				</>
 			)}
 			<ArbeidInntektPanel stateModifier={stateModifier} formikBag={formikBag} />
 			<PensjonPanel stateModifier={stateModifier} formikBag={formikBag} />

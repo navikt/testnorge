@@ -1,141 +1,46 @@
 package no.nav.dolly.mapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient;
+import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.FALSK_IDENTITET;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.KONTAKTINFORMASJON_DOEDSBO;
-import static no.nav.dolly.bestilling.pdlforvalter.PdlForvalterClient.UTENLANDS_IDENTIFIKASJONSNUMMER;
-import static no.nav.dolly.domain.resultset.SystemTyper.PDL_DODSBO;
-import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FALSKID;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static no.nav.dolly.domain.resultset.SystemTyper.PDL_FORVALTER;
-import static no.nav.dolly.domain.resultset.SystemTyper.PDL_UTENLANDSID;
 import static no.nav.dolly.mapper.AbstractRsStatusMiljoeIdentForhold.decodeMsg;
-import static no.nav.dolly.mapper.BestillingMeldingStatusIdentMapper.resolveStatus;
+import static no.nav.dolly.util.ListUtil.listOf;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Slf4j
+@UtilityClass
 public final class BestillingPdlForvalterStatusMapper {
 
-    private static final String OKEY = "OK";
+    public static List<RsStatusRapport> buildPdlForvalterStatusMap(List<BestillingProgress> bestProgress) {
 
-    public static List<RsStatusRapport> buildPdlForvalterStatusMap(List<BestillingProgress> progressList, ObjectMapper objectMapper) {
+        Map<String, List<String>> statusMap = new HashMap<>();
 
-        //  melding     status      ident
-        Map<String, Map<String, List<String>>> msgStatusIdents = new HashMap();
-
-        progressList.forEach(progress -> {
-            if (isNotBlank(progress.getPdlforvalterStatus())) {
-                List.of(progress.getPdlforvalterStatus().split("\\$")).forEach(
-                        resolveStatus(msgStatusIdents, progress)
-                );
+        bestProgress.forEach(progress -> {
+            if (isNotBlank(progress.getPdlForvalterStatus())) {
+                if (statusMap.containsKey(progress.getPdlForvalterStatus())) {
+                    statusMap.get(progress.getPdlForvalterStatus()).add(progress.getIdent());
+                } else {
+                    statusMap.put(progress.getPdlForvalterStatus(), listOf(progress.getIdent()));
+                }
             }
         });
 
-        List<RsStatusRapport> statusRapporter = new ArrayList<>();
-        statusRapporter.addAll(extractStatus(msgStatusIdents, KONTAKTINFORMASJON_DOEDSBO, PDL_DODSBO));
-        statusRapporter.addAll(extractStatus(msgStatusIdents, UTENLANDS_IDENTIFIKASJONSNUMMER, PDL_UTENLANDSID));
-        statusRapporter.addAll(extractStatus(msgStatusIdents, FALSK_IDENTITET, PDL_FALSKID));
-        statusRapporter.addAll(extractStatus(msgStatusIdents, PdlForvalterClient.PDL_FORVALTER, PDL_FORVALTER));
-
-        var pdlDataStatus = BestillingPdlDataStatusMapper.buildPdlDataStatusMap(progressList, objectMapper);
-
-        if (statusRapporter.isEmpty() && !pdlDataStatus.isEmpty()) {
-            statusRapporter.add(RsStatusRapport.builder()
-                    .id(PDL_FORVALTER)
-                    .navn(PDL_FORVALTER.getBeskrivelse())
-                    .statuser(new ArrayList<>(List.of(RsStatusRapport.Status.builder()
-                            .melding("OK")
-                            .identer(progressList.stream()
-                                    .map(BestillingProgress::getIdent)
-                                    .collect(Collectors.toList()))
-                            .build())))
-                    .build());
-        }
-
-        if (!pdlDataStatus.isEmpty()) {
-            pdlDataStatus.stream().findFirst().get()
-                    .getStatuser()
-                    .forEach(status -> addPdlDataStatus(statusRapporter, status));
-        }
-
-        return statusRapporter;
-    }
-
-    private static void removeAmbiguousOKs(RsStatusRapport statusRapporter) {
-
-        var identerMedFeil = statusRapporter.getStatuser().stream()
-                .filter(rapport -> !OKEY.equals(rapport.getMelding()))
-                .map(RsStatusRapport.Status::getIdenter)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toSet());
-
-        Iterator<RsStatusRapport.Status> it = statusRapporter.getStatuser().iterator();
-        while (it.hasNext()) {
-            RsStatusRapport.Status status = it.next();
-
-            if (OKEY.equals(status.getMelding())) {
-                status.setIdenter(status.getIdenter().stream()
-                        .filter(ident -> !identerMedFeil.contains(ident))
-                        .toList());
-
-                if (status.getIdenter().isEmpty()) {
-                    it.remove();
-                }
-            }
-        }
-    }
-
-    private static void addPdlDataStatus(List<RsStatusRapport> statusRapporter, RsStatusRapport.Status nyStatus) {
-
-        for (var rapport : statusRapporter) {
-            if (rapport.getId() == PDL_FORVALTER) {
-                var statusFound = false;
-                for (var status : rapport.getStatuser()) {
-                    if (status.getMelding().equals(nyStatus.getMelding())) {
-                        status.setIdenter(Stream.concat(status.getIdenter().stream(), nyStatus.getIdenter().stream())
-                                .distinct()
-                                .toList());
-                        statusFound = true;
-                    }
-                }
-                if (!statusFound) {
-                    rapport.getStatuser().add(RsStatusRapport.Status.builder()
-                            .melding(nyStatus.getMelding())
-                            .identer(nyStatus.getIdenter())
-                            .detaljert(nyStatus.getDetaljert())
-                            .build());
-                }
-            }
-
-            removeAmbiguousOKs(rapport);
-        }
-    }
-
-    private static List<RsStatusRapport> extractStatus(Map<String, Map<String, List<String>>> msgStatusIdents, String clientid, SystemTyper type) {
-        return msgStatusIdents.entrySet().stream().filter(entry -> clientid.equals(entry.getKey()))
-                .map(entry -> RsStatusRapport.builder().id(type).navn(type.getBeskrivelse())
-                        .statuser(new ArrayList<>(entry.getValue().entrySet().stream()
-                                .map(entry1 -> RsStatusRapport.Status.builder()
-                                        .melding(decodeMsg(entry1.getKey()))
-                                        .identer(entry1.getValue())
+        return statusMap.isEmpty() ? emptyList() :
+                singletonList(RsStatusRapport.builder().id(PDL_FORVALTER).navn(PDL_FORVALTER.getBeskrivelse())
+                        .statuser(statusMap.entrySet().stream().map(entry -> RsStatusRapport.Status.builder()
+                                        .melding(decodeMsg(entry.getKey()))
+                                        .identer(entry.getValue())
                                         .build())
-                                .toList()))
-                        .build())
-                .toList();
+                                .toList())
+                        .build());
     }
 }

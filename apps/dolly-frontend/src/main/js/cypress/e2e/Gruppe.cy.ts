@@ -38,7 +38,9 @@ describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 		cy.get('div').contains('12345678912').click()
 		cy.wait(2500)
 
-		cy.get('div').contains('Q1').click()
-		cy.wait(2000)
+		cy.get('div.miljoe-knapp').each((element) => {
+			element.trigger('mousedown')
+			cy.wait(500)
+		})
 	})
 })

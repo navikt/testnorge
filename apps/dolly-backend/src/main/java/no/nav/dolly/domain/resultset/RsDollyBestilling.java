@@ -14,16 +14,16 @@ import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
+import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.krrstub.RsDigitalKontaktdata;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.domain.resultset.pdlforvalter.RsPdldata;
 import no.nav.dolly.domain.resultset.pensjon.PensjonData;
 import no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag;
 import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
-import no.nav.dolly.domain.resultset.kontoregister.BankkontoData;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,7 +45,6 @@ public class RsDollyBestilling {
 
     @Schema(description = "Navn på malbestillling")
     private String malBestillingNavn;
-    private RsPdldata pdlforvalter;
     private PdlPersondata pdldata;
     private RsDigitalKontaktdata krrstub;
     private List<RsInstdata> instdata;
@@ -62,6 +61,7 @@ public class RsDollyBestilling {
     private RsTpsMessaging tpsMessaging;
     private BankkontoData bankkonto;
     private RsSkjerming skjerming;
+    private ArbeidsplassenCVDTO arbeidsplassenCV;
 
     public List<RsAareg> getAareg() {
         if (isNull(aareg)) {

@@ -8,7 +8,7 @@ import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.aareg.RsAmeldingRequest;
 import no.nav.dolly.domain.resultset.aareg.RsArbeidsforholdAareg;
-import no.nav.dolly.domain.resultset.tpsf.DollyPerson;
+import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.testnav.libs.dto.ameldingservice.v1.AMeldingDTO;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class AmeldingService {
                 .map(miljoe -> organisasjonServiceConsumer.getOrganisasjoner(orgnumre, miljoe)
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
-                                prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getHovedperson(),
+                                prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getIdent(),
                                         organisasjon, miljoe))
                         .collect(Collectors.joining(",")))
                 .flatMap(Flux::from)

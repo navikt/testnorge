@@ -63,11 +63,6 @@ consumers:
     namespace: dolly
     name: testnav-krrstub-proxy
     url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
-  testnav-inst-service:
-    cluster: dev-gcp
-    namespace: dolly
-    name: testnav-inst-service
-    url: https://testnav-inst-service.dev.intern.nav.no
   testnav-sigrunstub-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -157,6 +152,11 @@ consumers:
     name: testnav-dokarkiv-proxy
     namespace: dolly
     url: https://testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-inst-proxy:
+    name: testnav-inst-proxy
+    namespace: dolly
+    url: https://testnav-inst-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
 
 management:

@@ -42,11 +42,11 @@ export const multiFetcherBatchData = (url, dataListe) => {
 	)
 }
 
-export const multiFetcherFagsystemer = (miljoUrlListe, headers = null, path = null) => {
+export const multiFetcherInst = (miljoUrlListe, headers = null, path = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
-				return { miljo: obj.miljo, data: path ? result[path] : result }
+				return { miljo: obj.miljo, data: path ? result[path] : result?.[obj.miljo] }
 			})
 		)
 	)

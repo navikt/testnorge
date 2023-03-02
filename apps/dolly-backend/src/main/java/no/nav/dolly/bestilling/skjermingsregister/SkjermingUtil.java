@@ -25,13 +25,6 @@ public class SkjermingUtil {
                         nonNull(bestilling.getTpsMessaging().getEgenAnsattDatoTom()));
     }
 
-    public static boolean isTpsfEgenansatt(RsDollyUtvidetBestilling bestilling) {
-
-        return nonNull(bestilling.getTpsf()) &&
-                (nonNull(bestilling.getTpsf().getEgenAnsattDatoFom()) ||
-                        nonNull(bestilling.getTpsf().getEgenAnsattDatoTom()));
-    }
-
     public static LocalDateTime getEgenansattDatoFom(RsDollyUtvidetBestilling bestilling) {
 
         if (isSkjerming(bestilling)) {
@@ -39,9 +32,6 @@ public class SkjermingUtil {
 
         } else if (isTpsMessagingEgenansatt(bestilling)) {
             return toLocalDateTime(bestilling.getTpsMessaging().getEgenAnsattDatoFom());
-
-        } else if (isTpsfEgenansatt(bestilling)) {
-            return bestilling.getTpsf().getEgenAnsattDatoFom();
 
         } else {
             return null;
@@ -55,9 +45,6 @@ public class SkjermingUtil {
 
         } else if (isTpsMessagingEgenansatt(bestilling)) {
             return toLocalDateTime(bestilling.getTpsMessaging().getEgenAnsattDatoTom());
-
-        } else if (isTpsfEgenansatt(bestilling)) {
-            return bestilling.getTpsf().getEgenAnsattDatoTom();
 
         } else {
             return null;

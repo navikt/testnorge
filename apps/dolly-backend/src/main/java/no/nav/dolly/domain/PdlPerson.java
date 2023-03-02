@@ -318,7 +318,12 @@ public class PdlPerson {
 
         private String identifikasjonsnummer;
         private String type;
+        private String status;
         private Metadata metadata;
+
+        public boolean isOpphoert() {
+            return "OPPHOERT".equals(status);
+        }
     }
 
     @lombok.Data

@@ -4,8 +4,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.pdldata.PdlPersondata;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
-import no.nav.dolly.domain.resultset.tpsf.TpsfBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import org.springframework.stereotype.Component;
@@ -31,20 +29,10 @@ public class OriginatorMappingStrategy implements MappingStrategy {
                         if (isNull(destinasjon.getSyntetisk())) {
                             destinasjon.setSyntetisk((Boolean) context.getProperty("navSyntetiskIdent"));
                         }
+                        destinasjon.setOpprettFraIdent((String) context.getProperty("opprettFraIdent"));
                     }
                 })
                 .exclude("person")
-                .byDefault()
-                .register();
-
-        factory.classMap(RsTpsfUtvidetBestilling.class, TpsfBestilling.class)
-                .customize(new CustomMapper<>() {
-                    @Override
-                    public void mapAtoB(RsTpsfUtvidetBestilling kilde, TpsfBestilling destinasjon, MappingContext context) {
-
-                        destinasjon.setAntall(1);
-                    }
-                })
                 .byDefault()
                 .register();
     }

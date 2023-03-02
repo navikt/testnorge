@@ -17,11 +17,6 @@ public class TestidentDTO {
     private Master master;
 
     @JsonIgnore
-    public boolean isTpsf() {
-        return getMaster() == Master.TPSF;
-    }
-
-    @JsonIgnore
     public boolean isPdl() {
         return getMaster() == Master.PDL;
     }

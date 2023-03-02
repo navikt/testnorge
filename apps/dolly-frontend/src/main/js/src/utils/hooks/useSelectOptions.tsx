@@ -24,8 +24,6 @@ const multiplePdlPersonUrl = (gruppe) => {
 	return sliceGruppe(gruppe, maxAntall, url)
 }
 
-const tpsforvalterUrl = '/tps-forvalteren-proxy/api/v1/dolly/testdata/hentpersoner'
-
 export const usePdlOptions = (gruppe) => {
 	const { data, error } = useSWR<any, Error>([multiplePdlforvalterUrl(gruppe)], multiFetcherAll)
 
@@ -45,7 +43,7 @@ export const usePdlOptions = (gruppe) => {
 	return {
 		data: personData,
 		loading: false,
-		error: error,
+		error: gruppe ? error : undefined,
 	}
 }
 
@@ -89,33 +87,6 @@ export const useTestnorgeOptions = (gruppe) => {
 	return {
 		data: personData,
 		loading: false,
-		error: error,
-	}
-}
-
-export const useTpsOptions = (gruppe) => {
-	const maxAntall = 40
-	let identListe = []
-	for (let i = 0; i < gruppe?.length; i += maxAntall) {
-		const listeDel = gruppe?.slice(i, i + maxAntall)
-		identListe.push(listeDel.map((p) => p.ident))
-	}
-
-	const { data, error } = useSWR<any, Error>([tpsforvalterUrl, identListe], multiFetcherBatchData)
-
-	const personData = []
-	data?.flat().forEach((id) => {
-		const mellomnavn = id?.mellomnavn ? `${id?.mellomnavn?.charAt(0)}.` : ''
-		personData.push({
-			value: id?.ident,
-			label: `${id?.ident} - ${id?.fornavn} ${mellomnavn} ${id?.etternavn}`,
-			relasjoner: id?.relasjoner?.map((r: any) => r?.personRelasjonMed?.ident),
-		})
-	})
-
-	return {
-		data: personData,
-		loading: false,
-		error: error,
+		error: gruppe ? error : undefined,
 	}
 }

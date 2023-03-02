@@ -6,7 +6,6 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.resultset.RsDollyBestilling;
-import no.nav.dolly.domain.resultset.tpsf.RsTpsfUtvidetBestilling;
 import no.nav.dolly.exceptions.ConstraintViolationException;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -14,8 +13,6 @@ import no.nav.dolly.repository.BestillingKontrollRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.http.entity.ContentType;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,13 +34,13 @@ import java.util.Optional;
 import java.util.Set;
 
 import static java.util.Collections.singletonList;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsInAnyOrder;
 
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
@@ -118,7 +115,7 @@ class BestillingServiceTest {
         when(testgruppeRepository.findById(gruppeId)).thenReturn(Optional.of(gruppe));
 
         bestillingService.saveBestilling(gruppeId, RsDollyBestilling.builder().environments(miljoer).build(),
-                RsTpsfUtvidetBestilling.builder().build(), antallIdenter, null, null, null);
+                antallIdenter, null, null, null);
 
         ArgumentCaptor<Bestilling> argCap = ArgumentCaptor.forClass(Bestilling.class);
         verify(bestillingRepository).save(argCap.capture());
@@ -189,14 +186,6 @@ class BestillingServiceTest {
 
         Assertions.assertThrows(NotFoundException.class, () ->
                 bestillingService.createBestillingForGjenopprettFraBestilling(BEST_ID, singletonList("u1")));
-    }
-
-    @Test
-    void isStoppet_OK() {
-
-        bestillingService.isStoppet(BEST_ID);
-
-        verify(bestillingKontrollRepository).findByBestillingId(BEST_ID);
     }
 
     @BeforeEach

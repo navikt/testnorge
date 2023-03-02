@@ -20,18 +20,20 @@ import java.util.Collections;
 import java.util.List;
 
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
+import static no.nav.dolly.mapper.AnnenFeilStatusMapper.buildAnnenFeilStatusMap;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
 import static no.nav.dolly.mapper.BestillingImportFraPdlStatusMapper.buildImportFraPdlStatusMap;
-import static no.nav.dolly.mapper.BestillingImportFraTpsStatusMapper.buildImportFraTpsStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
 import static no.nav.dolly.mapper.BestillingInstdataStatusMapper.buildInstdataStatusMap;
 import static no.nav.dolly.mapper.BestillingKontoregisterStatusMapper.buildKontoregisterStatusMap;
 import static no.nav.dolly.mapper.BestillingKrrStubStatusMapper.buildKrrStubStatusMap;
 import static no.nav.dolly.mapper.BestillingPdlForvalterStatusMapper.buildPdlForvalterStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlOrdreStatusMapper.buildPdlOrdreStatusMap;
+import static no.nav.dolly.mapper.BestillingPdlPersonStatusMapper.buildPdlPersonStatusMap;
 import static no.nav.dolly.mapper.BestillingPensjonforvalterStatusMapper.buildPensjonforvalterStatusMap;
 import static no.nav.dolly.mapper.BestillingSigrunStubStatusMapper.buildSigrunStubStatusMap;
 import static no.nav.dolly.mapper.BestillingSkjermingsRegisterStatusMapper.buildSkjermingsRegisterStatusMap;
@@ -60,31 +62,27 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(Bestilling bestilling, RsBestillingStatus bestillingStatus, MappingContext context) {
 
-                        List<BestillingProgress> progresser;
                         var ident = (String) context.getProperty("ident");
-                        if (isBlank(ident)) {
-                            progresser = bestilling.getProgresser();
-
-                        } else {
-                            progresser = bestilling.getProgresser().stream()
-                                    .filter(progress -> ident.equals(progress.getIdent()))
-                                    .toList();
-                        }
+                        var progresser = bestilling.getProgresser().stream()
+                                .filter(progress -> isBlank(ident) || ident.equals(progress.getIdent()))
+                                .toList();
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper
                                 .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
                         bestillingStatus.setAntallLevert(progresser.stream()
                                 .filter(BestillingProgress::isIdentGyldig)
                                 .toList().size());
-                        bestillingStatus.setAntallIdenter(bestillingStatus.getAntallLevert()); // midlertidig til TPSF har blitt fjernet
+
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());
+                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildPdlOrdreStatusMap(progresser, objectMapper));
+                        bestillingStatus.getStatus().addAll(buildPdlPersonStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildTpsMessagingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKrrStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSigrunStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAaregStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildArenaStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildPdlForvalterStatusMap(progresser, objectMapper));
                         bestillingStatus.getStatus().addAll(buildInstdataStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildUdiStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildInntektstubStatusMap(progresser));
@@ -92,13 +90,12 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(progresser));
-                        bestillingStatus.getStatus().addAll(buildImportFraTpsStatusMap(bestilling));
-                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(bestilling));
+                        bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
-                                .pdlforvalter(bestillingRequest.getPdlforvalter())
                                 .pdldata(bestillingRequest.getPdldata())
                                 .aareg(bestillingRequest.getAareg())
                                 .krrstub(bestillingRequest.getKrrstub())
@@ -113,8 +110,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .dokarkiv(bestillingRequest.getDokarkiv())
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .skjerming(bestillingRequest.getSkjerming())
-//                                .tpsf(jsonBestillingMapper.mapTpsfRequest(bestilling.getTpsfKriterier()))
-                                .importFraTps(mapIdents(bestilling.getTpsImport()))
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .bankkonto(bestillingRequest.getBankkonto())
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))

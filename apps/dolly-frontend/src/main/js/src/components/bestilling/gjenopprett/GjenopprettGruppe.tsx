@@ -5,9 +5,11 @@ import { useDispatch } from 'react-redux'
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
 import { DollyApi } from '@/service/Api'
 import { useCurrentBruker } from '@/utils/hooks/useBruker'
-import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
+import { useBestilteMiljoerForGruppe } from '@/utils/hooks/useBestilling'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { setUpdateNow } from '@/ducks/finnPerson'
+import Loading from '@/components/ui/loading/Loading'
+import React from 'react'
 
 type GjenopprettGruppeProps = {
 	onClose: any
@@ -17,15 +19,11 @@ type GjenopprettGruppeProps = {
 export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) => {
 	const dispatch = useDispatch()
 	const { currentBruker } = useCurrentBruker()
-	const { bestillingerById } = useBestillingerGruppe(gruppe.id)
+	const { miljoer, loading } = useBestilteMiljoerForGruppe(gruppe.id)
 	const brukertype = currentBruker?.brukertype
-	const bestilteMiljoer = () => {
-		const miljoer: Set<string> = new Set()
-		bestillingerById &&
-			Object.values(bestillingerById).forEach((bestillingstatus) =>
-				bestillingstatus.environments?.forEach((miljo: string) => miljoer.add(miljo))
-			)
-		return [...miljoer]
+
+	if (loading) {
+		return <Loading label="Laster miljøer..." />
 	}
 
 	const gjenopprettHeader = (
@@ -38,8 +36,8 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 			<div className="flexbox">
 				<TitleValue title="Antall identer" value={gruppe.antallIdenter} />
 				<TitleValue
-					title="Bestilt miljø"
-					value={Formatters.arrayToString(bestilteMiljoer())}
+					title="Bestilte miljø"
+					value={Formatters.arrayToString(miljoer)}
 					size="medium"
 				/>
 			</div>
@@ -65,7 +63,7 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 			gjenopprettHeader={gjenopprettHeader}
 			submitFormik={submitFormik}
 			closeModal={onClose}
-			environments={bestilteMiljoer()}
+			environments={miljoer}
 			brukertype={brukertype}
 		/>
 	)

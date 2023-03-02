@@ -46,9 +46,6 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.pdldata) {
 		initialValuesMal.pdldata = getUpdatedPdldata(initialValuesMal.pdldata)
 	}
-	if (initialValuesMal.skjerming) {
-		initialValuesMal.tpsMessaging = initialValuesMal.skjerming
-	}
 	if (initialValuesMal.bankkonto) {
 		initialValuesMal.bankkonto = getUpdatedBankkonto(initialValuesMal.bankkonto)
 	}
@@ -181,6 +178,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 			if (relasjon.nyAnsvarlig) {
 				relasjon.nyAnsvarlig.syntetisk = true
 			}
+			return relasjon
 		})
 	}
 
@@ -189,6 +187,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 			if (relasjon.nyRelatertPerson) {
 				relasjon.nyRelatertPerson.syntetisk = true
 			}
+			return relasjon
 		})
 	}
 
@@ -197,6 +196,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 			if (fullmektig.nyFullmektig) {
 				fullmektig.nyFullmektig.syntetisk = true
 			}
+			return fullmektig
 		})
 	}
 
@@ -205,16 +205,18 @@ const getUpdatedPdldata = (pdldata: any) => {
 			if (verge.nyVergeIdent) {
 				verge.nyVergeIdent.syntetisk = true
 			}
+			return verge
 		})
 	}
 
 	if (person?.kontaktinformasjonForDoedsbo) {
 		newPdldata.person.kontaktinformasjonForDoedsbo = person.kontaktinformasjonForDoedsbo.map(
 			(kontaktinfo: any) => {
-				updateKontaktType(kontaktinfo)
+				kontaktinfo = updateKontaktType(kontaktinfo)
 				if (kontaktinfo.personSomKontakt?.nyKontaktperson) {
 					kontaktinfo.personSomKontakt.nyKontaktperson.syntetisk = true
 				}
+				return kontaktinfo
 			}
 		)
 	}
@@ -222,6 +224,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 	if (person.nyident) {
 		newPdldata.person.nyident = person.nyident.map((ident: NyIdent) => {
 			ident.syntetisk = true
+			return ident
 		})
 	}
 

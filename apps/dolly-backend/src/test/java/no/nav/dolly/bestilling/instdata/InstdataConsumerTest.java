@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
-import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
-import no.nav.dolly.config.credentials.InstServiceProperties;
+import no.nav.dolly.config.credentials.InstProxyProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -14,12 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.util.List;
 
@@ -33,14 +32,13 @@ import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static java.util.Collections.singletonList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static wiremock.org.hamcrest.MatcherAssert.assertThat;
 
 @ActiveProfiles("test")
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application.yaml")
 @AutoConfigureWireMock(port = 0)
-public class InstdataConsumerTest {
+class InstdataConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final String ENVIRONMENT = "U2";
@@ -58,37 +56,36 @@ public class InstdataConsumerTest {
     private InstdataConsumer instdataConsumer;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(InstServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
-    public void deleteInstdata() {
+    void deleteInstdata() {
 
         stubDeleteInstData();
 
-        instdataConsumer.deleteInstdata(List.of(IDENT)).block();
-
-        verify(tokenService).exchange(ArgumentMatchers.any(InstServiceProperties.class));
+        instdataConsumer.deleteInstdata(List.of(IDENT))
+                .subscribe(resultat ->
+                        verify(tokenService).exchange(ArgumentMatchers.any(InstProxyProperties.class)));
     }
 
     @Test
-    public void postInstdata() {
+    void postInstdata() {
 
         stubPostInstData();
 
-        ResponseEntity<List<InstdataResponse>> response = instdataConsumer.postInstdata(singletonList(Instdata.builder().build()), ENVIRONMENT);
-
-        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
+        StepVerifier.create(instdataConsumer.postInstdata(singletonList(Instdata.builder().build()), ENVIRONMENT))
+                .expectNextCount(1)
+                .verifyComplete();
     }
 
     private void stubPostInstData() {
 
-        stubFor(post(urlPathMatching("(.*)/api/v1/ident/batch"))
+        stubFor(post(urlPathMatching("(.*)/api/v1/institusjonsopphold/person"))
                 .withQueryParam("miljoe", equalTo("U2"))
-                .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+                .willReturn(ok()));
     }
 
     private void stubDeleteInstData() {

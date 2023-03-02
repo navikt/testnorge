@@ -29,7 +29,7 @@ public record GenererNavnCommand(WebClient webClient,
                 .uri(uriBuilder -> uriBuilder.path(FIKTIVE_NAVN_URL)
                         .queryParam("antall", antall)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HEADER_NAV_CALL_ID, callId)
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)

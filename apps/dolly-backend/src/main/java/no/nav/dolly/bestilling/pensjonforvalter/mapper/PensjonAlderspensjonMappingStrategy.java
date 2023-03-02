@@ -33,7 +33,8 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
         }
         return switch (sivilstandType) {
             case GIFT, SKILT, SEPARERT, ENKE_ELLER_ENKEMANN -> RelasjonType.EKTEF.name();
-            case REGISTRERT_PARTNER, SKILT_PARTNER, SEPARERT_PARTNER, GJENLEVENDE_PARTNER -> RelasjonType.PARTNER.name();
+            case REGISTRERT_PARTNER, SKILT_PARTNER, SEPARERT_PARTNER, GJENLEVENDE_PARTNER ->
+                    RelasjonType.PARTNER.name();
             default -> null;
         };
     }
@@ -73,10 +74,9 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
                         relasjoner.stream()
                                 .filter(person -> person.getIdent().equals(hovedperson))
                                 .forEach(personBolk -> personBolk.getPerson().getSivilstand().stream()
-                                        .filter(PdlPerson.Sivilstand::isGift)
                                         .findFirst()
                                         .ifPresent(sivilstand -> {
-                                            request.setSivilstand(sivilstand.getType().name());
+                                            request.setSivilstand(mapSivilstand(sivilstand.getType()));
                                             request.setSivilstandDatoFom(sivilstand.getGyldigFraOgMed());
                                             partner.set(sivilstand.getRelatertVedSivilstand());
                                         }));
@@ -137,4 +137,23 @@ public class PensjonAlderspensjonMappingStrategy implements MappingStrategy {
     }
 
     public enum RelasjonType {EKTEF, PARTNER, SAMBO}
+
+    private static String mapSivilstand(PdlPerson.SivilstandType sivilstandType) {
+
+        if (isNull(sivilstandType)) {
+            return null;
+        }
+
+        return switch (sivilstandType) {
+            case UGIFT, UOPPGITT -> SivilstandRelasjoner.UGIF.name();
+            case GIFT -> SivilstandRelasjoner.GIFT.name();
+            case ENKE_ELLER_ENKEMANN -> SivilstandRelasjoner.ENKE.name();
+            case SKILT -> SivilstandRelasjoner.SKIL.name();
+            case SEPARERT -> SivilstandRelasjoner.SEPR.name();
+            case REGISTRERT_PARTNER -> SivilstandRelasjoner.REPA.name();
+            case SEPARERT_PARTNER -> SivilstandRelasjoner.SEPA.name();
+            case SKILT_PARTNER -> SivilstandRelasjoner.SKPA.name();
+            case GJENLEVENDE_PARTNER -> SivilstandRelasjoner.GJPA.name();
+        };
+    }
 }

@@ -35,7 +35,7 @@ public class TagsHenteCommand implements Callable<Mono<JsonNode>> {
                         .path(PDL_TESTDATA)
                         .path(PDL_TAGS_URL)
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, token)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(IDENT, ident)
                 .retrieve()

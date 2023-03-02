@@ -3,8 +3,8 @@ package no.nav.dolly.provider.api;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.bestilling.service.GjenopprettIdentService;
+import no.nav.dolly.bestilling.service.OppdaterPersonService;
 import no.nav.dolly.domain.dto.TestidentDTO;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.RsDollyUpdateRequest;
@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -49,7 +50,7 @@ public class TestpersonController {
     private final BestillingService bestillingService;
     private final GjenopprettIdentService gjenopprettIdentService;
     private final TransaksjonMappingService transaksjonMappingService;
-    private final DollyBestillingService dollyBestillingService;
+    private final OppdaterPersonService oppdaterPersonService;
     private final MapperFacade mapperFacade;
     private final IdentService identService;
     private final PersonService personService;
@@ -67,7 +68,7 @@ public class TestpersonController {
         }
         Bestilling bestilling = bestillingService.saveBestilling(request, ident);
 
-        dollyBestillingService.oppdaterPersonAsync(request, bestilling);
+        oppdaterPersonService.oppdaterPersonAsync(request, bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
 
@@ -134,7 +135,7 @@ public class TestpersonController {
     @Operation(description = "Naviger til ønsket testperson")
     @Transactional
     @GetMapping("/naviger/{ident}")
-    public RsWhereAmI navigerTilTestident(@PathVariable String ident) {
+    public Mono<RsWhereAmI> navigerTilTestident(@PathVariable String ident) {
 
         return navigasjonService.navigerTilIdent(ident);
     }

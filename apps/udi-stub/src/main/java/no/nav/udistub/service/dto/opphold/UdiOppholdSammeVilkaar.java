@@ -1,6 +1,5 @@
 package no.nav.udistub.service.dto.opphold;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +13,6 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @Setter
 @Getter
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
 public class UdiOppholdSammeVilkaar {
 
     private UdiPeriode oppholdSammeVilkaarPeriode;

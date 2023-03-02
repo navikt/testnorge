@@ -6,8 +6,9 @@ metadata:
   labels:
     team: dolly
   annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.ingress.kubernetes.io/proxy-body-size: "512m"
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   tokenx:
     enabled: true
@@ -44,19 +45,18 @@ spec:
         - application: generer-navn-service
         - application: testnorge-profil-api
         - application: testnav-person-service
-        - application: testnav-inst-service
         - application: testnav-pdl-forvalter
         - application: testnav-arbeidsforhold-service
         - application: testnav-amelding-service
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
+        - application: testnav-miljoer-service
       external:
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-inst-service.dev.intern.nav.no
         - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
         - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
@@ -69,6 +69,7 @@ spec:
   webproxy: true
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   image: {{image}}

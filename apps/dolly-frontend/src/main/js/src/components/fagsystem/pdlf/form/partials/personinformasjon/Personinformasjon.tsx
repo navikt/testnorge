@@ -19,6 +19,7 @@ import { Navn } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { Foedsel } from '@/components/fagsystem/pdlf/form/partials/foedsel/Foedsel'
 import { Vergemaal } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
 import { NorskBankkonto, UtenlandskBankkonto } from '@/components/fagsystem/bankkonto/form'
+import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 
 const nasjonalitetPaths = [
 	'pdldata.person.statsborgerskap',
@@ -28,8 +29,8 @@ const nasjonalitetPaths = [
 
 const diversePaths = [
 	'tpsMessaging.spraakKode',
-	'tpsMessaging.egenAnsattDatoFom',
-	'tpsMessaging.egenAnsattDatoTom',
+	'skjerming.egenAnsattDatoFom',
+	'skjerming.egenAnsattDatoTom',
 ]
 
 const alderPaths = [
@@ -121,7 +122,8 @@ export const Personinformasjon = ({ formikBag }) => {
 				</Kategori>
 
 				<Kategori title="Diverse" vis={diversePaths}>
-					<TpsMessagingDiverse formikBag={formikBag} />
+					<TpsMessagingDiverse />
+					<SkjermingForm formikBag={formikBag} />
 				</Kategori>
 
 				<Kategori title="Norsk bankkonto" vis={norskBankkontoPath}>

@@ -33,6 +33,10 @@ spring:
       hibernate:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
   security:
     oauth2:
       resourceserver:
@@ -85,6 +89,16 @@ consumers:
     namespace: dolly
     url: https://testnav-tps-messaging-service.dev.intern.nav.no
     cluster: dev-gcp
+  testnav-miljoer-service:
+    name: testnav-miljoer-service
+    namespace: dolly
+    url: https://testnav-miljoer-service.dev.intern.nav.no
+    cluster: dev-gcp
+  testnav-norg2-proxy:
+    name: testnav-norg2-proxy
+    namespace: dolly
+    url: https://testnav-norg2-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-generer-navn-service:
     name: generer-navn-service
     namespace: dolly
@@ -130,11 +144,11 @@ consumers:
     namespace: dolly
     url: https://testnav-inntektstub-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-inst-service:
-    name: testnav-inst-service
+  testnav-inst-proxy:
+    name: testnav-inst-proxy
     namespace: dolly
-    url: https://testnav-inst-service.dev.intern.nav.no
-    cluster: dev-gcp
+    url: https://testnav-inst-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-statisk-data-forvalter-proxy:
     name: testnav-statisk-data-forvalter-proxy
     namespace: dolly
@@ -196,11 +210,6 @@ consumers:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
     cluster: dev-gcp
     threads: 5
-  tps-forvalteren-proxy:
-    name: tps-forvalteren-proxy
-    namespace: dolly
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly
@@ -211,8 +220,8 @@ consumers:
     namespace: dolly
     url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-popp-testdata-proxy:
-    name: testnav-popp-testdata-proxy
+  testnav-arbeidsplassencv-proxy:
+    name: testnav-arbeidsplassencv-proxy
     namespace: dolly
-    url: https://testnav-popp-testdata-proxy.dev.intern.nav.no
-    cluster: dev-gcp
+    url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss

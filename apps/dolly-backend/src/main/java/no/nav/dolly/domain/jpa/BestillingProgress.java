@@ -3,31 +3,29 @@ package no.nav.dolly.domain.jpa;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.jpa.Testident.Master;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.persistence.Version;
 import java.io.Serializable;
 
-import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "BESTILLING_PROGRESS")
@@ -37,22 +35,18 @@ public class BestillingProgress implements Serializable {
     private static final int MAX_DOKARKIV_STATUS_LENGTH = 2000;
 
     @Id
-    @GeneratedValue(generator = "bestillingProgressIdGenerator")
-    @GenericGenerator(name = "bestillingProgressIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "BESTILLING_PROGRESS_SEQ"),
-            @Parameter(name = "initial_value", value = "1"),
-            @Parameter(name = "increment_size", value = "1")
-    })
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Version
+    @Column(name = "VERSJON")
+    private Long versjon;
 
     @ManyToOne
     @JoinColumn(name = "BESTILLING_ID", nullable = false)
     private Bestilling bestilling;
 
     private String ident;
-
-    @Column(name = "TPSF_SUCCESS_ENVIRONMENTS")
-    private String tpsfSuccessEnv;
 
     @Column(name = "SIGRUNSTUB_STATUS")
     private String sigrunstubStatus;
@@ -68,9 +62,6 @@ public class BestillingProgress implements Serializable {
 
     @Column(name = "ARENAFORVALTER_STATUS")
     private String arenaforvalterStatus;
-
-    @Column(name = "PDLFORVALTER_STATUS")
-    private String pdlforvalterStatus;
 
     @Column(name = "INSTDATA_STATUS")
     private String instdataStatus;
@@ -96,24 +87,30 @@ public class BestillingProgress implements Serializable {
     @Column(name = "SKJERMINGSREGISTER_STATUS")
     private String skjermingsregisterStatus;
 
-    @Column(name = "TPS_IMPORT_STATUS")
-    private String tpsImportStatus;
-
     @Column(name = "TPS_MESSAGING_STATUS")
     private String tpsMessagingStatus;
 
     @Column(name = "PDL_IMPORT_STATUS")
     private String pdlImportStatus;
 
-    @Column(name = "PDL_DATA_STATUS")
-    private String pdlDataStatus;
+    @Column(name = "PDL_FORVALTER_STATUS")
+    private String pdlForvalterStatus;
+
+    @Column(name = "PDL_ORDRE_STATUS")
+    private String pdlOrdreStatus;
 
     @Column(name = "KONTOREGISTER_STATUS")
     private String kontoregisterStatus;
 
+    @Column(name = "PDL_PERSON_STATUS")
+    private String pdlPersonStatus;
+
     @Column(name = "master")
     @Enumerated(EnumType.STRING)
     private Master master;
+
+    @Transient
+    private boolean isPdlSync;
 
     private String feil;
 
@@ -122,12 +119,6 @@ public class BestillingProgress implements Serializable {
         this.bestilling = bestilling;
         this.master = master;
     }
-
-    @JsonIgnore
-    public boolean isTpsf() {
-        return getMaster() == Master.TPSF;
-    }
-
     @JsonIgnore
     public boolean isPdlf() {
         return getMaster() == Master.PDLF;

@@ -37,8 +37,6 @@ consumers:
     url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
   testnav-joark-dokument-service:
     url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
-  testnav-inst-service:
-    url: http://testnav-inst-service.dolly.svc.cluster.local
   testnav-organisasjon-forvalter:
     url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
   testnav-organisasjon-service:

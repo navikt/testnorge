@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
-import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredBoolean, requiredDate, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 const checkUndefined = (value) => {

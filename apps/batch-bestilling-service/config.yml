@@ -23,6 +23,7 @@ spec:
         - application: dolly-backend
   azure:
     application:
+      allowAllUsers: true
       enabled: true
       tenant: nav.no
   liveness:

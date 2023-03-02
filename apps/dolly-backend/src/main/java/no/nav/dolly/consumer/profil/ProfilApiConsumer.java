@@ -4,9 +4,8 @@ import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.config.credentials.ProfilApiProperties;
 import no.nav.dolly.consumer.profil.command.GetProfilCommand;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -27,10 +25,9 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 @Component
 public class ProfilApiConsumer {
 
-
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
     private final GetUserInfo getUserInfo;
 
     public ProfilApiConsumer(TokenExchange tokenService,
@@ -51,19 +48,17 @@ public class ProfilApiConsumer {
 
         getUserInfo.call().ifPresent(userInfo -> log.info("UserInfo: {}", Json.pretty(userInfo)));
 
-        ResponseEntity<ProfilDTO> response =
-                new GetProfilCommand(webClient,
-                        serviceProperties.getAccessToken(tokenService),
-                        getNavCallId()).call().block();
+        var response = tokenService.exchange(serviceProperties)
+                .flatMap(token ->
+                        new GetProfilCommand(webClient,
+                                token.getTokenValue(),
+                                getNavCallId()).call())
+                .block();
 
         if (nonNull(response) && !response.hasBody()) {
             throw new HttpClientErrorException(HttpStatus.NOT_FOUND);
         }
         return response;
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
     }
 
     private static String getNavCallId() {

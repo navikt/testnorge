@@ -16,7 +16,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import Icon from '@/components/ui/icon/Icon'
 import { Alert } from '@navikt/ds-react'
-import { usePdlOptions, useTestnorgeOptions, useTpsOptions } from '@/utils/hooks/useSelectOptions'
+import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type FlyttPersonButtonTypes = {
@@ -144,8 +144,6 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 		error: testnorgeError,
 	} = useTestnorgeOptions(gruppeIdenter)
 
-	const { data: tpsOptions, loading: tpsLoading, error: tpsError } = useTpsOptions(gruppeIdenter)
-
 	const navigate = useNavigate()
 
 	const getGruppeOptions = () => {
@@ -155,8 +153,6 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 				options.push(pdlOptions?.find((p: Option) => p.value === person.ident))
 			} else if (person.master === 'PDL' && testnorgeOptions) {
 				options.push(testnorgeOptions?.find((p: Option) => p.value === person.ident))
-			} else if (person.master === 'TPSF' && tpsOptions) {
-				options.push(tpsOptions?.find((p: Option) => p.value === person.ident))
 			}
 		})
 		return options
@@ -284,7 +280,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 									{!gruppeOptions ||
 									gruppeOptions?.length < 1 ||
 									gruppeOptions.every((i) => i === undefined) ? (
-										pdlError && testnorgeError && tpsError ? (
+										pdlError && testnorgeError ? (
 											<div className="error-message" style={{ marginBottom: '5px' }}>
 												Henting av personer feilet helt eller delvis
 											</div>
@@ -310,7 +306,7 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 													)
 												}
 											})}
-											{(gruppeLoading || pdlLoading || testnorgeLoading || tpsLoading) && (
+											{(gruppeLoading || pdlLoading || testnorgeLoading) && (
 												<Loading label="Laster personer..." />
 											)}
 										</PersonvelgerCheckboxes>

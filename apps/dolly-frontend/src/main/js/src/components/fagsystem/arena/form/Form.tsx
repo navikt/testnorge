@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useContext, useEffect } from 'react'
 import * as _ from 'lodash-es'
 import { ifPresent } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -10,10 +10,14 @@ import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/Al
 import { validation } from '@/components/fagsystem/arena/form/validation'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Alert } from '@navikt/ds-react'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 
 export const arenaPath = 'arenaforvalter'
 
 export const ArenaForm = ({ formikBag }) => {
+	const opts = useContext(BestillingsveilederContext)
+	const { leggTilPaaGruppe } = opts?.is
+
 	const servicebehovAktiv =
 		_.get(formikBag.values, `${arenaPath}.arenaBrukertype`) === 'MED_SERVICEBEHOV'
 	const dagpengerAktiv = _.get(formikBag.values, `${arenaPath}.dagpenger[0]`)
@@ -35,7 +39,7 @@ export const ArenaForm = ({ formikBag }) => {
 				iconType="arena"
 				startOpen={erForsteEllerTest(formikBag.values, [arenaPath])}
 			>
-				{dagpengerAktiv && (
+				{!leggTilPaaGruppe && dagpengerAktiv && (
 					<>
 						{!formikBag.values.hasOwnProperty('inntektstub') && (
 							<AlertInntektskomponentenRequired vedtak={'dagpengevedtak'} />

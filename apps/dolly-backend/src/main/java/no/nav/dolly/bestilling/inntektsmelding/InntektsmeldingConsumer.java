@@ -7,15 +7,13 @@ import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
 import no.nav.dolly.config.credentials.InntektsmeldingServiceProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.security.config.NaisServerProperties;
-import no.nav.dolly.util.CheckAliveUtil;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 
-import java.util.Map;
 import java.util.UUID;
 
 import static java.lang.String.format;
@@ -27,7 +25,7 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
-    private final NaisServerProperties serviceProperties;
+    private final ServerProperties serviceProperties;
 
     public InntektsmeldingConsumer(TokenExchange tokenService,
                                    InntektsmeldingServiceProperties serviceProperties,
@@ -41,21 +39,19 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
-    public ResponseEntity<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
-        String callId = getNavCallId();
-        log.info("Inntektsmelding med callId {} sendt", callId);
-
-        return new OpprettInntektsmeldingCommand(webClient, serviceProperties.getAccessToken(tokenService), inntekstsmelding, callId).call()
-                .block();
-    }
-
-    public Map<String, String> checkAlive() {
-        return CheckAliveUtil.checkConsumerAlive(serviceProperties, webClient, tokenService);
-    }
-
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID());
+    }
+
+    @Timed(name = "providers", tags = {"operation", "inntektsmelding_opprett"})
+    public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
+
+        var callId = getNavCallId();
+        log.info("Inntektsmelding med callId {} sendt", callId);
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new OpprettInntektsmeldingCommand(webClient,
+                        token.getTokenValue(), inntekstsmelding, callId).call());
     }
 
     @Override
