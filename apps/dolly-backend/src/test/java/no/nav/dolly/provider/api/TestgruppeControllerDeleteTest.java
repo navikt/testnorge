@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api.testgruppe;
+package no.nav.dolly.provider.api;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("DELETE /api/v1/gruppe")
-class TestgruppeControllerDeleteTest extends TestgruppeControllerTest {
+class TestgruppeControllerDeleteTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

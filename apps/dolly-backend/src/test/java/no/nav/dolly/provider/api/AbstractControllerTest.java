@@ -1,6 +1,6 @@
-package no.nav.dolly.provider.api.testgruppe;
+package no.nav.dolly.provider.api;
 
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
@@ -31,7 +31,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-public abstract class TestgruppeControllerTest {
+public abstract class AbstractControllerTest {
 
     @Autowired
     private BrukerRepository brukerRepository;
@@ -48,13 +48,13 @@ public abstract class TestgruppeControllerTest {
     @BeforeEach
     public void beforeEach() {
         flyway.migrate();
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
     @AfterEach
     public void afterEach() {
         flyway.clean();
-        JwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
     Bruker createBruker() {
@@ -88,8 +88,8 @@ public abstract class TestgruppeControllerTest {
         return testgruppeRepository.findById(id);
     }
 
-    void createTestident(String ident, Testgruppe testgruppe) {
-        identRepository.save(
+    Testident createTestident(String ident, Testgruppe testgruppe) {
+        return identRepository.save(
                 Testident
                         .builder()
                         .ident(ident)

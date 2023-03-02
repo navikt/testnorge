@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api.testgruppe;
+package no.nav.dolly.provider.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 
 @DisplayName("PUT /api/v1/gruppe")
-class TestgruppeControllerPutTest extends TestgruppeControllerTest {
+class TestgruppeControllerPutTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

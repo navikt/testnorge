@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api.testgruppe;
+package no.nav.dolly.provider.api;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("GET /api/v1/gruppe")
-class TestgruppeControllerGetTest extends TestgruppeControllerTest {
+class TestgruppeControllerGetTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

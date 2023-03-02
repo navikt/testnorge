@@ -1,4 +1,4 @@
-package no.nav.dolly.provider.api.testgruppe;
+package no.nav.dolly.provider.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.domain.resultset.entity.testgruppe.RsOpprettEndreTestgruppe;
@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @DisplayName("POST /api/v1/gruppe")
-class TestgruppeControllerPostTest extends TestgruppeControllerTest {
+class TestgruppeControllerPostTest extends AbstractControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
