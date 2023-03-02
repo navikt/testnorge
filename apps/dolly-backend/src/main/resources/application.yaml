@@ -32,7 +32,6 @@ spring:
     properties:
       hibernate:
         default-schema: public
-        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyLegacyJpaImpl
@@ -70,6 +69,14 @@ management:
     metrics:
       export:
         enabled: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        sql:
+          results:
+            jdbc: ERROR
 
 consumers:
   testnav-helsepersonell-service:
