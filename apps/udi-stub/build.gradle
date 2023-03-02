@@ -68,9 +68,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    
+
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'com.sun.xml.messaging.saaj:saaj-impl:1.5.1'
     implementation 'javax.xml.soap:javax.xml.soap-api:1.4.0'

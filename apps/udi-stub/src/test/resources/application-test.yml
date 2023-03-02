@@ -1,11 +1,16 @@
 spring:
+  cloud:
+    vault:
+      database:
+        enabled: false
+      token: "test"
+      enabled: false
   datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver # TODO: Remove once Spring Boot > 2.3.
-    url: jdbc:tc:postgresql:14.4:///dollyDB # 14.4 er versjon p.t. i dev-gcp.
-    username: sa
-    password:
+    url: jdbc:tc:postgresql:14.4:///test # 14.4 er versjon p.t. i dev-gcp.
+    username: user
+    password: pass
+  jpa:
+    hibernate:
+      ddl-auto: create
   flyway:
-    enabled: true
-    url: jdbc:tc:postgresql:14.4:///dollyDB # 14.4 er versjon p.t. i dev-gcp.
-    user: sa
-    password:
+    enabled: false
