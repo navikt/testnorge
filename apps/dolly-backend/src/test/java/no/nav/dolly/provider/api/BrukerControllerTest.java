@@ -1,7 +1,7 @@
 package no.nav.dolly.provider.api;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBruker;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerAndGruppeId;
@@ -88,6 +88,6 @@ public class BrukerControllerTest {
 
     @BeforeEach
     public void setup() {
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

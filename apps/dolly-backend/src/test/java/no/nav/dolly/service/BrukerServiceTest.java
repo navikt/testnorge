@@ -1,6 +1,6 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.exceptions.ConstraintViolationException;
@@ -159,6 +159,6 @@ public class BrukerServiceTest {
 
     @BeforeEach
     public void setup() {
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

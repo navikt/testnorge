@@ -8,7 +8,7 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 @Configuration
 @Slf4j
-public class JwtDecoderConfig {
+public class MockedJwtDecoderConfig {
 
     @MockBean
     private JwtDecoder jwtDecoder;

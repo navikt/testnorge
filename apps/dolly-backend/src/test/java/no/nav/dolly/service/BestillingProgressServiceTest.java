@@ -1,6 +1,6 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingProgressRepository;
@@ -60,7 +60,7 @@ public class BestillingProgressServiceTest {
 
     @BeforeTestClass
     public void setup() {
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
 }

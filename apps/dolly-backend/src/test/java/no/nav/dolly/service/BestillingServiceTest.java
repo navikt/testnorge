@@ -1,6 +1,6 @@
 package no.nav.dolly.service;
 
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingKontroll;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -186,6 +186,6 @@ class BestillingServiceTest {
 
     @BeforeEach
     public void setup() {
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }

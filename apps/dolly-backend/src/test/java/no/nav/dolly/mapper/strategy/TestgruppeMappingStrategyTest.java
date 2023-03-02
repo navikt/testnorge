@@ -1,7 +1,7 @@
 package no.nav.dolly.mapper.strategy;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -31,7 +31,7 @@ class TestgruppeMappingStrategyTest {
     @BeforeEach
     public void setUpHappyPath() {
         mapper = MapperTestUtils.createMapperFacadeForMappingStrategy(new TestgruppeMappingStrategy(new GetUserInfo("dummy")));
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
     @Test

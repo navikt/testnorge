@@ -1,7 +1,7 @@
 package no.nav.dolly.service;
 
 import ma.glasnost.orika.MapperFacade;
-import no.nav.dolly.JwtAuthenticationTokenUtils;
+import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
 import no.nav.dolly.common.TestidentBuilder;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
@@ -231,6 +231,6 @@ public class TestgruppeServiceTest {
 
     @BeforeEach
     public void establishSecurity() {
-        JwtAuthenticationTokenUtils.setJwtAuthenticationToken();
+        MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 }
