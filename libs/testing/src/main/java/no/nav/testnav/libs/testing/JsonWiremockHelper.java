@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.testing;
 
+import static com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder.responseDefinition;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.delete;
 import static com.github.tomakehurst.wiremock.client.WireMock.deleteRequestedFor;
@@ -21,6 +22,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder;
 import com.github.tomakehurst.wiremock.matching.RequestPatternBuilder;
 import com.github.tomakehurst.wiremock.matching.UrlPathPattern;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -36,8 +38,8 @@ public class JsonWiremockHelper {
     private UrlPathPattern urlPathPattern;
     private String requestBody;
     private String responseBody;
-    private Set<String> requestFieldsToIgnore = new HashSet<>();
-    private Map<String, String> queryParamMap = new HashMap<>();
+    private final Set<String> requestFieldsToIgnore = new HashSet<>();
+    private final Map<String, String> queryParamMap = new HashMap<>();
 
     private JsonWiremockHelper(ObjectMapper mapper) {
         this.mapper = mapper;
@@ -69,21 +71,18 @@ public class JsonWiremockHelper {
         return this;
     }
 
-    public void stubPost() {
-        MappingBuilder mappingBuilder = post(urlPathPattern);
-
-        updateMappingBuilder(mappingBuilder);
-
-        stubFor(mappingBuilder);
+    public void stubPost(HttpStatus status) {
+        stubFor(
+                updateMappingBuilder(
+                        post(urlPathPattern)
+                                .willReturn(responseDefinition().withStatus(status.value()))
+                )
+        );
     }
 
 
     public void stubPut() {
-        MappingBuilder mappingBuilder = put(urlPathPattern);
-
-        updateMappingBuilder(mappingBuilder);
-
-        stubFor(mappingBuilder);
+        stubFor(updateMappingBuilder(put(urlPathPattern)));
     }
 
     public void stubGet() {
@@ -123,13 +122,10 @@ public class JsonWiremockHelper {
     }
 
     public void stubDelete() {
-        MappingBuilder mappingBuilder = delete(urlPathPattern);
-
-        updateMappingBuilder(mappingBuilder);
-        stubFor(mappingBuilder);
+        stubFor(updateMappingBuilder(delete(urlPathPattern)));
     }
 
-    private void updateMappingBuilder(MappingBuilder mappingBuilder) {
+    private MappingBuilder updateMappingBuilder(MappingBuilder mappingBuilder) {
         queryParamMap.forEach((name, value) -> mappingBuilder.withQueryParam(name, equalTo(value)));
 
         if (requestBody != null) {
@@ -142,6 +138,7 @@ public class JsonWiremockHelper {
                     .withBody(responseBody)
             );
         }
+        return mappingBuilder;
     }
 
     public void verifyDelete() {

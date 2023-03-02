@@ -1,6 +1,6 @@
-wiremock.server.port: 0
-
-AAD_ISSUER_URI: http://localhost:${wiremock.server.port}/token
+wiremock:
+  server:
+    port: 0
 
 spring:
   cloud:

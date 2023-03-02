@@ -1,26 +1,26 @@
 package no.nav.testnav.apps.tpsmessagingservice;
 
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 
-@Disabled
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 @SpringBootTest
 @ActiveProfiles("test")
 class ApplicationContextTest {
 
     @MockBean
-    public JwtDecoder jwtDecoder;
-
-    @MockBean
-    public TokenExchange exchange;
+    @SuppressWarnings("unused")
+    private JwtDecoder jwtDecoder;
 
     @Test
-    @SuppressWarnings("java:S2699")
+    @DisplayName("Application context should load")
     void load_app_context() {
+        assertThat(true).isTrue();
     }
+
 }
