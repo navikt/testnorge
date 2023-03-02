@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static no.nav.pdl.forvalter.service.DummyAdresseService.getStrengtFortroligKontaktadresse;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 
 @Service
@@ -68,12 +69,12 @@ public class SwopIdentsService {
         person1.getPerson().getForeldreansvar().addAll(person2.getPerson().getForeldreansvar());
         person1.getPerson().getInnflytting().addAll(person2.getPerson().getInnflytting());
         person1.getPerson().setAdressebeskyttelse(person2.getPerson().getAdressebeskyttelse());
-        person1.getPerson().setBostedsadresse(person1.getPerson().getAdressebeskyttelse().isEmpty() ?
-                person2.getPerson().getBostedsadresse() : null);
-        person1.getPerson().setKontaktadresse(person1.getPerson().getAdressebeskyttelse().isEmpty() ?
-                person2.getPerson().getKontaktadresse() : null);
-        person1.getPerson().setOppholdsadresse(person1.getPerson().getAdressebeskyttelse().isEmpty() ?
-                person2.getPerson().getOppholdsadresse() : null);
+
+        if (person1.getPerson().isStrengtFortrolig() || person2.getPerson().isStrengtFortrolig()) {
+            person1.getPerson().setBostedsadresse(null);
+            person1.getPerson().setOppholdsadresse(null);
+            person1.getPerson().setKontaktadresse(new ArrayList<>(List.of(getStrengtFortroligKontaktadresse())));
+        }
 
         var foedsel = person2.getPerson().getFoedsel().stream().findFirst().orElse(new FoedselDTO());
         person1.getPerson().getFoedsel()
