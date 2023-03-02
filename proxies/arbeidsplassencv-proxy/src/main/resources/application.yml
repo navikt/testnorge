@@ -14,7 +14,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
+          accepted-audience: testnav-arbeidsplassencv-proxy
   cloud:
     gateway:
       httpclient:
@@ -27,4 +27,9 @@ consumer:
     name: pam-cv-api
     namespace: teampam
     url: https://pam-cv-api.dev-fss-pub.nais.io
+    cluster: dev-fss
+  fakedings-token-provider:
+    name: fakedings
+    namespace: plattformsikkerhet
+    url: https://fakedings.dev-gcp.nais.io
     cluster: dev-fss

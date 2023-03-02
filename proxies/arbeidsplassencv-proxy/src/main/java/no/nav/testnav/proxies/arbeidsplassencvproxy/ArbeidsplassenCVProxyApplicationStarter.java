@@ -37,7 +37,7 @@ public class ArbeidsplassenCVProxyApplicationStarter {
                                            ArbeidsplassenCVProperties arbeidsplassenCVProperties) {
 
         return builder.routes()
-                        .route(createRoute(arbeidsplassenCVProperties.getUrl(),
+                .route(createRoute(arbeidsplassenCVProperties.getUrl(),
                         AddAuthenticationRequestGatewayFilterFactory
                                 .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(arbeidsplassenCVProperties)
                                         .map(AccessToken::getTokenValue))))
