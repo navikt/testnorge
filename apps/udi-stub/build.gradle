@@ -36,6 +36,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 test {
     useJUnitPlatform()
+    jvmArgs '--add-opens', 'java.base/java.lang=ALL-UNNAMED'
 }
 
 repositories {
@@ -51,6 +52,8 @@ repositories {
     }
 }
 dependencies {
+
+    implementation platform('org.testcontainers:testcontainers-bom:1.17.6')
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -89,6 +92,8 @@ dependencies {
 
     testImplementation 'javax.inject:javax.inject:1'
     testImplementation 'com.h2database:h2'
+    testImplementation 'org.testcontainers:junit-jupiter'
+    testImplementation 'org.testcontainers:postgresql'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5

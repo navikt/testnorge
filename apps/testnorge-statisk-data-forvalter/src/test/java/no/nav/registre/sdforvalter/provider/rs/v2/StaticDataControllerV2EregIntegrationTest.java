@@ -20,9 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
@@ -46,9 +44,6 @@ class StaticDataControllerV2EregIntegrationTest {
     private static final String EREG_API = "/api/v1/faste-data/ereg";
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    public JwtDecoder jwtDecoder;
 
     @Autowired
     private ObjectMapper objectMapper;
