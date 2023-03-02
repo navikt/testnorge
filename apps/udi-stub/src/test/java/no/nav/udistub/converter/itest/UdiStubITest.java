@@ -17,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -32,6 +31,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
@@ -92,7 +92,7 @@ class UdiStubITest {
 
         mockMvc
                 .perform(
-                        MockMvcRequestBuilders.post("/api/v1/person")
+                        post("/api/v1/person")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(readFile("opprettPersonRequest-happy.json"))
                                 .header("Nav-Personident", TEST_PERSON_FNR)
@@ -103,36 +103,48 @@ class UdiStubITest {
                 .findByIdent(TEST_PERSON_FNR)
                 .orElseThrow(() -> new AssertionError("Person %s not found".formatted(TEST_PERSON_FNR)));
 
-        assertThat(person.getFoedselsDato()).isEqualTo(TEST_DATE);
-        assertThat(person.getIdent()).isEqualTo(TEST_PERSON_FNR);
-        assertThat(person.getNavn().getFornavn()).isEqualTo(TEST_NAVN.getFornavn());
-        assertThat(person.getNavn().getMellomnavn()).isEqualTo(TEST_NAVN.getMellomnavn());
-        assertThat(person.getNavn().getEtternavn()).isEqualTo(TEST_NAVN.getEtternavn());
-        assertThat(person.getFlyktning()).isEqualTo(TEST_FLYKTNINGSTATUS);
-        assertThat(person.getHarOppholdsTillatelse()).isEqualTo(TEST_OPPHOLDSTILLATELSE);
-        assertThat(person.getAliaser()).hasSize(1);
-        assertThat(person.getAliaser().get(0).getFnr()).isEqualTo(TEST_PERSON_ALIAS_FNR);
-        assertThat(person.getOppholdStatus()).isNotNull();
-        assertThat(
-                person
-                        .getOppholdStatus()
-                        .getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()
-                        .getAvslagEllerBortfall()
-                        .getAvslagOppholdstillatelseBehandletGrunnlagOvrig())
-                .isEqualTo(TEST_OPPHOLDS_GRUNNLAG_KATEGORI);
-        assertThat(
-                person
-                        .getOppholdStatus()
-                        .getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()
-                        .getOvrigIkkeOppholdsKategoriArsak())
-                .isEqualTo(TEST_ovrigIkkeOppholdsKategori);
-        assertThat(
-                person
-                        .getOppholdStatus()
-                        .getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum()
-                        .getUtvistMedInnreiseForbud()
-                        .getInnreiseForbud())
-                .isEqualTo(TEST_INNREISEFORBUD);
+        assertThat(person.getFoedselsDato())
+                .isEqualTo(TEST_DATE);
+        assertThat(person.getIdent())
+                .isEqualTo(TEST_PERSON_FNR);
+        assertThat(person.getNavn())
+                .isNotNull()
+                .satisfies(navn -> {
+                    assertThat(navn.getFornavn())
+                            .isEqualTo(TEST_NAVN.getFornavn());
+                    assertThat(navn.getMellomnavn())
+                            .isEqualTo(TEST_NAVN.getMellomnavn());
+                    assertThat(navn.getEtternavn())
+                            .isEqualTo(TEST_NAVN.getEtternavn());
+                });
+        assertThat(person.getFlyktning())
+                .isEqualTo(TEST_FLYKTNINGSTATUS);
+        assertThat(person.getHarOppholdsTillatelse())
+                .isEqualTo(TEST_OPPHOLDSTILLATELSE);
+        assertThat(person.getAliaser())
+                .singleElement()
+                .satisfies(alias -> assertThat(alias.getFnr())
+                        .isEqualTo(TEST_PERSON_ALIAS_FNR));
+        assertThat(person.getOppholdStatus())
+                .isNotNull()
+                .satisfies(
+                        oppholdStatus -> assertThat(oppholdStatus.getIkkeOppholdstilatelseIkkeVilkaarIkkeVisum())
+                                .isNotNull()
+                                .satisfies(ikkeOppholdstillatelseIkkeVisum -> {
+                                            assertThat(ikkeOppholdstillatelseIkkeVisum.getAvslagEllerBortfall())
+                                                    .isNotNull()
+                                                    .satisfies(avslagEllerBortfall ->
+                                                            assertThat(avslagEllerBortfall.getAvslagOppholdstillatelseBehandletGrunnlagOvrig())
+                                                                    .isEqualTo(TEST_OPPHOLDS_GRUNNLAG_KATEGORI));
+                                            assertThat(ikkeOppholdstillatelseIkkeVisum.getOvrigIkkeOppholdsKategoriArsak())
+                                                    .isEqualTo(TEST_ovrigIkkeOppholdsKategori);
+                                            assertThat(ikkeOppholdstillatelseIkkeVisum.getUtvistMedInnreiseForbud())
+                                                    .isNotNull()
+                                                    .satisfies(innreiseForbud -> assertThat(innreiseForbud.getInnreiseForbud())
+                                                            .isEqualTo(TEST_INNREISEFORBUD));
+                                        }
+                                )
+                );
 
     }
 
