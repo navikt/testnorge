@@ -72,8 +72,11 @@ public class SwopIdentsService {
 
         if (person1.getPerson().isStrengtFortrolig() || person2.getPerson().isStrengtFortrolig()) {
             person1.getPerson().setBostedsadresse(null);
+            person2.getPerson().setBostedsadresse(null);
             person1.getPerson().setOppholdsadresse(null);
+            person2.getPerson().setOppholdsadresse(null);
             person1.getPerson().setKontaktadresse(new ArrayList<>(List.of(getStrengtFortroligKontaktadresse())));
+            person2.getPerson().setKontaktadresse(new ArrayList<>(List.of(getStrengtFortroligKontaktadresse())));
         }
 
         var foedsel = person2.getPerson().getFoedsel().stream().findFirst().orElse(new FoedselDTO());
