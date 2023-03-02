@@ -13,7 +13,7 @@ import no.nav.testnav.apps.organisasjontilgangservice.domain.Organisasjon;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

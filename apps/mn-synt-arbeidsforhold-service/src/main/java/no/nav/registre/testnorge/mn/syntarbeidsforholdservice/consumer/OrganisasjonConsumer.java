@@ -9,7 +9,6 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -43,13 +42,6 @@ public class OrganisasjonConsumer {
                 .build();
     }
 
-    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, AccessToken accessToken, String miljo) {
-        return CompletableFuture.supplyAsync(
-                () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call(),
-                executorService
-        );
-    }
-
     @Cacheable("Mini-Norge-EREG")
     public List<OrganisasjonDTO> getOrganisasjoner(Set<String> orgnummerListe, String miljo) {
         var accessToken = tokenExchange.exchange(serviceProperties).block();
@@ -64,5 +56,12 @@ public class OrganisasjonConsumer {
             }
         }
         return list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    private CompletableFuture<OrganisasjonDTO> getFutureOrganisasjon(String orgnummer, AccessToken accessToken, String miljo) {
+        return CompletableFuture.supplyAsync(
+                () -> new GetOrganisasjonCommand(webClient, accessToken.getTokenValue(), orgnummer, miljo).call(),
+                executorService
+        );
     }
 }

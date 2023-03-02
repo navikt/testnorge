@@ -38,6 +38,19 @@ public class HttpExceptionAdvice {
                 .build();
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ExceptionInformation {
+
+        private String message;
+        private String error;
+        private String path;
+        private Integer status;
+        private LocalDateTime timestamp;
+    }
+
     @ResponseBody
     @ExceptionHandler({ DollyFunctionalException.class, ConstraintViolationException.class,
             MissingHttpHeaderException.class, KodeverkException.class, WebClientResponseException.BadRequest.class })

@@ -7,7 +7,7 @@ import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j

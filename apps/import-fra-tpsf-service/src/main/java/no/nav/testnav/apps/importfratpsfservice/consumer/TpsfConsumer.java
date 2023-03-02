@@ -9,7 +9,7 @@ import no.nav.testnav.apps.importfratpsfservice.dto.SkdEndringsmeldingGruppe;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 

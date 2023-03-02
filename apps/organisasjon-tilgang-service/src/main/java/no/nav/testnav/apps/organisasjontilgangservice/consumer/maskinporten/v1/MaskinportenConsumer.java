@@ -16,7 +16,6 @@ import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.c
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.command.GetWellKnownCommand;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.dto.AccessToken;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 

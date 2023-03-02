@@ -37,6 +37,12 @@ repositories {
     mavenLocal()
 }
 
+configurations {
+    configureEach {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-actuator'
+    }
+}
+
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {

@@ -11,7 +11,6 @@ import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
 import no.nav.testnav.libs.dto.organisasjonfastedataservice.v1.Gruppe;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.concurrent.atomic.AtomicInteger;

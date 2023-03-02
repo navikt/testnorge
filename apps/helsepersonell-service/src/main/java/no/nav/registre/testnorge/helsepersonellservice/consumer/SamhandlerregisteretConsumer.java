@@ -7,7 +7,7 @@ import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 

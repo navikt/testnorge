@@ -8,7 +8,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.HelsepersonellNotFoundException;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 

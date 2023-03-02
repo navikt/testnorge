@@ -8,7 +8,7 @@ import no.nav.registre.testnorge.helsepersonellservice.util.FilLaster;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.io.BufferedReader;

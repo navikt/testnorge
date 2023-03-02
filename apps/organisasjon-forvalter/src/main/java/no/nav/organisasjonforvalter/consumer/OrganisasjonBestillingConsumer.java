@@ -8,7 +8,7 @@ import no.nav.organisasjonforvalter.dto.responses.BestillingStatus;
 import no.nav.organisasjonforvalter.jpa.entity.Status;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 

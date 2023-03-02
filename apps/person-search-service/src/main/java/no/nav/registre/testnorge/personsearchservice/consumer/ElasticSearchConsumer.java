@@ -11,7 +11,7 @@ import no.nav.registre.testnorge.personsearchservice.model.SearchResponse;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.elasticsearch.action.search.SearchRequest;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
