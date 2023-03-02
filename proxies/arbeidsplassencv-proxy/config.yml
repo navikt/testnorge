@@ -70,5 +70,4 @@ spec:
   envFrom:
     - secret: azure-trygdeetaten-testnav-arbeidsplassencv-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-arbeidsplassencv-proxy.dev.intern.nav.no"
     - "https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io"
