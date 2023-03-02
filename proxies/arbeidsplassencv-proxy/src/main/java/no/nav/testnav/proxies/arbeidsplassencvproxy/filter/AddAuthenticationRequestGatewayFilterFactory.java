@@ -2,7 +2,9 @@ package no.nav.testnav.proxies.arbeidsplassencvproxy.filter;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactiveproxy.filter.MonoRequestBuilder;
+import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesecurity.exchange.ideporten.IdportenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.FakedingsConsumer;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
@@ -46,15 +48,18 @@ public class AddAuthenticationRequestGatewayFilterFactory extends AbstractGatewa
     }
 
     public static GatewayFilter bearerIdportenHeaderFilter(FakedingsConsumer fakedingsConsumer,
-                                                           IdportenService idportenService,
+                                                           TokenXService tokenXService,
                                                            Supplier<Mono<String>> getToken) {
 
         return (exchange, chain) -> {
             var httpRequest = exchange.getRequest();
             var ident = httpRequest.getHeaders().getFirst("fnr");
             getToken.get()
-                            .flatMap(token -> fakedingsConsumer.getFakeToken(ident, token)
-                                    .flatmap(faketoken -> idportenService.exchange())
+                    .flatMap(token -> fakedingsConsumer.getFakeToken(ident)
+                            .map(faketoken -> tokenXService.exchange(faketoken)
+                                    .map(tokenX ->
+                                            new AddAuthenticationRequestGatewayFilterFactory().apply(builder ->
+                                                    Mono.just(builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenX)));
         }
     }
 

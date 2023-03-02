@@ -13,7 +13,6 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
     private static final String FAKEDINGS_URL = "/fake/client_assertion";
     private final WebClient webClient;
     private final String ident;
-    private final String token;
     @Override
     public Mono<String> call() {
 
@@ -22,7 +21,6 @@ public class FakedingsGetCommand implements Callable<Mono<String>> {
                         .queryParam("pid", ident)
                         .queryParam("acr", "Level4")
                         .build())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(String.class);
     }

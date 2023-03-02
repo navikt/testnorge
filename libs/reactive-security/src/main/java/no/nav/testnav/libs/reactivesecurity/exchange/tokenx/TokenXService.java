@@ -35,6 +35,11 @@ public class TokenXService implements TokenService {
                 .flatMap(token -> new OnBehalfOfExchangeCommand(webClient, tokenX, serverProperties.toTokenXScope(), token).call());
     }
 
+    public Mono<AccessToken> exchange(String faketoken) {
+        return getAuthenticatedTokenAction.call()
+                .flatMap(token -> new OnBehalfOfExchangeCommand(webClient, tokenX, faketoken, token).call());
+    }
+
     @Override
     public ResourceServerType getType() {
         return ResourceServerType.TOKEN_X;
