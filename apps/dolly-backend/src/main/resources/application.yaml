@@ -213,11 +213,6 @@ consumers:
     url: https://testnav-organisasjon-service.dev.intern.nav.no
     cluster: dev-gcp
     threads: 5
-  tps-forvalteren-proxy:
-    name: tps-forvalteren-proxy
-    namespace: dolly
-    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
   testnav-udistub-proxy:
     name: testnav-udistub-proxy
     namespace: dolly
@@ -228,8 +223,8 @@ consumers:
     namespace: dolly
     url: https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
-  testnav-popp-testdata-proxy:
-    name: testnav-popp-testdata-proxy
+  testnav-arbeidsplassencv-proxy:
+    name: testnav-arbeidsplassencv-proxy
     namespace: dolly
-    url: https://testnav-popp-testdata-proxy.dev.intern.nav.no
-    cluster: dev-gcp
+    url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss

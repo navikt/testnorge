@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.tps-forvalteren-proxy")
-public class TpsForvalterenProxyProperties extends ServerProperties {
+@ConfigurationProperties(prefix = "consumers.testnav-arbeidsplassencv-proxy")
+public class ArbeidsplassenProxyProperties extends ServerProperties {
 }

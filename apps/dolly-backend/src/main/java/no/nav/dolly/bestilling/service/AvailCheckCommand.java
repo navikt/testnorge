@@ -1,13 +1,11 @@
 package no.nav.dolly.bestilling.service;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
-import no.nav.dolly.domain.jpa.Testident.Master;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
@@ -29,7 +27,6 @@ public class AvailCheckCommand implements Callable<Flux<AvailCheckCommand.AvailS
                         .ident(status.getIdent())
                         .available(isTrue(status.getAvailable()))
                         .message(status.getStatus())
-                        .master(Master.PDLF)
                         .build());
     }
 
@@ -41,16 +38,5 @@ public class AvailCheckCommand implements Callable<Flux<AvailCheckCommand.AvailS
         private String ident;
         private boolean available;
         private String message;
-        private Master master;
-
-        @JsonIgnore
-        public boolean isTpsf() {
-            return getMaster() == Master.TPSF;
-        }
-
-        @JsonIgnore
-        public boolean isPdlf() {
-            return getMaster() == Master.PDLF;
-        }
     }
 }

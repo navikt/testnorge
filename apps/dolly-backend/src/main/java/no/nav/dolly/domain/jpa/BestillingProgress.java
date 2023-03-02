@@ -119,12 +119,6 @@ public class BestillingProgress implements Serializable {
         this.bestilling = bestilling;
         this.master = master;
     }
-
-    @JsonIgnore
-    public boolean isTpsf() {
-        return getMaster() == Master.TPSF;
-    }
-
     @JsonIgnore
     public boolean isPdlf() {
         return getMaster() == Master.PDLF;

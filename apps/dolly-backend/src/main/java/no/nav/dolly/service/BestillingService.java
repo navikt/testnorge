@@ -320,9 +320,7 @@ public class BestillingService {
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe.get())
-                        .antallIdenter((int) testgruppe.get().getTestidenter().stream()
-                                .filter(testident -> testident.isPdlf() || testident.isPdl())
-                                .count())
+                        .antallIdenter(testgruppe.get().getTestidenter().size())
                         .bestKriterier("{}")
                         .sistOppdatert(now())
                         .miljoer(miljoer)
@@ -360,10 +358,7 @@ public class BestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
                         .bruker(fetchOrCreateBruker())
-                        .antallIdenter((int) gruppe.getTestidenter().stream()
-                                .filter(testident -> testident.isPdl() ||
-                                        testident.isPdlf())
-                                .count())
+                        .antallIdenter(gruppe.getTestidenter().size())
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
                         .build());
