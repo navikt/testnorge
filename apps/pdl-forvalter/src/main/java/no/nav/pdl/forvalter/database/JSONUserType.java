@@ -37,7 +37,7 @@ import java.time.format.DateTimeFormatter;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Slf4j
-public class JSONUserType implements UserType {
+public class JSONUserType implements UserType<PersonDTO> {
 
     private final ObjectMapper objectMapper;
 
@@ -58,8 +58,8 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public int[] sqlTypes() {
-        return new int[]{Types.JAVA_OBJECT};
+    public int getSqlType() {
+        return Types.JAVA_OBJECT;
     }
 
     @Override
@@ -68,7 +68,7 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public boolean equals(Object x, Object y) throws HibernateException {
+    public boolean equals(PersonDTO x, PersonDTO y) throws HibernateException {
 
         if (x == null) {
             return y == null;
@@ -77,15 +77,15 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public int hashCode(Object x) throws HibernateException {
+    public int hashCode(PersonDTO x) throws HibernateException {
         return x.hashCode();
     }
 
     @Override
-    public Object nullSafeGet(ResultSet rs, String[] names, SharedSessionContractImplementor session, Object owner)
+    public PersonDTO nullSafeGet(ResultSet rs, int position, SharedSessionContractImplementor session, Object owner)
             throws HibernateException, SQLException {
 
-        var cellContent = rs.getString(names[0]);
+        var cellContent = rs.getString(position);
         if (cellContent == null) {
             return null;
         }
@@ -98,7 +98,7 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public void nullSafeSet(PreparedStatement ps, Object value, int idx, SharedSessionContractImplementor session)
+    public void nullSafeSet(PreparedStatement ps, PersonDTO value, int idx, SharedSessionContractImplementor session)
             throws HibernateException, SQLException {
         if (value == null) {
             ps.setNull(idx, Types.OTHER);
@@ -117,7 +117,7 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public Object deepCopy(Object value) throws HibernateException {
+    public PersonDTO deepCopy(PersonDTO value) throws HibernateException {
 
         try {
             // use serialization to create a deep copy
@@ -129,7 +129,7 @@ public class JSONUserType implements UserType {
             bos.close();
 
             var bais = new ByteArrayInputStream(bos.toByteArray());
-            return new ObjectInputStream(bais).readObject();
+            return (PersonDTO) new ObjectInputStream(bais).readObject();
         } catch (ClassNotFoundException | IOException ex) {
             throw new HibernateException(ex);
         }
@@ -141,17 +141,17 @@ public class JSONUserType implements UserType {
     }
 
     @Override
-    public Serializable disassemble(Object value) throws HibernateException {
+    public Serializable disassemble(PersonDTO value) throws HibernateException {
         return (Serializable) this.deepCopy(value);
     }
 
     @Override
-    public Object assemble(Serializable cached, Object owner) throws HibernateException {
-        return this.deepCopy(cached);
+    public PersonDTO assemble(Serializable cached, Object owner) throws HibernateException {
+        return this.deepCopy((PersonDTO) cached);
     }
 
     @Override
-    public Object replace(Object original, Object target, Object owner) throws HibernateException {
+    public PersonDTO replace(PersonDTO original, PersonDTO target, Object owner) throws HibernateException {
         return this.deepCopy(original);
     }
 

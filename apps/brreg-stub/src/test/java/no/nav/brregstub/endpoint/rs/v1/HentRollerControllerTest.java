@@ -7,8 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -18,6 +20,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,18 +30,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class HentRollerControllerTest {
 
-    public static final String API_V_1_ROLLER = "/api/v1/hentrolle/";
+    public static final String API_V_1_ROLLER = "/api/v1/hentrolle";
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
+    @MockBean
     private HentRolleRepository repository;
 
     @Test
     @DisplayName("GET rolle returnerer 404 hvis ikke eksisterer")
     public void skalKasteNotFoundHvisRolleIkkeEksister() {
         var response = restTemplate.getForEntity(API_V_1_ROLLER + "0",
-                                                 String.class);
+                String.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
@@ -48,10 +51,10 @@ public class HentRollerControllerTest {
         var nyRolle = new HentRolle();
         nyRolle.setOrgnr(1);
         nyRolle.setJson("{\"orgnr\": 1}");
-        repository.save(nyRolle);
+        Mockito.when(repository.findByOrgnr(1)).thenReturn(Optional.of(nyRolle));
 
-        var response = restTemplate.getForEntity(API_V_1_ROLLER + nyRolle.getOrgnr(),
-                                                 RsOrganisasjon.class);
+        var response = restTemplate.getForEntity(API_V_1_ROLLER + "/" + nyRolle.getOrgnr(),
+                RsOrganisasjon.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         assertThat(response.getBody().getOrgnr()).isEqualTo(nyRolle.getOrgnr());
     }
@@ -63,11 +66,13 @@ public class HentRollerControllerTest {
         var rolleSomSkalSlettes = new HentRolle();
         rolleSomSkalSlettes.setOrgnr(3);
         rolleSomSkalSlettes.setJson("{}");
-        repository.save(rolleSomSkalSlettes);
+        Mockito.when(repository.findByOrgnr(3)).thenReturn(Optional.of(rolleSomSkalSlettes));
 
         var responseDelete =
-                restTemplate.exchange(API_V_1_ROLLER + rolleSomSkalSlettes.getOrgnr(), HttpMethod.DELETE, null, String.class);
+                restTemplate.exchange(API_V_1_ROLLER + "/" + rolleSomSkalSlettes.getOrgnr(), HttpMethod.DELETE, null, String.class);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Mockito.when(repository.findByOrgnr(3)).thenReturn(Optional.empty());
         var responseGet =
                 restTemplate.getForEntity(API_V_1_ROLLER + rolleSomSkalSlettes.getOrgnr(), String.class);
         assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

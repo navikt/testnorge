@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.personservice.v1.Gruppe;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -24,15 +23,13 @@ public class PersonFasteDataConsumer {
 
     public PersonFasteDataConsumer(
             PersonFasteDataServiceProperties serverProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

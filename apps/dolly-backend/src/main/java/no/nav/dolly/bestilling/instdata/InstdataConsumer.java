@@ -10,13 +10,12 @@ import no.nav.dolly.bestilling.instdata.command.InstdataPostCommand;
 import no.nav.dolly.bestilling.instdata.domain.DeleteResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstdataResponse;
 import no.nav.dolly.bestilling.instdata.domain.InstitusjonsoppholdRespons;
-import no.nav.dolly.config.credentials.InstServiceProperties;
+import no.nav.dolly.config.credentials.InstProxyProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,16 +33,15 @@ public class InstdataConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
 
     public InstdataConsumer(TokenExchange tokenService,
-                            InstServiceProperties serverProperties,
-                            ObjectMapper objectMapper,
-                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+                            InstProxyProperties serverProperties,
+                            ObjectMapper objectMapper
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -89,7 +87,7 @@ public class InstdataConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-inst-service";
+        return "testnav-inst-proxy";
     }
 
 }

@@ -7,7 +7,6 @@ import no.nav.testnav.libs.dto.organiasjonbestilling.v2.OrderDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -19,15 +18,13 @@ public class OrganisasjonBestillingConsumer {
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

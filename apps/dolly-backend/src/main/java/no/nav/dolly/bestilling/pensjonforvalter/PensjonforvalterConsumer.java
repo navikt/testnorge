@@ -25,7 +25,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -45,19 +44,18 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
 
     public PensjonforvalterConsumer(TokenExchange tokenService,
                                     PensjonforvalterProxyProperties serverProperties,
-                                    ObjectMapper objectMapper,
-                                    ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                    ObjectMapper objectMapper
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_getMiljoer"})
+    @Timed(name = "providers", tags = { "operation", "pen_getMiljoer" })
     public Mono<Set<String>> getMiljoer() {
 
         return tokenService.exchange(serviceProperties)
@@ -69,7 +67,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties);
     }
 
-    @Timed(name = "providers", tags = {"operation", "popp_lagreInntekt"})
+    @Timed(name = "providers", tags = { "operation", "popp_lagreInntekt" })
     public Flux<PensjonforvalterResponse> lagreInntekter(PensjonPoppInntektRequest pensjonPoppInntektRequest,
                                                          Set<String> miljoer, AccessToken token) {
 
@@ -79,7 +77,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                         pensjonPoppInntektRequest, miljoe).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_opprettPerson"})
+    @Timed(name = "providers", tags = { "operation", "pen_opprettPerson" })
     public Flux<PensjonforvalterResponse> opprettPerson(PensjonPersonRequest pensjonPersonRequest,
                                                         Set<String> miljoer, AccessToken token) {
 
@@ -88,14 +86,14 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return new OpprettPersonCommand(webClient, token.getTokenValue(), pensjonPersonRequest).call();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_lagreAlderspensjon"})
+    @Timed(name = "providers", tags = { "operation", "pen_lagreAlderspensjon" })
     public Flux<PensjonforvalterResponse> lagreAlderspensjon(AlderspensjonRequest request, AccessToken token) {
 
         log.info("Pensjon lagre alderspensjon {}", request);
         return new LagreAlderspensjonCommand(webClient, token.getTokenValue(), request).call();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_getInntekter"})
+    @Timed(name = "providers", tags = { "operation", "pen_getInntekter" })
     public JsonNode getInntekter(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
@@ -110,7 +108,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
         return new LagreTpForholdCommand(webClient, token.getTokenValue(), pensjonTpForholdRequest).call();
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_sletteTpForhold"})
+    @Timed(name = "providers", tags = { "operation", "pen_sletteTpForhold" })
     public void sletteTpForhold(List<String> identer) {
 
         tokenService.exchange(serviceProperties)
@@ -122,7 +120,7 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
                 .subscribe(response -> log.info("Slettet mot PESYS (tp) i alle miljoer"));
     }
 
-    @Timed(name = "providers", tags = {"operation", "pen_getTpForhold"})
+    @Timed(name = "providers", tags = { "operation", "pen_getTpForhold" })
     public JsonNode getTpForhold(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)

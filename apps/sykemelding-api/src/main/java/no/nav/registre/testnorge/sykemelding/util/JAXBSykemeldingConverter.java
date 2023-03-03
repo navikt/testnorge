@@ -1,17 +1,17 @@
 package no.nav.registre.testnorge.sykemelding.util;
 
 import static java.lang.Boolean.TRUE;
-import static javax.xml.bind.JAXBContext.newInstance;
-import static javax.xml.bind.Marshaller.JAXB_ENCODING;
-import static javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
-import static javax.xml.bind.Marshaller.JAXB_FRAGMENT;
+import static jakarta.xml.bind.JAXBContext.newInstance;
+import static jakarta.xml.bind.Marshaller.JAXB_ENCODING;
+import static jakarta.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
+import static jakarta.xml.bind.Marshaller.JAXB_FRAGMENT;
 
 import java.io.StringReader;
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamResult;
 
 import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;

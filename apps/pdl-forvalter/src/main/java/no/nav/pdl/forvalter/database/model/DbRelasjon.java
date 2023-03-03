@@ -1,24 +1,31 @@
 package no.nav.pdl.forvalter.database.model;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
+import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "relasjon")
 @Builder
@@ -31,10 +38,12 @@ public class DbRelasjon {
     @Id
     @GeneratedValue(generator = "relasjonIdGenerator")
     @GenericGenerator(name = "relasjonIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
-            @Parameter(name = "sequence_name", value = "relasjon_sequence")
+            @Parameter(name = "sequence_name", value = "relasjon_sequence"),
+            @Parameter(name = "increment_size", value = "1"),
     })
     private Long id;
 
+    @Column(name = "sist_oppdatert")
     private LocalDateTime sistOppdatert;
 
     @Enumerated(EnumType.STRING)
@@ -47,4 +56,17 @@ public class DbRelasjon {
     @ManyToOne
     @JoinColumn(name = "relatert_person_id", nullable = false, updatable = false)
     private DbPerson relatertPerson;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        DbRelasjon that = (DbRelasjon) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }

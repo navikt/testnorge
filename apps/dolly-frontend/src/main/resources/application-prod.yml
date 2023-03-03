@@ -3,9 +3,10 @@ POST_LOGOUT_REDIRECT_URI: https://dolly.ekstern.dev.nav.no/login
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace
@@ -29,8 +30,6 @@ consumers:
     url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
   testnav-joark-dokument-service:
     url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
-  testnav-inst-service:
-    url: http://testnav-inst-service.dolly.svc.cluster.local
   testnav-organisasjon-forvalter:
     url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
   testnav-organisasjon-service:

@@ -20,15 +20,15 @@ public class WebClientFilter {
 
     public static String getMessage(Throwable throwable) {
 
-        return throwable instanceof WebClientResponseException webClientResponseException?
+        return throwable instanceof WebClientResponseException webClientResponseException ?
                 webClientResponseException.getResponseBodyAsString(StandardCharsets.UTF_8) :
                 throwable.getMessage();
     }
 
     public static HttpStatus getStatus(Throwable throwable) {
 
-        return throwable instanceof WebClientResponseException webClientResponseException?
-                webClientResponseException.getStatusCode() :
+        return throwable instanceof WebClientResponseException webClientResponseException ?
+                HttpStatus.valueOf(webClientResponseException.getStatusCode().value()) :
                 HttpStatus.INTERNAL_SERVER_ERROR;
     }
 

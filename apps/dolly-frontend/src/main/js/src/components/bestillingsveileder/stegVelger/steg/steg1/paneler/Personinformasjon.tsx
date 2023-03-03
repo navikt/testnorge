@@ -35,33 +35,7 @@ const ignoreKeysTestnorge = [
 	'tilrettelagtKommunikasjon',
 ]
 
-const innvandret = 'innvandretFraLand'
 const utvandret = 'utvandretTilLand'
-
-const getDisabledNasjonalitetField = (opts: any) => {
-	const personFoerLeggTil = opts.personFoerLeggTil
-
-	const innflytting = personFoerLeggTil?.pdlforvalter?.person?.innflytting
-	const utflytting = personFoerLeggTil?.pdlforvalter?.person?.utflytting
-
-	const antallInnflyttet = innflytting ? innflytting.length : 0
-	const antallUtflyttet = utflytting ? utflytting.length : 0
-
-	if (antallInnflyttet === 0) {
-		return antallUtflyttet > 0 ? utvandret : ''
-	} else if (antallUtflyttet === 0) {
-		return innvandret
-	} else {
-		const sisteInnflytting = getSisteDato(
-			innflytting.map((val: Innflytting) => new Date(val.innflyttingsdato))
-		)
-		const sisteUtflytting = getSisteDato(
-			utflytting.map((val: Utflytting) => new Date(val.utflyttingsdato))
-		)
-
-		return sisteInnflytting > sisteUtflytting ? innvandret : utvandret
-	}
-}
 
 // @ts-ignore
 export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
@@ -71,9 +45,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 	const leggTil = opts.is.leggTil
 
 	const harFnr = opts.identtype === 'FNR'
-	//Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
-
-	const disabledInnUtflyttingField = leggTil ? getDisabledNasjonalitetField(opts) : ''
+	// Noen egenskaper kan ikke endres når personen opprettes fra eksisterende eller videreføres med legg til
 
 	const getIgnoreKeys = () => {
 		const ignoreKeys = testnorgeIdent ? [...ignoreKeysTestnorge] : ['identtype']
@@ -85,10 +57,6 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 		if (!testnorgeIdent && !harFnr) {
 			ignoreKeys.push(utvandret)
 		}
-		if (!testnorgeIdent && disabledInnUtflyttingField !== '') {
-			ignoreKeys.push(disabledInnUtflyttingField)
-		}
-
 		return ignoreKeys
 	}
 
@@ -135,13 +103,10 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 
 			<AttributtKategori title="Nasjonalitet" attr={sm.attrs}>
 				<Attributt attr={sm.attrs.statsborgerskap} />
-				<Attributt
-					attr={sm.attrs.innvandretFraLand}
-					disabled={disabledInnUtflyttingField === innvandret}
-				/>
+				<Attributt attr={sm.attrs.innvandretFraLand} />
 				<Attributt
 					attr={sm.attrs.utvandretTilLand}
-					disabled={!harFnr || disabledInnUtflyttingField === utvandret}
+					disabled={!harFnr}
 					title={
 						!harFnr
 							? 'Personer med identtype DNR eller NPID kan ikke utvandre fordi de ikke har norsk statsborgerskap'
@@ -189,16 +154,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		kjoenn: 'pdldata.person.kjoenn',
 		navn: 'pdldata.person.navn',
 		spraakKode: {
-			tpsf: 'tpsf.spraakKode',
 			tpsM: 'tpsMessaging.spraakKode',
 		},
 		egenAnsattDatoFom: {
-			tpsf: 'tpsf.egenAnsattDatoFom',
 			tpsM: 'tpsMessaging.egenAnsattDatoFom',
 			skjerming: 'skjerming.egenAnsattDatoFom',
 		},
 		egenAnsattDatoTom: {
-			tpsf: 'tpsf.egenAnsattDatoTom',
 			tpsM: 'tpsMessaging.egenAnsattDatoTom',
 			skjerming: 'skjerming.egenAnsattDatoTom',
 		},
@@ -303,16 +265,13 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		},
 		sprakKode: {
 			label: 'Språk',
-			checked: has(paths.spraakKode.tpsf) || has(paths.spraakKode.tpsM),
+			checked: has(paths.spraakKode.tpsM),
 			add: () => set(paths.spraakKode.tpsM, ''),
-			remove: () => del([paths.spraakKode.tpsM, paths.spraakKode.tpsf]),
+			remove: () => del(paths.spraakKode.tpsM),
 		},
 		egenAnsattDatoFom: {
 			label: 'Skjerming',
-			checked:
-				has(paths.egenAnsattDatoFom.tpsf) ||
-				has(paths.egenAnsattDatoFom.tpsM) ||
-				has(paths.egenAnsattDatoFom.skjerming),
+			checked: has(paths.egenAnsattDatoFom.tpsM) || has(paths.egenAnsattDatoFom.skjerming),
 			add() {
 				setMulti(
 					[

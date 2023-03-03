@@ -6,7 +6,6 @@ import no.nav.registre.testnorge.helsepersonellservice.domain.RsTestgruppeMedBes
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
@@ -26,8 +25,7 @@ public class DollyBackendConsumer {
     public DollyBackendConsumer(
             TokenExchange tokenExchange,
             DollyBackendProperties serverProperties,
-            @Value("${dolly.helsepersonell.gruppeId}") int helsepersonellGruppeId,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            @Value("${dolly.helsepersonell.gruppeId}") int helsepersonellGruppeId) {
 
         this.helsepersonellGruppeId = helsepersonellGruppeId;
         this.serverProperties = serverProperties;
@@ -36,7 +34,6 @@ public class DollyBackendConsumer {
                 .builder()
                 .exchangeStrategies(biggerMemorySizeExchangeStrategy())
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

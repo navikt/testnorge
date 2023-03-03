@@ -41,10 +41,6 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/bestilling/fraidenter`
 	}
 
-	static gruppeBestillingImport(gruppeId) {
-		return `${groupBase}/${gruppeId}/bestilling/importFraTps`
-	}
-
 	static gruppeBestillingImportFraPdl(gruppeId) {
 		return `${groupBase}/${gruppeId}/bestilling/importfrapdl`
 	}
@@ -179,10 +175,6 @@ export default class DollyEndpoints {
 
 	static kobleIdenter(ident) {
 		return `${identBase}/${ident}/relasjon`
-	}
-
-	static getFasteDatasettTPSGruppe(gruppe) {
-		return `${fasteDatasettBase}/tps/${gruppe}`
 	}
 
 	static getPersonnavn() {

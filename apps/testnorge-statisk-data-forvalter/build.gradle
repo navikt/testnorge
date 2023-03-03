@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.5.0.2730"
-    id 'org.springframework.boot' version "2.7.5"
+    id "org.sonarqube" version "4.0.0.2929"
+    id 'org.springframework.boot' version "3.0.3"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -19,8 +19,9 @@ sonarqube {
 }
 
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
 }
 
@@ -42,7 +43,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.google.guava:guava:31.0.1-jre'
+    implementation 'com.google.guava:guava:31.1-jre'
 
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -56,7 +57,7 @@ dependencies {
     implementation 'no.nav.testnav.libs:csv-converter'
 
     implementation 'org.springframework.kafka:spring-kafka'
-    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
+    implementation 'io.confluent:kafka-avro-serializer:7.3.1'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -65,13 +66,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
-    implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'org.aspectj:aspectjweaver:1.9.19'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.postgresql:postgresql'
     implementation 'com.zaxxer:HikariCP'
 
@@ -79,11 +79,10 @@ dependencies {
 
     implementation 'com.h2database:h2'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'javax.validation:validation-api:2.0.1.Final'
-
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
-    implementation 'javax.xml.bind:jaxb-api'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+   
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
 
     implementation 'org.projectlombok:lombok'

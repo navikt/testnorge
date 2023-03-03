@@ -1,12 +1,12 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;

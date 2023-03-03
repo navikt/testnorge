@@ -38,7 +38,6 @@ export default function PersonListe({
 	visPerson,
 	hovedperson,
 	iLaastGruppe,
-	fetchTpsfPersoner,
 	fetchPdlPersoner,
 	tmpPersoner,
 	sorting,
@@ -72,7 +71,6 @@ export default function PersonListe({
 		if (_.isEmpty(identListe)) {
 			return
 		}
-		fetchTpsfPersoner(identListe)
 		fetchPdlPersoner(identListe)
 	}, [identListe, visPerson, bestillingerById])
 

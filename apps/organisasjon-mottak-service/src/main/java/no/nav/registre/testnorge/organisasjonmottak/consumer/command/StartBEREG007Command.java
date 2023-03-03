@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.organisasjonmottak.domain.Flatfil;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.jenkins.v1.JenkinsCrumb;
-import org.apache.http.entity.ContentType;
+import org.apache.hc.core5.http.ContentType;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ContentDisposition;
@@ -39,13 +39,6 @@ public class StartBEREG007Command implements Callable<Long> {
     private final String miljo;
     private final JenkinsCrumb crumb;
     private final Flatfil flatfil;
-
-    private static Resource getFileResource(String content) throws IOException {
-        Path tempFile = Files.createTempFile("ereg", ".txt");
-        Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
-        File file = tempFile.toFile();
-        return new FileSystemResource(file);
-    }
 
     @SneakyThrows
     @Override
@@ -132,5 +125,12 @@ public class StartBEREG007Command implements Callable<Long> {
             throw e;
         }
 
+    }
+
+    private static Resource getFileResource(String content) throws IOException {
+        Path tempFile = Files.createTempFile("ereg", ".txt");
+        Files.write(tempFile, content.getBytes(StandardCharsets.UTF_8));
+        File file = tempFile.toFile();
+        return new FileSystemResource(file);
     }
 }

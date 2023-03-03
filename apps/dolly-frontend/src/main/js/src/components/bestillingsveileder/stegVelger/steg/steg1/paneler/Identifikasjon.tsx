@@ -11,18 +11,16 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 	const opts = useContext(BestillingsveilederContext)
 
 	const harNpid = opts.identtype === 'NPID'
-	const harTpsfMaster = opts.identMaster === 'TPSF'
 
 	const nyIdentTitle = () => {
 		if (harNpid) return 'Personer med identtype NPID kan ikke ha identhistorikk'
-		if (harTpsfMaster) return 'Personer med TPS som master kan ikke få ny ident'
 		return ''
 	}
 
 	return (
 		<Panel
 			heading={IdentifikasjonPanel.heading}
-			checkAttributeArray={() => sm.batchAdd((harNpid || harTpsfMaster) && 'nyident')}
+			checkAttributeArray={() => sm.batchAdd(harNpid && 'nyident')}
 			uncheckAttributeArray={sm.batchRemove}
 			iconType="identifikasjon"
 			startOpen={harValgtAttributt(formikBag.values, identifikasjonAttributter)}
@@ -30,11 +28,7 @@ export const IdentifikasjonPanel = ({ stateModifier, formikBag }) => {
 			<AttributtKategori attr={sm.attrs}>
 				<Attributt attr={sm.attrs.falskIdentitet} />
 				<Attributt attr={sm.attrs.utenlandskIdentifikasjonsnummer} />
-				<Attributt
-					attr={sm.attrs.nyident}
-					disabled={harNpid || harTpsfMaster}
-					title={nyIdentTitle()}
-				/>
+				<Attributt attr={sm.attrs.nyident} disabled={harNpid} title={nyIdentTitle()} />
 			</AttributtKategori>
 		</Panel>
 	)

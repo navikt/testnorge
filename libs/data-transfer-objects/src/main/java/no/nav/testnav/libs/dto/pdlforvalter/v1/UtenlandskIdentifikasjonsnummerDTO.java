@@ -14,15 +14,15 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class UtenlandskIdentifikasjonsnummerDTO extends DbVersjonDTO {
 
-    @Schema(required = true,
+    @Schema(
             description = "Utenlandsk identifikasjonsnummer knyttet til personen")
     private String identifikasjonsnummer;
 
-    @Schema(required = true,
+    @Schema(
             description = "Er det utenlandske identifikasjonsnummeret opphørt?")
     private Boolean opphoert;
 
-    @Schema(required = true,
+    @Schema(
             description = "Land i hht kodeverk 'Landkoder'")
     private String utstederland;
 

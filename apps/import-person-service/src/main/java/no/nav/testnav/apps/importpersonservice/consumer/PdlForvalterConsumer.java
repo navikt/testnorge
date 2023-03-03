@@ -9,7 +9,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -23,8 +22,7 @@ public class PdlForvalterConsumer {
 
     public PdlForvalterConsumer(
             TestnavPdlForvalterProperties serverProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
@@ -32,7 +30,6 @@ public class PdlForvalterConsumer {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

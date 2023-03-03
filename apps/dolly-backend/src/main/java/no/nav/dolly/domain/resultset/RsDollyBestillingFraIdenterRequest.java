@@ -18,7 +18,6 @@ import static java.util.Objects.isNull;
 public class RsDollyBestillingFraIdenterRequest extends RsDollyBestilling {
 
     @Schema(
-            required = true,
             description = "Liste av identer det skal opprettes testpersoner for"
     )
     private List<String> opprettFraIdenter;

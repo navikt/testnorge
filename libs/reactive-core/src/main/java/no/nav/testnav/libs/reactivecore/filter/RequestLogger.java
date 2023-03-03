@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Slf4j
 @Configuration
@@ -73,18 +74,18 @@ public class RequestLogger implements WebFilter {
             Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
             var method = request.getMethod().name();
             var uri = request.getPath().toString();
-            var statusCode = response.getRawStatusCode();
+            var statusCode = response.getStatusCode();
             var queryParrams = request.getQueryParams().isEmpty() ? null : request.getQueryParams().toString();
-            var host = request.getHeaders().getHost().toString();
+            var host = Objects.requireNonNull(request.getHeaders().getHost()).toString();
 
             contextMap.put("Transaction-Type", "response");
             contextMap.put("Method", method);
-            contextMap.put(HttpHeaders.CONTENT_TYPE, response.getHeaders().getContentType().getType());
+            contextMap.put(HttpHeaders.CONTENT_TYPE, Objects.requireNonNull(response.getHeaders().getContentType()).getType());
             contextMap.put(HttpHeaders.HOST, host);
             contextMap.put(HttpHeaders.ORIGIN, response.getHeaders().getOrigin());
             contextMap.put(HttpHeaders.ACCEPT, response.getHeaders().getAccept().toString());
             contextMap.put("Query-Params", queryParrams);
-            if (!response.getStatusCode().is2xxSuccessful()) {
+            if (!Objects.requireNonNull(response.getStatusCode()).is2xxSuccessful()) {
                 contextMap.put("Body", body == null ? "[empty]" : body);
             }
             contextMap.put("Http-Status", statusCode.toString());

@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Pattern;
-import javax.websocket.server.PathParam;
+import jakarta.validation.constraints.Pattern;
+import jakarta.websocket.server.PathParam;
 
 import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.domain.Ereg;

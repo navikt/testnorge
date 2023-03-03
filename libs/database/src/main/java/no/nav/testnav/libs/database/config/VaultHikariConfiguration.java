@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.cloud.vault.config.databases.VaultDatabaseProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.vault.core.lease.SecretLeaseContainer;
 import org.springframework.vault.core.lease.domain.RequestedSecret;
@@ -39,10 +38,8 @@ public class VaultHikariConfiguration implements InitializingBean {
 
         container.addLeaseListener(leaseEvent -> {
             log.info("Vault: Lease Event: {}", leaseEvent);
-            if (leaseEvent.getSource() == secret && leaseEvent instanceof SecretLeaseCreatedEvent) {
+            if (leaseEvent.getSource() == secret && leaseEvent instanceof SecretLeaseCreatedEvent lease) {
                 log.info("Roterer brukernavn/passord for: {}", leaseEvent);
-
-                var lease = (SecretLeaseCreatedEvent) leaseEvent;
 
                 var username = lease.getSecrets().get("username").toString();
                 var password = lease.getSecrets().get("password").toString();

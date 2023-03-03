@@ -7,7 +7,7 @@ import no.nav.testnav.apps.oversiktfrontend.consumer.dto.BrukerDTO;
 import no.nav.testnav.apps.oversiktfrontend.credentials.TestnavBrukerServiceProperties;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -19,15 +19,13 @@ public class BrukerConsumer {
     private final TokenExchange tokenExchange;
 
     public BrukerConsumer(TestnavBrukerServiceProperties serviceProperties,
-                          TokenExchange tokenExchange,
-                          ExchangeFilterFunction metricsWebClientFilterFunction) {
+                          TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

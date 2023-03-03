@@ -6,7 +6,6 @@ import no.nav.registre.tp.consumer.command.FindExistingPersonsCommand;
 import no.nav.registre.tp.consumer.command.RemovePersonsCommand;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
@@ -18,12 +17,10 @@ public class TpConsumer {
 
     private final WebClient webClient;
 
-    public TpConsumer(@Value("${pensjon-testdata-server-q2.url}") String serverUrl,
-                      ExchangeFilterFunction metricsWebClientFilterFunction) {
+    public TpConsumer(@Value("${pensjon-testdata-server-q2.url}") String serverUrl) {
 
         this.webClient = WebClient.builder()
                 .baseUrl(serverUrl)
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

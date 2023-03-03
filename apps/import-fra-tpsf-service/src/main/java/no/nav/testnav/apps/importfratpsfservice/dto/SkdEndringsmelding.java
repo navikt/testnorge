@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, property = "meldingstype")
 @JsonSubTypes({

@@ -10,7 +10,6 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -27,19 +26,18 @@ public class Norg2Consumer implements ConsumerStatus {
     public Norg2Consumer(
             TokenExchange accessTokenService,
             Norg2ProxyProperties serverProperties,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper
+    ) {
 
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "detaljertsykemelding_opprett"})
+    @Timed(name = "providers", tags = { "operation", "detaljertsykemelding_opprett" })
     public Mono<Norg2EnhetResponse> getNorgEnhet(String geografiskTilhoerighet) {
 
         return tokenService.exchange(serviceProperties)

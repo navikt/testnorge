@@ -25,6 +25,9 @@ public class VaultDevConfig extends AbstractVaultConfiguration {
 
     @Override
     public ClientAuthentication clientAuthentication() {
+        if (System.getenv().containsKey("VAULT_TOKEN")) {
+            System.setProperty("spring.cloud.vault.token", System.getenv("VAULT_TOKEN"));
+        }
         var token = System.getProperty("spring.cloud.vault.token");
         if (token == null) {
             throw new IllegalArgumentException("Påkrevet property 'spring.cloud.vault.token' er ikke satt.");

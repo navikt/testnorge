@@ -16,9 +16,9 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class RsAntallTimerIPerioden {
 
-    @Schema(required = true)
+    @Schema
     private RsPeriodeAareg periode;
 
-    @Schema(required = true)
+    @Schema
     private BigDecimal antallTimer;
 }

@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -39,14 +38,12 @@ public class TpsfConsumer {
     public TpsfConsumer(
             TokenExchange tokenExchange,
             TpsfProperties serviceProperties,
-            @Value("${consumers.tps-forvalter.threads}") Integer threads,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            @Value("${consumers.tps-forvalter.threads}") Integer threads) {
 
         this.tokenExchange = tokenExchange;
         this.properties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.executorService = Executors.newFixedThreadPool(threads);
     }

@@ -35,7 +35,7 @@ public class BestillingRequest {
     @AllArgsConstructor
     public static class OrganisasjonRequest {
 
-        @Schema(required = true, example = "BEDR", description = "I hht kodeverk EnhetstyperJuridiskEnhet eller EnhetstyperVirksomhet")
+        @Schema( example = "BEDR", description = "I hht kodeverk EnhetstyperJuridiskEnhet eller EnhetstyperVirksomhet")
         private String enhetstype;
         @Schema(example = "28.930", description = "I hht kodeverk Næringskoder")
         private String naeringskode;

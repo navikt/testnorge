@@ -12,7 +12,6 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -34,23 +33,17 @@ public class DokarkivConsumer implements ConsumerStatus {
 
     public DokarkivConsumer(DokarkivProxyServiceProperties properties,
                             TokenExchange tokenService,
-                            ObjectMapper objectMapper,
-                            ExchangeFilterFunction metricsWebClientFilterFunction) {
+                            ObjectMapper objectMapper) {
 
         this.serviceProperties = properties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "dokarkiv-opprett"})
+    @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
     public Flux<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
         var callId = getNavCallId();
@@ -61,7 +54,7 @@ public class DokarkivConsumer implements ConsumerStatus {
                         token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "dokarkiv_getEnvironments"})
+    @Timed(name = "providers", tags = { "operation", "dokarkiv_getEnvironments" })
     public Mono<List<String>> getEnvironments() {
 
         return tokenService.exchange(serviceProperties)
@@ -76,6 +69,10 @@ public class DokarkivConsumer implements ConsumerStatus {
     @Override
     public String consumerName() {
         return "testnav-dokarkiv-proxy";
+    }
+
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
 
 }

@@ -6,6 +6,7 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -38,7 +39,7 @@ public class KontoregisterPostCommand implements Callable<Mono<KontoregisterResp
                 .retrieve()
                 .toBodilessEntity()
                 .map(value -> KontoregisterResponseDTO.builder()
-                        .status(value.getStatusCode())
+                        .status(HttpStatus.valueOf(value.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(KontoregisterResponseDTO.builder()

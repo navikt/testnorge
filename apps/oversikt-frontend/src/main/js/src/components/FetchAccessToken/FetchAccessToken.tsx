@@ -34,7 +34,6 @@ const ButtonGroup = styled.div`
 const FetchAccessToken = styled.div`
 	max-width: 500px;
 	padding-bottom: 25px;
-	text-align: -webkit-center;
 `
 
 const GetTokenButton = styled(Knapp)`
@@ -62,7 +61,8 @@ const AccessTokenTextArea = styled.textarea`
 `
 
 const StyledCheckbox = styled(Checkbox)`
-	padding: 5px 0px;
+  padding: 5px 0px;
+  margin-left: 172px;
 `
 
 export default ({ labels = {}, scope }: Props) => {

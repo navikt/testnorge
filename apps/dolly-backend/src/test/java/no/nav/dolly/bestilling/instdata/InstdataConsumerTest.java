@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.instdata;
 
-import no.nav.dolly.config.credentials.InstServiceProperties;
+import no.nav.dolly.config.credentials.InstProxyProperties;
 import no.nav.dolly.domain.resultset.inst.Instdata;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -44,9 +43,6 @@ class InstdataConsumerTest {
     private static final String ENVIRONMENT = "U2";
 
     @MockBean
-    private JwtDecoder jwtDecoder;
-
-    @MockBean
     private TokenExchange tokenService;
 
     @MockBean
@@ -58,7 +54,7 @@ class InstdataConsumerTest {
     @BeforeEach
     void setup() {
 
-        when(tokenService.exchange(ArgumentMatchers.any(InstServiceProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
+        when(tokenService.exchange(ArgumentMatchers.any(InstProxyProperties.class))).thenReturn(Mono.just(new AccessToken("token")));
     }
 
     @Test
@@ -67,8 +63,8 @@ class InstdataConsumerTest {
         stubDeleteInstData();
 
         instdataConsumer.deleteInstdata(List.of(IDENT))
-                        .subscribe(resultat ->
-                                verify(tokenService).exchange(ArgumentMatchers.any(InstServiceProperties.class)));
+                .subscribe(resultat ->
+                        verify(tokenService).exchange(ArgumentMatchers.any(InstProxyProperties.class)));
     }
 
     @Test

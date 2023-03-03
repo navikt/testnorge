@@ -8,7 +8,6 @@ import no.nav.registre.sdforvalter.consumer.rs.aareg.response.ArbeidsforholdResp
 import no.nav.testnav.libs.dto.aareg.v1.Arbeidsforhold;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -21,8 +20,7 @@ public class AaregConsumer {
 
     public AaregConsumer(
             AaregProperties serverProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction
+            TokenExchange tokenExchange
     ) {
         this.properties = serverProperties;
         this.tokenExchange = tokenExchange;
@@ -33,7 +31,6 @@ public class AaregConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

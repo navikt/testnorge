@@ -1,29 +1,5 @@
 package no.nav.registre.sdforvalter.provider.rs;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.reset;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-import java.util.List;
-import java.util.Set;
-
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
 import no.nav.registre.sdforvalter.database.model.TpsIdentModel;
@@ -34,6 +10,27 @@ import no.nav.registre.sdforvalter.database.repository.TagRepository;
 import no.nav.registre.sdforvalter.database.repository.TpsIdentTagRepository;
 import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockHttpServletRequestBuilder;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import java.util.List;
+import java.util.Set;
+
+import static com.github.tomakehurst.wiremock.client.WireMock.reset;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -46,9 +43,6 @@ class FileControllerIntegrationTest {
 
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    public JwtDecoder jwtDecoder;
 
     @Autowired
     private TpsIdenterRepository tpsIdenterRepository;
@@ -70,6 +64,30 @@ class FileControllerIntegrationTest {
 
         OpprinnelseModel opprinnelseModel = new OpprinnelseModel(null, "Test");
         opprinnelseRepository.save(opprinnelseModel);
+    }
+
+    public void assertListOfPersonsFromCsvIsSavedInDatabase(List<TpsIdentModel> expectedTpsIdenterListe, String csvInnhold) throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
+                .multipart("/api/v1/faste-data/file/tpsIdenter")
+                .file("file", csvInnhold.getBytes())
+                .with(jwt())
+                .characterEncoding("UTF_8");
+
+        mvc.perform(builder).andExpect(status().isOk());
+
+        assertThat(tpsIdenterRepository.findAll())
+                .containsAll(expectedTpsIdenterListe);
+    }
+
+    @AfterEach
+    public void cleanUp() {
+        reset();
+        eregTagRepository.deleteAll();
+        tpsIdentTagRepository.deleteAll();
+        tagRepository.deleteAll();
+        tpsIdenterRepository.deleteAll();
+        opprinnelseRepository.deleteAll();
+        gruppeRepository.deleteAll();
     }
 
     @Test
@@ -125,29 +143,5 @@ class FileControllerIntegrationTest {
         );
 
         assertListOfPersonsFromCsvIsSavedInDatabase(expectedTpsIdenterListe, csvInnhold);
-    }
-
-    public void assertListOfPersonsFromCsvIsSavedInDatabase(List<TpsIdentModel> expectedTpsIdenterListe, String csvInnhold) throws Exception {
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders
-                .multipart("/api/v1/faste-data/file/tpsIdenter/")
-                .file("file", csvInnhold.getBytes())
-                .with(jwt())
-                .characterEncoding("UTF_8");
-
-        mvc.perform(builder).andExpect(status().isOk());
-
-        assertThat(tpsIdenterRepository.findAll())
-                .containsAll(expectedTpsIdenterListe);
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        reset();
-        eregTagRepository.deleteAll();
-        tpsIdentTagRepository.deleteAll();
-        tagRepository.deleteAll();
-        tpsIdenterRepository.deleteAll();
-        opprinnelseRepository.deleteAll();
-        gruppeRepository.deleteAll();
     }
 }

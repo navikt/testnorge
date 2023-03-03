@@ -2,9 +2,9 @@ package no.nav.pdl.forvalter.database.repository;
 
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -14,13 +14,14 @@ import java.util.Optional;
 import java.util.Set;
 
 @Repository
-public interface PersonRepository extends PagingAndSortingRepository<DbPerson, Long> {
+public interface PersonRepository extends JpaRepository<DbPerson, Long> {
 
     Optional<DbPerson> findByIdent(String ident);
 
     List<DbPerson> findByIdentIn(Collection<String> identer, Pageable pageable);
 
     List<DbPerson> findByIdIn(List<Long> identer);
+
 
     @Modifying
     int deleteByIdentIn(Set<String> ident);

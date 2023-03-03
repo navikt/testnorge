@@ -18,7 +18,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -43,8 +42,7 @@ public class OppsummeringsdokumentConsumer {
             TokenExchange tokenExchange,
             OppsummeringsdokuemntServerProperties properties,
             ObjectMapper objectMapper,
-            ApplicationProperties applicationProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ApplicationProperties applicationProperties) {
 
         this.applicationProperties = applicationProperties;
         this.tokenExchange = tokenExchange;
@@ -63,7 +61,6 @@ public class OppsummeringsdokumentConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

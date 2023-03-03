@@ -36,49 +36,6 @@ public class PensjonData {
         return tp;
     }
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class PoppInntekt {
-        @Schema(required = true,
-                description = "Fra og med år YYYY")
-        private Integer fomAar;
-
-        @Schema(required = true,
-                description = "Til og med år YYYY")
-        private Integer tomAar;
-
-        @Schema(description = "Beløp i hele kroner per år (i dagens verdi)",
-                required = true)
-        private Integer belop;
-
-        @Schema(description = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi",
-                required = true)
-        private Boolean redusertMedGrunnbelop;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class TpOrdning {
-        @Schema(required = true,
-                description = "Tjenestepensjons leverandør")
-        private String ordning;
-
-        @Schema(description = "Tjenestepensjons ytelser")
-        private List<TpYtelse> ytelser;
-
-        public List<TpYtelse> getYtelser() {
-            if (ytelser == null) {
-                ytelser = new ArrayList<>();
-            }
-            return ytelser;
-        }
-    }
-
     public enum TpYtelseType {
         ALDER,
         UFORE,
@@ -92,16 +49,54 @@ public class PensjonData {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class PoppInntekt {
+        @Schema(description = "Fra og med år YYYY")
+        private Integer fomAar;
+
+        @Schema(description = "Til og med år YYYY")
+        private Integer tomAar;
+
+        @Schema(description = "Beløp i hele kroner per år (i dagens verdi)")
+        private Integer belop;
+
+        @Schema(description = "Når true reduseres tidligere års pensjon i forhold til dagens kroneverdi")
+        private Boolean redusertMedGrunnbelop;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class TpOrdning {
+        @Schema(description = "Tjenestepensjons leverandør")
+        private String ordning;
+
+        @Schema(description = "Tjenestepensjons ytelser")
+        private List<TpYtelse> ytelser;
+
+        public List<TpYtelse> getYtelser() {
+            if (ytelser == null) {
+                ytelser = new ArrayList<>();
+            }
+            return ytelser;
+        }
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class TpYtelse {
-        @Schema(required = true,
+        @Schema(
                 description = "tjenestetype")
         private TpYtelseType type;
 
-        @Schema(required = true,
+        @Schema(
                 description = "Dato innmeldt ytelse fom, kan være tidligere eller samme som iverksatt fom dato.")
         private LocalDate datoInnmeldtYtelseFom;
 
-        @Schema(required = true,
+        @Schema(
                 description = "Dato iverksatt fom")
         private LocalDate datoYtelseIverksattFom;
 
@@ -114,10 +109,10 @@ public class PensjonData {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Alderspensjon {
-        @Schema(required = true)
+        @Schema
         private LocalDate iverksettelsesdato;
 
-        @Schema(required = true)
+        @Schema
         private Integer uttaksgrad;
 
         @Schema
@@ -137,7 +132,7 @@ public class PensjonData {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class SkjemaRelasjon {
-        @Schema(required = true)
+        @Schema
         private Integer sumAvForvArbKapPenInntekt;
     }
 }

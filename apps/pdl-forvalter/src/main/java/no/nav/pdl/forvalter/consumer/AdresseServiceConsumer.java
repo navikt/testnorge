@@ -9,7 +9,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.stream.Stream;
@@ -25,15 +25,13 @@ public class AdresseServiceConsumer {
     private final ServerProperties properties;
 
     public AdresseServiceConsumer(TokenExchange tokenExchange,
-                                  AdresseServiceProperties properties,
-                                  ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                  AdresseServiceProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

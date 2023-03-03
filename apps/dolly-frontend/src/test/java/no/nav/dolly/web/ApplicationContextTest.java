@@ -1,31 +1,26 @@
 package no.nav.dolly.web;
 
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
-import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.test.context.ActiveProfiles;
 
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Disabled
 class ApplicationContextTest {
 
     @MockBean
-    public TokenExchange exchange;
-
-    @MockBean
-    public JwtDecoder jwtDecoder;
-
-    @MockBean
-    public UserJwtExchange jwtExchange;
+    @SuppressWarnings("unused")
+    private SecurityWebFilterChain securityWebFilterChain;
 
     @Test
-    @SuppressWarnings("java:S2699")
+    @DisplayName("Application context should load")
     void load_app_context() {
+        assertThat(true).isTrue();
     }
+
 }

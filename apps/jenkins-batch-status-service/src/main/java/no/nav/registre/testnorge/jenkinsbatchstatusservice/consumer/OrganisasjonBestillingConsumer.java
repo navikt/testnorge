@@ -12,7 +12,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
@@ -28,8 +27,7 @@ public class OrganisasjonBestillingConsumer {
 
     public OrganisasjonBestillingConsumer(
             OrganisasjonBestillingServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
@@ -44,7 +42,6 @@ public class OrganisasjonBestillingConsumer {
                         .addHandlerLast(new ReadTimeoutHandler(TIMEOUT_SECONDS))
                         .addHandlerLast(new WriteTimeoutHandler(TIMEOUT_SECONDS)))
             ))
-            .filter(metricsWebClientFilterFunction)
             .build();
     }
 

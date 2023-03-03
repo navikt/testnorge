@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.commands.utils.WebClientFilter;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v1.ArbeidsforholdDTO;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -37,7 +38,7 @@ public class GetArbeidsforholdCommand implements Callable<Mono<ArbeidsforholdDTO
                 .header(AUTHORIZATION, "Bearer " + accessToken)
                 .header("miljo", "q1")
                 .retrieve()
-                .onStatus(HttpStatus::is4xxClientError, response -> Mono.error(
+                .onStatus(HttpStatusCode::is4xxClientError, response -> Mono.error(
                         new HttpClientErrorException(HttpStatus.NOT_FOUND, "Fant ikke arbeidsforhold")))
                 .bodyToMono(ArbeidsforholdDTO.class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
