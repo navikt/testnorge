@@ -11,6 +11,7 @@ import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
 import no.nav.pdl.forvalter.dto.OpprettIdent;
 import no.nav.pdl.forvalter.dto.OpprettRequest;
+import no.nav.pdl.forvalter.dto.OpprettRequestComparator;
 import no.nav.pdl.forvalter.dto.Ordre;
 import no.nav.pdl.forvalter.dto.OrdreRequest;
 import no.nav.pdl.forvalter.dto.PdlDelete;
@@ -86,6 +87,7 @@ public class PdlOrdreService {
     private final PersonRepository personRepository;
     private final AliasRepository aliasRepository;
     private final MapperFacade mapperFacade;
+    private final OpprettRequestComparator opprettRequestComparator;
 
     private static Set<String> getEksternePersoner(DbPerson dbPerson) {
 
@@ -201,6 +203,7 @@ public class PdlOrdreService {
                                 .map(oppretting -> deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())))
                                 .toList())
                         .oppretting(opprettinger.stream()
+                                .sorted(opprettRequestComparator::compare)
                                 .map(oppretting ->
                                         deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
                                                 List.of(OpprettIdent.builder()
