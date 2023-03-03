@@ -9,7 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -23,8 +23,7 @@ public class PersonOrganisasjonTilgangConsumer {
     public PersonOrganisasjonTilgangConsumer(
             PersonOrganisasjonTilgangServiceProperties properties,
             TokenExchange tokenExchange,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
@@ -41,7 +40,6 @@ public class PersonOrganisasjonTilgangConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

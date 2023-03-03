@@ -7,6 +7,7 @@ import no.nav.dolly.domain.resultset.Tags;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -50,7 +51,7 @@ public class TagsOpprettingCommand implements Callable<Mono<TagsOpprettingRespon
                 .map(status -> TagsOpprettingResponse.builder()
                         .message(status.hasBody() ? status.getBody().getMessage() : null)
                         .details(status.hasBody() ? status.getBody().getDetails() : null)
-                        .status(status.getStatusCode())
+                        .status(HttpStatus.valueOf(status.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

@@ -20,7 +20,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -51,15 +50,14 @@ public class TpsMessagingConsumer implements ConsumerStatus {
 
     public TpsMessagingConsumer(TokenExchange tokenService,
                                 TpsMessagingServiceProperties serverProperties,
-                                ObjectMapper objectMapper,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                ObjectMapper objectMapper
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

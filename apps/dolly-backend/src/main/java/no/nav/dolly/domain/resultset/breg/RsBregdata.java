@@ -58,7 +58,7 @@ public class RsBregdata {
         @Schema(defaultValue = "dagens dato")
         private LocalDateTime registreringsdato;
 
-        @Schema(required = true)
+        @Schema
         private String rolle;
 
         private List<PersonRolle> personroller;
@@ -91,7 +91,7 @@ public class RsBregdata {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class NavnTo {
 
-        @Schema(required = true)
+        @Schema
         private String navn1;
 
         private String navn2;
@@ -106,7 +106,7 @@ public class RsBregdata {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AdresseTo {
 
-        @Schema(required = true)
+        @Schema
         private String adresse1;
 
         private String adresse2;
@@ -115,7 +115,7 @@ public class RsBregdata {
 
         private String kommunenr;
 
-        @Schema(required = true)
+        @Schema
         private String landKode;
 
         private String postnr;

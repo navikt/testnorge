@@ -5,6 +5,7 @@ import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -35,7 +36,7 @@ public class PersonServiceExistCommand implements Callable<Mono<PersonServiceRes
                 .toEntity(Boolean.class)
                 .map(resultat -> PersonServiceResponse.builder()
                         .ident(ident)
-                        .status(resultat.getStatusCode())
+                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .exists(resultat.getBody())
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)

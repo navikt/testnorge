@@ -9,7 +9,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.util.FilLaster;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -33,8 +33,7 @@ public class PdlProxyConsumer {
 
     public PdlProxyConsumer(
             PdlProxyProperties pdlProxyProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = pdlProxyProperties;
         this.tokenExchange = tokenExchange;
@@ -45,7 +44,6 @@ public class PdlProxyConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(pdlProxyProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

@@ -29,7 +29,7 @@ public class AlderspensjonRequest {
     @AllArgsConstructor
     public static class SkjemaRelasjon {
 
-        @Schema(required = true)
+        @Schema
         private LocalDate relasjonFraDato;
 
         private LocalDate dodsdato;

@@ -14,11 +14,11 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsDollyImportFraTpsRequest extends RsDollyBestilling {
 
-    @Schema(required = true,
+    @Schema(
             description = "Liste av identer som skal importeres")
     private List<String> identer;
 
-    @Schema(required = true,
+    @Schema(
             description = "Miljø som det skal leses fra")
     private String kildeMiljoe;
 }

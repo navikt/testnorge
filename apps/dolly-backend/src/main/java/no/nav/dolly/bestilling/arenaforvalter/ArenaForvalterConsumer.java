@@ -23,7 +23,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -52,15 +51,14 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
 
     public ArenaForvalterConsumer(ArenaforvalterProxyProperties serverProperties,
                                   TokenExchange tokenService,
-                                  ObjectMapper objectMapper,
-                                  ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                  ObjectMapper objectMapper
+    ) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

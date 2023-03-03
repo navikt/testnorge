@@ -12,9 +12,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsDollyBestillingRequest extends RsDollyUtvidetBestilling {
 
-    @Schema(
-            required = true,
-            description = "Antall testpersoner som bestilles"
-    )
+    @Schema(description = "Antall testpersoner som bestilles")
     private int antall;
 }

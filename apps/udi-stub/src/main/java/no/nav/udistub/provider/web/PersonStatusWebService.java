@@ -16,7 +16,7 @@ import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusRequestType;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusResponseType;
 import v1.mt_1067_nav.no.udi.PingFault;
 
-import javax.xml.bind.JAXBElement;
+import jakarta.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 @Endpoint

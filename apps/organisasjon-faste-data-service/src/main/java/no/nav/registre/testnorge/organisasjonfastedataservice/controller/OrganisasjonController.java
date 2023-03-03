@@ -74,20 +74,10 @@ public class OrganisasjonController {
                         .toUri();
                 var response = ResponseEntity.created(uri).build();
 
-                responseMap.put(dto.getOrgnummer(), response.getStatusCode().name());
+                responseMap.put(dto.getOrgnummer(), HttpStatus.valueOf(response.getStatusCode().value()).name());
             }
         });
         return responseMap;
-    }
-
-    private void handleError(Map<String, String> responseMap, OrganisasjonDTO dto, String errorMessage) {
-        var error = String.format(
-                errorMessage,
-                dto.getOrgnummer(),
-                dto.getOverenhet()
-        );
-        log.error(error);
-        responseMap.put(dto.getOrgnummer(), error);
     }
 
     @GetMapping("/{orgnummer}")
@@ -102,5 +92,15 @@ public class OrganisasjonController {
     public ResponseEntity<HttpStatus> delete(@PathVariable String orgnummer) {
         service.delete(orgnummer);
         return ResponseEntity.noContent().build();
+    }
+
+    private void handleError(Map<String, String> responseMap, OrganisasjonDTO dto, String errorMessage) {
+        var error = String.format(
+                errorMessage,
+                dto.getOrgnummer(),
+                dto.getOverenhet()
+        );
+        log.error(error);
+        responseMap.put(dto.getOrgnummer(), error);
     }
 }

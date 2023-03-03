@@ -17,11 +17,11 @@ import java.time.LocalDateTime;
 public class RsArenaDagpenger {
 
 
-    @Schema(required = true,
+    @Schema(
             type = "String")
     private String rettighetKode;
 
-    @Schema(required = true,
+    @Schema(
             type = "LocalDateTime")
     private LocalDateTime fraDato;
 

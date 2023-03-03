@@ -7,7 +7,7 @@ import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsInntektsm
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Slf4j
@@ -20,14 +20,12 @@ public class GenererInntektsmeldingConsumer {
 
     public GenererInntektsmeldingConsumer(
             InntektsmeldingGeneratorServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

@@ -55,6 +55,31 @@ public class RsInntektsinformasjon {
 
     private Integer versjon;
 
+    public List<Inntekt> getInntektsliste() {
+        if (isNull(inntektsliste)) {
+            inntektsliste = new ArrayList<>();
+        }
+        return inntektsliste;
+    }
+
+    public List<Fradrag> getFradragsliste() {
+        if (isNull(fradragsliste)) {
+            fradragsliste = new ArrayList<>();
+        }
+        return fradragsliste;
+    }
+
+    public List<Forskuddstrekk> getForskuddstrekksliste() {
+        if (isNull(forskuddstrekksliste)) {
+            forskuddstrekksliste = new ArrayList<>();
+        }
+        return forskuddstrekksliste;
+    }
+
+    public List<Arbeidsforhold> getArbeidsforholdsliste() {
+        return arbeidsforholdsliste;
+    }
+
     public List<Historikk> getHistorikk() {
         if (isNull(historikk)) {
             historikk = new ArrayList<>();

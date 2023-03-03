@@ -1,6 +1,5 @@
 package no.nav.testnav.libs.dto.kontoregisterservice.v1;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -27,6 +26,5 @@ public class BankkontonrUtlandDTO {
     private String landkode;
     private Boolean tilfeldigKontonummer;
 
-    @Schema(description = "Datofeltet benyttes til lesning kun")
     private LocalDateTime kontoRegdato;
 }

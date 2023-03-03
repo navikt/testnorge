@@ -10,7 +10,7 @@ import no.nav.testnav.libs.commands.organisasjonservice.v1.GetOrganisasjonComman
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -35,13 +35,11 @@ public class OrganisasjonServiceConsumer {
 
     public OrganisasjonServiceConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
         this.executorService = Executors.newFixedThreadPool(serviceProperties.getThreads());

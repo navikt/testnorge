@@ -6,7 +6,6 @@ import no.nav.registre.sdforvalter.consumer.rs.tp.command.OpprettPersonerTpComma
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
@@ -23,16 +22,13 @@ public class TpConsumer {
 
     public TpConsumer(
             TokenExchange tokenExchange,
-            TestnorgeTpProperties serviceProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction
-    ) {
+            TestnorgeTpProperties serviceProperties) {
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
 
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

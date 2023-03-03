@@ -5,7 +5,6 @@ import no.nav.registre.testnorge.organisasjonmottak.consumer.command.RegisterEre
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
@@ -16,14 +15,12 @@ public class JenkinsBatchStatusConsumer {
 
     public JenkinsBatchStatusConsumer(
             JenkinsBatchStatusServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.properties = properties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

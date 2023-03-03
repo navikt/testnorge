@@ -6,11 +6,7 @@ import no.nav.registre.sdforvalter.domain.Krr;
 import no.nav.registre.sdforvalter.domain.KrrListe;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.RequestEntity;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
@@ -22,6 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
 @Component
@@ -107,6 +106,7 @@ public class KrrConsumer {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Nav-Call-Id", "Synt");
         httpHeaders.add("Nav-Consumer-Id", "Synt");
+        httpHeaders.add(CONTENT_TYPE, APPLICATION_JSON_VALUE);
         return httpHeaders;
     }
 }

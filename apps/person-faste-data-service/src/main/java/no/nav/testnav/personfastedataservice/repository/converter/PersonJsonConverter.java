@@ -3,7 +3,7 @@ package no.nav.testnav.personfastedataservice.repository.converter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 import no.nav.testnav.personfastedataservice.domain.Person;
 

@@ -3,9 +3,10 @@ POST_LOGOUT_REDIRECT_URI: https://dolly.ekstern.dev.nav.no/login
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
 
 consumers:
   # Benytter service discovery syntax for tilgang i samme cluster og dolly namespace

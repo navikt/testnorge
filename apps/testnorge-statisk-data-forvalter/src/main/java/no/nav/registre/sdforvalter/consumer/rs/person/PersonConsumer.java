@@ -18,7 +18,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -43,8 +43,7 @@ public class PersonConsumer {
     public PersonConsumer(
             ObjectMapper objectMapper, @Value("${consumers.person.threads}") Integer threads,
             PersonServiceProperties personServiceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = personServiceProperties;
         this.tokenExchange = tokenExchange;
@@ -61,7 +60,6 @@ public class PersonConsumer {
                 .builder()
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(personServiceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
 
         this.executor = Executors.newFixedThreadPool(threads);

@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -44,9 +43,6 @@ class TpsMessagingConsumerTest {
 
     private static final String IDENT = "12345678901";
     private static final List<String> MILJOER = List.of("q1", "q2");
-
-    @MockBean
-    private JwtDecoder jwtDecoder;
 
     @MockBean
     private TokenExchange tokenService;

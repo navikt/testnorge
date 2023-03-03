@@ -21,7 +21,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -41,15 +40,13 @@ public class PdlDataConsumer implements ConsumerStatus {
 
     public PdlDataConsumer(TokenExchange tokenService,
                            PdlDataForvalterProperties serviceProperties,
-                           ObjectMapper objectMapper,
-                           ExchangeFilterFunction metricsWebClientFilterFunction) {
+                           ObjectMapper objectMapper) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

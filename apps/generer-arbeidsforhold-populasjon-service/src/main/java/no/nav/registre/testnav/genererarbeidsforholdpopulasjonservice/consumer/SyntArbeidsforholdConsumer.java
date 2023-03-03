@@ -12,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -29,8 +28,7 @@ public class SyntArbeidsforholdConsumer {
     public SyntArbeidsforholdConsumer(
             TokenExchange tokenExchange,
             SyntAmeldingProperties properties,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
@@ -46,7 +44,6 @@ public class SyntArbeidsforholdConsumer {
                             .defaultCodecs()
                             .jackson2JsonDecoder(new Jackson2JsonDecoder(objectMapper, MediaType.APPLICATION_JSON));
                 })
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

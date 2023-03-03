@@ -6,7 +6,7 @@ import no.nav.pdl.forvalter.consumer.command.OrganisasjonForvalterCommand;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Map;
@@ -22,15 +22,13 @@ public class OrganisasjonForvalterConsumer {
     private final ServerProperties properties;
 
     public OrganisasjonForvalterConsumer(TokenExchange tokenExchange,
-                                         OrgForvalterServiceProperties properties,
-                                         ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                         OrgForvalterServiceProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

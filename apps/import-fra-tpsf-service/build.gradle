@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.5.0.2730"
-    id 'org.springframework.boot' version "2.7.5"
+    id "org.sonarqube" version "4.0.0.2929"
+    id 'org.springframework.boot' version "3.0.3"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -22,8 +22,9 @@ bootJar {
 }
 
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
 }
 
@@ -71,20 +72,21 @@ dependencies {
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'javax.xml.bind:jaxb-api'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.0.2'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 

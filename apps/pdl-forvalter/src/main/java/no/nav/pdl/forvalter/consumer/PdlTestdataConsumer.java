@@ -19,7 +19,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -42,14 +41,12 @@ public class PdlTestdataConsumer {
 
     public PdlTestdataConsumer(TokenExchange tokenExchange,
                                PdlServiceProperties properties,
-                               ObjectMapper objectMapper,
-                               ExchangeFilterFunction metricsWebClientFilterFunction) {
+                               ObjectMapper objectMapper) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.objectMapper = objectMapper;
     }
@@ -65,16 +62,10 @@ public class PdlTestdataConsumer {
                                                 .flatMap(entry -> entry.apply(accessToken))
                                                 .collectList()),
                                 Flux.fromIterable(orders.getOppretting())
-                                        .parallel()
                                         .flatMap(order -> Flux.fromIterable(order)
                                                 .flatMap(entry -> entry.apply(accessToken))
                                                 .collectList()),
-                                Flux.fromIterable(orders.getOpplysninger1())
-                                        .parallel()
-                                        .flatMap(order -> Flux.fromIterable(order)
-                                                .flatMap(entry -> entry.apply(accessToken))
-                                                .collectList()),
-                                Flux.fromIterable(orders.getOpplysninger2())
+                                Flux.fromIterable(orders.getOpplysninger())
                                         .parallel()
                                         .flatMap(order -> Flux.fromIterable(order)
                                                 .flatMap(entry -> entry.apply(accessToken))

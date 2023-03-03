@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 
 @Configuration
-@Profile({"local", "test"})
+@Profile({ "local", "test" })
 @Import({
         OicdInMemorySessionConfiguration.class
 })

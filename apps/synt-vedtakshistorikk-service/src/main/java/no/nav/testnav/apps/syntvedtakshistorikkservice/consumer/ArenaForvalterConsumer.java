@@ -12,19 +12,18 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.credential.Arena
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.EndreInnsatsbehovRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.FinnTiltakRequest;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.request.arena.rettighet.RettighetRequest;
-import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.arena.EndreInnsatsbehovResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.Arbeidsoeker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.brukere.NyBruker;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyeBrukereResponse;
 import no.nav.testnav.libs.domain.dto.arena.testnorge.vedtak.NyttVedtakResponse;
 import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerRequestDTO;
-import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import no.nav.testnav.libs.dto.syntvedtakshistorikkservice.v1.DagpengerResponseDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -51,13 +50,11 @@ public class ArenaForvalterConsumer {
 
     public ArenaForvalterConsumer(
             ArenaForvalterenProxyProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

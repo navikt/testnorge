@@ -2,7 +2,6 @@ package no.nav.organisasjonforvalter.util;
 
 import lombok.experimental.UtilityClass;
 import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseRequest;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.List;
 
@@ -26,7 +25,7 @@ public class UtenlandskAdresseUtil {
             request.setPoststed(ADRESSE_3_UTLAND);
         }
 
-        if (request.getAdresselinjer().stream().anyMatch(Strings::isNotBlank)) {
+        if (request.getAdresselinjer().stream().anyMatch(s -> !s.isBlank())) {
             return;
         }
 

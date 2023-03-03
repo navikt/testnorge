@@ -23,8 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
-import static org.apache.logging.log4j.util.Strings.isBlank;
 
 @Slf4j
 @Service

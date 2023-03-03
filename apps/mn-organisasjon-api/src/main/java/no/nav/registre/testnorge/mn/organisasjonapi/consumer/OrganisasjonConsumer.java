@@ -7,7 +7,7 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -28,8 +28,7 @@ public class OrganisasjonConsumer {
 
     public OrganisasjonConsumer(
             OrganisasjonServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
@@ -37,7 +36,6 @@ public class OrganisasjonConsumer {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

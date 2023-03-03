@@ -9,7 +9,6 @@ import no.nav.testnav.libs.domain.dto.aareg.amelding.ArbeidsforholdPeriode;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -23,8 +22,7 @@ public class SyntAmeldingConsumer {
     private final TokenExchange tokenExchange;
 
     public SyntAmeldingConsumer(TokenExchange tokenExchange,
-                                SyntAmeldingProperties properties,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                SyntAmeldingProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
@@ -35,7 +33,6 @@ public class SyntAmeldingConsumer {
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
