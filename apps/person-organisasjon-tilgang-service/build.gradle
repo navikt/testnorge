@@ -23,6 +23,7 @@ bootJar {
     archiveFileName = "app.jar"
 }
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }

@@ -50,7 +50,6 @@ public abstract class AbstractControllerTest {
 
     @AfterEach
     public void afterEach() {
-        flyway.clean();
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 

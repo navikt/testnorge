@@ -23,6 +23,7 @@ bootJar {
     archiveFileName = "app.jar"
 }
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
     }
 }
