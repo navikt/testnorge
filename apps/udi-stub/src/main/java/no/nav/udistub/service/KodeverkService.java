@@ -2,6 +2,8 @@ package no.nav.udistub.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.udistub.database.model.Kodeverk;
+import no.nav.udistub.database.repository.KodeverkRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -9,9 +11,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
-import no.nav.udistub.database.model.Kodeverk;
-import no.nav.udistub.database.repository.KodeverkRepository;
 
 @Slf4j
 @Service
@@ -21,9 +20,7 @@ public class KodeverkService {
     private final KodeverkRepository kodeverkRepository;
 
     public List<Kodeverk> finnAlle() {
-        ArrayList<Kodeverk> kodeverk = new ArrayList<>();
-        kodeverkRepository.findAll().forEach(kodeverk::add);
-        return kodeverk;
+        return new ArrayList<>(kodeverkRepository.findAll());
     }
 
     public List<Kodeverk> finnAlleMedType(String type) {

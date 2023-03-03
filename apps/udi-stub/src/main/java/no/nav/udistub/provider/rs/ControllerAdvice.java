@@ -18,7 +18,7 @@ import java.util.Map;
 @RestControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
 
-    private DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
@@ -27,19 +27,18 @@ public class ControllerAdvice extends ResponseEntityExceptionHandler {
                 .map(ConstraintViolation::getMessage)
                 .orElse("Could not find constraint violation");
 
-        return getValues(exception, request, message, HttpStatus.BAD_REQUEST);
+        return getValues(exception, request, message);
     }
 
     private Map<String, Object> getValues(Exception exception,
                                           HttpServletRequest request,
-                                          String message,
-                                          HttpStatus status) {
+                                          String message) {
         return Map.of(
                 "timestamp", ZonedDateTime.now().format(dateTimeFormatter),
                 "error", exception.getClass().getSimpleName(),
                 "path", request.getRequestURI(),
                 "message", message,
-                "status", status.value()
+                "status", HttpStatus.BAD_REQUEST.value()
         );
     }
 }

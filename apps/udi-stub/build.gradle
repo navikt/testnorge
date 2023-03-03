@@ -63,7 +63,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
@@ -72,14 +71,11 @@ dependencies {
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'com.sun.xml.messaging.saaj:saaj-impl:1.5.1'
-    implementation 'javax.xml.soap:javax.xml.soap-api:1.4.0'
+    implementation 'com.sun.xml.messaging.saaj:saaj-impl:3.0.0'
+    implementation 'jakarta.xml.soap:jakarta.xml.soap-api:3.0.0'
     implementation 'org.springframework.ws:spring-ws-security'
 
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'com.zaxxer:HikariCP'
     implementation 'org.postgresql:postgresql'
-    implementation 'com.h2database:h2'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
@@ -87,14 +83,11 @@ dependencies {
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.hibernate.validator:hibernate-validator'
+    implementation 'net.java.dev.jna:jna:5.13.0'
 
-    implementation 'wsdl4j:wsdl4j:1.6.3'
-
-    testImplementation 'javax.inject:javax.inject:1'
     testImplementation 'com.h2database:h2'
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:postgresql'
-    implementation 'net.java.dev.jna:jna:5.13.0'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock'
     testImplementation 'junit:junit:4.13.2' //TODO upgrade to JUnit5

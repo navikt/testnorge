@@ -1,5 +1,13 @@
 package no.nav.udistub.database.model;
 
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,14 +16,6 @@ import no.udi.mt_1067_nav_data.v1.ArbeidOmfangKategori;
 import no.udi.mt_1067_nav_data.v1.ArbeidsadgangType;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +23,7 @@ import jakarta.persistence.OneToOne;
 @Getter
 public class Arbeidsadgang {
 
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Id
     private Long id;
 
