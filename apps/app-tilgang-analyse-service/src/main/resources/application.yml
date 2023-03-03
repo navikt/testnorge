@@ -7,7 +7,7 @@ spring:
   application:
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
     name: testnav-app-tilgang-analyse-service
-    desciption: API for å app tilgang analyse
+    description: API for å app tilgang analyse
   security:
     oauth2:
       resourceserver:
