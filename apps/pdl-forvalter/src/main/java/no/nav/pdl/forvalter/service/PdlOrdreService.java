@@ -73,7 +73,6 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_TILRETTELA
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTENLANDS_IDENTIFIKASJON_NUMMER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_UTFLYTTING;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.PdlArtifact.PDL_VERGEMAAL;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.GAMMEL_IDENTITET;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Slf4j
@@ -150,7 +149,6 @@ public class PdlOrdreService {
                                 .skalSlettes(isNotTrue(isTpsMaster))
                                 .build()),
                         dbPerson.getRelasjoner().stream()
-                                .filter(relasjon -> GAMMEL_IDENTITET != relasjon.getRelasjonType())
                                 .filter(relasjon -> isNotTrue(ekskluderEksterenePersoner) ||
                                         eksternePersoner.stream()
                                                 .noneMatch(ekstern -> ekstern.equals(relasjon.getRelatertPerson().getIdent())))
@@ -180,7 +178,7 @@ public class PdlOrdreService {
                         .toList())
                 .build();
 
-        log.info("Oppretting av ident: {} tid: {} ", ident, System.currentTimeMillis() - timestamp);
+        log.info("PDL ordre for ident: {} tid: {} ms", ident, System.currentTimeMillis() - timestamp);
 
         return respons;
     }
@@ -211,26 +209,17 @@ public class PdlOrdreService {
                                                                 oppretting.getPerson().getPerson().getFolkeregisterPersonstatus().get(0).getStatus().equals(OPPHOERT))
                                                         .build())))
                                 .toList())
-                        .opplysninger1(opprettinger.stream()
-                                .map(this::getOrdrer1)
-                                .toList())
-                        .opplysninger2(opprettinger.stream()
-                                .map(this::getOrdrer2)
+                        .opplysninger(opprettinger.stream()
+                                .map(this::getOrdrer)
                                 .toList())
                         .build());
     }
 
-    private List<Ordre> getOrdrer1(OpprettRequest oppretting) {
+    private List<Ordre> getOrdrer(OpprettRequest oppretting) {
         return Stream.of(
                         deployService.createOrdre(PDL_FOLKEREGISTER_PERSONSTATUS, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFolkeregisterPersonstatus(), FolkeregisterPersonstatus.class)),
                         deployService.createOrdre(PDL_ADRESSEBESKYTTELSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getAdressebeskyttelse()),
-                        deployService.createOrdre(PDL_DOEDSFALL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getDoedsfall())))
-                .flatMap(Collection::stream)
-                .toList();
-    }
-
-    private List<Ordre> getOrdrer2(OpprettRequest oppretting) {
-        return Stream.of(
+                        deployService.createOrdre(PDL_DOEDSFALL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getDoedsfall())),
                         deployService.createOrdre(PDL_NAVN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavn()),
                         deployService.createOrdre(PDL_KJOENN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKjoenn()),
                         deployService.createOrdre(PDL_FOEDSEL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getFoedsel())),

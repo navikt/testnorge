@@ -66,12 +66,7 @@ public class PdlTestdataConsumer {
                                         .flatMap(order -> Flux.fromIterable(order)
                                                 .flatMap(entry -> entry.apply(accessToken))
                                                 .collectList()),
-                                Flux.fromIterable(orders.getOpplysninger1())
-                                        .parallel()
-                                        .flatMap(order -> Flux.fromIterable(order)
-                                                .flatMap(entry -> entry.apply(accessToken))
-                                                .collectList()),
-                                Flux.fromIterable(orders.getOpplysninger2())
+                                Flux.fromIterable(orders.getOpplysninger())
                                         .parallel()
                                         .flatMap(order -> Flux.fromIterable(order)
                                                 .flatMap(entry -> entry.apply(accessToken))
