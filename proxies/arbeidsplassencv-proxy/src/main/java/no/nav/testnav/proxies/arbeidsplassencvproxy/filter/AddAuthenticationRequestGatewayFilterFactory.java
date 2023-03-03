@@ -54,13 +54,15 @@ public class AddAuthenticationRequestGatewayFilterFactory extends AbstractGatewa
         return (exchange, chain) -> {
             var httpRequest = exchange.getRequest();
             var ident = httpRequest.getHeaders().getFirst("fnr");
-            getToken.get()
+            return getToken.get()
                     .flatMap(token -> fakedingsConsumer.getFakeToken(ident)
-                            .map(faketoken -> tokenXService.exchange(faketoken)
-                                    .map(tokenX ->
-                                            new AddAuthenticationRequestGatewayFilterFactory().apply(builder ->
-                                                    Mono.just(builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + tokenX)));
-        }
+                            .flatMap(faketoken -> tokenXService.exchange(faketoken)
+                                    .flatMap(tokenX ->
+                                                new no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory().apply(builder -> {
+                                                    return Mono.just(builder.headers(header -> builder.header(HttpHeaders.AUTHORIZATION, "Bearer " + token)));
+                                                }))
+                                    ));
+        };
     }
 
     @Override
