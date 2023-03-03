@@ -19,8 +19,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
@@ -56,12 +54,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 class UdiStubITest {
 
     protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
-    @Container
-    public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:14")
-            .withUsername("user")
-            .withPassword("pass")
-            .withDatabaseName("test")
-            .withExposedPorts(5432);
     @MockBean
     @SuppressWarnings("unused")
     private JwtDecoder jwtDecoder;

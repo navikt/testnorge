@@ -76,6 +76,7 @@ dependencies {
     implementation 'org.springframework.ws:spring-ws-security'
 
     implementation 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'

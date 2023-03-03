@@ -25,7 +25,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @Entity
 @Builder
 @Table(name = "aliaser")
-@JsonIgnoreProperties(value = {"person"})
+@JsonIgnoreProperties(value = { "person" })
 public class Alias {
 
     @GeneratedValue(strategy = GenerationType.AUTO)
