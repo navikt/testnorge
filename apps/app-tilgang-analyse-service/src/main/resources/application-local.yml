@@ -1,6 +1,3 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
-
 spring:
   flyway:
     url: jdbc:h2:mem:testdb
