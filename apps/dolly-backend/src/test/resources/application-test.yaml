@@ -92,13 +92,11 @@ spring:
       token: test
       enabled: false
   datasource:
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:14.4:///dollyDB # 14.4 er versjon p.t. i dev-gcp.
     username: user
     password: pass
   flyway:
     enabled: true
-    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:postgresql:14.4:///dollyDB # 14.4 er versjon p.t. i dev-gcp.
     user: user
     password: pass
