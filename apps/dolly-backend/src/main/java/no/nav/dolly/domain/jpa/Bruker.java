@@ -46,7 +46,7 @@ public class Bruker implements Serializable {
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
-    @Column(name = "BRUKER_ID")
+    @Column(name = "BRUKER_ID", unique = true)
     private String brukerId;
     @Column(name = "BRUKERNAVN")
     private String brukernavn;

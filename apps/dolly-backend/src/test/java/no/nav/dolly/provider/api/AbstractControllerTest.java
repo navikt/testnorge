@@ -20,6 +20,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
 import java.util.Optional;
+import java.util.UUID;
 
 import static no.nav.dolly.domain.jpa.Bruker.Brukertype.AZURE;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
@@ -57,7 +58,7 @@ public abstract class AbstractControllerTest {
         return brukerRepository.save(
                 Bruker
                         .builder()
-                        .brukerId("Bruker")
+                        .brukerId(UUID.randomUUID().toString())
                         .brukertype(AZURE)
                         .build()
         );
