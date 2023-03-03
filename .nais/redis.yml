@@ -9,7 +9,7 @@ metadata:
     nais.io/run-as-user: "999"
     nais.io/read-only-file-system: "false"
 spec:
-  image: redis:6.2.5
+  image: redis:7-alpine
   port: 6379
   replicas:
     min: 1
@@ -39,7 +39,7 @@ metadata:
   name: dolly-redis-session-redisexporter
   namespace: dolly
 spec:
-  image: oliver006/redis_exporter:v1.27.0
+  image: oliver006/redis_exporter:v1.47.0
   port: 9121
   prometheus:
     enabled: true
