@@ -4,7 +4,8 @@ import * as React from 'react'
 
 export const SammendragForm = ({ formikBag }) => {
 	return (
-		<>
+		<div style={{ width: '100%' }}>
+			<hr />
 			<h3>Sammendrag</h3>
 			<Fritekstfelt
 				label="Oppsummering"
@@ -14,6 +15,6 @@ export const SammendragForm = ({ formikBag }) => {
 					formikBag.setFieldValue('arbeidsplassenCV.sammendrag', sammendrag?.target?.value)
 				}
 			/>
-		</>
+		</div>
 	)
 }

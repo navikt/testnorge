@@ -11,58 +11,62 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 export const UtdanningForm = ({ formikBag }) => {
 	return (
-		<FormikDollyFieldArray
-			name="arbeidsplassenCV.utdanning"
-			header="Utdanninger"
-			// hjelpetekst={infotekst}
-			newEntry={initialUtdanning}
-			buttonText="Utdanning"
-			nested
-		>
-			{(utdanningPath, idx) => (
-				<div key={idx} className="flexbox--flex-wrap">
-					<FormikSelect
-						name={`${utdanningPath}.nuskode`}
-						label="Utdanningsnivå"
-						options={Options('nusKoder')}
-						size="large"
-						isClearable={false}
-					/>
-					<FormikTextInput
-						name={`${utdanningPath}.field`}
-						label="Grad og utdanningsretning"
-						size="medium"
-					/>
-					<FormikTextInput
-						name={`${utdanningPath}.institution`}
-						label="Skole/studiested"
-						size="medium"
-					/>
-					<Fritekstfelt
-						label="Beskrivelse"
-						placeholder="Beskrivelse av utdanning"
-						value={_get(formikBag.values, `${utdanningPath}.description`)}
-						onChange={(beskrivelse) =>
-							formikBag.setFieldValue(`${utdanningPath}.description`, beskrivelse?.target?.value)
-						}
-						size="small"
-					/>
-					<FormikDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
-					<FormikDatepicker
-						name={`${utdanningPath}.endDate`}
-						label="Sluttdato"
-						disabled={_get(formikBag.values, `${utdanningPath}.ongoing`)}
-						fastfield={false}
-					/>
-					<FormikCheckbox
-						name={`${utdanningPath}.ongoing`}
-						label="Pågående utdanning"
-						wrapperSize="inherit"
-						isDisabled={_get(formikBag.values, `${utdanningPath}.endDate`)}
-						checkboxMargin
-					/>
-				</div>
-			)}
-		</FormikDollyFieldArray>
+		<div style={{ width: '100%' }}>
+			<hr />
+			{/*<hr color="#595959" size="5px" />*/}
+			<FormikDollyFieldArray
+				name="arbeidsplassenCV.utdanning"
+				header="Utdanninger"
+				// hjelpetekst={infotekst}
+				newEntry={initialUtdanning}
+				buttonText="Utdanning"
+				nested
+			>
+				{(utdanningPath, idx) => (
+					<div key={idx} className="flexbox--flex-wrap">
+						<FormikSelect
+							name={`${utdanningPath}.nuskode`}
+							label="Utdanningsnivå"
+							options={Options('nusKoder')}
+							size="large"
+							isClearable={false}
+						/>
+						<FormikTextInput
+							name={`${utdanningPath}.field`}
+							label="Grad og utdanningsretning"
+							size="medium"
+						/>
+						<FormikTextInput
+							name={`${utdanningPath}.institution`}
+							label="Skole/studiested"
+							size="medium"
+						/>
+						<Fritekstfelt
+							label="Beskrivelse"
+							placeholder="Beskrivelse av utdanning"
+							value={_get(formikBag.values, `${utdanningPath}.description`)}
+							onChange={(beskrivelse) =>
+								formikBag.setFieldValue(`${utdanningPath}.description`, beskrivelse?.target?.value)
+							}
+							size="small"
+						/>
+						<FormikDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
+						<FormikDatepicker
+							name={`${utdanningPath}.endDate`}
+							label="Sluttdato"
+							disabled={_get(formikBag.values, `${utdanningPath}.ongoing`)}
+							fastfield={false}
+						/>
+						<FormikCheckbox
+							name={`${utdanningPath}.ongoing`}
+							label="Pågående utdanning"
+							wrapperSize="inherit"
+							isDisabled={_get(formikBag.values, `${utdanningPath}.endDate`)}
+							checkboxMargin
+						/>
+					</div>
+				)}
+			</FormikDollyFieldArray>
+		</div>
 	)
 }

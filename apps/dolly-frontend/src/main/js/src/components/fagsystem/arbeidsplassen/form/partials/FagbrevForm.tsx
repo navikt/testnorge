@@ -6,23 +6,26 @@ import { ArbeidKodeverk } from '@/config/kodeverk'
 
 export const FagbrevForm = ({ formikBag }) => {
 	return (
-		<FormikDollyFieldArray
-			name="arbeidsplassenCV.fagbrev"
-			header="Fagbrev"
-			// hjelpetekst={infotekst}
-			newEntry={initialFagbrev}
-			nested
-		>
-			{(fagbrevPath, idx) => (
-				// TODO: Må ha riktige data til lista. Sette title og type
-				<FormikSelect
-					name={`${fagbrevPath}.title`}
-					label="Fagdokumentasjon"
-					kodeverk={ArbeidKodeverk.Yrker}
-					size="xxlarge"
-					isClearable={false}
-				/>
-			)}
-		</FormikDollyFieldArray>
+		<div style={{ width: '100%' }}>
+			<hr />
+			<FormikDollyFieldArray
+				name="arbeidsplassenCV.fagbrev"
+				header="Fagbrev"
+				// hjelpetekst={infotekst}
+				newEntry={initialFagbrev}
+				nested
+			>
+				{(fagbrevPath, idx) => (
+					// TODO: Må ha riktige data til lista. Sette title og type
+					<FormikSelect
+						name={`${fagbrevPath}.title`}
+						label="Fagdokumentasjon"
+						kodeverk={ArbeidKodeverk.Yrker}
+						size="xxlarge"
+						isClearable={false}
+					/>
+				)}
+			</FormikDollyFieldArray>
+		</div>
 	)
 }

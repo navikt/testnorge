@@ -9,13 +9,14 @@ import {
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import _get from 'lodash/get'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
 // - Når vi får på plass en bedre struktur for bestillingsprosessen, kan
 //   mest sannsynlig visse props fjernes herfra (width?)
 
-const obj = (label, value, apiKodeverkId) => ({
+const obj = (label, value, apiKodeverkId = null) => ({
 	label,
 	value,
 	...(apiKodeverkId && { apiKodeverkId }),
@@ -1277,6 +1278,82 @@ const mapInntektStub = (bestillingData, data) => {
 	}
 }
 
+const mapArbeidsplassenCV = (bestillingData, data) => {
+	const CVKriterier = _get(bestillingData, 'arbeidsplassenCV')
+	console.log('CVKriterier: ', CVKriterier) //TODO - SLETT MEG
+	if (CVKriterier) {
+		const arbeidsplassenCV = {
+			header: 'Arbeidsplassen (CV)',
+			items: null,
+			itemRows: [],
+		}
+
+		CVKriterier.utdanning?.forEach((utdanning, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Utdanning ${i + 1}` },
+				obj('Utdanningsnivå', Formatters.showLabel('nusKoder', utdanning.nuskode)),
+				obj('Grad og utdanningsretning', utdanning.field),
+				obj('Skole/studiested', utdanning.institution),
+				obj('Beskrivelse', utdanning.description),
+				obj('Startdato', Formatters.formatDate(utdanning.startDate)),
+				obj('Sluttdato', Formatters.formatDate(utdanning.endDate)),
+				obj('Pågående utdanning', Formatters.oversettBoolean(utdanning.ongoing)),
+			])
+		})
+
+		CVKriterier.fagbrev?.forEach((fagbrev, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Fagbrev ${i + 1}` },
+				obj('Fagdokumentasjon', fagbrev.title),
+			])
+		})
+
+		CVKriterier.arbeidserfaring?.forEach((arbeidsforhold, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Arbeidserfaring ${i + 1}` },
+				obj('Stilling/yrke', arbeidsforhold.jobTitle),
+				obj('Alternativ tittel', arbeidsforhold.alternativeJobTitle),
+				obj('Bedrift', arbeidsforhold.employer),
+				obj('Sted', arbeidsforhold.location),
+				obj('Arbeidsoppgaver', arbeidsforhold.description),
+				obj('Ansatt fra', Formatters.formatDate(arbeidsforhold.fromDate)),
+				obj('Ansatt til', Formatters.formatDate(arbeidsforhold.toDate)),
+				obj('Nåværende jobb', Formatters.oversettBoolean(arbeidsforhold.ongoing)),
+			])
+		})
+
+		CVKriterier.annenErfaring?.forEach((annenErfaring, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Annen erfaring ${i + 1}` },
+				obj('Rolle', annenErfaring.role),
+				obj('Beskrivelse', annenErfaring.description),
+				obj('Startdato', Formatters.formatDate(annenErfaring.fromDate)),
+				obj('Sluttdato', Formatters.formatDate(annenErfaring.toDate)),
+				obj('Pågående', Formatters.oversettBoolean(annenErfaring.ongoing)),
+			])
+		})
+
+		CVKriterier.kompetanser?.forEach((kompetanse, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Kompetanser ${i + 1}` },
+				obj('Kompetanse', kompetanse.title),
+			])
+		})
+
+		CVKriterier.offentligeGodkjenninger?.forEach((offentligGodkjenning, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Offentlig godkjenning ${i + 1}` },
+				obj('Offentlig godkjenning', offentligGodkjenning.title),
+				obj('Utsteder', offentligGodkjenning.issuer),
+				obj('Fullført', Formatters.formatDate(offentligGodkjenning.fromDate)),
+				obj('Utløper', Formatters.formatDate(offentligGodkjenning.toDate)),
+			])
+		})
+
+		data.push(arbeidsplassenCV)
+	}
+}
+
 const mapSykemelding = (bestillingData, data) => {
 	const sykemeldingKriterier = _.get(bestillingData, 'sykemelding')
 
@@ -2005,6 +2082,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapAareg(bestillingData, data)
 	mapSigrunStub(bestillingData, data)
 	mapInntektStub(bestillingData, data)
+	mapArbeidsplassenCV(bestillingData, data)
 	mapSykemelding(bestillingData, data)
 	mapBrregstub(bestillingData, data)
 	mapKrr(bestillingData, data)
