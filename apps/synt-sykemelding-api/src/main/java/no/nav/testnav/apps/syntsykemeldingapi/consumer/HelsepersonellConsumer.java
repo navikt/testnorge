@@ -8,7 +8,7 @@ import no.nav.testnav.apps.syntsykemeldingapi.domain.HelsepersonellListe;
 import no.nav.testnav.apps.syntsykemeldingapi.exception.HelsepersonellNotFoundException;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 
@@ -23,15 +23,13 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(
             TokenExchange tokenExchange,
-            HelsepersonellServiceProperties serviceProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            HelsepersonellServiceProperties serviceProperties) {
 
         this.tokenExchange = tokenExchange;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

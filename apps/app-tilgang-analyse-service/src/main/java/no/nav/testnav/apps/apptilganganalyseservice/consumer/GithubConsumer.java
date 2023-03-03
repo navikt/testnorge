@@ -7,7 +7,6 @@ import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -18,8 +17,7 @@ public class GithubConsumer {
     private static final int PAGE_SIZE = 100;
     private final WebClient webClient;
 
-    public GithubConsumer(@Value("${consumers.github.url}") String url,
-                          ExchangeFilterFunction metricsWebClientFilterFunction) {
+    public GithubConsumer(@Value("${consumers.github.url}") String url) {
 
         this.webClient = WebClient
                 .builder()
@@ -29,7 +27,6 @@ public class GithubConsumer {
                                 .defaultCodecs()
                                 .maxInMemorySize(16 * 1024 * 1024))
                         .build())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

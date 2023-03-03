@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class RsInstdata {
 
-    @Schema(required = true,
+    @Schema(
             description = "Hvilken type institusjon oppholdet er registrert på. "
                     + "Kan være kodeverdiene AS (Alders- og sykehjem), FO (Fengsel) eller HS (Helseinsitusjon)")
     private InstdataInstitusjonstype institusjonstype;
 
-    @Schema(required = true,
+    @Schema(
             type = "LocalDateTime",
             description = "Dato for begynnelsen av oppholdet")
     private LocalDateTime startdato;

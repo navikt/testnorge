@@ -1,5 +1,6 @@
 package no.nav.pdl.forvalter.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +24,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import org.springframework.web.util.UrlPathHelper;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -70,6 +70,17 @@ public class ExceptionAdvice implements ResponseBodyAdvice<Object> {
         return getExceptionInformation(exception);
     }
 
+    private ExceptionInformation getExceptionInformation(HttpClientErrorException exception) {
+
+        return ExceptionInformation.builder()
+                .error(exception.getStatusText())
+                .status(exception.getStatusCode().value())
+                .message(exception.getStatusText())
+                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
@@ -81,16 +92,5 @@ public class ExceptionAdvice implements ResponseBodyAdvice<Object> {
         private String path;
         private Integer status;
         private LocalDateTime timestamp;
-    }
-
-    private ExceptionInformation getExceptionInformation(HttpClientErrorException exception) {
-
-        return ExceptionInformation.builder()
-                .error(exception.getStatusCode().getReasonPhrase())
-                .status(exception.getStatusCode().value())
-                .message(exception.getStatusText())
-                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
-                .timestamp(LocalDateTime.now())
-                .build();
     }
 }

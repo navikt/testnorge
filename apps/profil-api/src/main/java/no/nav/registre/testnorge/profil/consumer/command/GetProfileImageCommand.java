@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnorge.profil.util.WebClientFilter;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -27,7 +27,7 @@ public class GetProfileImageCommand implements Callable<Mono<byte[]>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
                 .onStatus(
-                        HttpStatus::isError,
+                        HttpStatusCode::isError,
                         clientResponse -> clientResponse
                                 .bodyToMono(String.class)
                                 .map(IllegalStateException::new)

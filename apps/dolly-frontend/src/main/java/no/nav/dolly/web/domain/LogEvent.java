@@ -1,12 +1,11 @@
 package no.nav.dolly.web.domain;
 
 import lombok.Value;
+import no.nav.dolly.web.provider.web.dto.LogEventDTO;
+import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import no.nav.dolly.web.provider.web.dto.LogEventDTO;
-import no.nav.testnav.libs.dto.tilbakemeldingapi.v1.TilbakemeldingDTO;
 
 @Value
 public class LogEvent {
@@ -62,14 +61,10 @@ public class LogEvent {
             return null;
         }
 
-        switch (rating) {
-            case NEGATIVE:
-                return no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating.NEGATIVE;
-            case POSITIVE:
-                return no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating.POSITIVE;
-            default:
-                return null;
-        }
+        return switch (rating) {
+            case NEGATIVE -> no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating.NEGATIVE;
+            case POSITIVE -> no.nav.testnav.libs.dto.tilbakemeldingapi.v1.Rating.POSITIVE;
+        };
     }
 
 }

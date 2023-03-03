@@ -7,7 +7,7 @@ import no.nav.registre.testnorge.helsepersonellservice.domain.Samhandler;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -24,8 +24,7 @@ public class SamhandlerregisteretConsumer {
 
     public SamhandlerregisteretConsumer(
             TokenExchange tokenExchange,
-            SamhandlerregisteretServerProperties serverProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            SamhandlerregisteretServerProperties serverProperties) {
 
         this.serverProperties = serverProperties;
         this.tokenExchange = tokenExchange;
@@ -33,7 +32,6 @@ public class SamhandlerregisteretConsumer {
                 .builder()
                 .exchangeStrategies(biggerMemorySizeExchangeStrategy())
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

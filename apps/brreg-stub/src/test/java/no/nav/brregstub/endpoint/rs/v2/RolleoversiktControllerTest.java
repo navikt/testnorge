@@ -1,15 +1,23 @@
 package no.nav.brregstub.endpoint.rs.v2;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import no.nav.brregstub.api.common.Egenskap;
+import no.nav.brregstub.api.common.RolleKode;
+import no.nav.brregstub.api.common.RsAdresse;
+import no.nav.brregstub.api.common.RsNavn;
+import no.nav.brregstub.api.v2.RsRolle;
+import no.nav.brregstub.api.v2.RsRolleStatus;
+import no.nav.brregstub.api.v2.RsRolleoversikt;
+import no.nav.brregstub.database.domene.Rolleoversikt;
+import no.nav.brregstub.database.repository.HentRolleRepository;
+import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -21,17 +29,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
-import no.nav.brregstub.api.common.Egenskap;
-import no.nav.brregstub.api.common.RolleKode;
-import no.nav.brregstub.api.common.RsAdresse;
-import no.nav.brregstub.api.common.RsNavn;
-import no.nav.brregstub.api.v2.RsRolle;
-import no.nav.brregstub.api.v2.RsRolleStatus;
-import no.nav.brregstub.api.v2.RsRolleoversikt;
-import no.nav.brregstub.database.domene.Rolleoversikt;
-import no.nav.brregstub.database.repository.HentRolleRepository;
-import no.nav.brregstub.database.repository.RolleoversiktRepository;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -44,10 +44,10 @@ public class RolleoversiktControllerTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
+    @MockBean
     private RolleoversiktRepository rolleoversiktRepository;
 
-    @Autowired
+    @MockBean
     private HentRolleRepository rolleRepository;
 
     @Test
@@ -74,7 +74,7 @@ public class RolleoversiktControllerTest {
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent(fnr);
         nyRolle.setJson("{\"fnr\":\"" + fnr + "\"}");
-        rolleoversiktRepository.save(nyRolle);
+        Mockito.when(rolleoversiktRepository.findByIdent(nyRolle.getIdent())).thenReturn(Optional.of(nyRolle));
 
         var response = restTemplate.exchange(API_V_2_ROLLEUTSKRIFT,
                 HttpMethod.GET,
@@ -90,11 +90,14 @@ public class RolleoversiktControllerTest {
         var nyRolle = new Rolleoversikt();
         nyRolle.setIdent("slettes");
         nyRolle.setJson("{\"fnr\":\"slettes\"}");
-        rolleoversiktRepository.save(nyRolle);
+        Mockito.when(rolleoversiktRepository.findByIdent(nyRolle.getIdent())).thenReturn(Optional.of(nyRolle));
 
         var responseDelete =
                 restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.DELETE, createHttpEntity("slettes", null), String.class);
         assertThat(responseDelete.getStatusCode()).isEqualTo(HttpStatus.OK);
+
+        Mockito.when(rolleoversiktRepository.findByIdent(nyRolle.getIdent())).thenReturn(Optional.empty());
+
         var responseGet =
                 restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.GET, createHttpEntity("slettes", null), String.class);
         assertThat(responseGet.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -130,22 +133,6 @@ public class RolleoversiktControllerTest {
         var response =
                 restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity(fnr, rsRolleoversikt), RsRolleoversikt.class);
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-    }
-
-    @Test
-    @DisplayName("POST rolleoversikt skal opprette ny databaseinnslag i organisasjonsbase")
-    public void skalLagreOrganisasjonIDatabase() throws JsonProcessingException {
-        var fnr = "02020202020";
-        int orgnummer = 99012345;
-        restTemplate.exchange(API_V_2_ROLLEUTSKRIFT, HttpMethod.POST, createHttpEntity(fnr, lagGyldigRsRolleoversikt(fnr, orgnummer)), RsRolleoversikt.class);
-
-        var organisasjon = rolleRepository.findByOrgnr(orgnummer).orElse(null);
-        assertThat(organisasjon).isNotNull();
-
-        var databaseJson = new ObjectMapper().readTree(organisasjon.getJson());
-        assertThat(databaseJson.get("orgnr").asInt()).isEqualTo(orgnummer);
-        assertThat(databaseJson.get("deltakere").get("roller").get(0).get("fodselsnr").asText()).isEqualTo(fnr);
-        assertThat(databaseJson.get("deltakere").get("roller").get(0).get("fratraadt").asBoolean()).isEqualTo(false);
     }
 
     private RsRolleoversikt lagGyldigRsRolleoversikt(

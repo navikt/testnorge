@@ -16,7 +16,6 @@ import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.c
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.command.GetWellKnownCommand;
 import no.nav.testnav.apps.organisasjontilgangservice.consumer.maskinporten.v1.dto.AccessToken;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -34,11 +33,9 @@ public class MaskinportenConsumer {
     private final MaskinportenConfig maskinportenConfig;
     private final Mono<AccessToken> accessToken;
 
-    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig,
-                                ExchangeFilterFunction metricsWebClientFilterFunction) {
+    public MaskinportenConsumer(MaskinportenConfig maskinportenConfig) {
 
         this.webClient = WebClient.builder()
-                .filter(metricsWebClientFilterFunction)
                 .build();
 
         this.maskinportenConfig = maskinportenConfig;

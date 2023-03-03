@@ -17,6 +17,5 @@ public class OrdreRequest {
 
     private List<List<Ordre>> sletting;
     private List<List<Ordre>> oppretting;
-    private List<List<Ordre>> opplysninger1;
-    private List<List<Ordre>> opplysninger2;
+    private List<List<Ordre>> opplysninger;
 }

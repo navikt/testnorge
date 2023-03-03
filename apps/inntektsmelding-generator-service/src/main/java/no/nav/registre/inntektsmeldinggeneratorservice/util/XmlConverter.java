@@ -1,17 +1,15 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.util;
 
-import java.io.StringReader;
-import java.io.StringWriter;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.inntektsmeldinggeneratorservice.exception.JaxbToXmlException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-
-import lombok.extern.slf4j.Slf4j;
-
-import no.nav.registre.inntektsmeldinggeneratorservice.exception.JaxbToXmlException;
+import java.io.StringReader;
+import java.io.StringWriter;
 
 @Slf4j
 public class XmlConverter {

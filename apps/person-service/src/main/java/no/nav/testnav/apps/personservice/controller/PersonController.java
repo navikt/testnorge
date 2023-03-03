@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import reactor.core.publisher.Mono;
 
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Size;
 
 import no.nav.testnav.apps.personservice.domain.Person;
 

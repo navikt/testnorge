@@ -10,7 +10,7 @@ import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -25,8 +25,7 @@ public class SafConsumer {
 
     public SafConsumer(
             TestnavSafProxyServiceProperties properties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
@@ -35,7 +34,6 @@ public class SafConsumer {
                         ExchangeStrategies.builder()
                                 .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024 * 50)).build())
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

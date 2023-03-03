@@ -59,8 +59,10 @@ management:
     heapdump.enabled: true
     health:
       show-details: always
-  metrics.export:
-    prometheus.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   servlet:
     encoding:

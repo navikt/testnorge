@@ -7,7 +7,6 @@ import no.nav.registre.orgnrservice.consumer.command.GetOrganisasjonCommand;
 import no.nav.registre.orgnrservice.consumer.command.MiljoerCommand;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,19 +31,16 @@ public class OrganisasjonConsumer {
     public OrganisasjonConsumer(
             MiljoerServiceProperties miljoerServiceProperties,
             OrganisasjonServiceProperties organisasjonServiceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.miljoerServiceProperties = miljoerServiceProperties;
         this.organisasjonServiceProperties = organisasjonServiceProperties;
         this.tokenExchange = tokenExchange;
         this.organisasjonWebClient = WebClient.builder()
                 .baseUrl(organisasjonServiceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.miljoerWebClient = WebClient.builder()
                 .baseUrl(miljoerServiceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

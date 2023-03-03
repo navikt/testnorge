@@ -7,7 +7,7 @@ import no.nav.testnav.libs.dto.geografiskekodeverkservice.v1.GeografiskeKodeverk
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -30,15 +30,13 @@ public class GeografiskeKodeverkConsumer {
     private Flux<GeografiskeKodeverkDTO> landkodeverkFlux;
 
     public GeografiskeKodeverkConsumer(TokenExchange tokenExchange,
-                                       GeografiskeKodeverkServiceProperties properties,
-                                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                       GeografiskeKodeverkServiceProperties properties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = properties;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(properties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

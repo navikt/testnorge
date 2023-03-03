@@ -1,13 +1,19 @@
 package no.nav.brregstub.endpoint.rs.v1;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
+import no.nav.brregstub.api.common.RsAdresse;
+import no.nav.brregstub.api.common.RsNavn;
+import no.nav.brregstub.api.v1.RolleTo;
+import no.nav.brregstub.api.v1.RolleoversiktTo;
+import no.nav.brregstub.database.domene.Rolleoversikt;
+import no.nav.brregstub.database.repository.RolleoversiktRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -18,13 +24,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.util.Map;
+import java.util.Optional;
 
-import no.nav.brregstub.api.common.RsAdresse;
-import no.nav.brregstub.api.common.RsNavn;
-import no.nav.brregstub.api.v1.RolleTo;
-import no.nav.brregstub.api.v1.RolleoversiktTo;
-import no.nav.brregstub.database.domene.Rolleoversikt;
-import no.nav.brregstub.database.repository.RolleoversiktRepository;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -33,10 +35,11 @@ import no.nav.brregstub.database.repository.RolleoversiktRepository;
 public class HentRolleoversiktControllerTest {
 
     public static final String API_V_1_ROLLEUTSKRIFT = "/api/v1/rolleoversikt";
+    private static final String IDENT = "teste";
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
+    @MockBean
     private RolleoversiktRepository repository;
 
     @Test
@@ -61,9 +64,9 @@ public class HentRolleoversiktControllerTest {
     @DisplayName("GET rolleoversikt returnerer 200 hvis ikke eksisterer")
     public void skalHenteRolleutskriftFraDatabase() {
         var nyRolle = new Rolleoversikt();
-        nyRolle.setIdent("ident");
+        nyRolle.setIdent(IDENT);
         nyRolle.setJson("{\"fnr\":\"ident\"}");
-        repository.save(nyRolle);
+        Mockito.when(repository.findByIdent("ident")).thenReturn(Optional.of(nyRolle));
 
         var response = restTemplate.exchange(API_V_1_ROLLEUTSKRIFT,
                 HttpMethod.GET,

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.5.0.2730"
+    id "org.sonarqube" version "4.0.0.2929"
+    //Appen har mismatch med nye ElasticSearch versjoner i spring, tilsynelatende mye knot for å oppgradere spring boot versjon
     id 'org.springframework.boot' version "2.5.7"
     id 'io.spring.dependency-management' version "1.1.0"
 }
@@ -22,6 +23,7 @@ bootJar {
 }
 
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2020.0.4'
     }
@@ -80,7 +82,7 @@ dependencies {
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.springframework.kafka:spring-kafka'
     implementation 'org.apache.kafka:kafka-clients:7.0.0-ce'
     implementation 'io.confluent:kafka-avro-serializer:7.0.0'

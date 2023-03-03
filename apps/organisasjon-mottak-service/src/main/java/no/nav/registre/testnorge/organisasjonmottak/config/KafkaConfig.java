@@ -4,6 +4,7 @@ import io.confluent.kafka.serializers.AbstractKafkaSchemaSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroDeserializerConfig;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.registre.testnorge.organisasjonmottak.service.ShutdownService;
 import org.apache.kafka.clients.CommonClientConfigs;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -16,16 +17,12 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
-import org.springframework.kafka.listener.BatchLoggingErrorHandler;
-import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
+import org.springframework.kafka.listener.CommonLoggingErrorHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.util.backoff.FixedBackOff;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
-
-import no.nav.registre.testnorge.organisasjonmottak.service.ShutdownService;
 
 @Slf4j
 @EnableKafka
@@ -89,7 +86,7 @@ public class KafkaConfig {
         });
         factory.setBatchListener(true);
         factory.setConsumerFactory(consumerFactory);
-        factory.setBatchErrorHandler(new BatchLoggingErrorHandler());
+        factory.setCommonErrorHandler(new CommonLoggingErrorHandler());
         return factory;
     }
 }

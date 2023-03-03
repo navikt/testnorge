@@ -7,7 +7,6 @@ import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -22,14 +21,13 @@ public class OrganisasjonServiceConsumer {
     private final ServerProperties serviceProperties;
 
     public OrganisasjonServiceConsumer(TokenExchange tokenService,
-                                       OrganisasjonServiceProperties serviceProperties,
-                                       ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                       OrganisasjonServiceProperties serviceProperties
+    ) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

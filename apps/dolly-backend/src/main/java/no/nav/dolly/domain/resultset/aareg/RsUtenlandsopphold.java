@@ -14,7 +14,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class RsUtenlandsopphold {
 
-    @Schema(required = true)
+    @Schema
     private RsPeriodeAareg periode;
 
     @Schema(description = "Gyldige verdier finnes i kodeverk 'LandkoderISO2'",

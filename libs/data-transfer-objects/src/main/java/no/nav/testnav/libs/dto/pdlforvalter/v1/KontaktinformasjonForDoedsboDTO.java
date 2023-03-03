@@ -20,11 +20,11 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 @AllArgsConstructor
 public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
 
-    @Schema(required = true,
+    @Schema(
             description = "Dødsboets skifteform")
     private PdlSkifteform skifteform;
 
-    @Schema(required = true,
+    @Schema(
             type = "LocalDateTime",
             description = "Dato for utstedelse")
     private LocalDateTime attestutstedelsesdato;
@@ -34,6 +34,11 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
     private OrganisasjonDTO advokatSomKontakt;
     private KontaktpersonDTO personSomKontakt;
     private OrganisasjonDTO organisasjonSomKontakt;
+
+    public int countKontakter() {
+
+        return count(getAdvokatSomKontakt()) + count(getPersonSomKontakt()) + count(getOrganisasjonSomKontakt());
+    }
 
     public enum PdlSkifteform {
 
@@ -90,7 +95,7 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
 
         private PersonNavnDTO kontaktperson;
         private String organisasjonsnavn;
-        @Schema(required = true)
+        @Schema
         private String organisasjonsnummer;
     }
 
@@ -104,11 +109,5 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private String fornavn;
         private String mellomnavn;
         private Boolean hasMellomnavn;
-    }
-
-
-    public int countKontakter() {
-
-        return count(getAdvokatSomKontakt()) + count(getPersonSomKontakt()) + count(getOrganisasjonSomKontakt());
     }
 }

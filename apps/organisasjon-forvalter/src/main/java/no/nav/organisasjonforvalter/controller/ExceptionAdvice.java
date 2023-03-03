@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UrlPathHelper;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 
 @ControllerAdvice
@@ -28,7 +28,7 @@ public class ExceptionAdvice {
         @ResponseStatus(value = HttpStatus.GONE)
         ExceptionInformation clientErrorException(HttpClientErrorException exception) {
             return ExceptionInformation.builder()
-                    .error(exception.getStatusCode().getReasonPhrase())
+                    .error(exception.getStatusText())
                     .status(exception.getStatusCode().value())
                     .message(exception.getMessage())
                     .path(urlPathHelper.getPathWithinApplication(httpServletRequest))

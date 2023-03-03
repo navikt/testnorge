@@ -1,17 +1,16 @@
 package no.nav.testnav.apps.tpsmessagingservice.factory;
 
 import com.ibm.mq.constants.CMQC;
-import com.ibm.mq.jms.MQQueueConnectionFactory;
-import com.ibm.msg.client.jms.JmsConstants;
-import com.ibm.msg.client.wmq.common.CommonConstants;
+import com.ibm.mq.jakarta.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.jakarta.jms.JmsConstants;
+import com.ibm.msg.client.jakarta.wmq.common.CommonConstants;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.config.CacheConfig;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
 
 @Slf4j
 @Component

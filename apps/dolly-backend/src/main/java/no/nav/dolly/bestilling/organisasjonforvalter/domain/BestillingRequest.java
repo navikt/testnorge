@@ -40,7 +40,7 @@ public class BestillingRequest {
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     public static class SyntetiskOrganisasjon {
 
-        @Schema(required = true, example = "BEDR", description = "I hht kodeverk EnhetstyperJuridiskEnhet eller EnhetstyperVirksomhet")
+        @Schema( example = "BEDR", description = "I hht kodeverk EnhetstyperJuridiskEnhet eller EnhetstyperVirksomhet")
         private String enhetstype;
         @Schema(example = "28.930", description = "I hht kodeverk Næringskoder")
         private String naeringskode;

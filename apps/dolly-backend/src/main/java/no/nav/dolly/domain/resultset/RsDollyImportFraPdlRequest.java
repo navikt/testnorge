@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class RsDollyImportFraPdlRequest extends RsDollyBestilling {
 
-    @Schema(required = true,
+    @Schema(
             description = "Liste av identer som skal importeres")
     private List<String> identer;
 }

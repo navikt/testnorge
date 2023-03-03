@@ -20,10 +20,10 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Arenadata {
 
-    @Schema(required = true)
+    @Schema
     private ArenaBrukertype arenaBrukertype;
 
-    @Schema(required = true)
+    @Schema
     private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
 
     @Schema(description = "Automatisk innsending av meldekort")

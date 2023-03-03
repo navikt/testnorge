@@ -19,14 +19,29 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static no.nav.udistub.converter.DefaultTestData.*;
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.matching;
+import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlMatching;
+import static no.nav.udistub.converter.DefaultTestData.TEST_DATE;
+import static no.nav.udistub.converter.DefaultTestData.TEST_FLYKTNINGSTATUS;
+import static no.nav.udistub.converter.DefaultTestData.TEST_INNREISEFORBUD;
+import static no.nav.udistub.converter.DefaultTestData.TEST_NAVN;
+import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDSTILLATELSE;
+import static no.nav.udistub.converter.DefaultTestData.TEST_OPPHOLDS_GRUNNLAG_KATEGORI;
+import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_ALIAS_FNR;
+import static no.nav.udistub.converter.DefaultTestData.TEST_PERSON_FNR;
+import static no.nav.udistub.converter.DefaultTestData.TEST_ovrigIkkeOppholdsKategori;
+import static no.nav.udistub.converter.DefaultTestData.createPersonTo;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
@@ -40,27 +55,28 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @Testcontainers
 class UdiStubITest {
 
+    protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
+    @Container
+    public static PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:14")
+            .withUsername("user")
+            .withPassword("pass")
+            .withDatabaseName("test")
+            .withExposedPorts(5432);
     @MockBean
     @SuppressWarnings("unused")
     private JwtDecoder jwtDecoder;
-
     @Autowired
     private PersonRepository personRepository;
-
     @Autowired
     private MapperFacade mapperFacade;
-
     @Autowired
     private MockMvc mockMvc;
-
-    @Autowired
+    @MockBean
     private Flyway flyway;
 
-    protected static final UdiPerson TESTPERSON_UDI = createPersonTo();
-
     @BeforeEach
-    public void setUp()
-            throws IOException {
+    public void setUp() throws IOException {
+
 
         flyway.migrate();
         stubFor(
@@ -75,6 +91,14 @@ class UdiStubITest {
 
     }
 
+    private static String readFile(String filename)
+            throws IOException {
+        return Files.readString(
+                new ClassPathResource(filename).getFile().toPath(),
+                StandardCharsets.UTF_8
+        );
+    }
+
     @BeforeEach
     void mapToTestPerson() {
 
@@ -87,9 +111,7 @@ class UdiStubITest {
 
     @Test
     @Transactional
-    void shouldOpprettPersonAndStoreInDb()
-            throws Exception {
-
+    void shouldOpprettPersonAndStoreInDb() throws Exception {
         mockMvc
                 .perform(
                         post("/api/v1/person")
@@ -146,14 +168,6 @@ class UdiStubITest {
                                 )
                 );
 
-    }
-
-    private static String readFile(String filename)
-            throws IOException {
-        return Files.readString(
-                new ClassPathResource(filename).getFile().toPath(),
-                StandardCharsets.UTF_8
-        );
     }
 
 }

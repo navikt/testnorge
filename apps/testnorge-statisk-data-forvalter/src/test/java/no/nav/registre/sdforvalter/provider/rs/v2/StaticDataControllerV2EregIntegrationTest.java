@@ -1,14 +1,18 @@
 package no.nav.registre.sdforvalter.provider.rs.v2;
 
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import no.nav.registre.sdforvalter.database.model.EregModel;
+import no.nav.registre.sdforvalter.database.model.GruppeModel;
+import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
+import no.nav.registre.sdforvalter.database.repository.EregRepository;
+import no.nav.registre.sdforvalter.database.repository.GruppeRepository;
+import no.nav.registre.sdforvalter.database.repository.OpprinnelseRepository;
+import no.nav.registre.sdforvalter.domain.Ereg;
+import no.nav.registre.sdforvalter.domain.EregListe;
+import no.nav.registre.sdforvalter.domain.Gruppe;
+import no.nav.registre.sdforvalter.domain.Opprinnelse;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,16 +28,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import no.nav.registre.sdforvalter.database.model.EregModel;
-import no.nav.registre.sdforvalter.database.model.GruppeModel;
-import no.nav.registre.sdforvalter.database.model.OpprinnelseModel;
-import no.nav.registre.sdforvalter.database.repository.EregRepository;
-import no.nav.registre.sdforvalter.database.repository.GruppeRepository;
-import no.nav.registre.sdforvalter.database.repository.OpprinnelseRepository;
-import no.nav.registre.sdforvalter.domain.Ereg;
-import no.nav.registre.sdforvalter.domain.EregListe;
-import no.nav.registre.sdforvalter.domain.Gruppe;
-import no.nav.registre.sdforvalter.domain.Opprinnelse;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,7 +41,7 @@ import no.nav.registre.sdforvalter.domain.Opprinnelse;
         locations = "classpath:application-test.yml"
 )
 class StaticDataControllerV2EregIntegrationTest {
-    private static final String EREG_API = "/api/v1/faste-data/ereg/";
+    private static final String EREG_API = "/api/v1/faste-data/ereg";
     @Autowired
     private MockMvc mvc;
 

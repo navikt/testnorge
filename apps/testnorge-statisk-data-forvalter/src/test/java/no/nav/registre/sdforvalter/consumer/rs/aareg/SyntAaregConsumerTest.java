@@ -11,11 +11,9 @@ import okhttp3.mockwebserver.RecordedRequest;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -38,11 +36,7 @@ public class SyntAaregConsumerTest {
 
     private final String fnr1 = "01010101010";
     private final String fnr2 = "02020202020";
-
     private SyntAaregConsumer syntAaregConsumer;
-
-    private final ExchangeFilterFunction metricsWebClientFilterFunction = Mockito.mock(ExchangeFilterFunction.class);
-
     private MockWebServer mockWebServer;
 
     @Before
@@ -52,8 +46,7 @@ public class SyntAaregConsumerTest {
         Dispatcher dispatcher = getDispatcher();
         mockWebServer.setDispatcher(dispatcher);
         syntAaregConsumer = new SyntAaregConsumer(2,
-                mockWebServer.url("/synt-aareg").toString(),
-                metricsWebClientFilterFunction);
+                mockWebServer.url("/synt-aareg").toString());
     }
 
     @Test
@@ -104,6 +97,11 @@ public class SyntAaregConsumerTest {
         assertThat(listAppender.list.get(0).toString(), containsString("Feil under syntetisering"));
     }
 
+    @After
+    public void tearDown() throws IOException {
+        mockWebServer.shutdown();
+    }
+
     private Dispatcher getDispatcher() {
         return new Dispatcher() {
             @Override
@@ -127,10 +125,5 @@ public class SyntAaregConsumerTest {
                 return new MockResponse().setResponseCode(404);
             }
         };
-    }
-
-    @After
-    public void tearDown() throws IOException {
-        mockWebServer.shutdown();
     }
 }
