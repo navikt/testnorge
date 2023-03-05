@@ -111,19 +111,19 @@ public class DollyBestillingService {
 
     public GjenopprettSteg fase2Klienter(Boolean unconditionalExecute, RsDollyBestilling bestilling) {
 
+        return register -> fase2Klienter().apply(register) &&
+                    (unconditionalExecute || hasPensjonAaregInntektstub(bestilling));
+    }
+
+    public GjenopprettSteg fase2Klienter() {
+
         var klienter = List.of(
                 PensjonforvalterClient.class,
                 AaregClient.class,
                 InntektstubClient.class);
 
         return register -> klienter.stream()
-                .anyMatch(client -> client.isInstance(register)) &&
-                (unconditionalExecute || hasPensjonAaregInntektstub(bestilling));
-    }
-
-    public GjenopprettSteg fase2Klienter() {
-
-        return fase2Klienter(false, null);
+                .anyMatch(client -> client.isInstance(register));
     }
 
     protected boolean hasPensjonAaregInntektstub(RsDollyBestilling bestilling) {
@@ -136,7 +136,7 @@ public class DollyBestillingService {
     public GjenopprettSteg fase3Klienter() {
 
         return register -> !fase1Klienter().apply(register) &&
-                !fase2Klienter().apply(register);
+                    !fase2Klienter().apply(register);
     }
 
     protected Flux<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,
