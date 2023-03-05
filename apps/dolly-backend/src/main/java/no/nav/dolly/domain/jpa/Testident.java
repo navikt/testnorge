@@ -12,6 +12,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,6 +47,10 @@ public class Testident implements Serializable {
     })
     @Column(name = "ID")
     private Long id;
+
+    @Version
+    @Column(name = "VERSJON")
+    private Long versjon;
 
     @Column (name = "IDENT")
     private String ident;

@@ -4,9 +4,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
@@ -25,20 +24,24 @@ import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class RsDollyBestilling {
+
+    private static final Set<String> EXCLUDE_METHODS = Set.of("getClass", "getMalBestillingNavn", "getEnvironments", "getPdldata");
 
     @Schema(description = "Sett av miljøer bestillingen skal deployes til")
     private Set<String> environments;
@@ -89,5 +92,20 @@ public class RsDollyBestilling {
             instdata = new ArrayList<>();
         }
         return instdata;
+    }
+
+    public static boolean isNonEmpty(RsDollyBestilling bestilling) {
+
+        return Arrays.stream(RsDollyBestilling.class.getMethods())
+                .filter(method -> "get".equals(method.getName().substring(0, 3)))
+                .filter(method -> !EXCLUDE_METHODS.contains(method.getName()))
+                .anyMatch(method -> {
+                    try {
+                        var object = method.invoke(bestilling);
+                        return nonNull(object) && (!(object instanceof List) || !((List<?>) object).isEmpty());
+                    } catch (IllegalAccessException | InvocationTargetException e) {
+                        return true;
+                    }
+                });
     }
 }

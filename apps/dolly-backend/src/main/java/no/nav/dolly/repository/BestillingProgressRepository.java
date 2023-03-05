@@ -25,4 +25,7 @@ public interface BestillingProgressRepository extends CrudRepository<BestillingP
     @Modifying
     @Query(value = "update BestillingProgress bp set bp.ident = :newIdent where bp.ident = :oldIdent")
     void swapIdent(@Param(value = "oldIdent") String oldIdent, @Param(value = "newIdent") String newIdent);
+
+    @Query(value = "select * from bestilling_progress where id = :id for update", nativeQuery = true)
+    Optional<BestillingProgress> findByIdAndLock(@Param("id") Long id);
 }

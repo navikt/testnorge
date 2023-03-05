@@ -5,6 +5,7 @@ import io.netty.resolver.dns.DnsNameResolverException;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class WebClientFilter {
         return (throwable instanceof WebClientResponseException wce &&
                 wce.getStatusCode().is5xxServerError()) &&
                 !wce.getStatusCode().equals(HttpStatus.INTERNAL_SERVER_ERROR) ||
+                throwable instanceof WebClientRequestException ||
                 throwable instanceof DnsNameResolverException ||
                 throwable instanceof IOException ||
                 throwable instanceof ChannelException;

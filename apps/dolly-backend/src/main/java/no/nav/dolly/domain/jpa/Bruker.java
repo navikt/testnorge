@@ -12,6 +12,7 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +47,11 @@ public class Bruker implements Serializable {
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
+
+    @Version
+    @Column(name = "VERSJON")
+    private Long versjon;
+
     @Column(name = "BRUKER_ID", unique = true)
     private String brukerId;
     @Column(name = "BRUKERNAVN")

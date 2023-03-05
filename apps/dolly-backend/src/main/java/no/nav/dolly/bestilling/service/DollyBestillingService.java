@@ -16,6 +16,7 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
@@ -115,8 +116,7 @@ public class DollyBestillingService {
                 AaregClient.class,
                 InntektstubClient.class);
 
-        return register -> !fase1Klienter().apply(register) &&
-                klienter.stream()
+        return register -> klienter.stream()
                         .anyMatch(client -> client.isInstance(register));
     }
 
@@ -172,7 +172,7 @@ public class DollyBestillingService {
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
 
-        return Flux.just(transactionHelperService.oppdaterProgress(BestillingProgress.builder()
+        return Flux.just(transactionHelperService.opprettProgress(BestillingProgress.builder()
                 .bestilling(bestilling)
                 .ident(ident)
                 .master(master)
@@ -240,5 +240,12 @@ public class DollyBestillingService {
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())
                         .build()));
+    }
+
+    protected boolean hasPensjonAaregInntektstub(RsDollyBestilling bestilling) {
+
+        return nonNull(bestilling.getPensjonforvalter()) ||
+                !bestilling.getAareg().isEmpty() ||
+                nonNull(bestilling.getInntektstub());
     }
 }
