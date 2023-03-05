@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -104,20 +103,13 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
-                                                                                            Flux.just(bestillingRequest)
-                                                                                                    .filter(request ->
-                                                                                                            countEmptyBestillinger.getAndIncrement() == 0 ||
-                                                                                                                    hasPensjonAaregInntektstub(request))
-                                                                                                    .flatMap(request ->
-                                                                                                            gjenopprettKlienter(dollyPerson, request,
-                                                                                                                    fase2Klienter(),
-                                                                                                                    progress, false)),
-                                                                                            Flux.just(bestillingRequest)
-                                                                                                    .filter(RsDollyBestilling::isNonEmpty)
-                                                                                                    .flatMap(request ->
-                                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                                    fase3Klienter(),
-                                                                                                                    progress, false))))))))
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase2Klienter(countEmptyBestillinger.getAndIncrement() == 0,
+                                                                                                            bestillingRequest),
+                                                                                                    progress, false),
+                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                                    fase3Klienter(),
+                                                                                                    progress, false)))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

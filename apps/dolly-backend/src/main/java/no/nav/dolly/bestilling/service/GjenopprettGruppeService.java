@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -99,20 +98,14 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
                                                                     .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
                                                                             .flatMap(bestillingRequest -> Flux.concat(
-                                                                                    Flux.just(bestillingRequest)
-                                                                                            .filter(request ->
-                                                                                                    isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)) ||
-                                                                                                            hasPensjonAaregInntektstub(request))
-                                                                                            .flatMap(request ->
-                                                                                                    gjenopprettKlienter(dollyPerson, request,
-                                                                                                            fase2Klienter(),
-                                                                                                            progress, false)),
-                                                                                    Flux.just(bestillingRequest)
-                                                                                            .filter(RsDollyBestilling::isNonEmpty)
-                                                                                            .flatMap(request ->
-                                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                            fase3Klienter(),
-                                                                                                            progress, false))))))))
+                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                            fase2Klienter(
+                                                                                                    isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)),
+                                                                                                    bestillingRequest),
+                                                                                            progress, false),
+                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                            fase3Klienter(),
+                                                                                            progress, false)))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

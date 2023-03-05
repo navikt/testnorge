@@ -109,7 +109,7 @@ public class DollyBestillingService {
         return TagsHendelseslagerClient.class::isInstance;
     }
 
-    public GjenopprettSteg fase2Klienter() {
+    public GjenopprettSteg fase2Klienter(Boolean unconditionalExecute, RsDollyBestilling bestilling) {
 
         var klienter = List.of(
                 PensjonforvalterClient.class,
@@ -117,7 +117,20 @@ public class DollyBestillingService {
                 InntektstubClient.class);
 
         return register -> klienter.stream()
-                        .anyMatch(client -> client.isInstance(register));
+                .anyMatch(client -> client.isInstance(register)) &&
+                (unconditionalExecute || hasPensjonAaregInntektstub(bestilling));
+    }
+
+    public GjenopprettSteg fase2Klienter() {
+
+        return fase2Klienter(false, null);
+    }
+
+    protected boolean hasPensjonAaregInntektstub(RsDollyBestilling bestilling) {
+
+        return nonNull(bestilling) && (nonNull(bestilling.getPensjonforvalter()) ||
+                !bestilling.getAareg().isEmpty() ||
+                nonNull(bestilling.getInntektstub()));
     }
 
     public GjenopprettSteg fase3Klienter() {
@@ -240,12 +253,5 @@ public class DollyBestillingService {
                                 bestilling.getMiljoer() :
                                 coBestilling.getMiljoer())
                         .build()));
-    }
-
-    protected boolean hasPensjonAaregInntektstub(RsDollyBestilling bestilling) {
-
-        return nonNull(bestilling.getPensjonforvalter()) ||
-                !bestilling.getAareg().isEmpty() ||
-                nonNull(bestilling.getInntektstub());
     }
 }
