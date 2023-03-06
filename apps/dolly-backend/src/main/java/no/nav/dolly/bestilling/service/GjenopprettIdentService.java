@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -34,7 +35,6 @@ import static java.lang.String.format;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -97,24 +97,21 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                             progress, true),
                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                             .map(ClientFuture::get)
-                                                            .map(BestillingProgress::isPdlSync)
-                                                            .flatMap(pdlSync -> isTrue(pdlSync) ?
+                                                            .filter(BestillingProgress::isPdlSync)
+                                                            .flatMap(pdlSync ->
                                                                     Flux.fromIterable(coBestillinger)
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                            .filter(cobestilling -> countEmptyBestillinger.getAndIncrement() == 0 ||
-                                                                                    (nonNull(cobestilling.getBestkriterier()) &&
-                                                                                            !cobestilling.getBestkriterier().equals("{}")))
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .filter(bestillingRequest -> countEmptyBestillinger.getAndIncrement() == 0 ||
+                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase2Klienter(),
                                                                                                     progress, false),
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase3Klienter(),
-                                                                                                    progress, false)))) :
-                                                                    Flux.empty())
-                                                            .filter(Objects::nonNull)))
+                                                                                                    progress, false)))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -125,7 +122,8 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .subscribe(done -> doFerdig(bestilling));
+                    .doFinally(done -> doFerdig(bestilling))
+                    .subscribe();
         }
     }
 }

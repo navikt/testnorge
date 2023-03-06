@@ -11,6 +11,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,6 +52,10 @@ public class Testgruppe implements Serializable {
             @Parameter(name = "increment_size", value = "1")
     })
     private Long id;
+
+    @Version
+    @Column(name = "VERSJON")
+    private Long versjon;
 
     @Column(nullable = false)
     private String navn;

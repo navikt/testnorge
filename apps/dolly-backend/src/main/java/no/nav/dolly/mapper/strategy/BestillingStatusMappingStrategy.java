@@ -69,9 +69,9 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
                         RsDollyBestillingRequest bestillingRequest = jsonBestillingMapper
                                 .mapBestillingRequest(bestilling.getId(), bestilling.getBestKriterier());
-                        bestillingStatus.setAntallLevert(progresser.stream()
+                        bestillingStatus.setAntallLevert((int) progresser.stream()
                                 .filter(BestillingProgress::isIdentGyldig)
-                                .toList().size());
+                                .count());
 
                         bestillingStatus.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         bestillingStatus.setGruppeId(bestilling.getGruppe().getId());

@@ -74,6 +74,7 @@ public class TpsMessagingClient implements ClientRegister {
     }
 
     @Override
+    @SuppressWarnings("S1144")
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.from(tpsMiljoerConsumer.getTpsMiljoer()
@@ -91,10 +92,10 @@ public class TpsMessagingClient implements ClientRegister {
                                             .flatMapMany(token -> Flux.concat(
                                                     sendSpraakkode(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("SpråkKode", respons)),
-                                                    sendBankkontonummerNorge(bestilling, dollyPerson.getIdent(), token)
-                                                            .map(respons -> Map.of("NorskBankkonto", respons)),
-                                                    sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent(), token)
-                                                            .map(respons -> Map.of("UtenlandskBankkonto", respons)),
+//                                                    sendBankkontonummerNorge(bestilling, dollyPerson.getIdent(), token)
+//                                                            .map(respons -> Map.of("NorskBankkonto", respons)),
+//                                                    sendBankkontonummerUtenland(bestilling, dollyPerson.getIdent(), token)
+//                                                            .map(respons -> Map.of("UtenlandskBankkonto", respons)),
                                                     sendEgenansattSlett(bestilling, dollyPerson.getIdent(), token)
                                                             .map(respons -> Map.of("Egenansatt_slett", respons)),
                                                     sendEgenansatt(bestilling, dollyPerson.getIdent(), token)
@@ -291,6 +292,7 @@ public class TpsMessagingClient implements ClientRegister {
                 Mono.just(emptyList());
     }
 
+    @SuppressWarnings("S1144")
     private Mono<List<TpsMeldingResponseDTO>> sendBankkontonummerNorge(RsDollyUtvidetBestilling bestilling,
                                                                        String ident, AccessToken token) {
 
@@ -309,6 +311,7 @@ public class TpsMessagingClient implements ClientRegister {
         }
     }
 
+    @SuppressWarnings("S1144")
     private Mono<List<TpsMeldingResponseDTO>> sendBankkontonummerUtenland(RsDollyUtvidetBestilling bestilling,
                                                                           String ident, AccessToken token) {
 

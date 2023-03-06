@@ -21,6 +21,7 @@ import no.nav.dolly.util.ThreadLocalContextLifter;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
@@ -29,12 +30,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.time.Duration;
 import java.util.List;
-import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -80,14 +81,17 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
 
-            Flux.fromIterable(bestilling.getGruppe().getTestidenter())
+            var counter = new AtomicInteger(0);
+            var testidenter = identService.getTestidenterByGruppe(bestilling.getGruppe().getId());
+            Flux.fromIterable(testidenter)
+                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 10 : 0))
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
                                     .flatMap(progress -> (originator.isPdlf() ?
                                             oppdaterPdlPerson(originator, testident.getIdent())
                                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                             Flux.just(testident.getIdent()))
-                                            .filter(Objects::nonNull)
+                                            .filter(StringUtils::isNotBlank)
                                             .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                                     .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
                                                             updateIdent(dollyPerson, progress) : Flux.just(ident))
@@ -98,17 +102,15 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                                             progress, true),
                                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                                             .map(ClientFuture::get)
-                                                                            .map(BestillingProgress::isPdlSync)
-                                                                            .flatMap(pdlSync -> (isTrue(pdlSync) ?
+                                                                            .filter(BestillingProgress::isPdlSync)
+                                                                            .flatMap(pdlSync ->
                                                                                     Flux.concat(
                                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                                     fase2Klienter(),
                                                                                                     progress, true),
                                                                                             gjenopprettKlienter(dollyPerson, bestKriterier,
                                                                                                     fase3Klienter(),
-                                                                                                    progress, true)) :
-                                                                                    Flux.empty())))))
-                                                    .filter(Objects::nonNull)
+                                                                                                    progress, true))))))
                                                     .onErrorResume(throwable -> {
                                                         var error = errorStatusDecoder.getErrorText(
                                                                 WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -119,7 +121,8 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                                                     })))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .subscribe(done -> doFerdig(bestilling));
+                    .doFinally(done -> doFerdig(bestilling))
+                    .subscribe();
         }
     }
 

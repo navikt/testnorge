@@ -2,12 +2,12 @@ package no.nav.dolly.domain.resultset;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@EqualsAndHashCode(callSuper = true)
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class RsDollyUtvidetBestilling extends RsDollyBestilling {

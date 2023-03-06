@@ -196,7 +196,6 @@ public class TestgruppeController {
     public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
 
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
-
         leggTilPaaGruppeService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }
