@@ -14,7 +14,6 @@ import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
-import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.service.BestillingProgressService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.IdentService;
@@ -45,7 +44,6 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
     private final PersonServiceClient personServiceClient;
     private final MapperFacade mapperFacade;
     private final BestillingProgressService bestillingProgressService;
-    private final IdentRepository identRepository;
 
     public LeggTilPaaGruppeService(
             IdentService identService,
@@ -58,8 +56,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             ErrorStatusDecoder errorStatusDecoder,
             PdlDataConsumer pdlDataConsumer,
             TransactionHelperService transactionHelperService,
-            PersonServiceClient personServiceClient,
-            IdentRepository identRepository) {
+            PersonServiceClient personServiceClient) {
         super(
                 identService,
                 bestillingService,
@@ -73,7 +70,6 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         this.personServiceClient = personServiceClient;
         this.mapperFacade = mapperFacade;
         this.bestillingProgressService = bestillingProgressService;
-        this.identRepository = identRepository;
     }
 
     @Async
