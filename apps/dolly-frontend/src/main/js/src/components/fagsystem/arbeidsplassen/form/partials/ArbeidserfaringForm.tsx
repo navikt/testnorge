@@ -5,11 +5,16 @@ import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { ArbeidKodeverk } from '@/config/kodeverk'
 import _get from 'lodash/get'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 
 export const ArbeidserfaringForm = ({ formikBag }) => {
+	const setYrke = (valg, path) => {
+		formikBag.setFieldValue(`${path}.styrkkode`, valg.value)
+		formikBag.setFieldValue(`${path}.jobTitle`, valg.label)
+	}
+
 	return (
 		<div style={{ width: '100%' }}>
 			<hr />
@@ -25,12 +30,12 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 					<div key={idx} className="flexbox--flex-wrap">
 						{/*TODO: Må kanskje sette styrkkode også. Og finn ut hvilke data som er riktig å bruke i lista*/}
 						<FormikSelect
-							name={`${arbeidsforholdPath}.jobTitle`}
+							name={`${arbeidsforholdPath}.styrkkode`}
 							label="Stilling/yrke"
-							kodeverk={ArbeidKodeverk.Yrker}
+							options={Options('jobbYrke')}
 							size="xxlarge"
 							isClearable={false}
-							optionHeight={50}
+							onChange={(valg) => setYrke(valg, arbeidsforholdPath)}
 						/>
 						<FormikTextInput
 							name={`${arbeidsforholdPath}.alternativeJobTitle`}

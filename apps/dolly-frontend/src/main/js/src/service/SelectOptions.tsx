@@ -586,6 +586,35 @@ const selectOptions = {
 		{ value: 'UKE', label: 'Uker' },
 		{ value: 'MND', label: 'Måneder' },
 	],
+
+	jobbYrke: [
+		{ value: '2611', label: 'Advokat' },
+		{ value: '2341', label: 'Allmennlærer' },
+		{ value: '7213', label: 'Bilskadereparatør' },
+		{ value: '5223', label: 'Butikkmedarbeider' },
+		{ value: '7115', label: 'Bygningssnekker' },
+		{ value: '5141', label: 'Frisør' },
+		{ value: '2223', label: 'Sykepleier' },
+		{ value: '9212', label: 'Sauegjeter' },
+		{ value: '7321', label: 'Typograf' },
+		{ value: '9999', label: 'Utvikler' },
+	],
+
+	omraade: [
+		{ value: 'NO20.2012', label: 'Alta' },
+		{ value: 'NO46.4601', label: 'Bergen' },
+		{ value: 'NO18.1804', label: 'Bodø' },
+		{ value: 'NO06.0602', label: 'Drammen' },
+		{ value: 'NO01.0106', label: 'Fredrikstad' },
+		{ value: 'NO10.1001', label: 'Kristiansand' },
+		{ value: 'NO02.0230', label: 'Lørenskog' },
+		{ value: 'NO03', label: 'Oslo' },
+		{ value: 'NO38.3806', label: 'Porsgrunn' },
+		{ value: 'NO11.1103', label: 'Stavanger' },
+		{ value: 'NO54.5401', label: 'Tromsø' },
+		{ value: 'NO50.5001', label: 'Trondheim' },
+		{ value: 'NO15.1504', label: 'Ålesund' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]

@@ -35,7 +35,7 @@ export const initialArbeidserfaring = {
 	fromDate: null,
 	toDate: null,
 	ongoing: false,
-	// styrkkode: '', // Stilling/yrke?
+	styrkkode: '',
 	// ikkeAktueltForFremtiden: false,
 }
 

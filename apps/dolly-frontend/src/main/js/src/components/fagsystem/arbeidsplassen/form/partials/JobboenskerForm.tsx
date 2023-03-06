@@ -31,11 +31,10 @@ export const JobboenskerForm = ({ formikBag }) => {
 		<>
 			<h3>Jobbønsker</h3>
 			<div className="flexbox--full-width">
-				{/*TODO: Må ha riktige data til lista. Sette title og styrk08*/}
 				<FormikSelect
 					name={`${jobboenskerPath}.occupations`}
 					label="Jobber og yrker"
-					kodeverk={ArbeidKodeverk.Yrker}
+					options={Options('jobbYrke')}
 					size="grow"
 					isClearable={false}
 					isMulti={true}
@@ -43,11 +42,10 @@ export const JobboenskerForm = ({ formikBag }) => {
 					value={_get(formikBag.values, `${jobboenskerPath}.occupations`).map((y) => y.styrk08)}
 					onChange={(options) => setYrker(options)}
 				/>
-				{/*TODO: Må ha riktige data til lista. Sette location og code*/}
 				<FormikSelect
 					name={`${jobboenskerPath}.locations`}
 					label="Områder"
-					kodeverk={AdresseKodeverk.Kommunenummer}
+					options={Options('omraade')}
 					size="grow"
 					isClearable={false}
 					isMulti={true}
