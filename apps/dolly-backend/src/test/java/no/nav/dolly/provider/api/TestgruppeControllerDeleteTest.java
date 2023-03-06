@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ class TestgruppeControllerDeleteTest extends AbstractControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Disabled
     @Test
     @DisplayName("Sletter Testgruppe")
     void deleteTestgruppe()

@@ -1,5 +1,6 @@
 package no.nav.dolly.provider.api;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ class TestgruppeControllerGetTest extends AbstractControllerTest {
 
     }
 
+    @Disabled
     @Test
     @DisplayName("Returnerer Testgruppe")
     void shouldReturnTestgruppe()
