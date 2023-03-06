@@ -1196,9 +1196,52 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
 			header: 'Arbeidsplassen (CV)',
-			items: null,
+			items: [],
 			itemRows: [],
 		}
+
+		if (CVKriterier.jobboensker) {
+			arbeidsplassenCV.items.push(
+				{ header: 'Jobbønsker' },
+				obj(
+					'Jobber og yrker',
+					Formatters.arrayToString(CVKriterier.jobboensker?.occupations?.map((jobb) => jobb?.title))
+				),
+				obj(
+					'Områder',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.locations?.map((omraade) => omraade?.location)
+					)
+				),
+				obj(
+					'Arbeidsmengde',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.workLoadTypes?.map((type) =>
+							Formatters.showLabel('arbeidsmengde', type)
+						)
+					)
+				),
+				obj(
+					'Arbeidstider',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.workScheduleTypes?.map((type) =>
+							Formatters.showLabel('arbeidstid', type)
+						)
+					)
+				),
+				obj(
+					'Ansettelsestyper',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.occupationTypes?.map((type) =>
+							Formatters.showLabel('ansettelsestype', type)
+						)
+					)
+				),
+				obj('Oppstart', Formatters.showLabel('oppstart', CVKriterier.jobboensker?.startOption))
+			)
+		}
+
+		console.log('arbeidsplassenCV: ', arbeidsplassenCV) //TODO - SLETT MEG
 
 		CVKriterier.utdanning?.forEach((utdanning, i) => {
 			arbeidsplassenCV.itemRows.push([
@@ -1261,6 +1304,60 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 				obj('Utløper', Formatters.formatDate(offentligGodkjenning.toDate)),
 			])
 		})
+
+		CVKriterier.andreGodkjenninger?.forEach((annenGodkjenning, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Andre godkjenninger ${i + 1}` },
+				obj('Annen godkjenning', annenGodkjenning.certificateName),
+				obj('Utsteder', annenGodkjenning.issuer),
+				obj('Fullført', Formatters.formatDate(annenGodkjenning.fromDate)),
+				obj('Utløper', Formatters.formatDate(annenGodkjenning.toDate)),
+			])
+		})
+
+		CVKriterier.spraak?.forEach((spraak, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Språk ${i + 1}` },
+				obj('Språk', spraak.language),
+				obj('Muntlig', Formatters.showLabel('spraakNivaa', spraak.oralProficiency)),
+				obj('Skriftlig', Formatters.showLabel('spraakNivaa', spraak.writtenProficiency)),
+			])
+		})
+
+		CVKriterier.foererkort?.forEach((foererkort, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Førerkort ${i + 1}` },
+				obj('Type førerkort', foererkort.type),
+				obj('Gyldig fra', Formatters.formatDate(foererkort.acquiredDate)),
+				obj('Gyldig til', Formatters.formatDate(foererkort.expiryDate)),
+			])
+		})
+
+		CVKriterier.kurs?.forEach((kurs, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Kurs ${i + 1}` },
+				obj('Kursnavn', kurs.title),
+				obj('Kursholder', kurs.issuer),
+				obj('Fullført', Formatters.formatDate(kurs.date)),
+				obj('Kurslengde', Formatters.showLabel('kursLengde', kurs.durationUnit)),
+				obj(
+					`Antall ${
+						kurs.durationUnit && kurs.durationUnit !== 'UKJENT'
+							? Formatters.showLabel('kursLengde', kurs.durationUnit)
+							: ''
+					}`,
+					kurs.duration
+				),
+			])
+		})
+
+		if (CVKriterier.sammendrag) {
+			arbeidsplassenCV.items.push(
+				{ header: 'Sammendrag' },
+				obj('Oppsummering', CVKriterier.sammendrag)
+			)
+		}
+		//TODO: fix fordi alt havner under jobbønsker
 
 		data.push(arbeidsplassenCV)
 	}

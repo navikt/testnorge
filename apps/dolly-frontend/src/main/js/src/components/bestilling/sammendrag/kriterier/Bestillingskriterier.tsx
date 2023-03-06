@@ -21,7 +21,10 @@ const _renderBestillingsDetaljer = (data) => {
 				<Fragment key={j}>
 					<h4>{kategori.header} </h4>
 					{kategori.items && (
-						<div className={cssClass}>{kategori.items.map(_renderStaticValue)}</div>
+						<>
+							{kategori.items[0].header && <h4>{kategori.items[0].header}</h4>}
+							<div className={cssClass}>{kategori.items.map(_renderStaticValue)}</div>
+						</>
 					)}
 					{kategori.paginering?.length > 0 && (
 						<>
