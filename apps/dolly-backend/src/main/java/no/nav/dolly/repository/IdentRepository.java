@@ -75,5 +75,9 @@ public interface IdentRepository extends JpaRepository<Testident, Long> {
         String getMiljoer();
     }
 
-    List<Testident> findTestidentByTestgruppe(Long gruppeId);
+    @Query(value = "select count(*) from Testident ti where ti.testgruppe.id = :gruppeId")
+    int countByTestgruppe(@Param("gruppeId") Long gruppeId);
+
+    @Query(value = "select ti from Testident ti where ti.testgruppe.id = :gruppeId")
+    List<Testident> findByTestgruppe(@Param("gruppeId") Long gruppeId);
 }

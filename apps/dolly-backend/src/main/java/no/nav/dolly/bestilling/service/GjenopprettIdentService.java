@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -102,10 +103,11 @@ public class GjenopprettIdentService extends DollyBestillingService {
                                                                             .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
                                                                             .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                             .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                                    .filter(bestillingRequest -> countEmptyBestillinger.getAndIncrement() == 0 ||
+                                                                                            RsDollyBestilling.isNonEmpty(bestillingRequest))
                                                                                     .flatMap(bestillingRequest -> Flux.concat(
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                    fase2Klienter(countEmptyBestillinger.getAndIncrement() == 0,
-                                                                                                            bestillingRequest),
+                                                                                                    fase2Klienter(),
                                                                                                     progress, false),
                                                                                             gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                                     fase3Klienter(),

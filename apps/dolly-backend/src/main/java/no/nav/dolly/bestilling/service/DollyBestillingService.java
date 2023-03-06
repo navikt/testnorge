@@ -16,7 +16,6 @@ import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testident;
-import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.Tags;
@@ -109,12 +108,6 @@ public class DollyBestillingService {
         return TagsHendelseslagerClient.class::isInstance;
     }
 
-    public GjenopprettSteg fase2Klienter(Boolean unconditionalExecute, RsDollyBestilling bestilling) {
-
-        return register -> fase2Klienter().apply(register) &&
-                    (unconditionalExecute || hasPensjonAaregInntektstub(bestilling));
-    }
-
     public GjenopprettSteg fase2Klienter() {
 
         var klienter = List.of(
@@ -126,17 +119,10 @@ public class DollyBestillingService {
                 .anyMatch(client -> client.isInstance(register));
     }
 
-    protected boolean hasPensjonAaregInntektstub(RsDollyBestilling bestilling) {
-
-        return nonNull(bestilling) && (nonNull(bestilling.getPensjonforvalter()) ||
-                !bestilling.getAareg().isEmpty() ||
-                nonNull(bestilling.getInntektstub()));
-    }
-
     public GjenopprettSteg fase3Klienter() {
 
         return register -> !fase1Klienter().apply(register) &&
-                    !fase2Klienter().apply(register);
+                !fase2Klienter().apply(register);
     }
 
     protected Flux<BestillingProgress> gjenopprettKlienter(DollyPerson dollyPerson, RsDollyUtvidetBestilling bestKriterier,

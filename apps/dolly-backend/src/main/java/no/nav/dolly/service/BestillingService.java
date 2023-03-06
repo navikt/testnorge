@@ -350,8 +350,9 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
-        log.info("Antall testidenter {} i gruppe {} :", gruppe.getTestidenter().size(), gruppeId);
+        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var size = identRepository.countByTestgruppe(gruppeId);
+        log.info("Antall testidenter {} i gruppe {} ", size, gruppeId);
         fixAaregAbstractClassProblem(request.getAareg());
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -359,7 +360,7 @@ public class BestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
                         .bruker(fetchOrCreateBruker())
-                        .antallIdenter(gruppe.getTestidenter().size())
+                        .antallIdenter(size)
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
                         .build());

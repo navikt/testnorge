@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -78,7 +79,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
             var counter = new AtomicInteger(0);
-            var emptyBestillingCounter = new ConcurrentHashMap<String, Boolean>();
+            var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 10 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
@@ -97,11 +98,11 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                     .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
                                                                     .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                            .filter(bestillingRequest -> isNotTrue(emptyBestillingFlag.putIfAbsent(ident, true)) ||
+                                                                                    RsDollyBestilling.isNonEmpty(bestillingRequest))
                                                                             .flatMap(bestillingRequest -> Flux.concat(
                                                                                     gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                            fase2Klienter(
-                                                                                                    isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)),
-                                                                                                    bestillingRequest),
+                                                                                            fase2Klienter(),
                                                                                             progress, false),
                                                                                     gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                             fase3Klienter(),
