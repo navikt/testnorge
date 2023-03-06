@@ -5,7 +5,7 @@ spring:
       maximum-pool-size: 3
       minimum-idle: 1
       jdbc-url: jdbc:postgresql://b27dbvl023.preprod.local:5432/udi-stub-dev
-#    driver-class-name: org.postgresql.Driver
+      driver-class-name: org.postgresql.Driver
   cloud:
     vault:
       host: vault.adeo.no
