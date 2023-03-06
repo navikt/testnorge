@@ -156,18 +156,10 @@ public class BestillingService {
         return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
     }
 
-    public Page<Bestilling> getBestillingerFromGruppePaginert(Long gruppeId, Integer page, Integer pageSize) {
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        if (testgruppe.isEmpty()) {
-            return Page.empty();
-        }
-        return getBestillingerFromGruppePaginert(testgruppe.get(), page, pageSize);
-    }
-
-    public Page<Bestilling> getBestillingerFromGruppePaginert(Testgruppe gruppe, Integer pageNo, Integer pageSize) {
+    public Page<Bestilling> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
         return bestillingRepository
-                .getBestillingerFromGruppe(gruppe, PageRequest.of(pageNo, pageSize));
+                .getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize));
     }
 
     @Transactional
