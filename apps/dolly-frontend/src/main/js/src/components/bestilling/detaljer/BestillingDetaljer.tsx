@@ -12,7 +12,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 	const [isMalModalOpen, openMalModal, closeMalModal] = useBoolean(false)
 
 	const alleredeMal = Boolean(bestilling.malBestillingNavn)
-	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0
+	const harIdenterOpprettet = bestilling.antallIdenterOpprettet > 0 || bestilling.antallLevert > 0
 	const erOrganisasjon = bestilling.hasOwnProperty('organisasjonNummer')
 
 	const sivilstand = _.get(bestilling, 'bestilling.pdldata.person.sivilstand')
