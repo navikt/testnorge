@@ -23,7 +23,7 @@ import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 @Getter
 public class Arbeidsadgang {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 

@@ -11,9 +11,9 @@ spring:
         default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
-    enabled: false
-  #    locations: classpath:db/migration
-  #    baseline-on-migrate: true
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
   security:
     oauth2:
       resourceserver:

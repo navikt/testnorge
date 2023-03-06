@@ -28,7 +28,7 @@ import org.hibernate.annotations.OnDeleteAction;
 @JsonIgnoreProperties(value = { "person" })
 public class Alias {
 
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 
