@@ -3,10 +3,12 @@ package no.nav.testnav.proxies.arbeidsplassencvproxy;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import no.nav.testnav.libs.reactiveproxy.config.SecurityConfig;
-import no.nav.testnav.libs.reactiveproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import no.nav.testnav.libs.reactivesecurity.exchange.azuread.TrygdeetatenAzureAdTokenService;
+import no.nav.testnav.libs.reactivesecurity.exchange.tokenx.TokenXService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.config.ArbeidsplassenCVProperties;
+import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.FakedingsConsumer;
+import no.nav.testnav.proxies.arbeidsplassencvproxy.filter.AddAuthenticationRequestGatewayFilterFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -34,12 +36,15 @@ public class ArbeidsplassenCVProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            TrygdeetatenAzureAdTokenService tokenService,
-                                           ArbeidsplassenCVProperties arbeidsplassenCVProperties) {
+                                           ArbeidsplassenCVProperties arbeidsplassenCVProperties,
+                                           FakedingsConsumer fakedingsConsumer,
+                                           TokenXService tokenXService) {
 
         return builder.routes()
                 .route(createRoute(arbeidsplassenCVProperties.getUrl(),
                         AddAuthenticationRequestGatewayFilterFactory
-                                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(arbeidsplassenCVProperties)
+                                .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService,
+                                        () -> tokenService.exchange(arbeidsplassenCVProperties)
                                         .map(AccessToken::getTokenValue))))
                 .build();
     }
