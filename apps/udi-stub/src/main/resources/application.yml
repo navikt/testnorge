@@ -25,6 +25,9 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-fss:dolly:testnav-udi-stub
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
