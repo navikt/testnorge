@@ -615,6 +615,115 @@ const selectOptions = {
 		{ value: 'NO50.5001', label: 'Trondheim' },
 		{ value: 'NO15.1504', label: 'Ålesund' },
 	],
+
+	fagbrev: [
+		{
+			value: 'Fagbrev anleggsgartner',
+			label: 'Fagbrev anleggsgartner',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{
+			value: 'Fagbrev barne- og ungdomsarbeider',
+			label: 'Fagbrev barne- og ungdomsarbeider',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{ value: 'Fagbrev butikkfag', label: 'Fagbrev butikkfag', type: 'SVENNEBREV_FAGBREV' },
+		{ value: 'Fagbrev IKT-driftsfag', label: 'Fagbrev IKT-driftsfag', type: 'SVENNEBREV_FAGBREV' },
+		{ value: 'Mesterbrev baker', label: 'Mesterbrev baker', type: 'MESTERBREV' },
+		{ value: 'Mesterbrev billakkerer', label: 'Mesterbrev billakkerer', type: 'MESTERBREV' },
+		{ value: 'Mesterbrev snekker', label: 'Mesterbrev snekker', type: 'MESTERBREV' },
+		{ value: 'Svennebrev frisør', label: 'Svennebrev frisør', type: 'SVENNEBREV_FAGBREV' },
+		{ value: 'Svennebrev gullsmed', label: 'Svennebrev gullsmed', type: 'SVENNEBREV_FAGBREV' },
+		{
+			value: 'Svennebrev mediegrafiker',
+			label: 'Svennebrev mediegrafiker',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{
+			value: 'Yrkeskompetanse interiørkonsulent',
+			label: 'Yrkeskompetanse interiørkonsulent',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{
+			value: 'Yrkeskompetanse tannhelsesekretær',
+			label: 'Yrkeskompetanse tannhelsesekretær',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+	],
+
+	kompetanse: [
+		{ value: 'Arbeide selvstendig og effektivt', label: 'Arbeide selvstendig og effektivt' },
+		{ value: 'Borhammer', label: 'Borhammer' },
+		{ value: 'Design av romfartsprodukter', label: 'Design av romfartsprodukter' },
+		{ value: 'Fange dyr i feller', label: 'Fange dyr i feller' },
+		{ value: 'Flink til å samarbeide', label: 'Flink til å samarbeide' },
+		{ value: 'God fysikk', label: 'God fysikk' },
+		{ value: 'Gode norsk- og engelskkunnskaper', label: 'Gode norsk- og engelskkunnskaper' },
+		{ value: 'Husdyrhold', label: 'Husdyrhold' },
+		{ value: 'Java (Programmeringsspråk)', label: 'Java (Programmeringsspråk)' },
+		{ value: 'Kunne arbeide ut fra egne ideer', label: 'Kunne arbeide ut fra egne ideer' },
+		{ value: 'Muskelbygging', label: 'Muskelbygging' },
+	],
+
+	offentligGodkjenning: [
+		{
+			value: 'Arbeids - og oppholdstillatelse i Norge',
+			label: 'Arbeids - og oppholdstillatelse i Norge',
+		},
+		{ value: 'Autorisasjon som fysioterapeut', label: 'Autorisasjon som fysioterapeut' },
+		{
+			value: 'Bevis for yrkessjåførkompetanse (YSK)',
+			label: 'Bevis for yrkessjåførkompetanse (YSK)',
+		},
+		{ value: 'Båtførerbevis', label: 'Båtførerbevis' },
+		{ value: 'Flygersertifikat', label: 'Flygersertifikat' },
+		{
+			value: 'Godkjenning som profesjonell pyrotekniker',
+			label: 'Godkjenning som profesjonell pyrotekniker',
+		},
+		{
+			value: 'Godkjenning/autorisasjon som brannkonstabel',
+			label: 'Godkjenning/autorisasjon som brannkonstabel',
+		},
+		{
+			value: 'Godkjenning/autorisasjon som revisor',
+			label: 'Godkjenning/autorisasjon som revisor',
+		},
+		{ value: 'Helseattest', label: 'Helseattest' },
+		{ value: 'Sertifikat varmearbeider', label: 'Sertifikat varmearbeider' },
+		{ value: 'Statsautorisert eiendomsmegler', label: 'Statsautorisert eiendomsmegler' },
+	],
+
+	annenGodkjenning: [
+		{ value: 'Autorisasjon som håndballtrener', label: 'Autorisasjon som håndballtrener' },
+		{ value: 'Ballongførerbevis', label: 'Ballongførerbevis' },
+		{ value: 'Bannerannonsering', label: 'Bannerannonsering' },
+		{ value: 'Datakort IT-kompetanse', label: 'Datakort IT-kompetanse' },
+		{ value: 'Kompetansebevis for dyretransport', label: 'Kompetansebevis for dyretransport' },
+		{ value: 'Legeattest', label: 'Legeattest' },
+		{ value: 'Sertifikat personlig trener', label: 'Sertifikat personlig trener' },
+		{ value: 'Sertifisert førstehjelpsinstruktør', label: 'Sertifisert førstehjelpsinstruktør' },
+		{
+			value: 'Sertifisert Lekeplassutstyrsinspektør LEK',
+			label: 'Sertifisert Lekeplassutstyrsinspektør LEK',
+		},
+		{ value: 'Testdrevet utvikling', label: 'Testdrevet utvikling' },
+	],
+
+	spraak: [
+		{ value: 'Arabisk', label: 'Arabisk' },
+		{ value: 'Engelsk', label: 'Engelsk' },
+		{ value: 'Fransk', label: 'Fransk' },
+		{ value: 'Hindi', label: 'Hindi' },
+		{ value: 'Kinesisk', label: 'Kinesisk' },
+		{ value: 'Norsk', label: 'Norsk' },
+		{ value: 'Norsk tegnspråk', label: 'Norsk tegnspråk' },
+		{ value: 'Nynorsk', label: 'Nynorsk' },
+		{ value: 'Russisk', label: 'Russisk' },
+		{ value: 'Samisk', label: 'Samisk' },
+		{ value: 'Spansk', label: 'Spansk' },
+		{ value: 'Tysk', label: 'Tysk' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]

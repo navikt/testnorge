@@ -1,7 +1,7 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { initialOffentligeGodkjenninger } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { ArbeidKodeverk } from '@/config/kodeverk'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
@@ -20,11 +20,10 @@ export const OffentligeGodkjenningerForm = ({ formikBag }) => {
 			>
 				{(offentligGodkjenningPath, idx) => (
 					<div key={idx} className="flexbox--flex-wrap">
-						{/*// TODO: Må ha riktige data til lista. Sette title*/}
 						<FormikSelect
 							name={`${offentligGodkjenningPath}.title`}
 							label="Offentlig godkjenning"
-							kodeverk={ArbeidKodeverk.Yrker}
+							options={Options('offentligGodkjenning')}
 							size="xxlarge"
 							isClearable={false}
 						/>

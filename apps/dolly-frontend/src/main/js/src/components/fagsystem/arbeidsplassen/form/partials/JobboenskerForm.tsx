@@ -1,5 +1,4 @@
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { AdresseKodeverk, ArbeidKodeverk } from '@/config/kodeverk'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
