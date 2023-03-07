@@ -18,3 +18,4 @@ spring:
         role: udi-stub-admin
         enabled: true
       enabled: true
+spring.config.import: vault://
