@@ -6,9 +6,6 @@ REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 spring:
   session:
     timeout: 60m
-  redis:
-    host: ${REDIS_HOST}
-    port: 6379
   security:
     oauth2:
       client:
@@ -22,6 +19,10 @@ spring:
         provider:
           idporten:
             issuer-uri: ${IDPORTEN_ISSUER_PROD}
+  data:
+    redis:
+      port: 6379
+      host: ${REDIS_HOST}
 
 
 consumers:
