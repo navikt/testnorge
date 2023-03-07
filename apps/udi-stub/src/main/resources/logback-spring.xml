@@ -15,7 +15,6 @@
                     <exclude>org\.apache\.coyote\..*</exclude>
                     <exclude>org\.apache\.tomcat\..*</exclude>
                 </throwableConverter>
-                <includeMdcKeyName>bestillingId</includeMdcKeyName>
             </encoder>
         </appender>
         <root level="INFO">
@@ -25,11 +24,11 @@
 
     <springProfile name="local">
         <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-            <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-                <charset>UTF-8</charset>
+            <encoder>
                 <pattern>
-                    %d{HH:mm:ss.SSS} %highlight(%p) | %yellow(%logger{0}): %m%n
+                    %d{HH:mm:ss.SSS} | %5p | %logger{25} | %m%n
                 </pattern>
+                <charset>utf8</charset>
             </encoder>
         </appender>
         <root level="INFO">
@@ -37,6 +36,4 @@
         </root>
     </springProfile>
 
-    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
-    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
 </configuration>

@@ -64,7 +64,6 @@ dependencies {
     implementation 'io.netty:netty-transport-native-epoll' // See above exclusion.
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
@@ -72,12 +71,11 @@ dependencies {
     implementation 'com.ibm.icu:icu4j:70.1'
 
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-    implementation 'org.glassfish.jaxb:jaxb-core:4.0.2'
+    implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    
 
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-s610-domain:2020.08.27-09.53-183ead3d81eb'
     implementation 'no.nav.repository.fellesreg.tpsws:nav-repository-fellesregister-jaxb-tps-m201-domain:2020.08.27-09.53-183ead3d81eb'
@@ -86,7 +84,6 @@ dependencies {
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
