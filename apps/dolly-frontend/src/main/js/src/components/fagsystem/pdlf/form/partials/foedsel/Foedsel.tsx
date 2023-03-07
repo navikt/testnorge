@@ -10,13 +10,12 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikProps } from 'formik'
 import { SelectedValue } from '@/components/fagsystem/pdlf/PdlTypes'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import _get from 'lodash/get'
 
 type FoedselTypes = {
 	formikBag: FormikProps<{}>
 	path?: string
 }
-
-const alderProps = ['alder', 'foedtEtter', 'foedtFoer']
 
 export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 	const handleLandChange = (selected: SelectedValue, foedselPath: string) => {
@@ -29,13 +28,21 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 	const foedselsaar = _.get(formikBag.values, `${path}.foedselsaar`)
 	const foedselsdato = _.get(formikBag.values, `${path}.foedselsdato`)
 
+	const harAlder = () => {
+		return (
+			_get(formikBag.values, 'pdldata.opprettNyPerson.alder') ||
+			_get(formikBag.values, 'pdldata.opprettNyPerson.foedtEtter') ||
+			_get(formikBag.values, 'pdldata.opprettNyPerson.foedtFoer')
+		)
+	}
+
 	return (
 		<>
 			<DatepickerWrapper>
 				<FormikDatepicker
 					name={`${path}.foedselsdato`}
 					label="Fødselsdato"
-					disabled={foedselsaar !== null && foedselsdato === null}
+					disabled={(foedselsaar !== null && foedselsdato === null) || harAlder()}
 					maxDate={new Date()}
 					fastfield={false}
 				/>
@@ -49,7 +56,7 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 					}
 					maxDate={new Date()}
 					// @ts-ignore
-					disabled={foedselsdato !== null && foedselsaar === null}
+					disabled={(foedselsdato !== null && foedselsaar === null) || harAlder()}
 				/>
 			</DatepickerWrapper>
 			<FormikTextInput name={`${path}.foedested`} label="Fødested" size="large" />
@@ -76,17 +83,6 @@ export const FoedselForm = ({ formikBag, path }: FoedselTypes) => {
 }
 
 export const Foedsel = ({ formikBag }: FoedselTypes) => {
-	const person = _.get(formikBag.values, 'pdldata.opprettNyPerson')
-	const hasAlder = () => {
-		let funnetAlder = false
-		alderProps.forEach((prop) => {
-			if (person?.hasOwnProperty(prop)) {
-				funnetAlder = true
-			}
-		})
-		return funnetAlder
-	}
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -94,11 +90,6 @@ export const Foedsel = ({ formikBag }: FoedselTypes) => {
 				header="Fødsel"
 				newEntry={initialFoedsel}
 				canBeEmpty={false}
-				hjelpetekst={
-					hasAlder()
-						? 'Du har valgt å sette både alder og fødsel på denne personen. Det er mulig å sette verdier som ikke samsvarer med hverandre. I så fall er det alder som vil bestemme identnummer, og fødsel som vil bestemme fødselsdato. '
-						: null
-				}
 			>
 				{(path: string, _idx: number) => {
 					return <FoedselForm formikBag={formikBag} path={path} />
