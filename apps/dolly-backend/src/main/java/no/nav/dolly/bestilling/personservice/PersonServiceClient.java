@@ -4,15 +4,23 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.personservice.dto.PersonServiceResponse;
+import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
+import no.nav.dolly.domain.PdlPerson;
+import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
@@ -26,10 +34,10 @@ public class PersonServiceClient {
     private static final String PDL_SYNC_START = "Info: Synkronisering mot PDL startet ...";
     private static final int TIMEOUT = 100;
     private static final int MAX_SEKUNDER = 30;
-
     private final PersonServiceConsumer personServiceConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
+    private final PdlPersonConsumer pdlPersonConsumer;
 
     public Flux<ClientFuture> syncPerson(DollyPerson dollyPerson, BestillingProgress progress) {
 
@@ -37,10 +45,35 @@ public class PersonServiceClient {
             transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, PDL_SYNC_START);
         }
         var startTime = System.currentTimeMillis();
-        return getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
-                new PersonServiceResponse(), dollyPerson.getIdent())
-                .flatMap(status -> logStatus(status, startTime)
-                        .map(status2 -> futurePersist(dollyPerson, progress, status, status2)));
+        var test = getIdentWithRelasjoner(dollyPerson.getIdent());
+        return test
+                .flatMap(ident -> getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
+                        new PersonServiceResponse(), ident)
+                        .flatMap(status ->
+                                logStatus(status, startTime)
+                                        .map(status2 -> futurePersist(dollyPerson, progress, status, status2))));
+    }
+
+    private Flux<String> getIdentWithRelasjoner(String ident) {
+
+        return Flux.concat(Flux.just(ident),
+                pdlPersonConsumer.getPdlPersoner(List.of(ident))
+                        .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
+                        .map(PdlPersonBolk::getData)
+                        .map(PdlPersonBolk.Data::getHentPersonBolk)
+                        .flatMap(Flux::fromIterable)
+                        .filter(personBolk -> nonNull(personBolk.getPerson()))
+                        .map(person -> Flux.fromStream(Stream.of(
+                                        person.getPerson().getSivilstand().stream()
+                                                .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getForelderBarnRelasjon().stream()
+                                                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getFullmakt().stream()
+                                                .map(FullmaktDTO::getMotpartsPersonident))
+                                .flatMap(Function.identity())))
+                        .flatMap(Flux::from));
     }
 
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress, PersonServiceResponse status, String status2) {
