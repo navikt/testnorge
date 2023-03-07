@@ -1,10 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://dev-pg.intern.nav.no:5432/udi-stub
+    url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
-      jdbc-url: jdbc:postgresql://dev-pg.intern.nav.no:5432/udi-stub
+      jdbc-url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
       driver-class-name: org.postgresql.Driver
   cloud:
     vault:
