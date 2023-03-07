@@ -8,8 +8,6 @@ spring:
       driver-class-name: org.postgresql.Driver
   cloud:
     vault:
-      config:
-        lifecycle.enabled: true
       host: vault.adeo.no
       port: 443
       fail-fast: true
@@ -18,6 +16,5 @@ spring:
       database:
         backend: postgresql/preprod-fss
         role: udi-stub-admin
-        username-property: spring.datasource.username
-        password-property: spring.datasource.password
         enabled: true
+      enabled: true
