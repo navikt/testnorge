@@ -34,13 +34,23 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
-  endpoint:
-    shutdown:
-      enabled: true
   endpoints:
+    enabled-by-default: true
     web:
+      base-path: /internal
       exposure:
         include: "*"
+      path-mapping:
+        prometheus: "prometheus"
+  endpoint:
+    prometheus:
+      enabled: true
+    heapdump:
+      enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 
 consumers:
   testnav-profil-api:
