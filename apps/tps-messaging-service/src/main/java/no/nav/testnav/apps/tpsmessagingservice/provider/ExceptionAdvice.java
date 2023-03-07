@@ -1,6 +1,6 @@
 package no.nav.testnav.apps.tpsmessagingservice.provider;
 
-import jakarta.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

@@ -12,8 +12,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.EndringsmeldingRequest;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsMeldingResponse;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
