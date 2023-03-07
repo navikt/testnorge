@@ -29,15 +29,16 @@ public class GenererNavnConsumer {
     private final ServerProperties serviceProperties;
     private final MapperFacade mapper;
 
-    public GenererNavnConsumer(TokenExchange tokenService,
-                               GenererNavnServiceProperties serverProperties,
-                               MapperFacade mapperFacade
+    public GenererNavnConsumer(
+            TokenExchange tokenService,
+            GenererNavnServiceProperties serverProperties,
+            MapperFacade mapperFacade,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.mapper = mapperFacade;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,10 +20,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RequestMapping(value = "/v1/status", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
-public class StatusController {;
+public class StatusController {
     private final List<ConsumerStatus> consumerRegister;
 
+    private final WebClient webClient;
+
     private static final Map<String, String> consumerNavnMapping = new HashMap<>();
+
     static {
         consumerNavnMapping.put("DokarkivConsumer", "Dokumentarkiv (JOARK)");
         consumerNavnMapping.put("KrrstubConsumer", "Digital kontaktinformasjon (DKIF)");
@@ -44,7 +48,7 @@ public class StatusController {;
         consumerNavnMapping.put("ArenaForvalterConsumer", "Arena fagsystem");
     }
 
-    private static final List<String> excludeConsumers = Arrays.asList("PdlPersonConsumer");
+    private static final List<String> excludeConsumers = List.of("PdlPersonConsumer");
 
     private static String getConsumerNavn(String classNavn) {
         var consumerNavn = classNavn.split("\\$\\$")[0];
@@ -62,9 +66,11 @@ public class StatusController {;
     @GetMapping()
     @Operation(description = "Hent status for Dolly forbrukere")
     public Object clientsStatus() {
-        return consumerRegister.parallelStream()
+        return consumerRegister
+                .parallelStream()
                 .filter(StatusController::isNotExcluded)
-                .map(client -> Arrays.asList(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus()))
+                .map(client -> Arrays.asList(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
                 .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
     }
+
 }

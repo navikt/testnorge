@@ -32,13 +32,15 @@ public class SkjermingsRegisterConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public SkjermingsRegisterConsumer(TokenExchange tokenService,
-                                      SkjermingsregisterProxyProperties serverProperties,
-                                      ObjectMapper objectMapper) {
-
+    public SkjermingsRegisterConsumer(
+            TokenExchange tokenService,
+            SkjermingsregisterProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

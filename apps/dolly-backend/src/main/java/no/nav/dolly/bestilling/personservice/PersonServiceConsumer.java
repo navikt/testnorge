@@ -23,17 +23,21 @@ public class PersonServiceConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public PersonServiceConsumer(TokenExchange tokenService,
-                                 PersonServiceProperties serverProperties
+    public PersonServiceConsumer(
+            TokenExchange tokenService,
+            PersonServiceProperties serverProperties,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
-                        .responseTimeout(Duration.ofSeconds(30))
-                        .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(30)))))
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient
+                                        .create()
+                                        .responseTimeout(Duration.ofSeconds(30))
+                                        .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(30)))))
                 .build();
     }
 

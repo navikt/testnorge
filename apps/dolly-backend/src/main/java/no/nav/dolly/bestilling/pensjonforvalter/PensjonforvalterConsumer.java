@@ -42,14 +42,15 @@ public class PensjonforvalterConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public PensjonforvalterConsumer(TokenExchange tokenService,
-                                    PensjonforvalterProxyProperties serverProperties,
-                                    ObjectMapper objectMapper
+    public PensjonforvalterConsumer(
+            TokenExchange tokenService,
+            PensjonforvalterProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

@@ -32,14 +32,15 @@ public class InstdataConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public InstdataConsumer(TokenExchange tokenService,
-                            InstProxyProperties serverProperties,
-                            ObjectMapper objectMapper
+    public InstdataConsumer(
+            TokenExchange tokenService,
+            InstProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
