@@ -49,7 +49,8 @@ repositories {
 }
 
 configurations.implementation {
-    exclude group: 'io.netty', module: 'netty-transport-native-epoll' // Avoid native Linux/Mac on non-Linux/Mac systems.
+    exclude group: 'io.netty', module: 'netty-transport-native-epoll'
+    // Avoid native Linux/Mac on non-Linux/Mac systems.
 }
 
 dependencies {
@@ -72,6 +73,8 @@ dependencies {
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'javax.json.bind:javax.json.bind-api:1.0'
+    implementation 'javax.activation:activation:1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime:2.3.0'
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
