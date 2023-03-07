@@ -12,6 +12,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: true
+    connect-retries-interval: 15s
+    connect-retries: 2
     locations: classpath:db/migration
     baseline-on-migrate: true
   security:
