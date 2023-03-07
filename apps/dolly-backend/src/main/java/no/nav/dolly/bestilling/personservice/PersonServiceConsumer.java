@@ -11,6 +11,7 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 
@@ -45,10 +46,10 @@ public class PersonServiceConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "personService_pdlSyncReady"})
-    public Mono<Boolean> getPdlSyncReady(String ident) {
+    public Flux<Boolean> getPdlSyncReady(String ident) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new PersonServiceSyncCommand(webClient, ident, token.getTokenValue()).call());
+                .flatMapMany(token -> new PersonServiceSyncCommand(webClient, ident, token.getTokenValue()).call());
     }
 
     @Override

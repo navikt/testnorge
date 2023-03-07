@@ -2,8 +2,6 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
@@ -37,7 +35,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
@@ -56,12 +53,6 @@ class ArenaForvalterClientTest {
 
     @Mock
     private TransactionHelperService transactionHelperService;
-
-    @Mock
-    private PersonServiceConsumer personServiceConsumer;
-
-    @Mock
-    private PdlPersonConsumer pdlPersonConsumer;
 
     @InjectMocks
     private ArenaForvalterClient arenaForvalterClient;
@@ -102,7 +93,6 @@ class ArenaForvalterClientTest {
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -141,7 +131,6 @@ class ArenaForvalterClientTest {
                                 .build()));
         when(arenaForvalterConsumer.deleteIdent(anyString(), anyString(), eq(accessToken))).thenReturn(Flux.just(""));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
-        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -186,7 +175,6 @@ class ArenaForvalterClientTest {
         request.setEnvironments(singleton("t3"));
         when(arenaForvalterConsumer.getToken()).thenReturn(Mono.just(accessToken));
         when(arenaForvalterConsumer.getEnvironments(accessToken)).thenReturn(Flux.just(ENV));
-        when(pdlPersonConsumer.getPdlPersoner(anyList())).thenReturn(Flux.just(pdlPersonBolk));
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT).build(),
                                 progress, false)
