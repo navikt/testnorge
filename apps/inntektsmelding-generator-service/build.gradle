@@ -47,9 +47,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    
+
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.hibernate.validator:hibernate-validator'
@@ -60,6 +59,7 @@ dependencies {
 
     implementation 'javax.validation:validation-api:2.0.1.Final'
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
+    implementation 'com.sun.xml.bind:jaxb-impl:3.0.0'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
