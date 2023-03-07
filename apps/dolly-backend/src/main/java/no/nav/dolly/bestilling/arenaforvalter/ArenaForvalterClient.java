@@ -6,10 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
-import no.nav.dolly.bestilling.personservice.PersonServiceConsumer;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.domain.PdlPerson;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -21,23 +17,17 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -50,9 +40,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
-    private final PersonServiceConsumer personServiceConsumer;
     private final TransactionHelperService transactionHelperService;
-    private final PdlPersonConsumer pdlPersonConsumer;
 
     private static ArenaNyeBrukere filtrerEksisterendeBrukere(ArenaNyeBrukere arenaNyeBrukere) {
 
@@ -84,35 +72,21 @@ public class ArenaForvalterClient implements ClientRegister {
                                         .collect(Collectors.joining(","));
                                 transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
                             })
-                            .flatMap(miljoer -> getIdenterFamilie(dollyPerson.getIdent())
-                                    .flatMap(personServiceConsumer::getPdlSyncReady)
-                                    .collectList()
-                                    .map(status -> status.stream().allMatch(BooleanUtils::isTrue))
-                                    .map(isPdlFamilyReady -> doArenaOpprett(isPdlFamilyReady, miljoer, token, bestilling, dollyPerson))
-                                    .flatMap(Mono::from)
-                                    .map(status -> futurePersist(progress, status))));
+                            .flatMap(miljoer -> doArenaOpprett(miljoer, token, bestilling, dollyPerson))
+                                    .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
     }
 
-    private Mono<String> doFeilmelding(RsDollyUtvidetBestilling bestilling) {
-        return Mono.just(bestilling.getEnvironments().stream()
-                .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(getVarselSlutt(SYSTEM))))
-                .collect(Collectors.joining(",")));
-    }
-
-    private Mono<String> doArenaOpprett(Boolean isPdlReady, List<String> miljoer, AccessToken token,
+    private Mono<String> doArenaOpprett(List<String> miljoer, AccessToken token,
                                         RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
 
-        return isTrue(isPdlReady) ?
-                Flux.fromIterable(miljoer)
+        return Flux.fromIterable(miljoer)
                         .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
                                 sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
                                 sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token)))
                         .filter(StringUtils::isNotBlank)
-                        .collect(Collectors.joining(",")) :
-
-                doFeilmelding(bestilling);
+                        .collect(Collectors.joining(","));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -128,30 +102,6 @@ public class ArenaForvalterClient implements ClientRegister {
 
         arenaForvalterConsumer.deleteIdenter(identer)
                 .subscribe(response -> log.info("Slettet utført mot Arena-forvalteren"));
-    }
-
-    private Flux<String> getIdenterFamilie(String ident) {
-
-        return pdlPersonConsumer.getPdlPersoner(List.of(ident))
-                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                .map(PdlPersonBolk::getData)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()))
-                .map(PdlPersonBolk.PersonBolk::getPerson)
-                .map(person -> Stream.of(
-                                person.getSivilstand().stream()
-                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getForelderBarnRelasjon().stream()
-                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                        .filter(Objects::nonNull)
-                                        .toList())
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .toList())
-                .flatMap(Flux::fromIterable);
     }
 
     private Flux<String> sendArenadata(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
