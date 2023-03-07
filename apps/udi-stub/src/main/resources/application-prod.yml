@@ -1,6 +1,4 @@
 spring:
-  flyway:
-    enabled: false
   datasource:
     url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
     hikari:
@@ -20,4 +18,6 @@ spring:
       database:
         backend: postgresql/preprod-fss
         role: udi-stub-admin
+        username-property: spring.datasource.username
+        password-property: spring.datasource.password
         enabled: true
