@@ -4,8 +4,6 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
-      jdbc-url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
-      driver-class-name: org.postgresql.Driver
   cloud:
     vault:
       host: vault.adeo.no
@@ -17,5 +15,3 @@ spring:
         backend: postgresql/preprod-fss
         role: udi-stub-admin
         enabled: true
-      enabled: true
-spring.config.import: vault://

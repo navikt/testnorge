@@ -4,8 +4,6 @@ spring:
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
-      jdbc-url: jdbc:postgresql://dev-pg.intern.nav.no:5432/udi-stub-dev
-      driver-class-name: org.postgresql.Driver
   cloud:
     vault:
       database:
