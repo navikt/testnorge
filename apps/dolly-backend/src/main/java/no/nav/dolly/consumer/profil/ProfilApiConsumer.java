@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.UUID;
@@ -32,15 +31,13 @@ public class ProfilApiConsumer {
 
     public ProfilApiConsumer(TokenExchange tokenService,
                              ProfilApiProperties serverProperties,
-                             GetUserInfo getUserInfo,
-                             ExchangeFilterFunction metricsWebClientFilterFunction) {
+                             GetUserInfo getUserInfo) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.getUserInfo = getUserInfo;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

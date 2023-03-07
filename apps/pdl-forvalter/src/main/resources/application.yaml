@@ -34,9 +34,9 @@ consumers:
     name: testnav-geografiske-kodeverk-service
 
 spring:
-  datasource:
-    testOnBorrow: true
-    validationQuery: select 1
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
@@ -54,8 +54,10 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
-  metrics.export:
-    prometheus.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   servlet:
     encoding:

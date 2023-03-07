@@ -7,7 +7,6 @@ import no.nav.testnav.apps.oversiktfrontend.domain.Application;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -22,15 +21,13 @@ public class AppTilgangAnalyseConsumer {
     private final TokenExchange tokenExchange;
 
     public AppTilgangAnalyseConsumer(AppTilgangAnalyseServiceProperties appTilgangAnalyseServiceProperties,
-                                     TokenExchange tokenExchange,
-                                     ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                     TokenExchange tokenExchange) {
 
         this.appTilgangAnalyseServiceProperties = appTilgangAnalyseServiceProperties;
         this.tokenExchange = tokenExchange;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(appTilgangAnalyseServiceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

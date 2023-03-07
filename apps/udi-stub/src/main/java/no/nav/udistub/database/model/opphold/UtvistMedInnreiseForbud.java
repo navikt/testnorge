@@ -7,9 +7,9 @@ import lombok.Setter;
 import no.udi.mt_1067_nav_data.v1.JaNeiUavklart;
 import no.udi.mt_1067_nav_data.v1.Varighet;
 
-import javax.persistence.AttributeOverride;
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
 import java.time.LocalDate;
 
 @Embeddable

@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.5.0.2730"
-    id 'org.springframework.boot' version "2.7.5"
+    id "org.sonarqube" version "4.0.0.2929"
+    id 'org.springframework.boot' version "3.0.4"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -21,8 +21,9 @@ bootJar {
 }
 
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
 }
 
@@ -36,7 +37,6 @@ repositories {
 }
 
 dependencies {
-
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:servlet-security'
@@ -47,22 +47,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
+    
     implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
 
     implementation 'javax.validation:validation-api:2.0.1.Final'
-    runtimeOnly 'com.sun.xml.bind:jaxb-ri:2.3.5'
+    implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
 
     implementation 'javax.activation:activation:1.1.1'

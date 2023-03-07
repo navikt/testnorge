@@ -7,7 +7,7 @@ import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
@@ -29,13 +29,11 @@ public class OrganisasjonOrgnummerServiceConsumer {
 
     public OrganisasjonOrgnummerServiceConsumer(
             TestnavOrgnummerServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

@@ -27,6 +27,7 @@ public class TestmiljoerServiceCommand implements Callable<Mono<String[]>> {
                 .retrieve()
                 .bodyToMono(String[].class)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .cache(Duration.ofSeconds(10));
     }
 }

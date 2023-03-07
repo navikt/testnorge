@@ -13,7 +13,6 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -32,19 +31,17 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
 
     public ArbeidplassenCVConsumer(ArbeidsplassenProxyProperties serverProperties,
                                    TokenExchange tokenService,
-                                   ObjectMapper objectMapper,
-                                   ExchangeFilterFunction metricsWebClientFilterFunction) {
+                                   ObjectMapper objectMapper) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         this.webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_getCV"})
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
     public Flux<ArbeidsplassenCVDTO> hentCV(String ident) {
 
         log.info("Henter CV på ident: {} fra arbeidsplassenCV", ident);
@@ -52,7 +49,7 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
                 .flatMapMany(token -> new ArbeidsplassenGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_putCV"})
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
     public Flux<ArbeidsplassenCVDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
 
         log.info("Oppdaterer CV på ident: {} til arbeidsplassenCV", ident);
@@ -60,7 +57,7 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
                 .flatMapMany(token -> new ArbeidsplassenPutCommand(webClient, ident, arbeidsplassenCV, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "arbeidsplassen_deleteCV"})
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_deleteCV" })
     public Flux<ArbeidsplassenCVDTO> deleteCV(String ident) {
 
         return tokenService.exchange(serviceProperties)

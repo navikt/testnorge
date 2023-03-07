@@ -4,16 +4,16 @@ import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public interface IdentRepository extends PagingAndSortingRepository<Testident, Long> {
+public interface IdentRepository extends JpaRepository<Testident, Long> {
 
     Optional<Testident> findByIdent(String ident);
 
@@ -26,7 +26,6 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
     @Modifying
     int deleteTestidentByIdent(String testident);
 
-    @Override // nødvendig da eksplisitt query sikrer at sletting skjer før oppretting!
     @Modifying
     @Query(value = "delete from Testident ti where ti.id = :id")
     void deleteById(@Param("id") Long id);
@@ -75,4 +74,10 @@ public interface IdentRepository extends PagingAndSortingRepository<Testident, L
 
         String getMiljoer();
     }
+
+    @Query(value = "select count(*) from Testident ti where ti.testgruppe.id = :gruppeId")
+    int countByTestgruppe(@Param("gruppeId") Long gruppeId);
+
+    @Query(value = "select ti from Testident ti where ti.testgruppe.id = :gruppeId")
+    List<Testident> findByTestgruppe(@Param("gruppeId") Long gruppeId);
 }

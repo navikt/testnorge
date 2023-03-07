@@ -12,12 +12,11 @@ import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
 
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 abstract class KafkaProducer<T extends SpecificRecord> {
@@ -26,7 +25,7 @@ abstract class KafkaProducer<T extends SpecificRecord> {
     @SneakyThrows
     KafkaProducer(String groupId) {
         InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
-        var keystorePassword =  nullToEmpty(System.getenv("KAFKA_CREDSTORE_PASSWORD"));
+        var keystorePassword = nullToEmpty(System.getenv("KAFKA_CREDSTORE_PASSWORD"));
         Map<String, Object> props = new HashMap<>();
 
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, nullToEmpty(System.getenv("KAFKA_BROKERS")));
@@ -55,7 +54,7 @@ abstract class KafkaProducer<T extends SpecificRecord> {
         this.kafkaTemplate = new KafkaTemplate<>(new DefaultKafkaProducerFactory<>(props));
     }
 
-    private String nullToEmpty(String value){
+    private String nullToEmpty(String value) {
         return value == null ? "" : value;
     }
 
@@ -63,5 +62,5 @@ abstract class KafkaProducer<T extends SpecificRecord> {
         return kafkaTemplate;
     }
 
-    abstract ListenableFuture<SendResult<String, T>> send(String key, T value);
+    abstract CompletableFuture<SendResult<String, T>> send(String key, T value);
 }

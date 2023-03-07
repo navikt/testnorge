@@ -16,4 +16,9 @@ public class AdressebeskyttelseDTO extends DbVersjonDTO {
     public enum AdresseBeskyttelse {STRENGT_FORTROLIG_UTLAND, STRENGT_FORTROLIG, FORTROLIG, UGRADERT}
 
     private AdresseBeskyttelse gradering;
+
+    public boolean isStrengtFortrolig(){
+
+        return gradering == AdresseBeskyttelse.STRENGT_FORTROLIG;
+    }
 }

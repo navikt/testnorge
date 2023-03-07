@@ -30,7 +30,7 @@ public final class CheckAliveUtil {
                     .retrieve().toBodilessEntity()
                     .block();
             if (nonNull(response) && response.getStatusCode().is2xxSuccessful()) {
-                return response.getStatusCode().name();
+                return "OK";
             }
         } catch (WebClientResponseException ex) {
             String feilmelding = PATTERN.formatted(ex.getStatusCode(), url);

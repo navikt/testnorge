@@ -7,7 +7,6 @@ import no.nav.dolly.web.consumers.dto.BrukerDTO;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -20,15 +19,13 @@ public class BrukerConsumer {
     private final AccessService accessService;
 
     public BrukerConsumer(TestnavBrukerServiceProperties serviceProperties,
-                          AccessService accessService,
-                          ExchangeFilterFunction metricsWebClientFilterFunction) {
+                          AccessService accessService) {
 
         this.serviceProperties = serviceProperties;
         this.accessService = accessService;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

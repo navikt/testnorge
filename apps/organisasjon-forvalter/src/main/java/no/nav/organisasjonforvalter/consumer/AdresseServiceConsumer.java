@@ -6,7 +6,6 @@ import no.nav.organisasjonforvalter.consumer.command.AdresseServiceCommand;
 import no.nav.testnav.libs.dto.adresseservice.v1.VegadresseDTO;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Arrays;
@@ -24,13 +23,11 @@ public class AdresseServiceConsumer {
 
     public AdresseServiceConsumer(
             AdresseServiceProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

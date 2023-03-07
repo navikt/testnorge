@@ -2,8 +2,8 @@ package no.nav.testnav.apps.importfratpsfservice.dto;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 

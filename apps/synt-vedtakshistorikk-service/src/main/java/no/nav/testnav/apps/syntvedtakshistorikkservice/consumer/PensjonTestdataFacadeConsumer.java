@@ -10,7 +10,7 @@ import no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.Collections;
@@ -25,13 +25,11 @@ public class PensjonTestdataFacadeConsumer {
 
     public PensjonTestdataFacadeConsumer(
             PensjonTestdataFacadeProxyProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.webClient = WebClient.builder()
                 .baseUrl(serviceProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
         this.tokenExchange = tokenExchange;
     }

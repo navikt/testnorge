@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.sigrunstub.dto.SigrunstubResponse;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
@@ -43,7 +44,7 @@ public class SigrunstubDeleteCommand implements Callable<Mono<SigrunstubResponse
                 .toBodilessEntity()
                 .map(resultat -> SigrunstubResponse.builder()
                         .ident(ident)
-                        .status(resultat.getStatusCode())
+                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
                         .build())
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Mono.just(SigrunstubResponse.builder()

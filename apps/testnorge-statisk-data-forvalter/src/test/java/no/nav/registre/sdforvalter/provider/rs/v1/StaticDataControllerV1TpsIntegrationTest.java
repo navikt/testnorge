@@ -1,7 +1,6 @@
 package no.nav.registre.sdforvalter.provider.rs.v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -9,26 +8,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
-import no.nav.registre.sdforvalter.config.credentials.TpsfProxyProperties;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
-import org.apache.http.HttpHeaders;
-import org.junit.Before;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentMatchers;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.ArrayList;
@@ -41,7 +29,6 @@ import no.nav.registre.sdforvalter.database.repository.TpsIdenterRepository;
 import no.nav.registre.sdforvalter.domain.Opprinnelse;
 import no.nav.registre.sdforvalter.domain.TpsIdent;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
-import reactor.core.publisher.Mono;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 
@@ -55,9 +42,6 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 class StaticDataControllerV1TpsIntegrationTest {
     @Autowired
     private MockMvc mvc;
-
-    @MockBean
-    public JwtDecoder jwtDecoder;
 
     @Autowired
     private ObjectMapper objectMapper;

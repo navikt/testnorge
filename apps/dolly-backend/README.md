@@ -31,3 +31,12 @@ Så kjør `./gradlew clean build`
 Deretter kan DollyBackendApplicationStarter startes med disse VM options:
 
 `-Dspring.profiles.active=local --add-opens java.base/java.lang=ALL-UNNAMED -Dspring.cloud.vault.token=*TOKEN*`
+
+For å kjøre tester og bygge appen lokalt må Docker (Colima kan brukes på Mac) kjøre og man er nødt til å sette disse
+miljøvariablene:
+
+```
+DOCKER_HOST=unix://${HOME}/.colima/default/docker.sock
+TESTCONTAINERS_DOCKER_SOCKET_OVERRIDE=/var/run/docker.sock
+TESTCONTAINERS_RYUK_DISABLED=true
+```

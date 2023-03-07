@@ -1,12 +1,11 @@
 package no.nav.testnav.libs.dto.statiskedataforvalter.v1;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.Value;
-
-import javax.validation.constraints.Pattern;
 
 @Value
 @Builder

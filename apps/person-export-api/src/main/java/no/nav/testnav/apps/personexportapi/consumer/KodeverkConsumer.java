@@ -15,7 +15,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
+
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Component
@@ -29,8 +29,7 @@ public class KodeverkConsumer {
 
     public KodeverkConsumer(
             TokenExchange tokenExchange,
-            KodeverkProperties serviceProperties,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            KodeverkProperties serviceProperties) {
 
         this.tokenExchange = tokenExchange;
         this.properties = serviceProperties;
@@ -39,7 +38,6 @@ public class KodeverkConsumer {
                 .codecs(configurer -> configurer
                         .defaultCodecs()
                         .maxInMemorySize(16 * 1024 * 1024))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

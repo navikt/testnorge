@@ -170,14 +170,19 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
-  metrics.export:
-    prometheus.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   servlet:
     encoding:
       charset: UTF-8
 
 logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
   level:
     org:
       springframework:

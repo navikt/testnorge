@@ -1,18 +1,14 @@
-
 spring:
   datasource:
     url: jdbc:postgresql://b27dbvl023.preprod.local:5432/udi-stub-dev
     hikari:
       maximum-pool-size: 3
       minimum-idle: 1
-    driver-class-name: org.postgresql.Driver
-  jpa:
-    properties:
-      hibernate:
-        default-schema: public
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+      jdbc-url: jdbc:postgresql://b27dbvl023.preprod.local:5432/udi-stub-dev
+      driver-class-name: org.postgresql.Driver
   cloud:
     vault:
       database:
         backend: postgresql/preprod-fss
         role: udi-stub-dev-admin
+        enabled: true

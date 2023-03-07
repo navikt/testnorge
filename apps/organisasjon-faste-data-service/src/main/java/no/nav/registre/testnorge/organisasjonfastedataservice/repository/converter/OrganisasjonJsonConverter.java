@@ -3,7 +3,7 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.repository.conver
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 
-import javax.persistence.AttributeConverter;
+import jakarta.persistence.AttributeConverter;
 
 import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 

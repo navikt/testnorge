@@ -17,8 +17,8 @@ public class ProdConfig {
 
     @Bean
     public Jedis jedis(
-            @Value("${spring.redis.host}") String host,
-            @Value("${spring.redis.port}") Integer port
+            @Value("${spring.data.redis.host}") String host,
+            @Value("${spring.data.redis.port}") Integer port
     ) {
         return new Jedis(host, port);
     }

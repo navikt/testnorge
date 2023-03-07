@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.5.0.2730"
-    id 'org.springframework.boot' version "2.7.5"
+    id "org.sonarqube" version "4.0.0.2929"
+    id 'org.springframework.boot' version "3.0.4"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -23,10 +23,12 @@ bootJar {
 }
 
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2021.0.5'
+        mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
 }
+
 
 properties {
     compileJava.options.encoding = 'UTF-8'
@@ -42,18 +44,10 @@ repositories {
     mavenLocal()
 }
 
+
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-    implementation 'org.springframework.cloud:spring-cloud-starter-sleuth'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
 
     implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:data-transfer-objects'
@@ -61,14 +55,28 @@ dependencies {
     implementation 'no.nav.testnav.libs:security-core'
     implementation 'no.nav.testnav.libs:servlet-security'
 
-    implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'org.flywaydb:flyway-core'
-    implementation 'org.postgresql:postgresql'
+    implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
+    implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
-    implementation 'org.springdoc:springdoc-openapi-ui:1.6.9'
+
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
+
+    implementation 'org.postgresql:postgresql'
+    implementation 'org.flywaydb:flyway-core'
+
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'

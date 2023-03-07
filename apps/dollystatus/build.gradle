@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id "org.sonarqube" version "3.5.0.2730"
-    id 'org.springframework.boot' version "2.7.5"
+    id "org.sonarqube" version "4.0.0.2929"
+    id 'org.springframework.boot' version "3.0.4"
     id 'io.spring.dependency-management' version "1.1.0"
 }
 
@@ -23,6 +23,7 @@ bootJar {
     archiveFileName = "app.jar"
 }
 dependencyManagement {
+    applyMavenExclusions = false
     imports {
     }
 }
@@ -38,7 +39,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+    implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 java.sourceCompatibility = JavaVersion.VERSION_17

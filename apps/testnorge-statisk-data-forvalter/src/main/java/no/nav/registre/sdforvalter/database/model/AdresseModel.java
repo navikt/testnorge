@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 
 import no.nav.registre.sdforvalter.domain.Adresse;
 

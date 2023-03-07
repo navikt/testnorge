@@ -36,11 +36,7 @@
         </root>
     </springProfile>
 
-    <logger name="no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer">
-        <level value="TRACE"/>
-    </logger>
-    <logger name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor">
-        <level value="TRACE"/>
-    </logger>
+    <logger level="TRACE" name="no.nav.registre.testnorge.sykemelding.consumer.SyfoConsumer" />
+    <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
 </configuration>
 

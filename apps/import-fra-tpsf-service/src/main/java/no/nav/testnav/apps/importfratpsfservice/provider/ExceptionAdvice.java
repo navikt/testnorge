@@ -22,12 +22,25 @@ public class ExceptionAdvice {
     //    private final HttpServletRequest httpServletRequest;
 //    private final UrlPathHelper urlPathHelper;
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ExceptionInformation {
+
+        private String message;
+        private String error;
+        private String path;
+        private Integer status;
+        private LocalDateTime timestamp;
+    }
+
     @ResponseBody
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     ExceptionInformation clientErrorException(NotFoundException exception) {
         return ExceptionInformation.builder()
-                .error(exception.getStatusCode().getReasonPhrase())
+                .error(exception.getStatusText())
                 .status(exception.getStatusCode().value())
                 .message(exception.getMessage())
 //                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
@@ -40,24 +53,11 @@ public class ExceptionAdvice {
     @ExceptionHandler(BadRequestException.class)
     ExceptionInformation clientErrorException(BadRequestException exception) {
         return ExceptionInformation.builder()
-                .error(exception.getStatusCode().getReasonPhrase())
+                .error(exception.getStatusText())
                 .status(exception.getStatusCode().value())
                 .message(exception.getMessage())
 //                .path(urlPathHelper.getPathWithinApplication(httpServletRequest))
                 .timestamp(LocalDateTime.now())
                 .build();
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class ExceptionInformation {
-
-        private String message;
-        private String error;
-        private String path;
-        private Integer status;
-        private LocalDateTime timestamp;
     }
 }

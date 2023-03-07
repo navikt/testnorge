@@ -6,7 +6,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -20,8 +19,7 @@ public class HodejegerenConsumer {
     public HodejegerenConsumer(
             @Value("${consumers.hodejegeren.url}") String url,
             HodejegerenProperties serviceProperties,
-            TokenExchange tokenExchange,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            TokenExchange tokenExchange) {
 
         this.serviceProperties = serviceProperties;
         this.tokenExchange = tokenExchange;
@@ -29,7 +27,6 @@ public class HodejegerenConsumer {
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 

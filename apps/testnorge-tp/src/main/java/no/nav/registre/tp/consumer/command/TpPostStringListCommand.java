@@ -9,5 +9,4 @@ public class TpPostStringListCommand extends TpPostListCommand<String[]> {
     public TpPostStringListCommand(String url, List<String> fnrs, WebClient webClient) {
         super(url, String[].class, new String[0], fnrs, webClient);
     }
-
 }

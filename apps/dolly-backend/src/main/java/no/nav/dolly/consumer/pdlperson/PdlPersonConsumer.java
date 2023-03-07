@@ -13,10 +13,8 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.apache.http.Consts;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -26,6 +24,7 @@ import java.io.InputStreamReader;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Slf4j
@@ -39,15 +38,14 @@ public class PdlPersonConsumer implements ConsumerStatus {
 
     public PdlPersonConsumer(TokenExchange tokenService,
                              PdlProxyProperties serverProperties,
-                             ObjectMapper objectMapper,
-                             ExchangeFilterFunction metricsWebClientFilterFunction) {
+                             ObjectMapper objectMapper
+    ) {
 
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
         webClient = WebClient.builder()
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
@@ -70,9 +68,19 @@ public class PdlPersonConsumer implements ConsumerStatus {
                         ).call()));
     }
 
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-pdl-proxy";
+    }
+
     public static String hentQueryResource(String pathResource) {
         val resource = new ClassPathResource(pathResource);
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), Consts.UTF_8))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(resource.getInputStream(), UTF_8))) {
             return reader.lines().collect(Collectors.joining("\n"));
 
         } catch (IOException e) {
@@ -83,16 +91,6 @@ public class PdlPersonConsumer implements ConsumerStatus {
 
     public enum PDL_MILJOER {
         Q1, Q2
-    }
-
-    @Override
-    public String serviceUrl() {
-        return serviceProperties.getUrl();
-    }
-
-    @Override
-    public String consumerName() {
-        return "testnav-pdl-proxy";
     }
 
 }

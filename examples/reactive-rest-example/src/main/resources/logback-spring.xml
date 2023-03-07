@@ -34,7 +34,5 @@
         <appender-ref ref="CONSOLE"/>
     </root>
 
-    <logger name="no.nav.testnav.libs.reactivecore.filter.RequestLogger">
-        <level value="TRACE"/>
-    </logger>
+    <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
 </configuration>

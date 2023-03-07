@@ -11,7 +11,6 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
@@ -28,15 +27,14 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
     public SyntSykemeldingConsumer(
             TokenExchange accessTokenService,
             SyntSykemeldingApiProperties serverProperties,
-            ObjectMapper objectMapper,
-            ExchangeFilterFunction metricsWebClientFilterFunction) {
+            ObjectMapper objectMapper
+    ) {
 
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
         this.webClient = WebClient.builder()
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
-                .filter(metricsWebClientFilterFunction)
                 .build();
     }
 
