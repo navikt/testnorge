@@ -1,5 +1,10 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 spring:
+  jpa:
+    properties:
+      hibernate:
+        id:
+          db_structure_naming_strategy: legacy
   main:
     banner-mode: off
   application:
@@ -16,6 +21,10 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-inntektsmelding-service
+
+
+
+
 
 springdoc:
   swagger-ui:
