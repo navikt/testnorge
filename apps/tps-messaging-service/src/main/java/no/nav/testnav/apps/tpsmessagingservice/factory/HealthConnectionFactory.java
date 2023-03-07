@@ -1,16 +1,15 @@
 package no.nav.testnav.apps.tpsmessagingservice.factory;
 
 import com.ibm.mq.constants.CMQC;
-import com.ibm.mq.jms.MQQueueConnectionFactory;
-import com.ibm.msg.client.jms.JmsConstants;
-import com.ibm.msg.client.wmq.common.CommonConstants;
+import com.ibm.mq.jakarta.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.jakarta.jms.JmsConstants;
+import com.ibm.msg.client.jakarta.wmq.common.CommonConstants;
+import jakarta.jms.JMSException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
-
-import javax.jms.JMSException;
 
 @Configuration
 public class HealthConnectionFactory {

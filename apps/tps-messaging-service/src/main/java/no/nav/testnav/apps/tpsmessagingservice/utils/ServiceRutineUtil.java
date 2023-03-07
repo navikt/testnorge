@@ -4,7 +4,7 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import no.nav.testnav.apps.tpsmessagingservice.dto.TpsServicerutineRequest;
 
-import javax.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBContext;
 import java.io.StringWriter;
 
 @UtilityClass

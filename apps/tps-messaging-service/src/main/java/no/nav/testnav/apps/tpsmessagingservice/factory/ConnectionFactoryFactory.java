@@ -1,7 +1,7 @@
 package no.nav.testnav.apps.tpsmessagingservice.factory;
 
-import javax.jms.ConnectionFactory;
-import javax.jms.JMSException;
+import jakarta.jms.ConnectionFactory;
+import jakarta.jms.JMSException;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 
 @FunctionalInterface
