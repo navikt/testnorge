@@ -63,10 +63,10 @@ public class DbPerson {
     private PersonDTO person;
 
     @OrderBy("relasjonType desc, id desc")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DbRelasjon> relasjoner;
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<DbAlias> alias;
 
