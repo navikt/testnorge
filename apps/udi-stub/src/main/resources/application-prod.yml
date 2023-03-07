@@ -1,5 +1,6 @@
 spring:
   flyway:
+    enabled: false
   datasource:
     url: jdbc:postgresql://b27dbvl007.preprod.local:5432/udi-stub
     hikari:
@@ -9,6 +10,8 @@ spring:
       driver-class-name: org.postgresql.Driver
   cloud:
     vault:
+      config:
+        lifecycle.enabled: true
       host: vault.adeo.no
       port: 443
       fail-fast: true
