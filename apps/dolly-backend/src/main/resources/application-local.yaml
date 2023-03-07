@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: dolly-backend-dev
   cloud:
     vault:
       host: vault.adeo.no
@@ -30,35 +28,20 @@ spring:
   jpa:
     properties:
       hibernate:
-        default-schema: public
         dialect: org.hibernate.dialect.PostgreSQLDialect
 
 management:
   endpoints:
-    enabled-by-default: true
     web:
-      base-path: /internal
       exposure:
         include: "*"
       path-mapping:
         prometheus: "prometheus"
-  endpoint:
-    prometheus:
-      enabled: true
-    heapdump:
-      enabled: true
-  prometheus:
-    metrics:
-      export:
-        enabled: true
 
 consumers:
   testnav-profil-api:
     name: testnorge-profil-api-dev
     url: https://testnorge-profil-api-dev.dev.intern.nav.no
-  tps-forvalteren-proxy:
-    name: tps-forvalteren-dev-proxy
-    url: https://tps-forvalteren-dev-proxy.dev.intern.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
     url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
