@@ -15,12 +15,12 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.Hibernate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.util.Date;
-import java.util.Objects;
 
 
 @Entity
@@ -47,13 +47,16 @@ public class InntektsmeldingModel {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
         InntektsmeldingModel that = (InntektsmeldingModel) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+
+        return new EqualsBuilder().append(id, that.id).append(createdAt, that.createdAt).isEquals();
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        return new HashCodeBuilder(17, 37).append(id).append(createdAt).toHashCode();
     }
 }

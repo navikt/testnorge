@@ -22,10 +22,6 @@ spring:
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-inntektsmelding-service
 
-
-
-
-
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
