@@ -69,6 +69,5 @@ spec:
       memory: 2048Mi
   envFrom:
     - secret: azure-trygdeetaten-testnav-arbeidsplassencv-proxy-trygdeetaten
-    - secret: tokenx-testnav-arbeidsplassencv-proxy
   ingresses:
     - "https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io"
