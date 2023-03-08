@@ -24,8 +24,10 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -60,14 +62,20 @@ public class DbPerson {
     private PersonDTO person;
 
     @OrderBy("relasjonType desc, id desc")
-    @Getter
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DbRelasjon> relasjoner;
     @JsonIgnore
-    @Getter
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
     private List<DbAlias> alias;
+
+    public List<DbRelasjon> getRelasjoner() {
+        return Optional.ofNullable(relasjoner).orElse(new ArrayList<>());
+    }
+
+    public List<DbAlias> getAlias() {
+        return Optional.ofNullable(alias).orElse(new ArrayList<>());
+    }
 
     @Override
     public boolean equals(Object o) {
