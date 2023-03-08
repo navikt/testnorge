@@ -16,6 +16,7 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -70,6 +71,7 @@ public class PersonServiceClient {
                     pdlDataConsumer.getPersoner(List.of(dollyPerson.getIdent()))
                             .map(FullPersonDTO::getRelasjoner)
                             .flatMap(Flux::fromIterable)
+                            .filter(relasjonType -> RelasjonType.GAMMEL_IDENTITET != relasjonType.getRelasjonType())
                             .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
                             .map(PersonDTO::getIdent));
         } else {
