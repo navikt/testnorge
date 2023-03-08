@@ -10,10 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -69,7 +66,7 @@ public class StatusController {
         return consumerRegister
                 .parallelStream()
                 .filter(StatusController::isNotExcluded)
-                .map(client -> Arrays.asList(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
+                .map(client -> List.of(getConsumerNavn(client.getClass().getSimpleName()), client.checkStatus(webClient)))
                 .collect(Collectors.toMap(key -> key.get(0), value -> value.get(1)));
     }
 
