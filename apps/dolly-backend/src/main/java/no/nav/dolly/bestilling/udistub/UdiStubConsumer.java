@@ -30,11 +30,12 @@ public class UdiStubConsumer implements ConsumerStatus {
     public UdiStubConsumer(
             TokenExchange accessTokenService,
             UdistubServerProperties serverProperties,
-            ObjectMapper objectMapper) {
-
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();

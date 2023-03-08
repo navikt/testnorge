@@ -28,11 +28,15 @@ public class AaregConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
-    public AaregConsumer(AaregProxyProperties serverProperties, TokenExchange tokenService, ObjectMapper objectMapper) {
+    public AaregConsumer(
+            AaregProxyProperties serverProperties,
+            TokenExchange tokenService,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();

@@ -20,13 +20,14 @@ public class OrganisasjonServiceConsumer {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public OrganisasjonServiceConsumer(TokenExchange tokenService,
-                                       OrganisasjonServiceProperties serviceProperties
+    public OrganisasjonServiceConsumer(
+            TokenExchange tokenService,
+            OrganisasjonServiceProperties serviceProperties,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .build();
     }

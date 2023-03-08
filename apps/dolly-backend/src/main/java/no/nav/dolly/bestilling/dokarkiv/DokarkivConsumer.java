@@ -31,13 +31,14 @@ public class DokarkivConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public DokarkivConsumer(DokarkivProxyServiceProperties properties,
-                            TokenExchange tokenService,
-                            ObjectMapper objectMapper) {
-
+    public DokarkivConsumer(
+            DokarkivProxyServiceProperties properties,
+            TokenExchange tokenService,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder) {
         this.serviceProperties = properties;
         this.tokenService = tokenService;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(properties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

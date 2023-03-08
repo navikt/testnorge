@@ -26,13 +26,14 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public InntektsmeldingConsumer(TokenExchange tokenService,
-                                   InntektsmeldingServiceProperties serviceProperties
+    public InntektsmeldingConsumer(
+            TokenExchange tokenService,
+            InntektsmeldingServiceProperties serviceProperties,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .build();
     }
