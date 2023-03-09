@@ -3,9 +3,9 @@ import { Argument } from 'classnames'
 import originalFetch from 'isomorphic-fetch'
 import axios from 'axios'
 import fetch_retry from 'fetch-retry'
-import logoutBruker from '@/components/utlogging/logoutBruker'
 import { runningCypressE2E } from '@/service/services/Request'
 import * as _ from 'lodash-es'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 const fetchRetry = fetch_retry(originalFetch)
 
@@ -99,8 +99,8 @@ export const fetcher = (url, headers) =>
 				return null
 			}
 			if (reason.status === 401 || reason.status === 403) {
-				console.error('Auth feilet, logger ut bruker')
-				logoutBruker()
+				console.error('Auth feilet, navigerer til login')
+				navigateToLogin()
 			}
 			if (reason.status === 404) {
 				throw new NotFoundError()
@@ -126,8 +126,8 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		retryOn: (attempt, _error, response) => {
 			if (!response.ok && !runningCypressE2E()) {
 				if (response.status === 401) {
-					console.error('Auth feilet, reloader siden for å få ny auth client.')
-					window.location.reload()
+					console.error('Auth feilet, navigerer til login')
+					navigateToLogin()
 				}
 				if (attempt < 4) {
 					return true
@@ -149,8 +149,8 @@ const _fetch = (url: string, config: Config, body?: object): Promise<Response> =
 		}
 		if (!response.ok && !runningCypressE2E()) {
 			if (response.status === 401) {
-				console.error('Auth feilet, reloader siden for å få ny auth client.')
-				window.location.reload()
+				console.error('Auth feilet, navigerer til login')
+				navigateToLogin()
 			}
 			if (response.status === 404) {
 				throw new NotFoundError()

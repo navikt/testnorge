@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.web.consumers.command.GetBrukerCommand;
 import no.nav.dolly.web.consumers.command.GetTokenCommand;
 import no.nav.dolly.web.consumers.dto.BrukerDTO;
-import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
+import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.TestnavBrukerServiceProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -16,13 +16,13 @@ import reactor.core.publisher.Mono;
 public class BrukerConsumer {
     private final WebClient webClient;
     private final TestnavBrukerServiceProperties serviceProperties;
-    private final TokenExchange tokenExchange;
+    private final AccessService accessService;
 
     public BrukerConsumer(TestnavBrukerServiceProperties serviceProperties,
-                          TokenExchange tokenExchange) {
+                          AccessService accessService) {
 
         this.serviceProperties = serviceProperties;
-        this.tokenExchange = tokenExchange;
+        this.accessService = accessService;
         this.webClient = WebClient
                 .builder()
                 .baseUrl(serviceProperties.getUrl())
@@ -30,13 +30,13 @@ public class BrukerConsumer {
     }
 
     public Mono<BrukerDTO> getBruker(String orgnummer, ServerWebExchange serverWebExchange) {
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
-                .flatMap(accessToken -> new GetBrukerCommand(webClient, accessToken.getTokenValue(), orgnummer).call());
+        return accessService.getAccessToken(serviceProperties, serverWebExchange)
+                .flatMap(accessToken -> new GetBrukerCommand(webClient, accessToken, orgnummer).call());
     }
 
-    public Mono<String> getToken(String id, ServerWebExchange serverWebExchange){
-        return tokenExchange.exchange(serviceProperties, serverWebExchange)
-                .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken.getTokenValue(), id).call());
+    public Mono<String> getToken(String id, ServerWebExchange serverWebExchange) {
+        return accessService.getAccessToken(serviceProperties, serverWebExchange)
+                .flatMap(accessToken -> new GetTokenCommand(webClient, accessToken, id).call());
     }
 
 }

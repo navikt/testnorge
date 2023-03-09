@@ -70,8 +70,8 @@ export const InfoStripe = () => {
 	}
 
 	const { data } = useSWR<InfoStripeType, Error>(getInfoStripeUrl, fetcher, {
-		refreshInterval: 15000,
-		dedupingInterval: 15000,
+		refreshInterval: 60000,
+		dedupingInterval: 60000,
 	})
 
 	useEffect(() => {

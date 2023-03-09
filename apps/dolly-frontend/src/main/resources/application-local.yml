@@ -1,3 +1,9 @@
+IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
+POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
+
+server:
+  port: 8020
+
 spring:
   security:
     oauth2:
@@ -22,12 +28,6 @@ spring:
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           idporten:
             issuer-uri: ${IDPORTEN_ISSUER_URI}
-
-server:
-  port: 8020
-
-POST_LOGOUT_REDIRECT_URI: 'http://localhost:3000/login'
-IDPORTEN_ISSUER_URI: https://oidc-ver2.difi.no/idporten-oidc-provider/
 
 consumers:
   tps-forvalteren-proxy:

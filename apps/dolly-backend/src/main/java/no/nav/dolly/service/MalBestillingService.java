@@ -69,6 +69,7 @@ public class MalBestillingService {
         return bestillinger.stream().map(bestilling -> RsMalBestilling.builder()
                 .malNavn(bestilling.getMalBestillingNavn())
                 .id(bestilling.getId())
+                .bestilling(mapperFacade.map(bestilling, RsMalBestillingWrapper.RsBestilling.class))
                 .build()).toList();
     }
 

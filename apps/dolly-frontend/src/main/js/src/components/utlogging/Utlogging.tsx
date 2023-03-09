@@ -7,6 +7,7 @@ import { WarningFilled } from '@navikt/ds-icons'
 import logoutBruker from './logoutBruker'
 import ProgressBar from '@navikt/fremdriftslinje'
 import { Button } from '@navikt/ds-react'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 function getCookie(cookieName: string) {
 	const name = cookieName + '='
@@ -52,15 +53,11 @@ const Utlogging = () => {
 
 	const continueSession = () => Api.fetch('/session/ping', { method: 'GET' })
 
-	if (milliseconds <= 0) {
-		logoutBruker()
-	}
-
 	return (
 		<DollyModal
 			minWidth={670}
 			isOpen={milliseconds <= SHOW_MODAL_WHEN_TIME_LEFT}
-			onRequestClose={() => logoutBruker()}
+			onRequestClose={() => navigateToLogin()}
 			noCloseButton={true}
 			contentLabel="Utlogging rute"
 		>

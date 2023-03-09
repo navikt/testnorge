@@ -27,7 +27,7 @@ jobs:
     name: Deploy
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-person-organisasjon-tilgang-service') }}
     with:
       resource: 'apps/person-organisasjon-tilgang-service/config.yml'
       app-name: 'person-organisasjon-tilgang-service'
@@ -38,7 +38,7 @@ jobs:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
     needs: build
-    if: ${{ github.ref == 'refs/heads/master' }}
+    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-person-organisasjon-tilgang-service') }}
     with:
       resource: 'apps/person-organisasjon-tilgang-service/config.dev.yml'
       app-name: 'person-organisasjon-tilgang-service'
