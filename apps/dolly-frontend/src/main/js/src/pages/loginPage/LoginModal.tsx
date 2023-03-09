@@ -37,14 +37,30 @@ const getAdvarsel: () => string = () => {
 	return null
 }
 
+export const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
+	event.preventDefault()
+	redirectTo(path)
+}
+
+const redirectTo = (path: string) => {
+	const toIdporten = path.includes('idporten') && !window.location.hostname?.includes('localhost')
+	const isIdporten =
+		window.location.hostname?.includes('idporten') &&
+		!window.location.hostname?.includes('localhost')
+
+	if (toIdporten && !isIdporten) {
+		location.replace('https://dolly-idporten.ekstern.dev.nav.no/login')
+	}
+	if (!toIdporten && isIdporten) {
+		location.replace('https://dolly.ekstern.dev.nav.no/login')
+	}
+	location.replace(location.protocol + '//' + location.host + path)
+}
+
 export default () => {
 	const advarsel = getAdvarsel()
 	const modalHeight = advarsel ? 400 + ((advarsel.length + 70) / 88) * 20 : 350
-
-	const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-		event.preventDefault()
-		location.replace(location.protocol + '//' + location.host + path)
-	}
+	const runningLocal = window.location.hostname.includes('localhost')
 
 	return (
 		<div className="login-container">
@@ -64,7 +80,7 @@ export default () => {
 				<NavButton
 					className="login-modal_button-nav"
 					variant={'primary'}
-					onClick={redirectOnClick('/oauth2/authorization/aad')}
+					onClick={redirectOnClick(runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login')}
 				>
 					Logg inn med NAV epost
 				</NavButton>
