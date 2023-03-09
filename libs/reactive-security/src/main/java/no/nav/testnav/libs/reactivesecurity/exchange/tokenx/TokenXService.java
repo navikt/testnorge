@@ -32,12 +32,11 @@ public class TokenXService implements TokenService {
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
         return getAuthenticatedTokenAction.call()
-                .flatMap(token -> new OnBehalfOfExchangeCommand(webClient, tokenX, serverProperties.toTokenXScope(), token).call());
+                .flatMap(token -> new OnBehalfOfExchangeCommand(webClient, tokenX, serverProperties.toTokenXScope(), token.getAccessTokenValue()).call());
     }
 
-    public Mono<AccessToken> exchange(String faketoken) {
-        return getAuthenticatedTokenAction.call()
-                .flatMap(token -> new OnBehalfOfExchangeCommand(webClient, tokenX, faketoken, token).call());
+    public Mono<AccessToken> exchange(ServerProperties serverProperties, String faketoken) {
+        return new OnBehalfOfExchangeCommand(webClient, tokenX, serverProperties.toTokenXScope(), faketoken).call();
     }
 
     @Override

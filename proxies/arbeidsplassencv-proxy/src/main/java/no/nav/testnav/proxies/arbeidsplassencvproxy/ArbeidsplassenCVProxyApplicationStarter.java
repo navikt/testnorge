@@ -44,6 +44,7 @@ public class ArbeidsplassenCVProxyApplicationStarter {
                 .route(createRoute(arbeidsplassenCVProperties.getUrl(),
                         AddAuthenticationRequestGatewayFilterFactory
                                 .bearerIdportenHeaderFilter(fakedingsConsumer, tokenXService,
+                                        arbeidsplassenCVProperties,
                                         () -> tokenService.exchange(arbeidsplassenCVProperties)
                                         .map(AccessToken::getTokenValue))))
                 .build();
