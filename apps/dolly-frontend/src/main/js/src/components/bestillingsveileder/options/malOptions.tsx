@@ -173,7 +173,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		)
 	}
 
-	if (person.foreldreansvar) {
+	if (person?.foreldreansvar) {
 		newPdldata.person.foreldreansvar = person.foreldreansvar.map((relasjon: Foreldreansvar) => {
 			if (relasjon.nyAnsvarlig) {
 				relasjon.nyAnsvarlig.syntetisk = true
@@ -182,7 +182,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		})
 	}
 
-	if (person.sivilstand) {
+	if (person?.sivilstand) {
 		newPdldata.person.sivilstand = person.sivilstand.map((relasjon: Sivilstand) => {
 			if (relasjon.nyRelatertPerson) {
 				relasjon.nyRelatertPerson.syntetisk = true
@@ -191,7 +191,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		})
 	}
 
-	if (person.fullmakt) {
+	if (person?.fullmakt) {
 		newPdldata.person.fullmakt = person.fullmakt.map((fullmektig: FullmaktValues) => {
 			if (fullmektig.nyFullmektig) {
 				fullmektig.nyFullmektig.syntetisk = true
@@ -200,7 +200,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		})
 	}
 
-	if (person.vergemaal) {
+	if (person?.vergemaal) {
 		newPdldata.person.vergemaal = person.vergemaal.map((verge: VergemaalValues) => {
 			if (verge.nyVergeIdent) {
 				verge.nyVergeIdent.syntetisk = true
@@ -221,7 +221,7 @@ const getUpdatedPdldata = (pdldata: any) => {
 		)
 	}
 
-	if (person.nyident) {
+	if (person?.nyident) {
 		newPdldata.person.nyident = person.nyident.map((ident: NyIdent) => {
 			ident.syntetisk = true
 			return ident
