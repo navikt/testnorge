@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlType;
 
 @Data
 @Builder

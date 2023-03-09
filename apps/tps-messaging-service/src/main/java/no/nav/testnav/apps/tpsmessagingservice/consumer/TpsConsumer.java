@@ -11,7 +11,7 @@ import no.nav.testnav.apps.tpsmessagingservice.factory.ConnectionFactoryFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

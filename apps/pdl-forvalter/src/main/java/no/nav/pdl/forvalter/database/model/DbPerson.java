@@ -28,8 +28,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static java.util.Objects.isNull;
-
 @Getter
 @Setter
 @ToString
@@ -63,26 +61,14 @@ public class DbPerson {
     private PersonDTO person;
 
     @OrderBy("relasjonType desc, id desc")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL)
-    private List<DbRelasjon> relasjoner;
+    @Builder.Default
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<DbRelasjon> relasjoner = new ArrayList<>();
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL)
+    @Builder.Default
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     @ToString.Exclude
-    private List<DbAlias> alias;
-
-    public List<DbRelasjon> getRelasjoner() {
-        if (isNull(relasjoner)) {
-            relasjoner = new ArrayList<>();
-        }
-        return relasjoner;
-    }
-
-    public List<DbAlias> getAlias() {
-        if (isNull(alias)) {
-            alias = new ArrayList<>();
-        }
-        return alias;
-    }
+    private List<DbAlias> alias = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

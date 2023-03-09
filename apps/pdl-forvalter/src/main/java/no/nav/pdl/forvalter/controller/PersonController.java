@@ -129,7 +129,7 @@ public class PersonController {
                                              @RequestParam(required = false) Boolean ekskluderEksternePersoner) {
 
         metadataTidspunkterService.updateMetadata(ident);
-        artifactGjeldendeService.setGjeldene(ident);
+        artifactGjeldendeService.setGjeldendeForRelasjon(ident);
 
         return pdlOrdreService.send(ident, isTpsMaster, ekskluderEksternePersoner);
     }

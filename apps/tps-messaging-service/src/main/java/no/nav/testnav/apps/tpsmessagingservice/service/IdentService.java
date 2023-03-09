@@ -15,8 +15,8 @@ import no.nav.tps.ctg.m201.domain.TpsPersonData;
 import no.nav.tps.ctg.m201.domain.TpsServiceRutineType;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.List;

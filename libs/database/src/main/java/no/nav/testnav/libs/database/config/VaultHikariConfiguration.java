@@ -45,7 +45,7 @@ public class VaultHikariConfiguration implements InitializingBean {
                 var password = lease.getSecrets().get("password").toString();
                 hikariDataSource.setUsername(username);
                 hikariDataSource.setPassword(password);
-                if(hikariDataSource.getHikariPoolMXBean() != null){
+                if (hikariDataSource.getHikariPoolMXBean() != null) {
                     hikariDataSource.getHikariPoolMXBean().softEvictConnections();
                 }
 
