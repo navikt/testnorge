@@ -87,7 +87,11 @@ export default () => {
 				<NavButton
 					className="login-modal_button-bankid"
 					variant={'primary'}
-					onClick={redirectOnClick('/oauth2/authorization/idporten')}
+					onClick={redirectOnClick(
+						runningLocal
+							? '/oauth2/authorization/idporten'
+							: 'https://dolly-idporten.ekstern.dev.nav.no/oauth2/login'
+					)}
 				>
 					Logg inn med BankId
 				</NavButton>
