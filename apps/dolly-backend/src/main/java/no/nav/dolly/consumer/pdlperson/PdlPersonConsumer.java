@@ -36,14 +36,15 @@ public class PdlPersonConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
     private final WebClient webClient;
 
-    public PdlPersonConsumer(TokenExchange tokenService,
-                             PdlProxyProperties serverProperties,
-                             ObjectMapper objectMapper
+    public PdlPersonConsumer(
+            TokenExchange tokenService,
+            PdlProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
-        webClient = WebClient.builder()
+        webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

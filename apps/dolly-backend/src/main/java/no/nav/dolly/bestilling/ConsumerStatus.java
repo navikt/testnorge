@@ -11,15 +11,13 @@ public interface ConsumerStatus {
     String serviceUrl();
     String consumerName();
 
-    default Map<String, Object> checkStatus() {
+    default Map<String, Object> checkStatus(WebClient webClient) {
         final String TEAM_DOLLY = "Team Dolly";
-
-        var statusWebClient = WebClient.builder().build();
 
         var consumerStatus =  CheckAliveUtil.checkConsumerStatus(
                 serviceUrl() + "/internal/isAlive",
                 serviceUrl() + "/internal/isReady",
-                statusWebClient);
+                webClient);
 
         consumerStatus.put("team", TEAM_DOLLY);
 
@@ -27,13 +25,14 @@ public interface ConsumerStatus {
         statusMap.put(consumerName(), consumerStatus);
 
         try {
-            Map response = statusWebClient.get()
+            var response = webClient.get()
                     .uri(serviceUrl() + "/internal/status")
                     .retrieve()
                     .bodyToMono(Map.class)
                     .block();
             statusMap.putAll(response);
         } catch (Exception e) {
+            // Ignored.
         }
 
         return statusMap;

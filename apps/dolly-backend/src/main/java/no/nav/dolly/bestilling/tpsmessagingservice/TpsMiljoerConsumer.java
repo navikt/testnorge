@@ -22,13 +22,14 @@ public class TpsMiljoerConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public TpsMiljoerConsumer(TokenExchange tokenService,
-                              TpsMiljoerProperties serverProperties
+    public TpsMiljoerConsumer(
+            TokenExchange tokenService,
+            TpsMiljoerProperties serverProperties,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

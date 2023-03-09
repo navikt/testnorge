@@ -45,14 +45,15 @@ public class OrganisasjonConsumer {
     private final WebClient webClient;
     private final OrganisasjonForvalterProperties serviceProperties;
 
-    public OrganisasjonConsumer(TokenExchange tokenService,
-                                OrganisasjonForvalterProperties serviceProperties,
-                                ObjectMapper objectMapper
+    public OrganisasjonConsumer(
+            TokenExchange tokenService,
+            OrganisasjonForvalterProperties serviceProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

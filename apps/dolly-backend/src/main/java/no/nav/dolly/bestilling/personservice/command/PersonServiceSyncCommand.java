@@ -5,6 +5,7 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -14,7 +15,7 @@ import java.util.concurrent.Callable;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
-public class PersonServiceSyncCommand implements Callable<Mono<Boolean>> {
+public class PersonServiceSyncCommand implements Callable<Flux<Boolean>> {
 
     private static final String PERSON_URL = "/api/v1/personer/{ident}/sync";
     private final WebClient webClient;
@@ -22,7 +23,7 @@ public class PersonServiceSyncCommand implements Callable<Mono<Boolean>> {
     private final String token;
 
     @Override
-    public Mono<Boolean> call() {
+    public Flux<Boolean> call() {
 
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder.path(PERSON_URL)
@@ -30,7 +31,7 @@ public class PersonServiceSyncCommand implements Callable<Mono<Boolean>> {
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .bodyToMono(Boolean.class)
+                .bodyToFlux(Boolean.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(Mono::error)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))

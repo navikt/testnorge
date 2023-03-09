@@ -26,12 +26,12 @@ public class Norg2Consumer implements ConsumerStatus {
     public Norg2Consumer(
             TokenExchange accessTokenService,
             Norg2ProxyProperties serverProperties,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();

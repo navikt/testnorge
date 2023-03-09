@@ -74,4 +74,4 @@ spec:
       - type: POSTGRES_12
         databases:
           - name: testnav-pdl-forvalter-db
-        tier: db-custom-1-3840
+        tier: db-custom-2-3840
