@@ -24,8 +24,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -49,7 +47,8 @@ public class Person {
     private String ident;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "person")
-    private List<Alias> aliaser;
+    @Builder.Default
+    private List<Alias> aliaser = new ArrayList<>();
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "person")
     private Arbeidsadgang arbeidsadgang;
@@ -63,11 +62,4 @@ public class Person {
 
     private JaNeiUavklart soeknadOmBeskyttelseUnderBehandling;
     private LocalDate soknadDato;
-
-    public List<Alias> getAliaser() {
-        if (isNull(aliaser)) {
-            aliaser = new ArrayList<>();
-        }
-        return aliaser;
-    }
 }

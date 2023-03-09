@@ -27,7 +27,6 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
@@ -69,26 +68,14 @@ public class Bruker implements Serializable {
     @JoinColumn(name = "EID_AV_ID")
     private Bruker eidAv;
     @OneToMany(mappedBy = "opprettetAv")
-    private Set<Testgruppe> testgrupper;
+    @Builder.Default
+    private Set<Testgruppe> testgrupper = new HashSet<>();
     @ManyToMany
+    @Builder.Default
     @JoinTable(name = "BRUKER_FAVORITTER",
             joinColumns = @JoinColumn(name = "bruker_id"),
             inverseJoinColumns = @JoinColumn(name = "gruppe_id"))
-    private Set<Testgruppe> favoritter;
-
-    public Set<Testgruppe> getFavoritter() {
-        if (isNull(favoritter)) {
-            favoritter = new HashSet<>();
-        }
-        return favoritter;
-    }
-
-    public Set<Testgruppe> getTestgrupper() {
-        if (isNull(testgrupper)) {
-            testgrupper = new HashSet<>();
-        }
-        return testgrupper;
-    }
+    private Set<Testgruppe> favoritter = new HashSet<>();
 
     @Override
     public boolean equals(Object o) {

@@ -77,9 +77,10 @@ public class Testgruppe implements Serializable {
     @OneToMany(mappedBy = "testgruppe", fetch = FetchType.EAGER)
     @Column(unique = true)
     @EqualsAndHashCode.Exclude
+    @Builder.Default
     @ToString.Exclude
     @OrderBy("id DESC")
-    private List<Testident> testidenter;
+    private List<Testident> testidenter = new ArrayList<>();
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
     @EqualsAndHashCode.Exclude
@@ -88,9 +89,10 @@ public class Testgruppe implements Serializable {
 
     @OrderBy("id")
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
+    @Builder.Default
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<Bestilling> bestillinger;
+    private Set<Bestilling> bestillinger = new HashSet<>();
 
     @Column(name = "ER_LAAST")
     private Boolean erLaast;
@@ -100,13 +102,6 @@ public class Testgruppe implements Serializable {
 
     @Column(name = "TAGS")
     private String tags;
-
-    public List<Testident> getTestidenter() {
-        if (isNull(testidenter)) {
-            testidenter = new ArrayList<>();
-        }
-        return testidenter;
-    }
 
     public Set<Bruker> getFavorisertAv() {
         if (isNull(favorisertAv)) {

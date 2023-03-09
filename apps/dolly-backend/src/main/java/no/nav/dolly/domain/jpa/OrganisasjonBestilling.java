@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
 @Entity
@@ -73,12 +72,6 @@ public class OrganisasjonBestilling {
     private Bruker bruker;
 
     @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
-    private List<OrganisasjonBestillingProgress> progresser;
-
-    public List<OrganisasjonBestillingProgress> getProgresser() {
-        if (isNull(progresser)) {
-            progresser = new ArrayList<>();
-        }
-        return progresser;
-    }
+    @Builder.Default
+    private List<OrganisasjonBestillingProgress> progresser = new ArrayList<>();
 }
