@@ -37,7 +37,7 @@ public class ArbeidsplassenCVStatusMapper {
                 singletonList(RsStatusRapport.builder().id(ARBEIDSPLASSENCV).navn(ARBEIDSPLASSENCV.getBeskrivelse())
                         .statuser(statusIdents.entrySet().stream()
                                 .map(entry -> RsStatusRapport.Status.builder()
-                                        .melding(decodeMsg(entry.getKey()))
+                                        .melding(decodeMsg(entry.getKey()).replace("error:", ""))
                                         .identer(entry.getValue())
                                         .build())
                                 .toList())
