@@ -49,14 +49,15 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
-    public ArenaForvalterConsumer(ArenaforvalterProxyProperties serverProperties,
-                                  TokenExchange tokenService,
-                                  ObjectMapper objectMapper
+    public ArenaForvalterConsumer(
+            ArenaforvalterProxyProperties serverProperties,
+            TokenExchange tokenService,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.serviceProperties = serverProperties;
         this.tokenService = tokenService;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

@@ -29,12 +29,12 @@ public class HelsepersonellConsumer {
 
     public HelsepersonellConsumer(
             TokenExchange accessTokenService,
-            HelsepersonellServiceProperties serviceProperties
+            HelsepersonellServiceProperties serviceProperties,
+            WebClient.Builder webClientBuilder
     ) {
         this.accessTokenService = accessTokenService;
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .build();
     }

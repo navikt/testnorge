@@ -31,13 +31,15 @@ public class TagsHendelseslagerConsumer {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public TagsHendelseslagerConsumer(TokenExchange tokenService,
-                                      PdlProxyProperties serviceProperties,
-                                      ObjectMapper objectMapper) {
-
+    public TagsHendelseslagerConsumer(
+            TokenExchange tokenService,
+            PdlProxyProperties serviceProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
                 .build();

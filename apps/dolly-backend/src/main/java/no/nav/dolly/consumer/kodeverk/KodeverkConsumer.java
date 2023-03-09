@@ -42,18 +42,21 @@ public class KodeverkConsumer {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public KodeverkConsumer(TokenExchange tokenService,
-                            KodeverkProxyProperties serverProperties
+    public KodeverkConsumer(
+            TokenExchange tokenService,
+            KodeverkProxyProperties serverProperties,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
-                .exchangeStrategies(ExchangeStrategies.builder()
-                        .codecs(configurer -> configurer
-                                .defaultCodecs()
-                                .maxInMemorySize(32 * 1024 * 1024))
-                        .build())
+        this.webClient = webClientBuilder
+                .exchangeStrategies(
+                        ExchangeStrategies
+                                .builder()
+                                .codecs(configurer -> configurer
+                                        .defaultCodecs()
+                                        .maxInMemorySize(32 * 1024 * 1024))
+                                .build())
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

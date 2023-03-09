@@ -12,8 +12,8 @@ import no.nav.testnav.apps.tpsmessagingservice.dto.TpsSystemInfo;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.TelefonTypeNummerDTO;
 import org.springframework.stereotype.Service;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;

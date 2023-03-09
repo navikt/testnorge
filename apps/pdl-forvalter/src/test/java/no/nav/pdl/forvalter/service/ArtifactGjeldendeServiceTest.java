@@ -57,7 +57,7 @@ class ArtifactGjeldendeServiceTest {
         when(personRepository.findByIdent(TEST_IDENT_1))
                 .thenReturn(Optional.of(DbPerson.builder().person(person).build()));
 
-        artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
+        artifactGjeldendeService.setGjeldendeForRelasjon(TEST_IDENT_1);
 
         assertThat(person.getNavn().get(0).getGjeldende(), is(equalTo(true)));
         assertThat(person.getNavn().get(1).getGjeldende(), is(equalTo(false)));
@@ -85,7 +85,7 @@ class ArtifactGjeldendeServiceTest {
         when(personRepository.findByIdent(TEST_IDENT_1))
                 .thenReturn(Optional.of(DbPerson.builder().person(person).build()));
 
-        artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
+        artifactGjeldendeService.setGjeldendeForRelasjon(TEST_IDENT_1);
 
         assertThat(person.getNavn().get(0).getGjeldende(), is(equalTo(false)));
         assertThat(person.getNavn().get(1).getGjeldende(), is(equalTo(false)));
@@ -136,7 +136,7 @@ class ArtifactGjeldendeServiceTest {
                                 .build()))
                         .build()));
 
-        artifactGjeldendeService.setGjeldene(TEST_IDENT_1);
+        artifactGjeldendeService.setGjeldendeForRelasjon(TEST_IDENT_1);
 
         assertThat(person1.getNavn().get(0).getGjeldende(), is(equalTo(true)));
         assertThat(person1.getNavn().get(1).getGjeldende(), is(equalTo(false)));

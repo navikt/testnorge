@@ -48,14 +48,15 @@ public class TpsMessagingConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public TpsMessagingConsumer(TokenExchange tokenService,
-                                TpsMessagingServiceProperties serverProperties,
-                                ObjectMapper objectMapper
+    public TpsMessagingConsumer(
+            TokenExchange tokenService,
+            TpsMessagingServiceProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

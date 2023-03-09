@@ -29,13 +29,15 @@ public class KrrstubConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public KrrstubConsumer(TokenExchange tokenService,
-                           KrrstubProxyProperties serverProperties,
-                           ObjectMapper objectMapper) {
-
+    public KrrstubConsumer(
+            TokenExchange tokenService,
+            KrrstubProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

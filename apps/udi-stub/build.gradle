@@ -68,7 +68,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
     implementation 'com.sun.xml.messaging.saaj:saaj-impl:3.0.0'
@@ -77,6 +76,7 @@ dependencies {
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
+    implementation 'com.zaxxer:HikariCP'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
 

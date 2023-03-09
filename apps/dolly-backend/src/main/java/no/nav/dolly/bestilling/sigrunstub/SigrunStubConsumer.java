@@ -29,14 +29,15 @@ public class SigrunStubConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public SigrunStubConsumer(TokenExchange tokenService,
-                              SigrunstubProxyProperties serverProperties,
-                              ObjectMapper objectMapper
+    public SigrunStubConsumer(
+            TokenExchange tokenService,
+            SigrunstubProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

@@ -32,13 +32,14 @@ public class FasteDatasettConsumer {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public FasteDatasettConsumer(TokenExchange tokenService,
-                                 StatiskDataForvalterProxyProperties serverProperties
+    public FasteDatasettConsumer(
+            TokenExchange tokenService,
+            StatiskDataForvalterProxyProperties serverProperties,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

@@ -13,8 +13,8 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
 @Profile("dev")
-@Import({ FlywayConfiguration.class,
-        VaultHikariConfiguration.class })
+@Import({ VaultHikariConfiguration.class,
+        FlywayConfiguration.class })
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
 public class DevConfig extends AbstractVaultConfiguration {
 
@@ -25,6 +25,7 @@ public class DevConfig extends AbstractVaultConfiguration {
 
     @Override
     public ClientAuthentication clientAuthentication() {
+
         if (System.getenv().containsKey("VAULT_TOKEN")) {
             System.setProperty("spring.cloud.vault.token", System.getenv("VAULT_TOKEN"));
         }
