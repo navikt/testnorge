@@ -103,9 +103,26 @@ export const initialAnnenErfaring = {
 	// updatedAt: null
 }
 
+export const initialAnnenErfaringVerdier = {
+	// uuid: '',
+	description: 'Mange års erfaring med trening av sau til utstillinger.',
+	role: 'Sauetrener',
+	fromDate: '2010-05-01T00:00:00+02:00',
+	toDate: null,
+	ongoing: true,
+	// updatedAt: null
+}
+
 export const initialKompetanser = {
 	// uuid: '',
 	title: '',
+	// conceptId: '',
+	// updatedAt: null,
+}
+
+export const initialKompetanserVerdier = {
+	// uuid: '',
+	title: 'Fange dyr i feller',
 	// conceptId: '',
 	// updatedAt: null,
 }

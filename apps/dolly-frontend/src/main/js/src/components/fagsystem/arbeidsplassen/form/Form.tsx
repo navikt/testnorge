@@ -26,7 +26,7 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 				startOpen={erForsteEllerTest(formikBag.values, [arbeidsplassenAttributt])}
 			>
 				<div className="flexbox--flex-wrap">
-					<JobboenskerForm formikBag={formikBag} />
+					{/*<JobboenskerForm formikBag={formikBag} />*/}
 					<UtdanningForm formikBag={formikBag} />
 					<FagbrevForm formikBag={formikBag} />
 					<ArbeidserfaringForm formikBag={formikBag} />

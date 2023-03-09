@@ -20,12 +20,12 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 		formikBag.setFieldValue(`${path}.jobTitle`, valg.label)
 	}
 
-	const arbeidserfaringerPath = 'arbeidsplassenCV.arbeidserfaring'
+	const arbeidserfaringListePath = 'arbeidsplassenCV.arbeidserfaring'
 
 	return (
-		<Vis attributt={arbeidserfaringerPath}>
+		<Vis attributt={arbeidserfaringListePath}>
 			<FormikDollyFieldArray
-				name={arbeidserfaringerPath}
+				name={arbeidserfaringListePath}
 				header="Arbeidserfaring"
 				newEntry={initialArbeidserfaringVerdier}
 				buttonText="Arbeidsforhold"

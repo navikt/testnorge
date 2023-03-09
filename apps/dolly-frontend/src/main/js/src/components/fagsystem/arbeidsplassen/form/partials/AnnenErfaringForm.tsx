@@ -1,55 +1,77 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialAnnenErfaring } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import {
+	initialAnnenErfaring,
+	initialAnnenErfaringVerdier,
+} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
 export const AnnenErfaringForm = ({ formikBag }) => {
+	const annenErfaringListePath = 'arbeidsplassenCV.annenErfaring'
+
 	return (
-		<div style={{ width: '100%' }}>
-			<hr />
+		<Vis attributt={annenErfaringListePath}>
 			<FormikDollyFieldArray
-				name="arbeidsplassenCV.annenErfaring"
-				header="Annen erfaring"
-				// hjelpetekst={infotekst}
-				newEntry={initialAnnenErfaring}
+				name={annenErfaringListePath}
+				header="Andre erfaringer"
+				newEntry={initialAnnenErfaringVerdier}
+				buttonText="Annen erfaring"
 				nested
 			>
 				{(annenErfaringPath, idx) => (
-					<div key={idx} className="flexbox--flex-wrap">
-						<FormikTextInput name={`${annenErfaringPath}.role`} label="Rolle" size="xlarge" />
-						<Fritekstfelt
-							label="Beskrivelse"
-							placeholder="Beskrivelse av annen erfaring"
-							value={_get(formikBag.values, `${annenErfaringPath}.description`)}
-							onChange={(beskrivelse) =>
-								formikBag.setFieldValue(
-									`${annenErfaringPath}.description`,
-									beskrivelse?.target?.value
-								)
-							}
-							size="small"
+					<>
+						<div key={idx} className="flexbox--flex-wrap">
+							<DollyTextInput
+								name={`${annenErfaringPath}.role`}
+								label="Rolle"
+								size="xlarge"
+								value={_get(formikBag.values, `${annenErfaringPath}.role`)}
+								onChange={(i) =>
+									formikBag.setFieldValue(`${annenErfaringPath}.role`, i.target.value)
+								}
+							/>
+							<Fritekstfelt
+								label="Beskrivelse"
+								placeholder="Beskrivelse av annen erfaring"
+								value={_get(formikBag.values, `${annenErfaringPath}.description`)}
+								onChange={(beskrivelse) =>
+									formikBag.setFieldValue(
+										`${annenErfaringPath}.description`,
+										beskrivelse?.target?.value
+									)
+								}
+								size="small"
+							/>
+							<FormikDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
+							<FormikDatepicker
+								name={`${annenErfaringPath}.toDate`}
+								label="Sluttdato"
+								disabled={_get(formikBag.values, `${annenErfaringPath}.ongoing`)}
+								fastfield={false}
+							/>
+							<FormikCheckbox
+								name={`${annenErfaringPath}.ongoing`}
+								label="Pågående"
+								wrapperSize="inherit"
+								isDisabled={_get(formikBag.values, `${annenErfaringPath}.toDate`)}
+								checkboxMargin
+							/>
+						</div>
+						<EraseFillButtons
+							formikBag={formikBag}
+							path={annenErfaringPath}
+							initialErase={initialAnnenErfaring}
+							initialFill={initialAnnenErfaringVerdier}
 						/>
-						<FormikDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
-						<FormikDatepicker
-							name={`${annenErfaringPath}.toDate`}
-							label="Sluttdato"
-							disabled={_get(formikBag.values, `${annenErfaringPath}.ongoing`)}
-							fastfield={false}
-						/>
-						<FormikCheckbox
-							name={`${annenErfaringPath}.ongoing`}
-							label="Pågående"
-							wrapperSize="inherit"
-							isDisabled={_get(formikBag.values, `${annenErfaringPath}.toDate`)}
-							checkboxMargin
-						/>
-					</div>
+					</>
 				)}
 			</FormikDollyFieldArray>
-		</div>
+		</Vis>
 	)
 }

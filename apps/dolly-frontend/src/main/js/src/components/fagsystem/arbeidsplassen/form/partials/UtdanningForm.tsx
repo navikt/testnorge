@@ -3,7 +3,7 @@ import {
 	initialUtdanning,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
@@ -15,12 +15,12 @@ import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
 export const UtdanningForm = ({ formikBag }) => {
-	const utdanningerPath = 'arbeidsplassenCV.utdanning'
+	const utdanningListePath = 'arbeidsplassenCV.utdanning'
 
 	return (
-		<Vis attributt={utdanningerPath}>
+		<Vis attributt={utdanningListePath}>
 			<FormikDollyFieldArray
-				name={utdanningerPath}
+				name={utdanningListePath}
 				header="Utdanninger"
 				newEntry={initialUtdanningVerdier}
 				buttonText="Utdanning"

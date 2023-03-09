@@ -5,11 +5,13 @@ import {
 } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
 import Panel from '@/components/ui/panel/Panel'
 import {
+	initialAnnenErfaringVerdier,
 	initialArbeidserfaring,
 	initialArbeidserfaringVerdier,
 	initialCV,
 	initialFagbrev,
 	initialFagbrevVerdier,
+	initialKompetanserVerdier,
 	initialUtdanning,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
@@ -29,6 +31,8 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 				<Attributt attr={sm.attrs.utdanning} />
 				<Attributt attr={sm.attrs.fagbrev} />
 				<Attributt attr={sm.attrs.arbeidserfaring} />
+				<Attributt attr={sm.attrs.annenErfaring} />
+				<Attributt attr={sm.attrs.kompetanser} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -75,6 +79,26 @@ ArbeidsplassenPanel.initialValues = ({ set, del, has }) => ({
 		},
 		remove() {
 			del('arbeidsplassenCV.arbeidserfaring')
+		},
+	},
+	annenErfaring: {
+		label: 'Har andre erfaringer',
+		checked: has('arbeidsplassenCV.annenErfaring'),
+		add() {
+			set('arbeidsplassenCV.annenErfaring', [initialAnnenErfaringVerdier])
+		},
+		remove() {
+			del('arbeidsplassenCV.annenErfaring')
+		},
+	},
+	kompetanser: {
+		label: 'Har kompetanser',
+		checked: has('arbeidsplassenCV.kompetanser'),
+		add() {
+			set('arbeidsplassenCV.kompetanser', [initialKompetanserVerdier])
+		},
+		remove() {
+			del('arbeidsplassenCV.kompetanser')
 		},
 	},
 })

@@ -1,31 +1,44 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialKompetanser } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import {
+	initialKompetanser,
+	initialKompetanserVerdier,
+} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import * as React from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
 export const KompetanserForm = ({ formikBag }) => {
+	const kompetanseListePath = 'arbeidsplassenCV.kompetanser'
+
 	return (
-		<div style={{ width: '100%' }}>
-			<hr />
+		<Vis attributt={kompetanseListePath}>
 			<FormikDollyFieldArray
-				name="arbeidsplassenCV.kompetanser"
+				name={kompetanseListePath}
 				header="Kompetanser"
-				// hjelpetekst={infotekst}
-				newEntry={initialKompetanser}
+				newEntry={initialKompetanserVerdier}
 				buttonText="Kompetanse"
 				nested
 			>
 				{(kompetansePath, idx) => (
-					<FormikSelect
-						name={`${kompetansePath}.title`}
-						label="Kompetanse/ferdighet/verktøy"
-						options={Options('kompetanse')}
-						size="xxlarge"
-						isClearable={false}
-					/>
+					<>
+						<FormikSelect
+							name={`${kompetansePath}.title`}
+							label="Kompetanse/ferdighet/verktøy"
+							options={Options('kompetanse')}
+							size="xxlarge"
+							isClearable={false}
+						/>
+						<EraseFillButtons
+							formikBag={formikBag}
+							path={kompetansePath}
+							initialFill={initialKompetanserVerdier}
+							initialErase={initialKompetanser}
+						/>
+					</>
 				)}
 			</FormikDollyFieldArray>
-		</div>
+		</Vis>
 	)
 }
