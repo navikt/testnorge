@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGetCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.config.credentials.ArbeidsplassenProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
@@ -52,7 +53,7 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
-    public Flux<ArbeidsplassenCVDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
+    public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
 
         log.info("Oppdaterer CV på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
