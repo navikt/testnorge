@@ -1,8 +1,10 @@
 package no.nav.testnav.apps.syntvedtakshistorikkservice.consumer.response.pensjon;
 
-import lombok.*;
-
-import java.time.ZonedDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
 @Setter
@@ -14,5 +16,5 @@ public class PensjonTestdataResponseDetails {
     private HttpStatus httpStatus;
     private String message;
     private String path;
-    private ZonedDateTime timestamp;
+    private String timestamp;
 }
