@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -71,13 +72,10 @@ public class PensjonServiceTest {
                         .build())
                 .build();
 
-
-        var pensjonResponseTimestamp = "2023-03-09T10:00:21.517400842";
-
         var pensjonResponseDetails = new PensjonTestdataResponseDetails(HttpStatus.builder()
                 .reasonPhrase("OK")
                 .status(200)
-                .build(), "Ok", "path", pensjonResponseTimestamp);
+                .build(), "Ok", "path", LocalDateTime.now());
 
         var pensjonResponse = PensjonTestdataResponse.builder()
                 .status(Collections.singletonList(PensjonTestdataStatus.builder()
