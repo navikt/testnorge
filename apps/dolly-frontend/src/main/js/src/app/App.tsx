@@ -6,7 +6,6 @@ import allRoutes from '@/allRoutes'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
 import { Forbedring } from '@/components/feedback/Forbedring'
-import Utlogging from '@/components/utlogging'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
@@ -54,7 +53,6 @@ export const App = () => {
 
 	return (
 		<React.Fragment>
-			<Utlogging />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />
