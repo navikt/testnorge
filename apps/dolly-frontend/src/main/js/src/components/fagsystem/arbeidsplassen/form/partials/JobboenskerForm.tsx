@@ -2,6 +2,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 
 export const JobboenskerForm = ({ formikBag }) => {
 	const jobboenskerPath = 'arbeidsplassenCV.jobboensker'
@@ -27,7 +28,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 	}
 
 	return (
-		<>
+		<Vis attributt={jobboenskerPath}>
 			<h3>Jobbønsker</h3>
 			<div className="flexbox--full-width">
 				<FormikSelect
@@ -38,7 +39,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 					isClearable={false}
 					isMulti={true}
 					fastfield={false}
-					value={_get(formikBag.values, `${jobboenskerPath}.occupations`).map((y) => y.styrk08)}
+					value={_get(formikBag.values, `${jobboenskerPath}.occupations`)?.map((y) => y.styrk08)}
 					onChange={(options) => setYrker(options)}
 				/>
 				<FormikSelect
@@ -49,7 +50,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 					isClearable={false}
 					isMulti={true}
 					fastfield={false}
-					value={_get(formikBag.values, `${jobboenskerPath}.locations`).map((o) => o.code)}
+					value={_get(formikBag.values, `${jobboenskerPath}.locations`)?.map((o) => o.code)}
 					onChange={(options) => setOmråder(options)}
 				/>
 			</div>
@@ -88,6 +89,6 @@ export const JobboenskerForm = ({ formikBag }) => {
 					size="large"
 				/>
 			</div>
-		</>
+		</Vis>
 	)
 }

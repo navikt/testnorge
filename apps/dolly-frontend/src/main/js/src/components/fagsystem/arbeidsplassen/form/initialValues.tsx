@@ -10,19 +10,19 @@ export const initialJobboensker = {
 }
 
 export const initialCV = {
-	arbeidserfaring: [],
-	utdanning: [],
-	andreGodkjenninger: [],
-	foererkort: [],
-	annenErfaring: [],
-	kurs: [],
-	spraak: [],
-	offentligeGodkjenninger: [],
-	fagbrev: [],
-	kompetanser: [],
 	jobboensker: initialJobboensker,
+	utdanning: [],
+	fagbrev: [],
+	arbeidserfaring: [],
+	annenErfaring: [],
+	kompetanser: [],
+	offentligeGodkjenninger: [],
+	andreGodkjenninger: [],
+	spraak: [],
+	foererkort: [],
+	kurs: [],
 	sammendrag: '',
-	harBil: false,
+	// harBil: false,
 }
 
 export const initialArbeidserfaring = {
@@ -39,6 +39,20 @@ export const initialArbeidserfaring = {
 	// ikkeAktueltForFremtiden: false,
 }
 
+export const initialArbeidserfaringVerdier = {
+	employer: 'Dolly gård',
+	jobTitle: 'Sauegjeter',
+	alternativeJobTitle: 'Sauepasser',
+	// conceptId: '',
+	location: 'Sauda',
+	description: 'Passe på at sauene har det bra.',
+	fromDate: '2016-01-01T00:00:00',
+	toDate: '2019-12-31T00:00:00',
+	ongoing: false,
+	styrkkode: '9212',
+	// ikkeAktueltForFremtiden: false,
+}
+
 export const initialUtdanning = {
 	institution: '',
 	field: '',
@@ -51,11 +65,31 @@ export const initialUtdanning = {
 	ongoing: false,
 }
 
+export const initialUtdanningVerdier = {
+	institution: 'Dolly Universitet',
+	field: 'Bachelor i sauefag',
+	nuskode: '6',
+	// hasAuthorization: false,
+	// vocationalCollege: null,
+	startDate: '2012-08-10T00:00:00',
+	endDate: '2015-05-10T00:00:00',
+	description: 'Studier innen sau og syntetiske data.',
+	ongoing: false,
+}
+
 export const initialFagbrev = {
 	// uuid: '',
 	title: '',
 	// conceptId: '',
 	type: '',
+	// updatedAt: null,
+}
+
+export const initialFagbrevVerdier = {
+	// uuid: '',
+	title: 'Svennebrev frisør',
+	// conceptId: '',
+	type: 'SVENNEBREV_FAGBREV',
 	// updatedAt: null,
 }
 

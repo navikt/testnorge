@@ -4,7 +4,15 @@ import {
 	AttributtKategori,
 } from '@/components/bestillingsveileder/stegVelger/steg/steg1/Attributt'
 import Panel from '@/components/ui/panel/Panel'
-import { initialCV } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import {
+	initialArbeidserfaring,
+	initialArbeidserfaringVerdier,
+	initialCV,
+	initialFagbrev,
+	initialFagbrevVerdier,
+	initialUtdanning,
+	initialUtdanningVerdier,
+} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
 export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidsplassenPanel.initialValues)
@@ -17,7 +25,10 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 			startOpen={harValgtAttributt(formikBag.values, ['arbeidsplassenCV'])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
-				<Attributt attr={sm.attrs.arbeidsplassen} />
+				{/*<Attributt attr={sm.attrs.arbeidsplassen} />*/}
+				<Attributt attr={sm.attrs.utdanning} />
+				<Attributt attr={sm.attrs.fagbrev} />
+				<Attributt attr={sm.attrs.arbeidserfaring} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -26,14 +37,44 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
 
 ArbeidsplassenPanel.initialValues = ({ set, del, has }) => ({
-	arbeidsplassen: {
-		label: 'Har CV',
-		checked: has('arbeidsplassenCV'),
+	// arbeidsplassen: {
+	// 	label: 'Har CV',
+	// 	checked: has('arbeidsplassenCV'),
+	// 	add() {
+	// 		set('arbeidsplassenCV', initialCV)
+	// 	},
+	// 	remove() {
+	// 		del('arbeidsplassenCV')
+	// 	},
+	// },
+	utdanning: {
+		label: 'Har utdanning',
+		checked: has('arbeidsplassenCV.utdanning'),
 		add() {
-			set('arbeidsplassenCV', initialCV)
+			set('arbeidsplassenCV.utdanning', [initialUtdanningVerdier])
 		},
 		remove() {
-			del('arbeidsplassenCV')
+			del('arbeidsplassenCV.utdanning')
+		},
+	},
+	fagbrev: {
+		label: 'Har fagbrev',
+		checked: has('arbeidsplassenCV.fagbrev'),
+		add() {
+			set('arbeidsplassenCV.fagbrev', [initialFagbrevVerdier])
+		},
+		remove() {
+			del('arbeidsplassenCV.fagbrev')
+		},
+	},
+	arbeidserfaring: {
+		label: 'Har arbeidserfaring',
+		checked: has('arbeidsplassenCV.arbeidserfaring'),
+		add() {
+			set('arbeidsplassenCV.arbeidserfaring', [initialArbeidserfaringVerdier])
+		},
+		remove() {
+			del('arbeidsplassenCV.arbeidserfaring')
 		},
 	},
 })
