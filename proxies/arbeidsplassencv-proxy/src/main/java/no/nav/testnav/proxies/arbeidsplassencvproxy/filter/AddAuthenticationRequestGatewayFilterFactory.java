@@ -16,8 +16,7 @@ import java.util.function.Supplier;
 public class AddAuthenticationRequestGatewayFilterFactory {
     public static GatewayFilter bearerIdportenHeaderFilter(FakedingsConsumer fakedingsConsumer,
                                                            TokenXService tokenXService,
-                                                           ServerProperties serverProperties,
-                                                           Supplier<Mono<String>> getToken) {
+                                                           ServerProperties serverProperties) {
 
         return (exchange, chain) -> {
             var httpRequest = exchange.getRequest();
