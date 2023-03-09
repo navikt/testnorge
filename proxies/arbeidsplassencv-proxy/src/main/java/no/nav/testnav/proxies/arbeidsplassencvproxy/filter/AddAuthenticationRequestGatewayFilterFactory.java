@@ -23,7 +23,6 @@ public class AddAuthenticationRequestGatewayFilterFactory {
             var ident = httpRequest.getHeaders().getFirst("fnr");
             return fakedingsConsumer.getFakeToken(ident)
                     .flatMap(faketoken -> tokenXService.exchange(serverProperties, faketoken)
-                            .doOnNext(tokenX -> log.info(tokenX.getTokenValue()))
                             .flatMap(tokenX -> {
                                 exchange.mutate()
                                         .request(builder -> builder.header(HttpHeaders.AUTHORIZATION,
