@@ -24,8 +24,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.util.Objects.isNull;
-
 @Entity
 @Getter
 @Setter
@@ -101,28 +99,17 @@ public class Bestilling implements Serializable {
     private Boolean navSyntetiskIdent;
 
     @OneToMany(mappedBy = "bestilling", fetch = FetchType.LAZY)
-    private List<BestillingProgress> progresser;
+    @Builder.Default
+    private List<BestillingProgress> progresser = new ArrayList<>();
 
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
-    private List<BestillingKontroll> kontroller;
+    @Builder.Default
+    private List<BestillingKontroll> kontroller = new ArrayList<>();
 
     @OneToMany(mappedBy = "bestillingId", fetch = FetchType.LAZY)
-    private List<TransaksjonMapping> transaksjonmapping;
+    @Builder.Default
+    private List<TransaksjonMapping> transaksjonmapping = new ArrayList<>();
 
     @Transient
     private String beskrivelse;
-
-    public List<BestillingProgress> getProgresser() {
-        if (isNull(progresser)) {
-            progresser = new ArrayList<>();
-        }
-        return progresser;
-    }
-
-    public List<BestillingKontroll> getKontroller() {
-        if (isNull(kontroller)) {
-            kontroller = new ArrayList<>();
-        }
-        return kontroller;
-    }
 }

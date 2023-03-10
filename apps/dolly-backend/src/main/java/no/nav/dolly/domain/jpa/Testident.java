@@ -36,8 +36,6 @@ import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATO
 @Table(name = "TEST_IDENT")
 public class Testident implements Serializable {
 
-    public enum Master {PDL, PDLF}
-
     @Id
     @GeneratedValue(generator = "gruppeIdGenerator")
     @GenericGenerator(name = "gruppeIdGenerator", strategy = SEQUENCE_STYLE_GENERATOR, parameters = {
@@ -47,42 +45,29 @@ public class Testident implements Serializable {
     })
     @Column(name = "ID")
     private Long id;
-
     @Version
     @Column(name = "VERSJON")
     private Long versjon;
-
-    @Column (name = "IDENT")
+    @Column(name = "IDENT")
     private String ident;
-
-    @Column (name = "IBRUK")
+    @Column(name = "IBRUK")
     private Boolean iBruk;
-
-    @Column (name = "BESKRIVELSE")
+    @Column(name = "BESKRIVELSE")
     private String beskrivelse;
-
     @ManyToOne
     @JoinColumn(name = "TILHOERER_GRUPPE", nullable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     private Testgruppe testgruppe;
-
     @Column(name = "MASTER")
     @Enumerated(EnumType.STRING)
     private Master master;
-
     @OneToMany(fetch = FetchType.LAZY)
+    @Builder.Default
     @JoinColumn(name = "IDENT", referencedColumnName = "ident", insertable = false, updatable = false)
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private List<BestillingProgress> bestillingProgress;
-
-    public List<BestillingProgress> getBestillingProgress() {
-        if (bestillingProgress == null) {
-            bestillingProgress = new ArrayList<>();
-        }
-        return bestillingProgress;
-    }
+    private List<BestillingProgress> bestillingProgress = new ArrayList<>();
 
     @JsonIgnore
     public boolean isPdl() {
@@ -93,4 +78,6 @@ public class Testident implements Serializable {
     public boolean isPdlf() {
         return getMaster() == Master.PDLF;
     }
+
+    public enum Master {PDL, PDLF}
 }

@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static java.util.Objects.isNull;
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
@@ -77,20 +76,23 @@ public class Testgruppe implements Serializable {
     @OneToMany(mappedBy = "testgruppe", fetch = FetchType.EAGER)
     @Column(unique = true)
     @EqualsAndHashCode.Exclude
+    @Builder.Default
     @ToString.Exclude
     @OrderBy("id DESC")
-    private List<Testident> testidenter;
+    private List<Testident> testidenter = new ArrayList<>();
 
     @ManyToMany(mappedBy = "favoritter", fetch = FetchType.EAGER)
+    @Builder.Default
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<Bruker> favorisertAv;
+    private Set<Bruker> favorisertAv = new HashSet<>();
 
     @OrderBy("id")
     @OneToMany(mappedBy = "gruppe", fetch = FetchType.LAZY)
+    @Builder.Default
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Set<Bestilling> bestillinger;
+    private Set<Bestilling> bestillinger = new HashSet<>();
 
     @Column(name = "ER_LAAST")
     private Boolean erLaast;
@@ -100,20 +102,6 @@ public class Testgruppe implements Serializable {
 
     @Column(name = "TAGS")
     private String tags;
-
-    public List<Testident> getTestidenter() {
-        if (isNull(testidenter)) {
-            testidenter = new ArrayList<>();
-        }
-        return testidenter;
-    }
-
-    public Set<Bruker> getFavorisertAv() {
-        if (isNull(favorisertAv)) {
-            favorisertAv = new HashSet<>();
-        }
-        return favorisertAv;
-    }
 
     public List<Tags> getTags() {
 
