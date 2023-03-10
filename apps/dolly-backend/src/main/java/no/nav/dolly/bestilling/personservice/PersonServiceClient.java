@@ -19,15 +19,12 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.nonNull;
@@ -55,12 +52,11 @@ public class PersonServiceClient {
         }
         var startTime = System.currentTimeMillis();
         return Flux.from(getIdentWithRelasjoner(dollyPerson)
-                .flatMap(ident -> getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
-                        new PersonServiceResponse(), ident))
-                .collectList()
-                .flatMap(status ->
-                        logStatus(status, startTime)
-                                .map(status2 -> futurePersist(dollyPerson, progress, status, status2))));
+                        .flatMap(ident -> getPersonService(LocalTime.now().plusSeconds(MAX_SEKUNDER), LocalTime.now(),
+                                new PersonServiceResponse(), ident))
+                        .doOnNext(status -> logStatus(status, startTime))
+                        .collectList()
+                        .map(status -> futurePersist(dollyPerson, progress, status)));
     }
 
     private Flux<String> getIdentWithRelasjoner(DollyPerson dollyPerson) {
@@ -97,7 +93,7 @@ public class PersonServiceClient {
     }
 
     private ClientFuture futurePersist(DollyPerson dollyPerson, BestillingProgress progress,
-                                       List<PersonServiceResponse> status, Map<String, String> status2) {
+                                       List<PersonServiceResponse> status) {
 
         return () -> {
             status.stream()
@@ -105,39 +101,33 @@ public class PersonServiceClient {
                     .forEach(entry -> {
                         progress.setPdlSync(entry.getStatus().is2xxSuccessful() && isTrue(entry.getExists()));
                         if (!dollyPerson.isOrdre()) {
-                            transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, status2.get(dollyPerson.getIdent()));
+                            transactionHelperService.persister(progress, BestillingProgress::setPdlPersonStatus, entry.getFormattertMelding());
                         }
                     });
             return progress;
         };
     }
 
-    private Mono<Map<String, String>> logStatus(List<PersonServiceResponse> response, long startTime) {
+    private void logStatus(PersonServiceResponse status, long startTime) {
 
-        return Mono.just(response.stream()
-                .map(status -> {
-                    if (status.getStatus().is2xxSuccessful() && isTrue(status.getExists())) {
-                        log.info("Synkronisering mot PersonService (isPerson) for {} tok {} ms.",
-                                status.getIdent(), System.currentTimeMillis() - startTime);
-                        return Map.of(status.getIdent(), String.format("Synkronisering mot PDL tok %d ms.",
-                                System.currentTimeMillis() - startTime));
+        if (status.getStatus().is2xxSuccessful() && isTrue(status.getExists())) {
+            log.info("Synkronisering mot PersonService (isPerson) for {} tok {} ms.",
+                    status.getIdent(), System.currentTimeMillis() - startTime);
+            status.setFormattertMelding(String.format("Synkronisering mot PDL tok %d ms.",
+                    System.currentTimeMillis() - startTime));
 
-                    } else if (status.getStatus().is2xxSuccessful() && isNotTrue(status.getExists())) {
-                        log.error("Synkronisering mot PersonService (isPerson) for {} gitt opp etter {} ms.",
-                                status.getIdent(), System.currentTimeMillis() - startTime);
-                        return Map.of(status.getIdent(), String.format("Feil: Synkronisering mot PDL gitt opp etter %d sekunder.",
-                                MAX_SEKUNDER));
-
-                    } else {
-                        log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms, feil {}.",
-                                status.getIdent(), System.currentTimeMillis() - startTime,
-                                errorStatusDecoder.getErrorText(status.getStatus(),
-                                        status.getFeilmelding()));
-                        return Map.of(status.getIdent(), "Feilet å skjekke status, se logg!");
-                    }
-                })
-                .flatMap(map -> map.entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+        } else if (status.getStatus().is2xxSuccessful() && isNotTrue(status.getExists())) {
+            log.error("Synkronisering mot PersonService (isPerson) for {} gitt opp etter {} ms.",
+                    status.getIdent(), System.currentTimeMillis() - startTime);
+            status.setFormattertMelding(String.format("Feil: Synkronisering mot PDL gitt opp etter %d sekunder.",
+                    MAX_SEKUNDER));
+        } else {
+            log.error("Feilet å sjekke om person finnes for ident {}, medgått tid {} ms, feil {}.",
+                    status.getIdent(), System.currentTimeMillis() - startTime,
+                    errorStatusDecoder.getErrorText(status.getStatus(),
+                            status.getFeilmelding()));
+            status.setFormattertMelding("Feilet å skjekke status, se logg!");
+        }
     }
 
     private Flux<PersonServiceResponse> getPersonService(LocalTime tidSlutt, LocalTime tidNo, PersonServiceResponse
