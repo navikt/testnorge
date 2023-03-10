@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
+import no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
@@ -32,6 +33,7 @@ import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -43,6 +45,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+import reactor.core.publisher.Flux;
 
 import java.util.Arrays;
 import java.util.List;
@@ -73,6 +77,21 @@ public class OppslagController {
     private final SkjermingsRegisterConsumer skjermingsRegisterConsumer;
     private final UdiStubConsumer udiStubConsumer;
 
+    private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
+
+    @GetMapping("/arbeidsforholdcv/ident/{ident}")
+    public Flux<ArbeidsplassenCVDTO> getArbeidsforhold(@PathVariable("ident") String ident) {
+
+        return arbeidsplassenCVConsumer.hentCV(ident)
+                .map(response -> {
+                    if (response.getStatus().is2xxSuccessful()) {
+                        return response.getArbeidsplassenCV();
+                    } else {
+                        throw new ResponseStatusException(response.getStatus(), response.getFeilmelding());
+                    }
+                });
+    }
+
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
@@ -92,7 +111,8 @@ public class OppslagController {
     @GetMapping("/pdlperson/ident/{ident}")
     @Operation(description = "Hent person tilhørende ident fra pdlperson")
     public JsonNode pdlPerson(@PathVariable("ident") String ident,
-                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PDL_MILJOER pdlMiljoe) {
+                              @RequestParam(value = "pdlMiljoe", required = false, defaultValue = "Q2") PDL_MILJOER
+                                      pdlMiljoe) {
         return pdlPersonConsumer.getPdlPerson(ident, pdlMiljoe);
     }
 
@@ -191,7 +211,8 @@ public class OppslagController {
 
     @GetMapping("/personnavn")
     @Operation(description = "Henter et gitt antall syntetiske personnavn")
-    public ResponseEntity<List<Navn>> getPersonnavn(@RequestParam(required = false, defaultValue = "10") Integer antall) {
+    public ResponseEntity<List<Navn>> getPersonnavn
+            (@RequestParam(required = false, defaultValue = "10") Integer antall) {
         return genererNavnConsumer.getPersonnavn(antall);
     }
 
@@ -212,9 +233,12 @@ public class OppslagController {
     @GetMapping("/transaksjonid")
     @Operation(description = "Henter transaksjon IDer for bestillingId, ident og system")
     public List<RsTransaksjonMapping> getTransaksjonIderIdent(
-            @Parameter(description = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long bestillingId,
-            @Parameter(description = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String ident,
-            @Parameter(description = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String system) {
+            @Parameter(description = "En ID som identifiserer en bestilling mot Dolly") @RequestParam(required = false) Long
+                    bestillingId,
+            @Parameter(description = "Ident (f.eks FNR) på person knyttet til en bestilling") @RequestParam String
+                    ident,
+            @Parameter(description = "System kan hentes ut fra /api/v1/systemer") @RequestParam(required = false) String
+                    system) {
 
         return transaksjonMappingService.getTransaksjonMapping(system, ident, bestillingId);
     }

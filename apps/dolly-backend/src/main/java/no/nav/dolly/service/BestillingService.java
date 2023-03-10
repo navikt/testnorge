@@ -450,6 +450,7 @@ public class BestillingService {
                 .bankkonto(request.getBankkonto())
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
+                .arbeidsplassenCV(request.getArbeidsplassenCV())
                 .build());
     }
 

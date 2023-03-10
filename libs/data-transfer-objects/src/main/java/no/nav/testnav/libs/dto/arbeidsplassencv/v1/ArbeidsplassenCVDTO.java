@@ -6,7 +6,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @SuperBuilder
@@ -29,6 +32,76 @@ public class ArbeidsplassenCVDTO {
     private Jobboensker jobboensker;
     private Boolean sistEndretAvNav;
     private LocalDateTime sistEndret;
+
+    public List<Arbeidserfaring> getArbeidserfaring() {
+        if (isNull(arbeidserfaring)) {
+            arbeidserfaring = new ArrayList<>();
+        }
+        return arbeidserfaring;
+    }
+
+    public List<Utdanning> getUtdanning() {
+        if (isNull(utdanning)) {
+            utdanning = new ArrayList<>();
+        }
+        return utdanning;
+    }
+
+    public List<AnnenGodkjenning> getAndreGodkjenninger() {
+        if (isNull(andreGodkjenninger)) {
+            andreGodkjenninger = new ArrayList<>();
+        }
+        return andreGodkjenninger;
+    }
+
+    public List<Foererkort> getFoererkort() {
+        if (isNull(foererkort)) {
+            foererkort = new ArrayList<>();
+        }
+        return foererkort;
+    }
+
+    public List<AnnenErfaring> getAnnenErfaring() {
+        if (isNull(annenErfaring)) {
+            annenErfaring = new ArrayList<>();
+        }
+        return annenErfaring;
+    }
+
+    public List<Kurs> getKurs() {
+        if (isNull(kurs)) {
+            kurs = new ArrayList<>();
+        }
+        return kurs;
+    }
+
+    public List<Spraak> getSpraak() {
+        if (isNull(spraak)) {
+            spraak = new ArrayList<>();
+        }
+        return spraak;
+    }
+
+    public List<OffentligeGodkjenning> getOffentligeGodkjenninger() {
+        if (isNull(offentligeGodkjenninger)) {
+            offentligeGodkjenninger = new ArrayList<>();
+        }
+        return offentligeGodkjenninger;
+    }
+
+    public List<Fagbrev> getFagbrev() {
+        if (isNull(fagbrev)) {
+            fagbrev = new ArrayList<>();
+        }
+        return fagbrev;
+    }
+
+    public List<Kompetanse> getKompetanser() {
+        if (isNull(kompetanser)) {
+            kompetanser = new ArrayList<>();
+        }
+        return kompetanser;
+    }
 
     @Data
     @SuperBuilder
@@ -235,6 +308,7 @@ public class ArbeidsplassenCVDTO {
         VAKT,
         TURNUS;
     }
+
     @Data
     @SuperBuilder
     @NoArgsConstructor
