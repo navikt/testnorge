@@ -27,10 +27,6 @@ import java.util.UUID;
 @SpringBootApplication
 public class PensjonTestdataFacadeProxyApplicationStarter {
 
-    public static void main(String[] args) {
-        SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
                                            TrygdeetatenAzureAdTokenService tokenService,
@@ -43,7 +39,8 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                 .route(spec -> spec
                         .path("/api/v1/inntekt/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter)
-                                .setRequestHeader("Nav-Call-Id","Dolly " + UUID.randomUUID())
+                                .setRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
+                                .setRequestHeader("Nav-Call-Id", "Dolly " + UUID.randomUUID())
                                 .setRequestHeader("Nav-Consumer-Id", "Dolly"))
                         .uri(properties.getUrl()))
                 .route(spec -> spec
@@ -53,5 +50,9 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
                         ) //Auth header er required men sjekkes ikke utover det
                         .uri("http://pensjon-testdata-facade.pensjontestdata.svc.nais.local/"))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(PensjonTestdataFacadeProxyApplicationStarter.class, args);
     }
 }
