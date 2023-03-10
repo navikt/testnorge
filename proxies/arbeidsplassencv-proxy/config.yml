@@ -1,16 +1,3 @@
----
-apiVersion: nais.io/v1
-kind: AzureAdApplication
-metadata:
-  name: testnav-arbeidsplassencv-proxy-trygdeetaten
-  namespace: dolly
-  labels:
-    team: dolly
-spec:
-  secretName: azure-trygdeetaten-testnav-arbeidsplassencv-proxy-trygdeetaten
-  secretKeyPrefix: "AZURE_TRYGDEETATEN"
-  tenant: trygdeetaten.no
----
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
@@ -35,6 +22,8 @@ spec:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-idporten
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
@@ -67,8 +56,5 @@ spec:
     limits:
       cpu: 500m
       memory: 2048Mi
-  envFrom:
-    - secret: azure-trygdeetaten-testnav-arbeidsplassencv-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-arbeidsplassencv-proxy.dev.intern.nav.no"
     - "https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io"

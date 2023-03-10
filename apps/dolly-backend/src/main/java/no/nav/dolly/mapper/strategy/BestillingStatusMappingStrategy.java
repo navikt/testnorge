@@ -21,6 +21,7 @@ import java.util.List;
 
 import static no.nav.dolly.bestilling.service.DollyBestillingService.getEnvironments;
 import static no.nav.dolly.mapper.AnnenFeilStatusMapper.buildAnnenFeilStatusMap;
+import static no.nav.dolly.mapper.ArbeidsplassenCVStatusMapper.buildArbeidsplassenCVStatusMap;
 import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMap;
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
@@ -95,6 +96,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildKontoregisterStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildAnnenFeilStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildArbeidsplassenCVStatusMap(progresser));
                         bestillingStatus.setBestilling(RsBestillingStatus.RsBestilling.builder()
                                 .pdldata(bestillingRequest.getPdldata())
                                 .aareg(bestillingRequest.getAareg())
@@ -112,6 +114,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .skjerming(bestillingRequest.getSkjerming())
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
                                 .bankkonto(bestillingRequest.getBankkonto())
+                                .arbeidsplassenCV(bestillingRequest.getArbeidsplassenCV())
                                 .importFraPdl(mapIdents(bestilling.getPdlImport()))
                                 .kildeMiljoe(bestilling.getKildeMiljoe())
                                 .navSyntetiskIdent(bestilling.getNavSyntetiskIdent())
@@ -133,6 +136,5 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
-
     }
 }

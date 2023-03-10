@@ -3,6 +3,8 @@ package no.nav.testnav.libs.reactivesessionsecurity.resolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.Token;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.oauth2.client.ReactiveOAuth2AuthorizedClientService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ServerWebExchange;
@@ -21,7 +23,9 @@ public class InMemoryTokenResolver extends Oauth2AuthenticationToken implements 
 
     @Override
     public Mono<Token> getToken(ServerWebExchange exchange) {
-        return oauth2AuthenticationToken()
+        return oauth2AuthenticationToken(ReactiveSecurityContextHolder
+                .getContext()
+                .map(SecurityContext::getAuthentication))
                 .flatMap(oAuth2AuthenticationToken -> auth2AuthorizedClientService.loadAuthorizedClient(
                                 oAuth2AuthenticationToken.getAuthorizedClientRegistrationId(),
                                 oAuth2AuthenticationToken.getPrincipal().getName())

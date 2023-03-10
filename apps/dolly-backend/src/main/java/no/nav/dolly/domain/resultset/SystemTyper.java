@@ -34,7 +34,8 @@ public enum SystemTyper {
     PDL_ORDRE("Ordre til PDL"),
     KONTOREGISTER("Bankkontoregister"),
     PDL_PERSONSTATUS("Person finnes i PDL"),
-    ANNEN_FEIL("Annen Feil");
+    ANNEN_FEIL("Annen Feil"),
+    ARBEIDSPLASSENCV("Arbeidsplassen CV");
 
     private String beskrivelse;
 

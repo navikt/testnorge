@@ -3,7 +3,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 spring:
   application:
     name: testnav-arbeidsplassencv-proxy
-    desciption: Proxy for arbeidsplassencv, endrer tenant til trygdeetaten.no
+    desciption: Proxy for arbeidsplassencv, henter fra fakedings og signerer med tokenx
   security:
     oauth2:
       resourceserver:
@@ -14,7 +14,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: ${TOKEN_X_CLIENT_ID}
+          accepted-audience: testnav-arbeidsplassencv-proxy
   cloud:
     gateway:
       httpclient:
@@ -26,5 +26,10 @@ consumer:
   arbeidsplassencv-proxy:
     name: pam-cv-api
     namespace: teampam
-    url: https://pam-cv-api.dev-fss-pub.nais.io
+    url: https://pam-cv-api.dev.adeo.no
+    cluster: dev-fss
+  fakedings-token-provider:
+    name: fakedings
+    namespace: plattformsikkerhet
+    url: https://fakedings.dev-gcp.nais.io
     cluster: dev-fss

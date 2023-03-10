@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
 import org.springframework.web.server.WebSession;
 import org.springframework.web.server.session.DefaultWebSessionManager;
 import org.springframework.web.server.session.WebSessionManager;
@@ -21,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/oauth2/logout")
 @RequiredArgsConstructor
-@Profile("prod")
+@Profile("idporten")
 public class FrontChannelLogoutController {
 
     private final WebSessionManager webSessionManager;

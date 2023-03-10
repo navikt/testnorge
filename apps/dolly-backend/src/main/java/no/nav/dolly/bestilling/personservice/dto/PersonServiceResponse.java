@@ -16,4 +16,5 @@ public class PersonServiceResponse {
     private Boolean exists;
     private HttpStatus status;
     private String feilmelding;
+    private String formattertMelding;
 }
