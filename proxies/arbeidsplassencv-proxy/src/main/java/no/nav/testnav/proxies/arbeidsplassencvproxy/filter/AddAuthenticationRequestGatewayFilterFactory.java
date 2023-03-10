@@ -7,9 +7,6 @@ import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.proxies.arbeidsplassencvproxy.consumer.FakedingsConsumer;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.http.HttpHeaders;
-import reactor.core.publisher.Mono;
-
-import java.util.function.Supplier;
 
 @Slf4j
 @UtilityClass
