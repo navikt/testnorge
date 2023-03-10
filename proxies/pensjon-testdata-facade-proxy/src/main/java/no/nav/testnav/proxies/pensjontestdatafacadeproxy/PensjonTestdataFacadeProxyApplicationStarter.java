@@ -37,9 +37,8 @@ public class PensjonTestdataFacadeProxyApplicationStarter {
 
         return builder.routes()
                 .route(spec -> spec
-                        .path("/api/v1/inntekt/**")
+                        .path("/api/v1/inntekt")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter)
-                                .setRequestHeader(HttpHeaders.AUTHORIZATION, "dolly")
                                 .setRequestHeader("Nav-Call-Id", "Dolly " + UUID.randomUUID())
                                 .setRequestHeader("Nav-Consumer-Id", "Dolly"))
                         .uri(properties.getUrl()))
