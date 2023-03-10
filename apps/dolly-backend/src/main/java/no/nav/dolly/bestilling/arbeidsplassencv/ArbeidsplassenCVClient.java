@@ -11,8 +11,10 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -23,7 +25,7 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class ArbeidsplassenCVClient implements ClientRegister {
 
-    private final ArbeidplassenCVConsumer arbeidplassenCVConsumer;
+    private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
     private final MapperFacade mapperFacade;
     private final TransactionHelperService transactionHelperService;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -31,15 +33,16 @@ public class ArbeidsplassenCVClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getArbeidsplassenCV())) {
-
-            var request = mapperFacade.map(bestilling.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class);
-            return arbeidplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request)
-                    .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                            errorStatusDecoder.getErrorText(status.getStatus(), status.getFeilmelding()))
-                    .map(resultat -> futurePersist(progress, resultat));
-        }
-        return Flux.empty();
+        return Flux.just(bestilling)
+                .filter(ordre -> nonNull(ordre.getArbeidsplassenCV()))
+                .flatMap(ordre -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class)))
+                .flatMap(request -> arbeidsplassenCVConsumer.hentCV(dollyPerson.getIdent())
+                        .flatMap(result ->
+                                arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request)
+                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
+                                                        status.getFeilmelding()))
+                                        .map(resultat -> futurePersist(progress, resultat))));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

@@ -24,13 +24,13 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Component
 @Slf4j
-public class ArbeidplassenCVConsumer implements ConsumerStatus {
+public class ArbeidsplassenCVConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
-    public ArbeidplassenCVConsumer(
+    public ArbeidsplassenCVConsumer(
             ArbeidsplassenProxyProperties serverProperties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
@@ -45,11 +45,12 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
-    public Flux<ArbeidsplassenCVDTO> hentCV(String ident) {
+    public Flux<ArbeidsplassenCVStatusDTO> hentCV(String ident) {
 
         log.info("Henter CV på ident: {} fra arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenGetCommand(webClient, ident, token.getTokenValue()).call());
+                .flatMapMany(token -> new ArbeidsplassenGetCommand(webClient, ident, token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Hentet CV for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
