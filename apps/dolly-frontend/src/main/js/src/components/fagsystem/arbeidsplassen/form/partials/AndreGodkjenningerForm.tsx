@@ -1,42 +1,60 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialAndreGodkjenninger } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import {
+	initialAndreGodkjenninger,
+	initialAndreGodkjenningerVerdier,
+} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import _get from 'lodash/get'
 
 export const AndreGodkjenningerForm = ({ formikBag }) => {
+	const andreGodkjenningerListePath = 'arbeidsplassenCV.andreGodkjenninger'
+
 	return (
-		<div style={{ width: '100%' }}>
-			<hr />
+		<Vis attributt={andreGodkjenningerListePath}>
 			<FormikDollyFieldArray
-				name="arbeidsplassenCV.andreGodkjenninger"
+				name={andreGodkjenningerListePath}
 				header="Andre godkjenninger"
-				// hjelpetekst={infotekst}
-				newEntry={initialAndreGodkjenninger}
+				newEntry={initialAndreGodkjenningerVerdier}
 				buttonText="Annen godkjenning"
 				nested
 			>
 				{(annenGodkjenningPath, idx) => (
-					<div key={idx} className="flexbox--flex-wrap">
-						<FormikSelect
-							name={`${annenGodkjenningPath}.certificateName`}
-							label="Annen godkjenning"
-							options={Options('annenGodkjenning')}
-							size="xxlarge"
-							isClearable={false}
+					<>
+						<div key={idx} className="flexbox--flex-wrap">
+							<FormikSelect
+								name={`${annenGodkjenningPath}.certificateName`}
+								label="Annen godkjenning"
+								options={Options('annenGodkjenning')}
+								size="xxlarge"
+								isClearable={false}
+							/>
+							<DollyTextInput
+								name={`${annenGodkjenningPath}.issuer`}
+								label="Utsteder"
+								size="large"
+								value={_get(formikBag.values, `${annenGodkjenningPath}.issuer`)}
+								onChange={(i) =>
+									formikBag.setFieldValue(`${annenGodkjenningPath}.issuer`, i.target.value)
+								}
+							/>
+							<FormikDatepicker name={`${annenGodkjenningPath}.fromDate`} label="Fullført" />
+							<FormikDatepicker name={`${annenGodkjenningPath}.toDate`} label="Utløper" />
+						</div>
+						<EraseFillButtons
+							formikBag={formikBag}
+							path={annenGodkjenningPath}
+							initialErase={initialAndreGodkjenninger}
+							initialFill={initialAndreGodkjenningerVerdier}
 						/>
-						<FormikTextInput
-							name={`${annenGodkjenningPath}.issuer`}
-							label="Utsteder"
-							size="large"
-						/>
-						<FormikDatepicker name={`${annenGodkjenningPath}.fromDate`} label="Fullført" />
-						<FormikDatepicker name={`${annenGodkjenningPath}.toDate`} label="Utløper" />
-					</div>
+					</>
 				)}
 			</FormikDollyFieldArray>
-		</div>
+		</Vis>
 	)
 }

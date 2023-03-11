@@ -9,6 +9,47 @@ export const initialJobboensker = {
 	workScheduleTypes: [],
 }
 
+export const initialJobboenskerVerdier = {
+	// active: false,
+	startOption: 'LEDIG_NAA',
+	occupations: [
+		{
+			title: 'Frisør',
+			styrk08: '5141',
+		},
+		{
+			title: 'Sauegjeter',
+			styrk08: '9212',
+		},
+		{
+			title: 'Typograf',
+			styrk08: '7321',
+		},
+		{
+			title: 'Utvikler',
+			styrk08: '9999',
+		},
+	],
+	// occupationDrafts: [],
+	locations: [
+		{
+			location: 'Lørenskog',
+			code: 'NO02.0230',
+		},
+		{
+			location: 'Oslo',
+			code: 'NO03',
+		},
+		{
+			location: 'Fredrikstad',
+			code: 'NO01.0106',
+		},
+	],
+	occupationTypes: ['FAST', 'PROSJEKT', 'FERIEJOBB'],
+	workLoadTypes: ['HELTID'],
+	workScheduleTypes: ['DAGTID', 'UKEDAGER', 'KVELD'],
+}
+
 export const initialCV = {
 	jobboensker: initialJobboensker,
 	utdanning: [],
@@ -137,6 +178,16 @@ export const initialOffentligeGodkjenninger = {
 	// updatedAt: null
 }
 
+export const initialOffentligeGodkjenningerVerdier = {
+	// uui: '',
+	title: 'Godkjenning som profesjonell pyrotekniker',
+	// conceptId: '',
+	issuer: 'Dolly Pyroakademi',
+	fromDate: '2017-12-31T00:00:00',
+	toDate: '2027-12-31T00:00:00',
+	// updatedAt: null
+}
+
 export const initialAndreGodkjenninger = {
 	// uuid: '',
 	certificateName: '',
@@ -148,11 +199,30 @@ export const initialAndreGodkjenninger = {
 	// updatedAt: null,
 }
 
+export const initialAndreGodkjenningerVerdier = {
+	// uuid: '',
+	certificateName: 'Ballongførerbevis',
+	// alternativeName: '',
+	// conceptId: '',
+	issuer: 'Dolly Luftfart',
+	fromDate: '2022-02-02T00:00:00',
+	toDate: '2027-02-02T00:00:00',
+	// updatedAt: null,
+}
+
 export const initialSpraak = {
 	// uuid: '',
 	language: '',
 	oralProficiency: 'IKKE_OPPGITT',
 	writtenProficiency: 'IKKE_OPPGITT',
+	// updatedAt: null,
+}
+
+export const initialSpraakVerdier = {
+	// uuid: '',
+	language: 'Norsk',
+	oralProficiency: 'FOERSTESPRAAK',
+	writtenProficiency: 'FOERSTESPRAAK',
 	// updatedAt: null,
 }
 
@@ -164,6 +234,14 @@ export const initialFoererkort = {
 	// updatedAt: null
 }
 
+export const initialFoererkortVerdier = {
+	// uuid: '',
+	type: 'C - Lastebil',
+	acquiredDate: '2020-03-01T00:00:00',
+	expiryDate: '2028-03-01T00:00:00',
+	// updatedAt: null
+}
+
 export const initialKurs = {
 	// uuid: '',
 	title: '',
@@ -171,6 +249,16 @@ export const initialKurs = {
 	duration: 0,
 	durationUnit: '',
 	date: null,
+	// updatedAt: null,
+}
+
+export const initialKursVerdier = {
+	// uuid: '',
+	title: 'Kurs i saueklipping',
+	issuer: 'Dolly Opplæringssenter',
+	duration: 2,
+	durationUnit: 'UKE',
+	date: '2022-07-30T00:00:00',
 	// updatedAt: null,
 }
 
@@ -187,3 +275,6 @@ export const initialJobboenskerYrke = {
 	// conceptId: null,
 	styrk08: '',
 }
+
+export const initialSammendragVerdi =
+	'Trivelig person med kjærlighet for sau, som har tonnevis med allsidig kompetanse og fantastiske personlige egenskaper.'

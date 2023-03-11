@@ -1,35 +1,48 @@
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { initialFoererkort } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import {
+	initialFoererkort,
+	initialFoererkortVerdier,
+} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import * as React from 'react'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
 export const FoererkortForm = ({ formikBag }) => {
+	const foererkortTyperListePath = 'arbeidsplassenCV.foererkort'
+
 	return (
-		<div style={{ width: '100%' }}>
-			<hr />
+		<Vis attributt={foererkortTyperListePath}>
 			<FormikDollyFieldArray
-				name="arbeidsplassenCV.foererkort"
+				name={foererkortTyperListePath}
 				header="Førerkort"
-				// hjelpetekst={infotekst}
-				newEntry={initialFoererkort}
+				newEntry={initialFoererkortVerdier}
 				nested
 			>
 				{(foererkortPath, idx) => (
-					<div key={idx} className="flexbox--flex-wrap">
-						<FormikSelect
-							name={`${foererkortPath}.type`}
-							label="Type førerkort"
-							options={Options('foererkortTyper')}
-							size="large"
-							isClearable={false}
+					<>
+						<div key={idx} className="flexbox--flex-wrap">
+							<FormikSelect
+								name={`${foererkortPath}.type`}
+								label="Type førerkort"
+								options={Options('foererkortTyper')}
+								size="large"
+								isClearable={false}
+							/>
+							<FormikDatepicker name={`${foererkortPath}.acquiredDate`} label="Gyldig fra" />
+							<FormikDatepicker name={`${foererkortPath}.expiryDate`} label="Gyldig til" />
+						</div>
+						<EraseFillButtons
+							formikBag={formikBag}
+							path={foererkortPath}
+							initialErase={initialFoererkort}
+							initialFill={initialFoererkortVerdier}
 						/>
-						<FormikDatepicker name={`${foererkortPath}.acquiredDate`} label="Gyldig fra" />
-						<FormikDatepicker name={`${foererkortPath}.expiryDate`} label="Gyldig til" />
-					</div>
+					</>
 				)}
 			</FormikDollyFieldArray>
-		</div>
+		</Vis>
 	)
 }

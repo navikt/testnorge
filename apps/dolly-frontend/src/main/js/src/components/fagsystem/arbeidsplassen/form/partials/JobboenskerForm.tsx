@@ -3,6 +3,11 @@ import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import {
+	initialJobboensker,
+	initialJobboenskerVerdier,
+} from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
 export const JobboenskerForm = ({ formikBag }) => {
 	const jobboenskerPath = 'arbeidsplassenCV.jobboensker'
@@ -89,6 +94,12 @@ export const JobboenskerForm = ({ formikBag }) => {
 					size="large"
 				/>
 			</div>
+			<EraseFillButtons
+				formikBag={formikBag}
+				path={jobboenskerPath}
+				initialErase={initialJobboensker}
+				initialFill={initialJobboenskerVerdier}
+			/>
 		</Vis>
 	)
 }

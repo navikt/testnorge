@@ -1,20 +1,30 @@
 import _get from 'lodash/get'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import * as React from 'react'
+import { Vis } from '@/components/bestillingsveileder/VisAttributt'
+import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { initialSammendragVerdi } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
 export const SammendragForm = ({ formikBag }) => {
+	const sammendragPath = 'arbeidsplassenCV.sammendrag'
+
 	return (
-		<div style={{ width: '100%' }}>
-			<hr />
+		<Vis attributt={sammendragPath}>
 			<h3>Sammendrag</h3>
 			<Fritekstfelt
 				label="Oppsummering"
 				placeholder="Kort oppsummering av kompetanse og personlige egenskaper"
-				value={_get(formikBag.values, 'arbeidsplassenCV.sammendrag')}
+				value={_get(formikBag.values, sammendragPath)}
 				onChange={(sammendrag) =>
-					formikBag.setFieldValue('arbeidsplassenCV.sammendrag', sammendrag?.target?.value)
+					formikBag.setFieldValue(sammendragPath, sammendrag?.target?.value)
 				}
 			/>
-		</div>
+			<EraseFillButtons
+				formikBag={formikBag}
+				path={sammendragPath}
+				initialErase={''}
+				initialFill={initialSammendragVerdi}
+			/>
+		</Vis>
 	)
 }
