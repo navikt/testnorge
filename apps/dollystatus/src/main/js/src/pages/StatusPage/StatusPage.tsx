@@ -13,7 +13,7 @@ export default () => {
 	const [dataLoading, setDataLoading] = useBoolean(true)
 
 	useEffect(() => {
-		const endpoint = 'http://dolly-backend.dolly'
+		const endpoint = 'https://dolly-backend'
 
 		fetch(endpoint)
 			.then((response) => response.json())
