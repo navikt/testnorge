@@ -21,7 +21,5 @@ spring:
         backend: postgresql/preprod-fss
         role: udi-stub-admin
         enabled: true
-  flyway:
-    enabled: false
   
   config.import: vault://
