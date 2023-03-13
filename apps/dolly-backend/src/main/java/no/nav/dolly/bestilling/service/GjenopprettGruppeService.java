@@ -24,10 +24,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -76,9 +78,10 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
+            var counter = new AtomicInteger(0);
             var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .limitRate(10)
+                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 10 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
                                     .filter(Objects::nonNull)

@@ -30,7 +30,9 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
@@ -79,9 +81,10 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         RsDollyBestillingRequest bestKriterier = getDollyBestillingRequest(bestilling);
         if (nonNull(bestKriterier)) {
 
+            var counter = new AtomicInteger(0);
             var testidenter = identService.getTestidenterByGruppe(bestilling.getGruppe().getId());
             Flux.fromIterable(testidenter)
-                    .limitRate(10)
+                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 10 : 0))
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
                                     .flatMap(progress -> (originator.isPdlf() ?
