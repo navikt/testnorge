@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
+import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
@@ -14,6 +15,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
@@ -44,6 +46,7 @@ public class PdlDataOpprettingCommand implements Callable<Flux<PdlResponse>> {
                         .ident(resultat)
                         .status(HttpStatus.OK)
                         .build())
+                .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on POST"))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error -> Flux.just(PdlResponse.builder()
                                 .status(WebClientFilter.getStatus(error))
