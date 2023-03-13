@@ -216,8 +216,9 @@ public class BankkontoExcelService {
                                 Collectors.toList()
                         ),
                         Collectors.filtering(
-                                p -> p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO)
-                                        && !p.getKontoregisterStatus().contains("Feil"),
+                                p -> p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO) &&
+                                        nonNull(p.getKontoregisterStatus()) &&
+                                        !p.getKontoregisterStatus().contains("Feil"),
                                 Collectors.toList()
                         ),
                         (tps, kontoregister) -> {
