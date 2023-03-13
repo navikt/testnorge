@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
+import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
@@ -12,10 +13,12 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+import static java.lang.String.join;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
@@ -23,9 +26,6 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
 
     private static final String PDL_FORVALTER_PERSONER_URL = "/api/v1/personer";
-    private static final String IDENTER = "identer";
-    private static final String PAGE_NO = "sidenummer";
-    private static final String PAGE_SIZE = "pagesize";
 
     private final WebClient webClient;
     private final List<String> identer;
@@ -38,14 +38,15 @@ public class PdlDataHentCommand implements Callable<Flux<FullPersonDTO>> {
         return webClient
                 .get()
                 .uri(uriBuilder -> uriBuilder.path(PDL_FORVALTER_PERSONER_URL)
-                        .queryParam(IDENTER, identer)
-                        .queryParam(PAGE_NO, sidenummer)
-                        .queryParam(PAGE_SIZE, sidestorrelse)
+                        .queryParam("identer", identer)
+                        .queryParam("sidenummer", sidenummer)
+                        .queryParam("pagesize", sidestorrelse)
                         .build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
                 .bodyToFlux(FullPersonDTO.class)
+                .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on GET of idents %s".formatted(join(",", identer))))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))
