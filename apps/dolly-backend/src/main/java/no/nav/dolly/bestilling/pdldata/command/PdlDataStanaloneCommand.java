@@ -1,5 +1,6 @@
 package no.nav.dolly.bestilling.pdldata.command;
 
+import io.netty.handler.timeout.TimeoutException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
@@ -10,6 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
+import java.net.http.HttpTimeoutException;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
@@ -37,6 +39,7 @@ public class PdlDataStanaloneCommand implements Callable<Mono<Void>> {
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
                 .bodyToMono(Void.class)
+                .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT of ident %s".formatted(ident)))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
