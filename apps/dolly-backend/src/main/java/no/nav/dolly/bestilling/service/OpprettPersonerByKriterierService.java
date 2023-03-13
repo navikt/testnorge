@@ -75,6 +75,7 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
             var originator = OriginatorUtility.prepOriginator(bestKriterier, mapperFacade);
 
             Flux.range(0, bestilling.getAntallIdenter())
+                    .limitRate(10)
                     .flatMap(index -> opprettPerson(originator)
                             .flatMap(pdlResponse -> opprettProgress(bestilling, PDLF, pdlResponse)
                                     .flatMap(progress -> sendOrdrePerson(progress, pdlResponse)
