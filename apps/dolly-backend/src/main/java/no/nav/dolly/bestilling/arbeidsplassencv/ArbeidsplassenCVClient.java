@@ -35,14 +35,16 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         return Flux.just(bestilling)
                 .filter(ordre -> nonNull(ordre.getArbeidsplassenCV()))
-                .flatMap(ordre -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class)))
-                .flatMap(request -> arbeidsplassenCVConsumer.hentCV(dollyPerson.getIdent())
-                        .flatMap(result ->
-                                arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request)
-                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
-                                                        status.getFeilmelding()))
-                                        .map(resultat -> futurePersist(progress, resultat))));
+                .flatMap(ordre -> arbeidsplassenCVConsumer.hentPerson(dollyPerson.getIdent())
+                        .flatMap(response -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent())
+                                .flatMap(response2 -> arbeidsplassenCVConsumer.opprettSamtykke(dollyPerson.getIdent())
+                                        .flatMap(response3 -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class))
+                                                .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request)
+                                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
+                                                                        status.getFeilmelding()))
+                                                        .map(resultat -> futurePersist(progress, resultat)))))))
+                .flatMap(Flux::from);
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
