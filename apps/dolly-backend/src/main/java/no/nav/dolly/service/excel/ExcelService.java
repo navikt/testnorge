@@ -63,13 +63,13 @@ public class ExcelService {
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
 
-        var testidenter = identRepository.findByTestgruppe(testgruppe.getId())
+        var testidenter = identRepository.findByTestgruppe(testgruppe.getId());
 
         var workbook = new XSSFWorkbook();
 
         Mono.zip(
                         personExcelService.preparePersonSheet(workbook, testidenter),
-                        bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe, testidenter))
+                        bankkontoExcelService.prepareBankkontoSheet(workbook, testgruppe))
                 .block();
 
         BankkontoToPersonHelper.appendData(workbook);

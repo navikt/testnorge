@@ -5,7 +5,7 @@ import no.nav.dolly.bestilling.kontoregisterservice.KontoregisterConsumer;
 import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
-import no.nav.dolly.domain.jpa.Testident;
+import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
@@ -166,10 +166,9 @@ public class BankkontoExcelService {
                 bankkontonrUtland.getValuta() : "";
     }
 
-    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, List<Testident> testidenter) {
+    public Mono<Void> prepareBankkontoSheet(XSSFWorkbook workbook, Testgruppe testgruppe) {
 
-        var rows = getBankkontoDetaljer(testidenter);
-
+        var rows = getBankkontoDetaljer(testgruppe);
 
         if (!rows.isEmpty()) {
             var sheet = workbook.createSheet(BANKKONTO_FANE);
@@ -207,9 +206,9 @@ public class BankkontoExcelService {
                 .collectList();
     }
 
-    private List<Object[]> getBankkontoDetaljer(List<Testident> testidenter) {
+    private List<Object[]> getBankkontoDetaljer(Testgruppe testgruppe) {
 
-        var bankKontoIdenter =
+        var bankKontoIdenter = testgruppe.getBestillinger().stream()
                 .filter(bestilling -> nonNull(bestilling.getBestKriterier()))
                 .filter(bestilling -> bestilling.getBestKriterier().contains("Bankkonto"))
                 .map(Bestilling::getProgresser)
