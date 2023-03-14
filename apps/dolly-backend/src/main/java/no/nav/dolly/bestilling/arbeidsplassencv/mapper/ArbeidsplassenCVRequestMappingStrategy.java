@@ -35,14 +35,15 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                                 .forEach(utdanning -> utdanning.setHasAuthorization(true));
                         prepCommonFacts(destiasjon);
 
+                        destiasjon.setSistEndretAvNav(true);
+                        destiasjon.setSistEndret(ZonedDateTime.now());
+
                         if (isNull(destiasjon.getJobboensker())) {
                             destiasjon.setJobboensker(new PAMCVDTO.Jobboensker());
                         }
-                        destiasjon.getJobboensker().setOccupations(List.of(new ArbeidsplassenCVDTO.Occupation()));
-                        destiasjon.getJobboensker().setOccupationDrafts(List.of(new ArbeidsplassenCVDTO.OccupationDraft()));
+                        destiasjon.getJobboensker().setActive(true);
                     }
                 })
-                .exclude("jobboensker")
                 .byDefault()
                 .register();
     }

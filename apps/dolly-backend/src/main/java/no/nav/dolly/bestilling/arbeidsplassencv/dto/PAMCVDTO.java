@@ -244,13 +244,69 @@ public class PAMCVDTO {
     public static class Jobboensker {
         private Boolean active;
         private ArbeidsplassenCVDTO.StartOption startOption;
-        private List<ArbeidsplassenCVDTO.Occupation> occupations;
-        private List<ArbeidsplassenCVDTO.OccupationDraft> occupationDrafts;
-        private List<ArbeidsplassenCVDTO.Location> locations;
+        private List<Occupation> occupations;
+        private List<OccupationDraft> occupationDrafts;
+        private List<Location> locations;
         private List<ArbeidsplassenCVDTO.OccupationType> occupationTypes;
         private List<ArbeidsplassenCVDTO.Omfang> workLoadTypes;
         private List<ArbeidsplassenCVDTO.Arbeidstid> workScheduleTypes;
+
+        public List<Occupation> getOccupations() {
+            if (isNull(occupations)) {
+                occupations = new ArrayList<>();
+            }
+            return occupations;
+        }
+
+        public List<OccupationDraft> getOccupationDrafts() {
+            if (isNull(occupationDrafts)) {
+                occupationDrafts = new ArrayList<>();
+            }
+            return occupationDrafts;
+        }
+
+        public List<Location> getLocations() {
+            if (isNull(locations)) {
+                locations = new ArrayList<>();
+            }
+            return locations;
+        }
     }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Occupation {
+        private String id;
+        private String title;
+        private Long conceptId;
+        private String styrk08;
+    }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class OccupationDraft {
+
+        private String id;
+        private String title;
+        private Long conceptId;
+        private String styrk08;
+    }
+
+    @Data
+    @SuperBuilder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Location {
+        private String id;
+        private String location;
+        private String code;
+        private Long conceptId;
+    }
+
 
     @Data
     @SuperBuilder

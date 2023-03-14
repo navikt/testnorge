@@ -272,6 +272,27 @@ public class ArbeidsplassenCVDTO {
         private List<OccupationType> occupationTypes;
         private List<Omfang> workLoadTypes;
         private List<Arbeidstid> workScheduleTypes;
+
+        public List<Occupation> getOccupations() {
+            if (isNull(occupations)) {
+                occupations = new ArrayList<>();
+            }
+            return occupations;
+        }
+
+        public List<OccupationDraft> getOccupationDrafts() {
+            if (isNull(occupationDrafts)) {
+                occupationDrafts = new ArrayList<>();
+            }
+            return occupationDrafts;
+        }
+
+        public List<Location> getLocations() {
+            if (isNull(locations)) {
+                locations = new ArrayList<>();
+            }
+            return locations;
+        }
     }
 
     public enum StartOption {

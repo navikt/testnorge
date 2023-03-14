@@ -34,15 +34,13 @@ public class ArbeidsplassenCVClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        var ident = dollyPerson.getIdent();
         return Flux.just(bestilling)
                 .filter(ordre -> nonNull(ordre.getArbeidsplassenCV()))
                 .flatMap(ordre -> Flux.just(CallIdUtil.generateCallId())
-                        .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(ident, uuid)
-                                .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(ident, uuid)
-//                                        .flatMap(response2 -> arbeidsplassenCVConsumer.hentCV(ident, uuid)
+                        .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
+                                .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(dollyPerson.getIdent(), uuid)
                                                 .flatMap(response3 -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), PAMCVDTO.class))
-                                                        .map(request -> arbeidsplassenCVConsumer.oppdaterCV(ident, request, uuid)
+                                                        .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
                                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
                                                                         String.format("%s UUID: %s",
                                                                         errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
