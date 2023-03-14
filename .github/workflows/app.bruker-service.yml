@@ -34,6 +34,8 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
   deploy-dev:
     name: Deploy dev
     uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
@@ -45,3 +47,5 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
