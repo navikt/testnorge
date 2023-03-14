@@ -51,17 +51,6 @@ jobs:
           build: npm run build
           start: npm run preview
   
-  
-  docker:
-    name: Docker build
-    uses: nais/docker-build-push@v0
-    id: docker-build-push
-    with:
-      team: dolly
-      identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      #        dockerfile: ${{ inputs.working-directory }}/Dockerfile
-      project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-  
   deploy:
     name: Deploy
     #    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
@@ -129,4 +118,3 @@ jobs:
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-      
