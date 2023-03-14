@@ -119,7 +119,7 @@ public class TestgruppeController {
     @Operation(description = "Hent testgruppe")
     public RsTestgruppeMedBestillingId getTestgruppe(@PathVariable("gruppeId") Long gruppeId) {
 
-        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 20000, null, null);
+        return testgruppeService.fetchPaginertTestgruppeById(gruppeId, 0, 2000, null, null);
     }
 
     @Cacheable(CACHE_GRUPPE)
@@ -196,7 +196,6 @@ public class TestgruppeController {
     public RsBestillingStatus endreGruppeLeggTil(@PathVariable("gruppeId") Long gruppeId, @RequestBody RsDollyBestillingLeggTilPaaGruppe request) {
 
         Bestilling bestilling = bestillingService.saveBestilling(gruppeId, request);
-
         leggTilPaaGruppeService.executeAsync(bestilling);
         return mapperFacade.map(bestilling, RsBestillingStatus.class);
     }

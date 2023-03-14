@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Import;
         InternalHandler.class,
         InternalRouter.class,
         ApplicationProperties.class,
+        WebClientConfig.class
 })
 @Configuration
 public class CoreConfig {

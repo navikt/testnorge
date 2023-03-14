@@ -53,6 +53,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: testnav-import-fra-tpsf-service
           cluster: dev-gcp
     outbound:
@@ -74,4 +76,4 @@ spec:
       - type: POSTGRES_12
         databases:
           - name: testnav-pdl-forvalter-db
-        tier: db-custom-1-3840
+        tier: db-custom-2-3840

@@ -105,6 +105,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "PDL_PERSON_STATUS")
     private String pdlPersonStatus;
 
+    @Column(name = "ARBEIDSPLASSENCV_STATUS")
+    private String arbeidsplassenCVStatus;
+
     @Column(name = "master")
     @Enumerated(EnumType.STRING)
     private Master master;

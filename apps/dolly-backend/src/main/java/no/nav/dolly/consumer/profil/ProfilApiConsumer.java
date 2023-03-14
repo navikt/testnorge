@@ -29,14 +29,16 @@ public class ProfilApiConsumer {
     private final ServerProperties serviceProperties;
     private final GetUserInfo getUserInfo;
 
-    public ProfilApiConsumer(TokenExchange tokenService,
-                             ProfilApiProperties serverProperties,
-                             GetUserInfo getUserInfo) {
-
+    public ProfilApiConsumer(
+            TokenExchange tokenService,
+            ProfilApiProperties serverProperties,
+            GetUserInfo getUserInfo,
+            WebClient.Builder webClientBuilder
+    ) {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
         this.getUserInfo = getUserInfo;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .build();
     }

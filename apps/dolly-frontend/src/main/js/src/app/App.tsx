@@ -6,22 +6,21 @@ import allRoutes from '@/allRoutes'
 import { VarslingerModal } from '@/components/varslinger/VarslingerModal'
 import './App.less'
 import { Forbedring } from '@/components/feedback/Forbedring'
-import Utlogging from '@/components/utlogging'
 import ToastConnector from '@/components/ui/toast/ToastConnector'
 import { Breadcrumbs } from '@/components/layout/breadcrumb/Breadcrumb'
 import { InfoStripe } from '@/components/infostripe/InfoStripe'
 import { useBrukerProfil, useCurrentBruker } from '@/utils/hooks/useBruker'
 import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
-import logoutBruker from '@/components/utlogging/logoutBruker'
 import {
 	useDollyMalerBrukerOgMalnavn,
 	useDollyOrganisasjonMalerBrukerOgMalnavn,
 } from '@/utils/hooks/useMaler'
 import { runningCypressE2E } from '@/service/services/Request'
+import { navigateToLogin } from '@/components/utlogging/navigateToLogin'
 
 const logout = (feilmelding: string) => {
 	if (!runningCypressE2E()) {
-		logoutBruker(feilmelding)
+		navigateToLogin(feilmelding)
 	}
 }
 
@@ -54,7 +53,6 @@ export const App = () => {
 
 	return (
 		<React.Fragment>
-			<Utlogging />
 			<VarslingerModal />
 			<Header />
 			<Breadcrumbs />

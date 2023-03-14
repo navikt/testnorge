@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   webproxy: true
   tokenx:
@@ -22,6 +22,8 @@ spec:
         - application: dolly-backend
           cluster: dev-gcp
         - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp

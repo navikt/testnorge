@@ -20,7 +20,7 @@ sonarqube {
 dependencyManagement {
     applyMavenExclusions = false
     imports {
-        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.3'
+        mavenBom 'org.springframework.boot:spring-boot-dependencies:3.0.4'
     }
 }
 
@@ -71,5 +71,4 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 }

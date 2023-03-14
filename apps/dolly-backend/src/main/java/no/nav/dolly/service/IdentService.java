@@ -1,7 +1,6 @@
 package no.nav.dolly.service;
 
 import lombok.RequiredArgsConstructor;
-import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.domain.jpa.Testident;
 import no.nav.dolly.domain.jpa.Testident.Master;
@@ -29,7 +28,6 @@ public class IdentService {
 
     private final IdentRepository identRepository;
     private final TransaksjonMappingRepository transaksjonMappingRepository;
-    private final MapperFacade mapperFacade;
 
     @Transactional(readOnly = true)
     public boolean exists(String ident) {
@@ -126,5 +124,10 @@ public class IdentService {
 
         return identRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(format(IDENT_NOT_FOUND, ident)));
+    }
+
+    public List<Testident> getTestidenterByGruppe(Long id) {
+
+        return identRepository.findByTestgruppe(id);
     }
 }

@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.metrics.CounterCustomRegistry;
 import no.nav.dolly.repository.IdentRepository.GruppeBestillingIdent;
@@ -23,15 +24,16 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
+import java.time.Duration;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -76,9 +78,10 @@ public class GjenopprettGruppeService extends DollyBestillingService {
 
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
-            var emptyBestillingCounter = new ConcurrentHashMap<String, Boolean>();
+            var counter = new AtomicInteger(0);
+            var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .filter(testident -> testident.isPdl() || testident.isPdlf())
+                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 10 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
                                     .filter(Objects::nonNull)
@@ -90,25 +93,20 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                             progress, true),
                                                     personServiceClient.syncPerson(dollyPerson, progress)
                                                             .map(ClientFuture::get)
-                                                            .map(BestillingProgress::isPdlSync)
-                                                            .flatMap(pdlSync -> isTrue(pdlSync) ?
-                                                                    Flux.fromIterable(coBestillinger)
-                                                                            .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
-                                                                            .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
-                                                                            .filter(cobestilling ->
-                                                                                    isNotTrue(emptyBestillingCounter.putIfAbsent(ident, true)) ||
-                                                                                            (nonNull(cobestilling.getBestkriterier()) &&
-                                                                                                    !cobestilling.getBestkriterier().equals("{}")))
-                                                                            .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
-                                                                                    .flatMap(bestillingRequest -> Flux.concat(
-                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                    fase2Klienter(),
-                                                                                                    progress, false),
-                                                                                            gjenopprettKlienter(dollyPerson, bestillingRequest,
-                                                                                                    fase3Klienter(),
-                                                                                                    progress, false)))) :
-                                                                    Flux.empty())
-                                                            .filter(Objects::nonNull)))
+                                                            .filter(BestillingProgress::isPdlSync)
+                                                            .flatMap(pdlSync -> Flux.fromIterable(coBestillinger)
+                                                                    .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
+                                                                    .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
+                                                                    .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
+                                                                            .filter(bestillingRequest -> isNotTrue(emptyBestillingFlag.putIfAbsent(ident, true)) ||
+                                                                                    RsDollyBestilling.isNonEmpty(bestillingRequest))
+                                                                            .flatMap(bestillingRequest -> Flux.concat(
+                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                            fase2Klienter(),
+                                                                                            progress, false),
+                                                                                    gjenopprettKlienter(dollyPerson, bestillingRequest,
+                                                                                            fase3Klienter(),
+                                                                                            progress, false)))))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -119,7 +117,8 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                             }))))
                     .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                     .collectList()
-                    .subscribe(done -> doFerdig(bestilling));
+                    .doFinally(done -> doFerdig(bestilling))
+                    .subscribe();
         }
     }
 }

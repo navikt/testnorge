@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
@@ -76,8 +77,18 @@ public class IdentPoolMappingStrategy implements MappingStrategy {
                     public void mapAtoB(BestillingRequestDTO kilde, HentIdenterRequest destinasjon, MappingContext context) {
 
                         destinasjon.setIdenttype(mapIdenttype(kilde.getIdenttype()));
+                        var foedsel = kilde.getPerson().getFoedsel().stream()
+                                .findFirst().orElse(new FoedselDTO());
 
-                        if (nonNull(kilde.getAlder()) && kilde.getAlder() > 0) {
+                        if (nonNull(foedsel.getFoedselsaar())) {
+                            destinasjon.setFoedtEtter(LocalDate.of(foedsel.getFoedselsaar() - 1, 12, 31));
+                            destinasjon.setFoedtFoer(LocalDate.of(foedsel.getFoedselsaar() + 1, 1, 1));
+
+                        } else if (nonNull(foedsel.getFoedselsdato())) {
+                            destinasjon.setFoedtEtter(foedsel.getFoedselsdato().toLocalDate().minusDays(1));
+                            destinasjon.setFoedtFoer(foedsel.getFoedselsdato().toLocalDate().plusDays(1));
+
+                        } else if (nonNull(kilde.getAlder()) && kilde.getAlder() > 0) {
                             destinasjon.setFoedtEtter(LocalDate.now().minusYears(kilde.getAlder()).minusYears(1));
                             destinasjon.setFoedtFoer(LocalDate.now().minusYears(kilde.getAlder()).minusMonths(3));
 

@@ -29,7 +29,7 @@ public class HealthConnectionFactory {
 
     @Bean
     @Primary
-    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter() throws JMSException {
+    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter() throws JMSException, JMSException {
 
         var factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);

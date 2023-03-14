@@ -115,9 +115,8 @@ public class DollyBestillingService {
                 AaregClient.class,
                 InntektstubClient.class);
 
-        return register -> !fase1Klienter().apply(register) &&
-                klienter.stream()
-                        .anyMatch(client -> client.isInstance(register));
+        return register -> klienter.stream()
+                .anyMatch(client -> client.isInstance(register));
     }
 
     public GjenopprettSteg fase3Klienter() {
@@ -131,6 +130,7 @@ public class DollyBestillingService {
                                                            BestillingProgress progress, boolean isOpprettEndre) {
 
         return Flux.from(Flux.fromIterable(clientRegisters)
+                .parallel()
                 .filter(steg::apply)
                 .flatMap(clientRegister ->
                         clientRegister.gjenopprett(bestKriterier, dollyPerson, progress, isOpprettEndre))
@@ -171,7 +171,7 @@ public class DollyBestillingService {
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
 
-        return Flux.just(transactionHelperService.oppdaterProgress(BestillingProgress.builder()
+        return Flux.just(transactionHelperService.opprettProgress(BestillingProgress.builder()
                 .bestilling(bestilling)
                 .ident(ident)
                 .master(master)
@@ -203,11 +203,11 @@ public class DollyBestillingService {
                         transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
                         log.info("Sendt ordre til PDL for ident {} ", forvalterStatus.getIdent());
                     })
-                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : null);
+                    .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : "");
 
         } else {
 
-            return Flux.empty();
+            return Flux.just("");
         }
     }
 

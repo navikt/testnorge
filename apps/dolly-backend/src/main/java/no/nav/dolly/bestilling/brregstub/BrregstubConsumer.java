@@ -27,14 +27,15 @@ public class BrregstubConsumer implements ConsumerStatus {
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
 
-    public BrregstubConsumer(TokenExchange tokenService,
-                             BrregstubProxyProperties serverProperties,
-                             ObjectMapper objectMapper) {
-
+    public BrregstubConsumer(
+            TokenExchange tokenService,
+            BrregstubProxyProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
+    ) {
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient
-                .builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();

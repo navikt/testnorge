@@ -52,21 +52,21 @@ public class ArtifactGjeldendeService {
     }
 
     @Transactional
-    public void setGjeldene(String ident) {
+    public void setGjeldendeForRelasjon(String ident) {
 
         var hovedperson = personRepository.findByIdent(ident);
 
         if (hovedperson.isPresent()) {
-            setGjeldene(hovedperson.get().getPerson());
+            setGjeldendeForRelasjon(hovedperson.get().getPerson());
             var relasjoner = hovedperson.get().getRelasjoner().stream()
                     .map(DbRelasjon::getRelatertPerson)
                     .toList();
 
-            relasjoner.forEach(relasjon -> setGjeldene(relasjon.getPerson()));
+            relasjoner.forEach(relasjon -> setGjeldendeForRelasjon(relasjon.getPerson()));
         }
     }
 
-    private PersonDTO setGjeldene(PersonDTO person) {
+    private void setGjeldendeForRelasjon(PersonDTO person) {
 
         setSisteGjeldende(person.getFoedsel(), !person.isStatusIn(OPPHOERT));
         setSisteGjeldende(person.getNavn(), !person.isStatusIn(OPPHOERT));
@@ -99,6 +99,5 @@ public class ArtifactGjeldendeService {
         setSisteGjeldende(person.getKontaktinformasjonForDoedsbo(), person.isStatusIn(DOED));
         setAlleGjeldende(person.getNyident(), false);
 
-        return person;
     }
 }

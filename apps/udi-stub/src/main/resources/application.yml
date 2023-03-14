@@ -5,11 +5,15 @@ spring:
     name: Testnav-UDI-stub
     version: 1.1
     description: Stub av persontjenesten til UDI
-  datasource:
-    testOnBorrow: true
-    validationQuery: select 1
+  jpa:
+    properties:
+      hibernate:
+        default-schema: public
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   flyway:
     enabled: true
+    connect-retries-interval: 15s
+    connect-retries: 2
     locations: classpath:db/migration
     baseline-on-migrate: true
   security:

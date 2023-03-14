@@ -33,14 +33,15 @@ public class KontoregisterConsumer implements ConsumerStatus {
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public KontoregisterConsumer(TokenExchange tokenService,
-                                 KontoregisterConsumerProperties serverProperties,
-                                 ObjectMapper objectMapper
+    public KontoregisterConsumer(
+            TokenExchange tokenService,
+            KontoregisterConsumerProperties serverProperties,
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

@@ -26,7 +26,7 @@ public class SecurityConfig {
         return http.csrf().disable()
                 .authorizeExchange()
                 .pathMatchers(
-                        "/swagger-ui.html",
+                        "/swagger**",
                         "/webjars/**",
                         "/v3/api-docs/**",
                         "/internal/metrics",

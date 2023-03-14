@@ -35,15 +35,16 @@ public class AmeldingConsumer {
     private final ServerProperties serviceProperties;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    public AmeldingConsumer(TokenExchange tokenService,
-                            AmeldingServiceProperties serviceProperties,
-                            ObjectMapper objectMapper,
-                            ErrorStatusDecoder errorStatusDecoder
+    public AmeldingConsumer(
+            TokenExchange tokenService,
+            AmeldingServiceProperties serviceProperties,
+            ObjectMapper objectMapper,
+            ErrorStatusDecoder errorStatusDecoder,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();

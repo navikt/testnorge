@@ -14,14 +14,10 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: pdl-forvalter-test-admin
-  flyway:
-    enabled: true # Disabled by default as you should probably think twice before running Flyway-migrations
-    locations: classpath:db/migration
-    baseline-on-migrate: true
   datasource:
     url: jdbc:postgresql://dev-pg.intern.nav.no:5432/pdl-forvalter-test
     hikari:
-      maximum-pool-size: 3
+      maximum-pool-size: 10
       minimum-idle: 1
     driver-class-name: org.postgresql.Driver
   jpa:

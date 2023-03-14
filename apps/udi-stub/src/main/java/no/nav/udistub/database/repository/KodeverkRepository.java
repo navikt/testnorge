@@ -1,16 +1,15 @@
 package no.nav.udistub.database.repository;
 
-import org.springframework.data.repository.CrudRepository;
+import no.nav.udistub.database.model.Kodeverk;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import no.nav.udistub.database.model.Kodeverk;
-
 @Repository
-public interface KodeverkRepository extends CrudRepository<Kodeverk, Long> {
+public interface KodeverkRepository extends JpaRepository<Kodeverk, Long> {
 
     Optional<Kodeverk> findByKode(String kode);
 

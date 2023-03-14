@@ -20,17 +20,16 @@ import no.nav.dolly.service.IdentService;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
-import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -80,7 +79,7 @@ public class OppdaterPersonService extends DollyBestillingService {
                                 oppdaterPdlPerson(originator, testident.getIdent())
                                         .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                 Flux.just(testident.getIdent()))
-                                .filter(Objects::nonNull)
+                                .filter(StringUtils::isNotBlank)
                                 .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                         .flatMap(dollyPerson -> (!dollyPerson.getIdent().equals(bestilling.getIdent()) ?
                                                 updateIdent(dollyPerson, progress) : Flux.just(ident))
@@ -91,17 +90,15 @@ public class OppdaterPersonService extends DollyBestillingService {
                                                                 progress, true),
                                                         personServiceClient.syncPerson(dollyPerson, progress)
                                                                 .map(ClientFuture::get)
-                                                                .map(BestillingProgress::isPdlSync)
-                                                                .flatMap(pdlSync -> isTrue(pdlSync) ?
+                                                                .filter(BestillingProgress::isPdlSync)
+                                                                .flatMap(pdlSync ->
                                                                         Flux.concat(
                                                                                 gjenopprettKlienter(dollyPerson, request,
                                                                                         fase2Klienter(),
                                                                                         progress, true),
                                                                                 gjenopprettKlienter(dollyPerson, request,
                                                                                         fase3Klienter(),
-                                                                                        progress, true)) :
-                                                                        Flux.empty())))))
-                                .filter(Objects::nonNull)
+                                                                                        progress, true)))))))
                                 .onErrorResume(throwable -> {
                                     var error = errorStatusDecoder.getErrorText(
                                             WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));
@@ -112,7 +109,8 @@ public class OppdaterPersonService extends DollyBestillingService {
                                 })))
                 .takeWhile(test -> !bestillingService.isStoppet(bestilling.getId()))
                 .collectList()
-                .subscribe(done -> doFerdig(bestilling));
+                .doFinally(done -> doFerdig(bestilling))
+                .subscribe();
     }
 
     private Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, String ident) {

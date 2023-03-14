@@ -1,6 +1,5 @@
 package no.nav.registre.tp.service;
 
-import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.tp.consumer.HodejegerenConsumer;
@@ -35,14 +34,13 @@ public class TpService {
     }
 
     public List<String> filterTpOnFnrs(List<String> fnrs) {
-        return  tpConsumer.findExistingPersons(fnrs);
+        return tpConsumer.findExistingPersons(fnrs);
     }
 
     public List<String> removeFnrsFromTp(List<String> fnrs) {
         return tpConsumer.removePersons(fnrs);
     }
 
-    @Timed(value = "tp.resource.latency", extraTags = {"operation", "hodejegeren"})
     private List<String> getLivingIdentities(
             Long id
     ) {

@@ -27,12 +27,12 @@ public class SyntSykemeldingConsumer implements ConsumerStatus {
     public SyntSykemeldingConsumer(
             TokenExchange accessTokenService,
             SyntSykemeldingApiProperties serverProperties,
-            ObjectMapper objectMapper
+            ObjectMapper objectMapper,
+            WebClient.Builder webClientBuilder
     ) {
-
         this.tokenService = accessTokenService;
         this.serviceProperties = serverProperties;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .baseUrl(serverProperties.getUrl())
                 .build();

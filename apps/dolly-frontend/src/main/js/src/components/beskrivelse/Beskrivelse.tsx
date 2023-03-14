@@ -9,7 +9,7 @@ type BeskrivelseProps = {
 	ident: { beskrivelse: string; ident: number }
 	isUpdatingBeskrivelse: boolean
 	closeModal: () => void
-	updateBeskrivelse: (arg0: any, arg1: string) => void
+	updateBeskrivelse: (arg0: any, arg1: string) => Promise<any>
 }
 export const Beskrivelse = ({
 	closeModal,
@@ -26,8 +26,7 @@ export const Beskrivelse = ({
 	}
 
 	const handleSubmit = (value: string) => {
-		matchMutate(REGEX_BACKEND_GRUPPER)
-		updateBeskrivelse(ident, value)
+		updateBeskrivelse(ident, value).then(() => matchMutate(REGEX_BACKEND_GRUPPER))
 		setBeskrivelse(value)
 	}
 

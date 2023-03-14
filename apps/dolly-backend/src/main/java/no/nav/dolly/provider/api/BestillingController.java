@@ -79,7 +79,7 @@ public class BestillingController {
     public List<RsBestillingStatus> getBestillinger(@PathVariable("gruppeId") Long gruppeId,
                                                     @RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
                                                     @RequestParam(value = "pageSize", required = false, defaultValue = "2000") Integer pageSize) {
-        var bestillinger = bestillingService.getBestillingerFromGruppePaginert(gruppeId, page, pageSize);
+        var bestillinger = bestillingService.getBestillingerFromGruppeIdPaginert(gruppeId, page, pageSize);
         if (nonNull(bestillinger) && !bestillinger.isEmpty()) {
             return mapperFacade.mapAsList(bestillinger.toList(), RsBestillingStatus.class);
         }

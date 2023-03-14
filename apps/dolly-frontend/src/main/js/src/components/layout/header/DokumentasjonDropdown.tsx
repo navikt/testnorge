@@ -23,19 +23,20 @@ const StyledA = styled.a`
 	color: #212529 !important;
 	text-decoration: none;
 	font-size: 1em !important;
+
 	&:hover {
 		background-color: #ebfcff !important;
 	}
+
 	padding: 0 !important;
+
 	&&& {
 		margin: 0;
 	}
 `
 
 export const DokumentasjonDropdown = () => {
-	const {
-		currentBruker: { brukertype },
-	} = useCurrentBruker()
+	const { currentBruker } = useCurrentBruker()
 
 	return (
 		<div style={{ color: 'white', fontSize: '1.2em', margin: '0 10px' }}>
@@ -55,7 +56,7 @@ export const DokumentasjonDropdown = () => {
 							<Icon kind="fileNew2" size={16} />
 							<StyledA>Brukerdokumentasjon</StyledA>
 						</Dropdown.Menu.List.Item>
-						{brukertype === 'AZURE' && (
+						{currentBruker?.brukertype === 'AZURE' && (
 							<Dropdown.Menu.List.Item
 								onClick={() =>
 									window.open(

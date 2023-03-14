@@ -48,47 +48,22 @@ export const folkeregisterpersonstatus = Yup.object({
 
 export const validation = {
 	pdldata: Yup.object({
-		opprettNyPerson: Yup.object()
-			.shape(
-				{
-					alder: Yup.mixed().when(['foedtEtter', 'foedtFoer'], {
-						is: null,
-						then: Yup.mixed()
-							.test(
-								'max',
-								`Alder må være mindre enn ${new Date().getFullYear() - 1899} år`,
-								(val) => val && new Date().getFullYear() - parseInt(val) >= 1900
-							)
-							.test('min', 'Alder må være minst 0 år', (val) => val && parseInt(val) >= 0)
-							.required(messages.required)
-							.nullable(),
-					}),
-					foedtEtter: testDatoFom(
-						Yup.mixed().when(['alder', 'foedtFoer'], {
-							is: (alder, foedtFoer) =>
-								(alder === null || alder === '') && (foedtFoer === null || foedtFoer === ''),
-							then: requiredDate.nullable(),
-						}),
-						'foedtFoer',
-						'Dato må være før født før-dato'
-					),
-					foedtFoer: testDatoTom(
-						Yup.mixed().when(['alder', 'foedtEtter'], {
-							is: (alder, foedtEtter) =>
-								(alder === null || alder === '') && (foedtEtter === null || foedtEtter === ''),
-							then: requiredDate.nullable(),
-						}),
-						'foedtEtter',
-						'Dato må være etter født etter-dato'
-					),
-				},
-				[
-					['foedtEtter', 'foedtFoer'],
-					['alder', 'foedtFoer'],
-					['alder', 'foedtEtter'],
-				]
-			)
-			.nullable(),
+		opprettNyPerson: Yup.object({
+			alder: Yup.mixed()
+				.test(
+					'max',
+					`Alder må være mindre enn ${new Date().getFullYear() - 1899} år`,
+					(val) => !val || new Date().getFullYear() - parseInt(val) >= 1900
+				)
+				.test('min', 'Alder må være minst 0 år', (val) => !val || parseInt(val) >= 0)
+				.nullable(),
+			foedtEtter: testDatoFom(Yup.date().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
+			foedtFoer: testDatoTom(
+				Yup.date().nullable(),
+				'foedtEtter',
+				'Dato må være etter født etter-dato'
+			),
+		}).nullable(),
 		person: Yup.object({
 			bostedsadresse: ifPresent('$pdldata.person.bostedsadresse', Yup.array().of(bostedsadresse)),
 			oppholdsadresse: ifPresent(

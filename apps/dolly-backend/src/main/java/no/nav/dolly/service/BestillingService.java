@@ -156,18 +156,10 @@ public class BestillingService {
         return bestillingRepository.getPaginertBestillingIndex(bestillingId, gruppeId);
     }
 
-    public Page<Bestilling> getBestillingerFromGruppePaginert(Long gruppeId, Integer page, Integer pageSize) {
-        Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
-        if (testgruppe.isEmpty()) {
-            return Page.empty();
-        }
-        return getBestillingerFromGruppePaginert(testgruppe.get(), page, pageSize);
-    }
-
-    public Page<Bestilling> getBestillingerFromGruppePaginert(Testgruppe gruppe, Integer pageNo, Integer pageSize) {
+    public Page<Bestilling> getBestillingerFromGruppeIdPaginert(Long gruppeId, Integer pageNo, Integer pageSize) {
 
         return bestillingRepository
-                .getBestillingerFromGruppe(gruppe, PageRequest.of(pageNo, pageSize));
+                .getBestillingerFromGruppeId(gruppeId, PageRequest.of(pageNo, pageSize));
     }
 
     @Transactional
@@ -350,7 +342,9 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestillingLeggTilPaaGruppe request) {
 
-        Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var size = identRepository.countByTestgruppe(gruppeId);
+        log.info("Antall testidenter {} i gruppe {} ", size, gruppeId);
         fixAaregAbstractClassProblem(request.getAareg());
         return saveBestillingToDB(
                 Bestilling.builder()
@@ -358,7 +352,7 @@ public class BestillingService {
                         .miljoer(join(",", request.getEnvironments()))
                         .sistOppdatert(now())
                         .bruker(fetchOrCreateBruker())
-                        .antallIdenter(gruppe.getTestidenter().size())
+                        .antallIdenter(size)
                         .navSyntetiskIdent(request.getNavSyntetiskIdent())
                         .bestKriterier(getBestKriterier(request))
                         .build());
@@ -456,6 +450,7 @@ public class BestillingService {
                 .bankkonto(request.getBankkonto())
                 .skjerming(request.getSkjerming())
                 .sykemelding(request.getSykemelding())
+                .arbeidsplassenCV(request.getArbeidsplassenCV())
                 .build());
     }
 

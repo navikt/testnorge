@@ -35,7 +35,7 @@ public class PostPensjonTestdataPersonCommand implements Callable<Mono<PensjonTe
 
     @Override
     public Mono<PensjonTestdataResponse> call() {
-        log.info("Oppretter ny pensjon testdata person.");
+        log.info("Oppretter ny pensjon testdata person: \n{}", person);
         return webClient.post()
                 .uri(builder ->
                         builder.path("/api/v1/person").build()

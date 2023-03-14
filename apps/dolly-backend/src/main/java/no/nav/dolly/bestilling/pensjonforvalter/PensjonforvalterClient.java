@@ -36,13 +36,13 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -105,7 +105,7 @@ public class PensjonforvalterClient implements ClientRegister {
 
         var bestillingId = progress.getBestilling().getId();
 
-        return Flux.from(pensjonforvalterConsumer.getMiljoer()
+        return Flux.from(pensjonforvalterConsumer.getMiljoer())
                         .flatMap(tilgjengeligeMiljoer -> {
 
                             if (!dollyPerson.isOrdre()) {
@@ -118,8 +118,9 @@ public class PensjonforvalterClient implements ClientRegister {
 
                             return pensjonforvalterConsumer.getAccessToken()
                                     .flatMapMany(token -> getIdenterRelasjoner(dollyPerson.getIdent())
-                                            .flatMap(this::getPersonData)
                                             .collectList()
+                                            .map(this::getPersonData)
+                                            .flatMapMany(Flux::collectList)
                                             .map(relasjoner -> Flux.concat(
                                                     opprettPersoner(dollyPerson.getIdent(), tilgjengeligeMiljoer,
                                                             relasjoner, token)
@@ -143,7 +144,7 @@ public class PensjonforvalterClient implements ClientRegister {
                                     .flatMap(Flux::from)
                                     .filter(StringUtils::isNotBlank)
                                     .collect(Collectors.joining("$"));
-                        }))
+                        })
                 .map(status -> futurePersist(dollyPerson, progress, status));
     }
 
@@ -165,25 +166,20 @@ public class PensjonforvalterClient implements ClientRegister {
         };
     }
 
-    private Flux<List<String>> getIdenterRelasjoner(String ident) {
+    private Flux<String> getIdenterRelasjoner(String ident) {
 
-        return getPersonData(List.of(ident))
-                .map(person -> Stream.of(List.of(person.getIdent()),
-                                person.getPerson().getSivilstand().stream()
-                                        .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getForelderBarnRelasjon().stream()
-                                        .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
-                                        .filter(Objects::nonNull)
-                                        .toList(),
-                                person.getPerson().getFullmakt().stream()
-                                        .map(FullmaktDTO::getMotpartsPersonident)
-                                        .filter(Objects::nonNull)
-                                        .toList())
-                        .flatMap(Collection::stream)
-                        .distinct()
-                        .toList());
+        return Flux.concat(Flux.just(ident),
+                getPersonData(List.of(ident))
+                        .flatMap(person -> Flux.fromStream(Stream.of(
+                                        person.getPerson().getSivilstand().stream()
+                                                .map(PdlPerson.Sivilstand::getRelatertVedSivilstand)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getForelderBarnRelasjon().stream()
+                                                .map(PdlPerson.ForelderBarnRelasjon::getRelatertPersonsIdent)
+                                                .filter(Objects::nonNull),
+                                        person.getPerson().getFullmakt().stream()
+                                                .map(FullmaktDTO::getMotpartsPersonident))
+                                .flatMap(Function.identity()))));
     }
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
