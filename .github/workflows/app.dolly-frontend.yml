@@ -59,6 +59,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
       resource: 'apps/dolly-frontend/config.yml'
+      working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
       project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
@@ -75,6 +76,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-idporten') }}
     with:
       resource: 'apps/dolly-frontend/config.idporten.yml'
+      working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
       project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
@@ -91,6 +93,7 @@ jobs:
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-dev') }}
     with:
       resource: 'apps/dolly-frontend/config.dev.yml'
+      working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
       project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
@@ -107,6 +110,7 @@ jobs:
     if: ${{ contains(github.event.head_commit.message, '#deploy-frontend-unstable') }}
     with:
       resource: 'apps/dolly-frontend/config.dev-unstable.yml'
+      working-directory: 'apps/dolly-frontend/'
       app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
       project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}

@@ -13,6 +13,9 @@ on:
       project-id:
         type: string
         required: true
+      working-directory:
+        type: string
+        required: true
     secrets:
       API_KEY:
         required: true
@@ -32,13 +35,12 @@ jobs:
         with:
           access_token: ${{ github.token }}
       - uses: actions/checkout@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
       - uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
           team: dolly
           identity_provider: ${{ secrets.IDENTITY_PROVIDER }}
+          working-directory: ${{ inputs.working-directory }}
           project_id: ${{ inputs.project-id }}
       - name: Deploy
         timeout-minutes: 5
