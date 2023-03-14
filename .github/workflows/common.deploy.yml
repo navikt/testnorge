@@ -10,6 +10,9 @@ on:
       app-name:
         type: string
         required: true
+      project-id:
+        type: string
+        required: true
     secrets:
       API_KEY:
         required: true
@@ -36,7 +39,7 @@ jobs:
         with:
           team: dolly
           identity_provider: ${{ secrets.IDENTITY_PROVIDER }}
-          project_id: ${{ secrets.PROJECT_ID }}
+          project_id: ${{ inputs.project-id }}
       - name: Deploy
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1

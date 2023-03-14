@@ -93,6 +93,7 @@ jobs:
       resource: 'apps/dolly-frontend/config.dev.yml'
       app-name: 'testnav-dolly-frontend'
       cluster: 'dev-gcp'
+      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
