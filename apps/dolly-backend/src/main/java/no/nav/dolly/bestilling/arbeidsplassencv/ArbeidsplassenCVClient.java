@@ -12,6 +12,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -36,17 +37,27 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         return Flux.just(bestilling)
                 .filter(ordre -> nonNull(ordre.getArbeidsplassenCV()))
-                .flatMap(ordre -> Flux.just(CallIdUtil.generateCallId())
+                .flatMap(ordre -> {
+                    if (isOpprettEndre) {
+                        var oppdatertOrdre = mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class);
+                        bestilling.setArbeidsplassenCV(oppdatertOrdre);
+                        transactionHelperService.persister(progress.getBestilling().getId(), bestilling);
+                        return Flux.just(oppdatertOrdre);
+                    } else {
+                        return Flux.just(ordre.getArbeidsplassenCV());
+                    }
+                })
+                .flatMap(oppdatertOrdre -> Flux.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
                                 .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(dollyPerson.getIdent(), uuid)
-                                                .flatMap(response3 -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), PAMCVDTO.class))
-                                                        .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
-                                                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                                                        String.format("%s UUID: %s",
+                                        .flatMap(response3 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                                .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
+                                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                                                String.format("%s UUID: %s",
                                                                         errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
                                                                                 status.getFeilmelding()),
-                                                                                        status.getUuid()))
-                                                                .map(resultat -> futurePersist(progress, resultat)))))))
+                                                                        status.getUuid()))
+                                                        .map(resultat -> futurePersist(progress, resultat)))))))
                 .flatMap(Flux::from);
     }
 
