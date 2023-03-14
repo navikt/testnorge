@@ -52,7 +52,8 @@ jobs:
   
   deploy:
     name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@feature/google_artifact_registry
+    #TODO: ENDRE DENNE TIL @MASTER    
     needs: [ build, cypress-run ]
     if: ${{ github.ref == 'refs/heads/master' }}
     with:

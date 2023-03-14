@@ -27,6 +27,12 @@ jobs:
         with:
           access_token: ${{ github.token }}
       - uses: actions/checkout@v3
+      - uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: dolly
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
       - name: Deploy
         timeout-minutes: 5
         uses: nais/deploy/actions/deploy@v1
@@ -34,3 +40,4 @@ jobs:
           APIKEY: ${{ secrets.API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.resource }}
+          VAR: image=${{steps.docker-build-push.outputs.image}}
