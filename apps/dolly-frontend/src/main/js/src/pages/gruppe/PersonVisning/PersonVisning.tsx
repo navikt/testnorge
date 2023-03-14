@@ -39,7 +39,13 @@ import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
-import { useDokarkivData, useInstData, usePoppData, useTpData } from '@/utils/hooks/useFagsystemer'
+import {
+	useArbeidsplassencvData,
+	useDokarkivData,
+	useInstData,
+	usePoppData,
+	useTpData,
+} from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
@@ -132,6 +138,11 @@ export const PersonVisning = ({
 		ident.ident,
 		harInstBestilling(bestillingerFagsystemer)
 	)
+
+	const { loading: loadingArbeidsplassencvData, arbeidsplassenCv } = useArbeidsplassencvData(
+		ident.ident
+	)
+	console.log('arbeidsplassenCv: ', arbeidsplassenCv) //TODO - SLETT MEG
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
