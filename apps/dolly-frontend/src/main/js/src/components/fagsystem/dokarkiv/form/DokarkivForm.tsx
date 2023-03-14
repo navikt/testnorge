@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useCallback, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -12,8 +12,7 @@ import styled from 'styled-components'
 import * as _ from 'lodash-es'
 import { Digitalinnsending } from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import FileUpload from '@navikt/filopplasting'
-import { v4 as uuid } from 'uuid'
+import { useDropzone } from 'react-dropzone'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -37,25 +36,34 @@ export type Vedlegg = {
 	}
 }
 
-const FilOpplaster = styled(FileUpload)`
-	background-color: unset;
+const getColor = (props: any) => {
+	if (props.isDragAccept) {
+		return '#06893a'
+	}
+	if (props.isDragReject) {
+		return '#ba3a26'
+	}
+	if (props.isFocused) {
+		return '#0067C5FF'
+	}
+	return '#eeeeee'
+}
+
+const Container = styled.div`
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 	margin-bottom: 10px;
-	min-height: 60px;
+	padding: 20px;
+	border-width: 2px;
+	border-radius: 2px;
+	border-color: ${(props) => getColor(props)};
 	border-style: dashed;
-
-	&:hover {
-		background-color: #f1f1f1;
-	}
-
-	.animate {
-		content-visibility: hidden;
-	}
-
-	div {
-		div {
-			margin-top: 15px;
-		}
-	}
+	background-color: #fafafa;
+	color: #bdbdbd;
+	outline: none;
+	transition: border 0.24s ease-in-out;
 `
 
 enum Kodeverk {
@@ -73,7 +81,45 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 
 	useEffect(() => {
 		handleSkjemaChange(skjemaValues)
+		handleVedleggChange(files)
 	}, [files, skjemaValues])
+
+	const MyDropzone = () => {
+		const handleDrop = useCallback((acceptedFiles: File[]) => {
+			const reader = new FileReader()
+
+			acceptedFiles.forEach((file: File) => {
+				reader.onabort = () => console.warn('file reading was aborted')
+				reader.onerror = () => console.error('file reading has failed')
+				reader.onload = () => {
+					const binaryStr = reader.result?.slice(28)
+					setFiles([
+						// @ts-ignore
+						{
+							id: new Date().getTime(),
+							name: file.path,
+							content: { base64: binaryStr },
+						},
+						...files,
+					])
+				}
+				reader.readAsDataURL(file)
+			})
+		}, [])
+		const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
+			multiple: true,
+			onDrop: handleDrop,
+		})
+
+		return (
+			<div className="container">
+				<Container {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
+					<input {...getInputProps()} />
+					<p>Dra og slipp filer innenfor rammen eller klikk her for å åpne filvelger</p>
+				</Container>
+			</div>
+		)
+	}
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
@@ -99,20 +145,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		dokumentVarianter.length > 0
 			? formikBag.setFieldValue('dokarkiv.dokumenter', dokumentVarianter)
 			: formikBag.setFieldValue('dokarkiv.dokumenter[0].tittel', skjema.data)
-	}
-
-	const handleNewFiles = (filer: [Vedlegg]) => {
-		const _uuid = uuid()
-		filer.map((f) => {
-			if (f.id.length != _uuid.length) {
-				f.id = _uuid
-			}
-			if (!f.dokNavn) {
-				f.dokNavn = f.name
-			}
-		})
-		const newFiles = (files || []).concat(filer)
-		handleVedleggChange(newFiles)
 	}
 
 	const handleVedleggChange = (filer: [Vedlegg]) => {
@@ -169,12 +201,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 					/>
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
-						<FilOpplaster
-							key={new Date().getTime()}
-							theme={'flexbox--full-width'}
-							files={[]}
-							onFilesChanged={handleNewFiles}
-						/>
+						<MyDropzone />
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
 						)}
