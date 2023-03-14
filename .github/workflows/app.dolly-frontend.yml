@@ -52,7 +52,9 @@ jobs:
   
   deploy:
     name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    #    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@feature/google_artifact_registry
+    #TODO: ENDRE DENNE TIL @MASTER    
     needs: [ build, cypress-run ]
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
@@ -66,7 +68,9 @@ jobs:
   
   deploy-idporten:
     name: Deploy Dolly Idporten
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    #    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@feature/google_artifact_registry
+    #TODO: ENDRE DENNE TIL @MASTER    
     needs: [ build, cypress-run ]
     if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-idporten') }}
     with:
@@ -96,7 +100,9 @@ jobs:
   
   deploy-dev-unstable:
     name: Deploy dev unstable
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    #    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    uses: navikt/testnorge/.github/workflows/common.deploy.yml@feature/google_artifact_registry
+    #TODO: ENDRE DENNE TIL @MASTER    
     needs: build
     if: ${{ contains(github.event.head_commit.message, '#deploy-frontend-unstable') }}
     with:
