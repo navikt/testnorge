@@ -2,7 +2,7 @@
 
 Applikasjon for viser status på forskjellig applikasjoner og tjeneserter fra Dolly. 
 
-Lenke https://dollystatus.dev.intern.nav.no/ 
+Lenke https://dollystatus.intern.dev.nav.no/ 
 
 ## Lokal kjøring
 Ha naisdevice kjørende og i "src/main/js" mappe kjør
