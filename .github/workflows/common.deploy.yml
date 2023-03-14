@@ -40,7 +40,7 @@ jobs:
         with:
           team: dolly
           identity_provider: ${{ secrets.IDENTITY_PROVIDER }}
-          working-directory: ${{ inputs.working-directory }}
+          dockerfile: ${{ inputs.working-directory }}/Dockerfile
           project_id: ${{ inputs.project-id }}
       - name: Deploy
         timeout-minutes: 5
