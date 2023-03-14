@@ -34,7 +34,6 @@ jobs:
       cluster: 'prod-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
       IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
   deploy-dev:
     name: Deploy
@@ -45,7 +44,7 @@ jobs:
       resource: 'apps/organisasjon-tilgang-frontend/config.dev.yml'
       app-name: 'organisasjon-tilgang-frontend'
       cluster: 'dev-gcp'
+      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
       IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

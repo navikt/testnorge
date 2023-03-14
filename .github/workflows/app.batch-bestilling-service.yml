@@ -32,7 +32,7 @@ jobs:
       resource: 'apps/batch-bestilling-service/config.yml'
       app-name: 'batch-bestilling-service'
       cluster: 'dev-gcp'
+      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      PROJECT_ID: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
       IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
