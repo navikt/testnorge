@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
+import static java.util.Objects.isNull;
+
 @Component
 public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
     @Override
@@ -32,8 +34,15 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                         destiasjon.getUtdanning()
                                 .forEach(utdanning -> utdanning.setHasAuthorization(true));
                         prepCommonFacts(destiasjon);
+
+                        if (isNull(destiasjon.getJobboensker())) {
+                            destiasjon.setJobboensker(new PAMCVDTO.Jobboensker());
+                        }
+                        destiasjon.getJobboensker().setOccupations(List.of(new ArbeidsplassenCVDTO.Occupation()));
+                        destiasjon.getJobboensker().setOccupationDrafts(List.of(new ArbeidsplassenCVDTO.OccupationDraft()));
                     }
                 })
+                .exclude("jobboensker")
                 .byDefault()
                 .register();
     }

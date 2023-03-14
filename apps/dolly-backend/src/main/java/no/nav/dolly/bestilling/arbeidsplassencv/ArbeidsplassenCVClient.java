@@ -40,7 +40,7 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 .flatMap(ordre -> Flux.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(ident, uuid)
                                 .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(ident, uuid)
-                                        .flatMap(response2 -> arbeidsplassenCVConsumer.hentCV(ident, uuid)
+//                                        .flatMap(response2 -> arbeidsplassenCVConsumer.hentCV(ident, uuid)
                                                 .flatMap(response3 -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), PAMCVDTO.class))
                                                         .map(request -> arbeidsplassenCVConsumer.oppdaterCV(ident, request, uuid)
                                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
@@ -48,7 +48,7 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                                                         errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
                                                                                 status.getFeilmelding()),
                                                                                         status.getUuid()))
-                                                                .map(resultat -> futurePersist(progress, resultat))))))))
+                                                                .map(resultat -> futurePersist(progress, resultat)))))))
                 .flatMap(Flux::from);
     }
 

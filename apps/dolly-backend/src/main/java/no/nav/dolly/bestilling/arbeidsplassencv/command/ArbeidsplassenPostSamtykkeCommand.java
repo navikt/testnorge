@@ -19,7 +19,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class ArbeidsplassenPostSamtykkeCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
 
-    private static final String ARBEIDSPLASSEN_SAMTYKKE_URL = "/rest/v2/samtykke";
+    private static final String ARBEIDSPLASSEN_SAMTYKKE_URL = "/rest/godta-vilkar";
     private static final String FNR = "fnr";
 
     private final WebClient webClient;
