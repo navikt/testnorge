@@ -18,9 +18,6 @@ on:
       PROJECT_ID:
         required: true
 
-env:
-  IMAGE: ghcr.io/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
-
 jobs:
   deploy:
     name: Deploy ${{ inputs.app-name }} to ${{ inputs.cluster }}
