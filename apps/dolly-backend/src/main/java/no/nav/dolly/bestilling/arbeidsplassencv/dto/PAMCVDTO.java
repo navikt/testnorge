@@ -1,21 +1,18 @@
-package no.nav.testnav.libs.dto.arbeidsplassencv.v1;
+package no.nav.dolly.bestilling.arbeidsplassencv.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
 
-@Data
-@SuperBuilder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ArbeidsplassenCVDTO {
+public class PAMCVDTO {
 
     private Boolean harBil;
     private List<Arbeidserfaring> arbeidserfaring;
@@ -31,7 +28,7 @@ public class ArbeidsplassenCVDTO {
     private String sammendrag;
     private Jobboensker jobboensker;
     private Boolean sistEndretAvNav;
-    private LocalDateTime sistEndret;
+    private ZonedDateTime sistEndret;
 
     public List<Arbeidserfaring> getArbeidserfaring() {
         if (isNull(arbeidserfaring)) {
@@ -115,8 +112,8 @@ public class ArbeidsplassenCVDTO {
         private String conceptId;
         private String location;
         private String description;
-        private LocalDateTime fromDate;
-        private LocalDateTime toDate;
+        private ZonedDateTime fromDate;
+        private ZonedDateTime toDate;
         private Boolean ongoing;
         private String styrkkode;
         private Boolean ikkeAktueltForFremtiden;
@@ -132,19 +129,11 @@ public class ArbeidsplassenCVDTO {
         private String field;
         private String nuskode;
         private Boolean hasAuthorization;
-        private Yrkesskole vocationalCollege;
-        private LocalDateTime startDate;
-        private LocalDateTime endDate;
+        private ArbeidsplassenCVDTO.Yrkesskole vocationalCollege;
+        private ZonedDateTime startDate;
+        private ZonedDateTime endDate;
         private String description;
         private Boolean ongoing;
-    }
-
-    public enum VocationalCertification {
-        SVENNEBREV_FAGBREV, MESTERBREV, AUTORISASJON
-    }
-
-    public enum Yrkesskole {
-        SVENNEBREV_FAGBREV, MESTERBREV, INGEN
     }
 
     @Data
@@ -157,8 +146,8 @@ public class ArbeidsplassenCVDTO {
         private String alternativeName;
         private String conceptId;
         private String issuer;
-        private LocalDateTime fromDate;
-        private LocalDateTime toDate;
+        private ZonedDateTime fromDate;
+        private ZonedDateTime toDate;
     }
 
     @Data
@@ -168,8 +157,8 @@ public class ArbeidsplassenCVDTO {
     public static class Foererkort extends CVFelles {
 
         private String type;
-        private LocalDateTime acquiredDate;
-        private LocalDateTime expiryDate;
+        private ZonedDateTime acquiredDate;
+        private ZonedDateTime expiryDate;
     }
 
     @Data
@@ -180,8 +169,8 @@ public class ArbeidsplassenCVDTO {
 
         private String description;
         private String role;
-        private LocalDateTime fromDate;
-        private LocalDateTime toDate;
+        private ZonedDateTime fromDate;
+        private ZonedDateTime toDate;
         private Boolean ongoing;
     }
 
@@ -194,18 +183,10 @@ public class ArbeidsplassenCVDTO {
         private String title;
         private String issuer;
         private Long duration;
-        private Tidsenhet durationUnit;
-        private LocalDateTime date;
+        private ArbeidsplassenCVDTO.Tidsenhet durationUnit;
+        private ZonedDateTime date;
     }
-
-    public enum Tidsenhet {
-        UKJENT,
-        TIME,
-        DAG,
-        UKE,
-        MND
-    }
-
+    
     @Data
     @SuperBuilder
     @NoArgsConstructor
@@ -213,16 +194,8 @@ public class ArbeidsplassenCVDTO {
     public static class Spraak extends CVFelles {
 
         private String language;
-        private Sprakferdighetsniva oralProficiency;
-        private Sprakferdighetsniva writtenProficiency;
-    }
-
-    public enum Sprakferdighetsniva {
-        IKKE_OPPGITT,
-        NYBEGYNNER,
-        GODT,
-        VELDIG_GODT,
-        FOERSTESPRAAK
+        private ArbeidsplassenCVDTO.Sprakferdighetsniva oralProficiency;
+        private ArbeidsplassenCVDTO.Sprakferdighetsniva writtenProficiency;
     }
 
     @Data
@@ -234,8 +207,8 @@ public class ArbeidsplassenCVDTO {
         private String title;
         private String conceptId;
         private String issuer;
-        private LocalDateTime fromDate;
-        private LocalDateTime toDate;
+        private ZonedDateTime fromDate;
+        private ZonedDateTime toDate;
     }
 
     @Data
@@ -246,7 +219,7 @@ public class ArbeidsplassenCVDTO {
 
         private String title;
         private String conceptId;
-        private VocationalCertification type;
+        private ArbeidsplassenCVDTO.VocationalCertification type;
     }
 
     @Data
@@ -265,82 +238,13 @@ public class ArbeidsplassenCVDTO {
     @AllArgsConstructor
     public static class Jobboensker {
         private Boolean active;
-        private StartOption startOption;
-        private List<Occupation> occupations;
-        private List<OccupationDraft> occupationDrafts;
-        private List<Location> locations;
-        private List<OccupationType> occupationTypes;
-        private List<Omfang> workLoadTypes;
-        private List<Arbeidstid> workScheduleTypes;
-    }
-
-    public enum StartOption {
-        LEDIG_NAA,
-        ETTER_TRE_MND,
-        ETTER_AVTALE
-    }
-
-    public enum OccupationType {
-        FAST,
-        VIKARIAT,
-        ENGASJEMENT,
-        PROSJEKT,
-        SESONG,
-        TRAINEE,
-        LAERLING,
-        SELVSTENDIG_NAERINGSDRIVENDE,
-        FERIEJOBB,
-        ANNET
-    }
-
-    public enum Omfang {
-        HELTID, DELTID;
-    }
-
-    public enum Arbeidstid {
-        DAGTID,
-        KVELD,
-        NATT,
-        UKEDAGER,
-        LOERDAG,
-        SOENDAG,
-        SKIFT,
-        VAKT,
-        TURNUS;
-    }
-
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Occupation {
-        private String id;
-        private String title;
-        private Long conceptId;
-        private String styrk08;
-    }
-
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class OccupationDraft {
-
-        private String id;
-        private String title;
-        private Long conceptId;
-        private String styrk08;
-    }
-
-    @Data
-    @SuperBuilder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Location {
-        private String id;
-        private String location;
-        private String code;
-        private Long conceptId;
+        private ArbeidsplassenCVDTO.StartOption startOption;
+        private List<ArbeidsplassenCVDTO.Occupation> occupations;
+        private List<ArbeidsplassenCVDTO.OccupationDraft> occupationDrafts;
+        private List<ArbeidsplassenCVDTO.Location> locations;
+        private List<ArbeidsplassenCVDTO.OccupationType> occupationTypes;
+        private List<ArbeidsplassenCVDTO.Omfang> workLoadTypes;
+        private List<ArbeidsplassenCVDTO.Arbeidstid> workScheduleTypes;
     }
 
     @Data
@@ -348,6 +252,6 @@ public class ArbeidsplassenCVDTO {
     @NoArgsConstructor
     public abstract static class CVFelles {
         private String uuid;
-        private LocalDateTime updatedAt;
+        private ZonedDateTime updatedAt;
     }
 }

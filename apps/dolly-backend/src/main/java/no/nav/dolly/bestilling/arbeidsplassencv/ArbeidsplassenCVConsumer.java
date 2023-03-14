@@ -9,6 +9,7 @@ import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPerson
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostSamtykkeCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
+import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.config.credentials.ArbeidsplassenProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
@@ -28,6 +29,7 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 @Slf4j
 public class ArbeidsplassenCVConsumer implements ConsumerStatus {
 
+    public static final String ARBEIDSPLASSEN_CALL_ID = "Nav-CallId";
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
@@ -47,50 +49,40 @@ public class ArbeidsplassenCVConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
-    public Flux<ArbeidsplassenCVStatusDTO> hentCV(String ident) {
+    public Flux<ArbeidsplassenCVStatusDTO> hentCV(String ident, String uuid) {
 
         log.info("Henter CV på ident: {} fra arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenGetCVCommand(webClient, ident, token.getTokenValue()).call())
+                .flatMapMany(token -> new ArbeidsplassenGetCVCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Hentet CV for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
-    public Flux<ArbeidsplassenCVStatusDTO> hentPerson(String ident) {
-
-        log.info("Henter person på ident: {} fra arbeidsplassenCV", ident);
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenGetCVCommand(webClient, ident, token.getTokenValue()).call())
-                .doOnNext(resultat -> log.info("Hentet person for ident {} {}", ident, resultat));
-    }
-
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
-    public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
+    public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid) {
 
         log.info("Oppdaterer CV på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, token.getTokenValue()).call())
+                .flatMapMany(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
-    public Flux<ArbeidsplassenCVStatusDTO> opprettSamtykke(String ident) {
+    public Flux<ArbeidsplassenCVStatusDTO> opprettSamtykke(String ident, String uuid) {
 
         log.info("Oppretter samtykke på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenPostSamtykkeCommand(webClient, ident, token.getTokenValue()).call())
+                .flatMapMany(token -> new ArbeidsplassenPostSamtykkeCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet samtykke for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
-    public Flux<ArbeidsplassenCVStatusDTO> opprettPerson(String ident) {
+    public Flux<ArbeidsplassenCVStatusDTO> opprettPerson(String ident, String uuid) {
 
         log.info("Oppretter person på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenPostPersonCommand(webClient, ident, token.getTokenValue()).call())
+                .flatMapMany(token -> new ArbeidsplassenPostPersonCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet person for ident {} {}", ident, resultat));
     }
-
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_deleteCV" })
     public Flux<ArbeidsplassenCVDTO> deleteCV(String ident) {

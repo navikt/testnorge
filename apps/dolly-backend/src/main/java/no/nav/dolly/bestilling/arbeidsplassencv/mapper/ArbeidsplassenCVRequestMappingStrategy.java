@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
@@ -11,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -22,12 +23,14 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(ArbeidsplassenCVDTO.class, ArbeidsplassenCVDTO.class)
+        factory.classMap(ArbeidsplassenCVDTO.class, PAMCVDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(ArbeidsplassenCVDTO kilde,
-                                        ArbeidsplassenCVDTO destiasjon, MappingContext context) {
+                                        PAMCVDTO destiasjon, MappingContext context) {
 
+                        destiasjon.getUtdanning()
+                                .forEach(utdanning -> utdanning.setHasAuthorization(true));
                         prepCommonFacts(destiasjon);
                     }
                 })
@@ -35,9 +38,9 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                 .register();
     }
 
-    private static void prepCommonFacts(ArbeidsplassenCVDTO arbeidsplassenCV) {
+    private static void prepCommonFacts(PAMCVDTO arbeidsplassenCV) {
 
-        var artifacter = Arrays.stream(ArbeidsplassenCVDTO.class.getMethods())
+        var artifacter = Arrays.stream(PAMCVDTO.class.getMethods())
                 .filter(method -> method.getName().contains("get"))
                 .filter(method -> method.getReturnType().getName().contains("List"))
                 .map(method -> {
@@ -57,7 +60,7 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                     if ("setUuid".equals(method.getName())) {
                         invoke(artifact, method, UUID.randomUUID().toString());
                     } else if ("setUpdatedAt".equals(method.getName())) {
-                        invoke(artifact, method, LocalDateTime.now());
+                        invoke(artifact, method, ZonedDateTime.now());
                     }
                 }));
     }
