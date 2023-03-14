@@ -17,6 +17,7 @@ import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/parti
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
+	console.log('render: ') //TODO - SLETT MEG
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel

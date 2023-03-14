@@ -34,14 +34,11 @@ export const OffentligeGodkjenningerForm = ({ formikBag }) => {
 								size="xxlarge"
 								isClearable={false}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${offentligGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								value={_get(formikBag.values, `${offentligGodkjenningPath}.issuer`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(`${offentligGodkjenningPath}.issuer`, i.target.value)
-								}
+								key={`issuer_${_get(formikBag.values, `${offentligGodkjenningPath}.issuer`)}`}
 							/>
 							<FormikDatepicker name={`${offentligGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormikDatepicker name={`${offentligGodkjenningPath}.toDate`} label="Utløper" />

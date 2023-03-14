@@ -29,19 +29,17 @@ export const KursForm = ({ formikBag }) => {
 					return (
 						<>
 							<div key={idx} className="flexbox--flex-wrap">
-								<DollyTextInput
+								<FormikTextInput
 									name={`${kursPath}.title`}
 									label="Kursnavn"
 									size="xlarge"
-									value={_get(formikBag.values, `${kursPath}.title`)}
-									onChange={(i) => formikBag.setFieldValue(`${kursPath}.title`, i.target.value)}
+									key={`title_${_get(formikBag.values, `${kursPath}.title`)}`}
 								/>
-								<DollyTextInput
+								<FormikTextInput
 									name={`${kursPath}.issuer`}
 									label="Kursholder"
 									size="xlarge"
-									value={_get(formikBag.values, `${kursPath}.issuer`)}
-									onChange={(i) => formikBag.setFieldValue(`${kursPath}.issuer`, i.target.value)}
+									key={`issuer_${_get(formikBag.values, `${kursPath}.issuer`)}`}
 								/>
 								<FormikDatepicker name={`${kursPath}.date`} label="Fullført" />
 								<FormikSelect
@@ -50,7 +48,7 @@ export const KursForm = ({ formikBag }) => {
 									options={Options('kursLengde')}
 									size="small"
 								/>
-								<DollyTextInput
+								<FormikTextInput
 									name={`${kursPath}.duration`}
 									label={`Antall ${
 										durationUnit && durationUnit !== 'UKJENT'
@@ -59,8 +57,7 @@ export const KursForm = ({ formikBag }) => {
 									}`}
 									size="small"
 									type="number"
-									value={_get(formikBag.values, `${kursPath}.duration`)}
-									onChange={(i) => formikBag.setFieldValue(`${kursPath}.duration`, i.target.value)}
+									key={`duration_${_get(formikBag.values, `${kursPath}.duration`)}`}
 								/>
 							</div>
 							<EraseFillButtons

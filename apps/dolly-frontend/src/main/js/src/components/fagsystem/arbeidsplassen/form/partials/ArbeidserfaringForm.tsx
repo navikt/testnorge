@@ -13,6 +13,7 @@ import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
+import { useRef } from 'react'
 
 export const ArbeidserfaringForm = ({ formikBag }) => {
 	const setYrke = (valg, path) => {
@@ -21,7 +22,10 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 	}
 
 	const arbeidserfaringListePath = 'arbeidsplassenCV.arbeidserfaring'
+	// console.log('render...') //TODO - SLETT MEG
 
+	const inputRef = useRef()
+	// console.log('inputRef: ', inputRef) //TODO - SLETT MEG
 	return (
 		<Vis attributt={arbeidserfaringListePath}>
 			<FormikDollyFieldArray
@@ -42,47 +46,33 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 								isClearable={false}
 								onChange={(valg) => setYrke(valg, arbeidsforholdPath)}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${arbeidsforholdPath}.alternativeJobTitle`}
 								label="Alternativ tittel"
 								size="large"
-								value={_get(formikBag.values, `${arbeidsforholdPath}.alternativeJobTitle`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(
-										`${arbeidsforholdPath}.alternativeJobTitle`,
-										i.target.value
-									)
-								}
+								key={`alternativeJobTitle_${_get(
+									formikBag.values,
+									`${arbeidsforholdPath}.alternativeJobTitle`
+								)}`}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${arbeidsforholdPath}.employer`}
 								label="Bedrift"
 								size="large"
-								value={_get(formikBag.values, `${arbeidsforholdPath}.employer`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(`${arbeidsforholdPath}.employer`, i.target.value)
-								}
+								key={`employer_${_get(formikBag.values, `${arbeidsforholdPath}.employer`)}`}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${arbeidsforholdPath}.location`}
 								label="Sted"
 								size="large"
-								value={_get(formikBag.values, `${arbeidsforholdPath}.location`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(`${arbeidsforholdPath}.location`, i.target.value)
-								}
+								key={`location_${_get(formikBag.values, `${arbeidsforholdPath}.location`)}`}
 							/>
-							<Fritekstfelt
+							<FormikTextInput
+								name={`${arbeidsforholdPath}.description`}
 								label="Arbeidsoppgaver"
 								placeholder="Beskrivelse av arbeidsoppgaver"
-								value={_get(formikBag.values, `${arbeidsforholdPath}.description`)}
-								onChange={(beskrivelse) =>
-									formikBag.setFieldValue(
-										`${arbeidsforholdPath}.description`,
-										beskrivelse?.target?.value
-									)
-								}
-								size="small"
+								key={`description${_get(formikBag.values, `${arbeidsforholdPath}.description`)}`}
+								size="fullWidth"
 							/>
 							<FormikDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
 							<FormikDatepicker

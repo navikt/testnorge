@@ -34,14 +34,11 @@ export const AndreGodkjenningerForm = ({ formikBag }) => {
 								size="xxlarge"
 								isClearable={false}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${annenGodkjenningPath}.issuer`}
 								label="Utsteder"
 								size="large"
-								value={_get(formikBag.values, `${annenGodkjenningPath}.issuer`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(`${annenGodkjenningPath}.issuer`, i.target.value)
-								}
+								key={`issuer_${_get(formikBag.values, `${annenGodkjenningPath}.issuer`)}`}
 							/>
 							<FormikDatepicker name={`${annenGodkjenningPath}.fromDate`} label="Fullført" />
 							<FormikDatepicker name={`${annenGodkjenningPath}.toDate`} label="Utløper" />

@@ -3,7 +3,7 @@ import {
 	initialUtdanning,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as React from 'react'
@@ -36,22 +36,17 @@ export const UtdanningForm = ({ formikBag }) => {
 								size="large"
 								isClearable={false}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${utdanningPath}.field`}
 								label="Grad og utdanningsretning"
 								size="medium"
-								// defaultValue={_get(formikBag.values, `${utdanningPath}.field`)}
-								value={_get(formikBag.values, `${utdanningPath}.field`)}
-								onChange={(i) => formikBag.setFieldValue(`${utdanningPath}.field`, i.target.value)}
+								key={`field_${_get(formikBag.values, `${utdanningPath}.field`)}`}
 							/>
-							<DollyTextInput
+							<FormikTextInput
 								name={`${utdanningPath}.institution`}
 								label="Skole/studiested"
 								size="medium"
-								value={_get(formikBag.values, `${utdanningPath}.institution`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(`${utdanningPath}.institution`, i.target.value)
-								}
+								key={`institution_${_get(formikBag.values, `${utdanningPath}.institution`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"

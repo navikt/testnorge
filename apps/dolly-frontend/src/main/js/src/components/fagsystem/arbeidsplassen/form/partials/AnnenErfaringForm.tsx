@@ -3,7 +3,7 @@ import {
 	initialAnnenErfaring,
 	initialAnnenErfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -27,14 +27,11 @@ export const AnnenErfaringForm = ({ formikBag }) => {
 				{(annenErfaringPath, idx) => (
 					<>
 						<div key={idx} className="flexbox--flex-wrap">
-							<DollyTextInput
+							<FormikTextInput
 								name={`${annenErfaringPath}.role`}
 								label="Rolle"
 								size="xlarge"
-								value={_get(formikBag.values, `${annenErfaringPath}.role`)}
-								onChange={(i) =>
-									formikBag.setFieldValue(`${annenErfaringPath}.role`, i.target.value)
-								}
+								key={`role_${_get(formikBag.values, `${annenErfaringPath}.role`)}`}
 							/>
 							<Fritekstfelt
 								label="Beskrivelse"
