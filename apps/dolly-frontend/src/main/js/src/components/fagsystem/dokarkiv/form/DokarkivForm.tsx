@@ -74,9 +74,13 @@ enum Kodeverk {
 export const dokarkivAttributt = 'dokarkiv'
 
 export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
+	if (!_.has(formikBag.values, dokarkivAttributt)) {
+		return null
+	}
+
 	const sessionDokumenter = _.get(formikBag.values, 'dokarkiv.vedlegg')
 	const digitalInnsending = _.get(formikBag.values, 'dokarkiv.avsenderMottaker')
-	const [files, setFiles] = useState(sessionDokumenter ? sessionDokumenter : [])
+	const [files, setFiles] = useState(sessionDokumenter || [])
 	const [skjemaValues, setSkjemaValues] = useState(_.get(formikBag.values, 'dokarkiv.skjema'))
 
 	useEffect(() => {
