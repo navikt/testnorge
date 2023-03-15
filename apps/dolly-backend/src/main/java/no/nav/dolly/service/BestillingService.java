@@ -432,7 +432,7 @@ public class BestillingService {
         return null;
     }
 
-    private String getBestKriterier(RsDollyBestilling request) {
+    public String getBestKriterier(RsDollyBestilling request) {
         return toJson(BestilteKriterier.builder()
                 .aareg(request.getAareg())
                 .krrstub(request.getKrrstub())
