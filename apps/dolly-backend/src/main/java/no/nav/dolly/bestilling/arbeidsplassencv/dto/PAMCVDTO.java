@@ -311,6 +311,7 @@ public class PAMCVDTO {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
+    @SuppressWarnings("java:S1700")
     public static class Location {
         private String id;
         private String location;
