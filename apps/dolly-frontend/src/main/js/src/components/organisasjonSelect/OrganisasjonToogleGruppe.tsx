@@ -14,7 +14,7 @@ export const OrganisasjonToogleGruppe = ({ handleToggleChange }: OrganisasjonToo
 			size={'small'}
 			onChange={handleToggleChange}
 			defaultValue={sessionStorage.getItem(ORGANISASJONSTYPE_TOGGLE) || inputValg.fraFellesListe}
-			style={{ margin: '5px 0 5px' }}
+			style={{ margin: '5px 0 5px', backgroundColor: '#ffffff' }}
 		>
 			<ToggleGroup.Item key={inputValg.fraEgenListe} value={inputValg.fraEgenListe}>
 				Egen organisasjon

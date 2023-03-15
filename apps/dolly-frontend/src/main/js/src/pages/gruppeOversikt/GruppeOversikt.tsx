@@ -84,7 +84,12 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 			</div>
 			{!bankIdBruker && (
 				<StyledDiv className="gruppe--flex-column-center">
-					<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
+					<ToggleGroup
+						value={visning}
+						onChange={byttVisning}
+						size={'small'}
+						style={{ backgroundColor: '#ffffff' }}
+					>
 						<StyledToggleItem value={VisningType.MINE}>
 							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
 							Mine

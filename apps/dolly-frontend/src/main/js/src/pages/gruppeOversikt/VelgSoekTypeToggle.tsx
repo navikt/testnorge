@@ -20,7 +20,12 @@ export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 	}
 	return (
 		<div className="toggle--wrapper">
-			<ToggleGroup size={'small'} onChange={handleToggleChange} defaultValue={SoekTypeValg.PERSON}>
+			<ToggleGroup
+				size={'small'}
+				onChange={handleToggleChange}
+				defaultValue={SoekTypeValg.PERSON}
+				style={{ backgroundColor: '#ffffff' }}
+			>
 				<ToggleGroup.Item key={SoekTypeValg.PERSON} value={SoekTypeValg.PERSON}>
 					<Icon kind={soekValg === SoekTypeValg.PERSON ? 'manLight' : 'man'} size={ICONSIZE} />
 				</ToggleGroup.Item>

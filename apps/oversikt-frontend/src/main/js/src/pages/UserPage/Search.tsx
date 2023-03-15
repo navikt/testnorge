@@ -1,8 +1,8 @@
-import { InputFormItem, Knapp } from '@navikt/dolly-komponenter/lib'
 import React, { FocusEventHandler } from 'react'
 import styled from 'styled-components'
+import * as components from '@navikt/dolly-komponenter'
 
-const StyledHovedknapp = styled(Knapp)`
+const StyledHovedknapp = styled(components.Knapp)`
 	margin-top: 32px;
 	margin-left: 5px;
 	margin-bottom: 5px;
@@ -12,7 +12,7 @@ const StyledSearch = styled.div`
 	display: flex;
 `
 
-const StyledInput = styled(InputFormItem)`
+const StyledInput = styled(components.InputFormItem)`
 	width: 100%;
 `
 

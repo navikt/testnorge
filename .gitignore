@@ -18,6 +18,7 @@ navikt/*/lib/
 ### Gradle ###
 .gradle
 *build/
+*dist/
 **/out/*
 
 ##brreg-stub
