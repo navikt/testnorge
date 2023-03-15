@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.arbeidsplassencv.dto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
@@ -106,6 +107,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -125,6 +127,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -142,6 +145,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -156,6 +160,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -167,6 +172,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -180,6 +186,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -193,6 +200,7 @@ public class PAMCVDTO {
     }
     
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -204,6 +212,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -217,6 +226,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -228,6 +238,7 @@ public class PAMCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor

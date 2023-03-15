@@ -2,6 +2,7 @@ package no.nav.testnav.libs.dto.arbeidsplassencv.v1;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -104,6 +105,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -123,6 +125,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -148,6 +151,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -162,6 +166,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -173,6 +178,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -186,6 +192,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -207,6 +214,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -226,6 +234,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -239,6 +248,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -250,6 +260,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
