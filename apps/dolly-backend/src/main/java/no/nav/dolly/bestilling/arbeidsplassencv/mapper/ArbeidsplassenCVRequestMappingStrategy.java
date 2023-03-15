@@ -44,16 +44,21 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                     public void mapAtoB(ArbeidsplassenCVDTO kilde,
                                         PAMCVDTO destiasjon, MappingContext context) {
 
-                        destiasjon.getUtdanning()
-                                .forEach(utdanning -> utdanning.setHasAuthorization(true));
+                        destiasjon.getUtdanning().stream()
+                                .filter(utdanning -> isNull(utdanning.getHasAuthorization()))
+                                .forEach(utdanning -> utdanning.setHasAuthorization(false));
 
-                        destiasjon.setSistEndretAvNav(true);
+                        if (isNull(destiasjon.getSistEndretAvNav())) {
+                            destiasjon.setSistEndretAvNav(true);
+                        }
                         destiasjon.setSistEndret(ZonedDateTime.now());
 
                         if (isNull(destiasjon.getJobboensker())) {
                             destiasjon.setJobboensker(new PAMCVDTO.Jobboensker());
                         }
-                        destiasjon.getJobboensker().setActive(true);
+                        if (isNull(destiasjon.getJobboensker().getActive())) {
+                            destiasjon.getJobboensker().setActive(true);
+                        }
                     }
                 })
                 .byDefault()
