@@ -4,7 +4,6 @@ import { CopyToClipboard } from 'react-copy-to-clipboard/lib/Component'
 // @ts-ignore
 import ApplicationService from '@/services/ApplicationService'
 import TokenService from '@/services/TokenService'
-import SessionTimer from '@/components/SessionTimer'
 import styled from 'styled-components'
 import {
 	ErrorAlertstripe,
@@ -61,8 +60,8 @@ const AccessTokenTextArea = styled.textarea`
 `
 
 const StyledCheckbox = styled(Checkbox)`
-  padding: 5px 0px;
-  margin-left: 172px;
+	padding: 5px 0px;
+	margin-left: 172px;
 `
 
 export default ({ labels = {}, scope }: Props) => {
@@ -115,7 +114,6 @@ export default ({ labels = {}, scope }: Props) => {
 				disabled={true}
 				value={loading ? 'Laster token...' : accessToken ? accessToken : ''}
 			/>
-			<SessionTimer />
 			{getError()}
 			<StyledCheckbox
 				name="client-credentials-radio"

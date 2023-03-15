@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ErrorAlert, SuccessAlert, WarningAlert } from '@navikt/dolly-komponenter'
 import { NotFoundError } from '@navikt/dolly-lib'
+import * as components from '@navikt/dolly-komponenter'
 
 type Submit<T> = () => Promise<void | T>
 
@@ -61,9 +61,9 @@ const Box = <T extends unknown>({ onRender, header, onSubmit }: Props<T>) => {
 		<StyledBox>
 			<Header>{header}</Header>
 			{onRender({ onSubmit: submit, value, loading })}
-			{notFound && <WarningAlert label="Ikke funnet." />}
-			{error && <ErrorAlert label="Noe gikk galt." />}
-			{success && <SuccessAlert label="Success!" />}
+			{notFound && <components.WarningAlert label="Ikke funnet." />}
+			{error && <components.ErrorAlert label="Noe gikk galt." />}
+			{success && <components.SuccessAlert label="Success!" />}
 		</StyledBox>
 	)
 }
