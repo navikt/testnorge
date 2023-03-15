@@ -50,9 +50,11 @@ const redirectTo = (path: string) => {
 
 	if (toIdporten && !isIdporten) {
 		location.replace('https://dolly-idporten.ekstern.dev.nav.no/login')
+		return
 	}
 	if (!toIdporten && isIdporten) {
 		location.replace('https://dolly.ekstern.dev.nav.no/login')
+		return
 	}
 	location.replace(location.protocol + '//' + location.host + path)
 }

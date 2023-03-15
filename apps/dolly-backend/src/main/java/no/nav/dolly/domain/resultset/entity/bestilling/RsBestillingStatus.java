@@ -23,6 +23,7 @@ import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -99,5 +100,6 @@ public class RsBestillingStatus {
         private RsTpsMessaging tpsMessaging;
         private BankkontoData bankkonto;
         private RsSkjerming skjerming;
+        private ArbeidsplassenCVDTO arbeidsplassenCV;
     }
 }

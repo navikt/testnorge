@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGetCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.config.credentials.ArbeidsplassenProxyProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
@@ -23,13 +24,13 @@ import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
 @Component
 @Slf4j
-public class ArbeidplassenCVConsumer implements ConsumerStatus {
+public class ArbeidsplassenCVConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
     private final TokenExchange tokenService;
 
-    public ArbeidplassenCVConsumer(
+    public ArbeidsplassenCVConsumer(
             ArbeidsplassenProxyProperties serverProperties,
             TokenExchange tokenService,
             ObjectMapper objectMapper,
@@ -44,19 +45,21 @@ public class ArbeidplassenCVConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
-    public Flux<ArbeidsplassenCVDTO> hentCV(String ident) {
+    public Flux<ArbeidsplassenCVStatusDTO> hentCV(String ident) {
 
         log.info("Henter CV på ident: {} fra arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenGetCommand(webClient, ident, token.getTokenValue()).call());
+                .flatMapMany(token -> new ArbeidsplassenGetCommand(webClient, ident, token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Hentet CV for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
-    public Flux<ArbeidsplassenCVDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
+    public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, ArbeidsplassenCVDTO arbeidsplassenCV) {
 
         log.info("Oppdaterer CV på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenPutCommand(webClient, ident, arbeidsplassenCV, token.getTokenValue()).call());
+                .flatMapMany(token -> new ArbeidsplassenPutCommand(webClient, ident, arbeidsplassenCV, token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_deleteCV" })
