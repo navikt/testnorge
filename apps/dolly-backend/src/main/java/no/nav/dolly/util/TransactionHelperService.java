@@ -1,9 +1,12 @@
 package no.nav.dolly.util;
 
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
+import no.nav.dolly.domain.resultset.RsDollyBestilling;
 import no.nav.dolly.repository.BestillingProgressRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.service.BestillingService;
 import org.springframework.cache.CacheManager;
 import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ import static java.util.Objects.requireNonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
 
+@Slf4j
 @Service
 public class TransactionHelperService {
 
@@ -26,15 +30,19 @@ public class TransactionHelperService {
     private final CacheManager cacheManager;
     private final BestillingRepository bestillingRepository;
     private final BestillingProgressRepository bestillingProgressRepository;
+    private final BestillingService bestillingService;
 
-    public TransactionHelperService(PlatformTransactionManager transactionManager, CacheManager cacheManager,
+    public TransactionHelperService(PlatformTransactionManager transactionManager,
+                                    CacheManager cacheManager,
                                     BestillingRepository bestillingRepository,
-                                    BestillingProgressRepository bestillingProgressRepository) {
+                                    BestillingProgressRepository bestillingProgressRepository,
+                                    BestillingService bestillingService) {
 
         this.transactionTemplate = new TransactionTemplate(transactionManager);
         this.cacheManager = cacheManager;
         this.bestillingRepository = bestillingRepository;
         this.bestillingProgressRepository = bestillingProgressRepository;
+        this.bestillingService = bestillingService;
     }
 
     @Retryable
@@ -65,6 +73,20 @@ public class TransactionHelperService {
                     });
 
             return bestillingProgress;
+        });
+    }
+
+    @Retryable
+    public Bestilling persister(Long bestillingId, RsDollyBestilling bestilling) {
+
+        return transactionTemplate.execute(status -> {
+
+            bestillingRepository.findByIdAndLock(bestillingId)
+                    .ifPresent(best -> {
+                        best.setBestKriterier(bestillingService.getBestKriterier(bestilling));
+                        bestillingRepository.save(best);
+                    });
+            return null;
         });
     }
 
