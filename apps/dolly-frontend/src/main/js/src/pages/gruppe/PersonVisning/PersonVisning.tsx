@@ -58,6 +58,7 @@ import {
 } from '@/utils/SjekkBestillingFagsystem'
 import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -139,10 +140,10 @@ export const PersonVisning = ({
 		harInstBestilling(bestillingerFagsystemer)
 	)
 
-	const { loading: loadingArbeidsplassencvData, arbeidsplassenCv } = useArbeidsplassencvData(
+	const { loading: loadingArbeidsplassencvData, arbeidsplassencvData } = useArbeidsplassencvData(
 		ident.ident
 	)
-	console.log('arbeidsplassenCv: ', arbeidsplassenCv) //TODO - SLETT MEG
+	console.log('arbeidsplassenCv: ', arbeidsplassencvData) //TODO - SLETT MEG
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
@@ -303,6 +304,12 @@ export const PersonVisning = ({
 					/>
 				)}
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
+				<InntektsmeldingVisning
+					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
+					ident={ident.ident}
+				/>
+				<ArbeidsplassenVisning data={arbeidsplassencvData} loading={loadingArbeidsplassencvData} />
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
@@ -320,20 +327,6 @@ export const PersonVisning = ({
 						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
 					/>
 				)}
-				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
-				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
-					ident={ident.ident}
-				/>
-				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
-				<BrregVisning data={brregstub} loading={loading.brregstub} />
-				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<InstVisning
-					data={instData}
-					loading={loadingInstData}
-					bestillingIdListe={bestillingIdListe}
-					tilgjengeligMiljoe={tilgjengeligMiljoe}
-				/>
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}
@@ -341,6 +334,15 @@ export const PersonVisning = ({
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
+				<BrregVisning data={brregstub} loading={loading.brregstub} />
+				<InstVisning
+					data={instData}
+					loading={loadingInstData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}

@@ -145,7 +145,7 @@ export const useArbeidsplassencvData = (ident: string) => {
 	}
 
 	return {
-		arbeidsplassenCv: data,
+		arbeidsplassencvData: data,
 		loading: !error && !data,
 		error: error,
 	}
