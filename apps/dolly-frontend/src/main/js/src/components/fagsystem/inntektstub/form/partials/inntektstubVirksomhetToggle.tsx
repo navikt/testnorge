@@ -43,6 +43,7 @@ export const InntektstubVirksomhetToggle = ({
 				size={'small'}
 				onChange={handleToggleChange}
 				defaultValue={ToggleValg.ORGANISASJON}
+				style={{ backgroundColor: '#ffffff' }}
 			>
 				<ToggleGroup.Item key={ToggleValg.ORGANISASJON} value={ToggleValg.ORGANISASJON}>
 					Organisasjon
