@@ -84,7 +84,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
             var counter = new AtomicInteger(0);
             var testidenter = identService.getTestidenterByGruppe(bestilling.getGruppe().getId());
             Flux.fromIterable(testidenter)
-                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 40 : 0))
+                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
                                     .flatMap(progress -> (originator.isPdlf() ?
