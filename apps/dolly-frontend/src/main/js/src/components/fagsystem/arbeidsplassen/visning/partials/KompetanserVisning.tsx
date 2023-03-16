@@ -5,7 +5,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
 
 export const KompetanserVisning = ({ data }) => {
-	if (data?.length < 1) {
+	if (!data || data.length < 1) {
 		return null
 	}
 

@@ -5,12 +5,13 @@ import Formatters from '@/utils/DataFormatter'
 
 export const JobboenskerVisning = ({ data }) => {
 	if (
-		data?.occupations?.length < 1 &&
-		data?.locations?.length < 1 &&
-		data?.workLoadTypes?.length < 1 &&
-		data?.workScheduleTypes?.length < 1 &&
-		data?.occupationTypes?.length < 1 &&
-		data?.startOption?.length < 1
+		!data ||
+		((!data.occupations || data.occupations.length < 1) &&
+			(!data.locations || data.locations.length < 1) &&
+			(!data.workLoadTypes || data.workLoadTypes.length < 1) &&
+			(!data.workScheduleTypes || data.workScheduleTypes.length < 1) &&
+			(!data.occupationTypes || data.occupationTypes.length < 1) &&
+			(!data.startOption || data.startOption.length < 1))
 	) {
 		return null
 	}
