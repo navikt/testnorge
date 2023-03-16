@@ -6,8 +6,12 @@ import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.web.reactive.function.client.DefaultClientRequestObservationConvention;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
+
+import java.time.Duration;
 
 @Configuration
 @Slf4j
@@ -27,7 +31,13 @@ public class WebClientConfig {
             return WebClient
                     .builder()
                     .observationConvention(new DefaultClientRequestObservationConvention())
-                    .observationRegistry(observationRegistry);
+                    .observationRegistry(observationRegistry)
+                    .clientConnector(
+                            new ReactorClientHttpConnector(
+                                    HttpClient
+                                            .create()
+                                            .responseTimeout(Duration.ofSeconds(30))
+                                            .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(30)))));
 
         } catch (NoSuchBeanDefinitionException e) {
 

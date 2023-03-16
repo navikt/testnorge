@@ -81,7 +81,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             var counter = new AtomicInteger(0);
             var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
-                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 10 : 0))
+                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
                             .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
                                     .filter(Objects::nonNull)

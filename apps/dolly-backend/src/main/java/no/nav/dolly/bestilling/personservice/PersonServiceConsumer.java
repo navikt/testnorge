@@ -8,14 +8,10 @@ import no.nav.dolly.config.credentials.PersonServiceProperties;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.netty.http.client.HttpClient;
-
-import java.time.Duration;
 
 @Service
 public class PersonServiceConsumer implements ConsumerStatus {
@@ -33,12 +29,6 @@ public class PersonServiceConsumer implements ConsumerStatus {
         this.serviceProperties = serverProperties;
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
-                .clientConnector(
-                        new ReactorClientHttpConnector(
-                                HttpClient
-                                        .create()
-                                        .responseTimeout(Duration.ofSeconds(30))
-                                        .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(30)))))
                 .build();
     }
 
