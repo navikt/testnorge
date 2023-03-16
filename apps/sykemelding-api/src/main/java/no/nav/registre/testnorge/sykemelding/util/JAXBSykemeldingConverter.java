@@ -3,10 +3,10 @@ package no.nav.registre.testnorge.sykemelding.util;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
-import no.nav.helse.eiFellesformat.XMLEIFellesformat;
-import no.nav.helse.msgHead.XMLMsgHead;
 import no.nav.registre.testnorge.sykemelding.exception.JAXBSykemeldingConverterException;
+import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLEIFellesformat;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLMsgHead;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringReader;
