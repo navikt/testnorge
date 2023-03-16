@@ -1,15 +1,24 @@
-const path = require('path');
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common.js');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import { defineConfig, splitVendorChunkPlugin } from 'vite';
+import viteTsconfigPaths from 'vite-tsconfig-paths';
+import svgr from 'vite-plugin-svgr';
+import { resolve } from 'path';
+import react from '@vitejs/plugin-react';
 
-module.exports = merge(common, {
-  mode: 'development',
-  devtool: 'inline-source-map',
-  devServer: {
-    port: 3000,
-    static: path.join(__dirname, 'public'),
-    historyApiFallback: true,
+/** @type {import('vite').UserConfig} */
+
+export default defineConfig(({ mode }) => ({
+  base: '/',
+  build: {
+    outDir: 'build',
+    cssCodeSplit: false,
+  },
+  resolve: {
+    alias: {
+      '@': resolve(__dirname, './src'),
+      '~': resolve(__dirname, './src'),
+    },
+  },
+  server: mode === 'local-dev' && {
     proxy: {
       '/testnav-person-service': {
         target: 'http://localhost:8080',
@@ -47,16 +56,7 @@ module.exports = merge(common, {
         secure: false,
       },
     },
+    port: 3000,
   },
-  plugins: [
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
-  ],
-  output: {
-    path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: '/',
-    clean: true,
-  },
-});
+  plugins: [react(), svgr(), viteTsconfigPaths(), splitVendorChunkPlugin()],
+}));
