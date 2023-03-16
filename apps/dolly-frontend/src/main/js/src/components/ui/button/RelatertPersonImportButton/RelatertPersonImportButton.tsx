@@ -123,7 +123,9 @@ export const RelatertPersonImportButton = ({
 							</FieldArray>
 						</div>
 						<div className="relatertPersonImportModal-actions">
-							<NavButton onClick={closeModal}>Avbryt</NavButton>
+							<NavButton onClick={closeModal} variant={'secondary'}>
+								Avbryt
+							</NavButton>
 							<NavButton
 								onClick={() => {
 									closeModal()
@@ -178,7 +180,9 @@ export const RelatertPersonImportButton = ({
 								</h4>
 							</div>
 							<div className="relatertPersonImportModal-actions">
-								<NavButton onClick={closeModal}>Nei</NavButton>
+								<NavButton onClick={closeModal} variant={'secondary'}>
+									Nei
+								</NavButton>
 								<NavButton
 									onClick={() => {
 										closeModal()
