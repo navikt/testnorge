@@ -5,10 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
+import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.http.HttpStatus;
@@ -35,14 +37,28 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         return Flux.just(bestilling)
                 .filter(ordre -> nonNull(ordre.getArbeidsplassenCV()))
-                .flatMap(ordre -> Mono.just(mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class)))
-                .flatMap(request -> arbeidsplassenCVConsumer.hentCV(dollyPerson.getIdent())
-                        .flatMap(result ->
-                                arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request)
-                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                                errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
-                                                        status.getFeilmelding()))
-                                        .map(resultat -> futurePersist(progress, resultat))));
+                .flatMap(ordre -> {
+                    if (isOpprettEndre) {
+                        var oppdatertOrdre = mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class);
+                        bestilling.setArbeidsplassenCV(oppdatertOrdre);
+                        transactionHelperService.persister(progress.getBestilling().getId(), bestilling);
+                        return Flux.just(oppdatertOrdre);
+                    } else {
+                        return Flux.just(ordre.getArbeidsplassenCV());
+                    }
+                })
+                .flatMap(oppdatertOrdre -> Flux.just(CallIdUtil.generateCallId())
+                        .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
+                                .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(dollyPerson.getIdent(), uuid)
+                                        .flatMap(response3 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                                .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
+                                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                                                String.format("%s UUID: %s",
+                                                                        errorStatusDecoder.getErrorText(HttpStatus.valueOf(status.getStatus().value()),
+                                                                                status.getFeilmelding()),
+                                                                        status.getUuid()))
+                                                        .map(resultat -> futurePersist(progress, resultat)))))))
+                .flatMap(Flux::from);
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

@@ -106,7 +106,12 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 						Opprett organisasjon
 					</NavButton>
 
-					<ToggleGroup size={'small'} onChange={byttVisning} defaultValue={VISNING_ORGANISASJONER}>
+					<ToggleGroup
+						size={'small'}
+						onChange={byttVisning}
+						defaultValue={VISNING_ORGANISASJONER}
+						style={{ backgroundColor: '#ffffff' }}
+					>
 						<ToggleGroup.Item value={VISNING_ORGANISASJONER}>
 							<Icon
 								size={13}

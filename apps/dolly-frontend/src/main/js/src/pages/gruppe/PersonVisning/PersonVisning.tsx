@@ -205,6 +205,15 @@ export const PersonVisning = ({
 				})
 			})
 
+		data.pdlforvalter?.person?.sivilstand
+			?.filter((siv) => siv?.type === 'SAMBOER')
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'SAMBOER',
+					id: person.relatertVedSivilstand,
+				})
+			})
+
 		data.pdl?.hentPerson?.forelderBarnRelasjon
 			?.filter(
 				(forelderBarn) =>

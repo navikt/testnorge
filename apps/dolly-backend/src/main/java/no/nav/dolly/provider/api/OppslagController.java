@@ -33,7 +33,7 @@ import no.nav.dolly.service.InntektsmeldingEnumService;
 import no.nav.dolly.service.InntektsmeldingEnumService.EnumTypes;
 import no.nav.dolly.service.RsTransaksjonMapping;
 import no.nav.dolly.service.TransaksjonMappingService;
-import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import no.nav.dolly.util.CallIdUtil;
 import no.nav.testnav.libs.dto.profil.v1.ProfilDTO;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
@@ -80,12 +80,12 @@ public class OppslagController {
     private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
 
     @GetMapping("/arbeidsforholdcv/ident/{ident}")
-    public Flux<ArbeidsplassenCVDTO> getArbeidsforhold(@PathVariable("ident") String ident) {
+    public Flux<JsonNode> getArbeidsforhold(@PathVariable("ident") String ident) {
 
-        return arbeidsplassenCVConsumer.hentCV(ident)
+        return arbeidsplassenCVConsumer.hentCV(ident, CallIdUtil.generateCallId())
                 .map(response -> {
                     if (response.getStatus().is2xxSuccessful()) {
-                        return response.getArbeidsplassenCV();
+                        return response.getJsonNode();
                     } else {
                         throw new ResponseStatusException(response.getStatus(), response.getFeilmelding());
                     }
