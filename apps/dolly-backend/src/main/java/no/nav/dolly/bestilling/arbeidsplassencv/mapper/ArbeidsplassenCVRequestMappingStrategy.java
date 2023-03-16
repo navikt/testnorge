@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Component
 public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
@@ -53,10 +54,7 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                         }
                         destiasjon.setSistEndret(ZonedDateTime.now());
 
-                        if (isNull(destiasjon.getJobboensker())) {
-                            destiasjon.setJobboensker(new PAMCVDTO.Jobboensker());
-                        }
-                        if (isNull(destiasjon.getJobboensker().getActive())) {
+                        if (nonNull(destiasjon.getJobboensker()) && isNull(destiasjon.getJobboensker().getActive())) {
                             destiasjon.getJobboensker().setActive(true);
                         }
                     }
