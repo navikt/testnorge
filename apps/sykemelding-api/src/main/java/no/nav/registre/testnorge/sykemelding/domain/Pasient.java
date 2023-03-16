@@ -1,13 +1,12 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
-import no.kith.xmlstds.XMLCS;
-import no.kith.xmlstds.XMLCV;
-import no.kith.xmlstds.XMLURL;
-import no.kith.xmlstds.felleskomponent1.XMLIdent;
-import no.kith.xmlstds.felleskomponent1.XMLTeleCom;
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLNavnType;
-
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCV;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLURL;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.felleskomponent1.XMLIdent;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.felleskomponent1.XMLTeleCom;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLNavnType;
 import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
 import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
 

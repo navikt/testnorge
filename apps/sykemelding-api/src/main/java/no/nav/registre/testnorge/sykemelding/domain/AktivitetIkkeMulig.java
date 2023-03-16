@@ -1,8 +1,9 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
-import no.kith.xmlstds.XMLCS;
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLArsakType;
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLArsakType;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
 
 class AktivitetIkkeMulig {
     private final XMLHelseOpplysningerArbeidsuforhet.Aktivitet.Periode.AktivitetIkkeMulig xmlAktivitetIkkeMulig;
