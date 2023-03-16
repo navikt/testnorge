@@ -15,6 +15,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import lombok.ToString;
 import no.nav.registre.testnorge.sykemelding.domain.LocalDateAdapter;
 import no.nav.registre.testnorge.sykemelding.domain.LocalDateTimeAdapter;
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
@@ -351,6 +352,7 @@ import java.util.List;
         "strekkode"
 })
 @XmlRootElement(name = "HelseOpplysningerArbeidsuforhet")
+@ToString
 public class XMLHelseOpplysningerArbeidsuforhet {
 
     @XmlElement(name = "RegelSettVersjon")
