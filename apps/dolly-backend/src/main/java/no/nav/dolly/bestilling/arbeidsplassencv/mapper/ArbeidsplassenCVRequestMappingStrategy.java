@@ -72,7 +72,7 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
                 .filter(method -> method.getReturnType().getName().contains("List"))
                 .map(method -> {
                     try {
-                        return method.invoke(arbeidsplassenCV, (Object) null);
+                        return method.invoke(arbeidsplassenCV, null);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new DollyFunctionalException(String.format("Henting av data feilet: %s", e.getMessage()), e);
                     }
