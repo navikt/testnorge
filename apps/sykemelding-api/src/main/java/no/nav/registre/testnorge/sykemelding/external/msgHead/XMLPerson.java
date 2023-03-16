@@ -14,8 +14,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import no.nav.registre.testnorge.sykemelding.domain.LocalDateAdapter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class XMLPerson {
     @XmlElement(name = "GivenName", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24")
     protected String givenName;
     @XmlElement(name = "DateOfBirth", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24", type = String.class)
-    @XmlJavaTypeAdapter(XmlAdapter.class)
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected LocalDate dateOfBirth;
     @XmlElement(name = "Sex", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24")

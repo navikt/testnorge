@@ -8,15 +8,15 @@
 
 package no.nav.registre.testnorge.sykemelding.external.xmlstds.felleskomponent1;
 
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
-import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
-
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import no.nav.registre.testnorge.sykemelding.domain.LocalDateAdapter;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +71,7 @@ public class XMLPerson {
     @XmlElement(name = "GivenName")
     protected String givenName;
     @XmlElement(name = "DateOfBirth", type = String.class)
-    @XmlJavaTypeAdapter(XmlAdapter.class)
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected LocalDate dateOfBirth;
     @XmlElement(name = "Sex")

@@ -14,8 +14,9 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import no.nav.registre.testnorge.sykemelding.domain.LocalDateAdapter;
+import no.nav.registre.testnorge.sykemelding.domain.LocalDateTimeAdapter;
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCS;
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.XMLCV;
 import no.nav.registre.testnorge.sykemelding.external.xmlstds.felleskomponent1.XMLAddress;
@@ -355,7 +356,7 @@ public class XMLHelseOpplysningerArbeidsuforhet {
     @XmlElement(name = "RegelSettVersjon")
     protected String regelSettVersjon;
     @XmlElement(name = "SyketilfelleStartDato", required = true, type = String.class)
-    @XmlJavaTypeAdapter(XmlAdapter.class)
+    @XmlJavaTypeAdapter(LocalDateAdapter.class)
     @XmlSchemaType(name = "date")
     protected LocalDate syketilfelleStartDato;
     @XmlElement(name = "Pasient", required = true)
@@ -1041,11 +1042,11 @@ public class XMLHelseOpplysningerArbeidsuforhet {
         public static class Periode {
 
             @XmlElement(name = "PeriodeFOMDato", required = true, type = String.class)
-            @XmlJavaTypeAdapter(XmlAdapter.class)
+            @XmlJavaTypeAdapter(LocalDateAdapter.class)
             @XmlSchemaType(name = "date")
             protected LocalDate periodeFOMDato;
             @XmlElement(name = "PeriodeTOMDato", required = true, type = String.class)
-            @XmlJavaTypeAdapter(XmlAdapter.class)
+            @XmlJavaTypeAdapter(LocalDateAdapter.class)
             @XmlSchemaType(name = "date")
             protected LocalDate periodeTOMDato;
             @XmlElement(name = "AvventendeSykmelding")
@@ -2056,11 +2057,11 @@ public class XMLHelseOpplysningerArbeidsuforhet {
     public static class KontaktMedPasient {
 
         @XmlElement(name = "BehandletDato", required = true, type = String.class)
-        @XmlJavaTypeAdapter(XmlAdapter.class)
+        @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
         @XmlSchemaType(name = "dateTime")
         protected LocalDateTime behandletDato;
         @XmlElement(name = "KontaktDato", type = String.class)
-        @XmlJavaTypeAdapter(XmlAdapter.class)
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         @XmlSchemaType(name = "date")
         protected LocalDate kontaktDato;
         @XmlElement(name = "BegrunnIkkeKontakt")
@@ -2226,7 +2227,7 @@ public class XMLHelseOpplysningerArbeidsuforhet {
         @XmlElement(name = "Yrkesskade")
         protected Boolean yrkesskade;
         @XmlElement(name = "YrkesskadeDato", type = String.class)
-        @XmlJavaTypeAdapter(XmlAdapter.class)
+        @XmlJavaTypeAdapter(LocalDateAdapter.class)
         @XmlSchemaType(name = "date")
         protected LocalDate yrkesskadeDato;
         @XmlElement(name = "SkjermesForPasient")
@@ -3255,13 +3256,13 @@ public class XMLHelseOpplysningerArbeidsuforhet {
             @XmlElement(name = "EgetArbeidPaSikt")
             protected Boolean egetArbeidPaSikt;
             @XmlElement(name = "ArbeidFraDato", type = String.class)
-            @XmlJavaTypeAdapter(XmlAdapter.class)
+            @XmlJavaTypeAdapter(LocalDateAdapter.class)
             @XmlSchemaType(name = "date")
             protected LocalDate arbeidFraDato;
             @XmlElement(name = "AnnetArbeidPaSikt")
             protected Boolean annetArbeidPaSikt;
             @XmlElement(name = "VurderingDato", type = String.class)
-            @XmlJavaTypeAdapter(XmlAdapter.class)
+            @XmlJavaTypeAdapter(LocalDateAdapter.class)
             @XmlSchemaType(name = "date")
             protected LocalDate vurderingDato;
 
@@ -3415,11 +3416,11 @@ public class XMLHelseOpplysningerArbeidsuforhet {
             @XmlElement(name = "ArbeidsforPaSikt")
             protected Boolean arbeidsforPaSikt;
             @XmlElement(name = "ArbeidsforFraDato", type = String.class)
-            @XmlJavaTypeAdapter(XmlAdapter.class)
+            @XmlJavaTypeAdapter(LocalDateAdapter.class)
             @XmlSchemaType(name = "date")
             protected LocalDate arbeidsforFraDato;
             @XmlElement(name = "VurderingDato", type = String.class)
-            @XmlJavaTypeAdapter(XmlAdapter.class)
+            @XmlJavaTypeAdapter(LocalDateAdapter.class)
             @XmlSchemaType(name = "date")
             protected LocalDate vurderingDato;
 

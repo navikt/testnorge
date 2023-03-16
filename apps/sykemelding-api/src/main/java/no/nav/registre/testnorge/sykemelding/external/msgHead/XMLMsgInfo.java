@@ -14,8 +14,8 @@ import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlSchemaType;
 import jakarta.xml.bind.annotation.XmlType;
-import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import no.nav.registre.testnorge.sykemelding.domain.LocalDateTimeAdapter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -24,9 +24,9 @@ import java.util.List;
 
 /**
  * <p>Java class for anonymous complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType&gt;
  *   &lt;complexContent&gt;
@@ -49,23 +49,21 @@ import java.util.List;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "type",
-    "miGversion",
-    "genDate",
-    "msgId",
-    "processingStatus",
-    "requestedPriority",
-    "ack",
-    "conversationRef",
-    "sender",
-    "receiver",
-    "otherReceiver",
-    "patient"
+        "type",
+        "miGversion",
+        "genDate",
+        "msgId",
+        "processingStatus",
+        "requestedPriority",
+        "ack",
+        "conversationRef",
+        "sender",
+        "receiver",
+        "otherReceiver",
+        "patient"
 })
 @XmlRootElement(name = "MsgInfo", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24")
 public class XMLMsgInfo {
@@ -75,7 +73,7 @@ public class XMLMsgInfo {
     @XmlElement(name = "MIGversion", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24", required = true)
     protected String miGversion;
     @XmlElement(name = "GenDate", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24", required = true, type = String.class)
-    @XmlJavaTypeAdapter(XmlAdapter.class)
+    @XmlJavaTypeAdapter(LocalDateTimeAdapter.class)
     @XmlSchemaType(name = "dateTime")
     protected LocalDateTime genDate;
     @XmlElement(name = "MsgId", namespace = "http://www.kith.no/xmlstds/msghead/2006-05-24", required = true)
@@ -99,11 +97,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the type property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLCS }
      */
     public XMLCS getType() {
         return type;
@@ -111,11 +107,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the type property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLCS }
      */
     public void setType(XMLCS value) {
         this.type = value;
@@ -123,11 +117,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the miGversion property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getMIGversion() {
         return miGversion;
@@ -135,11 +127,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the miGversion property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setMIGversion(String value) {
         this.miGversion = value;
@@ -147,11 +137,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the genDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public LocalDateTime getGenDate() {
         return genDate;
@@ -159,11 +147,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the genDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setGenDate(LocalDateTime value) {
         this.genDate = value;
@@ -171,11 +157,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the msgId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     * {@link String }
      */
     public String getMsgId() {
         return msgId;
@@ -183,11 +167,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the msgId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setMsgId(String value) {
         this.msgId = value;
@@ -195,11 +177,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the processingStatus property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLCS }
      */
     public XMLCS getProcessingStatus() {
         return processingStatus;
@@ -207,11 +187,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the processingStatus property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLCS }
      */
     public void setProcessingStatus(XMLCS value) {
         this.processingStatus = value;
@@ -219,11 +197,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the requestedPriority property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLCS }
      */
     public XMLCS getRequestedPriority() {
         return requestedPriority;
@@ -231,11 +207,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the requestedPriority property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLCS }
      */
     public void setRequestedPriority(XMLCS value) {
         this.requestedPriority = value;
@@ -243,11 +217,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the ack property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLCS }
      */
     public XMLCS getAck() {
         return ack;
@@ -255,11 +227,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the ack property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLCS }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLCS }
      */
     public void setAck(XMLCS value) {
         this.ack = value;
@@ -267,11 +237,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the conversationRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLConversationRef }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLConversationRef }
      */
     public XMLConversationRef getConversationRef() {
         return conversationRef;
@@ -279,11 +247,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the conversationRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLConversationRef }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLConversationRef }
      */
     public void setConversationRef(XMLConversationRef value) {
         this.conversationRef = value;
@@ -291,11 +257,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the sender property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLSender }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLSender }
      */
     public XMLSender getSender() {
         return sender;
@@ -303,11 +267,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the sender property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLSender }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLSender }
      */
     public void setSender(XMLSender value) {
         this.sender = value;
@@ -315,11 +277,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the receiver property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLReceiver }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLReceiver }
      */
     public XMLReceiver getReceiver() {
         return receiver;
@@ -327,11 +287,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the receiver property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLReceiver }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLReceiver }
      */
     public void setReceiver(XMLReceiver value) {
         this.receiver = value;
@@ -339,25 +297,23 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the otherReceiver property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the otherReceiver property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getOtherReceiver().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link XMLOtherReceiver }
-     * 
-     * 
      */
     public List<XMLOtherReceiver> getOtherReceiver() {
         if (otherReceiver == null) {
@@ -368,11 +324,9 @@ public class XMLMsgInfo {
 
     /**
      * Gets the value of the patient property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link XMLPatient }
-     *     
+     *
+     * @return possible object is
+     * {@link XMLPatient }
      */
     public XMLPatient getPatient() {
         return patient;
@@ -380,11 +334,9 @@ public class XMLMsgInfo {
 
     /**
      * Sets the value of the patient property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLPatient }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link XMLPatient }
      */
     public void setPatient(XMLPatient value) {
         this.patient = value;
