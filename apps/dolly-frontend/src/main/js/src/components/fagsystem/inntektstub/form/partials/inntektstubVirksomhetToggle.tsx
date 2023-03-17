@@ -6,7 +6,7 @@ import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partial
 import { ToggleGroup } from '@navikt/ds-react'
 
 type InntektstubVirksomhetToggleProps = {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<object>
 	path: string
 }
 
