@@ -13,6 +13,7 @@ import { FoererkortVisning } from '@/components/fagsystem/arbeidsplassen/visning
 import { KursVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/KursVisning'
 import { SammendragVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/SammendragVisning'
 import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/JobboenskerVisning'
+import Panel from '@/components/ui/panel/Panel'
 
 export const ArbeidsplassenVisning = ({ data, loading }) => {
 	if (loading) return <Loading label="Laster CV" />
@@ -23,18 +24,20 @@ export const ArbeidsplassenVisning = ({ data, loading }) => {
 	return (
 		<>
 			<SubOverskrift label="Arbeidsplassen (CV)" iconKind="cv" />
-			<JobboenskerVisning data={data.jobboensker} />
-			<UtdanningVisning data={data.utdanning} />
-			<FagbrevVisning data={data.fagbrev} />
-			<ArbeidserfaringVisning data={data.arbeidserfaring} />
-			<AnnenErfaringVisning data={data.annenErfaring} />
-			<KompetanserVisning data={data.kompetanser} />
-			<OffentligeGodkjenningerVisning data={data.offentligeGodkjenninger} />
-			<AndreGodkjenningerVisning data={data.andreGodkjenninger} />
-			<SpraakVisning data={data.spraak} />
-			<FoererkortVisning data={data.foererkort} />
-			<KursVisning data={data.kurs} />
-			<SammendragVisning data={data.sammendrag} />
+			<Panel heading="CV-opplysninger">
+				<JobboenskerVisning data={data.jobboensker} />
+				<UtdanningVisning data={data.utdanning} />
+				<FagbrevVisning data={data.fagbrev} />
+				<ArbeidserfaringVisning data={data.arbeidserfaring} />
+				<AnnenErfaringVisning data={data.annenErfaring} />
+				<KompetanserVisning data={data.kompetanser} />
+				<OffentligeGodkjenningerVisning data={data.offentligeGodkjenninger} />
+				<AndreGodkjenningerVisning data={data.andreGodkjenninger} />
+				<SpraakVisning data={data.spraak} />
+				<FoererkortVisning data={data.foererkort} />
+				<KursVisning data={data.kurs} />
+				<SammendragVisning data={data.sammendrag} />
+			</Panel>
 		</>
 	)
 }

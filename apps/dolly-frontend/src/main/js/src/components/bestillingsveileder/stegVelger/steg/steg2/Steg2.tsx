@@ -81,7 +81,7 @@ Steg2.label = 'Velg verdier'
 Steg2.validation = Yup.object({
 	...PdlfForm.validation,
 	...AaregForm.validation,
-	// ...ArbeidsplassenForm.validation,
+	...ArbeidsplassenForm.validation,
 	...SigrunstubForm.validation,
 	...InntektstubForm.validation,
 	...InntektsmeldingForm.validation,

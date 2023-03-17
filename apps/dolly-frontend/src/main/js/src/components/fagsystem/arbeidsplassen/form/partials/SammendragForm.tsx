@@ -21,6 +21,7 @@ export const SammendragForm = ({ formikBag }) => {
 				onChange={(sammendrag) =>
 					formikBag.setFieldValue(sammendragPath, sammendrag?.target?.value)
 				}
+				error={_get(formikBag.values, sammendragPath) === '' ? 'Feltet er påkrevd' : null}
 			/>
 			<EraseFillButtons
 				formikBag={formikBag}

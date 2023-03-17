@@ -14,6 +14,7 @@ import { SpraakForm } from '@/components/fagsystem/arbeidsplassen/form/partials/
 import { FoererkortForm } from '@/components/fagsystem/arbeidsplassen/form/partials/FoererkortForm'
 import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/KursForm'
 import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
+import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -44,3 +45,5 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 		</Vis>
 	)
 }
+
+ArbeidsplassenForm.validation = validation

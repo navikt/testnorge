@@ -143,7 +143,6 @@ export const PersonVisning = ({
 	const { loading: loadingArbeidsplassencvData, arbeidsplassencvData } = useArbeidsplassencvData(
 		ident.ident
 	)
-	console.log('arbeidsplassenCv: ', arbeidsplassencvData) //TODO - SLETT MEG
 
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
