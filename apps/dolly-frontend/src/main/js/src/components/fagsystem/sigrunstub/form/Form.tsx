@@ -35,10 +35,11 @@ SigrunstubForm.validation = {
 							tekniskNavn: Yup.string().required('Velg en type inntekt'),
 							verdi: Yup.mixed().when('tekniskNavn', {
 								is: 'skatteoppgjoersdato',
-								then: requiredDate.nullable(),
-								otherwise: Yup.number()
-									.min(0, 'Tast inn en gyldig verdi')
-									.typeError('Tast inn en gyldig verdi'),
+								then: () => requiredDate.nullable(),
+								otherwise: () =>
+									Yup.number()
+										.min(0, 'Tast inn en gyldig verdi')
+										.typeError('Tast inn en gyldig verdi'),
 							}),
 						})
 					)

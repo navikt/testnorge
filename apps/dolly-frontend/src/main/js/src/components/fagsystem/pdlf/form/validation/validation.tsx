@@ -1,25 +1,25 @@
 import * as Yup from 'yup'
-import { ifPresent, messages, requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import {
-	bostedsadresse,
-	oppholdsadresse,
-	kontaktadresse,
 	adressebeskyttelse,
+	bostedsadresse,
 	doedfoedtBarn,
+	falskIdentitet,
 	forelderBarnRelasjon,
 	foreldreansvar,
-	sivilstand,
-	innflytting,
-	kontaktDoedsbo,
-	sikkerhetstiltak,
-	telefonnummer,
-	utenlandskId,
-	falskIdentitet,
-	utflytting,
 	fullmakt,
+	innflytting,
+	kontaktadresse,
+	kontaktDoedsbo,
+	oppholdsadresse,
+	sikkerhetstiltak,
+	sivilstand,
 	statsborgerskap,
-	vergemaal,
+	telefonnummer,
 	tilrettelagtKommunikasjon,
+	utenlandskId,
+	utflytting,
+	vergemaal,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { bankkontoValidation } from '@/components/fagsystem/bankkonto/form'
 import { tpsMessagingValidation } from '@/components/fagsystem/tpsmessaging/form/validation'
@@ -30,7 +30,7 @@ export const doedsfall = Yup.object({
 })
 
 export const kjoenn = Yup.object({
-	kjoenn: requiredString.nullable(),
+	kjoenn: requiredString,
 })
 
 export const navn = Yup.object({
@@ -41,7 +41,7 @@ export const navn = Yup.object({
 })
 
 export const folkeregisterpersonstatus = Yup.object({
-	status: requiredString.nullable(),
+	status: requiredString,
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
 })

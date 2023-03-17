@@ -162,19 +162,19 @@ export const bostedsadresse = Yup.object({
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
-		then: vegadresse,
+		then: () => vegadresse,
 	}),
 	matrikkeladresse: Yup.mixed().when('adressetype', {
 		is: 'MATRIKKELADRESSE',
-		then: matrikkeladresse,
+		then: () => matrikkeladresse,
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
-		then: utenlandskAdresse,
+		then: () => utenlandskAdresse,
 	}),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
-		then: ukjentBosted,
+		then: () => ukjentBosted,
 	}),
 })
 
@@ -184,19 +184,19 @@ export const oppholdsadresse = Yup.object({
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
-		then: vegadresse,
+		then: () => vegadresse,
 	}),
 	matrikkeladresse: Yup.mixed().when('adressetype', {
 		is: 'MATRIKKELADRESSE',
-		then: matrikkeladresse,
+		then: () => matrikkeladresse,
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
-		then: utenlandskAdresse,
+		then: () => utenlandskAdresse,
 	}),
 	oppholdAnnetSted: Yup.mixed().when('adressetype', {
 		is: 'OPPHOLD_ANNET_STED',
-		then: requiredString.nullable(),
+		then: () => requiredString.nullable(),
 	}),
 })
 
@@ -206,15 +206,15 @@ export const kontaktadresse = Yup.object({
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
-		then: vegadresse,
+		then: () => vegadresse,
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
-		then: utenlandskAdresse,
+		then: () => utenlandskAdresse,
 	}),
 	postboksadresse: Yup.mixed().when('adressetype', {
 		is: 'POSTBOKSADRESSE',
-		then: postboksadresse,
+		then: () => postboksadresse,
 	}),
 })
 

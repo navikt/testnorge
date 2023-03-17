@@ -170,9 +170,10 @@ const deltBosted = Yup.object({
 	matrikkeladresse: matrikkeladresse.nullable(),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
-		then: Yup.object({
-			bostedskommune: requiredString.nullable(),
-		}),
+		then: () =>
+			Yup.object({
+				bostedskommune: requiredString.nullable(),
+			}),
 	}),
 })
 
@@ -183,13 +184,13 @@ export const forelderBarnRelasjon = Yup.array().of(
 		relatertPerson: Yup.string().nullable(),
 		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
-			then: Yup.mixed().notRequired(),
-			otherwise: Yup.boolean(),
+			then: () => Yup.mixed().notRequired(),
+			otherwise: () => Yup.boolean(),
 		}),
 		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
-			then: deltBosted.nullable(),
+			then: () => deltBosted.nullable(),
 		}),
 	})
 )

@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import { ifPresent, messages, requiredString } from '@/utils/YupValidations'
 import * as _ from 'lodash-es'
-import { landkoder, landkodeIsoMapping } from '@/service/services/kontoregister/landkoder'
+import { landkodeIsoMapping, landkoder } from '@/service/services/kontoregister/landkoder'
 
 const validInputOrCheckboxTest = (val, checkboxPath, feilmelding, inputValidation) => {
 	return val.test('is-input-or-checkbox', function isInputOrCheckbox(value) {
@@ -135,7 +135,7 @@ export const bankkontoValidation = {
 						messages.required,
 						validateIban
 					),
-					tilfeldigKontonummer: Yup.object().nullable(),
+					tilfeldigKontonummer: Yup.string().nullable(),
 					swift: validateSwift(Yup.string()),
 					landkode: requiredString.nullable(),
 					iban: Yup.string().nullable().optional(),
@@ -180,7 +180,7 @@ export const bankkontoValidation = {
 						messages.required,
 						null
 					),
-					tilfeldigKontonummer: Yup.object().nullable(),
+					tilfeldigKontonummer: Yup.string().nullable(),
 				})
 			),
 		})

@@ -15,8 +15,6 @@ import {
 	initialTpsSikkerhetstiltak,
 	initialVergemaal,
 } from '@/components/fagsystem/pdlf/form/initialValues'
-import { Innflytting, Utflytting } from '@/components/fagsystem/pdlf/PdlTypes'
-import { getSisteDato } from '@/components/bestillingsveileder/utils'
 
 const ignoreKeysTestnorge = [
 	'alder',
@@ -221,7 +219,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							{
 								fraflyttingsland: '',
 								fraflyttingsstedIUtlandet: '',
-								innflyttingsdato: null as string,
+								innflyttingsdato: null as unknown as string,
 								master: 'FREG',
 								kilde: 'Dolly',
 							},
@@ -241,7 +239,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 							{
 								tilflyttingsland: '',
 								tilflyttingsstedIUtlandet: '',
-								utflyttingsdato: null as string,
+								utflyttingsdato: null as unknown as string,
 								master: 'FREG',
 								kilde: 'Dolly',
 							},

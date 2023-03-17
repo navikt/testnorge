@@ -122,7 +122,7 @@ const arbeidsforholdsliste = Yup.array().of(
 		startdato: testDatoFom(
 			Yup.mixed().when('sluttdato', {
 				is: (val) => val !== undefined,
-				then: requiredDate,
+				then: () => requiredDate,
 			}),
 			'sluttdato'
 		),
@@ -145,7 +145,7 @@ export const validation = {
 	inntektstub: Yup.object({
 		inntektsinformasjon: Yup.array().of(
 			Yup.object({
-				sisteAarMaaned: requiredString.matches(/^\d{4}\-(0[1-9]|1[012])$/, {
+				sisteAarMaaned: requiredString.matches(/^\d{4}-(0[1-9]|1[012])$/, {
 					message: 'Dato må være på formatet yyyy-MM',
 					excludeEmptyString: true,
 				}),

@@ -5,7 +5,7 @@ import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials'
 export const kontaktDoedsbo = Yup.array().of(
 	Yup.object().shape({
 		skifteform: requiredString.nullable(),
-		attestutstedelsesdato: requiredDate,
+		attestutstedelsesdato: requiredDate.nullable(),
 		kontaktType: requiredString.nullable(),
 		adresse: Yup.object({
 			adresselinje1: Yup.string().nullable(),
@@ -17,57 +17,61 @@ export const kontaktDoedsbo = Yup.array().of(
 
 		advokatSomKontakt: Yup.object().when('kontaktType', {
 			is: 'ADVOKAT',
-			then: Yup.object({
-				organisasjonsnummer: requiredString.nullable(),
-				organisasjonsnavn: Yup.string().nullable(),
-				kontaktperson: Yup.object({
-					fornavn: Yup.string().nullable(),
-					mellomnavn: Yup.string().nullable(),
-					etternavn: Yup.string().nullable(),
-				}).nullable(),
-			}),
+			then: () =>
+				Yup.object({
+					organisasjonsnummer: requiredString.nullable(),
+					organisasjonsnavn: Yup.string().nullable(),
+					kontaktperson: Yup.object({
+						fornavn: Yup.string().nullable(),
+						mellomnavn: Yup.string().nullable(),
+						etternavn: Yup.string().nullable(),
+					}).nullable(),
+				}),
 		}),
 
 		organisasjonSomKontakt: Yup.object().when('kontaktType', {
 			is: 'ORGANISASJON',
-			then: Yup.object({
-				organisasjonsnummer: requiredString.nullable(),
-				organisasjonsnavn: Yup.string().nullable(),
-				kontaktperson: Yup.object({
-					fornavn: Yup.string().nullable(),
-					mellomnavn: Yup.string().nullable(),
-					etternavn: Yup.string().nullable(),
-				}).nullable(),
-			}),
+			then: () =>
+				Yup.object({
+					organisasjonsnummer: requiredString.nullable(),
+					organisasjonsnavn: Yup.string().nullable(),
+					kontaktperson: Yup.object({
+						fornavn: Yup.string().nullable(),
+						mellomnavn: Yup.string().nullable(),
+						etternavn: Yup.string().nullable(),
+					}).nullable(),
+				}),
 		}),
 
 		personSomKontakt: Yup.object()
 			.when('kontaktType', {
 				is: 'PERSON_FDATO',
-				then: Yup.object().shape(
-					{
-						identifikasjonsnummer: Yup.mixed().when('foedselsdato', {
-							is: null,
-							then: requiredString.nullable(),
-						}),
-						foedselsdato: Yup.mixed().when('identifikasjonsnummer', {
-							is: null,
-							then: requiredString.nullable(),
-						}),
-						navn: Yup.object({
-							fornavn: Yup.string().nullable(),
-							mellomnavn: Yup.string().nullable(),
-							etternavn: Yup.string().nullable(),
-						}).nullable(),
-					},
-					['identifikasjonsnummer', 'foedselsdato']
-				),
+				then: () =>
+					Yup.object().shape(
+						{
+							identifikasjonsnummer: Yup.mixed().when('foedselsdato', {
+								is: null,
+								then: () => requiredString.nullable(),
+							}),
+							foedselsdato: Yup.mixed().when('identifikasjonsnummer', {
+								is: null,
+								then: () => requiredString.nullable(),
+							}),
+							navn: Yup.object({
+								fornavn: Yup.string().nullable(),
+								mellomnavn: Yup.string().nullable(),
+								etternavn: Yup.string().nullable(),
+							}).nullable(),
+						},
+						['identifikasjonsnummer', 'foedselsdato']
+					),
 			})
 			.when('kontaktType', {
 				is: 'NY_PERSON',
-				then: Yup.object({
-					nyKontaktperson: nyPerson,
-				}),
+				then: () =>
+					Yup.object({
+						nyKontaktperson: nyPerson,
+					}),
 			}),
 	})
 )
