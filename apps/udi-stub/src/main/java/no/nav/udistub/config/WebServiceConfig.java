@@ -19,13 +19,6 @@ import java.util.List;
 @Configuration
 public class WebServiceConfig extends WsConfigurerAdapter {
 
-    @Bean(name = "udistub")
-    public Wsdl11Definition defaultWsdl11Definition() {
-        SimpleWsdl11Definition wsdl11Definition = new SimpleWsdl11Definition();
-        wsdl11Definition.setWsdl(new ClassPathResource("/wsdl/MT_1067_NAV_v1.wsdl"));
-        return wsdl11Definition;
-    }
-
     @Bean
     public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
@@ -33,6 +26,35 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         servlet.setTransformWsdlLocations(true);
         return new ServletRegistrationBean<>(servlet, "/ws/*");
     }
+
+    @Bean(name = "udistub")
+    public Wsdl11Definition defaultWsdl11Definition() {
+        SimpleWsdl11Definition wsdl11Definition = new SimpleWsdl11Definition();
+        wsdl11Definition.setWsdl(new ClassPathResource("/wsdl/MT_1067_NAV_v1.wsdl"));
+        return wsdl11Definition;
+    }
+
+//    @Bean(name = "udistub")
+//    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchemaCollection udistubSchema) {
+//        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
+//        wsdl11Definition.setPortTypeName("MT_1067_NAV_v1Port");
+//        wsdl11Definition.setLocationUri("/ws");
+//        wsdl11Definition.setTargetNamespace("http://udi.no.MT_1067_NAV.v1");
+//        wsdl11Definition.setSchemaCollection(udistubSchema);
+//        return wsdl11Definition;
+//    }
+//
+//    @Bean
+//    public XsdSchemaCollection udistubSchema() {
+//        return new CommonsXsdSchemaCollection(
+//                new ClassPathResource("/wsdl/schema/MT_1067_NAV_v1.xsd"),
+//                new ClassPathResource("/wsdl/schema/Common_v2.xsd"),
+//                new ClassPathResource("/wsdl/schema/MT_1067_NAV_Data_v1.xsd"),
+//                new ClassPathResource("/wsdl/schema/Common_Fault_v3.xsd"),
+//                new ClassPathResource("/wsdl/schema/Common_Headers_v2.xsd"),
+//                new ClassPathResource("/wsdl/schema/Common_Tilgangskontroll_v1.xsd")
+//        );
+//    }
 
     @Bean
     public Wss4jSecurityInterceptor securityInterceptor() {

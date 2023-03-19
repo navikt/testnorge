@@ -5,14 +5,15 @@ import no.nav.udistub.service.PersonService;
 import no.nav.udistub.service.dto.UdiPerson;
 import no.udi.common.v2.PingRequestType;
 import no.udi.common.v2.PingResponseType;
-import no.udi.mt_1067_nav_data.v1.HentPersonstatusRequestType;
-import no.udi.mt_1067_nav_data.v1.HentPersonstatusResponseType;
+
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
-import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusRequestType;
-import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusResponseType;
 import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusResultat;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import v1.mt_1067_nav.no.udi.HentPersonstatusRequestType;
+import v1.mt_1067_nav.no.udi.HentPersonstatusResponseType;
+import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusRequestType;
+import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusResponseType;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
