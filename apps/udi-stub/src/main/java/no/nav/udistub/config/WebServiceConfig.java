@@ -34,28 +34,6 @@ public class WebServiceConfig extends WsConfigurerAdapter {
         return wsdl11Definition;
     }
 
-//    @Bean(name = "udistub")
-//    public DefaultWsdl11Definition defaultWsdl11Definition(XsdSchemaCollection udistubSchema) {
-//        DefaultWsdl11Definition wsdl11Definition = new DefaultWsdl11Definition();
-//        wsdl11Definition.setPortTypeName("MT_1067_NAV_v1Port");
-//        wsdl11Definition.setLocationUri("/ws");
-//        wsdl11Definition.setTargetNamespace("http://udi.no.MT_1067_NAV.v1");
-//        wsdl11Definition.setSchemaCollection(udistubSchema);
-//        return wsdl11Definition;
-//    }
-//
-//    @Bean
-//    public XsdSchemaCollection udistubSchema() {
-//        return new CommonsXsdSchemaCollection(
-//                new ClassPathResource("/wsdl/schema/MT_1067_NAV_v1.xsd"),
-//                new ClassPathResource("/wsdl/schema/Common_v2.xsd"),
-//                new ClassPathResource("/wsdl/schema/MT_1067_NAV_Data_v1.xsd"),
-//                new ClassPathResource("/wsdl/schema/Common_Fault_v3.xsd"),
-//                new ClassPathResource("/wsdl/schema/Common_Headers_v2.xsd"),
-//                new ClassPathResource("/wsdl/schema/Common_Tilgangskontroll_v1.xsd")
-//        );
-//    }
-
     @Bean
     public Wss4jSecurityInterceptor securityInterceptor() {
         Wss4jSecurityInterceptor securityInterceptor = new Wss4jSecurityInterceptor();

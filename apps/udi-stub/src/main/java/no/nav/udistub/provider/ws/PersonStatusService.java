@@ -5,22 +5,26 @@ import no.nav.udistub.service.PersonService;
 import no.nav.udistub.service.dto.UdiPerson;
 import no.udi.common.v2.PingRequestType;
 import no.udi.common.v2.PingResponseType;
-
 import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import no.udi.mt_1067_nav_data.v1.HentUtvidetPersonstatusResultat;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Service;
+import v1.mt_1067_nav.no.udi.DeepPingFault;
+import v1.mt_1067_nav.no.udi.HentPersonstatusFault;
 import v1.mt_1067_nav.no.udi.HentPersonstatusRequestType;
 import v1.mt_1067_nav.no.udi.HentPersonstatusResponseType;
+import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusFault;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusRequestType;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusResponseType;
+import v1.mt_1067_nav.no.udi.MT1067NAVV1Interface;
+import v1.mt_1067_nav.no.udi.PingFault;
 
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 
 @Service
 @RequiredArgsConstructor
-public class PersonStatusService {
+public class PersonStatusService implements MT1067NAVV1Interface {
 
     private final PersonService personService;
     private final ConversionService conversionService;
@@ -67,17 +71,21 @@ public class PersonStatusService {
         return resultat;
     }
 
-    public PingResponseType ping(PingRequestType parameters) {
+    @Override
+    public PingResponseType ping(PingRequestType parameters) throws PingFault {
 
         return new PingResponseType();
     }
 
-    public PingResponseType deepPing(PingRequestType parameters) {
+    @Override
+    public PingResponseType deepPing(PingRequestType parameters) throws DeepPingFault {
 
         return new PingResponseType();
     }
 
-    public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters) {
+    @Override
+    public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters)
+            throws HentPersonstatusFault {
 
         UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
@@ -87,7 +95,9 @@ public class PersonStatusService {
         return response;
     }
 
-    public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters) {
+    @Override
+    public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters)
+            throws HentUtvidetPersonstatusFault {
 
         UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);
