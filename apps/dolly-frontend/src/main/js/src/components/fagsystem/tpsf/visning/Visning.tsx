@@ -1,12 +1,12 @@
 import * as _ from 'lodash-es'
 import {
-	TpsfBoadresse,
 	Fullmakt,
-	TpsfIdenthistorikk,
 	MidlertidigAdresse,
-	TpsfNasjonalitet,
 	Postadresse,
 	Relasjoner,
+	TpsfBoadresse,
+	TpsfIdenthistorikk,
+	TpsfNasjonalitet,
 	TpsfPersoninfo,
 	TpsfVergemaal,
 } from './partials'

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
-import { TpsfApi } from '@/service/Api'
+import { TpsMessagingApi } from '@/service/Api'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { Adressevalg } from '@/components/fagsystem/tpsf/visning/partials/Adressevalg'
 
@@ -13,7 +13,7 @@ export const Barn = ({ data, type }) => {
 		if (data) {
 			const fetchData = async () => {
 				setIsLoading(true)
-				const respons = await TpsfApi.getPersoner([data.ident], 0, 10)
+				const respons = await TpsMessagingApi.getTpsPersonInfoAllEnvs(data.ident)
 				setBarnInfo(respons.data.contents)
 				setIsLoading(false)
 			}

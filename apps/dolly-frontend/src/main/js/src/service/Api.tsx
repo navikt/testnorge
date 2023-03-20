@@ -1,5 +1,4 @@
 import DollyService from '@/service/services/dolly/DollyService'
-import TpsfService from '@/service/services/tpsf/TpsfService'
 import SigrunService from '@/service/services/sigrun/SigrunService'
 import KrrService from '@/service/services/krr/KrrService'
 import ArenaService from '@/service/services/arena/ArenaService'
@@ -18,7 +17,6 @@ import KontoregisterService from '@/service/services/kontoregister/Kontoregister
 import SkjermingService from '@/service/services/skjerming/SkjermingService'
 
 export const DollyApi = DollyService
-export const TpsfApi = TpsfService
 export const TpsMessagingApi = TpsMessagingService
 export const SigrunApi = SigrunService
 export const KrrApi = KrrService
@@ -38,7 +36,6 @@ export const SkjermingApi = SkjermingService
 
 export default {
 	DollyApi: DollyService,
-	TpsfApi: TpsfService,
 	SigrunApi: SigrunService,
 	KrrApi: KrrService,
 	ArenaApi: ArenaService,

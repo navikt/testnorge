@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
-import { TpsfApi } from '@/service/Api'
+import { TpsMessagingApi } from '@/service/Api'
 import { Adressevisning } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
 import { PostadresseVisning } from '@/components/fagsystem/tpsf/visning/partials/Postadresse'
 import { Historikk } from '@/components/ui/historikk/Historikk'
@@ -49,7 +49,7 @@ export const Foreldre = ({ person, type }: Data) => {
 		if (person) {
 			const fetchData = async () => {
 				setIsLoading(true)
-				const respons = await TpsfApi.getPersoner([person.ident])
+				const respons = await TpsMessagingApi.getTpsPersonInfoAllEnvs(person.ident)
 				setForeldreInfo(respons.data)
 				setIsLoading(false)
 			}
