@@ -144,9 +144,9 @@ const utenlandskAdresse = Yup.object({
 })
 
 export const postboksadresse = Yup.object({
-	postboks: requiredString.nullable(),
+	postboks: requiredString,
 	postbokseier: Yup.string().nullable(),
-	postnummer: requiredString.nullable(),
+	postnummer: requiredString,
 })
 
 const ukjentBosted = Yup.object({
@@ -196,7 +196,7 @@ export const oppholdsadresse = Yup.object({
 	}),
 	oppholdAnnetSted: Yup.mixed().when('adressetype', {
 		is: 'OPPHOLD_ANNET_STED',
-		then: () => requiredString.nullable(),
+		then: () => requiredString,
 	}),
 })
 
@@ -219,5 +219,5 @@ export const kontaktadresse = Yup.object({
 })
 
 export const adressebeskyttelse = Yup.object({
-	gradering: requiredString.nullable(),
+	gradering: requiredString,
 })

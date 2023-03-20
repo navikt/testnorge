@@ -29,5 +29,5 @@ const testPrioritet = (val) => {
 export const telefonnummer = Yup.object({
 	landskode: requiredString,
 	nummer: testTelefonnummer(),
-	prioritet: testPrioritet(Yup.mixed().required()).nullable(),
+	prioritet: testPrioritet(Yup.mixed().required()),
 }).nullable()

@@ -146,7 +146,7 @@ export const doedfoedtBarn = Yup.array().of(
 )
 
 export const sivilstand = Yup.object({
-	type: requiredString.nullable(),
+	type: requiredString,
 	sivilstandsdato: Yup.string().nullable(),
 	relatertVedSivilstand: Yup.string().nullable(),
 	bekreftelsesdato: Yup.string().nullable(),
@@ -155,7 +155,7 @@ export const sivilstand = Yup.object({
 })
 
 const deltBosted = Yup.object({
-	adressetype: testDeltBostedAdressetype(requiredString.nullable()),
+	adressetype: testDeltBostedAdressetype(requiredString),
 	startdatoForKontrakt: testDatoFom(
 		Yup.date().optional().nullable(),
 		'sluttdatoForKontrakt',
@@ -172,7 +172,7 @@ const deltBosted = Yup.object({
 		is: 'UKJENT_BOSTED',
 		then: () =>
 			Yup.object({
-				bostedskommune: requiredString.nullable(),
+				bostedskommune: requiredString,
 			}),
 	}),
 })
@@ -197,6 +197,6 @@ export const forelderBarnRelasjon = Yup.array().of(
 
 export const foreldreansvar = Yup.array().of(
 	Yup.object({
-		ansvar: testForeldreansvar(requiredString.nullable()),
+		ansvar: testForeldreansvar(requiredString),
 	})
 )

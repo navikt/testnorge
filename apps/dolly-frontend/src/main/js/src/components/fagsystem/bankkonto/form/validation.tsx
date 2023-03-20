@@ -137,7 +137,7 @@ export const bankkontoValidation = {
 					),
 					tilfeldigKontonummer: Yup.string().nullable(),
 					swift: validateSwift(Yup.string()),
-					landkode: requiredString.nullable(),
+					landkode: requiredString,
 					iban: Yup.string().nullable().optional(),
 					valuta: requiredString
 						.nullable()

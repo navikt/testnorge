@@ -4,9 +4,9 @@ import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials'
 
 export const kontaktDoedsbo = Yup.array().of(
 	Yup.object().shape({
-		skifteform: requiredString.nullable(),
+		skifteform: requiredString,
 		attestutstedelsesdato: requiredDate.nullable(),
-		kontaktType: requiredString.nullable(),
+		kontaktType: requiredString,
 		adresse: Yup.object({
 			adresselinje1: Yup.string().nullable(),
 			adresselinje2: Yup.string().nullable(),
@@ -19,7 +19,7 @@ export const kontaktDoedsbo = Yup.array().of(
 			is: 'ADVOKAT',
 			then: () =>
 				Yup.object({
-					organisasjonsnummer: requiredString.nullable(),
+					organisasjonsnummer: requiredString,
 					organisasjonsnavn: Yup.string().nullable(),
 					kontaktperson: Yup.object({
 						fornavn: Yup.string().nullable(),
@@ -33,7 +33,7 @@ export const kontaktDoedsbo = Yup.array().of(
 			is: 'ORGANISASJON',
 			then: () =>
 				Yup.object({
-					organisasjonsnummer: requiredString.nullable(),
+					organisasjonsnummer: requiredString,
 					organisasjonsnavn: Yup.string().nullable(),
 					kontaktperson: Yup.object({
 						fornavn: Yup.string().nullable(),
@@ -51,11 +51,11 @@ export const kontaktDoedsbo = Yup.array().of(
 						{
 							identifikasjonsnummer: Yup.mixed().when('foedselsdato', {
 								is: null,
-								then: () => requiredString.nullable(),
+								then: () => requiredString,
 							}),
 							foedselsdato: Yup.mixed().when('identifikasjonsnummer', {
 								is: null,
-								then: () => requiredString.nullable(),
+								then: () => requiredString,
 							}),
 							navn: Yup.object({
 								fornavn: Yup.string().nullable(),

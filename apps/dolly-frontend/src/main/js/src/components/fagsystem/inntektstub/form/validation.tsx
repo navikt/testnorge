@@ -87,13 +87,13 @@ const inntektsliste = Yup.array().of(
 	Yup.object().shape(
 		{
 			beloep: requiredNumber.typeError(messages.required),
-			inntektstype: requiredString.nullable(),
+			inntektstype: requiredString,
 			startOpptjeningsperiode: testDatoFom(Yup.string().nullable(), 'sluttOpptjeningsperiode'),
 			sluttOpptjeningsperiode: testDatoTom(Yup.string().nullable(), 'startOpptjeningsperiode'),
-			inngaarIGrunnlagForTrekk: Yup.boolean().required().nullable(),
-			utloeserArbeidsgiveravgift: Yup.boolean().required().nullable(),
-			fordel: ifPresent('fordel', requiredString.nullable()),
-			beskrivelse: ifPresent('beskrivelse', requiredString.nullable()),
+			inngaarIGrunnlagForTrekk: Yup.boolean().required(),
+			utloeserArbeidsgiveravgift: Yup.boolean().required(),
+			fordel: ifPresent('fordel', requiredString),
+			beskrivelse: ifPresent('beskrivelse', requiredString),
 		},
 		[
 			['fordel', 'fordel'],
@@ -156,7 +156,7 @@ export const validation = {
 					.max(500, 'Antall måneder kan maksimalt være 500')
 					.nullable(),
 				virksomhet: unikOrgMndTest(requiredString.typeError(messages.required)).nullable(),
-				opplysningspliktig: requiredString.nullable(),
+				opplysningspliktig: requiredString,
 				inntektsliste: inntektsliste,
 				fradragsliste: fradragsliste,
 				forskuddstrekksliste: forskuddstrekksliste,
