@@ -32,6 +32,7 @@ export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		ArbeidsplassenPanel,
 		SykdomPanel,
 		BrregPanel,
 		IdentifikasjonPanel,
