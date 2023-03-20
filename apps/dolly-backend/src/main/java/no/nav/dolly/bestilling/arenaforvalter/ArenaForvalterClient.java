@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -53,7 +54,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private static String getFeilbeskrivelse(String feil) {
 
         log.error("Arena error {}", feil);
-        return !feil.contains("User Defined Resource Error") ?
+        return isNotBlank(feil) && !feil.contains("User Defined Resource Error") ?
                 ErrorStatusDecoder.encodeStatus(feil) : "";
     }
 
@@ -73,7 +74,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                 transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
                             })
                             .flatMap(miljoer -> doArenaOpprett(miljoer, token, bestilling, dollyPerson))
-                                    .map(status -> futurePersist(progress, status)));
+                            .map(status -> futurePersist(progress, status)));
         }
         return Flux.empty();
     }
@@ -82,11 +83,11 @@ public class ArenaForvalterClient implements ClientRegister {
                                         RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson) {
 
         return Flux.fromIterable(miljoer)
-                        .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
-                                sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
-                                sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token)))
-                        .filter(StringUtils::isNotBlank)
-                        .collect(Collectors.joining(","));
+                .flatMap(miljo -> Flux.concat(arenaForvalterConsumer.deleteIdent(dollyPerson.getIdent(), miljo, token),
+                        sendArenadata(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token),
+                        sendArenadagpenger(bestilling.getArenaforvalter(), dollyPerson.getIdent(), miljo, token)))
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining(","));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -122,7 +123,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 .map(respons -> {
                     log.info("Arena respons {}", respons);
                     return respons.getArbeidsokerList().stream()
-                            .filter(arbeidsoker -> "OK" .equals(arbeidsoker.getStatus()))
+                            .filter(arbeidsoker -> "OK".equals(arbeidsoker.getStatus()))
                             .filter(arbeidsoker -> arenadata.getDagpenger().isEmpty())
                             .map(arbeidsoker -> String.format(STATUS_FMT, arbeidsoker.getMiljoe(), arbeidsoker.getStatus()))
                             .collect(Collectors.joining(","))
@@ -155,7 +156,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                     .map(ArenaNyeDagpengerResponse.Dagp::getNyeDagpResponse)
                                     .filter(Objects::nonNull)
                                     .map(dagp -> String.format(STATUS_FMT, miljoe,
-                                            ("JA" .equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
+                                            ("JA".equals(dagp.getUtfall()) ? "OK" : ("Feil: OPPRETT_DAGPENGER " +
                                                     errorStatusDecoder.getStatusMessage(dagp.getBegrunnelse())))))
                                     .collect(Collectors.joining(",")) +
 
