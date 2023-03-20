@@ -5,6 +5,7 @@ import 'rc-tooltip/assets/bootstrap_white.css'
 import { TpsfVisning } from '@/components/fagsystem'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import React from 'react'
 
 type TpsData = {
 	data: Array<Data>
@@ -48,9 +49,9 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 					<DollyTooltip
 						overlay={getPersonInfo(miljoe)}
 						align={{
-							offset: ['0', '-10'],
+							offset: [0, -10],
 						}}
-						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
+						arrowContent={<div className="rc-tooltip-arrow-inner" />}
 						key={idx}
 						overlayStyle={{ opacity: 1 }}
 					>

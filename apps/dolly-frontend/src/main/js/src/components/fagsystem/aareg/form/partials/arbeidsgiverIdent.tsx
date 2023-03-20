@@ -4,7 +4,7 @@ import * as _ from 'lodash-es'
 import Icon from '@/components/ui/icon/Icon'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
-import { TpsfApi } from '@/service/Api'
+import { TpsMessagingApi } from '@/service/Api'
 import { useFormikContext } from 'formik'
 
 type ArbeidsgiverIdentProps = {
@@ -40,7 +40,7 @@ export const ArbeidsgiverIdent = ({ path, isDisabled }: ArbeidsgiverIdentProps) 
 	const handleManualPersonnrChange = (personnr: string) => {
 		setLoading(true)
 
-		TpsfApi.getMiljoerByFnr(personnr)
+		TpsMessagingApi.getTpsPersonInfoAllEnvs(personnr)
 			.then((response: any) => {
 				if (
 					!('statusPaaIdenter' in response.data) ||

@@ -43,7 +43,6 @@ public class DollyFrontendApplicationStarter {
     private final TestnavOrganisasjonFasteDataServiceProperties testnavOrganisasjonFasteDataServiceProperties;
     private final TestnavJoarkDokumentServiceProperties testnavJoarkDokumentServiceProperties;
     private final TestnavInntektstubProxyProperties testnavInntektstubProxyProperties;
-    private final TpsForvalterenProxyProperties tpsForvalterenProxyProperties;
     private final TpsMessagingServiceProperties tpsMessagingServiceProperties;
     private final TestnavBrukerServiceProperties testnavBrukerServiceProperties;
     private final TestnavBrregstubProxyProperties testnavBrregstubProxyProperties;
@@ -89,7 +88,6 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavJoarkDokumentServiceProperties))
                 .route(createRoute(testnavPensjonTestdataFacadeProxyProperties))
                 .route(createRoute(testnavInntektstubProxyProperties))
-                .route(createRoute(tpsForvalterenProxyProperties, "tps-forvalteren-proxy"))
                 .route(createRoute(testnavBrregstubProxyProperties))
                 .route(createRoute(testnavAaregProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))

@@ -33,7 +33,7 @@ export const getEksisterendeNyPerson = (
 	ident: String,
 	relasjonType: String
 ) => {
-	const relasjon = relasjoner.find(
+	const relasjon = relasjoner?.find(
 		(relasjon) =>
 			relasjon?.relatertPerson?.ident === ident && relasjon?.relasjonType === relasjonType
 	)
