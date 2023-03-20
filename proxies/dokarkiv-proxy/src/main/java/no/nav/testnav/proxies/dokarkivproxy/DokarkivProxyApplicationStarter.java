@@ -29,7 +29,7 @@ import java.util.function.Function;
 @SpringBootApplication
 public class DokarkivProxyApplicationStarter {
 
-    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
+    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "t3"};
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,
@@ -40,8 +40,8 @@ public class DokarkivProxyApplicationStarter {
         Arrays.asList(miljoer)
                 .forEach(miljoe -> routes.route(createRoute(miljoe, dokarkivProperties.forEnvironment(miljoe).getUrl(),
                         AddAuthenticationRequestGatewayFilterFactory
-                        .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivProperties.forEnvironment(miljoe))
-                                .map(AccessToken::getTokenValue)))));
+                                .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(dokarkivProperties.forEnvironment(miljoe))
+                                        .map(AccessToken::getTokenValue)))));
 
         return routes.build();
     }

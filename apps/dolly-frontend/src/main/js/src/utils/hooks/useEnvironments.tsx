@@ -6,9 +6,9 @@ const getMiljoerUrl = '/testnav-miljoer-service/api/v1/miljoer'
 const getPensjonMiljoerUrl = '/testnav-pensjon-testdata-facade-proxy/api/v1/miljo'
 const getArenaMiljoerUrl = '/testnav-arena-forvalteren-proxy/api/v1/miljoe'
 const getInstMiljoerUrl = '/testnav-inst-proxy/api/v1/environment'
-const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/internal/miljoe'
+const getDokarkivMiljoerUrl = '/testnav-dokarkiv-proxy/rest/miljoe'
 
-const prefetchedMiljoer = ['t3', 't13', 'q1', 'q2', 'q4', 'q5', 'qx']
+const prefetchedMiljoer = ['t3', 'q1', 'q2', 'q4', 'q5']
 const prefetchedPensjonMiljoer = ['q1', 'q2']
 const prefetchedArenaMiljoer = ['q1', 'q2', 'q4']
 const prefetchedInstMiljoer = { institusjonsoppholdEnvironments: ['q1', 'q2'] }
