@@ -55,6 +55,9 @@ export const InntektsmeldingVisning = ({ liste, ident }: InntektsmeldingVisningP
 			onFetch={() =>
 				DollyApi.getTransaksjonid('INNTKMELD', ident)
 					.then(({ data }: { data: Array<TransaksjonId> }) => {
+						if (!data) {
+							return null
+						}
 						return data.map((bestilling: TransaksjonId) => {
 							return getDokumenter(bestilling).then((response) => {
 								if (response) {

@@ -30,9 +30,7 @@ public class EregProxyApplicationStarter {
                 .route(createRoute("q2"))
                 .route(createRoute("q4"))
                 .route(createRoute("q5"))
-                .route(createRoute("qx"))
                 .route(createRoute("t3"))
-                .route(createRoute("t13"))
                 .build();
     }
 
