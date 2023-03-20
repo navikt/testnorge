@@ -36,14 +36,16 @@ export const AnnenErfaringForm = ({ formikBag }) => {
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av annen erfaring"
-								value={_get(formikBag.values, `${annenErfaringPath}.description`)}
-								onChange={(beskrivelse) =>
+								defaultValue={_get(formikBag.values, `${annenErfaringPath}.description`)}
+								onBlur={(beskrivelse) =>
 									formikBag.setFieldValue(
 										`${annenErfaringPath}.description`,
 										beskrivelse?.target?.value
 									)
 								}
 								size="small"
+								key={`description_${_get(formikBag.values, `${annenErfaringPath}.description`)}`}
+								resize
 							/>
 							<FormikDatepicker name={`${annenErfaringPath}.fromDate`} label="Startdato" />
 							<FormikDatepicker

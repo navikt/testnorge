@@ -51,14 +51,16 @@ export const UtdanningForm = ({ formikBag }) => {
 							<Fritekstfelt
 								label="Beskrivelse"
 								placeholder="Beskrivelse av utdanning"
-								value={_get(formikBag.values, `${utdanningPath}.description`)}
-								onChange={(beskrivelse) =>
+								defaultValue={_get(formikBag.values, `${utdanningPath}.description`)}
+								onBlur={(beskrivelse) =>
 									formikBag.setFieldValue(
 										`${utdanningPath}.description`,
 										beskrivelse?.target?.value
 									)
 								}
 								size="small"
+								key={`description_${_get(formikBag.values, `${utdanningPath}.description`)}`}
+								resize
 							/>
 							<FormikDatepicker name={`${utdanningPath}.startDate`} label="Startdato" />
 							<FormikDatepicker

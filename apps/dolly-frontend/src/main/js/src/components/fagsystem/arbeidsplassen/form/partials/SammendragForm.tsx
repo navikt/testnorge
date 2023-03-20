@@ -12,16 +12,14 @@ export const SammendragForm = ({ formikBag }) => {
 		<Vis attributt={sammendragPath}>
 			<h3>Sammendrag</h3>
 			<Fritekstfelt
-				// name={sammendragPath}
-				// id={sammendragPath}
 				label="Oppsummering"
 				placeholder="Kort oppsummering av kompetanse og personlige egenskaper"
-				resize
-				value={_get(formikBag.values, sammendragPath)}
-				onChange={(sammendrag) =>
-					formikBag.setFieldValue(sammendragPath, sammendrag?.target?.value)
-				}
+				defaultValue={_get(formikBag.values, sammendragPath)}
+				onBlur={(sammendrag) => formikBag.setFieldValue(sammendragPath, sammendrag?.target?.value)}
+				size="small"
+				key={`sammendrag_${_get(formikBag.values, sammendragPath)}`}
 				error={_get(formikBag.values, sammendragPath) === '' ? 'Feltet er påkrevd' : null}
+				resize
 			/>
 			<EraseFillButtons
 				formikBag={formikBag}

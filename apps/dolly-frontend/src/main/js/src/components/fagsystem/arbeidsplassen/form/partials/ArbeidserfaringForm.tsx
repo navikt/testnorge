@@ -67,12 +67,19 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 								size="large"
 								key={`location_${_get(formikBag.values, `${arbeidsforholdPath}.location`)}`}
 							/>
-							<FormikTextInput
-								name={`${arbeidsforholdPath}.description`}
+							<Fritekstfelt
 								label="Arbeidsoppgaver"
 								placeholder="Beskrivelse av arbeidsoppgaver"
-								key={`description${_get(formikBag.values, `${arbeidsforholdPath}.description`)}`}
-								size="fullWidth"
+								defaultValue={_get(formikBag.values, `${arbeidsforholdPath}.description`)}
+								onBlur={(beskrivelse) =>
+									formikBag.setFieldValue(
+										`${arbeidsforholdPath}.description`,
+										beskrivelse?.target?.value
+									)
+								}
+								size="small"
+								key={`description_${_get(formikBag.values, `${arbeidsforholdPath}.description`)}`}
+								resize
 							/>
 							<FormikDatepicker name={`${arbeidsforholdPath}.fromDate`} label="Ansatt fra" />
 							<FormikDatepicker

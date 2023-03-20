@@ -8,10 +8,16 @@ export const Fritekstfelt = styled(Textarea)`
 
 	textarea {
 		font-size: 1em;
+	}
 
-		//:focus {
-		//	outline: 0.5px solid #0067c5;
-		//}
+	p {
+		font-size: 1em;
+		font-weight: normal;
+		font-style: italic;
+
+		&::before {
+			content: none !important;
+		}
 	}
 
 	&& {
