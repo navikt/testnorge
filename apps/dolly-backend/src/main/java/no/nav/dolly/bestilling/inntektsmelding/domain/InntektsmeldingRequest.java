@@ -6,11 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
-import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilUtsettelseType;
-import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakVedEndringType;
-import no.nav.dolly.domain.resultset.inntektsmeldingstub.BegrunnelseForReduksjonEllerIkkeUtbetaltType;
-import no.nav.dolly.domain.resultset.inntektsmeldingstub.NaturalytelseType;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakBeregnetInntektEndringKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakUtsettelseKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.BegrunnelseIngenEllerRedusertUtbetalingKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.NaturalytelseKodeListe;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -59,7 +59,7 @@ public class InntektsmeldingRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Inntektsmelding {
 
-        private AarsakTilInnsendingType aarsakTilInnsending;
+        private AarsakInnsendingKodeListe aarsakTilInnsending;
         private Arbeidsforhold arbeidsforhold;
         private Arbeidsgiver arbeidsgiver;
         private ArbeidsgiverPrivat arbeidsgiverPrivat;
@@ -83,7 +83,7 @@ public class InntektsmeldingRequest {
     public static class SykepengerIArbeidsgiverperioden {
 
         private List<Periode> arbeidsgiverperiodeListe;
-        private BegrunnelseForReduksjonEllerIkkeUtbetaltType begrunnelseForReduksjonEllerIkkeUtbetalt;
+        private BegrunnelseIngenEllerRedusertUtbetalingKodeListe begrunnelseForReduksjonEllerIkkeUtbetalt;
         private Double bruttoUtbetalt;
     }
 
@@ -119,7 +119,7 @@ public class InntektsmeldingRequest {
 
         private Double beloepPrMnd;
         private LocalDate fom;
-        private NaturalytelseType naturalytelseType;
+        private NaturalytelseKodeListe naturalytelseType;
     }
 
     @Getter
@@ -214,7 +214,7 @@ public class InntektsmeldingRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class UtsettelseAvForeldrepenger {
 
-        private AarsakTilUtsettelseType aarsakTilUtsettelse;
+        private AarsakUtsettelseKodeListe aarsakTilUtsettelse;
         private Periode periode;
     }
 
@@ -235,7 +235,7 @@ public class InntektsmeldingRequest {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class AltinnInntekt {
 
-        private AarsakVedEndringType aarsakVedEndring;
+        private AarsakBeregnetInntektEndringKodeListe aarsakVedEndring;
         private Double beloep;
     }
 

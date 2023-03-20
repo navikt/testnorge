@@ -4,9 +4,9 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
-import no.nav.dolly.domain.resultset.inntektsmeldingstub.AarsakTilInnsendingType;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.mapper.MappingStrategy;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
@@ -61,7 +61,7 @@ public class InntektsmeldingMappingStrategy implements MappingStrategy {
                                         Inntektsmelding inntektsmelding, MappingContext context) {
 
                         inntektsmelding.setAarsakTilInnsending(
-                                nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakTilInnsendingType.NY));
+                                nullcheckSetDefaultValue(rsInntektsmelding.getAarsakTilInnsending(), AarsakInnsendingKodeListe.NY));
 
                         if (nonNull(inntektsmelding.getArbeidsgiver()) &&
                                 isNull(inntektsmelding.getArbeidsgiver().getKontaktinformasjon())) {
