@@ -13,8 +13,29 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.commons.text.CaseUtils.toCamelCase;
+
 @Service
 public class InntektsmeldingEnumService {
+
+    public List<String> getEnumType(EnumTypes enumType) {
+
+        return switch (enumType) {
+            case AARSAK_TIL_INNSENDING_TYPE ->
+                    Stream.of(AarsakTilInnsendingType.values()).map(type -> toCamelCase(type.name(), true, '_')).collect(Collectors.toList());
+            case AARSAK_TIL_UTSETTELSE_TYPE ->
+                    Stream.of(AarsakTilUtsettelseType.values()).map(type -> toCamelCase(type.name(), true, '_')).collect(Collectors.toList());
+            case AARSAK_VED_ENDRING_TYPE ->
+                    Stream.of(AarsakVedEndringType.values()).map(type -> toCamelCase(type.name(), true, '_')).collect(Collectors.toList());
+            case BEGRUNNELSE_TYPE ->
+                    Stream.of(BegrunnelseForReduksjonEllerIkkeUtbetaltType.values()).map(type -> toCamelCase(type.name(), true, '_')).collect(Collectors.toList());
+            case NATURALYTELSE_TYPE ->
+                    Stream.of(NaturalytelseType.values()).map(type -> toCamelCase(type.name(), true, '_')).collect(Collectors.toList());
+            case YTELSE_TYPE ->
+                    Stream.of(YtelseType.values()).map(type -> toCamelCase(type.name(), true, '_')).collect(Collectors.toList());
+            default -> Collections.emptyList();
+        };
+    }
 
     public enum EnumTypes {
 
@@ -24,18 +45,5 @@ public class InntektsmeldingEnumService {
         BEGRUNNELSE_TYPE,
         NATURALYTELSE_TYPE,
         YTELSE_TYPE
-    }
-
-    public List<String> getEnumType(EnumTypes enumType) {
-
-        return switch (enumType) {
-            case AARSAK_TIL_INNSENDING_TYPE -> Stream.of(AarsakTilInnsendingType.values()).map(Enum::name).collect(Collectors.toList());
-            case AARSAK_TIL_UTSETTELSE_TYPE -> Stream.of(AarsakTilUtsettelseType.values()).map(Enum::name).collect(Collectors.toList());
-            case AARSAK_VED_ENDRING_TYPE -> Stream.of(AarsakVedEndringType.values()).map(Enum::name).collect(Collectors.toList());
-            case BEGRUNNELSE_TYPE -> Stream.of(BegrunnelseForReduksjonEllerIkkeUtbetaltType.values()).map(Enum::name).collect(Collectors.toList());
-            case NATURALYTELSE_TYPE -> Stream.of(NaturalytelseType.values()).map(Enum::name).collect(Collectors.toList());
-            case YTELSE_TYPE -> Stream.of(YtelseType.values()).map(Enum::name).collect(Collectors.toList());
-            default -> Collections.emptyList();
-        };
     }
 }
