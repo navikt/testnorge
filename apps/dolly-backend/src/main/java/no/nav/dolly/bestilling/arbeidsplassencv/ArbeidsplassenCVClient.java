@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
 @Service
@@ -37,6 +38,9 @@ public class ArbeidsplassenCVClient implements ClientRegister {
 
         return Flux.just(bestilling)
                 .filter(ordre -> nonNull(ordre.getArbeidsplassenCV()))
+                .doOnNext(ordre ->
+                    transactionHelperService.persister(progress, BestillingProgress::setArbeidsplassenCVStatus,
+                            getInfoVenter("Arbeidsplassen")))
                 .flatMap(ordre -> {
                     if (isOpprettEndre) {
                         var oppdatertOrdre = mapperFacade.map(ordre.getArbeidsplassenCV(), ArbeidsplassenCVDTO.class);
