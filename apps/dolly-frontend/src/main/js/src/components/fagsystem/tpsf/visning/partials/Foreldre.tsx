@@ -82,7 +82,7 @@ export const Foreldre = ({ person, type }: Data) => {
 				/>
 				<TitleValue title="Uten fast bopel" value={person.utenFastBopel && 'Ja'} />
 				{foreldreInfo && !isLoading && foreldreInfo.length > 0 && (
-					<TitleValue title="Barn" value={finnBarn(foreldreInfo[0].relasjoner).join(', ')} />
+					<TitleValue title="Barn" value={finnBarn(foreldreInfo[0].relasjoner)?.join(', ')} />
 				)}
 			</div>
 			{person.boadresse?.length > 0 && (
@@ -101,10 +101,10 @@ export const Foreldre = ({ person, type }: Data) => {
 
 const finnBarn = (relasjoner: Relasjon) =>
 	relasjoner
-		.filter((relasjon) => {
+		?.filter((relasjon) => {
 			return relasjon.relasjonTypeNavn === 'BARN'
 		})
-		.map(
+		?.map(
 			(relasjon) =>
 				relasjon.personRelasjonMed.fornavn +
 				' ' +
