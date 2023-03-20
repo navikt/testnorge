@@ -53,6 +53,7 @@ export const AnnenErfaringForm = ({ formikBag }) => {
 								fastfield={false}
 							/>
 							<FormikCheckbox
+								id={`${annenErfaringPath}.ongoing`}
 								name={`${annenErfaringPath}.ongoing`}
 								label="Pågående"
 								wrapperSize="inherit"

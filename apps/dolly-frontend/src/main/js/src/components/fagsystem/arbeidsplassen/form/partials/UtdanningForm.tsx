@@ -68,6 +68,7 @@ export const UtdanningForm = ({ formikBag }) => {
 								fastfield={false}
 							/>
 							<FormikCheckbox
+								id={`${utdanningPath}.ongoing`}
 								name={`${utdanningPath}.ongoing`}
 								label="Pågående utdanning"
 								wrapperSize="inherit"

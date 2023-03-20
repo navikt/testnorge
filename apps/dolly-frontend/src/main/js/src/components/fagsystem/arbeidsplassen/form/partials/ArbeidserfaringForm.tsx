@@ -82,6 +82,7 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 								fastfield={false}
 							/>
 							<FormikCheckbox
+								id={`${arbeidsforholdPath}.ongoing`}
 								name={`${arbeidsforholdPath}.ongoing`}
 								label="Nåværende jobb"
 								wrapperSize="inherit"
