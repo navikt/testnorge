@@ -20,8 +20,6 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: mn-organisasjon-api
-          cluster: dev-fss
         - application: testnorge-statisk-data-forvalter
           cluster: dev-fss
         - application: testnav-orgnummer-service
