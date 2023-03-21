@@ -9,20 +9,20 @@ import java.io.IOException;
 import java.util.Arrays;
 
 
-public class JsonYtelseKodeListeDeserializer extends StdDeserializer<YtelseKodeListe> {
+public class JsonYtelseKodeListeDeserializer extends StdDeserializer<YtelseKoder> {
     protected JsonYtelseKodeListeDeserializer() {
-        super(YtelseKodeListe.class);
+        super(YtelseKoder.class);
     }
 
     @Override
-    public YtelseKodeListe deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public YtelseKoder deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         JsonNode node = jsonParser.getCodec().readTree(jsonParser);
         String itemName = node.asText();
 
-        return Arrays.stream(YtelseKodeListe.values())
+        return Arrays.stream(YtelseKoder.values())
                 .filter(yrke -> yrke.name().equals(itemName))
                 .findFirst()
-                .orElseGet(() -> Arrays.stream(YtelseKodeListe.values())
+                .orElseGet(() -> Arrays.stream(YtelseKoder.values())
                         .filter(yrke -> yrke.getValue().equals(itemName))
                         .findFirst()
                         .orElseThrow()

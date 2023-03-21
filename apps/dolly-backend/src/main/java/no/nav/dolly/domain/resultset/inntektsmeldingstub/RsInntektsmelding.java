@@ -5,12 +5,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakBeregnetInntektEndringKodeListe;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKodeListe;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakUtsettelseKodeListe;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.BegrunnelseIngenEllerRedusertUtbetalingKodeListe;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.NaturalytelseKodeListe;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakBeregnetInntektEndringKoder;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakInnsendingKoder;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.AarsakUtsettelseKoder;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.BegrunnelseIngenEllerRedusertUtbetalingKoder;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.NaturalytelseKoder;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKoder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,7 +55,7 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Inntektsmelding {
 
-        private AarsakInnsendingKodeListe aarsakTilInnsending;
+        private AarsakInnsendingKoder aarsakTilInnsending;
         private RsArbeidsforhold arbeidsforhold;
         private RsArbeidsgiver arbeidsgiver;
         private RsArbeidsgiverPrivat arbeidsgiverPrivat;
@@ -68,7 +68,7 @@ public class RsInntektsmelding {
         private RsRefusjon refusjon;
         private LocalDate startdatoForeldrepengeperiode;
         private RsSykepengerIArbeidsgiverperioden sykepengerIArbeidsgiverperioden;
-        private YtelseKodeListe ytelse;
+        private YtelseKoder ytelse;
     }
 
     @Getter
@@ -79,7 +79,7 @@ public class RsInntektsmelding {
     public static class RsSykepengerIArbeidsgiverperioden {
 
         private List<RsPeriode> arbeidsgiverperiodeListe;
-        private BegrunnelseIngenEllerRedusertUtbetalingKodeListe begrunnelseForReduksjonEllerIkkeUtbetalt;
+        private BegrunnelseIngenEllerRedusertUtbetalingKoder begrunnelseForReduksjonEllerIkkeUtbetalt;
         private Double bruttoUtbetalt;
     }
 
@@ -115,7 +115,7 @@ public class RsInntektsmelding {
 
         private Double beloepPrMnd;
         private LocalDate fom;
-        private NaturalytelseKodeListe naturalytelseType;
+        private NaturalytelseKoder naturalytelseType;
     }
 
     @Getter
@@ -208,7 +208,7 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsUtsettelseAvForeldrepenger {
 
-        private AarsakUtsettelseKodeListe aarsakTilUtsettelse;
+        private AarsakUtsettelseKoder aarsakTilUtsettelse;
         private RsPeriode periode;
     }
 
@@ -229,7 +229,7 @@ public class RsInntektsmelding {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class RsAltinnInntekt {
 
-        private AarsakBeregnetInntektEndringKodeListe aarsakVedEndring;
+        private AarsakBeregnetInntektEndringKoder aarsakVedEndring;
         private Double beloep;
     }
 
