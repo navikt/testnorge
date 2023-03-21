@@ -41,6 +41,7 @@ public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<Arbeidsplass
                                 .status(HttpStatus.valueOf(status.getStatusCode().value()))
                                 .build())
                 .doOnError(WebClientFilter::logErrorMessage)
+                .doOnError(throwable -> Mono.empty())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }
