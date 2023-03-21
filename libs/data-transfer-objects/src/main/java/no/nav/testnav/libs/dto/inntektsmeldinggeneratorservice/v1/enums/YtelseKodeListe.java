@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 
 @JsonDeserialize(using = JsonYtelseKodeListeDeserializer.class)
-public enum YtelseKoder implements AltinnEnum {
+public enum YtelseKodeListe implements AltinnEnum {
     SYKEPENGER("Sykepenger"),
     FORELDREPENGER("Foreldrepenger"),
     SVANGERSKAPSPENGER("Svangerskapspenger"),
@@ -16,7 +16,7 @@ public enum YtelseKoder implements AltinnEnum {
 
     private String value;
 
-    YtelseKoder(String value) {
+    YtelseKodeListe(String value) {
         this.value = value;
     }
 

@@ -1,12 +1,12 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-public enum AarsakUtsettelseKoder implements AltinnEnum {
+public enum AarsakUtsettelseKodeListe implements AltinnEnum {
     ARBEID("Arbeid"),
     LOVBESTEMT_FERIE("LovbestemtFerie");
 
     private String value;
 
-    AarsakUtsettelseKoder(String value) {
+    AarsakUtsettelseKodeListe (String value) {
         this.value = value;
     }
 

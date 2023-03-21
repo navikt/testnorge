@@ -1,6 +1,6 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-public enum BegrunnelseIngenEllerRedusertUtbetalingKoder implements AltinnEnum {
+public enum BegrunnelseIngenEllerRedusertUtbetalingKodeListe implements AltinnEnum {
     LOVLIG_FRAVAER("LovligFravaer"),
     FRAVAER_UTEN_GYLDIG_GRUNN("FravaerUtenGyldigGrunn"),
     ARBEID_OPPHOERT("ArbeidOpphoert"),
@@ -16,7 +16,7 @@ public enum BegrunnelseIngenEllerRedusertUtbetalingKoder implements AltinnEnum {
 
     private String value;
 
-    BegrunnelseIngenEllerRedusertUtbetalingKoder(String value) {
+    BegrunnelseIngenEllerRedusertUtbetalingKodeListe (String value) {
         this.value = value;
     }
 

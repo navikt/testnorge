@@ -1,6 +1,6 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-public enum NaturalytelseKoder implements AltinnEnum {
+public enum NaturalytelseKodeListe implements AltinnEnum {
     AKSJER_GRUNNFONDSBEVIS_TIL_UNDERKURS("aksjerGrunnfondsbevisTilUnderkurs"),
     LOSJI("losji"),
     KOST_DOEGN("kostDoegn"),
@@ -23,7 +23,7 @@ public enum NaturalytelseKoder implements AltinnEnum {
 
     private String value;
 
-    NaturalytelseKoder(String value) {
+    NaturalytelseKodeListe (String value) {
         this.value = value;
     }
 

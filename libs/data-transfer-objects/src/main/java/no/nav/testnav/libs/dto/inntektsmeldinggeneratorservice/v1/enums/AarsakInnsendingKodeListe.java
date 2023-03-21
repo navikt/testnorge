@@ -1,12 +1,12 @@
 package no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums;
 
-public enum AarsakBeregnetInntektEndringKoder implements AltinnEnum {
-    TARIFFENDRING("Tariffendring"),
-    FEIL_INNTEKT("FeilInntekt");
+public enum AarsakInnsendingKodeListe implements AltinnEnum {
+    NY("Ny"),
+    ENDRING("Endring");
 
     private String value;
 
-    AarsakBeregnetInntektEndringKoder(String value) {
+    AarsakInnsendingKodeListe (String value) {
         this.value = value;
     }
 
