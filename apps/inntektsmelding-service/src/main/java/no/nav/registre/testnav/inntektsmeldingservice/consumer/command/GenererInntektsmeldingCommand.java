@@ -1,5 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer.command;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.util.WebClientFilter;
@@ -25,7 +26,7 @@ public class GenererInntektsmeldingCommand implements Callable<Mono<String>> {
 
     @Override
     public Mono<String> call() {
-        log.info("Sender inntektsmelding med verdier: {}", dto);
+        log.info("Sender inntektsmelding med verdier: {}", Json.pretty(dto));
         return webClient
                 .post()
                 .uri("/api/v2/inntektsmelding/2018/12/11")
