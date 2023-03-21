@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlAktoerCommand;
 import no.nav.testnav.apps.personservice.consumer.command.GetPdlPersonCommand;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer;
-import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
+import no.nav.testnav.apps.personservice.config.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.http.MediaType;

@@ -1,30 +1,31 @@
 package no.nav.testnav.apps.personservice.controller;
 
+import io.micrometer.common.util.StringUtils;
+import jakarta.validation.constraints.Size;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlAktoer.AktoerIdent;
+import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.apps.personservice.service.PdlSyncService;
 import no.nav.testnav.apps.personservice.service.PersonService;
+import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
 import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
+import org.springframework.boot.web.server.WebServerException;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestBody;
-
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.util.UriComponentsBuilder;
+import org.webjars.NotFoundException;
 import reactor.core.publisher.Mono;
 
-import jakarta.validation.constraints.Size;
-
-import no.nav.testnav.apps.personservice.domain.Person;
-
-import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
-
-import org.springframework.web.util.UriComponentsBuilder;
 import java.util.Optional;
+
+import static java.lang.String.format;
 
 @RestController
 @RequestMapping("/api/v1/personer")
@@ -39,9 +40,9 @@ public class PersonController {
             @RequestBody PersonDTO personDTO,
             @RequestHeader(required = false) String kilde
     ) {
-        Person person = new Person(personDTO);
-        var pdlKilde = kilde == null ? "DOLLY" : kilde;
-        String ident = personService.createPerson(person, pdlKilde);
+        var person = new Person(personDTO);
+        var pdlKilde = StringUtils.isBlank(kilde) ? "DOLLY" : kilde;
+        var ident = personService.ordrePerson(person, pdlKilde);
 
         var uri = UriComponentsBuilder
                 .fromPath("/api/v1/personer/{ident}")
@@ -51,20 +52,16 @@ public class PersonController {
     }
 
     @GetMapping("/{ident}")
-    public Mono<ResponseEntity<?>> getPerson(
-            @RequestHeader Persondatasystem persondatasystem,
+    public Mono<PersonDTO> getPerson(
+            @RequestHeader (required = false) Persondatasystem persondatasystem,
             @RequestHeader(required = false) String miljoe,
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
 
-        if (persondatasystem == Persondatasystem.TPS && miljoe == null) {
-            return Mono.just(ResponseEntity.badRequest().body("Kunne ikke hente person fra TPS. Miljø ikke satt"));
-        }
-
         return personService
-                .getPerson(ident, miljoe, persondatasystem)
+                .getPerson(ident)
                 .map(value -> value
-                        .map(person -> ResponseEntity.ok(person.toDTO()))
-                        .orElse(ResponseEntity.notFound().build())
+                        .map(Person::toDTO)
+                        .orElseThrow(() -> new NotFoundException(format("Ident %s ikke funnet", ident)))
                 );
     }
 
