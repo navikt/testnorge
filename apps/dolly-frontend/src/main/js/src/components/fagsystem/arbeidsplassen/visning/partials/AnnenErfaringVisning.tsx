@@ -13,7 +13,7 @@ export const AnnenErfaringVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Andre erfaringer" nested>
-					{(annenErfaring, idx: number) => (
+					{(annenErfaring) => (
 						<>
 							<TitleValue title="Rolle" value={annenErfaring.role} />
 							<TitleValue title="Beskrivelse" value={annenErfaring.description} size="medium" />

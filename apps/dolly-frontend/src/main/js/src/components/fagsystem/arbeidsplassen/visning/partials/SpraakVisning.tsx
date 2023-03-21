@@ -13,7 +13,7 @@ export const SpraakVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Språk" nested>
-					{(spraak, idx: number) => (
+					{(spraak) => (
 						<>
 							<TitleValue title="Språk" value={Formatters.showLabel('spraak', spraak.language)} />
 							<TitleValue

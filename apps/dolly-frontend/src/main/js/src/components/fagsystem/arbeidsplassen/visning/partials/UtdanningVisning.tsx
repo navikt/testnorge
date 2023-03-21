@@ -13,7 +13,7 @@ export const UtdanningVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Utdanning" nested>
-					{(utdanning, idx: number) => (
+					{(utdanning) => (
 						<>
 							<TitleValue
 								title="Utdanningsnivå"

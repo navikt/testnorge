@@ -3,7 +3,7 @@ import {
 	initialAnnenErfaring,
 	initialAnnenErfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import _get from 'lodash/get'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'

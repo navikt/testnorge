@@ -13,7 +13,7 @@ export const FagbrevVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Fagbrev" nested>
-					{(fagbrev, idx: number) => (
+					{(fagbrev) => (
 						<>
 							<TitleValue
 								title="Fagdokumentasjon"

@@ -28,7 +28,7 @@ export const FagbrevForm = ({ formikBag }) => {
 				newEntry={initialFagbrevVerdier}
 				nested
 			>
-				{(fagbrevPath, idx) => (
+				{(fagbrevPath) => (
 					<>
 						<FormikSelect
 							name={`${fagbrevPath}.title`}

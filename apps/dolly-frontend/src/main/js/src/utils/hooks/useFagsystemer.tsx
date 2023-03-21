@@ -131,18 +131,17 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	}
 }
 
-export const useArbeidsplassencvData = (ident: string) => {
+export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
+	if (!harArbeidsplassenBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
 	const { data, error } = useSWR<any, Error>(
 		[arbeidsforholdcvUrl(ident), { fnr: ident }],
 		([url, headers]) => fetcher(url, headers)
 	)
-
-	if (!ident) {
-		return {
-			loading: false,
-			error: 'Ident mangler!',
-		}
-	}
 
 	return {
 		arbeidsplassencvData: data,

@@ -51,6 +51,7 @@ import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVi
 import {
 	harAaregBestilling,
 	harApBestilling,
+	harArbeidsplassenBestilling,
 	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
@@ -141,7 +142,8 @@ export const PersonVisning = ({
 	)
 
 	const { loading: loadingArbeidsplassencvData, arbeidsplassencvData } = useArbeidsplassencvData(
-		ident.ident
+		ident.ident,
+		harArbeidsplassenBestilling(bestillingerFagsystemer)
 	)
 
 	const getGruppeIdenter = () => {

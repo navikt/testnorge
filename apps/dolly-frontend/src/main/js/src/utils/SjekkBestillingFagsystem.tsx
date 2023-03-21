@@ -57,3 +57,13 @@ export const harDokarkivBestilling = (bestillingerFagsystemer) => {
 	})
 	return dokarkiv
 }
+
+export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
+	let arbeidsplassen = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.arbeidsplassenCV) {
+			arbeidsplassen = true
+		}
+	})
+	return arbeidsplassen
+}

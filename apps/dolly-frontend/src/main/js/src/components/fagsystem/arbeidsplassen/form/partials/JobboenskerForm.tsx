@@ -22,14 +22,14 @@ export const JobboenskerForm = ({ formikBag }) => {
 		formikBag.setFieldValue(`${jobboenskerPath}.occupations`, yrker)
 	}
 
-	const setOmråder = (options) => {
-		const områder = options.map((opt) => {
+	const setOmraader = (options) => {
+		const omraader = options.map((opt) => {
 			return {
 				location: opt.label,
 				code: opt.value,
 			}
 		})
-		formikBag.setFieldValue(`${jobboenskerPath}.locations`, områder)
+		formikBag.setFieldValue(`${jobboenskerPath}.locations`, omraader)
 	}
 
 	return (
@@ -56,7 +56,7 @@ export const JobboenskerForm = ({ formikBag }) => {
 					isMulti={true}
 					fastfield={false}
 					value={_get(formikBag.values, `${jobboenskerPath}.locations`)?.map((o) => o.code)}
-					onChange={(options) => setOmråder(options)}
+					onChange={(options) => setOmraader(options)}
 				/>
 			</div>
 			<div className="flexbox--flex-wrap">

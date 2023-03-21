@@ -18,7 +18,6 @@ import { validation } from '@/components/fagsystem/arbeidsplassen/form/validatio
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
-	console.log('render: ') //TODO - SLETT MEG
 	return (
 		<Vis attributt={arbeidsplassenAttributt}>
 			<Panel

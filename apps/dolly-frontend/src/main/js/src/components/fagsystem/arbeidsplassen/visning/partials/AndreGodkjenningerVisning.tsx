@@ -13,7 +13,7 @@ export const AndreGodkjenningerVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Andre godkjenninger" nested>
-					{(annenGodkjenning, idx: number) => (
+					{(annenGodkjenning) => (
 						<>
 							<TitleValue
 								title="Annen godkjenning"

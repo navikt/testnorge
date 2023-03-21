@@ -7,20 +7,15 @@ import Panel from '@/components/ui/panel/Panel'
 import {
 	initialAndreGodkjenningerVerdier,
 	initialAnnenErfaringVerdier,
-	initialArbeidserfaring,
 	initialArbeidserfaringVerdier,
-	initialCV,
-	initialFagbrev,
 	initialFagbrevVerdier,
 	initialFoererkortVerdier,
-	initialJobboensker,
 	initialJobboenskerVerdier,
 	initialKompetanserVerdier,
 	initialKursVerdier,
 	initialOffentligeGodkjenningerVerdier,
 	initialSammendragVerdi,
 	initialSpraakVerdier,
-	initialUtdanning,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
 
@@ -35,7 +30,6 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 			startOpen={harValgtAttributt(formikBag.values, ['arbeidsplassenCV'])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>
-				{/*<Attributt attr={sm.attrs.arbeidsplassen} />*/}
 				<Attributt attr={sm.attrs.jobboensker} />
 				<Attributt attr={sm.attrs.utdanning} />
 				<Attributt attr={sm.attrs.fagbrev} />
@@ -56,16 +50,6 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
 
 ArbeidsplassenPanel.initialValues = ({ set, del, has }) => ({
-	// arbeidsplassen: {
-	// 	label: 'Har CV',
-	// 	checked: has('arbeidsplassenCV'),
-	// 	add() {
-	// 		set('arbeidsplassenCV', initialCV)
-	// 	},
-	// 	remove() {
-	// 		del('arbeidsplassenCV')
-	// 	},
-	// },
 	jobboensker: {
 		label: 'Har jobbønsker',
 		checked: has('arbeidsplassenCV.jobboensker'),

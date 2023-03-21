@@ -21,7 +21,7 @@ export const KompetanserForm = ({ formikBag }) => {
 				buttonText="Kompetanse"
 				nested
 			>
-				{(kompetansePath, idx) => (
+				{(kompetansePath) => (
 					<>
 						<FormikSelect
 							name={`${kompetansePath}.title`}

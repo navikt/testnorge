@@ -3,7 +3,7 @@ import {
 	initialArbeidserfaring,
 	initialArbeidserfaringVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
-import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as React from 'react'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
@@ -13,7 +13,6 @@ import { Fritekstfelt } from '@/components/fagsystem/arbeidsplassen/form/styles'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
-import { useRef } from 'react'
 
 export const ArbeidserfaringForm = ({ formikBag }) => {
 	const setYrke = (valg, path) => {
@@ -22,10 +21,7 @@ export const ArbeidserfaringForm = ({ formikBag }) => {
 	}
 
 	const arbeidserfaringListePath = 'arbeidsplassenCV.arbeidserfaring'
-	// console.log('render...') //TODO - SLETT MEG
 
-	const inputRef = useRef()
-	// console.log('inputRef: ', inputRef) //TODO - SLETT MEG
 	return (
 		<Vis attributt={arbeidserfaringListePath}>
 			<FormikDollyFieldArray

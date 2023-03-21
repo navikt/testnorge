@@ -13,7 +13,7 @@ export const FoererkortVisning = ({ data }) => {
 		<div className="person-visning_content" style={{ marginTop: '-15px' }}>
 			<ErrorBoundary>
 				<DollyFieldArray data={data} header="Førerkort" nested>
-					{(foererkort, idx: number) => (
+					{(foererkort) => (
 						<>
 							<TitleValue
 								title="Type førerkort"
