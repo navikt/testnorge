@@ -1,5 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer.command;
 
+import io.swagger.v3.core.util.Json;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.util.WebClientFilter;
@@ -29,6 +30,7 @@ public class OpprettJournalpostCommand implements Callable<Mono<DokmotResponse>>
 
     @Override
     public Mono<DokmotResponse> call() {
+        log.info("Sender journalpost: {}", Json.pretty(request));
         return webClient.post()
                 .uri(builder -> builder.path("/api/{miljo}/v1/journalpost").build(miljo))
                 .header("Nav-Call-Id", navCallId)

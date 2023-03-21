@@ -1,5 +1,6 @@
 package no.nav.registre.testnav.inntektsmeldingservice.consumer;
 
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.testnav.inntektsmeldingservice.config.credentials.DokarkivProxyServiceProperties;
 import no.nav.registre.testnav.inntektsmeldingservice.consumer.command.OpprettJournalpostCommand;
@@ -10,7 +11,6 @@ import no.nav.testnav.libs.dto.dokarkiv.v1.ProsessertInntektDokument;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
-
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -49,9 +49,10 @@ public class DokmotConsumer {
                                                 .call()
                                                 .map(response -> {
                                                     log.info(
-                                                            "Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}",
+                                                            "Lagt inn dokument i joark med journalpostId: {} og eksternReferanseId: {}\n{}",
                                                             response.getJournalpostId(),
-                                                            inntektDokument.getMetadata().getEksternReferanseId()
+                                                            inntektDokument.getMetadata().getEksternReferanseId(),
+                                                            Json.pretty(inntektDokument)
                                                     );
                                                     return new ProsessertInntektDokument(inntektDokument, response);
                                                 })
