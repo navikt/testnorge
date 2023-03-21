@@ -1192,7 +1192,7 @@ const mapInntektStub = (bestillingData, data) => {
 
 const mapArbeidsplassenCV = (bestillingData, data) => {
 	const CVKriterier = _get(bestillingData, 'arbeidsplassenCV')
-	console.log('CVKriterier: ', CVKriterier) //TODO - SLETT MEG
+
 	if (CVKriterier) {
 		const arbeidsplassenCV = {
 			header: 'Arbeidsplassen (CV)',
@@ -1201,8 +1201,8 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 		}
 
 		if (CVKriterier.jobboensker) {
-			arbeidsplassenCV.items.push(
-				{ header: 'Jobbønsker' },
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: 'Jobbønsker' },
 				obj(
 					'Jobber og yrker',
 					Formatters.arrayToString(CVKriterier.jobboensker?.occupations?.map((jobb) => jobb?.title))
@@ -1237,11 +1237,9 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 						)
 					)
 				),
-				obj('Oppstart', Formatters.showLabel('oppstart', CVKriterier.jobboensker?.startOption))
-			)
+				obj('Oppstart', Formatters.showLabel('oppstart', CVKriterier.jobboensker?.startOption)),
+			])
 		}
-
-		console.log('arbeidsplassenCV: ', arbeidsplassenCV) //TODO - SLETT MEG
 
 		CVKriterier.utdanning?.forEach((utdanning, i) => {
 			arbeidsplassenCV.itemRows.push([
@@ -1352,12 +1350,15 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 		})
 
 		if (CVKriterier.sammendrag) {
-			arbeidsplassenCV.items.push(
-				{ header: 'Sammendrag' },
-				obj('Oppsummering', CVKriterier.sammendrag)
-			)
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: 'Sammendrag' },
+				{
+					label: 'Oppsummering',
+					value: CVKriterier.sammendrag,
+					width: 'xlarge',
+				},
+			])
 		}
-		//TODO: fix fordi alt havner under jobbønsker
 
 		data.push(arbeidsplassenCV)
 	}
