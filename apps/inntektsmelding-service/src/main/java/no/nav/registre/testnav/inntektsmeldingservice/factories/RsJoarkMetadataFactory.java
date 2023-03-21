@@ -6,21 +6,21 @@ import java.util.Map;
 
 import no.nav.testnav.libs.dto.dokarkiv.v1.RsJoarkMetadata;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.RsInntektsmeldingRequest;
-import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKodeListe;
+import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.enums.YtelseKoder;
 
 public class RsJoarkMetadataFactory {
     private RsJoarkMetadataFactory() {
     }
 
-    private static final Map<YtelseKodeListe, String> ytelseMap = Map.of(
-            YtelseKodeListe.FORELDREPENGER, "FOR",
-            YtelseKodeListe.SVANGERSKAPSPENGER, "FOR",
-            YtelseKodeListe.PLEIEPENGER, "OMS",
-            YtelseKodeListe.PLEIEPENGER_BARN, "OMS",
-            YtelseKodeListe.PLEIEPENGER_NAERSTAAENDE, "OMS",
-            YtelseKodeListe.OMSORGSPENGER, "OMS",
-            YtelseKodeListe.OPPLAERINGSPENGER, "OMS",
-            YtelseKodeListe.SYKEPENGER, "SYK");
+    private static final Map<YtelseKoder, String> ytelseMap = Map.of(
+            YtelseKoder.FORELDREPENGER, "FOR",
+            YtelseKoder.SVANGERSKAPSPENGER, "FOR",
+            YtelseKoder.PLEIEPENGER, "OMS",
+            YtelseKoder.PLEIEPENGER_BARN, "OMS",
+            YtelseKoder.PLEIEPENGER_NAERSTAAENDE, "OMS",
+            YtelseKoder.OMSORGSPENGER, "OMS",
+            YtelseKoder.OPPLAERINGSPENGER, "OMS",
+            YtelseKoder.SYKEPENGER, "SYK");
 
     private static final String DEFAULT_JOURNALPOST_TYPE = "INNGAAENDE";
     private static final String DEFAULT_BRUKER_ID_TYPE = "FNR";

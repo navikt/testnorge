@@ -25,6 +25,7 @@ public class GenererInntektsmeldingCommand implements Callable<Mono<String>> {
 
     @Override
     public Mono<String> call() {
+        log.info("Sender inntektsmelding med verdier: {}", dto);
         return webClient
                 .post()
                 .uri("/api/v2/inntektsmelding/2018/12/11")
