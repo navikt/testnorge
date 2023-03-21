@@ -1,5 +1,7 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.util;
 
+import io.swagger.v3.core.util.Json;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntektsmeldinggeneratorservice.provider.Melding;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsforhold;
 import no.nav.testnav.libs.dto.inntektsmeldinggeneratorservice.v1.rs.RsArbeidsgiver;
@@ -54,6 +56,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class XmlInntektsmelding201812 {
 
     private static final String NAMESPACE_URI = "http://seres.no/xsd/NAV/Inntektsmelding_M/20181211";
@@ -62,7 +65,7 @@ public class XmlInntektsmelding201812 {
     }
 
     public static Melding createInntektsmelding(RsInntektsmelding melding) {
-        return new Melding(new XMLSkjemainnhold(
+        Melding inntektsMelding = new Melding(new XMLSkjemainnhold(
                 melding.getYtelse(),
                 melding.getAarsakTilInnsending(),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsgiver"),
@@ -98,6 +101,8 @@ public class XmlInntektsmelding201812 {
                         XMLOmsorgspenger.class,
                         createOmsorgspenger(melding.getOmsorgspenger().orElse(null)))),
                 Collections.emptyMap());
+        log.info("Opprettet inntektsmelding med verdier: {}", Json.pretty(inntektsMelding));
+        return inntektsMelding;
     }
 
     private static XMLOmsorgspenger createOmsorgspenger(RsOmsorgspenger omsorgspenger) {
