@@ -1,5 +1,6 @@
 package no.nav.registre.inntektsmeldinggeneratorservice.provider;
 
+import io.swagger.v3.core.util.Json;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.inntektsmeldinggeneratorservice.exception.JaxbToXmlException;
@@ -30,6 +31,7 @@ public class InntektsmeldingController {
     }
 
     private static String jaxbObjectToXML(Melding inntektsmelding) {
+        log.info("Konverterter inntektsmelding til xml: {}", Json.pretty(inntektsmelding));
         try {
             //Create JAXB Context
             JAXBContext jaxbContext = JAXBContext.newInstance(Melding.class);
@@ -46,6 +48,7 @@ public class InntektsmeldingController {
             //Write XML to StringWriter
             jaxbMarshaller.marshal(inntektsmelding, sw);
 
+            log.info("Generert xml: {}", sw);
             //Return XML Content
             return sw.toString();
         } catch (JAXBException e) {
