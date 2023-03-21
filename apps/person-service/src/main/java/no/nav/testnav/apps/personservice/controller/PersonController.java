@@ -8,9 +8,6 @@ import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.apps.personservice.service.PdlSyncService;
 import no.nav.testnav.apps.personservice.service.PersonService;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
-import no.nav.testnav.libs.dto.personservice.v1.Persondatasystem;
-import org.springframework.boot.web.server.WebServerException;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -53,8 +50,6 @@ public class PersonController {
 
     @GetMapping("/{ident}")
     public Mono<PersonDTO> getPerson(
-            @RequestHeader (required = false) Persondatasystem persondatasystem,
-            @RequestHeader(required = false) String miljoe,
             @PathVariable("ident") @Size(min = 11, max = 11, message = "Ident må ha 11 siffer") String ident) {
 
         return personService
