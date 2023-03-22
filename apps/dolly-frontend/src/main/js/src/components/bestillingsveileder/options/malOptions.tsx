@@ -49,9 +49,22 @@ export const initialValuesBasedOnMal = (mal: any) => {
 	if (initialValuesMal.bankkonto) {
 		initialValuesMal.bankkonto = getUpdatedBankkonto(initialValuesMal.bankkonto)
 	}
+	if (initialValuesMal.arbeidsplassenCV) {
+		initialValuesMal.arbeidsplassenCV = getUpdatedArbeidsplassenData(
+			initialValuesMal.arbeidsplassenCV
+		)
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
+}
+
+const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {
+	return Object.fromEntries(
+		Object.entries(arbeidsplassenData)?.filter((kategori) => {
+			return (kategori?.[0] === 'jobboensker' && kategori?.[1]) || kategori?.[1]?.length > 0
+		})
+	)
 }
 
 const getUpdatedInntektstubData = (inntektstubData: any) => {
