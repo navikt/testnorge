@@ -18,7 +18,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<ArbeidsplassenCVStatusDTO>> {
 
-    private static final String ARBEIDSPLASSEN_CV_URL = "/rest/samtykke";
+    private static final String ARBEIDSPLASSEN_SAMTYKKE_URL = "/rest/samtykke";
     private static final String FNR = "fnr";
 
     private final WebClient webClient;
@@ -30,7 +30,7 @@ public class ArbeidsplassenDeleteCVCommand implements Callable<Mono<Arbeidsplass
 
         return webClient.delete().uri(
                         uriBuilder -> uriBuilder
-                                .path(ARBEIDSPLASSEN_CV_URL)
+                                .path(ARBEIDSPLASSEN_SAMTYKKE_URL)
                                 .build())
                 .header(FNR, ident)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
