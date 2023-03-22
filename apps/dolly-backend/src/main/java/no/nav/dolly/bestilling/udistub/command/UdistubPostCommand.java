@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.udistub.command;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.udistub.domain.UdiPerson;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
-import no.nav.dolly.util.RequestHeaderUtil;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
@@ -18,14 +17,11 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
 public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
 
-    private static final String CONSUMER = "Dolly";
     private static final String UDISTUB_PERSON = "/api/v1/person";
 
     private final WebClient webClient;
@@ -39,8 +35,6 @@ public class UdistubPostCommand implements Callable<Mono<UdiPersonResponse>> {
                 .post()
                 .uri(uriBuilder -> uriBuilder.path(UDISTUB_PERSON).build())
                 .accept(MediaType.APPLICATION_JSON)
-                .header(HEADER_NAV_CALL_ID, RequestHeaderUtil.getNavCallId())
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .body(BodyInserters.fromPublisher(Mono.just(udiPerson), UdiPerson.class))

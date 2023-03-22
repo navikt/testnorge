@@ -1,4 +1,4 @@
-package no.nav.testnav.apps.personservice.credentials;
+package no.nav.testnav.apps.personservice.config.credentials;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

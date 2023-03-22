@@ -1,5 +1,6 @@
-package no.nav.udistub.provider.web;
+package no.nav.udistub.provider.ws;
 
+import jakarta.xml.bind.JAXBElement;
 import lombok.RequiredArgsConstructor;
 import no.udi.common.v2.PingRequestType;
 import no.udi.common.v2.PingResponseType;
@@ -16,7 +17,6 @@ import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusRequestType;
 import v1.mt_1067_nav.no.udi.HentUtvidetPersonstatusResponseType;
 import v1.mt_1067_nav.no.udi.PingFault;
 
-import jakarta.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 @Endpoint
@@ -29,43 +29,47 @@ public class PersonStatusWebService {
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "PingRequest")
     @ResponsePayload
-    public JAXBElement<PingResponseType> ping(@RequestPayload PingRequestType parameters) throws PingFault {
+    public JAXBElement<PingResponseType> ping(@RequestPayload JAXBElement<PingRequestType> parameters)
+            throws PingFault {
+
         var ping = new JAXBElement<>(new QName(NAMESPACE_URI, "PingResponse"), PingResponseType.class,
-                personStatusService.ping(parameters));
+                personStatusService.ping(parameters.getValue()));
         ping.setNil(true);
         return ping;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "DeepPingRequest")
     @ResponsePayload
-    public JAXBElement<PingResponseType> deepPing(@RequestPayload PingRequestType parameters) throws DeepPingFault {
+    public JAXBElement<PingResponseType> deepPing(@RequestPayload JAXBElement<PingRequestType> parameters)
+            throws DeepPingFault {
+
         var deepPing =
                 new JAXBElement<>(new QName(NAMESPACE_URI, "DeepPingResponse"), PingResponseType.class,
-                        personStatusService.deepPing(parameters));
+                        personStatusService.deepPing(parameters.getValue()));
         deepPing.setNil(true);
         return deepPing;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentPersonstatusRequest")
     @ResponsePayload
-    public JAXBElement<HentPersonstatusResponseType> hentPersonstatus(@RequestPayload HentPersonstatusRequestType request)
+    public JAXBElement<HentPersonstatusResponseType> hentPersonstatus(@RequestPayload JAXBElement<HentPersonstatusRequestType> request)
             throws HentPersonstatusFault {
 
         var hentPersonstatusResponse =
                 new JAXBElement<>(new QName(NAMESPACE_URI, "HentPersonstatusResponse"),
-                        HentPersonstatusResponseType.class, personStatusService.hentPersonstatus(request));
+                        HentPersonstatusResponseType.class, personStatusService.hentPersonstatus(request.getValue()));
         hentPersonstatusResponse.setNil(true);
         return hentPersonstatusResponse;
     }
 
     @PayloadRoot(namespace = NAMESPACE_URI, localPart = "HentUtvidetPersonstatusRequest")
     @ResponsePayload
-    public JAXBElement<HentUtvidetPersonstatusResponseType> hentUtvidetPersonstatus(@RequestPayload HentUtvidetPersonstatusRequestType request)
+    public JAXBElement<HentUtvidetPersonstatusResponseType> hentUtvidetPersonstatus(@RequestPayload JAXBElement<HentUtvidetPersonstatusRequestType> request)
             throws HentUtvidetPersonstatusFault {
 
         var hentUtvidetPersonstatusResponse =
                 new JAXBElement<>(new QName(NAMESPACE_URI, "HentUtvidetPersonstatusResponse"),
-                        HentUtvidetPersonstatusResponseType.class, personStatusService.hentUtvidetPersonstatus(request));
+                        HentUtvidetPersonstatusResponseType.class, personStatusService.hentUtvidetPersonstatus(request.getValue()));
         hentUtvidetPersonstatusResponse.setNil(true);
         return hentUtvidetPersonstatusResponse;
     }

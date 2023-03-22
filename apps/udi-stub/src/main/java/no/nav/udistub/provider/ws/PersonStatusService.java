@@ -1,4 +1,4 @@
-package no.nav.udistub.provider.web;
+package no.nav.udistub.provider.ws;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.udistub.service.PersonService;
@@ -84,7 +84,8 @@ public class PersonStatusService implements MT1067NAVV1Interface {
     }
 
     @Override
-    public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters) throws HentPersonstatusFault {
+    public HentPersonstatusResponseType hentPersonstatus(HentPersonstatusRequestType parameters)
+            throws HentPersonstatusFault {
 
         UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentPersonstatusResultat.class);
@@ -95,7 +96,8 @@ public class PersonStatusService implements MT1067NAVV1Interface {
     }
 
     @Override
-    public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters) throws HentUtvidetPersonstatusFault {
+    public HentUtvidetPersonstatusResponseType hentUtvidetPersonstatus(HentUtvidetPersonstatusRequestType parameters)
+            throws HentUtvidetPersonstatusFault {
 
         UdiPerson foundPerson = personService.finnPerson(parameters.getParameter().getFodselsnummer());
         var resultat = conversionService.convert(foundPerson, HentUtvidetPersonstatusResultat.class);

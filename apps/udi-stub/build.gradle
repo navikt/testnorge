@@ -18,15 +18,20 @@ sonarqube {
     }
 }
 
-wsimport {
-    wsdl("MT_1067_NAV_v1.wsdl")
-}
-
 dependencyManagement {
     applyMavenExclusions = false
     imports {
         mavenBom 'org.springframework.cloud:spring-cloud-dependencies:2022.0.1'
     }
+}
+
+wsimport {
+    wsdl("MT_1067_NAV_v1.wsdl")
+}
+
+// tag::jaxb[]
+configurations {
+    jaxb
 }
 
 bootJar {
@@ -66,26 +71,23 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-configuration-processor'
-    implementation 'org.glassfish.jaxb:jaxb-runtime'
+    implementation 'org.springframework.boot:spring-boot-starter-web-services'
+    implementation 'org.springframework.ws:spring-ws-security'
+    jaxb 'org.glassfish.jaxb:jaxb-xjc'
+    implementation 'wsdl4j:wsdl4j'
 
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
-
-    implementation 'com.sun.xml.messaging.saaj:saaj-impl:3.0.0'
-    implementation 'jakarta.xml.soap:jakarta.xml.soap-api:3.0.0'
-    implementation 'org.springframework.ws:spring-ws-security'
 
     implementation 'org.postgresql:postgresql'
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.zaxxer:HikariCP'
 
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
-    implementation 'wsdl4j:wsdl4j'
 
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'org.hibernate.validator:hibernate-validator'
-    implementation 'net.java.dev.jna:jna:5.13.0'
 
     testImplementation 'com.h2database:h2'
     testImplementation 'org.testcontainers:junit-jupiter'

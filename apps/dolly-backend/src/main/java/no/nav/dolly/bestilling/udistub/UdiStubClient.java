@@ -59,6 +59,7 @@ public class UdiStubClient implements ClientRegister {
     public void release(List<String> identer) {
 
         udiStubConsumer.deleteUdiPerson(identer)
+                .collectList()
                 .subscribe(response -> log.info("Slettet identer fra Udistub"));
     }
 

@@ -76,8 +76,8 @@ public class ArbeidsplassenCVClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-//        arbeidplassenCVConsumer.deleteCVer(identer)
-//                .collectList()
-//                .subscribe(response -> log.info("Slettet utført mot ArbeidsplassenCV"));
+        arbeidsplassenCVConsumer.deleteCVer(identer)
+                .collectList()
+                .subscribe(response -> log.info("Sletting utført mot ArbeidsplassenCV"));
     }
 }

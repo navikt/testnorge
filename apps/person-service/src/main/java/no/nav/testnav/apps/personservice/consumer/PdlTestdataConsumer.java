@@ -8,7 +8,7 @@ import no.nav.testnav.apps.personservice.consumer.command.PostAdresseCommand;
 import no.nav.testnav.apps.personservice.consumer.command.PostNavnCommand;
 import no.nav.testnav.apps.personservice.consumer.command.PostTagsCommand;
 import no.nav.testnav.apps.personservice.consumer.exception.PdlCreatePersonException;
-import no.nav.testnav.apps.personservice.credentials.PdlServiceProperties;
+import no.nav.testnav.apps.personservice.config.credentials.PdlServiceProperties;
 import no.nav.testnav.apps.personservice.domain.Person;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
@@ -76,7 +76,7 @@ public class PdlTestdataConsumer {
         }
     }
 
-    public String createPerson(Person person, String kilde) {
+    public String ordrePerson(Person person, String kilde) {
         log.info("Oppretter person med ident {} i PDL", person.getIdent());
 
         try {
