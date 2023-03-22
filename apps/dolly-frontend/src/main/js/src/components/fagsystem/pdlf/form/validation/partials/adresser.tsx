@@ -163,18 +163,22 @@ export const bostedsadresse = Yup.object({
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
 		then: () => vegadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	matrikkeladresse: Yup.mixed().when('adressetype', {
 		is: 'MATRIKKELADRESSE',
 		then: () => matrikkeladresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
 		then: () => utenlandskAdresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
 		then: () => ukjentBosted,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 })
 
@@ -185,18 +189,22 @@ export const oppholdsadresse = Yup.object({
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
 		then: () => vegadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	matrikkeladresse: Yup.mixed().when('adressetype', {
 		is: 'MATRIKKELADRESSE',
 		then: () => matrikkeladresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
 		then: () => utenlandskAdresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	oppholdAnnetSted: Yup.mixed().when('adressetype', {
 		is: 'OPPHOLD_ANNET_STED',
 		then: () => requiredString,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 })
 
@@ -207,14 +215,17 @@ export const kontaktadresse = Yup.object({
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
 		then: () => vegadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
 		then: () => utenlandskAdresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	postboksadresse: Yup.mixed().when('adressetype', {
 		is: 'POSTBOKSADRESSE',
 		then: () => postboksadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 })
 

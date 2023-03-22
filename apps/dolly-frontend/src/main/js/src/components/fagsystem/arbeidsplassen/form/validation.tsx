@@ -19,7 +19,7 @@ export const validation = {
 					startDate: testDatoFom(requiredDate, 'endDate', 'Dato må være før sluttdato'),
 					endDate: Yup.mixed().when('ongoing', {
 						is: false,
-						then: testDatoTom(requiredDate, 'startDate', 'Dato må være etter startdato'),
+						then: () => testDatoTom(requiredDate, 'startDate', 'Dato må være etter startdato'),
 					}),
 				})
 			)
@@ -40,7 +40,7 @@ export const validation = {
 					fromDate: testDatoFom(requiredDate, 'toDate', 'Dato må være før tildato'),
 					toDate: Yup.mixed().when('ongoing', {
 						is: false,
-						then: testDatoTom(requiredDate, 'fromDate', 'Dato må være etter fradato'),
+						then: () => testDatoTom(requiredDate, 'fromDate', 'Dato må være etter fradato'),
 					}),
 				})
 			)
@@ -112,7 +112,7 @@ export const validation = {
 					title: requiredString,
 					duration: Yup.mixed().when('durationUnit', {
 						is: (val) => val !== null,
-						then: requiredString.nullable() || requiredNumber.nullable(),
+						then: () => requiredString || requiredNumber,
 					}),
 				})
 			)
