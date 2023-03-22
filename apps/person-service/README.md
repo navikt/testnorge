@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Person Service
+title: Testnav Person Service
 parent: Applikasjoner
 ---
 
-# Testnorge-Person-api
+# Testnav-Person-Service
 API for oppretting og henting av personer fra PDL og TPS
 
 ## Swagger

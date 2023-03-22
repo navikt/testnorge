@@ -37,8 +37,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-backend-dev
           cluster: dev-gcp
-        - application: testnorge-opprett-person-pdl
-          cluster: dev-fss
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
