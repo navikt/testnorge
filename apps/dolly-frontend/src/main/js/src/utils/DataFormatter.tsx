@@ -103,9 +103,7 @@ Formatters.arrayToString = (array, separator = ',') => {
 	}
 
 	return array.reduce((accumulator, nextString, idx) => {
-		return `${accumulator}${accumulator ? separator : ''}${idx === 0 ? '' : ' '}${
-			isNaN(nextString) ? nextString?.toUpperCase() : nextString
-		}`
+		return `${accumulator}${accumulator ? separator : ''}${idx === 0 ? '' : ' '}${nextString}`
 	}, '')
 }
 

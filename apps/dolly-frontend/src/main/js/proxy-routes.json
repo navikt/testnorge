@@ -183,5 +183,10 @@
     "target": "http://localhost:8020",
     "changeOrigin": true,
     "secure": false
+  },
+  "/testnav-arbeidsplassencv-proxy": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
   }
 }

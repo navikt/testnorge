@@ -47,14 +47,11 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-
     implementation 'org.hibernate.validator:hibernate-validator'
     implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
 
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-
 
     implementation 'javax.xml.bind:jaxb-api:2.3.1'
     implementation 'javax.json.bind:javax.json.bind-api:1.0'
@@ -63,6 +60,7 @@ dependencies {
     implementation 'com.sun.xml.bind:jaxb-core:2.3.0.1'
 
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    implementation 'org.apache.commons:commons-text:1.10.0'
 
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
     implementation 'no.nav.tjenestespesifikasjoner:nav-altinn-inntektsmelding:1.2019.08.16-13.46-35cbdfd492d4'
