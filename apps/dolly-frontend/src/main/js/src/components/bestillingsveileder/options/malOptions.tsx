@@ -19,7 +19,7 @@ import { useDollyEnvironments } from '@/utils/hooks/useEnvironments'
 export const initialValuesBasedOnMal = (mal: any) => {
 	const { dollyEnvironments } = useDollyEnvironments()
 	const initialValuesMal = Object.assign({}, mal.bestilling)
-	console.log('initialValuesMal: ', initialValuesMal) //TODO - SLETT MEG
+
 	if (initialValuesMal.aareg) {
 		initialValuesMal.aareg = getUpdatedAaregData(initialValuesMal.aareg)
 	}
