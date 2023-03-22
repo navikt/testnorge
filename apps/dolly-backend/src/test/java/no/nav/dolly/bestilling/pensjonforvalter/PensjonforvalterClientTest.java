@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.pensjonforvalter;
 import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpForholdRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonTpYtelseRequest;
@@ -78,6 +79,9 @@ class PensjonforvalterClientTest {
 
     @Mock
     private PdlPersonConsumer pdlPersonConsumer;
+
+    @Mock
+    private PdlDataConsumer pdlDataConsumer;
 
     @Mock
     private ErrorStatusDecoder errorStatusDecoder;
@@ -309,6 +313,7 @@ class PensjonforvalterClientTest {
                 .thenReturn(new PensjonTpForholdRequest());
         when(mapperFacade.map(any(PensjonData.TpYtelse.class), eq(PensjonTpYtelseRequest.class), any(MappingContext.class)))
                 .thenReturn(new PensjonTpYtelseRequest());
+        when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -399,6 +404,7 @@ class PensjonforvalterClientTest {
                 .thenReturn(new PensjonTpYtelseRequest());
         when(errorStatusDecoder.getErrorText(HttpStatus.INTERNAL_SERVER_ERROR, "ytelse2 feil on TEST2"))
                 .thenReturn("Feil= ytelse2 feil on TEST2");
+        when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
@@ -487,6 +493,7 @@ class PensjonforvalterClientTest {
                 .thenReturn(new PensjonTpYtelseRequest());
         when(errorStatusDecoder.getErrorText(eq(HttpStatus.INTERNAL_SERVER_ERROR), anyString()))
                 .thenReturn("Feil= Klarte ikke å få TP-ytelse respons for 12345 i PESYS (pensjon)");
+        when(pdlDataConsumer.getPersoner(anyList())).thenReturn(Flux.empty());
 
         StepVerifier.create(pensjonforvalterClient.gjenopprett(bestilling, dollyPerson, progress, false)
                         .map(ClientFuture::get))
