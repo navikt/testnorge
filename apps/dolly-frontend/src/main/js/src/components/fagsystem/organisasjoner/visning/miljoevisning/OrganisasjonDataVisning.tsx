@@ -43,7 +43,7 @@ export const OrganisasjonDataVisning = ({ data }) => {
 					<DollyTooltip
 						overlay={getOrganisasjonInfo(organisasjoner, selectedId, setSelectedId)}
 						align={{
-							offset: ['0', '-10'],
+							offset: [0, -10],
 						}}
 						arrowContent={<div className="rc-tooltip-arrow-inner"></div>}
 						key={idx}

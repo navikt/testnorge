@@ -5,11 +5,14 @@ import lombok.NoArgsConstructor;
 import lombok.Value;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLNaturalytelseDetaljer;
+import org.apache.commons.text.CaseUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -32,7 +35,7 @@ public class NaturalYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDe
         ));
         xmlNaturalytelseDetaljer.setFom(factory.createXMLNaturalytelseDetaljerFom(fom));
         xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
-                naturalytelseType
+                isBlank(naturalytelseType) ? null : CaseUtils.toCamelCase(naturalytelseType, true, '_')
         ));
 
         return xmlNaturalytelseDetaljer;
