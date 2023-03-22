@@ -56,6 +56,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static org.apache.commons.text.CaseUtils.toCamelCase;
+
 @Slf4j
 public class XmlInntektsmelding201812 {
 
@@ -174,7 +176,8 @@ public class XmlInntektsmelding201812 {
     private static XMLNaturalytelseDetaljer createNaturalytelse(RsNaturalytelseDetaljer detaljer) {
         BigDecimal beloep = detaljer.getBeloepPrMnd().map(BigDecimal::valueOf).orElse(null);
         return new XMLNaturalytelseDetaljer(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturaytelseType().orElse(null)),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "naturalytelseType"), String.class, detaljer.getNaturaytelseType()
+                        .map(s -> toCamelCase(s, true, '_')).orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "fom"), LocalDate.class, detaljer.getFom().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beloepPrMnd"), BigDecimal.class, beloep));
     }
@@ -191,7 +194,8 @@ public class XmlInntektsmelding201812 {
                 new JAXBElement<>(new QName(NAMESPACE_URI, "bruttoUtbetalt"), BigDecimal.class, bruttoUtbetalt),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "begrunnelseForReduksjonEllerIkkeUtbetalt"),
                         String.class,
-                        sykepenger.getBegrunnelseForReduksjonEllerIkkeUtbetalt().orElse(null)));
+                        sykepenger.getBegrunnelseForReduksjonEllerIkkeUtbetalt()
+                                .map(s -> toCamelCase(s, true, '_')).orElse(null)));
     }
 
     private static XMLArbeidsgiverperiodeListe createArbeidsgiverperiodeListe(List<RsPeriode> perioder) {
@@ -238,7 +242,8 @@ public class XmlInntektsmelding201812 {
 
     private static XMLArbeidsforhold createArbeidsforhold(RsArbeidsforhold arbeidsforhold) {
         return new XMLArbeidsforhold(
-                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidsforholdId().orElse(null)),
+                new JAXBElement<>(new QName(NAMESPACE_URI, "arbeidsforholdId"), String.class, arbeidsforhold.getArbeidsforholdId()
+                        .map(s -> toCamelCase(s, true, '_')).orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "foersteFravaersdag"), LocalDate.class, arbeidsforhold.getFoersteFravaersdag().orElse(null)),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beregnetInntekt"), XMLInntekt.class, createInntekt(arbeidsforhold.getBeregnetInntekt().orElse(null))),
                 new JAXBElement<>(new QName(NAMESPACE_URI, "avtaltFerieListe"), XMLAvtaltFerieListe.class, createAvtaltFerieListe(arbeidsforhold.getAvtaltFerieListe())),
@@ -276,7 +281,8 @@ public class XmlInntektsmelding201812 {
     private static XMLUtsettelseAvForeldrepenger createUtsettelseAvForeldrepenger(RsUtsettelseAvForeldrepenger utsettelse) {
         return new XMLUtsettelseAvForeldrepenger(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "periode"), XMLPeriode.class, createPeriode(utsettelse.getPeriode().orElse(null))),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakTilUtsettelse"), String.class, utsettelse.getAarsakTilUtsettelse().orElse(null)));
+                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakTilUtsettelse"), String.class, utsettelse.getAarsakTilUtsettelse()
+                        .map(s -> toCamelCase(s, true, '_')).orElse(null)));
     }
 
     private static XMLAvtaltFerieListe createAvtaltFerieListe(List<RsPeriode> perioder) {
@@ -303,7 +309,8 @@ public class XmlInntektsmelding201812 {
         BigDecimal beloep = inntekt.getBeloep().map(BigDecimal::valueOf).orElse(null);
         return new XMLInntekt(
                 new JAXBElement<>(new QName(NAMESPACE_URI, "beloep"), BigDecimal.class, beloep),
-                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakVedEndring"), String.class, inntekt.getAarsakVedEndring().orElse(null))
+                new JAXBElement<>(new QName(NAMESPACE_URI, "aarsakVedEndring"), String.class, inntekt.getAarsakVedEndring()
+                        .map(s -> toCamelCase(s, true, '_')).orElse(null))
         );
     }
 
