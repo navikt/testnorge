@@ -39,12 +39,19 @@ import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
 import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
-import { useDokarkivData, useInstData, usePoppData, useTpData } from '@/utils/hooks/useFagsystemer'
+import {
+	useArbeidsplassencvData,
+	useDokarkivData,
+	useInstData,
+	usePoppData,
+	useTpData,
+} from '@/utils/hooks/useFagsystemer'
 import { sjekkManglerTpData } from '@/components/fagsystem/tjenestepensjon/visning/TpVisning'
 import { sjekkManglerInstData } from '@/components/fagsystem/inst/visning/InstVisning'
 import {
 	harAaregBestilling,
 	harApBestilling,
+	harArbeidsplassenBestilling,
 	harDokarkivBestilling,
 	harInstBestilling,
 	harPoppBestilling,
@@ -52,6 +59,7 @@ import {
 } from '@/utils/SjekkBestillingFagsystem'
 import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -131,6 +139,11 @@ export const PersonVisning = ({
 	const { loading: loadingInstData, instData } = useInstData(
 		ident.ident,
 		harInstBestilling(bestillingerFagsystemer)
+	)
+
+	const { loading: loadingArbeidsplassencvData, arbeidsplassencvData } = useArbeidsplassencvData(
+		ident.ident,
+		harArbeidsplassenBestilling(bestillingerFagsystemer)
 	)
 
 	const getGruppeIdenter = () => {
@@ -301,6 +314,12 @@ export const PersonVisning = ({
 					/>
 				)}
 				<SigrunstubVisning data={sigrunstub} loading={loading.sigrunstub} />
+				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
+				<InntektsmeldingVisning
+					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
+					ident={ident.ident}
+				/>
+				<ArbeidsplassenVisning data={arbeidsplassencvData} loading={loadingArbeidsplassencvData} />
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
@@ -318,20 +337,6 @@ export const PersonVisning = ({
 						data={AlderspensjonVisning.filterValues(bestillingListe, ident.ident)}
 					/>
 				)}
-				<InntektstubVisning liste={inntektstub} loading={loading.inntektstub} />
-				<InntektsmeldingVisning
-					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
-					ident={ident.ident}
-				/>
-				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
-				<BrregVisning data={brregstub} loading={loading.brregstub} />
-				<KrrVisning data={krrstub} loading={loading.krrstub} />
-				<InstVisning
-					data={instData}
-					loading={loadingInstData}
-					bestillingIdListe={bestillingIdListe}
-					tilgjengeligMiljoe={tilgjengeligMiljoe}
-				/>
 				<ArenaVisning
 					data={arenaforvalteren}
 					bestillinger={bestillingListe}
@@ -339,6 +344,15 @@ export const PersonVisning = ({
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<SykemeldingVisning data={SykemeldingVisning.filterValues(bestillingListe, ident.ident)} />
+				<BrregVisning data={brregstub} loading={loading.brregstub} />
+				<InstVisning
+					data={instData}
+					loading={loadingInstData}
+					bestillingIdListe={bestillingIdListe}
+					tilgjengeligMiljoe={tilgjengeligMiljoe}
+				/>
+				<KrrVisning data={krrstub} loading={loading.krrstub} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}

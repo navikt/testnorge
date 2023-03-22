@@ -184,6 +184,7 @@ export const icons = {
 	flytt: Flytt,
 	fileNew2: NewFile2,
 	fileCode: FileCode,
+	cv: NewFile2,
 }
 
 const px = (v: number) => `${v}px`

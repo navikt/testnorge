@@ -504,6 +504,226 @@ const selectOptions = {
 		{ value: 40, label: '40%' },
 		{ value: 20, label: '20%' },
 	],
+
+	// Arbeidsplassen:
+	nusKoder: [
+		{ value: '2', label: 'Grunnskole' },
+		{ value: '3', label: 'Folkehøgskole' },
+		{ value: '4', label: 'Videregående/yrkesskole' },
+		{ value: '5', label: 'Fagskole' },
+		{ value: '6', label: 'Høyere utdanning, 1-4 år' },
+		{ value: '7', label: 'Høyere utdanning, 4+ år' },
+		{ value: '8', label: 'Doktorgrad' },
+	],
+
+	oppstart: [
+		{ value: 'LEDIG_NAA', label: 'Kan begynne nå' },
+		{ value: 'ETTER_TRE_MND', label: 'Har 3 måneders oppsigelse' },
+		{ value: 'ETTER_AVTALE', label: 'Kan begynne etter nærmere avtale' },
+	],
+
+	arbeidsmengde: [
+		{ value: 'HELTID', label: 'Heltid' },
+		{ value: 'DELTID', label: 'Deltid' },
+	],
+
+	arbeidstid: [
+		{ value: 'DAGTID', label: 'Dagtid' },
+		{ value: 'KVELD', label: 'Kveld' },
+		{ value: 'NATT', label: 'Natt' },
+		{ value: 'UKEDAGER', label: 'Ukedager' },
+		{ value: 'LOERDAG', label: 'Lørdag' },
+		{ value: 'SOENDAG', label: 'Søndag' },
+		{ value: 'SKIFT', label: 'Skift' },
+		{ value: 'VAKT', label: 'Vakt' },
+		{ value: 'TURNUS', label: 'Turnus' },
+	],
+
+	ansettelsestype: [
+		{ value: 'FAST', label: 'Fast' },
+		{ value: 'VIKARIAT', label: 'Vikariat' },
+		{ value: 'ENGASJEMENT', label: 'Engasjement' },
+		{ value: 'PROSJEKT', label: 'Prosjekt' },
+		{ value: 'SESONG', label: 'Sesong' },
+		{ value: 'TRAINEE', label: 'Trainee' },
+		{ value: 'LAERLING', label: 'Lærling' },
+		{ value: 'SELVSTENDIG_NAERINGSDRIVENDE', label: 'Selvstendig næringsdrivende' },
+		{ value: 'FERIEJOBB', label: 'Feriejobb' },
+		{ value: 'ANNET', label: 'Annet' },
+	],
+
+	spraakNivaa: [
+		{ value: 'IKKE_OPPGITT', label: 'Ikke oppgitt' },
+		{ value: 'NYBEGYNNER', label: 'Nybegynner' },
+		{ value: 'GODT', label: 'Godt' },
+		{ value: 'VELDIG_GODT', label: 'Veldig godt' },
+		{ value: 'FOERSTESPRAAK', label: 'Førstespråk (morsmål)' },
+	],
+
+	foererkortTyper: [
+		{ value: 'A - Motorsykkel', label: 'A - Motorsykkel' },
+		{ value: 'A1 - Lett motorsykkel', label: 'A1 - Lett motorsykkel' },
+		{ value: 'A2 - Mellomtung motorsykkel', label: 'A2 - Mellomtung motorsykkel' },
+		{ value: 'AM - Moped', label: 'AM - Moped' },
+		{ value: 'B - Personbil', label: 'B - Personbil' },
+		{ value: 'BE - Personbil med tilhenger', label: 'BE - Personbil med tilhenger' },
+		{ value: 'C - Lastebil', label: 'C - Lastebil' },
+		{ value: 'C1 - Lett lastebil', label: 'C1 - Lett lastebil' },
+		{ value: 'C1E - Lett lastebil med tilhenger', label: 'C1E - Lett lastebil med tilhenger' },
+		{ value: 'CE - Lastebil med tilhenger', label: 'CE - Lastebil med tilhenger' },
+		{ value: 'D - Buss', label: 'D - Buss' },
+		{ value: 'D1 - Minibuss', label: 'D1 - Minibuss' },
+		{ value: 'T - Traktor', label: 'T - Traktor' },
+		{ value: 'D1E - Minibuss med tilhenger', label: 'D1E - Minibuss med tilhenger' },
+		{ value: 'DE - Buss med tilhenger', label: 'DE - Buss med tilhenger' },
+		{ value: 'S - Snøscooter', label: 'S - Snøscooter' },
+	],
+
+	kursLengde: [
+		{ value: 'UKJENT', label: 'Ukjent' },
+		{ value: 'TIME', label: 'Timer' },
+		{ value: 'DAG', label: 'Dager' },
+		{ value: 'UKE', label: 'Uker' },
+		{ value: 'MND', label: 'Måneder' },
+	],
+
+	jobbYrke: [
+		{ value: '2611', label: 'Advokat' },
+		{ value: '2341', label: 'Allmennlærer' },
+		{ value: '7213', label: 'Bilskadereparatør' },
+		{ value: '5223', label: 'Butikkmedarbeider' },
+		{ value: '7115', label: 'Bygningssnekker' },
+		{ value: '5141', label: 'Frisør' },
+		{ value: '2223', label: 'Sykepleier' },
+		{ value: '9212', label: 'Sauegjeter' },
+		{ value: '7321', label: 'Typograf' },
+		{ value: '9999', label: 'Utvikler' },
+	],
+
+	omraade: [
+		{ value: 'NO20.2012', label: 'Alta' },
+		{ value: 'NO46.4601', label: 'Bergen' },
+		{ value: 'NO18.1804', label: 'Bodø' },
+		{ value: 'NO06.0602', label: 'Drammen' },
+		{ value: 'NO01.0106', label: 'Fredrikstad' },
+		{ value: 'NO10.1001', label: 'Kristiansand' },
+		{ value: 'NO02.0230', label: 'Lørenskog' },
+		{ value: 'NO03', label: 'Oslo' },
+		{ value: 'NO38.3806', label: 'Porsgrunn' },
+		{ value: 'NO11.1103', label: 'Stavanger' },
+		{ value: 'NO54.5401', label: 'Tromsø' },
+		{ value: 'NO50.5001', label: 'Trondheim' },
+		{ value: 'NO15.1504', label: 'Ålesund' },
+	],
+
+	fagbrev: [
+		{
+			value: 'Fagbrev anleggsgartner',
+			label: 'Fagbrev anleggsgartner',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{
+			value: 'Fagbrev barne- og ungdomsarbeider',
+			label: 'Fagbrev barne- og ungdomsarbeider',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{ value: 'Fagbrev butikkfag', label: 'Fagbrev butikkfag', type: 'SVENNEBREV_FAGBREV' },
+		{ value: 'Fagbrev IKT-driftsfag', label: 'Fagbrev IKT-driftsfag', type: 'SVENNEBREV_FAGBREV' },
+		{ value: 'Mesterbrev baker', label: 'Mesterbrev baker', type: 'MESTERBREV' },
+		{ value: 'Mesterbrev billakkerer', label: 'Mesterbrev billakkerer', type: 'MESTERBREV' },
+		{ value: 'Mesterbrev snekker', label: 'Mesterbrev snekker', type: 'MESTERBREV' },
+		{ value: 'Svennebrev frisør', label: 'Svennebrev frisør', type: 'SVENNEBREV_FAGBREV' },
+		{ value: 'Svennebrev gullsmed', label: 'Svennebrev gullsmed', type: 'SVENNEBREV_FAGBREV' },
+		{
+			value: 'Svennebrev mediegrafiker',
+			label: 'Svennebrev mediegrafiker',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{
+			value: 'Yrkeskompetanse interiørkonsulent',
+			label: 'Yrkeskompetanse interiørkonsulent',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+		{
+			value: 'Yrkeskompetanse tannhelsesekretær',
+			label: 'Yrkeskompetanse tannhelsesekretær',
+			type: 'SVENNEBREV_FAGBREV',
+		},
+	],
+
+	kompetanse: [
+		{ value: 'Arbeide selvstendig og effektivt', label: 'Arbeide selvstendig og effektivt' },
+		{ value: 'Borhammer', label: 'Borhammer' },
+		{ value: 'Design av romfartsprodukter', label: 'Design av romfartsprodukter' },
+		{ value: 'Fange dyr i feller', label: 'Fange dyr i feller' },
+		{ value: 'Flink til å samarbeide', label: 'Flink til å samarbeide' },
+		{ value: 'God fysikk', label: 'God fysikk' },
+		{ value: 'Gode norsk- og engelskkunnskaper', label: 'Gode norsk- og engelskkunnskaper' },
+		{ value: 'Husdyrhold', label: 'Husdyrhold' },
+		{ value: 'Java (Programmeringsspråk)', label: 'Java (Programmeringsspråk)' },
+		{ value: 'Kunne arbeide ut fra egne ideer', label: 'Kunne arbeide ut fra egne ideer' },
+		{ value: 'Muskelbygging', label: 'Muskelbygging' },
+	],
+
+	offentligGodkjenning: [
+		{
+			value: 'Arbeids - og oppholdstillatelse i Norge',
+			label: 'Arbeids - og oppholdstillatelse i Norge',
+		},
+		{ value: 'Autorisasjon som fysioterapeut', label: 'Autorisasjon som fysioterapeut' },
+		{
+			value: 'Bevis for yrkessjåførkompetanse (YSK)',
+			label: 'Bevis for yrkessjåførkompetanse (YSK)',
+		},
+		{ value: 'Båtførerbevis', label: 'Båtførerbevis' },
+		{ value: 'Flygersertifikat', label: 'Flygersertifikat' },
+		{
+			value: 'Godkjenning som profesjonell pyrotekniker',
+			label: 'Godkjenning som profesjonell pyrotekniker',
+		},
+		{
+			value: 'Godkjenning/autorisasjon som brannkonstabel',
+			label: 'Godkjenning/autorisasjon som brannkonstabel',
+		},
+		{
+			value: 'Godkjenning/autorisasjon som revisor',
+			label: 'Godkjenning/autorisasjon som revisor',
+		},
+		{ value: 'Helseattest', label: 'Helseattest' },
+		{ value: 'Sertifikat varmearbeider', label: 'Sertifikat varmearbeider' },
+		{ value: 'Statsautorisert eiendomsmegler', label: 'Statsautorisert eiendomsmegler' },
+	],
+
+	annenGodkjenning: [
+		{ value: 'Autorisasjon som håndballtrener', label: 'Autorisasjon som håndballtrener' },
+		{ value: 'Ballongførerbevis', label: 'Ballongførerbevis' },
+		{ value: 'Bannerannonsering', label: 'Bannerannonsering' },
+		{ value: 'Datakort IT-kompetanse', label: 'Datakort IT-kompetanse' },
+		{ value: 'Kompetansebevis for dyretransport', label: 'Kompetansebevis for dyretransport' },
+		{ value: 'Legeattest', label: 'Legeattest' },
+		{ value: 'Sertifikat personlig trener', label: 'Sertifikat personlig trener' },
+		{ value: 'Sertifisert førstehjelpsinstruktør', label: 'Sertifisert førstehjelpsinstruktør' },
+		{
+			value: 'Sertifisert Lekeplassutstyrsinspektør LEK',
+			label: 'Sertifisert Lekeplassutstyrsinspektør LEK',
+		},
+		{ value: 'Testdrevet utvikling', label: 'Testdrevet utvikling' },
+	],
+
+	spraak: [
+		{ value: 'Arabisk', label: 'Arabisk' },
+		{ value: 'Engelsk', label: 'Engelsk' },
+		{ value: 'Fransk', label: 'Fransk' },
+		{ value: 'Hindi', label: 'Hindi' },
+		{ value: 'Kinesisk', label: 'Kinesisk' },
+		{ value: 'Norsk', label: 'Norsk' },
+		{ value: 'Norsk tegnspråk', label: 'Norsk tegnspråk' },
+		{ value: 'Nynorsk', label: 'Nynorsk' },
+		{ value: 'Russisk', label: 'Russisk' },
+		{ value: 'Samisk', label: 'Samisk' },
+		{ value: 'Spansk', label: 'Spansk' },
+		{ value: 'Tysk', label: 'Tysk' },
+	],
 }
 
 export const SelectOptionsManager = (attributeId) => selectOptions[attributeId]
