@@ -246,7 +246,9 @@ export const VisningRedigerbarSamlet = ({
 															</h4>
 														</div>
 														<div className="slettModal-actions">
-															<NavButton onClick={closeModal}>Nei</NavButton>
+															<NavButton onClick={closeModal} variant={'secondary'}>
+																Nei
+															</NavButton>
 
 															<NavButton
 																onClick={() => {
@@ -303,7 +305,7 @@ export const VisningRedigerbarSamlet = ({
 								<FieldArrayEdit>
 									<Knappegruppe>
 										<NavButton
-											variant={'primary'}
+											variant={'secondary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}

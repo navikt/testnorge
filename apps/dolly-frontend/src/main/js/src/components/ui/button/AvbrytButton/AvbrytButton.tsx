@@ -27,7 +27,9 @@ export const AvbrytButton = ({ action, children }: Props) => {
 						<h4>{children}</h4>
 					</div>
 					<div className="avbrytModal-actions">
-						<NavButton onClick={closeModal}>Nei</NavButton>
+						<NavButton onClick={closeModal} variant={'secondary'}>
+							Nei
+						</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()
