@@ -20,17 +20,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers(
-                        "/internal/**",
-                        "/webjars/**",
-                        "/swagger-resources/**",
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger",
-                        "/error",
-                        "/swagger-ui.html"
-                ).permitAll()
                 .requestMatchers("/api/**").fullyAuthenticated()
+                .anyRequest()
+                .permitAll()
                 .and()
                 .oauth2ResourceServer()
                 .jwt();

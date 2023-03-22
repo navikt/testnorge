@@ -57,6 +57,7 @@ const getValgteAttributter = (values) => {
 		'sigrunstub',
 		'inntektstub',
 		'inntektsmelding',
+		'arbeidsplassenCV',
 		'pensjonforvalter.inntekt',
 		'pensjonforvalter.tp',
 		'pensjonforvalter.alderspensjon',

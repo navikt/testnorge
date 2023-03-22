@@ -4,14 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Vegadresse;
+import no.nav.testnav.libs.dto.personservice.v1.AdresseDTO;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.List;
-
-import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Vegadresse;
-import no.nav.testnav.apps.personservice.consumer.dto.tpsf.Boadresse;
-import no.nav.testnav.libs.dto.personservice.v1.AdresseDTO;
 
 @Getter
 @Builder
@@ -35,11 +33,6 @@ public class Adresse {
         gatenavn = vegadresse.getAdressenavn() + " " + vegadresse.getHusnummer();
         postnummer = vegadresse.getPostnummer();
         kommunenummer = vegadresse.getKommunenummer();
-    }
-
-    public Adresse (Boadresse boadresse) {
-        gatenavn = boadresse.getGateadresse() + " " + boadresse.getHusnummer();
-        postnummer = boadresse.getPostnr();
     }
 
     public AdresseDTO toDto() {

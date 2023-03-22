@@ -18,7 +18,7 @@ Data opprettes via REST-tjenesten
 For dokumentasjon av applikasjonen sine endepunkter:
 
 - `/swagger-ui.html`
-- `WSDL: /ws`
+- `WSDL: /ws/udistub.wsdl
 
 ## Lokal kjøring
 

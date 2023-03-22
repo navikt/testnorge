@@ -8,7 +8,6 @@ import {
 	KrrApi,
 	PdlforvalterApi,
 	SigrunApi,
-	TpsfApi,
 	TpsMessagingApi,
 } from '@/service/Api'
 import { onSuccess } from '@/ducks/utils/requestActions'
@@ -19,7 +18,6 @@ import * as _ from 'lodash-es'
 
 export const actions = createActions(
 	{
-		getTpsf: TpsfApi.getPersoner,
 		getTpsMessaging: [
 			TpsMessagingApi.getTpsPersonInfoAllEnvs,
 			(ident) => ({
@@ -131,11 +129,6 @@ const initialState = {
 
 export default handleActions(
 	{
-		[onSuccess(actions.getTpsf)](state, action) {
-			action.payload.data.forEach((ident) => {
-				state.tpsf[ident.ident] = ident
-			})
-		},
 		[onSuccess(actions.getSigrun)](state, action) {
 			state.sigrunstub[action.meta.ident] = action.payload.data.responseList
 		},

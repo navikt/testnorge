@@ -15,6 +15,7 @@ import { DokarkivPanel } from './paneler/Dokarkiv'
 import { SykdomPanel } from './paneler/Sykdom'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { PensjonPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Pensjon'
+import { ArbeidsplassenPanel } from '@/components/bestillingsveileder/stegVelger/steg/steg1/paneler/Arbeidsplassen'
 
 export const identFraTestnorge = (opts: any) => {
 	if (opts?.is?.importTestnorge) {
@@ -31,6 +32,7 @@ export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 		AdressePanel,
 		FamilierelasjonPanel,
 		ArbeidInntektPanel,
+		ArbeidsplassenPanel,
 		SykdomPanel,
 		BrregPanel,
 		IdentifikasjonPanel,
@@ -64,6 +66,7 @@ export const Steg1Person = ({ formikBag, stateModifier }: any) => {
 				</>
 			)}
 			<ArbeidInntektPanel stateModifier={stateModifier} formikBag={formikBag} />
+			<ArbeidsplassenPanel stateModifier={stateModifier} formikBag={formikBag} />
 			<PensjonPanel stateModifier={stateModifier} formikBag={formikBag} />
 			<ArenaPanel stateModifier={stateModifier} formikBag={formikBag} />
 			<SykdomPanel stateModifier={stateModifier} formikBag={formikBag} />

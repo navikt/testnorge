@@ -23,6 +23,7 @@ import no.nav.dolly.domain.resultset.skjerming.RsSkjerming;
 import no.nav.dolly.domain.resultset.sykemelding.RsSykemelding;
 import no.nav.dolly.domain.resultset.tpsmessagingservice.RsTpsMessaging;
 import no.nav.dolly.domain.resultset.udistub.model.RsUdiPerson;
+import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -90,5 +91,6 @@ public class RsMalBestillingWrapper {
         private RsTpsMessaging tpsMessaging;
         private RsSkjerming skjerming;
         private BankkontoData bankkonto;
+        private ArbeidsplassenCVDTO arbeidsplassenCV;
     }
 }

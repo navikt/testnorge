@@ -5,19 +5,17 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
-import java.util.Optional;
-import java.util.Set;
-
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.FoedselDTO;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Foedsel;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Folkeregisteridentifikator;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.HentPerson;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.Navn;
 import no.nav.testnav.apps.personservice.consumer.dto.pdl.graphql.PdlPerson;
-import no.nav.testnav.apps.personservice.consumer.dto.tpsf.TpsPerson;
 import no.nav.testnav.libs.dto.personservice.v1.PersonDTO;
+
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -63,15 +61,6 @@ public class Person {
                 .findFirst()
                 .map(value -> new Adresse(value.getVegadresse()))
                 .orElse(null);
-    }
-
-    public Person(TpsPerson tpsPerson) {
-        ident = tpsPerson.getIdent();
-        fornavn = tpsPerson.getFornavn();
-        mellomnavn = tpsPerson.getMellomnavn();
-        etternavn = tpsPerson.getEtternavn();
-        foedselsdato = tpsPerson.getFoedselsdato().toLocalDate();
-        adresse = !tpsPerson.getBoadresse().isEmpty() ? new Adresse(tpsPerson.getBoadresse().get(0)) : null;
     }
 
     public PersonDTO toDTO() {

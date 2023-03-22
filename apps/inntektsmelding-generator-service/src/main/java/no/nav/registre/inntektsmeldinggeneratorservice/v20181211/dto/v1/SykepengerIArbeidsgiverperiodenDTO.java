@@ -6,9 +6,12 @@ import lombok.Value;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.ObjectFactory;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLArbeidsgiverperiodeListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLSykepengerIArbeidsgiverperioden;
+import org.apache.commons.text.CaseUtils;
 
 import java.math.BigDecimal;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -40,7 +43,7 @@ public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<XMLSykep
         ));
         xmlSykepengerIArbeidsgiverperioden.setBegrunnelseForReduksjonEllerIkkeUtbetalt(
                 factory.createXMLSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
-                        begrunnelseForReduksjonEllerIkkeUtbetalt
+                        isBlank(begrunnelseForReduksjonEllerIkkeUtbetalt) ? null : CaseUtils.toCamelCase(begrunnelseForReduksjonEllerIkkeUtbetalt, true, '_')
                 )
         );
 

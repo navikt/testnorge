@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
+import { fetcher, multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
@@ -37,6 +37,8 @@ const journalpostUrl = (transaksjonsid, miljoer) =>
 			miljo: miljoe,
 		}
 	})
+
+const arbeidsforholdcvUrl = (ident: string) => `/testnav-arbeidsplassencv-proxy/rest/v2/cv`
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -124,6 +126,25 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 	return {
 		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
+	if (!harArbeidsplassenBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>(
+		[arbeidsforholdcvUrl(ident), { fnr: ident }],
+		([url, headers]) => fetcher(url, headers)
+	)
+
+	return {
+		arbeidsplassencvData: data,
 		loading: !error && !data,
 		error: error,
 	}

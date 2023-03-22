@@ -12,7 +12,6 @@ import no.nav.dolly.bestilling.arbeidsplassencv.dto.ArbeidsplassenCVStatusDTO;
 import no.nav.dolly.bestilling.arbeidsplassencv.dto.PAMCVDTO;
 import no.nav.dolly.config.credentials.ArbeidsplassenProxyProperties;
 import no.nav.dolly.metrics.Timed;
-import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -84,13 +83,6 @@ public class ArbeidsplassenCVConsumer implements ConsumerStatus {
                 .doOnNext(resultat -> log.info("Opprettet person for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_deleteCV" })
-    public Flux<ArbeidsplassenCVDTO> deleteCV(String ident) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArbeidsplassenDeleteCVCommand(webClient, ident, null, token.getTokenValue()).call());
-    }
-
     public Mono<AccessToken> getToken() {
 
         return tokenService.exchange(serviceProperties);
@@ -106,11 +98,11 @@ public class ArbeidsplassenCVConsumer implements ConsumerStatus {
         return "testnav-arbeidsplassencv-proxy";
     }
 
-    public Flux<ArbeidsplassenCVDTO> deleteCVer(List<String> identer) {
+    public Flux<ArbeidsplassenCVStatusDTO> deleteCVer(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.fromIterable(identer)
-                        .flatMap(ident -> new ArbeidsplassenDeleteCVCommand(webClient, ident, null,
+                        .flatMap(ident -> new ArbeidsplassenDeleteCVCommand(webClient, ident,
                                 token.getTokenValue()).call()));
     }
 }

@@ -22,7 +22,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class DokarkivGetMiljoeCommand implements Callable<Mono<List<String>>> {
 
-    private static final String DOKARKIV_PROXY_ENVIRONMENTS = "/internal/miljoe";
+    private static final String DOKARKIV_PROXY_ENVIRONMENTS = "/rest/miljoe";
 
     private final WebClient webClient;
     private final String token;

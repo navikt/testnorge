@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import Formatters from '@/utils/DataFormatter'
-import { TpsfApi } from '@/service/Api'
+import { TpsMessagingApi } from '@/service/Api'
 import { Adressevisning } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
 import { PostadresseVisning } from '@/components/fagsystem/tpsf/visning/partials/Postadresse'
 import { Historikk } from '@/components/ui/historikk/Historikk'
@@ -49,7 +49,7 @@ export const Foreldre = ({ person, type }: Data) => {
 		if (person) {
 			const fetchData = async () => {
 				setIsLoading(true)
-				const respons = await TpsfApi.getPersoner([person.ident])
+				const respons = await TpsMessagingApi.getTpsPersonInfoAllEnvs(person.ident)
 				setForeldreInfo(respons.data)
 				setIsLoading(false)
 			}
@@ -82,7 +82,7 @@ export const Foreldre = ({ person, type }: Data) => {
 				/>
 				<TitleValue title="Uten fast bopel" value={person.utenFastBopel && 'Ja'} />
 				{foreldreInfo && !isLoading && foreldreInfo.length > 0 && (
-					<TitleValue title="Barn" value={finnBarn(foreldreInfo[0].relasjoner).join(', ')} />
+					<TitleValue title="Barn" value={finnBarn(foreldreInfo[0].relasjoner)?.join(', ')} />
 				)}
 			</div>
 			{person.boadresse?.length > 0 && (
@@ -101,10 +101,10 @@ export const Foreldre = ({ person, type }: Data) => {
 
 const finnBarn = (relasjoner: Relasjon) =>
 	relasjoner
-		.filter((relasjon) => {
+		?.filter((relasjon) => {
 			return relasjon.relasjonTypeNavn === 'BARN'
 		})
-		.map(
+		?.map(
 			(relasjon) =>
 				relasjon.personRelasjonMed.fornavn +
 				' ' +
