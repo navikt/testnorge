@@ -18,6 +18,7 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class ArbeidsplassenCVDTO {
 
+    private Boolean harHjemmel;
     private Boolean harBil;
     private List<Arbeidserfaring> arbeidserfaring;
     private List<Utdanning> utdanning;

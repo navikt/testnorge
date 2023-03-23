@@ -13,6 +13,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -54,7 +55,13 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 .flatMap(oppdatertOrdre -> Flux.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
                                 .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(dollyPerson.getIdent(), uuid))
-                                .flatMap(response2 -> arbeidsplassenCVConsumer.opprettHjemmel(dollyPerson.getIdent(), uuid))
+                                .flatMap(response2 -> {
+                                    if (BooleanUtils.isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel())) {
+                                        return arbeidsplassenCVConsumer.opprettHjemmel(dollyPerson.getIdent(), uuid);
+                                    } else {
+                                        return Flux.empty();
+                                    }
+                                })
                                 .flatMap(response3 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                         .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
