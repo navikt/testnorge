@@ -13,7 +13,6 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.CallIdUtil;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -23,6 +22,7 @@ import java.util.List;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -54,10 +54,10 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                 })
                 .flatMap(oppdatertOrdre -> Flux.just(CallIdUtil.generateCallId())
                         .flatMap(uuid -> arbeidsplassenCVConsumer.opprettPerson(dollyPerson.getIdent(), uuid)
-                                .flatMap(response -> arbeidsplassenCVConsumer.opprettSamtykke(dollyPerson.getIdent(), uuid))
+                                .flatMap(response -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid))
                                 .flatMap(response2 -> {
-                                    if (BooleanUtils.isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel())) {
-                                        return arbeidsplassenCVConsumer.opprettHjemmel(dollyPerson.getIdent(), uuid);
+                                    if (isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel())) {
+                                        return arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid);
                                     } else {
                                         return Flux.empty();
                                     }
