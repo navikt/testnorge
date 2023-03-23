@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.AktivKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -69,21 +68,19 @@ class KontoregisterConsumerTest {
 
     private String hentKontoResponse() {
         return "{\n" +
-                "    \"aktivKonto\": {\n" +
-                "        \"kontohaver\": \"" + IDENT + "\",\n" +
-                "        \"kontonummer\": \"" + KONTONUMMER + "\",\n" +
-                "        \"gyldigFom\": \"2022-08-16T14:15:05.573486\",\n" +
-                "        \"opprettetAv\": \"Dolly\",\n" +
-                "        \"utenlandskKontoInfo\": {\n" +
-                "            \"banknavn\": \"string\",\n" +
-                "            \"bankkode\": \"XXXX\",\n" +
-                "            \"bankLandkode\": \"SE\",\n" +
-                "            \"valutakode\": \"SEK\",\n" +
-                "            \"swiftBicKode\": \"SHEDSE22\",\n" +
-                "            \"bankadresse1\": \"string\",\n" +
-                "            \"bankadresse2\": \"string\",\n" +
-                "            \"bankadresse3\": \"string\"\n" +
-                "        }\n" +
+                "    \"kontohaver\": \"" + IDENT + "\",\n" +
+                "    \"kontonummer\": \"" + KONTONUMMER + "\",\n" +
+                "    \"gyldigFom\": \"2022-08-16T14:15:05.573486\",\n" +
+                "    \"opprettetAv\": \"Dolly\",\n" +
+                "    \"utenlandskKontoInfo\": {\n" +
+                "        \"banknavn\": \"string\",\n" +
+                "        \"bankkode\": \"XXXX\",\n" +
+                "        \"bankLandkode\": \"SE\",\n" +
+                "        \"valutakode\": \"SEK\",\n" +
+                "        \"swiftBicKode\": \"SHEDSE22\",\n" +
+                "        \"bankadresse1\": \"string\",\n" +
+                "        \"bankadresse2\": \"string\",\n" +
+                "        \"bankadresse3\": \"string\"\n" +
                 "    }\n" +
                 "}";
     }
@@ -141,7 +138,7 @@ class KontoregisterConsumerTest {
     @Test
     void testHentBankkonto() {
         stubFor(
-                post(urlPathMatching("(.*)/api/system/v1/hent-konto"))
+                post(urlPathMatching("(.*)/api/system/v1/hent-aktiv-konto"))
                         .willReturn(ok()
                                 .withBody(hentKontoResponse())
                                 .withHeader("Content-Type", "application/json")));
@@ -153,12 +150,12 @@ class KontoregisterConsumerTest {
                 .map(e -> e.getRequest().getBodyAsString())
                 .map(s -> {
                     try {
-                        return objectMapper.readValue(s, AktivKontoRequestDTO.class);
+                        return objectMapper.readValue(s, HentKontoRequestDTO.class);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         hentBankkontoer.stream()
                 .forEach(b -> {
