@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.kontoregisterservice.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
@@ -18,7 +17,6 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
-@Slf4j
 public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseDTO>> {
 
     private static final String KONTOREGISTER_API_URL = "/api/system/v1/hent-aktiv-konto";
@@ -29,8 +27,6 @@ public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseD
 
     @Override
     public Mono<HentKontoResponseDTO> call() {
-
-        log.info("Sender request til Bankkontoregister service:");
 
         return webClient.post()
                 .uri(uriBuilder -> uriBuilder
