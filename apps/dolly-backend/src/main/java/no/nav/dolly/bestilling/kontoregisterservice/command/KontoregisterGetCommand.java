@@ -5,20 +5,23 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoResponseDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 @RequiredArgsConstructor
 @Slf4j
 public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseDTO>> {
 
-    private static final String KONTOREGISTER_API_URL = "/api/system/v1/hent-konto";
+    private static final String KONTOREGISTER_API_URL = "/api/system/v1/hent-aktiv-konto";
 
     private final WebClient webClient;
     private final HentKontoRequestDTO body;
@@ -37,8 +40,15 @@ public class KontoregisterGetCommand implements Callable<Mono<HentKontoResponseD
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(HentKontoResponseDTO.class)
+                .toEntity(KontoDTO.class)
+                .map(response -> HentKontoResponseDTO.builder()
+                        .aktivKonto(Objects.nonNull(response.getBody()) ? response.getBody() : null)
+                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .build())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                        .filter(WebClientFilter::is5xxException));
+                        .filter(WebClientFilter::is5xxException))
+                .onErrorResume(throwable -> Mono.just(HentKontoResponseDTO.builder()
+                        .status(WebClientFilter.getStatus(throwable))
+                        .build()));
     }
 }

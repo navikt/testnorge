@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.KontoregisterConsumerProperties;
-import no.nav.testnav.libs.dto.kontoregisterservice.v1.HentKontoRequestDTO;
+import no.nav.testnav.libs.dto.kontoregisterservice.v1.AktivKontoRequestDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
@@ -97,7 +97,7 @@ class KontoregisterConsumerTest {
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
 
-        StepVerifier.create(kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO()))
+        StepVerifier.create(kontoregisterConsumer.opprettKontonummer(new OppdaterKontoRequestDTO()))
                 .expectNext(KontoregisterResponseDTO.builder()
                         .status(HttpStatus.OK)
                         .build())
@@ -113,7 +113,7 @@ class KontoregisterConsumerTest {
                                 .withBody("{\"feilmelding\":\"Noe galt har skjedd\"}")
                                 .withHeader("Content-Type", "application/json")));
 
-        StepVerifier.create(kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO()))
+        StepVerifier.create(kontoregisterConsumer.opprettKontonummer(new OppdaterKontoRequestDTO()))
                 .expectNext(KontoregisterResponseDTO.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .feilmelding("{\"feilmelding\":\"Noe galt har skjedd\"}")
@@ -153,7 +153,7 @@ class KontoregisterConsumerTest {
                 .map(e -> e.getRequest().getBodyAsString())
                 .map(s -> {
                     try {
-                        return objectMapper.readValue(s, HentKontoRequestDTO.class);
+                        return objectMapper.readValue(s, AktivKontoRequestDTO.class);
                     } catch (JsonProcessingException e) {
                         throw new RuntimeException(e);
                     }
