@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenDeleteCVCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenGetCVCommand;
+import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostHjemmelCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostPersonCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPostSamtykkeCommand;
 import no.nav.dolly.bestilling.arbeidsplassencv.command.ArbeidsplassenPutCVCommand;
@@ -50,34 +51,38 @@ public class ArbeidsplassenCVConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "arbeidsplassen_getCV" })
     public Flux<ArbeidsplassenCVStatusDTO> hentCV(String ident, String uuid) {
 
-        log.info("Henter CV på ident: {} fra arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArbeidsplassenGetCVCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Hentet CV for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_oppdaterCV" })
     public Flux<ArbeidsplassenCVStatusDTO> oppdaterCV(String ident, PAMCVDTO arbeidsplassenCV, String uuid) {
 
-        log.info("Oppdaterer CV på ident: {} til arbeidsplassenCV: {}", ident, arbeidsplassenCV);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArbeidsplassenPutCVCommand(webClient, ident, arbeidsplassenCV, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Oppdatert CV for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_opprettSamtykke" })
     public Flux<ArbeidsplassenCVStatusDTO> opprettSamtykke(String ident, String uuid) {
 
-        log.info("Oppretter samtykke på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArbeidsplassenPostSamtykkeCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet samtykke for ident {} {}", ident, resultat));
     }
 
-    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_putCV" })
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_opprettHjemmel" })
+    public Flux<ArbeidsplassenCVStatusDTO> opprettHjemmel(String ident, String uuid) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new ArbeidsplassenPostHjemmelCommand(webClient, ident, uuid, token.getTokenValue()).call())
+                .doOnNext(resultat -> log.info("Opprettet hjemmel for ident {} {}", ident, resultat));
+    }
+
+    @Timed(name = "providers", tags = { "operation", "arbeidsplassen_opprettPerson" })
     public Flux<ArbeidsplassenCVStatusDTO> opprettPerson(String ident, String uuid) {
 
-        log.info("Oppretter person på ident: {} til arbeidsplassenCV", ident);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArbeidsplassenPostPersonCommand(webClient, ident, uuid, token.getTokenValue()).call())
                 .doOnNext(resultat -> log.info("Opprettet person for ident {} {}", ident, resultat));
