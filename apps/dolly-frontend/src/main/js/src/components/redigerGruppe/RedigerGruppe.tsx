@@ -59,7 +59,7 @@ const RedigerGruppe = ({
 			hensikt: yup
 				.string()
 				.trim()
-				.required('Gi en liten beskrivelse av hensikten med gruppen')
+				.required('Gi en beskrivelse av hensikten med gruppen')
 				.max(200, 'Maksimalt 200 bokstaver'),
 		})
 
@@ -73,14 +73,14 @@ const RedigerGruppe = ({
 	}
 
 	const buttons = (
-		<Fragment>
-			<NavButton type={'reset'} variant={'danger'} onClick={() => onCancel()}>
-				Avbryt
-			</NavButton>
+		<>
 			<NavButton variant={'primary'} type={'submit'}>
 				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 			</NavButton>
-		</Fragment>
+			<NavButton type={'reset'} variant={'danger'} onClick={() => onCancel()}>
+				Avbryt
+			</NavButton>
+		</>
 	)
 
 	return (
@@ -88,7 +88,7 @@ const RedigerGruppe = ({
 			{() => (
 				<Form className="opprett-tabellrad" autoComplete="off">
 					<div className="fields">
-						<FormikTextInput name="navn" label="NAVN" size="grow" autoFocus />
+						<FormikTextInput name="navn" label="NAVN" size="grow" useOnChange={true} autoFocus />
 						<FormikTextInput name="hensikt" label="HENSIKT" size="grow" useOnChange={true} />
 						{buttons}
 					</div>
