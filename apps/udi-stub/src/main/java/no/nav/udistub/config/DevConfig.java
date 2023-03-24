@@ -13,8 +13,6 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Configuration
 @Profile("dev")
-@Import({ VaultHikariConfiguration.class,
-        FlywayConfiguration.class })
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
 public class DevConfig extends AbstractVaultConfiguration {
 
