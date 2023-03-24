@@ -57,12 +57,13 @@ public class ArbeidsplassenCVClient implements ClientRegister {
                                 .flatMap(response -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid))
                                 .flatMap(response2 -> {
                                     if (isTrue(bestilling.getArbeidsplassenCV().getHarHjemmel())) {
-                                        return arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid);
+                                        return arbeidsplassenCVConsumer.godtaHjemmel(dollyPerson.getIdent(), uuid)
+                                                .flatMap(response3 -> arbeidsplassenCVConsumer.godtaVilkaar(dollyPerson.getIdent(), uuid));
                                     } else {
-                                        return Flux.empty();
+                                        return Flux.just("Fortsetter uten hjemmel og repetert vilkaar");
                                     }
                                 })
-                                .flatMap(response3 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
+                                .flatMap(response4 -> Mono.just(mapperFacade.map(oppdatertOrdre, PAMCVDTO.class))
                                         .map(request -> arbeidsplassenCVConsumer.oppdaterCV(dollyPerson.getIdent(), request, uuid)
                                                 .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
                                                         String.format("%s UUID: %s",
