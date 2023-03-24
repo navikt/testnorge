@@ -16,9 +16,8 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
-  cloud:
-    vault:
-      enabled: false
+  config:
+    import: vault://
 
 springdoc:
   swagger-ui:
