@@ -9,12 +9,12 @@ export const HjemmelForm = () => {
 			<div className="dfa-blokk-nested_title">
 				<h3>Hjemmel</h3>
 				<Hjelpetekst>
-					Hjemmel er ikke en del av CV, men brukes for bakover-kompabilitet. Den styrer lesetilgang
-					ved "rekrutteringsbistand" i target system.
+					Hjemmel er ikke en del av CV, men brukes for å styre lesetilgang ved
+					"rekrutteringsbistand" i mottakende system.
 				</Hjelpetekst>
 			</div>
 			<div className="flexbox--full-width">
-				<FormikCheckbox name={hjemmelPath} label="Har hjemmel" size="small" />
+				<FormikCheckbox name={hjemmelPath} label="Godta hjemmel" size="small" />
 			</div>
 		</Vis>
 	)

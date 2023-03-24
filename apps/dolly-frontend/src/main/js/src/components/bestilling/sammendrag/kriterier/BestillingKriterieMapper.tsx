@@ -1365,7 +1365,7 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 			arbeidsplassenCV.itemRows.push([
 				{ numberHeader: 'Hjemmel' },
 				{
-					label: 'Har hjemmel',
+					label: 'Godta hjemmel',
 					value: Formatters.oversettBoolean(CVKriterier.harHjemmel),
 				},
 			])

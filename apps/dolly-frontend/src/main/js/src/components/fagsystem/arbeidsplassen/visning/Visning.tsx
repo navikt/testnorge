@@ -14,16 +14,13 @@ import { KursVisning } from '@/components/fagsystem/arbeidsplassen/visning/parti
 import { SammendragVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/SammendragVisning'
 import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/JobboenskerVisning'
 import Panel from '@/components/ui/panel/Panel'
-import { useArbeidsplassencvHjemmel } from '@/utils/hooks/useFagsystemer'
+import { HjemmelVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/HjemmelVisning'
 
-export const ArbeidsplassenVisning = ({ data, loading, ident }) => {
+export const ArbeidsplassenVisning = ({ data, loading, hjemmel }) => {
 	if (loading) return <Loading label="Laster CV" />
 	if (!data) {
 		return null
 	}
-
-	const { arbeidsplassencvHjemmel } = useArbeidsplassencvHjemmel(ident?.ident)
-	console.log('arbeidsplassencvHjemmel: ', arbeidsplassencvHjemmel) //TODO - SLETT MEG
 
 	return (
 		<>
@@ -41,6 +38,7 @@ export const ArbeidsplassenVisning = ({ data, loading, ident }) => {
 				<FoererkortVisning data={data.foererkort} />
 				<KursVisning data={data.kurs} />
 				<SammendragVisning data={data.sammendrag} />
+				<HjemmelVisning hjemmel={hjemmel} />
 			</Panel>
 		</>
 	)
