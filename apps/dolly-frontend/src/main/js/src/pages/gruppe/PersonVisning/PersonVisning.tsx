@@ -60,6 +60,7 @@ import {
 import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
+import _has from 'lodash/has'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -236,6 +237,14 @@ export const PersonVisning = ({
 		gruppeIdenter?.includes(ident.id)
 	)
 
+	const getArbeidsplassencvHjemmel = () => {
+		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
+		const arbeidsplassenBestillinger = bestillingListe.filter((bestilling) =>
+			_has(bestilling.data, 'arbeidsplassenCV')
+		)
+		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
+	}
+
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -252,6 +261,9 @@ export const PersonVisning = ({
 								}
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
+								}
+								if (arbeidsplassencvData) {
+									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
 								leggTilPaaPerson(
 									personData,
@@ -319,7 +331,11 @@ export const PersonVisning = ({
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
-				<ArbeidsplassenVisning data={arbeidsplassencvData} loading={loadingArbeidsplassencvData} />
+				<ArbeidsplassenVisning
+					data={arbeidsplassencvData}
+					loading={loadingArbeidsplassencvData}
+					hjemmel={getArbeidsplassencvHjemmel()}
+				/>
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
