@@ -1,6 +1,8 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
+import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.vault.annotation.VaultPropertySource;
 import org.springframework.vault.authentication.ClientAuthentication;
@@ -9,9 +11,12 @@ import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
 @Profile("dev")
+@Import(DevConfig.class)
 @Configuration
 @VaultPropertySource(value = "kv/preprod/fss/testnav-skjermingsregister-proxy/dev", ignoreSecretNotFound = false)
 public class DevVaultConfig extends AbstractVaultConfiguration {
+
+    private static final String PROPERTY_NAME = "spring.cloud.vault.token";
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -21,12 +26,12 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
     @Override
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
-            System.setProperty("spring.cloud.vault.token", System.getenv("VAULT_TOKEN"));
+            System.setProperty(PROPERTY_NAME, System.getenv("VAULT_TOKEN"));
         }
-        var token = System.getProperty("spring.cloud.vault.token");
+        var token = System.getProperty(PROPERTY_NAME);
         if (token == null) {
-            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException("Påkreved property '%s' er ikke satt.".formatted(PROPERTY_NAME));
         }
-        return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
+        return new TokenAuthentication(System.getProperty(PROPERTY_NAME));
     }
 }
