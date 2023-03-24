@@ -319,7 +319,11 @@ export const PersonVisning = ({
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
-				<ArbeidsplassenVisning data={arbeidsplassencvData} loading={loadingArbeidsplassencvData} />
+				<ArbeidsplassenVisning
+					data={arbeidsplassencvData}
+					loading={loadingArbeidsplassencvData}
+					ident={ident}
+				/>
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}

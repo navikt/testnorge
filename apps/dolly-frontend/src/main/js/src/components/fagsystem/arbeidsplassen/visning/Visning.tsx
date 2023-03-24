@@ -14,12 +14,16 @@ import { KursVisning } from '@/components/fagsystem/arbeidsplassen/visning/parti
 import { SammendragVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/SammendragVisning'
 import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/JobboenskerVisning'
 import Panel from '@/components/ui/panel/Panel'
+import { useArbeidsplassencvHjemmel } from '@/utils/hooks/useFagsystemer'
 
-export const ArbeidsplassenVisning = ({ data, loading }) => {
+export const ArbeidsplassenVisning = ({ data, loading, ident }) => {
 	if (loading) return <Loading label="Laster CV" />
 	if (!data) {
 		return null
 	}
+
+	const { arbeidsplassencvHjemmel } = useArbeidsplassencvHjemmel(ident?.ident)
+	console.log('arbeidsplassencvHjemmel: ', arbeidsplassencvHjemmel) //TODO - SLETT MEG
 
 	return (
 		<>
