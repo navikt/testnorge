@@ -18,9 +18,12 @@ import {
 	initialSpraakVerdier,
 	initialUtdanningVerdier,
 } from '@/components/fagsystem/arbeidsplassen/form/initialValues'
+import _get from 'lodash/get'
+import _has from 'lodash/has'
 
 export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 	const sm = stateModifier(ArbeidsplassenPanel.initialValues)
+
 	return (
 		<Panel
 			heading={ArbeidsplassenPanel.heading}
@@ -49,125 +52,182 @@ export const ArbeidsplassenPanel = ({ stateModifier, formikBag }) => {
 
 ArbeidsplassenPanel.heading = 'Arbeidsplassen (CV)'
 
-ArbeidsplassenPanel.initialValues = ({ set, del, has }) => ({
-	jobboensker: {
-		label: 'Har jobbønsker',
-		checked: has('arbeidsplassenCV.jobboensker'),
-		add() {
-			set('arbeidsplassenCV.jobboensker', initialJobboenskerVerdier)
+ArbeidsplassenPanel.initialValues = ({ setMulti, del, has, initial }) => {
+	const hjemmel = () => {
+		if (_has(initial, 'arbeidsplassenCV.harHjemmel')) {
+			return _get(initial, 'arbeidsplassenCV.harHjemmel')
+		}
+		return true
+	}
+
+	const fjernHjemmelPath = (fjernPath) => {
+		if (
+			initial?.arbeidsplassenCV &&
+			Object.keys(initial.arbeidsplassenCV)?.length === 2 &&
+			_has(initial, fjernPath) &&
+			_has(initial, 'arbeidsplassenCV.harHjemmel')
+		) {
+			return [fjernPath, 'arbeidsplassenCV.harHjemmel']
+		}
+		return fjernPath
+	}
+
+	return {
+		jobboensker: {
+			label: 'Har jobbønsker',
+			checked: has('arbeidsplassenCV.jobboensker'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.jobboensker', initialJobboenskerVerdier],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.jobboensker'))
+			},
 		},
-		remove() {
-			del('arbeidsplassenCV.jobboensker')
+		utdanning: {
+			label: 'Har utdanning',
+			checked: has('arbeidsplassenCV.utdanning'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.utdanning', [initialUtdanningVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.utdanning'))
+			},
 		},
-	},
-	utdanning: {
-		label: 'Har utdanning',
-		checked: has('arbeidsplassenCV.utdanning'),
-		add() {
-			set('arbeidsplassenCV.utdanning', [initialUtdanningVerdier])
+		fagbrev: {
+			label: 'Har fagbrev',
+			checked: has('arbeidsplassenCV.fagbrev'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.fagbrev', [initialFagbrevVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.fagbrev'))
+			},
 		},
-		remove() {
-			del('arbeidsplassenCV.utdanning')
+		arbeidserfaring: {
+			label: 'Har arbeidserfaring',
+			checked: has('arbeidsplassenCV.arbeidserfaring'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.arbeidserfaring', [initialArbeidserfaringVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.arbeidserfaring'))
+			},
 		},
-	},
-	fagbrev: {
-		label: 'Har fagbrev',
-		checked: has('arbeidsplassenCV.fagbrev'),
-		add() {
-			set('arbeidsplassenCV.fagbrev', [initialFagbrevVerdier])
+		annenErfaring: {
+			label: 'Har andre erfaringer',
+			checked: has('arbeidsplassenCV.annenErfaring'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.annenErfaring', [initialAnnenErfaringVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.annenErfaring'))
+			},
 		},
-		remove() {
-			del('arbeidsplassenCV.fagbrev')
+		kompetanser: {
+			label: 'Har kompetanser',
+			checked: has('arbeidsplassenCV.kompetanser'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.kompetanser', [initialKompetanserVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.kompetanser'))
+			},
 		},
-	},
-	arbeidserfaring: {
-		label: 'Har arbeidserfaring',
-		checked: has('arbeidsplassenCV.arbeidserfaring'),
-		add() {
-			set('arbeidsplassenCV.arbeidserfaring', [initialArbeidserfaringVerdier])
+		offentligeGodkjenninger: {
+			label: 'Har offentlige godkjenninger',
+			checked: has('arbeidsplassenCV.offentligeGodkjenninger'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.offentligeGodkjenninger', [initialOffentligeGodkjenningerVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.offentligeGodkjenninger'))
+			},
 		},
-		remove() {
-			del('arbeidsplassenCV.arbeidserfaring')
+		andreGodkjenninger: {
+			label: 'Har andre godkjenninger',
+			checked: has('arbeidsplassenCV.andreGodkjenninger'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.andreGodkjenninger', [initialAndreGodkjenningerVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.andreGodkjenninger'))
+			},
 		},
-	},
-	annenErfaring: {
-		label: 'Har andre erfaringer',
-		checked: has('arbeidsplassenCV.annenErfaring'),
-		add() {
-			set('arbeidsplassenCV.annenErfaring', [initialAnnenErfaringVerdier])
+		spraak: {
+			label: 'Har språk',
+			checked: has('arbeidsplassenCV.spraak'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.spraak', [initialSpraakVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.spraak'))
+			},
 		},
-		remove() {
-			del('arbeidsplassenCV.annenErfaring')
+		foererkort: {
+			label: 'Har førerkort',
+			checked: has('arbeidsplassenCV.foererkort'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.foererkort', [initialFoererkortVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.foererkort'))
+			},
 		},
-	},
-	kompetanser: {
-		label: 'Har kompetanser',
-		checked: has('arbeidsplassenCV.kompetanser'),
-		add() {
-			set('arbeidsplassenCV.kompetanser', [initialKompetanserVerdier])
+		kurs: {
+			label: 'Har kurs',
+			checked: has('arbeidsplassenCV.kurs'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.kurs', [initialKursVerdier]],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.kurs'))
+			},
 		},
-		remove() {
-			del('arbeidsplassenCV.kompetanser')
+		sammendrag: {
+			label: 'Har sammendrag',
+			checked: has('arbeidsplassenCV.sammendrag'),
+			add() {
+				setMulti(
+					['arbeidsplassenCV.sammendrag', initialSammendragVerdi],
+					['arbeidsplassenCV.harHjemmel', hjemmel()]
+				)
+			},
+			remove() {
+				del(fjernHjemmelPath('arbeidsplassenCV.sammendrag'))
+			},
 		},
-	},
-	offentligeGodkjenninger: {
-		label: 'Har offentlige godkjenninger',
-		checked: has('arbeidsplassenCV.offentligeGodkjenninger'),
-		add() {
-			set('arbeidsplassenCV.offentligeGodkjenninger', [initialOffentligeGodkjenningerVerdier])
-		},
-		remove() {
-			del('arbeidsplassenCV.offentligeGodkjenninger')
-		},
-	},
-	andreGodkjenninger: {
-		label: 'Har andre godkjenninger',
-		checked: has('arbeidsplassenCV.andreGodkjenninger'),
-		add() {
-			set('arbeidsplassenCV.andreGodkjenninger', [initialAndreGodkjenningerVerdier])
-		},
-		remove() {
-			del('arbeidsplassenCV.andreGodkjenninger')
-		},
-	},
-	spraak: {
-		label: 'Har språk',
-		checked: has('arbeidsplassenCV.spraak'),
-		add() {
-			set('arbeidsplassenCV.spraak', [initialSpraakVerdier])
-		},
-		remove() {
-			del('arbeidsplassenCV.spraak')
-		},
-	},
-	foererkort: {
-		label: 'Har førerkort',
-		checked: has('arbeidsplassenCV.foererkort'),
-		add() {
-			set('arbeidsplassenCV.foererkort', [initialFoererkortVerdier])
-		},
-		remove() {
-			del('arbeidsplassenCV.foererkort')
-		},
-	},
-	kurs: {
-		label: 'Har kurs',
-		checked: has('arbeidsplassenCV.kurs'),
-		add() {
-			set('arbeidsplassenCV.kurs', [initialKursVerdier])
-		},
-		remove() {
-			del('arbeidsplassenCV.kurs')
-		},
-	},
-	sammendrag: {
-		label: 'Har sammendrag',
-		checked: has('arbeidsplassenCV.sammendrag'),
-		add() {
-			set('arbeidsplassenCV.sammendrag', initialSammendragVerdi)
-		},
-		remove() {
-			del('arbeidsplassenCV.sammendrag')
-		},
-	},
-})
+	}
+}
