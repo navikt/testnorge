@@ -1,5 +1,6 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
+import io.micrometer.common.lang.NonNullApi;
 import no.nav.testnav.libs.reactiveproxy.config.DevConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -14,6 +15,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @Import(DevConfig.class)
 @Configuration
 @VaultPropertySource(value = "kv/preprod/fss/testnav-skjermingsregister-proxy/dev", ignoreSecretNotFound = false)
+@NonNullApi
 public class DevVaultConfig extends AbstractVaultConfiguration {
 
     private static final String PROPERTY_NAME = "spring.cloud.vault.token";
@@ -34,4 +36,5 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
         }
         return new TokenAuthentication(System.getProperty(PROPERTY_NAME));
     }
+
 }
