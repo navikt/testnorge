@@ -244,7 +244,6 @@ export const PersonVisning = ({
 		)
 		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
 	}
-	console.log('getArbeidsplassencvHjemmel(): ', getArbeidsplassencvHjemmel()) //TODO - SLETT MEG
 
 	return (
 		<ErrorBoundary>
