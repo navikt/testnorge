@@ -49,7 +49,7 @@ export const MalForm = ({
 }
 
 MalForm.validation = {
-	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString.nullable()),
+	malBestillingNavn: ifPresent('$malBestillingNavn', requiredString),
 }
 
 export enum MalTyper {

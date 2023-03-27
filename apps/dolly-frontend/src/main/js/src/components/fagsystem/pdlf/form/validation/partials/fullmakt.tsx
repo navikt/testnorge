@@ -6,8 +6,8 @@ import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials/f
 export const fullmakt = Yup.array().of(
 	Yup.object({
 		omraader: Yup.array().min(1, 'Velg minst ett område'),
-		gyldigFraOgMed: testDatoFom(requiredDate, 'gyldigTilOgMed'),
-		gyldigTilOgMed: testDatoTom(requiredDate, 'gyldigFraOgMed'),
+		gyldigFraOgMed: testDatoFom(requiredDate.nullable(), 'gyldigTilOgMed'),
+		gyldigTilOgMed: testDatoTom(requiredDate.nullable(), 'gyldigFraOgMed'),
 		motpartsPersonident: Yup.string().nullable(),
 		nyFullmektig: nyPerson,
 	})

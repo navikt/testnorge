@@ -19,7 +19,7 @@ import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
 const initialValues = {
 	antall: 1,
 	identtype: Options('identtype')[0].value,
-	mal: null as string,
+	mal: null as unknown as string,
 }
 
 export type NyBestillingProps = {

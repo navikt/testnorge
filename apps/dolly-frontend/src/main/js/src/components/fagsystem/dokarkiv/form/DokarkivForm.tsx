@@ -236,19 +236,25 @@ DokarkivForm.validation = {
 				id: Yup.string()
 					.when('idType', {
 						is: 'ORGNR',
-						then: Yup.string()
-							.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
-							.test(
-								'len',
-								'Orgnummer må være et tall med 9 sifre',
-								(val) => val && val.length === 9
-							),
+						then: () =>
+							Yup.string()
+								.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
+								.test(
+									'len',
+									'Orgnummer må være et tall med 9 sifre',
+									(val) => val && val.length === 9
+								),
 					})
 					.when('idType', {
 						is: 'FNR',
-						then: Yup.string()
-							.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
-							.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
+						then: () =>
+							Yup.string()
+								.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
+								.test(
+									'len',
+									'Ident må være et tall med 11 sifre',
+									(val) => val && val.length === 11
+								),
 					}),
 				navn: Yup.string().optional(),
 			}),

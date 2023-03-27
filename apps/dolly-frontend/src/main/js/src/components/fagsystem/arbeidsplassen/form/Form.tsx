@@ -15,6 +15,7 @@ import { FoererkortForm } from '@/components/fagsystem/arbeidsplassen/form/parti
 import { KursForm } from '@/components/fagsystem/arbeidsplassen/form/partials/KursForm'
 import { SammendragForm } from '@/components/fagsystem/arbeidsplassen/form/partials/SammendragForm'
 import { validation } from '@/components/fagsystem/arbeidsplassen/form/validation'
+import { HjemmelForm } from '@/components/fagsystem/arbeidsplassen/form/partials/HjemmelForm'
 
 export const arbeidsplassenAttributt = 'arbeidsplassenCV'
 export const ArbeidsplassenForm = ({ formikBag }) => {
@@ -39,6 +40,7 @@ export const ArbeidsplassenForm = ({ formikBag }) => {
 					<FoererkortForm formikBag={formikBag} />
 					<KursForm formikBag={formikBag} />
 					<SammendragForm formikBag={formikBag} />
+					<HjemmelForm />
 				</div>
 			</Panel>
 		</Vis>

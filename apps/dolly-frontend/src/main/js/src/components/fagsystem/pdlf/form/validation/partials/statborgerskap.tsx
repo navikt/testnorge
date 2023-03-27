@@ -3,7 +3,7 @@ import { requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 export const statsborgerskap = Yup.object({
-	landkode: requiredString.nullable(),
+	landkode: requiredString,
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
 	bekreftelsesdato: Yup.date().optional().nullable(),

@@ -5,11 +5,11 @@ import * as _ from 'lodash-es'
 
 export const sikkerhetstiltak = Yup.array().of(
 	Yup.object({
-		tiltakstype: requiredString.nullable(),
+		tiltakstype: requiredString,
 		beskrivelse: Yup.string().nullable(),
 		kontaktperson: Yup.object({
-			personident: requiredString.nullable(),
-			enhet: requiredString.nullable(),
+			personident: requiredString,
+			enhet: requiredString,
 		}),
 		gyldigFraOgMed: requiredDate.nullable(),
 		gyldigTilOgMed: Yup.string()

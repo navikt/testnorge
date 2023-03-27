@@ -1,6 +1,8 @@
 package no.nav.testnav.libs.reactivecore.config;
 
 import io.micrometer.observation.ObservationRegistry;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.epoll.EpollChannelOption;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -36,6 +38,11 @@ public class WebClientConfig {
                             new ReactorClientHttpConnector(
                                     HttpClient
                                             .create()
+                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                                            .option(ChannelOption.SO_KEEPALIVE, true)
+                                            .option(EpollChannelOption.TCP_KEEPIDLE, 300)
+                                            .option(EpollChannelOption.TCP_KEEPINTVL, 60)
+                                            .option(EpollChannelOption.TCP_KEEPCNT, 8)
                                             .responseTimeout(Duration.ofSeconds(30))
                                             .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(30)))));
 

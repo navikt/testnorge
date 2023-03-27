@@ -1,36 +1,36 @@
 import { startOfToday } from 'date-fns'
 
 const navn = {
-	fornavn: null as string,
-	mellomnavn: null as string,
-	etternavn: null as string,
+	fornavn: null as unknown as string,
+	mellomnavn: null as unknown as string,
+	etternavn: null as unknown as string,
 }
 
 export const initialPdlPerson = {
-	identtype: null as string,
-	kjoenn: null as string,
-	foedtEtter: null as string,
-	foedtFoer: null as string,
-	alder: null as number,
+	identtype: null as unknown as string,
+	kjoenn: null as unknown as string,
+	foedtEtter: null as unknown as string,
+	foedtFoer: null as unknown as string,
+	alder: null as unknown as number,
 	syntetisk: true,
 	nyttNavn: {
 		hasMellomnavn: false,
 	},
-	statsborgerskapLandkode: null as string,
-	gradering: null as string,
+	statsborgerskapLandkode: null as unknown as string,
+	gradering: null as unknown as string,
 }
 
 export const initialPdlBiPerson = {
-	foedselsdato: null as string,
-	kjoenn: null as string,
+	foedselsdato: null as unknown as string,
+	kjoenn: null as unknown as string,
 	navn: navn,
-	statsborgerskap: null as string,
+	statsborgerskap: null as unknown as string,
 }
 
 export const initialKontaktadresse = {
-	adressetype: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
+	adressetype: null as unknown as string,
+	gyldigFraOgMed: null as unknown as string,
+	gyldigTilOgMed: null as unknown as string,
 	opprettCoAdresseNavn: null as object,
 	kilde: 'Dolly',
 	master: 'FREG',
@@ -42,67 +42,67 @@ export const initialOppholdsadresse = {
 
 export const initialBostedsadresse = {
 	...initialKontaktadresse,
-	angittFlyttedato: null as string,
+	angittFlyttedato: null as unknown as string,
 }
 
 export const initialDeltBosted = {
-	adressetype: null as string,
-	startdatoForKontrakt: null as string,
-	sluttdatoForKontrakt: null as string,
+	adressetype: null as unknown as string,
+	startdatoForKontrakt: null as unknown as string,
+	sluttdatoForKontrakt: null as unknown as string,
 }
 
 export const initialAdressebeskyttelse = {
-	gradering: null as string,
+	gradering: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialVegadresse = {
-	adressekode: null as string,
-	adressenavn: null as string,
-	tilleggsnavn: null as string,
-	bruksenhetsnummer: null as string,
-	husbokstav: null as string,
-	husnummer: null as string,
-	kommunenummer: null as string,
-	postnummer: null as string,
+	adressekode: null as unknown as string,
+	adressenavn: null as unknown as string,
+	tilleggsnavn: null as unknown as string,
+	bruksenhetsnummer: null as unknown as string,
+	husbokstav: null as unknown as string,
+	husnummer: null as unknown as string,
+	kommunenummer: null as unknown as string,
+	postnummer: null as unknown as string,
 }
 
 export const initialMatrikkeladresse = {
-	kommunenummer: null as string,
-	gaardsnummer: null as number,
-	bruksnummer: null as number,
-	postnummer: null as string,
-	bruksenhetsnummer: null as string,
-	tilleggsnavn: null as string,
+	kommunenummer: null as unknown as string,
+	gaardsnummer: null as unknown as number,
+	bruksnummer: null as unknown as number,
+	postnummer: null as unknown as string,
+	bruksenhetsnummer: null as unknown as string,
+	tilleggsnavn: null as unknown as string,
 }
 
 export const initialUtenlandskAdresse = {
-	adressenavnNummer: null as string,
-	postboksNummerNavn: null as string,
-	postkode: null as string,
-	bySted: null as string,
-	landkode: null as string,
-	bygningEtasjeLeilighet: null as string,
-	regionDistriktOmraade: null as string,
+	adressenavnNummer: null as unknown as string,
+	postboksNummerNavn: null as unknown as string,
+	postkode: null as unknown as string,
+	bySted: null as unknown as string,
+	landkode: null as unknown as string,
+	bygningEtasjeLeilighet: null as unknown as string,
+	regionDistriktOmraade: null as unknown as string,
 }
 
 export const initialPostboksadresse = {
-	postboks: null as string,
-	postbokseier: null as string,
-	postnummer: null as string,
+	postboks: null as unknown as string,
+	postbokseier: null as unknown as string,
+	postnummer: null as unknown as string,
 }
 
 export const initialUkjentBosted = {
-	bostedskommune: null as string,
+	bostedskommune: null as unknown as string,
 }
 
-export const initialOppholdAnnetSted = null as string
+export const initialOppholdAnnetSted = null as unknown as string
 
 export const initialKontaktinfoForDoedebo = {
-	skifteform: null as string,
-	attestutstedelsesdato: null as string,
-	kontaktType: null as string,
+	skifteform: null as unknown as string,
+	attestutstedelsesdato: null as unknown as string,
+	kontaktType: null as unknown as string,
 	adresse: {
 		adresselinje1: '',
 		adresselinje2: '',
@@ -122,7 +122,7 @@ export const initialSikkerhetstiltak = {
 		enhet: '',
 	},
 	gyldigFraOgMed: startOfToday(),
-	gyldigTilOgMed: null as string,
+	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
@@ -131,20 +131,20 @@ export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
 	gyldigFraOgMed: startOfToday(),
-	gyldigTilOgMed: null as string,
+	gyldigTilOgMed: null as unknown as string,
 }
 
 export const initialStatsborgerskap = {
-	landkode: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
+	landkode: null as unknown as string,
+	gyldigFraOgMed: null as unknown as string,
+	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialTilrettelagtKommunikasjon = {
-	spraakForTaletolk: null as string,
-	spraakForTegnspraakTolk: null as string,
+	spraakForTaletolk: null as unknown as string,
+	spraakForTegnspraakTolk: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
@@ -156,24 +156,24 @@ export const initialDoedsfall = {
 }
 
 export const initialFoedsel = {
-	foedekommune: null as string,
-	foedeland: null as string,
-	foedested: null as string,
-	foedselsaar: null as number,
-	foedselsdato: null as string,
+	foedekommune: null as unknown as string,
+	foedeland: null as unknown as string,
+	foedested: null as unknown as string,
+	foedselsaar: null as unknown as number,
+	foedselsdato: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialOrganisasjon = {
-	organisasjonsnummer: null as string,
-	organisasjonsnavn: null as string,
+	organisasjonsnummer: null as unknown as string,
+	organisasjonsnavn: null as unknown as string,
 	kontaktperson: navn,
 }
 
 export const initialPerson = {
-	identifikasjonsnummer: null as string,
-	foedselsdato: null as string,
+	identifikasjonsnummer: null as unknown as string,
+	foedselsdato: null as unknown as string,
 	navn: null as typeof navn,
 }
 
@@ -198,7 +198,7 @@ export const initialFalskIdentitetValues = {
 export const initialInnvandring = {
 	fraflyttingsland: '',
 	fraflyttingsstedIUtlandet: '',
-	innflyttingsdato: null as string,
+	innflyttingsdato: null as unknown as string,
 	master: 'FREG',
 	kilde: 'Dolly',
 }
@@ -206,16 +206,16 @@ export const initialInnvandring = {
 export const initialUtvandring = {
 	tilflyttingsland: '',
 	tilflyttingsstedIUtlandet: '',
-	utflyttingsdato: null as string,
+	utflyttingsdato: null as unknown as string,
 	master: 'FREG',
 	kilde: 'Dolly',
 }
 
 export const initialSivilstand = {
-	type: null as string,
-	sivilstandsdato: null as string,
-	relatertVedSivilstand: null as string,
-	bekreftelsesdato: null as string,
+	type: null as unknown as string,
+	sivilstandsdato: null as unknown as string,
+	relatertVedSivilstand: null as unknown as string,
+	bekreftelsesdato: null as unknown as string,
 	borIkkeSammen: false,
 	nyRelatertPerson: initialPdlPerson,
 	kilde: 'Dolly',
@@ -223,28 +223,28 @@ export const initialSivilstand = {
 }
 
 export const initialKjoenn = {
-	kjoenn: null as string,
+	kjoenn: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialNavn = {
-	fornavn: null as string,
-	mellomnavn: null as string,
-	etternavn: null as string,
+	fornavn: null as unknown as string,
+	mellomnavn: null as unknown as string,
+	etternavn: null as unknown as string,
 	hasMellomnavn: false,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialVergemaal = {
-	vergemaalEmbete: null as string,
-	sakType: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
+	vergemaalEmbete: null as unknown as string,
+	sakType: null as unknown as string,
+	gyldigFraOgMed: null as unknown as string,
+	gyldigTilOgMed: null as unknown as string,
 	nyVergeIdent: initialPdlPerson,
-	vergeIdent: null as string,
-	mandatType: null as string,
+	vergeIdent: null as unknown as string,
+	mandatType: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -253,7 +253,7 @@ export const initialForelder = {
 	minRolleForPerson: 'BARN',
 	relatertPersonsRolle: 'FORELDER',
 	borIkkeSammen: false,
-	typeForelderBarn: null as string,
+	typeForelderBarn: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
@@ -262,7 +262,7 @@ export const initialBarn = {
 	minRolleForPerson: 'FORELDER',
 	relatertPersonsRolle: 'BARN',
 	partnerErIkkeForelder: false,
-	typeForelderBarn: null as string,
+	typeForelderBarn: null as unknown as string,
 	deltBosted: null as any,
 	kilde: 'Dolly',
 	master: 'FREG',
@@ -275,20 +275,20 @@ export const initialDoedfoedtBarn = {
 }
 
 export const initialForeldreansvar = {
-	typeAnsvarlig: null as string,
-	ansvar: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
+	typeAnsvarlig: null as unknown as string,
+	ansvar: null as unknown as string,
+	gyldigFraOgMed: null as unknown as string,
+	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
 
 export const initialNyIdent = {
-	eksisterendeIdent: null as string,
-	identtype: null as string,
-	kjoenn: null as string,
-	foedtEtter: null as string,
-	foedtFoer: null as string,
+	eksisterendeIdent: null as unknown as string,
+	identtype: null as unknown as string,
+	kjoenn: null as unknown as string,
+	foedtEtter: null as unknown as string,
+	foedtFoer: null as unknown as string,
 	alder: '',
 	syntetisk: true,
 	nyttNavn: {
@@ -300,17 +300,17 @@ export const initialNyIdent = {
 
 export const initialFullmakt = {
 	omraader: [] as any,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
-	motpartsPersonident: null as string,
+	gyldigFraOgMed: null as unknown as string,
+	gyldigTilOgMed: null as unknown as string,
+	motpartsPersonident: null as unknown as string,
 	nyFullmektig: initialPdlPerson,
 	kilde: 'Dolly',
 	master: 'PDL',
 }
 
 export const initialOpphold = {
-	oppholdFra: null as Date,
-	oppholdTil: null as Date,
+	oppholdFra: null as unknown as Date,
+	oppholdTil: null as unknown as Date,
 	type: 'OPPLYSNING_MANGLER',
 	kilde: 'Dolly',
 	master: 'FREG',
@@ -331,9 +331,9 @@ export const initialTpsTelefonnummer = {
 }
 
 export const initialPersonstatus = {
-	status: null as string,
-	gyldigFraOgMed: null as string,
-	gyldigTilOgMed: null as string,
+	status: null as unknown as string,
+	gyldigFraOgMed: null as unknown as string,
+	gyldigTilOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

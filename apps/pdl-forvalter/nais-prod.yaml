@@ -55,8 +55,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-idporten
           cluster: dev-gcp
-        - application: testnav-import-fra-tpsf-service
-          cluster: dev-gcp
     outbound:
       rules:
         - application: generer-navn-service

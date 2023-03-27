@@ -4,8 +4,8 @@ import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import { nyPerson } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 
 export const vergemaal = Yup.object({
-	vergemaalEmbete: requiredString.nullable(),
-	sakType: requiredString.nullable(),
+	vergemaalEmbete: requiredString,
+	sakType: requiredString,
 	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
 	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
 	nyVergeIdent: nyPerson,

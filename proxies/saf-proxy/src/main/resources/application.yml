@@ -15,6 +15,12 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: ${TOKEN_X_CLIENT_ID}
+  cloud:
+    gateway:
+      httpclient:
+        response-timeout: 1200s
+    vault:
+      enabled: false
 
 consumers:
   saf:

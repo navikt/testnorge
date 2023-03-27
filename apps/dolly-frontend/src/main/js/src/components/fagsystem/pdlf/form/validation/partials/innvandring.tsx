@@ -21,5 +21,5 @@ const validInnflyttingsdato = (val) => {
 export const innflytting = Yup.object({
 	fraflyttingsland: requiredString,
 	fraflyttingsstedIUtlandet: Yup.string().optional().nullable(),
-	innflyttingsdato: validInnflyttingsdato(requiredDate),
+	innflyttingsdato: validInnflyttingsdato(requiredDate.nullable()),
 })

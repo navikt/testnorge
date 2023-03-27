@@ -27,7 +27,7 @@ const initialValuesDiagnose = {
 
 const initialValuesPeriode = {
 	aktivitet: {
-		aktivitet: null as string,
+		aktivitet: null as unknown as string,
 		behandlingsdager: 0,
 		grad: 0,
 		reisetilskudd: false,

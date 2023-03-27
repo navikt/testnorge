@@ -16,7 +16,7 @@ import {
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
 
 const initialValues = {
-	mal: null as string,
+	mal: null as unknown as string,
 }
 
 const InputDiv = styled.div`

@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
-import { ifPresent, requiredBoolean, requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredBoolean, requiredString } from '@/utils/YupValidations'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 
 const checkUndefined = (value) => {
@@ -16,7 +16,7 @@ const aliaser = Yup.array().of(
 		identtype: Yup.string()
 			.when('nyIdent', {
 				is: true,
-				then: requiredString,
+				then: () => requiredString,
 			})
 			.nullable(),
 	})

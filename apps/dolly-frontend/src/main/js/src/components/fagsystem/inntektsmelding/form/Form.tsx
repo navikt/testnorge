@@ -237,17 +237,17 @@ InntektsmeldingForm.validation = {
 	inntektsmelding: Yup.object({
 		inntekter: Yup.array().of(
 			Yup.object({
-				aarsakTilInnsending: requiredString.nullable(),
+				aarsakTilInnsending: requiredString,
 				arbeidsgiver: Yup.object({
 					virksomhetsnummer: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiver.virksomhetsnummer',
-						requiredString.nullable().matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer')
+						requiredString.matches(/^\d{9}$/, 'Orgnummer må være et tall med 9 siffer')
 					),
 				}),
 				arbeidsgiverPrivat: Yup.object({
 					arbeidsgiverFnr: ifPresent(
 						'$inntektsmelding.inntekter[0].arbeidsgiverPrivat.arbeidsgiverFnr',
-						requiredString.nullable().matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer')
+						requiredString.matches(/^\d{11}$/, 'Ident må være et tall med 11 siffer')
 					),
 				}),
 				arbeidsforhold: Yup.object({
