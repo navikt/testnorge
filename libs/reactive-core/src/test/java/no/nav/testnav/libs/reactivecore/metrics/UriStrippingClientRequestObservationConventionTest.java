@@ -1,7 +1,6 @@
 package no.nav.testnav.libs.reactivecore.metrics;
 
 import io.micrometer.common.KeyValue;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.web.reactive.function.client.ClientRequest;
@@ -15,7 +14,6 @@ import java.net.URISyntaxException;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.springframework.http.HttpMethod.GET;
 
-@Slf4j
 class UriStrippingClientRequestObservationConventionTest {
 
     private static final String HOST = "nowhere.net";
