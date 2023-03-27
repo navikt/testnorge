@@ -56,14 +56,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-resource-server'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
-    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 
     implementation 'org.flywaydb:flyway-core'
