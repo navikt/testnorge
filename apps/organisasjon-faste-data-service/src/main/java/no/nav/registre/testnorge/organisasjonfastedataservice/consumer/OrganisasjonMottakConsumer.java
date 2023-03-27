@@ -2,11 +2,8 @@ package no.nav.registre.testnorge.organisasjonfastedataservice.consumer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
-
-import java.util.Optional;
-import java.util.stream.Collectors;
-
+import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Adresse;
+import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
 import no.nav.testnav.libs.avro.organisasjon.v1.DetaljertNavn;
 import no.nav.testnav.libs.avro.organisasjon.v1.Endringsdokument;
 import no.nav.testnav.libs.avro.organisasjon.v1.Epost;
@@ -15,8 +12,10 @@ import no.nav.testnav.libs.avro.organisasjon.v1.Metadata;
 import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
-import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Adresse;
-import no.nav.registre.testnorge.organisasjonfastedataservice.domain.Organisasjon;
+import org.springframework.stereotype.Component;
+
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -87,7 +86,7 @@ public class OrganisasjonMottakConsumer {
             return null;
         }
 
-        if(adresse.getKommunenr() == null){
+        if (adresse.getKommunenr() == null) {
             log.warn("Kommunenr kan ikke være null. Adresse blir satt til null.");
             return null;
         }
