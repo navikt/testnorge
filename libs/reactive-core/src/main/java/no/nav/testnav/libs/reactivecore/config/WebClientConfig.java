@@ -2,7 +2,7 @@ package no.nav.testnav.libs.reactivecore.config;
 
 import io.micrometer.observation.ObservationRegistry;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivecore.metrics.CustomClientRequestObservationConvention;
+import no.nav.testnav.libs.reactivecore.metrics.UriStrippingClientRequestObservationConvention;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -60,7 +60,7 @@ public class WebClientConfig {
 
     @Bean
     public ClientRequestObservationConvention clientRequestObservationConvention() {
-        return new CustomClientRequestObservationConvention();
+        return new UriStrippingClientRequestObservationConvention();
     }
 
 }
