@@ -38,7 +38,8 @@ const journalpostUrl = (transaksjonsid, miljoer) =>
 		}
 	})
 
-const arbeidsforholdcvUrl = (ident: string) => `/testnav-arbeidsplassencv-proxy/rest/v2/cv`
+const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
+const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -139,12 +140,25 @@ export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilli
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		[arbeidsforholdcvUrl(ident), { fnr: ident }],
+		[arbeidsforholdcvUrl, { fnr: ident }],
 		([url, headers]) => fetcher(url, headers)
 	)
 
 	return {
 		arbeidsplassencvData: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useArbeidsplassencvHjemmel = (ident: string) => {
+	const { data, error } = useSWR<any, Error>(
+		[arbeidsforholdcvHjemmelUrl, { fnr: ident }],
+		([url, headers]) => fetcher(url, headers)
+	)
+
+	return {
+		arbeidsplassencvHjemmel: data,
 		loading: !error && !data,
 		error: error,
 	}

@@ -15,6 +15,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -199,10 +200,11 @@ public class BankkontoExcelService {
     }
 
     private Mono<List<Object[]>> kontoregisterBankkonto(List<String> identer) {
-        return Flux.range(0, identer.size())
-                .flatMap(index -> kontoregisterConsumer.getKontonummer(identer.get(index)))
-                .filter(konto -> konto != null && konto.getAktivKonto() != null)
-                .map(konto -> unpackBankkonto(konto.getAktivKonto()))
+
+        return Flux.fromIterable(identer)
+                .flatMap(ident -> kontoregisterConsumer.getKontonummer(ident)
+                        .filter(response -> HttpStatus.OK.equals(response.getStatus()))
+                        .map(response -> unpackBankkonto(response.getAktivKonto())))
                 .collectList();
     }
 

@@ -47,21 +47,25 @@ public class KontoregisterConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "kontoregister_postBankkontoregister"})
+    @Timed(name = "providers", tags = {"operation", "kontoregister_opprettKontonummer"})
 
-    public Mono<KontoregisterResponseDTO> postKontonummerRegister(OppdaterKontoRequestDTO bankdetaljer) {
+    public Mono<KontoregisterResponseDTO> opprettKontonummer(OppdaterKontoRequestDTO bankdetaljer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new KontoregisterPostCommand(webClient, bankdetaljer, token.getTokenValue()).call());
+                .flatMap(token -> new KontoregisterPostCommand(webClient, bankdetaljer, token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Opprettet kontonummer for ident {} {}", bankdetaljer.getKontohaver(), response));
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_hentKonto"})
     public Mono<HentKontoResponseDTO> getKontonummer(String ident) {
 
-        var requestDto = new HentKontoRequestDTO(ident, false);
-
         return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new KontoregisterGetCommand(webClient, requestDto, token.getTokenValue()).call());
+                .flatMap(token -> new KontoregisterGetCommand(webClient,
+                        HentKontoRequestDTO.builder()
+                                .kontohaver(ident)
+                                .build(),
+                        token.getTokenValue()).call())
+                .doOnNext(response -> log.info("Hentet kontonummer for ident {} {}", ident, response));
     }
 
     @Timed(name = "providers", tags = {"operation", "kontoregister_slettKonto"})
@@ -73,7 +77,6 @@ public class KontoregisterConsumer implements ConsumerStatus {
                         .flatMap(index -> new KontoregisterDeleteCommand(
                                 webClient, identer.get(index), token.getTokenValue()
                         ).call()));
-
     }
 
     @Override

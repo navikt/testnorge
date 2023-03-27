@@ -10,6 +10,7 @@ import {
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
+import _has from 'lodash/has'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1356,6 +1357,16 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 					label: 'Oppsummering',
 					value: CVKriterier.sammendrag,
 					width: 'xlarge',
+				},
+			])
+		}
+
+		if (_has(CVKriterier, 'harHjemmel')) {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: 'Hjemmel' },
+				{
+					label: 'Godta hjemmel',
+					value: Formatters.oversettBoolean(CVKriterier.harHjemmel),
 				},
 			])
 		}
