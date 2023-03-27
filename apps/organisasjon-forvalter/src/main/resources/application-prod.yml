@@ -30,3 +30,6 @@ spring:
     properties:
       hibernate:
         default-schema: public
+  cloud:
+    vault:
+      enabled: false

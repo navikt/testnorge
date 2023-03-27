@@ -47,13 +47,6 @@ repositories {
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 
-configurations {
-    configureEach {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
-        exclude group: 'ch.qos.logback', module: 'logback-classic'
-    }
-}
-
 dependencies {
 
     implementation 'no.nav.testnav.libs:kafka-config'
@@ -73,13 +66,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-security'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap' // TODO remove legacy bootstrap config
-
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'
     implementation 'org.springframework.cloud:spring-cloud-vault-config-databases'
-    implementation 'org.springframework.boot:spring-boot-starter-actuator'
-
-    implementation 'io.micrometer:micrometer-registry-prometheus'
 
     implementation 'org.apache.avro:avro:1.11.0'
     implementation 'org.flywaydb:flyway-core'
@@ -90,18 +78,19 @@ dependencies {
     implementation 'ma.glasnost.orika:orika-core:1.5.4'
     implementation 'org.hibernate.validator:hibernate-validator'
 
-    implementation 'ch.qos.logback:logback-core:1.2.11'
+//    implementation 'ch.qos.logback:logback-core:1.2.11'
     implementation 'net.logstash.logback:logstash-logback-encoder:7.3'
-    implementation 'ch.qos.logback:logback-classic:1.2.11'
-    implementation 'org.slf4j:slf4j-api:1.7.36'
+//    implementation 'ch.qos.logback:logback-classic:1.2.11'
+//    implementation 'org.slf4j:slf4j-api:1.7.36'
 
-    implementation 'org.springframework.data:spring-data-commons'
+//    implementation 'org.springframework.data:spring-data-commons'
 
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.0.0'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+//    implementation 'jakarta.persistence:jakarta.persistence-api:3.0.0'
+//    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
     implementation 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
 
     testImplementation 'com.h2database:h2'
     testImplementation 'no.nav.testnav.libs:testing'
