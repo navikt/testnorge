@@ -7,7 +7,7 @@ const testTelefonnummer = () =>
 		.max(20, 'Telefonnummer kan ikke ha mer enn 20 sifre')
 		.when('landskode', {
 			is: '+47',
-			then: Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
+			then: () => Yup.string().length(8, 'Norsk telefonnummer må ha 8 sifre'),
 		})
 		.required('Feltet er påkrevd')
 		.matches(/^[1-9]\d*$/, 'Telefonnummer må være numerisk, og kan ikke starte med 0')
@@ -29,5 +29,5 @@ const testPrioritet = (val) => {
 export const telefonnummer = Yup.object({
 	landskode: requiredString,
 	nummer: testTelefonnummer(),
-	prioritet: testPrioritet(Yup.mixed().required()).nullable(),
+	prioritet: testPrioritet(Yup.mixed().required()),
 }).nullable()

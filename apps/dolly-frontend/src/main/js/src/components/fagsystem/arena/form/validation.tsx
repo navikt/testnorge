@@ -299,10 +299,12 @@ export const validation = Yup.object({
 		})
 	),
 	arenaBrukertype: requiredString,
-	inaktiveringDato: Yup.mixed().nullable().when('arenaBrukertype', {
-		is: 'UTEN_SERVICEBEHOV',
-		then: requiredDate,
-	}),
+	inaktiveringDato: Yup.mixed()
+		.nullable()
+		.when('arenaBrukertype', {
+			is: 'UTEN_SERVICEBEHOV',
+			then: () => requiredDate,
+		}),
 	automatiskInnsendingAvMeldekort: Yup.boolean().nullable(),
 	kvalifiseringsgruppe: Yup.string()
 		.test('har-verdi', messages.required, function validKvalifiseringsgruppe(gruppe) {

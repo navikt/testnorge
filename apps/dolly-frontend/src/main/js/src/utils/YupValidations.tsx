@@ -42,13 +42,13 @@ export const requiredNumber = Yup.number().required(messages.required)
 export const ifPresent = (key, schema) =>
 	Yup.mixed().when(key, {
 		is: (v) => !_.isUndefined(v),
-		then: schema,
-		otherwise: Yup.mixed().notRequired(),
+		then: () => schema,
+		otherwise: () => Yup.mixed().notRequired(),
 	})
 
 export const ifKeyHasValue = (key, values, schema) =>
 	Yup.mixed().when(key, {
 		is: (v) => values.includes(v),
-		then: schema,
-		otherwise: Yup.mixed().notRequired(),
+		then: () => schema,
+		otherwise: () => Yup.mixed().notRequired(),
 	})

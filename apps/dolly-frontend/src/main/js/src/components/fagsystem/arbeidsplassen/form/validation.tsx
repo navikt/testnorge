@@ -16,11 +16,14 @@ export const validation = {
 			Yup.array().of(
 				Yup.object({
 					nuskode: requiredString,
-					startDate: testDatoFom(requiredDate, 'endDate', 'Dato må være før sluttdato'),
-					endDate: Yup.mixed().when('ongoing', {
-						is: false,
-						then: testDatoTom(requiredDate, 'startDate', 'Dato må være etter startdato'),
-					}),
+					startDate: testDatoFom(requiredDate.nullable(), 'endDate', 'Dato må være før sluttdato'),
+					endDate: Yup.mixed()
+						.when('ongoing', {
+							is: false,
+							then: () =>
+								testDatoTom(requiredDate.nullable(), 'startDate', 'Dato må være etter startdato'),
+						})
+						.nullable(),
 				})
 			)
 		),
@@ -37,11 +40,14 @@ export const validation = {
 			Yup.array().of(
 				Yup.object({
 					styrkkode: requiredString,
-					fromDate: testDatoFom(requiredDate, 'toDate', 'Dato må være før tildato'),
-					toDate: Yup.mixed().when('ongoing', {
-						is: false,
-						then: testDatoTom(requiredDate, 'fromDate', 'Dato må være etter fradato'),
-					}),
+					fromDate: testDatoFom(requiredDate.nullable(), 'toDate', 'Dato må være før tildato'),
+					toDate: Yup.mixed()
+						.when('ongoing', {
+							is: false,
+							then: () =>
+								testDatoTom(requiredDate.nullable(), 'fromDate', 'Dato må være etter fradato'),
+						})
+						.nullable(),
 				})
 			)
 		),
@@ -66,7 +72,7 @@ export const validation = {
 			Yup.array().of(
 				Yup.object({
 					title: requiredString,
-					fromDate: testDatoFom(requiredDate, 'toDate', 'Dato må være før utløpsdato'),
+					fromDate: testDatoFom(requiredDate.nullable(), 'toDate', 'Dato må være før utløpsdato'),
 					toDate: testDatoTom(
 						Yup.date().nullable(),
 						'fromDate',
@@ -80,7 +86,7 @@ export const validation = {
 			Yup.array().of(
 				Yup.object({
 					certificateName: requiredString,
-					fromDate: testDatoFom(requiredDate, 'toDate', 'Dato må være før utløpsdato'),
+					fromDate: testDatoFom(requiredDate.nullable(), 'toDate', 'Dato må være før utløpsdato'),
 					toDate: testDatoTom(
 						Yup.date().nullable(),
 						'fromDate',
@@ -112,7 +118,7 @@ export const validation = {
 					title: requiredString,
 					duration: Yup.mixed().when('durationUnit', {
 						is: (val) => val !== null,
-						then: requiredString.nullable() || requiredNumber.nullable(),
+						then: () => requiredString || requiredNumber,
 					}),
 				})
 			)
