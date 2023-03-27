@@ -12,6 +12,7 @@ import no.nav.testnav.libs.avro.organisasjon.v1.Metadata;
 import no.nav.testnav.libs.avro.organisasjon.v1.Opprettelsesdokument;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.EndringsdokumentV2Producer;
 import no.nav.testnav.libs.kafkaproducers.organisasjon.v2.OpprettelsesdokumentV2Producer;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -86,7 +87,7 @@ public class OrganisasjonMottakConsumer {
             return null;
         }
 
-        if (adresse.getKommunenr() == null) {
+        if (StringUtils.isBlank(adresse.getKommunenr())) {
             log.warn("Kommunenr kan ikke være null. Adresse blir satt til null.");
             return null;
         }
