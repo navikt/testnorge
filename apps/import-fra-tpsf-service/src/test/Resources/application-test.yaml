@@ -1,8 +1,0 @@
-
-mq:
-  dev:
-    username: nada
-    password: nada
-  test:
-    username: nada
-    password: nada
