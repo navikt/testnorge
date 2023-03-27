@@ -7,10 +7,10 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -52,7 +52,7 @@ public class ArenaforvalterPostArenadagpenger implements Callable<Flux<ArenaNyeD
                                         .melding(WebClientFilter.getMessage(error))
                                         .build()))
                                 .build()))
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.InternalServerError,
-                        throwable -> Mono.empty());
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }
