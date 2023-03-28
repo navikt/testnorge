@@ -2,7 +2,6 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
@@ -62,9 +61,6 @@ class ArenaForvalterClientTest {
 
     @Mock
     private AccessToken accessToken;
-
-    @Mock
-    private PdlPersonBolk pdlPersonBolk;
 
     @Captor
     ArgumentCaptor<String> statusCaptor;

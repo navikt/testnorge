@@ -3,7 +3,6 @@ package no.nav.dolly.bestilling.arenaforvalter;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
-import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.hamcrest.CoreMatchers;
@@ -51,9 +50,6 @@ class ArenaForvalterConsumerTest {
     private TokenExchange tokenService;
 
     @MockBean
-    private ErrorStatusDecoder errorStatusDecoder;
-
-    @MockBean
     private AccessToken accessToken;
 
     @Autowired
@@ -70,7 +66,7 @@ class ArenaForvalterConsumerTest {
 
         stubDeleteArenaForvalterBruker();
 
-        var response = arenaForvalterConsumer.deleteIdenter(List.of(IDENT)).block();
+        var response = arenaForvalterConsumer.deleteIdenter(List.of(IDENT)).collectList().block();
 
         verify(tokenService).exchange(ArgumentMatchers.any(ArenaforvalterProxyProperties.class));
     }
@@ -96,9 +92,9 @@ class ArenaForvalterConsumerTest {
 
         stubGetArenaForvalterBruker();
 
-        var response = arenaForvalterConsumer.getIdent(IDENT);
+        var response = arenaForvalterConsumer.getBruker(IDENT, ENV, accessToken).block();
 
-        assertThat("Response should be 200 successful", response.getStatusCode().is2xxSuccessful());
+        assertThat("Response should be 200 successful", response.getStatus().is2xxSuccessful());
     }
 
     private void stubDeleteArenaForvalterBruker() {
