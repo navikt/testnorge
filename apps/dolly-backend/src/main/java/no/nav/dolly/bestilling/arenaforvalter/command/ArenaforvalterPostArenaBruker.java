@@ -21,7 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
-public class ArenaforvalterPostArenadata implements Callable<Flux<ArenaNyeBrukereResponse>> {
+public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBrukereResponse>> {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 

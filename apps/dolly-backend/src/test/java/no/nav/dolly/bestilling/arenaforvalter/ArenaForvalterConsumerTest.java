@@ -77,7 +77,7 @@ class ArenaForvalterConsumerTest {
         stubPostArenaForvalterBruker();
 
         var response =
-                arenaForvalterConsumer.postArenadata(ArenaNyeBrukere.builder()
+                arenaForvalterConsumer.postArenaBruker(ArenaNyeBrukere.builder()
                                 .nyeBrukere(singletonList(ArenaNyBruker.builder().personident(IDENT).build()))
                                 .build(), accessToken)
                         .collectList()
@@ -92,7 +92,7 @@ class ArenaForvalterConsumerTest {
 
         stubGetArenaForvalterBruker();
 
-        var response = arenaForvalterConsumer.getBruker(IDENT, ENV, accessToken).block();
+        var response = arenaForvalterConsumer.getBruker(IDENT, ENV, accessToken).blockFirst();
 
         assertThat("Response should be 200 successful", response.getStatus().is2xxSuccessful());
     }

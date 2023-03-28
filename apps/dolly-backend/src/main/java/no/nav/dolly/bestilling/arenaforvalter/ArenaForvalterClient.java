@@ -65,7 +65,7 @@ public class ArenaForvalterClient implements ClientRegister {
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe, token)
                         .flatMap(response -> response.getArbeidsokerList().isEmpty() ?
-                                sendArenadata(arenadata, ident, miljoe, token) :
+                                sendArenaBruker(arenadata, ident, miljoe, token) :
                                 Flux.just(String.format(STATUS_FMT, miljoe, "OK")))
                         .flatMap(brukerStatus -> brukerStatus.contains("OK") &&
                                 !arenadata.getDagpenger().isEmpty() ?
@@ -91,7 +91,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Arena-forvalteren"));
     }
 
-    private Flux<String> sendArenadata(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+    private Flux<String> sendArenaBruker(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
         return Flux.just(arenadata)
                 .map(arenadata1 -> {
@@ -102,7 +102,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     arenaNyeBrukere.getNyeBrukere().get(0).setMiljoe(miljoe);
                     return arenaNyeBrukere;
                 })
-                .flatMap(arenaNyeBrukere -> arenaForvalterConsumer.postArenadata(arenaNyeBrukere, token)
+                .flatMap(arenaNyeBrukere -> arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere, token)
                         .map(respons -> {
                             if (!respons.getStatus().is2xxSuccessful()) {
                                 return String.format(STATUS_FMT, miljoe,

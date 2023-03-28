@@ -78,7 +78,7 @@ class ArenaForvalterClientTest {
         when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
                 .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
                 .build());
-        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class), eq(accessToken)))
+        when(arenaForvalterConsumer.postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken)))
                 .thenReturn(Flux.just(
                         ArenaNyeBrukereResponse.builder()
                                 .arbeidsokerList(singletonList(ArenaNyeBrukereResponse.Bruker.builder()
@@ -105,7 +105,7 @@ class ArenaForvalterClientTest {
                 .verifyComplete();
 
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
-        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
+        verify(arenaForvalterConsumer).postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
     @Test
@@ -116,7 +116,7 @@ class ArenaForvalterClientTest {
         when(mapperFacade.map(any(Arenadata.class), eq(ArenaNyBruker.class))).thenReturn(ArenaNyBruker.builder()
                 .kvalifiseringsgruppe(ArenaKvalifiseringsgruppe.IKVAL)
                 .build());
-        when(arenaForvalterConsumer.postArenadata(any(ArenaNyeBrukere.class), eq(accessToken)))
+        when(arenaForvalterConsumer.postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken)))
                 .thenReturn(Flux.just(
                         ArenaNyeBrukereResponse.builder()
                                 .nyBrukerFeilList(singletonList(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
@@ -144,7 +144,7 @@ class ArenaForvalterClientTest {
                 .verifyComplete();
 
         verify(arenaForvalterConsumer).getEnvironments(accessToken);
-        verify(arenaForvalterConsumer).postArenadata(any(ArenaNyeBrukere.class), eq(accessToken));
+        verify(arenaForvalterConsumer).postArenaBruker(any(ArenaNyeBrukere.class), eq(accessToken));
     }
 
     @Test

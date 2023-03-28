@@ -6,8 +6,8 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetBrukerCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenaBruker;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
-import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadata;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -80,10 +80,10 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postBruker"})
-    public Flux<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
+    public Flux<ArenaNyeBrukereResponse> postArenaBruker(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
 
         log.info("Arena opprett bruker {}", arenaNyeBrukere);
-        return new ArenaforvalterPostArenadata(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call()
+        return new ArenaforvalterPostArenaBruker(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call()
                 .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}", response));
     }
 
