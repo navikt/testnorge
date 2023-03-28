@@ -7,6 +7,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 
 import './RedigerGruppe.less'
 import { useNavigate } from 'react-router-dom'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 type Props = {
 	gruppe: {
@@ -32,6 +33,7 @@ const RedigerGruppe = ({
 }: Props): JSX.Element => {
 	const navigate = useNavigate()
 	const erRedigering = Boolean(getIn(gruppe, 'id', false))
+	const mutate = useMatchMutate()
 
 	const onHandleSubmit = async (values: { hensikt: any; navn: any }, _actions: any) => {
 		const groupValues = {
@@ -39,7 +41,9 @@ const RedigerGruppe = ({
 			navn: values.navn,
 		}
 		erRedigering
-			? await updateGruppe(gruppe.id, groupValues)
+			? await updateGruppe(gruppe.id, groupValues).then(() => {
+					return mutate(REGEX_BACKEND_GRUPPER)
+			  })
 			: await createGruppe(groupValues).then((response: { value: { data: { id: any } } }) => {
 					const gruppeId = response.value?.data?.id
 					if (gruppeId) {
