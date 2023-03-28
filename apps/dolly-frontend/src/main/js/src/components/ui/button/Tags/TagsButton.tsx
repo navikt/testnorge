@@ -38,7 +38,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 			<DollyModal isOpen={modalIsOpen} closeModal={closeModal} width="60%" overflow="auto">
 				<div className="tagsModal">
 					<div className="tagsModal tagsModal-content">
-						<h1>TILKNYTT TAGS</h1>
+						<h1>Tilknytt tags</h1>
 						<Alert variant={'info'}>
 							Tags gir deg mulighet til å identifisere dine PDL-personer på egen “tagged”
 							Kafka-topic, der tags[dintag] legges til på responsen. Ta kontakt for ytterligere
@@ -56,7 +56,7 @@ export const TagsButton = ({ action, loading, gruppeId, eksisterendeTags }: Prop
 						/>
 					</div>
 					<div className="tagsModal-actions">
-						<NavButton type={'fare'} onClick={closeModal}>
+						<NavButton variant={'danger'} onClick={closeModal}>
 							Avbryt
 						</NavButton>
 						<NavButton

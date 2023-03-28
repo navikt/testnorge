@@ -69,6 +69,6 @@ const StatusListe = ({ bestillingListe, cancelBestilling, isCanceling }: StatusP
 		/>
 	))
 
-	return ikkeFerdig.concat(...ferdig)
+	return ferdig.concat(...ikkeFerdig)
 }
 export default StatusListe

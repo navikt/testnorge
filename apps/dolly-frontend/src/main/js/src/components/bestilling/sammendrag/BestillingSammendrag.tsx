@@ -2,13 +2,6 @@ import Bestillingskriterier from './kriterier/Bestillingskriterier'
 import MiljoeStatus from './miljoeStatus/MiljoeStatus'
 
 export default function BestillingSammendrag({ bestilling }) {
-	if ((!bestilling.antallIdenter || !bestilling.gruppeId) && !bestilling.organisasjonNummer) {
-		return (
-			<div className="bestilling-detaljer">
-				<MiljoeStatus bestilling={bestilling} />
-			</div>
-		)
-	}
 	return (
 		<div className="bestilling-detaljer">
 			<MiljoeStatus bestilling={bestilling} />

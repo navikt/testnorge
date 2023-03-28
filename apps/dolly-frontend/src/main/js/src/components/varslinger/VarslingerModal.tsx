@@ -85,7 +85,11 @@ export const VarslingerModal = () => {
 
 					<div className="varslinger-buttons">
 						{steg > 0 && (
-							<NavButton onClick={() => setSteg(steg - 1)} style={{ float: 'left' }}>
+							<NavButton
+								variant={'secondary'}
+								onClick={() => setSteg(steg - 1)}
+								style={{ float: 'left' }}
+							>
 								Forrige side
 							</NavButton>
 						)}
