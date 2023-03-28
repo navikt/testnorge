@@ -19,12 +19,12 @@ export const initialJobboenskerVerdier = {
 			styrk08: '9212',
 		},
 		{
-			title: 'Typograf',
-			styrk08: '7321',
+			title: 'Saueklipper',
+			styrk08: '6121',
 		},
 		{
-			title: 'Utvikler',
-			styrk08: '9999',
+			title: 'Ullklassifisør',
+			styrk08: '7543',
 		},
 	],
 	locations: [
