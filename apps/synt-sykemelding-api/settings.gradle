@@ -4,13 +4,12 @@ plugins {
 
 rootProject.name = 'synt-sykemelding-api'
 
-
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/commands'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
 includeBuild '../../libs/testing'
-
 
 gradleEnterprise {
     buildScan {
