@@ -5,6 +5,9 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
 spec:
   image: {{image}}
   port: 8080
@@ -56,4 +59,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-histark-proxy.intern.dev.nav.no"
-    - "https://testnav-histark-proxy.dev-fss-pub.nais.io"
