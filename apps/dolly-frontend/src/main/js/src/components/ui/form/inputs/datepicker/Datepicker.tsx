@@ -38,7 +38,7 @@ export const Datepicker = ({
 			onChange={onChange}
 			showMonthDropdown
 			showYearDropdown
-			minDate={minDate || subYears(new Date(), 100)}
+			minDate={minDate || subYears(new Date(), 125)}
 			maxDate={maxDate || addYears(new Date(), 5)}
 			dropdownMode="select"
 			disabled={disabled}
