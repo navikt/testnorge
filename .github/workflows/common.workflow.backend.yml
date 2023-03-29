@@ -1,11 +1,10 @@
 on:
   workflow_call:
     inputs:
-      cluster:
+      identity-provider:
         type: string
-        description: "The cluster to deploy to, e.g. dev-fss."
-        default: "dev-gcp"
-        required: false
+        description: "The value of secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER."
+        required: true
       working-directory:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-backend (without leading/trailing slash)."
@@ -18,6 +17,11 @@ on:
         type: string
         description: "The commit message tag that will trigger a deployment to the development environment, e.g. #deploy-backend-dev."
         required: true
+      cluster:
+        type: string
+        description: "The cluster to deploy to, e.g. dev-fss."
+        default: "dev-gcp"
+        required: false
 
 jobs:
 
@@ -67,7 +71,7 @@ jobs:
         id: docker-build-push
         with:
           team: dolly
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          identity_provider: ${{ inputs.identity_provider }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}

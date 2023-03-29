@@ -11,6 +11,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/dolly-backend/"
+      identity-provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      working-directory: "apps/dolly-backend"
       deploy-tag: "#deploy-dolly-backend"
       deploy-tag-dev: "#deploy-dolly-backend-dev"
