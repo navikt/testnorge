@@ -46,12 +46,14 @@ public class ArenaForvalterGetBrukerCommand implements Callable<Flux<ArenaArbeid
                 .bodyToFlux(ArenaArbeidssokerBruker.class)
                 .map(response -> {
                     response.setStatus(HttpStatus.OK);
+                    response.setMiljoe(miljoe);
                     return response;
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .doOnError(throwable -> ArenaArbeidssokerBruker.builder()
                         .status(WebClientFilter.getStatus(throwable))
                         .feilmelding(WebClientFilter.getMessage(throwable))
+                        .miljoe(miljoe)
                         .build())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

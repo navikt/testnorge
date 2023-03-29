@@ -108,14 +108,14 @@ public class ArenaForvalterClient implements ClientRegister {
                             if (!respons.getStatus().is2xxSuccessful()) {
                                 return String.format(STATUS_FMT, miljoe,
                                         errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
-                            } else if (respons.getNyBrukerFeilList().isEmpty()) {
-                                return respons.getArbeidsokerList().stream()
-                                        .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
-                                        .collect(Collectors.joining(","));
-                            } else {
+                            } else if (!respons.getNyBrukerFeilList().isEmpty()) {
                                 return respons.getNyBrukerFeilList().stream()
                                         .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
                                                 "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
+                                        .collect(Collectors.joining(","));
+                            } else {
+                                return respons.getArbeidsokerList().stream()
+                                        .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
                                         .collect(Collectors.joining(","));
                             }
                         }));
@@ -135,15 +135,15 @@ public class ArenaForvalterClient implements ClientRegister {
                     if (!response.getStatus().is2xxSuccessful()) {
                         return String.format(STATUS_FMT, miljoe,
                                 errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
-                    } else if (response.getNyeDagpFeilList().isEmpty()) {
-                        return response.getNyeDagpResponse().stream()
-                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
-                                        ": " + dagpResponse.getBegrunnelse()))
-                                .collect(Collectors.joining(","));
-                    } else {
+                    } else if (!response.getNyeDagpFeilList().isEmpty()) {
                         return response.getNyeDagpFeilList().stream()
                                 .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
                                         "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + dagpFeil.getMelding()))
+                                .collect(Collectors.joining(","));
+                    } else {
+                        return response.getNyeDagpResponse().stream()
+                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
+                                        ": " + dagpResponse.getBegrunnelse()))
                                 .collect(Collectors.joining(","));
                     }
                 });

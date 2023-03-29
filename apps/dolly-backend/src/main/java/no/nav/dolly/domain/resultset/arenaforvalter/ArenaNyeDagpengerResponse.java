@@ -21,6 +21,7 @@ public class ArenaNyeDagpengerResponse {
 
     private HttpStatus status;
     private String feilmelding;
+    private String miljoe;
 
     public enum DagpFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, AKTIVER_DAGP}
     private List<Dagp> nyeDagp;

@@ -21,6 +21,7 @@ public class ArenaNyeBrukereResponse {
 
     private HttpStatus status;
     private String feilmelding;
+    private String miljoe;
     public enum BrukerFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, FINNES_ALLEREDE_PAA_VALGT_MILJO, BRUKEREN_ER_IKKE_REGISTRERT, AKTIVER_BRUKER, INAKTIVER_BRUKER, AKTIVER_AAP_115, AKTIVER_AAP}
 
     private List<Bruker> arbeidsokerList;

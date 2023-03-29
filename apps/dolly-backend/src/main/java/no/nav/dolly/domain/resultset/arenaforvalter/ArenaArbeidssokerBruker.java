@@ -23,6 +23,7 @@ public class ArenaArbeidssokerBruker {
 
     private HttpStatus status;
     private String feilmelding;
+    private String miljoe;
     private List<Arbeidssoker> arbeidsokerList;
     private Long antallSider;
 

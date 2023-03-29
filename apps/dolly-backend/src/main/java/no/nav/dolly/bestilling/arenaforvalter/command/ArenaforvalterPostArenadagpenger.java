@@ -45,13 +45,15 @@ public class ArenaforvalterPostArenadagpenger implements Callable<Flux<ArenaNyeD
                 .bodyToFlux(ArenaNyeDagpengerResponse.class)
                 .map(response -> {
                     response.setStatus(HttpStatus.OK);
+                    response.setMiljoe(arenaDagpenger.getMiljoe());
                     return response;
                 })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(throwable ->
                         Flux.just(ArenaNyeDagpengerResponse.builder()
-                                        .status(WebClientFilter.getStatus(throwable))
-                                        .feilmelding(WebClientFilter.getMessage(throwable))
+                                .status(WebClientFilter.getStatus(throwable))
+                                .feilmelding(WebClientFilter.getMessage(throwable))
+                                .miljoe(arenaDagpenger.getMiljoe())
                                 .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
