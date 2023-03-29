@@ -9,7 +9,7 @@ on:
 
 jobs:
   workflow:
-    uses: navikt/testnorge/.github/workflows/common.workflow.backend.yml@master
+    uses: navikt/testnorge/.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/dolly-backend/"
       deploy-dev-tag: "#deploy-dolly-backend-dev"
