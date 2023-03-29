@@ -33,6 +33,6 @@ jobs:
     with:
       resource: 'proxies/histark-proxy/config.yml'
       app-name: 'histark-proxy'
-      cluster: 'dev-gcp'
+      cluster: 'dev-fss'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
