@@ -29,7 +29,7 @@ on:
 jobs:
 
   scan:
-    uses: .github/workflows/common.sonar.yml
+    uses: ./.github/workflows/common.sonar.yml
     with:
       working-directory: ${{ inputs.working-directory }}
     secrets:
