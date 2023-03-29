@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
@@ -109,12 +110,12 @@ public class ArenaForvalterClient implements ClientRegister {
                                         errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
                             } else if (respons.getNyBrukerFeilList().isEmpty()) {
                                 return respons.getArbeidsokerList().stream()
-                                        .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), bruker.getStatus()))
+                                        .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
                                         .collect(Collectors.joining(","));
                             } else {
                                 return respons.getNyBrukerFeilList().stream()
                                         .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
-                                                "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + brukerfeil.getMelding()))
+                                                "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
                                         .collect(Collectors.joining(","));
                             }
                         }));
