@@ -138,12 +138,12 @@ public class ArenaForvalterClient implements ClientRegister {
                     } else if (!response.getNyeDagpFeilList().isEmpty()) {
                         return response.getNyeDagpFeilList().stream()
                                 .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
-                                        "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + dagpFeil.getMelding()))
+                                        "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
                                 .collect(Collectors.joining(","));
                     } else {
                         return response.getNyeDagpResponse().stream()
                                 .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
-                                        ": " + dagpResponse.getBegrunnelse()))
+                                        ": " + encodeStatus(dagpResponse.getBegrunnelse())))
                                 .collect(Collectors.joining(","));
                     }
                 });
