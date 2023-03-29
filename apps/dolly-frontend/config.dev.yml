@@ -47,6 +47,7 @@ spec:
         - application: testnav-person-search-service
         - application: dolly-backend-dev
       external:
+        - host: dolly-backend-dev.dev.intern.nav.no
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
