@@ -43,6 +43,23 @@ spec:
         - application: testnav-inst-service
         - application: dolly-backend
       external:
+        - host: testnorge-tilbakemelding-api.dev.intern.nav.no
+        - host: testnav-adresse-service.dev.intern.nav.no
+        - host: testnav-miljoer-service.dev.intern.nav.no
+        - host: testnav-organisasjon-service.dev.intern.nav.no
+        - host: testnav-organisasjon-forvalter.dev.intern.nav.no
+        - host: testnorge-profil-api.dev.intern.nav.no
+        - host: testnav-organisasjon-tilgang-service.dev.intern.nav.no
+        - host: testnav-joark-dokument-service.dev.intern.nav.no
+        - host: testnav-organisasjon-faste-data-service.dev.intern.nav.no
+        - host: testnav-tps-messaging-service.dev.intern.nav.no
+        - host: testnav-varslinger-service.dev.intern.nav.no
+        - host: dolly-dev-redis-session.dev.intern.nav.no
+        - host: testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+        - host: testnav-pdl-forvalter.dev.intern.nav.no
+        - host: testnav-bruker-service.dev.intern.nav.no
+        - host: testnav-person-search-service.dev.intern.nav.no
+        - host: dolly-backend.dev.intern.nav.no
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
