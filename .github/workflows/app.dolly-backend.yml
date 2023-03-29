@@ -18,6 +18,6 @@ jobs:
       deploy-tag: "#deploy-dolly-backend"
       deploy-tag-dev: "#deploy-dolly-backend-dev"
     secrets:
-      NAV_TOKEN: ${{ env.NAV_TOKEN }}
+      NAV_TOKEN: $NAV_TOKEN
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
