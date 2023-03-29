@@ -596,7 +596,9 @@ const selectOptions = {
 		{ value: '5141', label: 'Frisør' },
 		{ value: '2223', label: 'Sykepleier' },
 		{ value: '9212', label: 'Sauegjeter' },
+		{ value: '6121', label: 'Saueklipper' },
 		{ value: '7321', label: 'Typograf' },
+		{ value: '7543', label: 'Ullklassifisør' },
 		{ value: '9999', label: 'Utvikler' },
 	],
 

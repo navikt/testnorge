@@ -6,12 +6,12 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -21,7 +21,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
-public class ArenaforvalterPostArenadata implements Callable<Flux<ArenaNyeBrukereResponse>> {
+public class ArenaforvalterPostArenaBruker implements Callable<Flux<ArenaNyeBrukereResponse>> {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 
@@ -43,14 +43,17 @@ public class ArenaforvalterPostArenadata implements Callable<Flux<ArenaNyeBruker
                 .bodyValue(arenaNyeBrukere)
                 .retrieve()
                 .bodyToFlux(ArenaNyeBrukereResponse.class)
+                .map(response -> {
+                    response.setStatus(HttpStatus.OK);
+                    response.setMiljoe(arenaNyeBrukere.getNyeBrukere().get(0).getMiljoe());
+                    return response;
+                })
                 .doOnError(WebClientFilter::logErrorMessage)
                 .onErrorResume(error ->
                         Flux.just(ArenaNyeBrukereResponse.builder()
-                                .nyBrukerFeilList(List.of(ArenaNyeBrukereResponse.NyBrukerFeilV1.builder()
-                                        .miljoe(arenaNyeBrukere.getNyeBrukere().get(0).getMiljoe())
-                                        .personident(arenaNyeBrukere.getNyeBrukere().get(0).getPersonident())
-                                        .melding(WebClientFilter.getMessage(error))
-                                        .build()))
+                                .status(WebClientFilter.getStatus(error))
+                                .feilmelding(WebClientFilter.getMessage(error))
+                                .miljoe(arenaNyeBrukere.getNyeBrukere().get(0).getMiljoe())
                                 .build()))
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

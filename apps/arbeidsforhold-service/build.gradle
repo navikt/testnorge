@@ -51,10 +51,11 @@ dependencies {
     implementation 'org.glassfish.jaxb:jaxb-runtime'
     implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
 
-    implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
     implementation 'no.nav.testnav.libs:commands'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config'

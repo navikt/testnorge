@@ -41,7 +41,11 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 				</AvbrytButton>
 
 				<div className="step-navknapper--right">
-					{showPrevious && <NavButton onClick={() => onPrevious(formikBag)}>Tilbake</NavButton>}
+					{showPrevious && (
+						<NavButton variant={'secondary'} onClick={() => onPrevious(formikBag)}>
+							Tilbake
+						</NavButton>
+					)}
 					{!isLastStep && (
 						<NavButton
 							variant={'primary'}

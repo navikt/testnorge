@@ -72,7 +72,11 @@ export default () => {
 				{organisasjon && !loading && (
 					<BrukernavnVelger organisasjon={organisasjon} addToSession={addToSession} />
 				)}
-				<NavButton className="tilbake-button" onClick={() => navigateToLogin()}>
+				<NavButton
+					className="tilbake-button"
+					onClick={() => navigateToLogin()}
+					variant={'secondary'}
+				>
 					Tilbake til innlogging
 				</NavButton>
 			</div>

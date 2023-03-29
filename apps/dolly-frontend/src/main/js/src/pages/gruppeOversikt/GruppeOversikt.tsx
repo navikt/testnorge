@@ -82,6 +82,9 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				</StyledNavButton>
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
+
+			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
+
 			{!bankIdBruker && (
 				<StyledDiv className="gruppe--flex-column-center">
 					<ToggleGroup
@@ -108,8 +111,6 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 					</ToggleGroup>
 				</StyledDiv>
 			)}
-
-			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
 				gruppeDetaljer={{

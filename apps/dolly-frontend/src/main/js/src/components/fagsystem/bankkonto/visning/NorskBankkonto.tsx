@@ -83,7 +83,9 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 								<h4>Er du sikker på at du vil slette denne bankkontoen fra personen?</h4>
 							</div>
 							<div className="slettModal-actions">
-								<NavButton onClick={closeModal}>Nei</NavButton>
+								<NavButton onClick={closeModal} variant={'secondary'}>
+									Nei
+								</NavButton>
 								<NavButton
 									onClick={() => {
 										closeModal()

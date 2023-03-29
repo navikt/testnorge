@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,9 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArenaArbeidssokerBruker {
 
+    private HttpStatus status;
+    private String feilmelding;
+    private String miljoe;
     private List<Arbeidssoker> arbeidsokerList;
     private Long antallSider;
 

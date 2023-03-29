@@ -46,6 +46,19 @@ spec:
         - application: testnav-popp-testdata-proxy
         - application: testnav-histark-proxy
       external:
+        - host: testnav-helsepersonell-service.dev.intern.nav.no
+        - host: testnav-organisasjon-forvalter.dev.intern.nav.no
+        - host: testnav-inntektsmelding-service.dev.intern.nav.no
+        - host: testnav-tps-messaging-service.dev.intern.nav.no
+        - host: generer-navn-service.dev.intern.nav.no
+        - host: testnorge-profil-api-dev.dev.intern.nav.no
+        - host: testnav-person-service.dev.intern.nav.no
+        - host: testnav-pdl-forvalter-dev.dev.intern.nav.no
+        - host: testnav-arbeidsforhold-service.dev.intern.nav.no
+        - host: testnav-amelding-service.dev.intern.nav.no
+        - host: testnav-organisasjon-service.dev.intern.nav.no
+        - host: testnav-synt-sykemelding-api.dev.intern.nav.no
+        - host: testnav-popp-testdata-proxy.dev.intern.nav.no
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
