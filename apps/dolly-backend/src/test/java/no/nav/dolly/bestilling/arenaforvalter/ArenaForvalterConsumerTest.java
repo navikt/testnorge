@@ -123,7 +123,9 @@ class ArenaForvalterConsumerTest {
 
         stubFor(get(urlPathMatching("(.*)/arenaforvalter/api/v1/bruker"))
                 .withQueryParam("filter-personident", equalTo(IDENT))
+                .withQueryParam("filter-miljoe", equalTo(ENV))
                 .willReturn(ok()
-                        .withHeader("Content-Type", "application/json")));
+                        .withHeader("Content-Type", "application/json")
+                        .withBody("{\"arbeidsokerList\":[{\"status\":\"OK\"}]}")));
     }
 }

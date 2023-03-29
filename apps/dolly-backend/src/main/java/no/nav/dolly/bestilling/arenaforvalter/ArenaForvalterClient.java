@@ -114,7 +114,7 @@ public class ArenaForvalterClient implements ClientRegister {
                             } else {
                                 return respons.getNyBrukerFeilList().stream()
                                         .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
-                                                brukerfeil.getNyBrukerFeilstatus() + ": " + brukerfeil.getMelding()))
+                                                "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + brukerfeil.getMelding()))
                                         .collect(Collectors.joining(","));
                             }
                         }));
@@ -142,7 +142,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     } else {
                         return response.getNyeDagpFeilList().stream()
                                 .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
-                                        dagpFeil.getNyDagpFeilstatus() + ": " + dagpFeil.getMelding()))
+                                        "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + dagpFeil.getMelding()))
                                 .collect(Collectors.joining(","));
                     }
                 });
