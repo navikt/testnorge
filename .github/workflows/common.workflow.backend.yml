@@ -12,11 +12,11 @@ on:
         required: true
       deploy-tag:
         type: string
-        description: "The commit message tag that will trigger a deployment, e.g. #deploy-dolly-backend."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend."
         required: true
       deploy-tag-dev:
         type: string
-        description: "The commit message tag that will trigger a deployment to the development environment, e.g. #deploy-backend-dev."
+        description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-backend-dev."
         required: true
     secrets:
       NAV_TOKEN:
@@ -28,14 +28,13 @@ on:
 
 jobs:
 
-#  scan:
-#    name: "Scan"
-#    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
-#    with:
-#      working-directory: ${{ inputs.working-directory }}
-#    secrets:
-#      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-#      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+  scan:
+    uses: .github/workflows/common.sonar.yml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   common:
     permissions:
