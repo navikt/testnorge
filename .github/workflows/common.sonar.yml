@@ -12,12 +12,11 @@ on:
 
 jobs:
   scan:
-    name: Sonar Scan
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
       - uses: actions/checkout@v3
-      - name: Fetch git history
+      - name: "Checkout"
         run: git fetch --unshallow
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
@@ -30,7 +29,7 @@ jobs:
             ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
             ${{ runner.os }}-gradle-
             ${{ runner.os }}-
-      - name: Gradle cache
+      - name: "Cache"
         uses: actions/cache@v3
         with:
           path: |
@@ -38,12 +37,12 @@ jobs:
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
           restore-keys: |
             ${{ runner.os }}-gradle
-      - name: Set up JDK 17
+      - name: "Java"
         uses: actions/setup-java@v3
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 17
-      - name: Sonar Analysis
+      - name: "Sonar"
         working-directory: ${{ inputs.working-directory }}
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
