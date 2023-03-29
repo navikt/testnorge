@@ -6,8 +6,6 @@ on:
       - apps/dolly-backend/**
       - libs/data-transfer-objects/**
       - .github/workflows/app.dolly-backend.yml
-      - .github/workflows/common.workflow.backend.yml
-      - .github/workflows/common.sonar.yml
 
 jobs:
   workflow:
