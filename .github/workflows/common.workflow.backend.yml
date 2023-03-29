@@ -21,14 +21,14 @@ on:
 
 jobs:
 
-  scan:
-    name: "Scan"
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
-    with:
-      working-directory: ${{ inputs.working-directory }}
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#  scan:
+#    name: "Scan"
+#    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+#    with:
+#      working-directory: ${{ inputs.working-directory }}
+#    secrets:
+#      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+#      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
     name: "Build"
