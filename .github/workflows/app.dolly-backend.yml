@@ -12,5 +12,5 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/dolly-backend/"
-      deploy-dev-tag: "#deploy-dolly-backend-dev"
       deploy-tag: "#deploy-dolly-backend"
+      deploy-tag-dev: "#deploy-dolly-backend-dev"
