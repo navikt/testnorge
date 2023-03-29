@@ -73,6 +73,7 @@ jobs:
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           dockerfile: "apps/testnorge-bisys/Dockerfile"
+          docker_context: "apps/testnorge-bisys/"
       - name: Deploy to dev-gcp
         uses: nais/deploy/actions/deploy@v1
         if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-testnorge-bisys')}}
