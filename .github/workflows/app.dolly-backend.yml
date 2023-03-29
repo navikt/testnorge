@@ -16,37 +16,86 @@ jobs:
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#  build:
+#    name: Build
+#    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
+#    with:
+#      working-directory: 'apps/dolly-backend/'
+#      app-name: 'testnav-dolly-backend'
+#    secrets:
+#      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'apps/dolly-backend/'
-      app-name: 'testnav-dolly-backend'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-dolly-backend')}}
-    with:
-      resource: 'apps/dolly-backend/config.yml'
-      app-name: 'testnav-dolly-backend'
-      cluster: 'dev-gcp'
-      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-backend-dev')}}
-    with:
-      resource: 'apps/dolly-backend/config.dev.yml'
-      app-name: 'testnav-dolly-backend'
-      cluster: 'dev-gcp'
-      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+    name: "Build (GAR test)"
+    permissions:
+      contents: "read"
+      id-token: "write"
+    runs-on: ubuntu-latest
+    if: ${{ github.actor != 'dependabot[bot]' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Gradle cache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17.x'
+      - name: Compile
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        working-directory: "apps/dolly-backend/"
+        run: ./gradlew build --scan
+      - name: Build and publish Docker image
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        with:
+          team: dolly
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          dockerfile: "apps/dolly-backend/Dockerfile"
+          docker_context: "apps/dolly-backend/"
+      - name: Deploy development version to dev-gcp
+        uses: nais/deploy/actions/deploy@v1
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-backend-dev')}}
+        env:
+          APIKEY: ${{ secrets.NAIS_DEPLOY_APIKEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: "apps/dolly-backend/config.dev.yml"
+          VAR: image=${{steps.docker-build-push.outputs.image}}
+#  deploy:
+#    name: Deploy
+#    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+#    needs: build
+#    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-dolly-backend')}}
+#    with:
+#      resource: 'apps/dolly-backend/config.yml'
+#      app-name: 'testnav-dolly-backend'
+#      cluster: 'dev-gcp'
+#      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+#    secrets:
+#      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+#      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+#  deploy-dev:
+#    name: Deploy dev
+#    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+#    needs: build
+#    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-backend-dev')}}
+#    with:
+#      resource: 'apps/dolly-backend/config.dev.yml'
+#      app-name: 'testnav-dolly-backend'
+#      cluster: 'dev-gcp'
+#      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+#    secrets:
+#      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+#      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
