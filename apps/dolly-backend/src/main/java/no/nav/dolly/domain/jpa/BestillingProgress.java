@@ -81,6 +81,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "DOKARKIV_STATUS")
     private String dokarkivStatus;
 
+    @Column(name = "HISTARK_STATUS")
+    private String histarkStatus;
+
     @Column(name = "SYKEMELDING_STATUS")
     private String sykemeldingStatus;
 
@@ -122,6 +125,7 @@ public class BestillingProgress implements Serializable {
         this.bestilling = bestilling;
         this.master = master;
     }
+
     @JsonIgnore
     public boolean isPdlf() {
         return getMaster() == Master.PDLF;

@@ -51,6 +51,8 @@ spec:
       rules:
         - application: synthdata-arena-meldekort
           cluster: dev-gcp
+      external:
+        - host: synthdata-arena-meldekort.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4

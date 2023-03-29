@@ -403,6 +403,29 @@ public class BestillingService {
         bestillingRepository.swapIdent(oldIdent, newIdent);
     }
 
+    public String getBestKriterier(RsDollyBestilling request) {
+        return toJson(BestilteKriterier.builder()
+                .aareg(request.getAareg())
+                .krrstub(request.getKrrstub())
+                .udistub(request.getUdistub())
+                .sigrunstub(request.getSigrunstub())
+                .arenaforvalter(request.getArenaforvalter())
+                .pdldata(request.getPdldata())
+                .instdata(request.getInstdata())
+                .inntektstub(request.getInntektstub())
+                .pensjonforvalter(request.getPensjonforvalter())
+                .inntektsmelding(request.getInntektsmelding())
+                .brregstub(request.getBrregstub())
+                .dokarkiv(request.getDokarkiv())
+                .histark(request.getHistark())
+                .tpsMessaging(request.getTpsMessaging())
+                .bankkonto(request.getBankkonto())
+                .skjerming(request.getSkjerming())
+                .sykemelding(request.getSykemelding())
+                .arbeidsplassenCV(request.getArbeidsplassenCV())
+                .build());
+    }
+
     private String wrapSearchString(String searchString) {
         return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
     }
@@ -430,28 +453,6 @@ public class BestillingService {
             log.info("Konvertering til Json feilet", e);
         }
         return null;
-    }
-
-    public String getBestKriterier(RsDollyBestilling request) {
-        return toJson(BestilteKriterier.builder()
-                .aareg(request.getAareg())
-                .krrstub(request.getKrrstub())
-                .udistub(request.getUdistub())
-                .sigrunstub(request.getSigrunstub())
-                .arenaforvalter(request.getArenaforvalter())
-                .pdldata(request.getPdldata())
-                .instdata(request.getInstdata())
-                .inntektstub(request.getInntektstub())
-                .pensjonforvalter(request.getPensjonforvalter())
-                .inntektsmelding(request.getInntektsmelding())
-                .brregstub(request.getBrregstub())
-                .dokarkiv(request.getDokarkiv())
-                .tpsMessaging(request.getTpsMessaging())
-                .bankkonto(request.getBankkonto())
-                .skjerming(request.getSkjerming())
-                .sykemelding(request.getSykemelding())
-                .arbeidsplassenCV(request.getArbeidsplassenCV())
-                .build());
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {

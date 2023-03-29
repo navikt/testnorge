@@ -44,6 +44,7 @@ spec:
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
         - application: testnav-popp-testdata-proxy
+        - application: testnav-histark-proxy
       external:
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
@@ -57,6 +58,7 @@ spec:
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
