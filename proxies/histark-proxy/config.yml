@@ -58,5 +58,5 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-histark-proxy.intern.dev.nav.no"
+    - "https://testnav-histark-proxy.dev.intern.nav.no"
     - "https://testnav-histark-proxy.dev-fss-pub.nais.io"
