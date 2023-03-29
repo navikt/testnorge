@@ -9,12 +9,7 @@ on:
         required: true
     secrets:
       NAV_TOKEN:
-        required: true
-      NAIS_DOLLY_DEPLOY_API_KEY:
-        required: true
-      NAIS_WORKLOAD_IDENTITY_PROVIDER:
-        required: true
-
+        required: false
 env:
   IMAGE: ghcr.io/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
 
