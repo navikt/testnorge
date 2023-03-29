@@ -149,7 +149,7 @@ class ArenaForvalterClientTest {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$Feil: DUPLIKAT: message: 555 User Defined Resource Error")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$Feil: DUPLIKAT: message= 555 User Defined Resource Error")));
                 })
                 .verifyComplete();
 
