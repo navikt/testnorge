@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.histark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.histark.command.HistarkPostCommand;
@@ -46,7 +45,7 @@ public class HistarkConsumer implements ConsumerStatus {
     public Flux<HistarkResponse> postHistark(HistarkRequest histarkRequest) {
 
         var callId = getNavCallId();
-        log.info("Sender histark melding: callId: {}, consumerId: {}\n{}", callId, CONSUMER, Json.pretty(histarkRequest));
+        log.info("Sender histark melding: callId: {}, consumerId: {}\n{}", callId, CONSUMER, histarkRequest);
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new HistarkPostCommand(webClient, histarkRequest,

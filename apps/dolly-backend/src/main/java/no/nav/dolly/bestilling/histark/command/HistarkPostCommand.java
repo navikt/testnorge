@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.histark.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.dolly.util.WebClientFilter;
@@ -19,6 +20,7 @@ import java.util.concurrent.Callable;
 
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
+@Slf4j
 @RequiredArgsConstructor
 public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
 
@@ -42,7 +44,11 @@ public class HistarkPostCommand implements Callable<Flux<HistarkResponse>> {
                     .header(HttpHeaders.CONTENT_TYPE, MediaType.MULTIPART_FORM_DATA_VALUE)
                     .body(BodyInserters.fromMultipartData(bodyBuilder.build()))
                     .retrieve()
-                    .bodyToMono(HistarkResponse.class)
+                    .bodyToMono(String.class)
+                    .doOnSuccess(response -> log.info("Response mottatt fra Histark service: {}", response))
+                    .map(response -> HistarkResponse.builder()
+                            .histarkId(response.replaceAll("[^\\d-]|-(?=\\D)", ""))
+                            .build())
                     .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                             .filter(WebClientFilter::is5xxException))
                     .doOnError(WebClientFilter::logErrorMessage)

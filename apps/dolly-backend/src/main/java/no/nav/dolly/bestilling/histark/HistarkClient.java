@@ -58,7 +58,7 @@ public class HistarkClient implements ClientRegister {
                             .filter(env -> !transaksjonMappingService.existAlready(HISTARK,
                                     dollyPerson.getIdent(), "NA") || isOpprettEndre)
                             .flatMap(request -> histarkConsumer.postHistark(request)
-                                    .map(status -> getStatus(dollyPerson.getIdent(), bestillingId, status)))
+                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestillingId, status)))
                             .collect(Collectors.joining(",")))
                     .map(status -> futurePersist(progress, status));
         }
