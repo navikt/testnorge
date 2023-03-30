@@ -47,7 +47,7 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                             .skannested(dokument.getSkannested())
                                             .klage("")
                                             .sjekksum(DigestUtils.sha256Hex(fysiskDokument))
-                                            .skanningstidspunkt(dokument.getScanningsTidspunkt().format(dateTimeFormatter))
+                                            .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
                                             .startAar(String.valueOf(dokument.getStartAar().getYear()))
                                             .sluttAar(String.valueOf(dokument.getSluttAar().getYear()))
                                             .temakoder(String.join(",", dokument.getTemakoder()))

@@ -49,7 +49,7 @@ public class RsHistark {
         private String skannested;
 
         @Schema(description = "Når saksmappen ble skannet")
-        private LocalDateTime scanningsTidspunkt;
+        private LocalDateTime skanningsTidspunkt;
         @Schema(description = "Temakoder som forsendelsen tilhører, for eksempel “DAG” (Dagpenger)")
         private List<String> temakoder;
         @Schema(description = "Kanalen som ble brukt ved innsending eller distribusjon. F.eks. NAV_NO, ALTINN eller EESSI.")
