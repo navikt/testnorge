@@ -29,6 +29,9 @@ spec:
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
+        - application: etterlatte-testdata
+          cluster: dev-gcp
+          namespace: etterlatte
     outbound:
       rules:
         - application: testnav-helsepersonell-service
