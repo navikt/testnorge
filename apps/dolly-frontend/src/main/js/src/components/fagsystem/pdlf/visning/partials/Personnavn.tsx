@@ -5,9 +5,9 @@ export const Personnavn = ({ data }) => {
 	const { fornavn, mellomnavn, etternavn } = data
 	return (
 		<>
-			<TitleValue title="Kontaktperson fornavn" value={fornavn} />
-			<TitleValue title="Kontaktperson mellomnavn" value={mellomnavn} />
-			<TitleValue title="Kontaktperson etternavn" value={etternavn} />
+			<TitleValue title="Fornavn" value={fornavn} />
+			<TitleValue title="Mellomnavn" value={mellomnavn} />
+			<TitleValue title="Etternavn" value={etternavn} />
 		</>
 	)
 }

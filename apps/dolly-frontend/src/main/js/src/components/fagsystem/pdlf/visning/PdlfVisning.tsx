@@ -150,6 +150,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo
 					data={data?.person?.kontaktinformasjonForDoedsbo}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
 					relasjoner={data?.relasjoner}
 				/>
 			</div>

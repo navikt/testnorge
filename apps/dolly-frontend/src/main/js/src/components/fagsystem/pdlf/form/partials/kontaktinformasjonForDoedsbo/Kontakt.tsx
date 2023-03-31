@@ -14,6 +14,8 @@ import { OrganisasjonSelect } from '@/components/organisasjonSelect'
 import { FormikProps } from 'formik'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
+import { useEffect } from 'react'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 interface KontaktValues {
 	formikBag: FormikProps<any>
@@ -30,22 +32,44 @@ type OrgValues = {
 	navn: string
 }
 
-export const Kontakt = ({ formikBag, path }: KontaktValues) => {
+export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: KontaktValues) => {
 	const advokatPath = `${path}.advokatSomKontakt`
 	const organisasjonPath = `${path}.organisasjonSomKontakt`
 	const personPath = `${path}.personSomKontakt`
 
-	const kontaktType = _.get(formikBag.values, `${path}.kontaktType`)
+	const getKontakttype = () => {
+		const kontaktType = _.get(formikBag.values, `${path}.kontaktType`)
+		if (kontaktType) {
+			return kontaktType
+		} else if (_.get(formikBag.values, `${path}.advokatSomKontakt`)) {
+			return 'ADVOKAT'
+		} else if (_.get(formikBag.values, `${path}.organisasjonSomKontakt`)) {
+			return 'ORGANISASJON'
+		} else if (_.get(formikBag.values, `${path}.personSomKontakt.nyKontaktperson`)) {
+			return 'NY_PERSON'
+		} else if (
+			_.get(formikBag.values, `${path}.personSomKontakt.identifikasjonsnummer`) ||
+			_.get(formikBag.values, `${path}.personSomKontakt.foedselsdato`)
+		) {
+			return 'PERSON_FDATO'
+		} else return null
+	}
 
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
+
+	useEffect(() => {
+		if (!_.get(formikBag.values, `${path}.kontaktType`)) {
+			formikBag.setFieldValue(`${path}.kontaktType`, getKontakttype())
+		}
+	}, [])
 
 	const handleAfterChange = (type: TypeValues) => {
 		const { value } = type
 		const kontaktinfo = _.get(formikBag.values, path)
 		const kontaktinfoClone = _.cloneDeep(kontaktinfo)
 
-		if (value !== kontaktType) {
+		if (value !== getKontakttype()) {
 			_.set(kontaktinfoClone, 'kontaktType', value)
 			if (value === 'ADVOKAT') {
 				_.set(kontaktinfoClone, 'advokatSomKontakt', initialOrganisasjon)
@@ -84,13 +108,13 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 			<FormikSelect
 				name={`${path}.kontaktType`}
 				label="Kontakttype"
-				value={kontaktType}
+				value={getKontakttype()}
 				options={Options('kontaktType')}
 				onChange={handleAfterChange}
 				isClearable={false}
 				size="large"
 			/>
-			{kontaktType === 'ADVOKAT' && (
+			{getKontakttype() === 'ADVOKAT' && (
 				<div className="flexbox--flex-wrap">
 					<OrganisasjonSelect
 						path={`${advokatPath}.organisasjonsnummer`}
@@ -101,7 +125,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						name={`${advokatPath}.kontaktperson.fornavn`}
 						label="Kontaktperson navn"
 						options={navnOptions}
-						size="xlarge"
+						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${advokatPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
 						onChange={(navn: string) =>
@@ -112,7 +136,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 				</div>
 			)}
 
-			{kontaktType === 'ORGANISASJON' && (
+			{getKontakttype() === 'ORGANISASJON' && (
 				<div className="flexbox--flex-wrap">
 					<OrganisasjonSelect
 						path={`${organisasjonPath}.organisasjonsnummer`}
@@ -122,7 +146,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 						name={`${organisasjonPath}.kontaktperson.fornavn`}
 						label="Kontaktperson navn"
 						options={navnOptions}
-						size="xlarge"
+						size="large"
 						placeholder={getPlaceholder(formikBag.values, `${organisasjonPath}.kontaktperson`)}
 						isLoading={navnInfo.loading}
 						onChange={(navn: string) =>
@@ -133,20 +157,24 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 				</div>
 			)}
 
-			{kontaktType === 'PERSON_FDATO' && (
+			{getKontakttype() === 'PERSON_FDATO' && (
 				<div className="flexbox--flex-wrap">
 					<PdlEksisterendePerson
 						eksisterendePersonPath={`${personPath}.identifikasjonsnummer`}
 						label="Kontaktperson"
 						disabled={disableIdent}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+						formikBag={formikBag}
 					/>
-					<FormikDatepicker
-						name={`${personPath}.foedselsdato`}
-						label="Fødselsdato"
-						disabled={disablePersoninfo}
-						maxDate={new Date()}
-						fastfield={false}
-					/>
+					<DatepickerWrapper>
+						<FormikDatepicker
+							name={`${personPath}.foedselsdato`}
+							label="Fødselsdato"
+							disabled={disablePersoninfo}
+							maxDate={new Date()}
+							fastfield={false}
+						/>
+					</DatepickerWrapper>
 					<DollySelect
 						name={`${personPath}.navn.fornavn`}
 						label="Kontaktperson navn"
@@ -163,7 +191,7 @@ export const Kontakt = ({ formikBag, path }: KontaktValues) => {
 				</div>
 			)}
 
-			{kontaktType === 'NY_PERSON' && (
+			{getKontakttype() === 'NY_PERSON' && (
 				<PdlNyPerson nyPersonPath={`${personPath}.nyKontaktperson`} formikBag={formikBag} />
 			)}
 		</Kategori>
