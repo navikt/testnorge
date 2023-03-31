@@ -1,7 +1,7 @@
 ﻿apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: testnav-histark-proxy
+  name: testnav-histarkimport-proxy
   namespace: dolly
   labels:
     team: dolly
@@ -58,5 +58,5 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-histark-proxy.dev.intern.nav.no"
-    - "https://testnav-histark-proxy.dev-fss-pub.nais.io"
+    - "https://testnav-histarkimport-proxy.dev.intern.nav.no"
+    - "https://testnav-histarkimport-proxy.dev-fss-pub.nais.io"
