@@ -6,8 +6,14 @@ import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetBrukerCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap115;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenaBruker;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -84,7 +90,24 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
 
         log.info("Arena opprett bruker {}", arenaNyeBrukere);
         return new ArenaforvalterPostArenaBruker(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call()
-                .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}", response));
+                .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}",
+                        arenaNyeBrukere.getNyeBrukere().get(0).getPersonident(), response));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "arena_postAap"})
+    public Flux<AapResponse> postAap(AapRequest aapRequest, AccessToken accessToken) {
+
+        return new ArenaforvalterPostAap(webClient, aapRequest, accessToken.getTokenValue()).call()
+                .doOnNext(response -> log.info("Opprettet aap {} mot Arenaforvalter {}",
+                        aapRequest.getPersonident(), response));
+    }
+
+    @Timed(name = "providers", tags = {"operation", "arena_postAap115"})
+    public Flux<Aap115Response> postAap115(Aap115Request aap115Request, AccessToken accessToken) {
+
+        return new ArenaforvalterPostAap115(webClient, aap115Request, accessToken.getTokenValue()).call()
+                .doOnNext(response -> log.info("Opprettet aap115 {} mot Arenaforvalter {}",
+                        aap115Request.getPersonident(), response));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postDagpenger"})
