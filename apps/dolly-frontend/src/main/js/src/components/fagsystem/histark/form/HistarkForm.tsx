@@ -78,7 +78,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 						newEntry={initialHistark}
 						canBeEmpty={false}
 					>
-						{(path: string, idx: number) => (
+						{(path: string) => (
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
 									<FormikSelect
