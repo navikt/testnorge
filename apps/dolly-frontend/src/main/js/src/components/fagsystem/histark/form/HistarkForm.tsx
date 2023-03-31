@@ -15,12 +15,12 @@ import { initialHistark } from '@/components/fagsystem/arbeidsplassen/form/initi
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
 import * as _ from 'lodash'
 import { Option } from '@/service/SelectOptionsOppslag'
-import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
 
 interface HistarkFormProps {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<object>
 }
 
 type Skjema = {
@@ -43,13 +43,15 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 
 	const sessionDokumenter = _.get(formikBag.values, 'histark.vedlegg')
 	const [files, setFiles] = useState(sessionDokumenter || [])
+	const [startAar, setStartAar] = useState(new Date())
+	const [sluttAar, setSluttAar] = useState(new Date())
 	const [selectedNavEnhet, setSelectedNavEnhet] = useState({} as Option)
 	const [skjemaValues, setSkjemaValues] = useState(_.get(formikBag.values, 'histark.skjema'))
 
 	const { navEnheter = [] } = useNavEnheter()
 
 	useEffect(() => {
-		handleVedleggChange(files, null)
+		handleVedleggChange(files)
 	}, [files, skjemaValues])
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
@@ -65,7 +67,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 		// @ts-ignore
 		<Vis attributt={histarkAttributt}>
 			<Panel
-				heading="Dokumenter"
+				heading="Dokumenter (histark)"
 				hasErrors={panelError(formikBag, histarkAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
@@ -76,6 +78,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 						name="histark.dokumenter"
 						header="Dokumenter"
 						newEntry={initialHistark}
+						maxEntries={1} //Foreløpig er bare 1 innsending støttet, backend har mulighet for flere
 						canBeEmpty={false}
 					>
 						{(path: string) => (
@@ -97,23 +100,38 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 											formikBag.setFieldValue(`${path}.enhetsnavn`, selected.label)
 											setSelectedNavEnhet(selected)
 										}}
-										label={'NAV enhet'}
+										label={'NAV-enhet'}
 										fastfield={false}
 										size={'xlarge'}
 										options={navEnheter}
+										feil={
+											_.has(formikBag.errors, `${path}.enhetsnavn`)
+												? { feilmelding: 'Velg en NAV-enhet' }
+												: null
+										}
 										isLoading={_.isEmpty(navEnheter)}
 									/>
-									<FormikDatepicker
+									<Yearpicker
+										formikBag={formikBag}
 										name={`${path}.startAar`}
 										label="Startår"
-										visHvisAvhuket={false}
-										size="medium"
+										date={startAar}
+										handleDateChange={(val) =>
+											formikBag.setFieldValue(`${path}.startAar`, val ? new Date(val) : null)
+										}
+										maxDate={new Date()}
 									/>
-									<FormikDatepicker
+									<Yearpicker
+										formikBag={formikBag}
 										name={`${path}.sluttAar`}
 										label="Sluttår"
-										visHvisAvhuket={false}
-										size="medium"
+										date={sluttAar}
+										handleDateChange={(val) => {
+											const time = val ? new Date(val) : null
+											setSluttAar(time)
+											formikBag.setFieldValue(`${path}.sluttAar`, time)
+										}}
+										maxDate={new Date()}
 									/>
 									<FormikDateTimepicker
 										name={`${path}.skanningsTidspunkt`}
@@ -125,16 +143,28 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 										name={`${path}.skanner`}
 										label="Skanner"
 										visHvisAvhuket={false}
+										size={'xsmall'}
 									/>
 									<FormikTextInput
 										name={`${path}.skannested`}
 										label="Skannested"
 										visHvisAvhuket={false}
+										size={'xsmall'}
 									/>
-									<FileUploader files={files} setFiles={setFiles} />
-									{files.length > 0 && (
-										<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
-									)}
+									<Kategori title={'Vedlegg'}>
+										<FileUploader
+											files={files}
+											setFiles={setFiles}
+											feil={
+												_.has(formikBag.errors, `${path}.tittel`)
+													? { feilmelding: 'Fil er påkrevd' }
+													: null
+											}
+										/>
+										{files.length > 0 && (
+											<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
+										)}
+									</Kategori>
 								</div>
 							</div>
 						)}
@@ -152,7 +182,7 @@ HistarkForm.validation = {
 			dokumenter: Yup.array().of(
 				Yup.object({
 					tittel: requiredString,
-					temakoder: Yup.array().required().of(Yup.string()),
+					temakoder: Yup.array().required().min(1, 'Velg minst en temakode'),
 					enhetsnavn: requiredString,
 					enhetsnummer: requiredString,
 					skanner: requiredString,

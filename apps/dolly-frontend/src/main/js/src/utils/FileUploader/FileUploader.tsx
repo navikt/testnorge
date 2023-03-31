@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import styled from 'styled-components'
+import * as _ from 'lodash-es'
 
 const getColor = (props: any) => {
 	if (props.isDragAccept) {
@@ -20,7 +21,9 @@ const Container = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	width: auto;
 	margin-bottom: 10px;
+	margin-top: 10px;
 	padding: 20px;
 	border-width: 2px;
 	border-radius: 2px;
@@ -31,7 +34,15 @@ const Container = styled.div`
 	outline: none;
 	transition: border 0.24s ease-in-out;
 `
-export const FileUploader = ({ files, setFiles }: { files: File[]; setFiles: any }) => {
+export const FileUploader = ({
+	files,
+	setFiles,
+	feil,
+}: {
+	files: File[]
+	setFiles: any
+	feil?: { feilmelding: string } | null
+}) => {
 	const handleDrop = useCallback((acceptedFiles: File[]) => {
 		const reader = new FileReader()
 
@@ -64,6 +75,11 @@ export const FileUploader = ({ files, setFiles }: { files: File[]; setFiles: any
 				<input {...getInputProps()} />
 				<p>Dra og slipp filer innenfor rammen eller klikk her for å åpne filvelger</p>
 			</Container>
+			{feil && !_.isEmpty(feil.feilmelding) && (
+				<div role="alert" aria-live="assertive">
+					<div className="skjemaelement__feilmelding">{feil.feilmelding}</div>
+				</div>
+			)}
 		</div>
 	)
 }
