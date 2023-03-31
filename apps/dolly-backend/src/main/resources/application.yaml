@@ -192,7 +192,7 @@ consumers:
   testnav-histark-proxy:
     name: testnav-histark-proxy
     namespace: dolly
-    url: https://testnav-histark-proxy.dev.intern.nav.no
+    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter
