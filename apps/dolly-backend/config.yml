@@ -50,7 +50,7 @@ spec:
         - application: testnav-amelding-service
         - application: testnav-organisasjon-service
         - application: testnav-synt-sykemelding-api
-        - application: testnav-histarkimport-proxy
+        - application: testnav-histark-proxy
         - application: testnav-miljoer-service
       external:
         - host: testnav-helsepersonell-service.dev.intern.nav.no
@@ -76,7 +76,7 @@ spec:
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-histarkimport-proxy.intern.dev.nav.no
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io

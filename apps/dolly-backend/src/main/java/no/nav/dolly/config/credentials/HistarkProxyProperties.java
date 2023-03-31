@@ -5,6 +5,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "consumers.testnav-histarkimport-proxy")
+@ConfigurationProperties(prefix = "consumers.testnav-histark-proxy")
 public class HistarkProxyProperties extends ServerProperties {
 }

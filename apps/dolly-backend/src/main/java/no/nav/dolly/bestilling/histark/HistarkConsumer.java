@@ -59,7 +59,7 @@ public class HistarkConsumer implements ConsumerStatus {
 
     @Override
     public String consumerName() {
-        return "testnav-histarkimport-proxy";
+        return "testnav-histark-proxy";
     }
 
     private static String getNavCallId() {
