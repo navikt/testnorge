@@ -71,7 +71,7 @@ spec:
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-        - host: testnav-histarkimport-proxy.dev-fss-pub.nais.io
+        - host: testnav-histarkimport-proxy.intern.dev.nav.no
         - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
         - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
