@@ -41,9 +41,15 @@ public class SykepengerIArbeidsgiverperiodenDTO implements ToXmlElement<XMLSykep
         xmlSykepengerIArbeidsgiverperioden.setBruttoUtbetalt(factory.createXMLSykepengerIArbeidsgiverperiodenBruttoUtbetalt(
                 bruttoUtbetalt != null ? BigDecimal.valueOf(bruttoUtbetalt) : null
         ));
-        xmlSykepengerIArbeidsgiverperioden.setBegrunnelseForReduksjonEllerIkkeUtbetalt(
+        if (isBlank(begrunnelseForReduksjonEllerIkkeUtbetalt))
+            xmlSykepengerIArbeidsgiverperioden.setBegrunnelseForReduksjonEllerIkkeUtbetalt(
+                    factory.createXMLSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
+                            null
+                    )
+            );
+        else xmlSykepengerIArbeidsgiverperioden.setBegrunnelseForReduksjonEllerIkkeUtbetalt(
                 factory.createXMLSykepengerIArbeidsgiverperiodenBegrunnelseForReduksjonEllerIkkeUtbetalt(
-                        isBlank(begrunnelseForReduksjonEllerIkkeUtbetalt) ? null : CaseUtils.toCamelCase(begrunnelseForReduksjonEllerIkkeUtbetalt, true, '_')
+                        begrunnelseForReduksjonEllerIkkeUtbetalt.contains("_") ? CaseUtils.toCamelCase(begrunnelseForReduksjonEllerIkkeUtbetalt, true, '_') : begrunnelseForReduksjonEllerIkkeUtbetalt
                 )
         );
 
