@@ -108,7 +108,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_postAap115"})
     public Flux<Aap115Response> postAap115(Aap115Request aap115Request, AccessToken accessToken) {
 
-        log.info("Arena opprett bruker {}", aap115Request);
+        log.info("Arena opprett Aap115 {}", aap115Request);
         return new ArenaforvalterPostAap115(webClient, aap115Request, accessToken.getTokenValue()).call()
                 .doOnNext(response -> log.info("Opprettet aap115 {} mot Arenaforvalter {}",
                         aap115Request.getPersonident(), response));
