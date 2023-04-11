@@ -12,7 +12,6 @@ jobs:
     with:
       working-directory: "apps/amelding-service/"
       deploy-tag: "#deploy-amelding-service"
-      deploy-tag-dev: "#deploy-amelding-service-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
