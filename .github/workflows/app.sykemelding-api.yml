@@ -5,6 +5,7 @@ on:
     paths:
       - apps/sykemelding-api/**
       - .github/workflows/app.sykemelding-api.yml
+      - .github/workflows/common.workflow.backend.yml # TODO: Testing only, remove when done.
 
 jobs:
   workflow:
