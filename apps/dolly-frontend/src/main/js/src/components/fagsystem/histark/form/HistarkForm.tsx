@@ -116,9 +116,11 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 										name={`${path}.startAar`}
 										label="Startår"
 										date={startAar}
-										handleDateChange={(val) =>
+										handleDateChange={(val) => {
+											const time = val ? new Date(val) : null
+											setStartAar(time)
 											formikBag.setFieldValue(`${path}.startAar`, val ? new Date(val) : null)
-										}
+										}}
 										maxDate={new Date()}
 									/>
 									<Yearpicker
