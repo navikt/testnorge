@@ -45,13 +45,14 @@ export const Kontakt = ({ formikBag, path, eksisterendeNyPerson = null }: Kontak
 			return 'ADVOKAT'
 		} else if (_.get(formikBag.values, `${path}.organisasjonSomKontakt`)) {
 			return 'ORGANISASJON'
-		} else if (_.get(formikBag.values, `${path}.personSomKontakt.nyKontaktperson`)) {
-			return 'NY_PERSON'
 		} else if (
+			eksisterendeNyPerson ||
 			_.get(formikBag.values, `${path}.personSomKontakt.identifikasjonsnummer`) ||
 			_.get(formikBag.values, `${path}.personSomKontakt.foedselsdato`)
 		) {
 			return 'PERSON_FDATO'
+		} else if (_.get(formikBag.values, `${path}.personSomKontakt.nyKontaktperson`)) {
+			return 'NY_PERSON'
 		} else return null
 	}
 

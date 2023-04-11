@@ -162,6 +162,27 @@ export const KontaktinformasjonForDoedsboVisning = ({
 				'KONTAKT_FOR_DOEDSBO'
 		  )
 
+	if (eksisterendeNyPerson && initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt) {
+		const filteredPerson = Object.fromEntries(
+			Object.entries(initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt).filter(
+				(item) => item[0] !== 'nyKontaktperson'
+			)
+		)
+		initialValues.kontaktinformasjonForDoedsbo.personSomKontakt = filteredPerson
+	}
+
+	if (
+		eksisterendeNyPerson &&
+		redigertKontaktinfoValues?.kontaktinformasjonForDoedsbo?.personSomKontakt
+	) {
+		const filteredPerson = Object.fromEntries(
+			Object.entries(
+				redigertKontaktinfoValues?.kontaktinformasjonForDoedsbo?.personSomKontakt
+			).filter((item) => item[0] !== 'nyKontaktperson')
+		)
+		redigertKontaktinfoValues.kontaktinformasjonForDoedsbo.personSomKontakt = filteredPerson
+	}
+
 	return erPdlVisning ? (
 		<KontaktinformasjonForDoedsboLes data={kontaktinfoData} relasjoner={relasjoner} idx={idx} />
 	) : (
