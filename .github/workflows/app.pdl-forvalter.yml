@@ -10,8 +10,8 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/pdl-forvalter/"
-      deploy-tag: "#deploy-pdl-forvalter-prod"
+      working-directory: "apps/pdl-forvalter"
+      deploy-tag: "#deploy-pdl-forvalter"
       deploy-tag-dev: "#deploy-pdl-forvalter-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

@@ -11,8 +11,8 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       cluster: "dev-fss"
-      working-directory: "apps/testnorge-tp/"
-      deploy-tag: "#deploy-testnorge-tp-dev"
+      working-directory: "apps/testnorge-tp"
+      deploy-tag: "#deploy-testnorge-tp"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

@@ -10,8 +10,8 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/organisasjon-forvalter/"
-      deploy-tag: "#deploy-organisasjon-forvalter-dev"
+      working-directory: "apps/organisasjon-forvalter"
+      deploy-tag: "#deploy-organisasjon-forvalter"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

@@ -10,7 +10,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/varslinger-service/"
+      working-directory: "apps/varslinger-service"
       deploy-tag: "#deploy-varslinger-service"
       deploy-tag-dev: "#deploy-varslinger-service-dev"
     secrets:

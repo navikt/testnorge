@@ -11,8 +11,8 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       cluster: "dev-fss"
-      working-directory: "apps/testnorge-statisk-data-forvalter/"
-      deploy-tag: "#deploy-statisk-data-forvalter"
+      working-directory: "apps/testnorge-statisk-data-forvalter"
+      deploy-tag: "#deploy-testnorge-statisk-data-forvalter"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

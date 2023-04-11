@@ -10,8 +10,8 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/testnav-ident-pool/"
-      deploy-tag: "#deploy-ident-pool-dev"
+      working-directory: "apps/testnav-ident-pool"
+      deploy-tag: "#deploy-testnav-ident-pool"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

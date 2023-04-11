@@ -10,7 +10,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/app-tilgang-analyse-service/"
+      working-directory: "apps/app-tilgang-analyse-service"
       deploy-tag: "#deploy-app-tilgang-analyse-service"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

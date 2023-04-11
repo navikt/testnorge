@@ -10,7 +10,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/organisasjon-tilgang-service/"
+      working-directory: "apps/organisasjon-tilgang-service"
       deploy-tag: "#deploy-organisasjon-tilgang-service"
       deploy-tag-dev: "#deploy-organisasjon-tilgang-service-dev"
     secrets:
