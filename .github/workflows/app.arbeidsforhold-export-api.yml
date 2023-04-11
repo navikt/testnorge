@@ -12,7 +12,6 @@ jobs:
     with:
       working-directory: "apps/arbeidsforhold-export-api/"
       deploy-tag: "#deploy-arbeidsforhold-export-api"
-      deploy-tag-dev: "#deploy-arbeidsforhold-export-api-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
