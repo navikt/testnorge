@@ -80,6 +80,7 @@ export default () => {
 					</Alert>
 				)}
 				<NavButton
+					data-cy={'button_login_nav'}
 					className="login-modal_button-nav"
 					variant={'primary'}
 					onClick={redirectOnClick(runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login')}

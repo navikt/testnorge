@@ -47,6 +47,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 			{data.map((miljoe, idx) => {
 				return (
 					<DollyTooltip
+						dataCy="miljoe_hover"
 						overlay={getPersonInfo(miljoe)}
 						align={{
 							offset: [0, -10],

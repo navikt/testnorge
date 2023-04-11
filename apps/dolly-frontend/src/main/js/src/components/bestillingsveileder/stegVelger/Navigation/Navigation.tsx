@@ -48,6 +48,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 					)}
 					{!isLastStep && (
 						<NavButton
+							data-cy={'button_videre'}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
 							onClick={

@@ -99,6 +99,7 @@ export default ({ search, sidetall }: OrganisasjonerProps) => {
 
 				<div className="toolbar">
 					<NavButton
+						data-cy={'button_opprett_organisasjon'}
 						variant={'primary'}
 						// onClick={() => startBestilling(BestillingType.NY)}
 						onClick={visStartBestilling}

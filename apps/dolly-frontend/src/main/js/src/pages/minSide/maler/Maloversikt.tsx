@@ -36,7 +36,11 @@ export default ({ brukerId }: { brukerId: string }) => {
 			<hr />
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
-				<SearchField placeholder={'Søk etter mal'} setText={setSearchText} />
+				<SearchField
+					data-cy={'input_minside_mal'}
+					placeholder={'Søk etter mal'}
+					setText={setSearchText}
+				/>
 			</div>
 			<MalPanel
 				antallEgneMaler={antallEgneMaler}

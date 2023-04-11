@@ -10,7 +10,7 @@ describe('Login side og aksepter varsling', () => {
 		)
 		cy.visit('http://localhost:5678/login')
 
-		cy.get('button').contains('NAV').click()
-		cy.get('button').contains('Lukk').click()
+		cy.get('[data-cy="button_login_nav"]').click()
+		cy.get('[data-cy="button_varsling_lukk"]').click()
 	})
 })

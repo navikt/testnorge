@@ -90,6 +90,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						<div className="ny-bestilling-form_maler">
 							<div>
 								<DollyCheckbox
+									data-cy={'toggle_mal'}
 									name="aktiver-maler"
 									onChange={() => handleMalChange(formikBag)}
 									label="Opprett fra mal"
@@ -135,6 +136,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 							</div>
 						</div>
 						<ModalActionKnapper
+							data-cy={'button_start_bestilling'}
 							submitknapp="Start bestilling"
 							disabled={!formikBag.isValid || formikBag.isSubmitting}
 							onSubmit={formikBag.handleSubmit}

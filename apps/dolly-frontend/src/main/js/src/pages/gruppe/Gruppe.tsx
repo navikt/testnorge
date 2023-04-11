@@ -108,6 +108,7 @@ export default ({
 				<div className="gruppe--full gruppe--flex-row-center">
 					{!bankIdBruker && (
 						<NavButton
+							data-cy={'button_opprett_personer'}
 							variant={'primary'}
 							onClick={visStartBestilling}
 							disabled={erLaast}

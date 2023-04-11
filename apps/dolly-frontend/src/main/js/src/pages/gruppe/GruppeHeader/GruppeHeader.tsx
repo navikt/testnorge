@@ -59,7 +59,7 @@ const GruppeHeader = ({
 
 	return (
 		<Fragment>
-			<div className="page-header flexbox--align-center">
+			<div data-cy={'title_visning'} className="page-header flexbox--align-center">
 				<h1>{gruppeNavn}</h1>
 				{erLaast && (
 					<Hjelpetekst placement={bottom}>

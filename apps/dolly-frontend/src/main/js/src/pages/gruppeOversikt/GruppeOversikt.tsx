@@ -69,7 +69,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	return (
 		<div className="oversikt-container">
 			<div className="toolbar">
-				<div className="page-header flexbox--align-center--justify-start">
+				<div data-cy={'title_visning'} className="page-header flexbox--align-center--justify-start">
 					<h1>Grupper</h1>
 					<Hjelpetekst placement={bottom}>
 						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
@@ -77,7 +77,7 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				</div>
 			</div>
 			<div className="toolbar gruppe--full">
-				<StyledNavButton variant="primary" onClick={visNyGruppe}>
+				<StyledNavButton data-cy={'button_ny_gruppe'} variant="primary" onClick={visNyGruppe}>
 					Ny gruppe
 				</StyledNavButton>
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
@@ -93,18 +93,18 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 						size={'small'}
 						style={{ backgroundColor: '#ffffff' }}
 					>
-						<StyledToggleItem value={VisningType.MINE}>
+						<StyledToggleItem data-cy={'toggle_mine'} value={VisningType.MINE}>
 							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
 							Mine
 						</StyledToggleItem>
-						<StyledToggleItem value={VisningType.FAVORITTER}>
+						<StyledToggleItem data-cy={'toggle_favoritter'} value={VisningType.FAVORITTER}>
 							<Icon
 								size={16}
 								kind={visning === VisningType.FAVORITTER ? 'starLight' : 'starDark'}
 							/>
 							Favoritter
 						</StyledToggleItem>
-						<StyledToggleItem value={VisningType.ALLE}>
+						<StyledToggleItem data-cy={'toggle_alle'} value={VisningType.ALLE}>
 							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
 							Alle
 						</StyledToggleItem>

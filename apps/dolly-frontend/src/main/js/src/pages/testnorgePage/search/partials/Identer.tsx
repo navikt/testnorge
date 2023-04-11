@@ -22,6 +22,7 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 								<div className="flexbox--align-start" key={index}>
 									<div className="skjemaelement">
 										<Field
+											data-cy={'input_testnorge_fnr'}
 											name={`${identerPath}.${index}`}
 											className="skjemaelement__input"
 											placeholder={'Ikke spesifisert'}

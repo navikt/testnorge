@@ -114,7 +114,10 @@ export const MalPanel = ({
 												)}
 											</Table.HeaderCell>
 											<Table.HeaderCell>
-												<Button onClick={() => slettMal(id, bestilling?.organisasjon)}>
+												<Button
+													data-cy={'button_maler_slett'}
+													onClick={() => slettMal(id, bestilling?.organisasjon)}
+												>
 													<Icon kind={'trashcan'} />
 												</Button>
 											</Table.HeaderCell>

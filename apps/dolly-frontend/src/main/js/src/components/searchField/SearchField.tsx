@@ -4,7 +4,7 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 
 import './SearchField.less'
 
-export const SearchField = ({ placeholder = 'Hva leter du etter?', setText }) => {
+export const SearchField = ({ placeholder = 'Hva leter du etter?', setText, ...rest }) => {
 	const dispatch = useDispatch()
 
 	const handleChange = (event) =>
@@ -21,6 +21,7 @@ export const SearchField = ({ placeholder = 'Hva leter du etter?', setText }) =>
 				onChange={handleChange}
 				aria-label="Search"
 				icon="search"
+				{...rest}
 			/>
 		</div>
 	)

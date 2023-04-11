@@ -103,6 +103,7 @@ export const VarslingerModal = () => {
 							</NavButton>
 						) : (
 							<NavButton
+								data-cy={'button_varsling_lukk'}
 								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}

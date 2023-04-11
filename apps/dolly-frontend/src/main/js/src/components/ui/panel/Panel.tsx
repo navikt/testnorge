@@ -48,7 +48,9 @@ export default function Panel({
 					</div>
 				)}
 				<span className="dolly-panel-heading_buttons">
-					{checkAttributeArray && <LinkButton text="Velg alle" onClick={check} />}
+					{checkAttributeArray && (
+						<LinkButton data-cy={'button_velg_alle'} text="Velg alle" onClick={check} />
+					)}
 					{uncheckAttributeArray && <LinkButton text="Fjern alle" onClick={uncheck} />}
 					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />
 				</span>

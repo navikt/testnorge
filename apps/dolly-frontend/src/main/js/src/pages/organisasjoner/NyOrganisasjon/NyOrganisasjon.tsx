@@ -94,6 +94,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 							</div>
 						</div>
 						<ModalActionKnapper
+							data-cy={'button_start_bestilling'}
 							submitknapp="Start bestilling"
 							disabled={!formikBag.isValid || formikBag.isSubmitting}
 							onSubmit={formikBag.handleSubmit}

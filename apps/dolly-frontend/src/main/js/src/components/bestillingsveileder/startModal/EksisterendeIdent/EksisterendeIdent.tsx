@@ -94,6 +94,7 @@ export const EksisterendeIdent = ({
 
 			{finnesGyldige && (
 				<ModalActionKnapper
+					data-cy={'button_start_bestilling'}
 					submitknapp="Start bestilling"
 					onSubmit={_onSubmit}
 					onAvbryt={onAvbryt}
