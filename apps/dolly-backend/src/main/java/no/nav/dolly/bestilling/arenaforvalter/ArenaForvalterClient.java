@@ -163,12 +163,12 @@ public class ArenaForvalterClient implements ClientRegister {
         return arenadata.getAap115().isEmpty() ?
                 Flux.just("OK") :
 
-                Flux.fromIterable(arenadata.getAap115())
-                        .map(aap115 -> {
+                Flux.just(arenadata)
+                        .map(arenadata1 -> {
                             var context = new MappingContext.Factory().getContext();
                             context.setProperty("ident", ident);
                             context.setProperty("miljoe", miljoe);
-                            return mapperFacade.map(aap115, Aap115Request.class, context);
+                            return mapperFacade.map(arenadata1, Aap115Request.class, context);
                         })
                         .flatMap(request -> arenaForvalterConsumer.postAap115(request, token))
                         .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :

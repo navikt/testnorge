@@ -5,6 +5,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
+import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -24,14 +25,14 @@ public class ArenaAapMappingStrategy implements MappingStrategy {
     @Override
     public void register(MapperFactory factory) {
 
-        factory.classMap(RsArenaAap115.class, Aap115Request.class)
+        factory.classMap(Arenadata.class, Aap115Request.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsArenaAap115 arenadata, Aap115Request aap115Request, MappingContext context) {
+                    public void mapAtoB(Arenadata arenadata, Aap115Request aap115Request, MappingContext context) {
 
                         aap115Request.setPersonident((String) context.getProperty("ident"));
                         aap115Request.setMiljoe((String) context.getProperty("miljoe"));
-                        aap115Request.setNyeAap115(mapperFacade.map(arenadata, Aap115.class));
+                        aap115Request.setNyeAap115(mapperFacade.mapAsList(arenadata.getAap115(), Aap115.class));
                     }
                 })
                 .register();
@@ -67,7 +68,7 @@ public class ArenaAapMappingStrategy implements MappingStrategy {
                         }
                         aap115Request.setUtfall(isBlank(aap115Request.getUtfall()) ? "JA" :
                                 aap115Request.getUtfall());
-                        aap115Request.setBegrunnelse(isBlank(aap115Request.getBegrunnelse())?
+                        aap115Request.setBegrunnelse(isBlank(aap115Request.getBegrunnelse()) ?
                                 "Dolly legger til grunn at du er arbeidsufør på grunn av sykdom." :
                                 aap115Request.getBegrunnelse());
                         aap115Request.setVedtaktype(isNull(aap115Request.getVedtaktype()) ?

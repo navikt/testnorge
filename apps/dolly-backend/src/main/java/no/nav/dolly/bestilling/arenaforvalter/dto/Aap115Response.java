@@ -20,7 +20,7 @@ public class Aap115Response {
     private String miljoe;
 
     @Schema(description = "Liste over opprettede AAP-115")
-    private Aap115 nyeAap115;
+    private List<Aap115> nyeAap115;
 
     @Schema(description = "Liste over AAP-115 hvor oppretting feilet")
     private List<Aap115Feil> nyeAapFeilList;
