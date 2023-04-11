@@ -23,13 +23,13 @@ public class Aap115Response {
     private Aap115 nyeAap115;
 
     @Schema(description = "Liste over AAP-115 hvor oppretting feilet")
-    private List<NyAap115FeilV1> nyeAapFeilList;
+    private List<Aap115Feil> nyeAapFeilList;
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class NyAap115FeilV1 {
+    public static class Aap115Feil {
 
         private String personident;
         private String miljoe;

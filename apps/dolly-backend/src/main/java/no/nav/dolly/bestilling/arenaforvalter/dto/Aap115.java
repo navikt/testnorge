@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -23,16 +27,30 @@ public class Aap115 {
 
     @Schema(description = "Gyldige verdier: O (ny), S (stans)")
     private VedtaksType vedtaktype;
-    private MedisinskOpplysningV1 medisinskOpplysning;
-    private Vilkaar vilkaar;
+    private List<MedisinskOpplysning> medisinskOpplysning;
+    private List<Vilkaar> vilkaar;
     private String utfall;
     private String begrunnelse;
+
+    public List<MedisinskOpplysning> getMedisinskOpplysning() {
+        if (isNull(medisinskOpplysning)) {
+            medisinskOpplysning = new ArrayList<>();
+        }
+        return medisinskOpplysning;
+    }
+
+    public List<Vilkaar> getVilkaar() {
+        if (isNull(vilkaar)) {
+            vilkaar = new ArrayList<>();
+        }
+        return vilkaar;
+    }
 
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MedisinskOpplysningV1 {
+    public static class MedisinskOpplysning {
 
         private String type;
         private String klassifisering;

@@ -14,6 +14,7 @@ import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -64,7 +65,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Flux<String> deleteIdenter(List<String> identer) {
+    public Flux<InaktiverResponse> deleteIdenter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
@@ -75,9 +76,10 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Flux<String> deleteIdent(String ident, String miljoe, AccessToken token) {
+    public Mono<InaktiverResponse> inaktiverBruker(String ident, String miljoe, AccessToken token) {
 
-        return new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call();
+        return new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call()
+                .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response));
     }
 
     public Mono<AccessToken> getToken() {
@@ -97,6 +99,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_postAap"})
     public Flux<AapResponse> postAap(AapRequest aapRequest, AccessToken accessToken) {
 
+        log.info("Arena opprett bruker {}", aapRequest);
         return new ArenaforvalterPostAap(webClient, aapRequest, accessToken.getTokenValue()).call()
                 .doOnNext(response -> log.info("Opprettet aap {} mot Arenaforvalter {}",
                         aapRequest.getPersonident(), response));
@@ -105,6 +108,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_postAap115"})
     public Flux<Aap115Response> postAap115(Aap115Request aap115Request, AccessToken accessToken) {
 
+        log.info("Arena opprett bruker {}", aap115Request);
         return new ArenaforvalterPostAap115(webClient, aap115Request, accessToken.getTokenValue()).call()
                 .doOnNext(response -> log.info("Opprettet aap115 {} mot Arenaforvalter {}",
                         aap115Request.getPersonident(), response));

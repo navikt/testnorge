@@ -24,24 +24,9 @@ public class ArenaNyeBrukereResponse {
     private String miljoe;
     public enum BrukerFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, FINNES_ALLEREDE_PAA_VALGT_MILJO, BRUKEREN_ER_IKKE_REGISTRERT, AKTIVER_BRUKER, INAKTIVER_BRUKER, AKTIVER_AAP_115, AKTIVER_AAP}
 
-    private List<Bruker> arbeidsokerList;
+    private List<ArenaBruker> arbeidsokerList;
     private List<NyBrukerFeilV1> nyBrukerFeilList;
 
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Bruker {
-
-        private String personident;
-        private String miljoe;
-        private String status;
-        private String eier;
-        private String servicebehov;
-        private boolean automatiskInnsendingAvMeldekort;
-        private boolean aap115;
-        private boolean aap;
-    }
 
     @Data
     @Builder
@@ -55,7 +40,7 @@ public class ArenaNyeBrukereResponse {
         private String melding;
     }
 
-    public List<Bruker> getArbeidsokerList() {
+    public List<ArenaBruker> getArbeidsokerList() {
         if (isNull(arbeidsokerList)) {
             arbeidsokerList = new ArrayList<>();
         }

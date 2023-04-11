@@ -4,9 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -24,29 +22,14 @@ public class ArenaArbeidssokerBruker {
     private HttpStatus status;
     private String feilmelding;
     private String miljoe;
-    private List<Arbeidssoker> arbeidsokerList;
+    private List<ArenaBruker> arbeidsokerList;
     private Long antallSider;
 
-    public List<Arbeidssoker> getArbeidsokerList() {
+    public List<ArenaBruker> getArbeidsokerList() {
 
         if (isNull(arbeidsokerList)) {
             arbeidsokerList = new ArrayList<>();
         }
         return arbeidsokerList;
-    }
-
-    @Getter
-    @Setter
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Arbeidssoker {
-
-        private String personident;
-        private String miljoe;
-        private String status;
-        private String eier;
-        private String servicebehov;
-        private String automatiskInnsendingAvMeldekort;
     }
 }

@@ -46,9 +46,9 @@ public class ArenaMappingStrategy implements MappingStrategy {
                         if (arenadata.getAap().isEmpty()) {
                             arenaNyBruker.setAap(null);
                         }
-                        if (arenadata.getAap115().isEmpty()) {
+//                        if (arenadata.getAap115().isEmpty()) {
                             arenaNyBruker.setAap115(null);
-                        }
+//                        }
                     }
                 })
                 .byDefault()

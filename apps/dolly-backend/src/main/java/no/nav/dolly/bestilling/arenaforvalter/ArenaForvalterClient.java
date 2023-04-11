@@ -6,8 +6,11 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -22,6 +25,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -65,15 +69,24 @@ public class ArenaForvalterClient implements ClientRegister {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe, token)
-                        .flatMap(response -> response.getArbeidsokerList().isEmpty() ?
-                                sendArenaBruker(arenadata, ident, miljoe, token) :
-                                Flux.just(String.format(STATUS_FMT, miljoe, "OK")))
-                        .flatMap(brukerStatus -> brukerStatus.contains("OK") &&
-                                !arenadata.getDagpenger().isEmpty() ?
-                                sendArenadagpenger(arenadata, ident, miljoe, token) :
-                                Flux.just(brukerStatus)))
-                .filter(StringUtils::isNotBlank)
-                .collect(Collectors.joining(","));
+                        .flatMap(arenaArbeidsokerStatus ->
+                                sendArenaBruker(arenadata, arenaArbeidsokerStatus, ident, miljoe, token)
+                                        .flatMap(brukerStatus -> {
+                                            if (brukerStatus.contains("OK")) {
+                                                return sendAap115(arenadata, ident, miljoe, token)
+                                                        .flatMap(aap115tstaus -> {
+                                                            if (aap115tstaus.contains("OK")) {
+                                                                return sendArenadagpenger(arenadata, ident, miljoe, token);
+                                                            } else {
+                                                                return Flux.just(aap115tstaus);
+                                                            }
+                                                        });
+                                            } else {
+                                                return Flux.just(brukerStatus);
+                                            }
+                                        })))
+                        .filter(StringUtils::isNotBlank)
+                        .collect(Collectors.joining(","));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -92,7 +105,8 @@ public class ArenaForvalterClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Arena-forvalteren"));
     }
 
-    private Flux<String> sendArenaBruker(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+    private Flux<String> sendArenaBruker(Arenadata arenadata, ArenaArbeidssokerBruker arbeidssoker, String
+            ident, String miljoe, AccessToken token) {
 
         return Flux.just(arenadata)
                 .map(arenadata1 -> {
@@ -101,51 +115,94 @@ public class ArenaForvalterClient implements ClientRegister {
                             .build();
                     arenaNyeBrukere.getNyeBrukere().get(0).setPersonident(ident);
                     arenaNyeBrukere.getNyeBrukere().get(0).setMiljoe(miljoe);
+                    oppdaterAktiveringsdato(arenaNyeBrukere, arbeidssoker);
                     return arenaNyeBrukere;
                 })
-                .flatMap(arenaNyeBrukere -> arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere, token)
-                        .map(respons -> {
-                            if (!respons.getStatus().is2xxSuccessful()) {
-                                return String.format(STATUS_FMT, miljoe,
-                                        errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
-                            } else if (!respons.getNyBrukerFeilList().isEmpty()) {
-                                return respons.getNyBrukerFeilList().stream()
-                                        .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
-                                                "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
-                                        .collect(Collectors.joining(","));
-                            } else {
-                                return respons.getArbeidsokerList().stream()
-                                        .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
-                                        .collect(Collectors.joining(","));
-                            }
-                        }));
+                .flatMap(arenaNyeBrukere -> (!arbeidssoker.getArbeidsokerList().isEmpty() ?
+                        arenaForvalterConsumer.inaktiverBruker(ident, miljoe, token) :
+                        Mono.just("Ingen sletting"))
+                        .map(response -> arenaNyeBrukere))
+                .flatMap(arenaNyeBrukere ->
+                        arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere, token)
+                                .map(respons -> {
+                                    if (!respons.getStatus().is2xxSuccessful()) {
+                                        return String.format(STATUS_FMT, miljoe,
+                                                errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
+                                    } else if (!respons.getNyBrukerFeilList().isEmpty()) {
+                                        return respons.getNyBrukerFeilList().stream()
+                                                .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
+                                                        "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
+                                                .collect(Collectors.joining(","));
+                                    } else {
+                                        return respons.getArbeidsokerList().stream()
+                                                .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
+                                                .collect(Collectors.joining(","));
+                                    }
+                                }));
+    }
+
+    private static void oppdaterAktiveringsdato(ArenaNyeBrukere arenaNyeBrukere, ArenaArbeidssokerBruker
+            arbeidssoker) {
+
+        arenaNyeBrukere.getNyeBrukere()
+                .forEach(bruker -> {
+
+                    if (nonNull(bruker.getAktiveringsDato()) && !arbeidssoker.getArbeidsokerList().isEmpty()) {
+                        bruker.setAktiveringsDato(
+                                arbeidssoker.getArbeidsokerList().stream()
+                                        .map(ArenaBruker::getAktiveringsDato)
+                                        .filter(Objects::nonNull)
+                                        .findFirst()
+                                        .orElse(bruker.getAktiveringsDato()));
+                    }
+                });
+    }
+
+    private Flux<String> sendAap115(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+
+        return arenadata.getAap115().isEmpty() ?
+                Flux.just("OK") :
+
+                Flux.fromIterable(arenadata.getAap115())
+                        .map(aap115 -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty("ident", ident);
+                            context.setProperty("miljoe", miljoe);
+                            return mapperFacade.map(aap115, Aap115Request.class, context);
+                        })
+                        .flatMap(request -> arenaForvalterConsumer.postAap115(request, token))
+                        .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
+                                errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
     }
 
     private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
-        return Flux.just(arenadata)
-                .map(arenadata1 -> {
-                    var context = new MappingContext.Factory().getContext();
-                    context.setProperty("ident", ident);
-                    context.setProperty("miljoe", miljoe);
-                    return mapperFacade.map(arenadata1, ArenaDagpenger.class);
-                })
-                .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
-                .map(response -> {
-                    if (!response.getStatus().is2xxSuccessful()) {
-                        return String.format(STATUS_FMT, miljoe,
-                                errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
-                    } else if (!response.getNyeDagpFeilList().isEmpty()) {
-                        return response.getNyeDagpFeilList().stream()
-                                .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
-                                        "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
-                                .collect(Collectors.joining(","));
-                    } else {
-                        return response.getNyeDagpResponse().stream()
-                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
-                                        ": " + encodeStatus(dagpResponse.getBegrunnelse())))
-                                .collect(Collectors.joining(","));
-                    }
-                });
+        return arenadata.getDagpenger().isEmpty() ?
+                Flux.just("OK") :
+
+                Flux.just(arenadata)
+                        .map(arenadata1 -> {
+                            var context = new MappingContext.Factory().getContext();
+                            context.setProperty("ident", ident);
+                            context.setProperty("miljoe", miljoe);
+                            return mapperFacade.map(arenadata1, ArenaDagpenger.class);
+                        })
+                        .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
+                        .map(response -> {
+                            if (!response.getStatus().is2xxSuccessful()) {
+                                return String.format(STATUS_FMT, miljoe,
+                                        errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+                            } else if (!response.getNyeDagpFeilList().isEmpty()) {
+                                return response.getNyeDagpFeilList().stream()
+                                        .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
+                                                "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
+                                        .collect(Collectors.joining(","));
+                            } else {
+                                return response.getNyeDagpResponse().stream()
+                                        .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
+                                                ": " + encodeStatus(dagpResponse.getBegrunnelse())))
+                                        .collect(Collectors.joining(","));
+                            }
+                        });
     }
 }
