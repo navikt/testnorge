@@ -14,12 +14,12 @@ on:
         type: string
         description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend."
         required: false
-        default: null
+        default: "#deploy-prod"
       deploy-tag-dev:
         type: string
-        description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-backend-dev."
+        description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-dolly-backend-dev."
         required: false
-        default: null
+        default: "#deploy-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
         required: true
