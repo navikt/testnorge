@@ -13,7 +13,8 @@ on:
       deploy-tag:
         type: string
         description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend."
-        required: true
+        required: false
+        default: ""
       deploy-tag-dev:
         type: string
         description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-backend-dev."
@@ -73,7 +74,7 @@ jobs:
       - name: "Docker"
         uses: nais/docker-build-push@v0
         id: docker-build-push
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev) || contains(github.event.head_commit.message, inputs.deploy-tag) }}
+        if: ${{ github.ref == 'refs/heads/master' || (inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag-dev) || contains(github.event.head_commit.message, inputs.deploy-tag)) }}
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

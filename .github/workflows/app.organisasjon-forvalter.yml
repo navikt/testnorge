@@ -1,4 +1,4 @@
-name: App organisasjon-forvalter
+name: organisasjon-forvalter
 
 on:
   push:
@@ -7,32 +7,13 @@ on:
       - .github/workflows/app.organisasjon-forvalter.yml
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'apps/organisasjon-forvalter/'
+      working-directory: "apps/organisasjon-forvalter/"
+      deploy-tag: "#deploy-organisasjon-forvalter-dev"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'apps/organisasjon-forvalter/'
-      app-name: 'organisasjon-forvalter'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-organisasjon-forvalter-dev')}}
-    with:
-      resource: 'apps/organisasjon-forvalter/config.yml'
-      app-name: 'organisasjon-forvalter'
-      cluster: 'dev-gcp'
-      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

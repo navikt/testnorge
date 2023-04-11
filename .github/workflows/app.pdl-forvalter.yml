@@ -1,4 +1,4 @@
-name: App pdl-forvalter
+name: pdl-forvalter
 
 on:
   push:
@@ -7,45 +7,14 @@ on:
       - .github/workflows/app.pdl-forvalter.yml
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'apps/pdl-forvalter/'
+      working-directory: "apps/pdl-forvalter/"
+      deploy-tag: "#deploy-pdl-forvalter-prod"
+      deploy-tag-dev: "#deploy-pdl-forvalter-dev"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'apps/pdl-forvalter/'
-      app-name: 'testnav-pdl-forvalter'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-pdl-forvalter-prod')}}
-    with:
-      resource: 'apps/pdl-forvalter/nais-prod.yaml'
-      app-name: 'testnav-pdl-forvalter'
-      cluster: 'dev-gcp'
-      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-pdl-forvalter-dev')}}
-    with:
-      resource: 'apps/pdl-forvalter/nais-dev.yaml'
-      app-name: 'testnav-pdl-forvalter'
-      cluster: 'dev-gcp'
-      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
