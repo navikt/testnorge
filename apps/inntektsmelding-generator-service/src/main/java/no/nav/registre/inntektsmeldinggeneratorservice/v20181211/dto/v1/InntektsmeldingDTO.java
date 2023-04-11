@@ -80,11 +80,17 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
             );
         }
 
-        xmlSkjemainnhold.setYtelse(
-                isBlank(ytelse) ? null : CaseUtils.toCamelCase(ytelse, true, '_')
+        if (isBlank(ytelse)) xmlSkjemainnhold.setYtelse(
+                null
         );
-        xmlSkjemainnhold.setAarsakTilInnsending(
-                isBlank(aarsakTilInnsending) ? null : CaseUtils.toCamelCase(aarsakTilInnsending, true, '_')
+        else xmlSkjemainnhold.setYtelse(
+                ytelse.contains("_") ? CaseUtils.toCamelCase(ytelse, true, '_') : ytelse
+        );
+        if (isBlank(aarsakTilInnsending)) xmlSkjemainnhold.setAarsakTilInnsending(
+                null
+        );
+        else xmlSkjemainnhold.setAarsakTilInnsending(
+                aarsakTilInnsending.contains("_") ? CaseUtils.toCamelCase(aarsakTilInnsending, true, '_') : aarsakTilInnsending
         );
         xmlSkjemainnhold.setArbeidstakerFnr(arbeidstakerFnr);
         xmlSkjemainnhold.setNaerRelasjon(naerRelasjon);
