@@ -82,7 +82,7 @@ jobs:
           docker_context: ${{ inputs.working-directory }}
       - name: "Deploy (development)"
         uses: nais/deploy/actions/deploy@v1
-        if: ${{ github.ref == 'refs/heads/master' || (inputs.deploy-tag-dev != "" && contains(github.event.head_commit.message, inputs.deploy-tag-dev)) }}
+        if: ${{ github.ref == 'refs/heads/master' || (inputs.deploy-tag-dev != '' && contains(github.event.head_commit.message, inputs.deploy-tag-dev)) }}
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
