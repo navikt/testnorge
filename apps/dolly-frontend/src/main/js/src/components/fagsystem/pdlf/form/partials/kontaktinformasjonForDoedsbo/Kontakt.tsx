@@ -20,6 +20,7 @@ import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/Datepi
 interface KontaktValues {
 	formikBag: FormikProps<any>
 	path: string
+	eksisterendeNyPerson?: any
 }
 
 type TypeValues = {

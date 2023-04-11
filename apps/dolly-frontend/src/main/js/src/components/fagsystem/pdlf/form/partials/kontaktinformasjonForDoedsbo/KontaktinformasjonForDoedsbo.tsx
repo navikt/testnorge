@@ -19,7 +19,6 @@ export const KontaktinformasjonForDoedsboForm = ({
 	path,
 	eksisterendeNyPerson = null,
 }) => {
-	console.log("formikBag.values: ", formikBag.values) //TODO - SLETT MEG
 	return (
 		<>
 			<FormikSelect
