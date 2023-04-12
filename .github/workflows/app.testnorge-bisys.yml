@@ -1,6 +1,7 @@
 name: testnorge-bisys
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - apps/testnorge-bisys/**
