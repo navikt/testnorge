@@ -15,7 +15,6 @@ import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.Paginering;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.exception.NotFoundException;
-import no.nav.pdl.forvalter.utils.RelasjonerAlder;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -197,7 +196,7 @@ public class PersonService {
         if (isNull(request.getPerson())) {
             request.setPerson(new PersonDTO());
         }
-        RelasjonerAlder.fixRelasjonerAlder(request);
+//        RelasjonerAlder.fixRelasjonerAlder(request);
 
         if (isBlank(request.getOpprettFraIdent())) {
             request.getPerson().setIdent(identPoolConsumer.acquireIdents(
