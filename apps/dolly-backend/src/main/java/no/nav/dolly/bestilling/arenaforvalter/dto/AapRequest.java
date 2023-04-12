@@ -6,6 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,5 +25,12 @@ public class AapRequest {
     private String miljoe;
 
     @Schema(description = "AAP-rettigheter for brukeren")
-    private Aap nyeAap;
+    private List<Aap> nyeAap;
+
+    public List<Aap> getNyeAap() {
+        if (isNull(nyeAap)) {
+            nyeAap = new ArrayList<>();
+        }
+        return nyeAap;
+    }
 }

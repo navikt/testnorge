@@ -7,6 +7,7 @@ import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
@@ -19,7 +20,6 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -39,6 +39,14 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private static final String STATUS_FMT = "%s$%s";
     private static final String SYSTEM = "Arena";
+    private static final String IDENT = "ident";
+    private static final String MILJOE = "miljoe";
+
+    private static final String FEIL = "Feil: ";
+    private static final String BRUKER = "bruker:";
+    private static final String AAP115 = "aap115:";
+    private static final String AAP = "aap:";
+    private static final String DAGPENGER = "dagpenger:";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
@@ -62,31 +70,37 @@ public class ArenaForvalterClient implements ClientRegister {
                                     transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
                                 })
                                 .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer, token)
+                                        .map(this::parseStatus)
                                         .map(status -> futurePersist(progress, status)))));
     }
 
-    private Mono<String> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer, AccessToken token) {
+    private Mono<List<String>> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer, AccessToken token) {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe, token)
-                        .flatMap(arenaArbeidsokerStatus ->
+                        .flatMap(arenaArbeidsokerStatus -> Flux.concat(
                                 sendArenaBruker(arenadata, arenaArbeidsokerStatus, ident, miljoe, token)
-                                        .flatMap(brukerStatus -> {
-                                            if (brukerStatus.contains("OK")) {
-                                                return sendAap115(arenadata, ident, miljoe, token)
-                                                        .flatMap(aap115tstaus -> {
-                                                            if (aap115tstaus.contains("OK")) {
-                                                                return sendArenadagpenger(arenadata, ident, miljoe, token);
-                                                            } else {
-                                                                return Flux.just(aap115tstaus);
-                                                            }
-                                                        });
-                                            } else {
-                                                return Flux.just(brukerStatus);
-                                            }
-                                        })))
-                        .filter(StringUtils::isNotBlank)
-                        .collect(Collectors.joining(","));
+                                        .map(brukerStatus -> BRUKER + brukerStatus),
+
+                                sendAap115(arenadata, ident, miljoe, token)
+                                        .map(aap115tstaus -> AAP115 + aap115tstaus),
+
+                                sendAap(arenadata, ident, miljoe, token)
+                                        .map(aapStataus -> AAP + aapStataus),
+
+                                sendArenadagpenger(arenadata, ident, miljoe, token)
+                                        .map(dagpengerStatus -> DAGPENGER + dagpengerStatus)
+                        )))
+                .collectList();
+    }
+
+    private String parseStatus(List<String> status) {
+
+        return status.stream()
+                .filter(entry -> !entry.contains("OK"))
+                .map(entry -> FEIL + entry)
+                .findFirst()
+                .orElse("OK");
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -131,7 +145,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                     } else if (!respons.getNyBrukerFeilList().isEmpty()) {
                                         return respons.getNyBrukerFeilList().stream()
                                                 .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
-                                                        "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
+                                                        brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
                                                 .collect(Collectors.joining(","));
                                     } else {
                                         return respons.getArbeidsokerList().stream()
@@ -141,8 +155,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                 }));
     }
 
-    private static void oppdaterAktiveringsdato(ArenaNyeBrukere arenaNyeBrukere, ArenaArbeidssokerBruker
-            arbeidssoker) {
+    private static void oppdaterAktiveringsdato(ArenaNyeBrukere arenaNyeBrukere, ArenaArbeidssokerBruker arbeidssoker) {
 
         arenaNyeBrukere.getNyeBrukere()
                 .forEach(bruker -> {
@@ -160,49 +173,60 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private Flux<String> sendAap115(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
-        return arenadata.getAap115().isEmpty() ?
-                Flux.just("OK") :
+        return Flux.just(arenadata)
+                .filter(arenadata1 -> !arenadata1.getAap115().isEmpty())
+                .map(arenadata1 -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty(IDENT, ident);
+                    context.setProperty(MILJOE, miljoe);
+                    return mapperFacade.map(arenadata1, Aap115Request.class, context);
+                })
+                .flatMap(request -> arenaForvalterConsumer.postAap115(request, token))
+                .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
+                        errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+    }
 
-                Flux.just(arenadata)
-                        .map(arenadata1 -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty("ident", ident);
-                            context.setProperty("miljoe", miljoe);
-                            return mapperFacade.map(arenadata1, Aap115Request.class, context);
-                        })
-                        .flatMap(request -> arenaForvalterConsumer.postAap115(request, token))
-                        .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
-                                errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+    private Flux<String> sendAap(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+
+        return Flux.just(arenadata)
+                .filter(arenadata1 -> !arenadata1.getAap().isEmpty())
+                .map(arenadata1 -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty(IDENT, ident);
+                    context.setProperty(MILJOE, miljoe);
+                    return mapperFacade.map(arenadata1, AapRequest.class, context);
+                })
+                .flatMap(request -> arenaForvalterConsumer.postAap(request, token))
+                .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
+                        errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
     }
 
     private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
-        return arenadata.getDagpenger().isEmpty() ?
-                Flux.just("OK") :
-
-                Flux.just(arenadata)
-                        .map(arenadata1 -> {
-                            var context = new MappingContext.Factory().getContext();
-                            context.setProperty("ident", ident);
-                            context.setProperty("miljoe", miljoe);
-                            return mapperFacade.map(arenadata1, ArenaDagpenger.class);
-                        })
-                        .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
-                        .map(response -> {
-                            if (!response.getStatus().is2xxSuccessful()) {
-                                return String.format(STATUS_FMT, miljoe,
-                                        errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
-                            } else if (!response.getNyeDagpFeilList().isEmpty()) {
-                                return response.getNyeDagpFeilList().stream()
-                                        .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
-                                                "Feil: " + dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
-                                        .collect(Collectors.joining(","));
-                            } else {
-                                return response.getNyeDagpResponse().stream()
-                                        .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
-                                                ": " + encodeStatus(dagpResponse.getBegrunnelse())))
-                                        .collect(Collectors.joining(","));
-                            }
-                        });
+        return Flux.just(arenadata)
+                .filter(arenadata1 -> !arenadata1.getDagpenger().isEmpty())
+                .map(arenadata1 -> {
+                    var context = new MappingContext.Factory().getContext();
+                    context.setProperty(IDENT, ident);
+                    context.setProperty(MILJOE, miljoe);
+                    return mapperFacade.map(arenadata1, ArenaDagpenger.class);
+                })
+                .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
+                .map(response -> {
+                    if (!response.getStatus().is2xxSuccessful()) {
+                        return String.format(STATUS_FMT, miljoe,
+                                errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+                    } else if (!response.getNyeDagpFeilList().isEmpty()) {
+                        return response.getNyeDagpFeilList().stream()
+                                .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
+                                        dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
+                                .collect(Collectors.joining(","));
+                    } else {
+                        return response.getNyeDagpResponse().stream()
+                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
+                                        ": " + encodeStatus(dagpResponse.getBegrunnelse())))
+                                .collect(Collectors.joining(","));
+                    }
+                });
     }
 }

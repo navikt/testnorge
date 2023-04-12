@@ -20,7 +20,7 @@ public class AapResponse {
     private String miljoe;
 
     @Schema(description = "AAP-rettigheter for brukeren")
-    private Aap nyeAap;
+    private List<Aap> nyeAap;
 
     @Schema(description = "liste over AAP hvor oppretting feilet")
     private List<NyAapFeilV1> nyeAapFeilList;

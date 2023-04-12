@@ -58,14 +58,4 @@ public class Aap115 {
         private String kilde;
         private LocalDate kildeDato;
     }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Vilkaar {
-
-        private String kode;
-        private String status;
-    }
 }

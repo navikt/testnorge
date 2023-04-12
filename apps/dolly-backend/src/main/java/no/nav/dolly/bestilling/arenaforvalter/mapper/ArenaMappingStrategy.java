@@ -43,12 +43,8 @@ public class ArenaMappingStrategy implements MappingStrategy {
                         } else if (!arenadata.getAap().isEmpty() || !arenadata.getAap115().isEmpty() || !arenadata.getDagpenger().isEmpty()) {
                             mapMedServicebehov(arenadata, arenaNyBruker);
                         }
-                        if (arenadata.getAap().isEmpty()) {
-                            arenaNyBruker.setAap(null);
-                        }
-//                        if (arenadata.getAap115().isEmpty()) {
-                            arenaNyBruker.setAap115(null);
-//                        }
+                        arenaNyBruker.setAap(null);
+                        arenaNyBruker.setAap115(null);
                     }
                 })
                 .byDefault()

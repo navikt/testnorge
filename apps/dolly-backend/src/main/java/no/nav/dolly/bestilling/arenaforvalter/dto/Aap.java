@@ -7,6 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -21,13 +25,13 @@ public class Aap {
     private LocalDate datoMottatt;
     @Schema(description = "O = ny rettighet, S = sletting")
     private VedtakType vedtaktype;
-    private SaksopplysningV1 genSaksopplysninger;
-    private MedlemFolketrygdenV1 medlemFolketrygden;
-    private AndreOkonomYtelser andreOkonomYtelserListe;
-    private SaksopplysningV1 institusjonsopphold;
+    private List<Saksopplysning> genSaksopplysninger;
+    private MedlemFolketrygden medlemFolketrygden;
+    private List<AndreOkonomYtelser> andreOkonomYtelserListe;
+    private List<Saksopplysning> institusjonsopphold;
     private LocalDate fraDato;
     private LocalDate justertFra;
-    private Vilkaar vilkaar;
+    private List<Vilkaar> vilkaar;
     private String utfall;
     private LocalDate tilDato;
     private PeriodeAAP periode;
@@ -38,11 +42,39 @@ public class Aap {
     private String saksbehandler;
     private String beslutter;
 
+    public List<Saksopplysning> getGenSaksopplysninger() {
+        if (isNull(genSaksopplysninger)) {
+            genSaksopplysninger = new ArrayList<>();
+        }
+        return genSaksopplysninger;
+    }
+
+    public List<AndreOkonomYtelser> getAndreOkonomYtelserListe() {
+        if (isNull(andreOkonomYtelserListe)) {
+            andreOkonomYtelserListe = new ArrayList<>();
+        }
+        return andreOkonomYtelserListe;
+    }
+
+    public List<Saksopplysning> getInstitusjonsopphold() {
+        if (isNull(institusjonsopphold)) {
+            institusjonsopphold = new ArrayList<>();
+        }
+        return institusjonsopphold;
+    }
+
+    public List<Vilkaar> getVilkaar() {
+        if (isNull(vilkaar)) {
+            vilkaar = new ArrayList<>();
+        }
+        return vilkaar;
+    }
+
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class SaksopplysningV1 {
+    public static class Saksopplysning {
         private String kode;
         private String overrdnet;
         private String verdi;
@@ -52,7 +84,7 @@ public class Aap {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class MedlemFolketrygdenV1 {
+    public static class MedlemFolketrygden {
         private String kode;
         private String verdi;
     }
@@ -72,15 +104,6 @@ public class Aap {
     @AllArgsConstructor
     public static class AndreOkonomYtelser {
         private AnnenOkonomYtelse annenOkonomYtelse;
-    }
-
-    @Data
-    @Builder
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class Vilkaar {
-        private String kode;
-        private String status;
     }
 
     @Data
