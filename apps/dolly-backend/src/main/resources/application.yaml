@@ -240,3 +240,4 @@ consumers:
     namespace: dolly
     url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+    
