@@ -34,4 +34,3 @@ jobs:
       cluster: 'dev-gcp'
     secrets:
       API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      DOLLY_READER_TOKEN: ${{ secrets.DOLLY_READER_TOKEN }}

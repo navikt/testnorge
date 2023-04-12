@@ -1,4 +1,4 @@
-DOLLY_READER_TOKEN: test
+GITHUB_TOKEN: test
 
 spring:
   flyway:
