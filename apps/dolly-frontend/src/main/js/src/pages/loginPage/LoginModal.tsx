@@ -93,10 +93,7 @@ export default () => {
 				<NavButton
 					className="login-modal_button-bankid"
 					variant={'primary'}
-					onClick={redirectOnClick(
-						runningLocal ? '/oauth2/authorization/idporten' : '/oauth2/login',
-						true
-					)}
+					onClick={redirectOnClick('/oauth2/authorization/idporten', true)}
 				>
 					Logg inn med BankId
 				</NavButton>
