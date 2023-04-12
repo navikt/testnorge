@@ -37,22 +37,23 @@ const getAdvarsel: () => string = () => {
 	return null
 }
 
-export const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-	event.preventDefault()
-	redirectTo(path)
-}
+export const redirectOnClick =
+	(path: string, toIdporten: boolean) => (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault()
+		redirectTo(path, toIdporten)
+	}
 
-const redirectTo = (path: string) => {
-	const toIdporten = path.includes('idporten') && !window.location.hostname?.includes('localhost')
+const redirectTo = (path: string, toIdporten: boolean) => {
+	const navigateToIdporten = toIdporten && !window.location.hostname?.includes('localhost')
 	const isIdporten =
 		window.location.hostname?.includes('idporten') &&
 		!window.location.hostname?.includes('localhost')
 
-	if (toIdporten && !isIdporten) {
+	if (navigateToIdporten && !isIdporten) {
 		location.replace('https://dolly-idporten.ekstern.dev.nav.no/login')
 		return
 	}
-	if (!toIdporten && isIdporten) {
+	if (!navigateToIdporten && isIdporten) {
 		location.replace('https://dolly.ekstern.dev.nav.no/login')
 		return
 	}
@@ -82,7 +83,10 @@ export default () => {
 				<NavButton
 					className="login-modal_button-nav"
 					variant={'primary'}
-					onClick={redirectOnClick(runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login')}
+					onClick={redirectOnClick(
+						runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
+						false
+					)}
 				>
 					Logg inn med NAV epost
 				</NavButton>
@@ -90,7 +94,8 @@ export default () => {
 					className="login-modal_button-bankid"
 					variant={'primary'}
 					onClick={redirectOnClick(
-						runningLocal ? '/oauth2/authorization/idporten' : '/oauth2/login'
+						runningLocal ? '/oauth2/authorization/idporten' : '/oauth2/login',
+						true
 					)}
 				>
 					Logg inn med BankId
