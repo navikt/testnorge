@@ -232,7 +232,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon kind={'search'} size={20} />
+				<Icon data-cy={'input_person_soek'} kind={'search'} size={20} />
 			</components.DropdownIndicator>
 		)
 	}
@@ -250,6 +250,7 @@ const FinnPersonBestilling = ({
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
+						data-cy={'select_person_search'}
 						defaultOptions={false}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}

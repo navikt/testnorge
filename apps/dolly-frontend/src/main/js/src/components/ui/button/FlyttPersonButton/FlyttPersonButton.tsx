@@ -9,6 +9,7 @@ export const FlyttPersonButton = ({ gruppeId, disabled }) => {
 	return (
 		<>
 			<Button
+				data-cy={'button_flytt_personer'}
 				onClick={openModal}
 				className="svg-icon-blue-line"
 				kind="flytt"

@@ -5,6 +5,11 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 		cy.visit('http://localhost:5678/gruppe')
 
 		// Naviger mellom tabs
+		cy.get('[data-cy="input_person_soek"]').click({ force: true })
+		cy.get('body').type('12345')
+
+		cy.wait(400)
+
 		cy.get('[data-cy="toggle_favoritter"]').click()
 		cy.get('[data-cy="toggle_alle"]').click()
 		cy.get('[data-cy="toggle_mine"]').click()
@@ -18,7 +23,7 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 		cy.get('[data-cy="toggle_eksisterende_person"]').click()
 		cy.get('[data-cy="toggle_ny_person"]').click()
 		cy.get('[data-cy="toggle_mal"]').click()
-		cy.url().should('include', '/gruppe/2') // => true
+		cy.url().should('include', '/gruppe/2')
 		cy.get('[data-cy="button_start_bestilling"]').click()
 		cy.get('[data-cy="button_velg_alle"]').each((btn) => cy.wrap(btn).click())
 		cy.get('[data-cy="button_videre"]').click()
@@ -30,6 +35,14 @@ describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 		cy.visit('http://localhost:5678/gruppe')
 
 		cy.get('div').contains('Testytest').click()
+
+		cy.get('[data-cy="button_flytt_personer"]').click()
+
+		cy.get('[data-cy="toggle_ny_gruppe"]').click()
+		cy.get('[data-cy="toggle_eksisterende_gruppe"]').click()
+
+		cy.get('[data-cy="button_flytt_personer_avbryt"]').click()
+
 		cy.get('div').contains('12345678912').click()
 		cy.wait(3000)
 

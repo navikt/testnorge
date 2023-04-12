@@ -357,7 +357,11 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 					{error && <div className="error-message">{`Feil: ${error}`}</div>}
 				</div>
 				<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
-					<NavButton onClick={handleClose} variant="secondary">
+					<NavButton
+						data-cy={'button_flytt_personer_avbryt'}
+						onClick={handleClose}
+						variant="secondary"
+					>
 						Avbryt
 					</NavButton>
 					<NavButton

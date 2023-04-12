@@ -34,13 +34,14 @@ export const VelgGruppeToggle = ({
 		<div className="toggle--wrapper">
 			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
 				<ToggleGroup.Item
+					data-cy={'toggle_eksisterende_gruppe'}
 					key={Gruppevalg.EKSISTERENDE}
 					value={Gruppevalg.EKSISTERENDE}
 					style={{ padding: '0 20px' }}
 				>
 					Eksisterende gruppe
 				</ToggleGroup.Item>
-				<ToggleGroup.Item key={Gruppevalg.NY} value={Gruppevalg.NY}>
+				<ToggleGroup.Item data-cy={'toggle_ny_gruppe'} key={Gruppevalg.NY} value={Gruppevalg.NY}>
 					Ny gruppe
 				</ToggleGroup.Item>
 			</StyledToggleGroup>

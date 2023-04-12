@@ -13,6 +13,15 @@ export const gjeldendeBrukerMock = {
 	epost: 'BeASt@bugexterminator.no',
 }
 
+export const personFragmentSearchMock = [
+	{
+		ident: '12345678912',
+		fornavn: 'Teste',
+		mellomnavn: null,
+		etternavn: 'Testesen',
+	},
+]
+
 export const kodeverkMock = {
 	name: 'Tema',
 	koder: [
