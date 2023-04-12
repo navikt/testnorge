@@ -90,9 +90,7 @@ export default () => {
 					className="login-modal_button-bankid"
 					variant={'primary'}
 					onClick={redirectOnClick(
-						runningLocal
-							? '/oauth2/authorization/idporten'
-							: 'https://dolly-idporten.ekstern.dev.nav.no/oauth2/login'
+						runningLocal ? '/oauth2/authorization/idporten' : '/oauth2/login'
 					)}
 				>
 					Logg inn med BankId
