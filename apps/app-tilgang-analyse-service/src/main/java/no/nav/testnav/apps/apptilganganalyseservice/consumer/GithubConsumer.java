@@ -38,6 +38,10 @@ public class GithubConsumer {
                 .doOnNext(value -> log.info("Fant {} (søk='{}').", value.getItems().size(), args));
     }
 
+    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
+        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
+    }
+
     private Mono<SearchResults> search(SearchResults results, SearchArgs args, Integer page) {
         var command = new SearchCodeCommand(webClient, args.toString(), page, PAGE_SIZE);
         return command.call().flatMap(dto -> {
@@ -46,9 +50,5 @@ public class GithubConsumer {
             }
             return Mono.just(results.concat(dto));
         });
-    }
-
-    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
-        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
     }
 }
