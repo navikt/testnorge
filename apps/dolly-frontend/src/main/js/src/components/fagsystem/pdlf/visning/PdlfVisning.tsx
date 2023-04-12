@@ -24,8 +24,8 @@ import { PdlSikkerhetstiltak } from '@/components/fagsystem/pdl/visning/partials
 import { TpsMBankkonto } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMBankkonto'
 
 export const getBankkontoData = (data) => {
-	if (data?.kontoregister?.aktivKonto) {
-		return getKontoregisterBankkonto(data.kontoregister.aktivKonto)
+	if (data?.kontoregister) {
+		return getKontoregisterBankkonto(data.kontoregister)
 	} else {
 		return {
 			bankkontonrUtland: data?.tpsMessaging?.bankkontonrUtland,
@@ -42,6 +42,7 @@ const getKontoregisterBankkonto = (bankkontoData) => {
 	if (bankkontoData.utenlandskKontoInfo) {
 		resp.bankkontonrUtland = {
 			kontonummer: bankkontoData.kontonummer,
+			gyldig: bankkontoData.gyldigFom,
 			swift: bankkontoData.utenlandskKontoInfo?.swiftBicKode,
 			landkode: bankkontoData.utenlandskKontoInfo?.bankLandkode,
 			banknavn: bankkontoData.utenlandskKontoInfo?.banknavn,
@@ -54,6 +55,7 @@ const getKontoregisterBankkonto = (bankkontoData) => {
 	} else {
 		resp.bankkontonrNorsk = {
 			kontonummer: bankkontoData?.kontonummer,
+			gyldig: bankkontoData?.gyldigFom,
 		}
 	}
 	return resp

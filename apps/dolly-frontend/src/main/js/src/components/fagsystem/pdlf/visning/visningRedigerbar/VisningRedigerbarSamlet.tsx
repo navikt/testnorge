@@ -16,8 +16,8 @@ import { telefonnummer } from '@/components/fagsystem/pdlf/form/validation/parti
 import { TelefonnummerFormRedigering } from '@/components/fagsystem/pdlf/form/partials/telefonnummer/Telefonnummer'
 import { TelefonnummerLes } from '@/components/fagsystem/pdlf/visning/partials/Telefonnummer'
 import {
-	RedigerLoading,
 	Modus,
+	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 
 type VisningTypes = {
@@ -107,7 +107,7 @@ export const VisningRedigerbarSamlet = ({
 
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
-			const id = null as number
+			const id = null as unknown as number
 			const itemData = _.get(data, path)?.filter((item: any) => item)
 			setVisningModus(Modus.LoadingPdlf)
 			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
@@ -246,7 +246,9 @@ export const VisningRedigerbarSamlet = ({
 															</h4>
 														</div>
 														<div className="slettModal-actions">
-															<NavButton onClick={closeModal}>Nei</NavButton>
+															<NavButton onClick={closeModal} variant={'secondary'}>
+																Nei
+															</NavButton>
 
 															<NavButton
 																onClick={() => {
@@ -303,7 +305,7 @@ export const VisningRedigerbarSamlet = ({
 								<FieldArrayEdit>
 									<Knappegruppe>
 										<NavButton
-											variant={'primary'}
+											variant={'secondary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}

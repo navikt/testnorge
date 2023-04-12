@@ -31,9 +31,7 @@ public class XmlConverter {
 
             String xmlContent = sw.toString();
 
-            if (log.isDebugEnabled()) {
-                log.debug("Opprettet xml: {}", xmlContent);
-            }
+            log.debug("Opprettet xml: {}", xmlContent);
             return xmlContent;
         } catch (JAXBException e) {
             throw new JaxbToXmlException("klarte ikke å konvertere Jaxb element til XML", e);

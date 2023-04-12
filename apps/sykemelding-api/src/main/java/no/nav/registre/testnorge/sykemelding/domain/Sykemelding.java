@@ -2,6 +2,22 @@ package no.nav.registre.testnorge.sykemelding.domain;
 
 import lombok.SneakyThrows;
 import lombok.ToString;
+import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLEIFellesformat;
+import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLMottakenhetBlokk;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLAddress;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLCS;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLHealthcareProfessional;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLIdent;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLMsgHead;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLOrganisation;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLPatient;
+import no.nav.registre.testnorge.sykemelding.util.JAXBSykemeldingConverter;
+import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
+import no.nav.testnav.libs.dto.sykemelding.v1.AdresseDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.OrganisasjonDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
+import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
 
 import javax.xml.datatype.DatatypeFactory;
 import java.nio.charset.StandardCharsets;
@@ -11,23 +27,6 @@ import java.time.ZoneId;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.UUID;
-
-import no.nav.helse.eiFellesformat.XMLEIFellesformat;
-import no.nav.helse.eiFellesformat.XMLMottakenhetBlokk;
-import no.nav.helse.msgHead.XMLAddress;
-import no.nav.helse.msgHead.XMLCS;
-import no.nav.helse.msgHead.XMLHealthcareProfessional;
-import no.nav.helse.msgHead.XMLIdent;
-import no.nav.helse.msgHead.XMLMsgHead;
-import no.nav.helse.msgHead.XMLOrganisation;
-import no.nav.helse.msgHead.XMLPatient;
-import no.nav.testnav.libs.dto.sykemelding.v1.AdresseDTO;
-import no.nav.testnav.libs.dto.sykemelding.v1.HelsepersonellDTO;
-import no.nav.testnav.libs.dto.sykemelding.v1.OrganisasjonDTO;
-import no.nav.testnav.libs.dto.sykemelding.v1.PasientDTO;
-import no.nav.testnav.libs.dto.sykemelding.v1.SykemeldingDTO;
-import no.nav.registre.testnorge.sykemelding.util.JAXBSykemeldingConverter;
-import no.nav.registre.testnorge.sykemelding.util.StaticResourceLoader;
 
 @ToString
 public class Sykemelding {
@@ -64,10 +63,29 @@ public class Sykemelding {
         );
     }
 
+    public LocalDate getFom() {
+        return fom;
+    }
+
+    public LocalDate getTom() {
+        return tom;
+    }
+
+    public String getIdent() {
+        return ident;
+    }
+
+    public String toXml() {
+        return JAXBSykemeldingConverter.getInstance().convertToXml(fellesformat);
+    }
+
+    public String getMsgId() {
+        return getXMLMsgHead().getMsgInfo().getMsgId();
+    }
+
     private XMLMsgHead getXMLMsgHead() {
         return findObjectFromClass(value -> value instanceof XMLMsgHead);
     }
-
 
     private void updatePatient(XMLPatient patient, PasientDTO dto) {
         patient.getIdent().forEach(value -> value.setId(dto.getIdent()));
@@ -117,14 +135,12 @@ public class Sykemelding {
         updateOrganisation(organisation, dto, null);
     }
 
-
     private XMLIdent getXMLIdent(List<XMLIdent> list, String type) {
         return list.stream()
                 .filter(value -> value.getTypeId().getV().equals(type))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Klarte ikke å finne ident av type " + type));
     }
-
 
     @SuppressWarnings("unchecked")
     private <T> T findObjectFromClass(final FilterInstanceOf filterAction) {
@@ -141,29 +157,8 @@ public class Sykemelding {
         return findObjectFromClass(value -> value instanceof XMLMottakenhetBlokk);
     }
 
-
     @FunctionalInterface
     private interface FilterInstanceOf {
         boolean filter(Object value);
-    }
-
-    public LocalDate getFom() {
-        return fom;
-    }
-
-    public LocalDate getTom() {
-        return tom;
-    }
-
-    public String getIdent() {
-        return ident;
-    }
-
-    public String toXml() {
-        return JAXBSykemeldingConverter.getInstance().convertToXml(fellesformat);
-    }
-
-    public String getMsgId() {
-        return getXMLMsgHead().getMsgInfo().getMsgId();
     }
 }

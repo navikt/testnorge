@@ -26,7 +26,7 @@ export const MalModal = ({ id, closeModal }) => {
 						/>
 					</Label>
 					<ModalActionKnapper
-						submitknapp="Lagre Mal"
+						submitknapp="Lagre mal"
 						disabled={nyttMalnavn === ''}
 						onSubmit={lagreEndring}
 						onAvbryt={closeModal}

@@ -6,7 +6,7 @@ import { OrgnummerToggle } from '@/components/fagsystem/inntektstub/form/partial
 import { ToggleGroup } from '@navikt/ds-react'
 
 type InntektstubVirksomhetToggleProps = {
-	formikBag: FormikProps<{}>
+	formikBag: FormikProps<object>
 	path: string
 }
 
@@ -43,6 +43,7 @@ export const InntektstubVirksomhetToggle = ({
 				size={'small'}
 				onChange={handleToggleChange}
 				defaultValue={ToggleValg.ORGANISASJON}
+				style={{ backgroundColor: '#ffffff' }}
 			>
 				<ToggleGroup.Item key={ToggleValg.ORGANISASJON} value={ToggleValg.ORGANISASJON}>
 					Organisasjon

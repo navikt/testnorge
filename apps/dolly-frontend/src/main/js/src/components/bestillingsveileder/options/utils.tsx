@@ -18,7 +18,7 @@ export const initialValues = {
 	barnDoedfoedt: initialDoedfoedtBarn,
 	boadresse: {
 		bolignr: '',
-		flyttedato: null as string,
+		flyttedato: null as unknown as string,
 	},
 	kontaktinformasjonForDoedsbo: {
 		adressat: { adressatType: '' },
@@ -31,51 +31,51 @@ export const initialValues = {
 		utstedtDato: '',
 	},
 	arbeidsadgang: {
-		arbeidsOmfang: null as string,
+		arbeidsOmfang: null as unknown as string,
 		harArbeidsAdgang: 'JA',
 		periode: {
-			fra: null as Date,
-			til: null as Date,
+			fra: null as unknown as Date,
+			til: null as unknown as Date,
 		},
-		typeArbeidsadgang: null as string,
+		typeArbeidsadgang: null as unknown as string,
 		hjemmel: '',
-		forklaring: null as string,
+		forklaring: null as unknown as string,
 	},
 	udistub: [
 		{
 			eosEllerEFTABeslutningOmOppholdsrettPeriode: {
-				fra: null as Date,
-				til: null as Date,
+				fra: null as unknown as Date,
+				til: null as unknown as Date,
 			},
-			eosEllerEFTABeslutningOmOppholdsrettEffektuering: null as Date,
+			eosEllerEFTABeslutningOmOppholdsrettEffektuering: null as unknown as Date,
 			eosEllerEFTABeslutningOmOppholdsrett: '',
 		},
 		{
 			eosEllerEFTAVedtakOmVarigOppholdsrettPeriode: {
-				fra: null as Date,
-				til: null as Date,
+				fra: null as unknown as Date,
+				til: null as unknown as Date,
 			},
-			eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering: null as Date,
+			eosEllerEFTAVedtakOmVarigOppholdsrettEffektuering: null as unknown as Date,
 			eosEllerEFTAVedtakOmVarigOppholdsrett: '',
 		},
 		{
 			eosEllerEFTAOppholdstillatelsePeriode: {
-				fra: null as Date,
-				til: null as Date,
+				fra: null as unknown as Date,
+				til: null as unknown as Date,
 			},
-			eosEllerEFTAOppholdstillatelseEffektuering: null as Date,
+			eosEllerEFTAOppholdstillatelseEffektuering: null as unknown as Date,
 			eosEllerEFTAOppholdstillatelse: '',
 		},
 		{
 			oppholdSammeVilkaar: {
 				oppholdSammeVilkaarPeriode: {
 					eosEllerEFTAOppholdstillatelsePeriode: {
-						fra: null as Date,
-						til: null as Date,
+						fra: null as unknown as Date,
+						til: null as unknown as Date,
 					},
 				},
-				oppholdSammeVilkaarEffektuering: null as Date,
-				oppholdstillatelseVedtaksDato: null as Date,
+				oppholdSammeVilkaarEffektuering: null as unknown as Date,
+				oppholdstillatelseVedtaksDato: null as unknown as Date,
 				oppholdstillatelseType: '',
 			},
 		},
@@ -84,7 +84,7 @@ export const initialValues = {
 		identtype: 'FNR',
 		kjonn: '',
 		barnType: '',
-		partnerNr: null as string,
+		partnerNr: null as unknown as string,
 		borHos: '',
 		erAdoptert: false,
 		spesreg: '',
@@ -106,15 +106,15 @@ export const initialValues = {
 	},
 	statborgerskap: {
 		statborgerskap: '',
-		statsborgerskapRegdato: null as Date,
-		statsborgerskapTildato: null as Date,
+		statsborgerskapRegdato: null as unknown as Date,
+		statsborgerskapTildato: null as unknown as Date,
 	},
 	utvandretTil: {
 		utvandretTilLand: '',
-		utvandretTilLandFlyttedato: null as Date,
+		utvandretTilLandFlyttedato: null as unknown as Date,
 	},
 	innvandretFra: {
 		innvandretFraLand: '',
-		innvandretFraLandFlyttedato: null as Date,
+		innvandretFraLandFlyttedato: null as unknown as Date,
 	},
 }

@@ -10,7 +10,7 @@ interface RefusjonForm {
 }
 
 const initialEndringIRefusjon = {
-	refusjonsbeloepPrMnd: null as string,
+	refusjonsbeloepPrMnd: null as unknown as string,
 	endringsdato: new Date(),
 }
 

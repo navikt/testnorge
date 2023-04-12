@@ -156,12 +156,12 @@ export const AaregVisning = ({
 	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
 	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
-	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
+	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
 
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
-	const gyldigeAaregBestillinger = bestillingListe.filter((bestilling) => {
+	const gyldigeAaregBestillinger = bestillingListe?.filter((bestilling) => {
 		const gyldigAareg =
 			bestilling?.data?.aareg?.length > 0 &&
 			bestilling?.status?.some(
@@ -178,7 +178,7 @@ export const AaregVisning = ({
 	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
 
 	const filteredData =
-		tilgjengeligMiljoe && liste.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && liste?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	return (
 		<div>

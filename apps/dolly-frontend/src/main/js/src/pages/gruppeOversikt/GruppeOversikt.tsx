@@ -82,9 +82,17 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				</StyledNavButton>
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
+
+			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
+
 			{!bankIdBruker && (
 				<StyledDiv className="gruppe--flex-column-center">
-					<ToggleGroup value={visning} onChange={byttVisning} size={'small'}>
+					<ToggleGroup
+						value={visning}
+						onChange={byttVisning}
+						size={'small'}
+						style={{ backgroundColor: '#ffffff' }}
+					>
 						<StyledToggleItem value={VisningType.MINE}>
 							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
 							Mine
@@ -103,8 +111,6 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 					</ToggleGroup>
 				</StyledDiv>
 			)}
-
-			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
 				gruppeDetaljer={{

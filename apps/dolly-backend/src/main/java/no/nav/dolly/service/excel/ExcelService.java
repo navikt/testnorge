@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.exceptions.NotFoundException;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.core.io.FileSystemResource;
@@ -25,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExcelService {
 
     private final TestgruppeRepository testgruppeRepository;
+    private final IdentRepository identRepository;
     private final PersonExcelService personExcelService;
     private final BankkontoExcelService bankkontoExcelService;
     private final OrganisasjonExcelService organisasjonExcelService;
@@ -61,9 +63,7 @@ public class ExcelService {
         var testgruppe = testgruppeRepository.findById(gruppeId)
                 .orElseThrow(() -> new NotFoundException("Testgruppe ikke funnet for id " + gruppeId));
 
-        var testidenter = testgruppe
-                .getTestidenter().stream()
-                .toList();
+        var testidenter = identRepository.findByTestgruppe(testgruppe.getId());
 
         var workbook = new XSSFWorkbook();
 

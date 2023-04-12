@@ -1,7 +1,9 @@
 package no.nav.testnav.libs.dto.arbeidsplassencv.v1;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
@@ -17,6 +19,9 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class ArbeidsplassenCVDTO {
 
+    @Schema(description = "harHjemmel er ikke en del av CV, men er lagt her for bakover-kompabilitet. " +
+            "Den styrer lesetilgang ved \"rekrutteringsbistand\" i target system.")
+    private Boolean harHjemmel;
     private Boolean harBil;
     private List<Arbeidserfaring> arbeidserfaring;
     private List<Utdanning> utdanning;
@@ -104,6 +109,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -123,6 +129,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -148,6 +155,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -162,6 +170,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -173,6 +182,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -186,6 +196,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -207,6 +218,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -226,6 +238,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -239,6 +252,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -250,6 +264,7 @@ public class ArbeidsplassenCVDTO {
     }
 
     @Data
+    @EqualsAndHashCode(callSuper = true)
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
@@ -272,6 +287,27 @@ public class ArbeidsplassenCVDTO {
         private List<OccupationType> occupationTypes;
         private List<Omfang> workLoadTypes;
         private List<Arbeidstid> workScheduleTypes;
+
+        public List<Occupation> getOccupations() {
+            if (isNull(occupations)) {
+                occupations = new ArrayList<>();
+            }
+            return occupations;
+        }
+
+        public List<OccupationDraft> getOccupationDrafts() {
+            if (isNull(occupationDrafts)) {
+                occupationDrafts = new ArrayList<>();
+            }
+            return occupationDrafts;
+        }
+
+        public List<Location> getLocations() {
+            if (isNull(locations)) {
+                locations = new ArrayList<>();
+            }
+            return locations;
+        }
     }
 
     public enum StartOption {
@@ -297,7 +333,7 @@ public class ArbeidsplassenCVDTO {
         HELTID, DELTID;
     }
 
-    enum Arbeidstid {
+    public enum Arbeidstid {
         DAGTID,
         KVELD,
         NATT,
@@ -336,6 +372,7 @@ public class ArbeidsplassenCVDTO {
     @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
+    @SuppressWarnings("java:S1700")
     public static class Location {
         private String id;
         private String location;

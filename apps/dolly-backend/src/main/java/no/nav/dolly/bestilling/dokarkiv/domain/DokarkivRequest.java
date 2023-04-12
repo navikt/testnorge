@@ -21,11 +21,6 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DokarkivRequest {
 
-    public enum IdType {
-
-        FNR, ORGNR, HPRNR, UTL_ORG
-    }
-
     private String tittel;
     private RsDokarkiv.JournalPostType journalpostType;
     private String tema;
@@ -40,9 +35,13 @@ public class DokarkivRequest {
     public List<Dokument> getDokumenter() {
         if (isNull(dokumenter)) {
             dokumenter = new ArrayList<>();
-            dokumenter.add(new Dokument());
         }
         return dokumenter;
+    }
+
+    public enum IdType {
+
+        FNR, ORGNR, HPRNR, UTL_ORG
     }
 
     @Builder
@@ -72,7 +71,6 @@ public class DokarkivRequest {
         public List<DokumentVariant> getDokumentvarianter() {
             if (isNull(dokumentvarianter)) {
                 dokumentvarianter = new ArrayList<>();
-                dokumentvarianter.add(new DokumentVariant());
             }
             return dokumentvarianter;
         }
@@ -130,4 +128,5 @@ public class DokarkivRequest {
         private String fagsaksystem;
         private String sakstype;
     }
+
 }

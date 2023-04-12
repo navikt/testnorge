@@ -26,7 +26,7 @@ const ThumbsButton = styled(NavButton)`
 		padding: 7px 10px;
 		border-radius: 50%;
 		margin-left: 7px;
-		box-shadow: inset 0 0 0 1.5px var(--navds-button-color-secondary-border);
+		box-shadow: inset 0 0 0 1.5px #0067c5;
 	}
 
 	&& :hover {

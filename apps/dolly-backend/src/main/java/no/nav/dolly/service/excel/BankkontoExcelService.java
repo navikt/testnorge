@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.tpsmessagingservice.TpsMessagingConsumer;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.Testgruppe;
+import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoDTO;
@@ -14,6 +15,7 @@ import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import org.apache.poi.ss.usermodel.IgnoredErrorType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -42,6 +44,8 @@ public class BankkontoExcelService {
     private static final LocalDateTime NYTT_KONTOREGISTER_FRA_DATO = LocalDateTime.of(2022, 8, 30, 0, 0);
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final KontoregisterConsumer kontoregisterConsumer;
+
+    private final BestillingRepository bestillingRepository;
 
     private static String getAdresse1(KontoDTO konto) {
 
@@ -196,10 +200,11 @@ public class BankkontoExcelService {
     }
 
     private Mono<List<Object[]>> kontoregisterBankkonto(List<String> identer) {
-        return Flux.range(0, identer.size())
-                .flatMap(index -> kontoregisterConsumer.getKontonummer(identer.get(index)))
-                .filter(konto -> konto != null && konto.getAktivKonto() != null)
-                .map(konto -> unpackBankkonto(konto.getAktivKonto()))
+
+        return Flux.fromIterable(identer)
+                .flatMap(ident -> kontoregisterConsumer.getKontonummer(ident)
+                        .filter(response -> HttpStatus.OK.equals(response.getStatus()))
+                        .map(response -> unpackBankkonto(response.getAktivKonto())))
                 .collectList();
     }
 
@@ -216,8 +221,9 @@ public class BankkontoExcelService {
                                 Collectors.toList()
                         ),
                         Collectors.filtering(
-                                p -> p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO)
-                                        && !p.getKontoregisterStatus().contains("Feil"),
+                                p -> p.getBestilling().getSistOppdatert().isAfter(NYTT_KONTOREGISTER_FRA_DATO) &&
+                                        nonNull(p.getKontoregisterStatus()) &&
+                                        !p.getKontoregisterStatus().contains("Feil"),
                                 Collectors.toList()
                         ),
                         (tps, kontoregister) -> {

@@ -69,7 +69,9 @@ export const FrigjoerButton = ({
 						<h4>{infoTekst()}</h4>
 					</div>
 					<div className="frigjoerModal-actions">
-						<NavButton onClick={closeModal}>Nei</NavButton>
+						<NavButton onClick={closeModal} variant={'secondary'}>
+							Nei
+						</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()

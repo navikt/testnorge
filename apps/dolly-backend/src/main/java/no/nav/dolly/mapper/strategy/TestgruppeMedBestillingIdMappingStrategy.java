@@ -42,8 +42,9 @@ public class TestgruppeMedBestillingIdMappingStrategy implements MappingStrategy
                                                         bestillingProgress.getBestilling().getGruppe().getId().equals(testident.getTestgruppe().getId()))
                                                 .map(BestillingProgress::getBestilling)
                                                 .map(bestilling -> {
-                                                    context.setProperty("ident", testident.getIdent());
-                                                    var status = mapperFacade.map(bestilling, RsBestillingStatus.class, context);
+                                                    var context2 = new MappingContext.Factory().getContext();
+                                                    context2.setProperty("ident", testident.getIdent());
+                                                    var status = mapperFacade.map(bestilling, RsBestillingStatus.class, context2);
                                                     return RsBestillingStatus.builder()
                                                             .id(bestilling.getId())
                                                             .status(status.getStatus())

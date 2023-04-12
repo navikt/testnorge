@@ -77,7 +77,10 @@ export const MiljoVelger = ({
 			if (tilgjengeligMiljo === 'q2') return bankIdQ2
 			return bankIdQ1
 		}
-		return miljoer
+		return {
+			Q: miljoer.Q.filter((env) => env.id !== 'qx'),
+			T: miljoer.T.filter((env) => env.id !== 't13'),
+		}
 	}
 
 	const disableAllEnvironments = erMiljouavhengig(bestillingsdata)

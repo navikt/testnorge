@@ -155,7 +155,7 @@ export default function PersonListe({
 							}}
 							arrowContent={<div className="rc-tooltip-arrow-inner" />}
 							align={{
-								offset: ['0', '-10'],
+								offset: [0, -10],
 							}}
 						>
 							<div style={{ textAlign: 'center' }}>

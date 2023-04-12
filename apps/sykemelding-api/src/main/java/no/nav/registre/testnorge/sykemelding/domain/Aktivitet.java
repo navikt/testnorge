@@ -1,12 +1,11 @@
 package no.nav.registre.testnorge.sykemelding.domain;
 
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import no.nav.testnav.libs.dto.sykemelding.v1.PeriodeDTO;
 
 class Aktivitet {
     private final XMLHelseOpplysningerArbeidsuforhet.Aktivitet xmlAktivitet;

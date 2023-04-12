@@ -9,10 +9,13 @@ import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLInntektsmeldingM;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLOpphoerAvNaturalytelseListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLPleiepengerPeriodeListe;
 import no.seres.xsd.nav.inntektsmelding_m._20181211.XMLSkjemainnhold;
+import org.apache.commons.text.CaseUtils;
 
 import javax.xml.bind.JAXBElement;
 import java.time.LocalDate;
 import java.util.List;
+
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @Value
 @NoArgsConstructor(force = true)
@@ -77,8 +80,12 @@ public class InntektsmeldingDTO implements ToXmlElement<XMLInntektsmeldingM> {
             );
         }
 
-        xmlSkjemainnhold.setYtelse(ytelse);
-        xmlSkjemainnhold.setAarsakTilInnsending(aarsakTilInnsending);
+        xmlSkjemainnhold.setYtelse(
+                isBlank(ytelse) ? null : CaseUtils.toCamelCase(ytelse, true, '_')
+        );
+        xmlSkjemainnhold.setAarsakTilInnsending(
+                isBlank(aarsakTilInnsending) ? null : CaseUtils.toCamelCase(aarsakTilInnsending, true, '_')
+        );
         xmlSkjemainnhold.setArbeidstakerFnr(arbeidstakerFnr);
         xmlSkjemainnhold.setNaerRelasjon(naerRelasjon);
 

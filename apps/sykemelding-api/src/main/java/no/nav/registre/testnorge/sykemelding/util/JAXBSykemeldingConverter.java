@@ -1,24 +1,22 @@
 package no.nav.registre.testnorge.sykemelding.util;
 
-import static java.lang.Boolean.TRUE;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBException;
+import jakarta.xml.bind.Marshaller;
+import no.nav.registre.testnorge.sykemelding.exception.JAXBSykemeldingConverterException;
+import no.nav.registre.testnorge.sykemelding.external.eiFellesformat.XMLEIFellesformat;
+import no.nav.registre.testnorge.sykemelding.external.msgHead.XMLMsgHead;
+import no.nav.registre.testnorge.sykemelding.external.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
+
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringReader;
+import java.io.StringWriter;
+
 import static jakarta.xml.bind.JAXBContext.newInstance;
 import static jakarta.xml.bind.Marshaller.JAXB_ENCODING;
 import static jakarta.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT;
 import static jakarta.xml.bind.Marshaller.JAXB_FRAGMENT;
-
-import java.io.StringReader;
-import java.io.StringWriter;
-
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
-import javax.xml.transform.stream.StreamResult;
-
-import no.kith.xmlstds.helseopplysningerarbeidsuforhet._2013_10_01.XMLHelseOpplysningerArbeidsuforhet;
-
-import no.nav.helse.eiFellesformat.XMLEIFellesformat;
-import no.nav.helse.msgHead.XMLMsgHead;
-import no.nav.registre.testnorge.sykemelding.exception.JAXBSykemeldingConverterException;
+import static java.lang.Boolean.TRUE;
 
 public class JAXBSykemeldingConverter {
 
@@ -30,17 +28,6 @@ public class JAXBSykemeldingConverter {
         context = newInstance(XMLEIFellesformat.class, XMLMsgHead.class, XMLHelseOpplysningerArbeidsuforhet.class);
     }
 
-    public static JAXBSykemeldingConverter getInstance() {
-        if (instance == null) {
-            try {
-                instance = new JAXBSykemeldingConverter();
-            } catch (JAXBException e) {
-                throw new JAXBSykemeldingConverterException("Klarer ikke å opprette sykemelding converter", e);
-            }
-        }
-        return instance;
-    }
-
     public XMLEIFellesformat convertToXMLEIFellesformat(String xml) {
         try {
             return (XMLEIFellesformat) context.createUnmarshaller().unmarshal(new StringReader(xml));
@@ -48,7 +35,6 @@ public class JAXBSykemeldingConverter {
             throw new JAXBSykemeldingConverterException("Klarer ikke å opprette XMLEIFellesformat fra xml", e);
         }
     }
-
 
     public String convertToXml(XMLEIFellesformat element) {
         try {
@@ -62,5 +48,16 @@ public class JAXBSykemeldingConverter {
         } catch (JAXBException e) {
             throw new JAXBSykemeldingConverterException("Klarer ikke å konvertere sykemelding til xml", e);
         }
+    }
+
+    public static JAXBSykemeldingConverter getInstance() {
+        if (instance == null) {
+            try {
+                instance = new JAXBSykemeldingConverter();
+            } catch (JAXBException e) {
+                throw new JAXBSykemeldingConverterException("Klarer ikke å opprette sykemelding converter", e);
+            }
+        }
+        return instance;
     }
 }

@@ -89,6 +89,7 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 								}}
 								size={'small'}
 								defaultValue={RELASJON_BARN}
+								style={{ backgroundColor: '#ffffff' }}
 							>
 								<ToggleGroup.Item value={RELASJON_BARN}>{RELASJON_BARN}</ToggleGroup.Item>
 								<ToggleGroup.Item value={RELASJON_FORELDER}>{RELASJON_FORELDER}</ToggleGroup.Item>

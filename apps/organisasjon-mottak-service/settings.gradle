@@ -4,14 +4,15 @@ plugins {
 
 rootProject.name = 'organisasjon-mottak-service'
 
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/kafka-config'
-includeBuild '../../libs/kafka-producers'
-includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/avro-schema'
 includeBuild '../../libs/commands'
-includeBuild '../../libs/servlet-insecure-security'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/kafka-config'
+includeBuild '../../libs/kafka-producers'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-insecure-security'
 
 gradleEnterprise {
     buildScan {

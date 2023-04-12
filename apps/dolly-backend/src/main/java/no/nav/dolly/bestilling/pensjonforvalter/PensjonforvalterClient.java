@@ -8,6 +8,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.AlderspensjonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPersonRequest;
 import no.nav.dolly.bestilling.pensjonforvalter.domain.PensjonPoppInntektRequest;
@@ -27,7 +28,10 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.service.TransaksjonMappingService;
 import no.nav.dolly.util.IdentTypeUtil;
 import no.nav.dolly.util.TransactionHelperService;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
@@ -66,6 +70,7 @@ public class PensjonforvalterClient implements ClientRegister {
     private final ErrorStatusDecoder errorStatusDecoder;
     private final TransactionHelperService transactionHelperService;
     private final PdlPersonConsumer pdlPersonConsumer;
+    private final PdlDataConsumer pdlDataConsumer;
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
 
@@ -179,7 +184,13 @@ public class PensjonforvalterClient implements ClientRegister {
                                                 .filter(Objects::nonNull),
                                         person.getPerson().getFullmakt().stream()
                                                 .map(FullmaktDTO::getMotpartsPersonident))
-                                .flatMap(Function.identity()))));
+                                .flatMap(Function.identity()))),
+                pdlDataConsumer.getPersoner(List.of(ident))
+                        .flatMap(person -> Flux.fromIterable(person.getRelasjoner())
+                                .filter(relasjon -> relasjon.getRelasjonType() != RelasjonType.GAMMEL_IDENTITET)
+                                .map(FullPersonDTO.RelasjonDTO::getRelatertPerson)
+                                .map(PersonDTO::getIdent)))
+                .distinct();
     }
 
     private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {

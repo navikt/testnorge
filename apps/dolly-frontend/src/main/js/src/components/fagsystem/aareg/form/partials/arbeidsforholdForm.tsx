@@ -95,7 +95,7 @@ export const ArbeidsforholdForm = ({
 		errors: FormikErrors<any>
 		setFieldValue: any
 	} = useFormikContext()
-	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as Date)
+	const [navArbeidsforholdPeriode, setNavArbeidsforholdPeriode] = useState(null as unknown as Date)
 	const { tidligereBestillinger } = useContext(BestillingsveilederContext)
 	const tidligereAaregBestillinger = hentUnikeAaregBestillinger(tidligereBestillinger)
 	const erLaastArbeidsforhold =

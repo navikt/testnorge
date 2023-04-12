@@ -29,7 +29,7 @@ import java.util.function.Function;
 @SpringBootApplication
 public class SafProxyApplicationStarter {
 
-    private static final String[] miljoer = new String[]{"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
+    private static final String[] miljoer = new String[]{ "q1", "q2", "q4", "q5", "t3" };
 
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder,

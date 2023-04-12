@@ -63,14 +63,13 @@ public class UdiStubConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "udi_deletePerson"})
-    public Mono<List<Void>> deleteUdiPerson(List<String> identer) {
+    public Flux<UdiPersonResponse> deleteUdiPerson(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size())
-                        .map(index -> new UdistubDeleteCommand(webClient,
-                                identer.get(index), token.getTokenValue()).call())
-                        .flatMap(Flux::from))
-                .collectList();
+                .flatMapMany(token -> Flux.fromIterable(identer)
+                        .map(ident -> new UdistubDeleteCommand(webClient,
+                                ident, token.getTokenValue()).call())
+                        .flatMap(Flux::from));
     }
 
     @Override

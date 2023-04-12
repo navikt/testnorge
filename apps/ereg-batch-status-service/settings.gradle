@@ -4,8 +4,9 @@ plugins {
 
 rootProject.name = 'ereg-batch-status-service'
 
-includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/servlet-core'
 includeBuild '../../libs/servlet-security'
 
 gradleEnterprise {

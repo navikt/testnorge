@@ -9,6 +9,7 @@ import DollyModal from '@/components/ui/modal/DollyModal'
 import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import styled from 'styled-components'
+import Formatters from '@/utils/DataFormatter'
 
 type Data = {
 	data: NorskBankkontoData
@@ -18,6 +19,7 @@ type Data = {
 
 type NorskBankkontoData = {
 	kontonummer: string
+	gyldig: string
 }
 
 const EditDeleteKnapper = styled.div`
@@ -67,6 +69,7 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 			<div className="person-visning_content">
 				<ErrorBoundary>
 					<TitleValue title={'Kontonummer'} value={mapBankkontoNummer(data.kontonummer)} />
+					<TitleValue title={'Gyldig f.o.m.'} value={Formatters.formatDate(data.gyldig)} />
 				</ErrorBoundary>
 			</div>
 			{extraButtons && (
@@ -80,7 +83,9 @@ export const Visning = ({ data, ident, extraButtons }: Data) => {
 								<h4>Er du sikker på at du vil slette denne bankkontoen fra personen?</h4>
 							</div>
 							<div className="slettModal-actions">
-								<NavButton onClick={closeModal}>Nei</NavButton>
+								<NavButton onClick={closeModal} variant={'secondary'}>
+									Nei
+								</NavButton>
 								<NavButton
 									onClick={() => {
 										closeModal()

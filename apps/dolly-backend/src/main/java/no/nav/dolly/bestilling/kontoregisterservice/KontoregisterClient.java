@@ -14,12 +14,15 @@ import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrNorskDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.OppdaterKontoRequestDTO;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
 @Service
@@ -34,18 +37,28 @@ public class KontoregisterClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getBankkonto())) {
-
-            var request = prepareRequest(bestilling, dollyPerson.getIdent());
-            if (nonNull(request)) {
-                return Flux.from(kontoregisterConsumer.postKontonummerRegister(request)
-                                .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
-                                        errorStatusDecoder.getErrorText(status.getStatus(),
-                                                status.getFeilmelding())))
-                        .map(status -> futurePersist(progress, status));
-            }
-        }
-        return Flux.empty();
+        return Flux.just(bestilling)
+                .filter(ordre -> nonNull(bestilling.getBankkonto()))
+                .flatMap(ordre -> {
+                    if (isOpprettEndre) {
+                        return Mono.just(true);
+                    } else {
+                        return kontoregisterConsumer.getKontonummer(dollyPerson.getIdent())
+                                .map(status -> !HttpStatus.OK.equals(status.getStatus()));
+                    }
+                })
+                .flatMap(opprettNytt -> {
+                    if (isTrue(opprettNytt)) {
+                        return prepareRequest(bestilling, dollyPerson.getIdent())
+                                .flatMap(request -> kontoregisterConsumer.opprettKontonummer(request)
+                                        .map(status -> status.getStatus().is2xxSuccessful() ? "OK" :
+                                                errorStatusDecoder.getErrorText(status.getStatus(),
+                                                        status.getFeilmelding())));
+                    } else {
+                        return Flux.just("OK");
+                    }
+                })
+                .map(status -> futurePersist(progress, status));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -56,7 +69,7 @@ public class KontoregisterClient implements ClientRegister {
         };
     }
 
-    private OppdaterKontoRequestDTO prepareRequest(RsDollyUtvidetBestilling bestilling, String ident) {
+    private Mono<OppdaterKontoRequestDTO> prepareRequest(RsDollyUtvidetBestilling bestilling, String ident) {
 
         var norskBankkonto = nonNull(bestilling.getBankkonto().getNorskBankkonto()) ?
                 bestilling.getBankkonto().getNorskBankkonto() : getNorskBankkonto(bestilling);
@@ -68,13 +81,13 @@ public class KontoregisterClient implements ClientRegister {
         context.setProperty("ident", ident);
 
         if (nonNull(norskBankkonto)) {
-            return mapperFacade.map(norskBankkonto, OppdaterKontoRequestDTO.class, context);
+            return Mono.just(mapperFacade.map(norskBankkonto, OppdaterKontoRequestDTO.class, context));
 
         } else if (nonNull(utenlandskBankkonto)) {
-            return mapperFacade.map(utenlandskBankkonto, OppdaterKontoRequestDTO.class, context);
+            return Mono.just(mapperFacade.map(utenlandskBankkonto, OppdaterKontoRequestDTO.class, context));
 
         } else {
-            return null;
+            return Mono.empty();
         }
     }
 

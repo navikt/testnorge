@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.badRequest;
 import static com.github.tomakehurst.wiremock.client.WireMock.ok;
@@ -69,21 +68,19 @@ class KontoregisterConsumerTest {
 
     private String hentKontoResponse() {
         return "{\n" +
-                "    \"aktivKonto\": {\n" +
-                "        \"kontohaver\": \"" + IDENT + "\",\n" +
-                "        \"kontonummer\": \"" + KONTONUMMER + "\",\n" +
-                "        \"gyldigFom\": \"2022-08-16T14:15:05.573486\",\n" +
-                "        \"opprettetAv\": \"Dolly\",\n" +
-                "        \"utenlandskKontoInfo\": {\n" +
-                "            \"banknavn\": \"string\",\n" +
-                "            \"bankkode\": \"XXXX\",\n" +
-                "            \"bankLandkode\": \"SE\",\n" +
-                "            \"valutakode\": \"SEK\",\n" +
-                "            \"swiftBicKode\": \"SHEDSE22\",\n" +
-                "            \"bankadresse1\": \"string\",\n" +
-                "            \"bankadresse2\": \"string\",\n" +
-                "            \"bankadresse3\": \"string\"\n" +
-                "        }\n" +
+                "    \"kontohaver\": \"" + IDENT + "\",\n" +
+                "    \"kontonummer\": \"" + KONTONUMMER + "\",\n" +
+                "    \"gyldigFom\": \"2022-08-16T14:15:05.573486\",\n" +
+                "    \"opprettetAv\": \"Dolly\",\n" +
+                "    \"utenlandskKontoInfo\": {\n" +
+                "        \"banknavn\": \"string\",\n" +
+                "        \"bankkode\": \"XXXX\",\n" +
+                "        \"bankLandkode\": \"SE\",\n" +
+                "        \"valutakode\": \"SEK\",\n" +
+                "        \"swiftBicKode\": \"SHEDSE22\",\n" +
+                "        \"bankadresse1\": \"string\",\n" +
+                "        \"bankadresse2\": \"string\",\n" +
+                "        \"bankadresse3\": \"string\"\n" +
                 "    }\n" +
                 "}";
     }
@@ -97,7 +94,7 @@ class KontoregisterConsumerTest {
                                 .withBody("")
                                 .withHeader("Content-Type", "application/json")));
 
-        StepVerifier.create(kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO()))
+        StepVerifier.create(kontoregisterConsumer.opprettKontonummer(new OppdaterKontoRequestDTO()))
                 .expectNext(KontoregisterResponseDTO.builder()
                         .status(HttpStatus.OK)
                         .build())
@@ -113,7 +110,7 @@ class KontoregisterConsumerTest {
                                 .withBody("{\"feilmelding\":\"Noe galt har skjedd\"}")
                                 .withHeader("Content-Type", "application/json")));
 
-        StepVerifier.create(kontoregisterConsumer.postKontonummerRegister(new OppdaterKontoRequestDTO()))
+        StepVerifier.create(kontoregisterConsumer.opprettKontonummer(new OppdaterKontoRequestDTO()))
                 .expectNext(KontoregisterResponseDTO.builder()
                         .status(HttpStatus.BAD_REQUEST)
                         .feilmelding("{\"feilmelding\":\"Noe galt har skjedd\"}")
@@ -141,7 +138,7 @@ class KontoregisterConsumerTest {
     @Test
     void testHentBankkonto() {
         stubFor(
-                post(urlPathMatching("(.*)/api/system/v1/hent-konto"))
+                post(urlPathMatching("(.*)/api/system/v1/hent-aktiv-konto"))
                         .willReturn(ok()
                                 .withBody(hentKontoResponse())
                                 .withHeader("Content-Type", "application/json")));
@@ -158,7 +155,7 @@ class KontoregisterConsumerTest {
                         throw new RuntimeException(e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         hentBankkontoer.stream()
                 .forEach(b -> {

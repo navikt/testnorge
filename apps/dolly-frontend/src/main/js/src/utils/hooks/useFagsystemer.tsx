@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
+import { fetcher, multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
 import {
 	useDokarkivEnvironments,
 	useInstEnvironments,
@@ -37,6 +37,9 @@ const journalpostUrl = (transaksjonsid, miljoer) =>
 			miljo: miljoe,
 		}
 	})
+
+const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
+const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -124,6 +127,38 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 
 	return {
 		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
+	if (!harArbeidsplassenBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>(
+		[arbeidsforholdcvUrl, { fnr: ident }],
+		([url, headers]) => fetcher(url, headers)
+	)
+
+	return {
+		arbeidsplassencvData: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useArbeidsplassencvHjemmel = (ident: string) => {
+	const { data, error } = useSWR<any, Error>(
+		[arbeidsforholdcvHjemmelUrl, { fnr: ident }],
+		([url, headers]) => fetcher(url, headers)
+	)
+
+	return {
+		arbeidsplassencvHjemmel: data,
 		loading: !error && !data,
 		error: error,
 	}

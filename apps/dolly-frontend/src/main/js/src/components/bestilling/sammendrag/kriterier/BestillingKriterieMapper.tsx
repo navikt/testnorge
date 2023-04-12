@@ -9,13 +9,15 @@ import {
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import _get from 'lodash/get'
+import _has from 'lodash/has'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
 // - Når vi får på plass en bedre struktur for bestillingsprosessen, kan
 //   mest sannsynlig visse props fjernes herfra (width?)
 
-const obj = (label, value, apiKodeverkId) => ({
+const obj = (label, value, apiKodeverkId = null) => ({
 	label,
 	value,
 	...(apiKodeverkId && { apiKodeverkId }),
@@ -1189,6 +1191,190 @@ const mapInntektStub = (bestillingData, data) => {
 	}
 }
 
+const mapArbeidsplassenCV = (bestillingData, data) => {
+	const CVKriterier = _get(bestillingData, 'arbeidsplassenCV')
+
+	if (CVKriterier) {
+		const arbeidsplassenCV = {
+			header: 'Arbeidsplassen (CV)',
+			items: [],
+			itemRows: [],
+		}
+
+		if (CVKriterier.jobboensker) {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: 'Jobbønsker' },
+				obj(
+					'Jobber og yrker',
+					Formatters.arrayToString(CVKriterier.jobboensker?.occupations?.map((jobb) => jobb?.title))
+				),
+				obj(
+					'Områder',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.locations?.map((omraade) => omraade?.location)
+					)
+				),
+				obj(
+					'Arbeidsmengde',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.workLoadTypes?.map((type) =>
+							Formatters.showLabel('arbeidsmengde', type)
+						)
+					)
+				),
+				obj(
+					'Arbeidstider',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.workScheduleTypes?.map((type) =>
+							Formatters.showLabel('arbeidstid', type)
+						)
+					)
+				),
+				obj(
+					'Ansettelsestyper',
+					Formatters.arrayToString(
+						CVKriterier.jobboensker?.occupationTypes?.map((type) =>
+							Formatters.showLabel('ansettelsestype', type)
+						)
+					)
+				),
+				obj('Oppstart', Formatters.showLabel('oppstart', CVKriterier.jobboensker?.startOption)),
+			])
+		}
+
+		CVKriterier.utdanning?.forEach((utdanning, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Utdanning ${i + 1}` },
+				obj('Utdanningsnivå', Formatters.showLabel('nusKoder', utdanning.nuskode)),
+				obj('Grad og utdanningsretning', utdanning.field),
+				obj('Skole/studiested', utdanning.institution),
+				obj('Beskrivelse', utdanning.description),
+				obj('Startdato', Formatters.formatDate(utdanning.startDate)),
+				obj('Sluttdato', Formatters.formatDate(utdanning.endDate)),
+				obj('Pågående utdanning', Formatters.oversettBoolean(utdanning.ongoing)),
+			])
+		})
+
+		CVKriterier.fagbrev?.forEach((fagbrev, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Fagbrev ${i + 1}` },
+				obj('Fagdokumentasjon', fagbrev.title),
+			])
+		})
+
+		CVKriterier.arbeidserfaring?.forEach((arbeidsforhold, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Arbeidserfaring ${i + 1}` },
+				obj('Stilling/yrke', arbeidsforhold.jobTitle),
+				obj('Alternativ tittel', arbeidsforhold.alternativeJobTitle),
+				obj('Bedrift', arbeidsforhold.employer),
+				obj('Sted', arbeidsforhold.location),
+				obj('Arbeidsoppgaver', arbeidsforhold.description),
+				obj('Ansatt fra', Formatters.formatDate(arbeidsforhold.fromDate)),
+				obj('Ansatt til', Formatters.formatDate(arbeidsforhold.toDate)),
+				obj('Nåværende jobb', Formatters.oversettBoolean(arbeidsforhold.ongoing)),
+			])
+		})
+
+		CVKriterier.annenErfaring?.forEach((annenErfaring, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Annen erfaring ${i + 1}` },
+				obj('Rolle', annenErfaring.role),
+				obj('Beskrivelse', annenErfaring.description),
+				obj('Startdato', Formatters.formatDate(annenErfaring.fromDate)),
+				obj('Sluttdato', Formatters.formatDate(annenErfaring.toDate)),
+				obj('Pågående', Formatters.oversettBoolean(annenErfaring.ongoing)),
+			])
+		})
+
+		CVKriterier.kompetanser?.forEach((kompetanse, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Kompetanser ${i + 1}` },
+				obj('Kompetanse', kompetanse.title),
+			])
+		})
+
+		CVKriterier.offentligeGodkjenninger?.forEach((offentligGodkjenning, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Offentlig godkjenning ${i + 1}` },
+				obj('Offentlig godkjenning', offentligGodkjenning.title),
+				obj('Utsteder', offentligGodkjenning.issuer),
+				obj('Fullført', Formatters.formatDate(offentligGodkjenning.fromDate)),
+				obj('Utløper', Formatters.formatDate(offentligGodkjenning.toDate)),
+			])
+		})
+
+		CVKriterier.andreGodkjenninger?.forEach((annenGodkjenning, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Andre godkjenninger ${i + 1}` },
+				obj('Annen godkjenning', annenGodkjenning.certificateName),
+				obj('Utsteder', annenGodkjenning.issuer),
+				obj('Fullført', Formatters.formatDate(annenGodkjenning.fromDate)),
+				obj('Utløper', Formatters.formatDate(annenGodkjenning.toDate)),
+			])
+		})
+
+		CVKriterier.spraak?.forEach((spraak, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Språk ${i + 1}` },
+				obj('Språk', spraak.language),
+				obj('Muntlig', Formatters.showLabel('spraakNivaa', spraak.oralProficiency)),
+				obj('Skriftlig', Formatters.showLabel('spraakNivaa', spraak.writtenProficiency)),
+			])
+		})
+
+		CVKriterier.foererkort?.forEach((foererkort, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Førerkort ${i + 1}` },
+				obj('Type førerkort', foererkort.type),
+				obj('Gyldig fra', Formatters.formatDate(foererkort.acquiredDate)),
+				obj('Gyldig til', Formatters.formatDate(foererkort.expiryDate)),
+			])
+		})
+
+		CVKriterier.kurs?.forEach((kurs, i) => {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: `Kurs ${i + 1}` },
+				obj('Kursnavn', kurs.title),
+				obj('Kursholder', kurs.issuer),
+				obj('Fullført', Formatters.formatDate(kurs.date)),
+				obj('Kurslengde', Formatters.showLabel('kursLengde', kurs.durationUnit)),
+				obj(
+					`Antall ${
+						kurs.durationUnit && kurs.durationUnit !== 'UKJENT'
+							? Formatters.showLabel('kursLengde', kurs.durationUnit)
+							: ''
+					}`,
+					kurs.duration
+				),
+			])
+		})
+
+		if (CVKriterier.sammendrag) {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: 'Sammendrag' },
+				{
+					label: 'Oppsummering',
+					value: CVKriterier.sammendrag,
+					width: 'xlarge',
+				},
+			])
+		}
+
+		if (_has(CVKriterier, 'harHjemmel')) {
+			arbeidsplassenCV.itemRows.push([
+				{ numberHeader: 'Hjemmel' },
+				{
+					label: 'Godta hjemmel',
+					value: Formatters.oversettBoolean(CVKriterier.harHjemmel),
+				},
+			])
+		}
+
+		data.push(arbeidsplassenCV)
+	}
+}
+
 const mapSykemelding = (bestillingData, data) => {
 	const sykemeldingKriterier = _.get(bestillingData, 'sykemelding')
 
@@ -1899,6 +2085,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapAareg(bestillingData, data)
 	mapSigrunStub(bestillingData, data)
 	mapInntektStub(bestillingData, data)
+	mapArbeidsplassenCV(bestillingData, data)
 	mapSykemelding(bestillingData, data)
 	mapBrregstub(bestillingData, data)
 	mapKrr(bestillingData, data)

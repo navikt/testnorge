@@ -11,7 +11,7 @@ public class MiljoController {
     @Value("${environments}")
     private String environments;
 
-    @GetMapping(value = "/internal/miljoe", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/rest/miljoe", produces = MediaType.APPLICATION_JSON_VALUE)
     public String[] getMiljoe() {
         return environments.split(",");
     }

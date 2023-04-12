@@ -27,7 +27,7 @@ import java.util.function.Function;
 @Configuration
 public class RouteLocatorConfig {
 
-    private static final String[] MILJOER = {"q1", "q2", "q4", "q5", "qx", "t3", "t13"};
+    private static final String[] MILJOER = { "q1", "q2", "q4", "q5", "t3" };
 
     @Bean
     public RouteLocator customRouteLocator(
@@ -64,7 +64,7 @@ public class RouteLocatorConfig {
                 .and()
                 .method(HttpMethod.GET)
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/" + miljoe +  "/(?<segment>.*)", "/${segment}")
+                        .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
                 .uri("https://aareg-services-" + miljoe + ".dev.intern.nav.no");

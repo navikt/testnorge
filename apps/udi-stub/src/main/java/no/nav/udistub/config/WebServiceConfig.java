@@ -20,18 +20,18 @@ import java.util.List;
 public class WebServiceConfig extends WsConfigurerAdapter {
 
     @Bean
-    public Wsdl11Definition defaultWsdl11Definition() {
-        SimpleWsdl11Definition wsdl11Definition = new SimpleWsdl11Definition();
-        wsdl11Definition.setWsdl(new ClassPathResource("/wsdl/MT_1067_NAV_v1.wsdl"));
-        return wsdl11Definition;
-    }
-
-    @Bean
     public ServletRegistrationBean<MessageDispatcherServlet> messageDispatcherServlet(ApplicationContext applicationContext) {
         MessageDispatcherServlet servlet = new MessageDispatcherServlet();
         servlet.setApplicationContext(applicationContext);
         servlet.setTransformWsdlLocations(true);
         return new ServletRegistrationBean<>(servlet, "/ws/*");
+    }
+
+    @Bean(name = "udistub")
+    public Wsdl11Definition defaultWsdl11Definition() {
+        SimpleWsdl11Definition wsdl11Definition = new SimpleWsdl11Definition();
+        wsdl11Definition.setWsdl(new ClassPathResource("/wsdl/MT_1067_NAV_v1.wsdl"));
+        return wsdl11Definition;
     }
 
     @Bean
