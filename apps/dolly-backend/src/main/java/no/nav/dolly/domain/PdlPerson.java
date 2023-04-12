@@ -537,13 +537,15 @@ public class PdlPerson {
         @Override
         @JsonIgnore
         public boolean isAdresseNorge() {
-            return false;
+
+            return nonNull(vegadresse) || nonNull(postboksadresse);
         }
 
         @Override
         @JsonIgnore
         public boolean isAdresseUtland() {
-            return false;
+
+            return nonNull(utenlandskAdresse);
         }
     }
 }

@@ -29,7 +29,7 @@ public final class BestillingArenaforvalterStatusMapper {
                         entry -> {
                             var envStatus = entry.split("\\$");
                             var environment = envStatus[0];
-                            var status = decodeMsg(envStatus.length > 1 ? envStatus[1] : "");
+                            var status = decodeMsg(envStatus.length > 1 ? envStatus[envStatus.length - 1] : "");
                             AbstractRsMeldingStatusMapper.buildStatusMap(statusEnvIdents, status, environment, progress.getIdent());
                         });
             }
@@ -40,9 +40,9 @@ public final class BestillingArenaforvalterStatusMapper {
                         .statuser(statusEnvIdents.entrySet().stream().map(entry -> RsStatusRapport.Status.builder()
                                         .melding(decodeMsg(entry.getKey()))
                                         .detaljert(entry.getValue().entrySet().stream().map(entry1 -> RsStatusRapport.Detaljert.builder()
-                                                .miljo(entry1.getKey())
-                                                .identer(entry1.getValue())
-                                                .build())
+                                                        .miljo(entry1.getKey())
+                                                        .identer(entry1.getValue())
+                                                        .build())
                                                 .toList())
                                         .build())
                                 .toList())

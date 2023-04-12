@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Stream;
 
@@ -59,12 +58,20 @@ public class ArenaMappingStrategy implements MappingStrategy {
                 .customize(new CustomMapper<>() {
                     @Override
                     public void mapAtoB(Arenadata arenadata, ArenaDagpenger arenaDagpenger, MappingContext context) {
-                        RsArenaDagpenger rsArenaDagpenger = arenadata.getDagpenger().get(0);
 
                         arenaDagpenger.setMiljoe((String) context.getProperty("miljoe"));
                         arenaDagpenger.setPersonident((String) context.getProperty("ident"));
 
-                        NyeDagp dagpenger = new NyeDagp();
+                        arenaDagpenger.setNyeDagp(mapperFacade.mapAsList(arenadata.getDagpenger(), NyeDagp.class));
+                    }
+                })
+                .byDefault()
+                .register();
+
+        factory.classMap(RsArenaDagpenger.class, NyeDagp.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(RsArenaDagpenger rsArenaDagpenger, NyeDagp dagpenger, MappingContext context) {
 
                         dagpenger.setVedtaksperiode(ArenaDagpenger.Vedtaksperiode.builder()
                                 .fom(rsArenaDagpenger.getFraDato().toLocalDate())
@@ -102,8 +109,6 @@ public class ArenaMappingStrategy implements MappingStrategy {
                         dagpenger.setDatoMottatt(nonNull(rsArenaDagpenger.getMottattDato())
                                 ? rsArenaDagpenger.getMottattDato().toLocalDate()
                                 : rsArenaDagpenger.getFraDato().toLocalDate());
-
-                        arenaDagpenger.setNyeDagp(List.of(dagpenger));
                     }
                 })
                 .byDefault()
@@ -113,15 +118,15 @@ public class ArenaMappingStrategy implements MappingStrategy {
     private void mapMedServicebehov(Arenadata arenadata, ArenaNyBruker arenaNyBruker) {
         arenaNyBruker.setAktiveringsDato(
                 Stream.of(
-                        arenadata.getAap().stream()
-                                .filter(Objects::nonNull)
-                                .map(RsArenaAap::getFraDato),
-                        arenadata.getAap115().stream()
-                                .filter(Objects::nonNull)
-                                .map(RsArenaAap115::getFraDato),
-                        arenadata.getDagpenger().stream()
-                                .filter(Objects::nonNull)
-                                .map(RsArenaDagpenger::getFraDato))
+                                arenadata.getAap().stream()
+                                        .filter(Objects::nonNull)
+                                        .map(RsArenaAap::getFraDato),
+                                arenadata.getAap115().stream()
+                                        .filter(Objects::nonNull)
+                                        .map(RsArenaAap115::getFraDato),
+                                arenadata.getDagpenger().stream()
+                                        .filter(Objects::nonNull)
+                                        .map(RsArenaDagpenger::getFraDato))
                         .flatMap(Stream::distinct)
                         .map(LocalDateTime::toLocalDate)
                         .min(LocalDate::compareTo)

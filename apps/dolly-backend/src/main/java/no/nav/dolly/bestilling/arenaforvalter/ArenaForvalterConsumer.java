@@ -1,13 +1,13 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetBrukerCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
+import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenaBruker;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
-import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadata;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -15,35 +15,22 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.metrics.Timed;
-import no.nav.dolly.util.WebClientFilter;
-import no.nav.testnav.libs.securitycore.config.UserConstant;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.util.List;
 
-import static java.util.Objects.nonNull;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
-import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
-import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Component
 @Slf4j
 public class ArenaForvalterConsumer implements ConsumerStatus {
-
-    private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 
     private final WebClient webClient;
     private final ServerProperties serviceProperties;
@@ -64,42 +51,21 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_getIdent"})
-    public ResponseEntity<ArenaArbeidssokerBruker> getIdent(String ident) {
+    public Flux<ArenaArbeidssokerBruker> getBruker(String ident, String miljoe, AccessToken token) {
 
-        log.info("Henter bruker på ident: {} fra arena-forvalteren", ident);
-        var response = tokenService.exchange(serviceProperties)
-                .flatMap(token -> webClient.get().uri(
-                                uriBuilder -> uriBuilder
-                                        .path(ARENAFORVALTER_BRUKER)
-                                        .queryParam("filter-personident", ident)
-                                        .build())
-                        .header(HEADER_NAV_CALL_ID, generateCallId())
-                        .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
-                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getTokenValue())
-                        .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                        .retrieve()
-                        .toEntity(ArenaArbeidssokerBruker.class)
-                        .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)))
-                .block();
-
-        if (nonNull(response) && response.hasBody()) {
-            log.info("Hentet bruker fra arena: {}", Json.pretty(response.getBody()));
-        }
-        return response;
+        return new ArenaForvalterGetBrukerCommand(webClient, ident, miljoe, token.getTokenValue()).call()
+                .doOnNext(response -> log.info("Hentet ident {} fra Arenaforvalter {}", ident, response));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Mono<List<String>> deleteIdenter(List<String> identer) {
+    public Flux<String> deleteIdenter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
-                        .map(miljoe -> Flux.range(0, identer.size())
+                        .flatMap(miljoe -> Flux.fromIterable(identer)
                                 .delayElements(Duration.ofMillis(100))
-                                .map(index -> new ArenaForvalterDeleteCommand(webClient, identer.get(index), miljoe, token.getTokenValue()).call())))
-                .flatMap(Flux::from)
-                .flatMap(Flux::from)
-                .collectList();
+                                .flatMap(ident -> new ArenaForvalterDeleteCommand(webClient, ident, miljoe,
+                                        token.getTokenValue()).call())));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
@@ -114,17 +80,20 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postBruker"})
-    public Flux<ArenaNyeBrukereResponse> postArenadata(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
+    public Flux<ArenaNyeBrukereResponse> postArenaBruker(ArenaNyeBrukere arenaNyeBrukere, AccessToken accessToken) {
 
-        log.info("Arena opprett {}", arenaNyeBrukere);
-        return new ArenaforvalterPostArenadata(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call();
+        log.info("Arena opprett bruker {}", arenaNyeBrukere);
+        return new ArenaforvalterPostArenaBruker(webClient, arenaNyeBrukere, accessToken.getTokenValue()).call()
+                .doOnNext(response -> log.info("Opprettet bruker {} mot Arenaforvalter {}", response));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postDagpenger"})
     public Flux<ArenaNyeDagpengerResponse> postArenaDagpenger(ArenaDagpenger arenaDagpenger, AccessToken accessToken) {
 
-        log.info("Arena opprett {}", arenaDagpenger);
-        return new ArenaforvalterPostArenadagpenger(webClient, arenaDagpenger, accessToken.getTokenValue()).call();
+        log.info("Opprett dagpenger mot Arenaforvalter {}", arenaDagpenger);
+        return new ArenaforvalterPostArenadagpenger(webClient, arenaDagpenger, accessToken.getTokenValue()).call()
+                .doOnNext(response -> log.info("Opprettet dagpenger for {} mot Arenaforvalter {}",
+                        arenaDagpenger.getPersonident(), arenaDagpenger));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_getEnvironments"})

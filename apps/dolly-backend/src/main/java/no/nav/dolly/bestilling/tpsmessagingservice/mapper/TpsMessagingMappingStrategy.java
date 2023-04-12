@@ -4,9 +4,9 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
+import no.nav.dolly.domain.PdlPerson;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.TelefonnummerDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.tpsmessagingservice.v1.AdresseUtlandDTO;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -48,12 +49,19 @@ public class TpsMessagingMappingStrategy implements MappingStrategy {
                 })
                 .register();
 
-        factory.classMap(KontaktadresseDTO.class, AdresseUtlandDTO.class)
+        factory.classMap(PdlPerson.Kontaktadresse.class, AdresseUtlandDTO.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(KontaktadresseDTO kilde, AdresseUtlandDTO destinasjon, MappingContext context) {
+                    public void mapAtoB(PdlPerson.Kontaktadresse kilde, AdresseUtlandDTO destinasjon, MappingContext context) {
 
                         mapperFacade.map(kilde.getUtenlandskAdresse(), destinasjon);
+
+                        if (isBlank(destinasjon.getAdresse1())) {
+                            destinasjon.setAdresse1(destinasjon.getAdresse2());
+                            destinasjon.setAdresse2(destinasjon.getAdresse3());
+                            destinasjon.setAdresse3(null);
+                        }
+
                         destinasjon.setDatoAdresse(kilde.getGyldigFraOgMed());
                     }
                 })

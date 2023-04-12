@@ -118,11 +118,16 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
                 bostedadresse.setVegadresse(new VegadresseDTO());
             }
 
-        } else if (bostedadresse.countAdresser() == 0 &&
-                person.getOppholdsadresse().isEmpty() &&
+        } else if (bostedadresse.countAdresser() == 0) {
+
+            if (person.getOppholdsadresse().isEmpty() &&
                 person.getKontaktadresse().isEmpty()) {
 
-            bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+                bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
+            } else {
+                person.setBostedsadresse(null);
+                return;
+            }
 
         } else {
 

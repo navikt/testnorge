@@ -48,6 +48,8 @@ spec:
           namespace: traktor
           cluster: prod-fss
     outbound:
+      external:
+        - host: synthdata-arena-meldekort.dev.intern.nav.no
       rules:
         - application: synthdata-arena-meldekort
           cluster: dev-gcp

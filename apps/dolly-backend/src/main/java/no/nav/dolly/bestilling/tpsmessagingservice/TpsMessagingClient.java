@@ -36,9 +36,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigNorskBankkonto;
 import static no.nav.dolly.bestilling.kontoregisterservice.util.BankkontoGenerator.tilfeldigUtlandskBankkonto;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getVarselSlutt;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Slf4j
@@ -47,7 +45,7 @@ import static org.apache.commons.lang3.BooleanUtils.isTrue;
 public class TpsMessagingClient implements ClientRegister {
 
     private static final String STATUS_FMT = "%s:%s";
-    private static final String TPS_MESSAGING = "TPS-meldinger";
+    private static final String TPS_MESSAGING = "TPS";
 
     private final TpsMessagingConsumer tpsMessagingConsumer;
     private final MapperFacade mapperFacade;
@@ -82,7 +80,7 @@ public class TpsMessagingClient implements ClientRegister {
 
                             if (!dollyPerson.isOrdre()) {
                                 transactionHelperService.persister(progress, BestillingProgress::setTpsMessagingStatus,
-                                        prepTpsMessagingStatus(miljoer, false));
+                                        prepTpsMessagingStatus(miljoer));
                             }
 
                             return getIdenterHovedpersonOgPartner(dollyPerson.getIdent())
@@ -142,11 +140,10 @@ public class TpsMessagingClient implements ClientRegister {
         };
     }
 
-    private String prepTpsMessagingStatus(List<String> miljoer, boolean isFinal) {
+    private String prepTpsMessagingStatus(List<String> miljoer) {
 
-        return miljoer.stream()
-                .map(miljo -> String.format(STATUS_FMT, miljo, encodeStatus(isFinal ?
-                        getVarselSlutt(TPS_MESSAGING) : getInfoVenter(TPS_MESSAGING))))
+        return "Startet#" + miljoer.stream()
+                .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(TPS_MESSAGING)))
                 .collect(Collectors.joining(","));
     }
 
