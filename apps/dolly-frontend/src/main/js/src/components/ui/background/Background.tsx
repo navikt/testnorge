@@ -30,7 +30,7 @@ const weekDay = new Date().getDay()
 const isHalloween = (month === 9 && day > 14) || (month === 10 && day === 0)
 const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
-const isEaster = (month === 2 && day === 31) || (month === 3 && day < 11)
+const isEaster = (month === 2 && day > 21) || (month === 3 && day === 1)
 
 const DefaultBackground = styled.div`
 	background-image: url(${() => {
