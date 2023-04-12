@@ -1,1 +1,1 @@
-export { default as DokarkivVisning } from './Visning'
+export { default as HistarkVisning } from './Visning'

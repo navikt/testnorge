@@ -1,22 +1,17 @@
-import JoarkDokumentService, {
-	Dokument,
-	Journalpost,
-} from '@/service/services/JoarkDokumentService'
+import { Dokument, Journalpost } from '@/service/services/JoarkDokumentService'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import styled from 'styled-components'
-import Button from '@/components/ui/button/Button'
 
 type Props = {
 	journalpost: Journalpost
-	miljoe: string
 }
 
 const H4 = styled.h4`
 	width: 100%;
 `
 
-export default ({ journalpost, miljoe }: Props) => (
+export default ({ journalpost }: Props) => (
 	<div className="person-visning_content">
 		<TitleValue title="Tittel" value={journalpost.tittel} />
 		<TitleValue title="Kanal" value={journalpost.kanal} />
@@ -38,19 +33,6 @@ export default ({ journalpost, miljoe }: Props) => (
 					<div key={idx} className="person-visning_content">
 						<TitleValue title="Tittel" value={dokument.tittel} />
 						<TitleValue title="Dokumentinfo-ID" value={dokument.dokumentInfoId} />
-						<Button
-							className="flexbox--align-center csv-eksport-btn"
-							kind="file-new-table"
-							onClick={() =>
-								JoarkDokumentService.hentPDF(
-									journalpost.journalpostId,
-									dokument.dokumentInfoId,
-									miljoe
-								)
-							}
-						>
-							VIS PDF
-						</Button>
 					</div>
 				)
 			}}

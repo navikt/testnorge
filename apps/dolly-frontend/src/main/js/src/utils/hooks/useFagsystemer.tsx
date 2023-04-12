@@ -132,6 +132,27 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	}
 }
 
+export const useHistarkData = (ident, harHistarkbestilling) => {
+	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
+
+	if (!harHistarkbestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const { data, error } = useSWR<any, Error>(
+		journalpostUrl(transaksjonsid, 'NA'),
+		multiFetcherDokarkiv
+	)
+
+	return {
+		histarkData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
+		loading: !error && !data,
+		error: error,
+	}
+}
+
 export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
 	if (!harArbeidsplassenBestilling) {
 		return {

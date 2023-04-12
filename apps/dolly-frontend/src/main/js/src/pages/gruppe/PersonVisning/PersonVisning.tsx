@@ -7,6 +7,7 @@ import {
 	ArenaVisning,
 	BrregVisning,
 	DokarkivVisning,
+	HistarkVisning,
 	InntektsmeldingVisning,
 	InntektstubVisning,
 	InstVisning,
@@ -42,6 +43,7 @@ import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useDokarkivData,
+	useHistarkData,
 	useInstData,
 	usePoppData,
 	useTpData,
@@ -53,6 +55,7 @@ import {
 	harApBestilling,
 	harArbeidsplassenBestilling,
 	harDokarkivBestilling,
+	harHistarkBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
@@ -135,6 +138,11 @@ export const PersonVisning = ({
 	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(
 		ident.ident,
 		harDokarkivBestilling(bestillingerFagsystemer)
+	)
+
+	const { loading: loadingHistarkData, histarkData } = useHistarkData(
+		ident.ident,
+		harHistarkBestilling(bestillingerFagsystemer)
 	)
 
 	const { loading: loadingInstData, instData } = useInstData(
@@ -379,6 +387,7 @@ export const PersonVisning = ({
 					loading={loadingDokarkivData}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<HistarkVisning data={histarkData} loading={loadingDokarkivData} />
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}
 					ident={ident.ident}

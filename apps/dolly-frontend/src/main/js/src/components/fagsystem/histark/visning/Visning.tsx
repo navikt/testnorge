@@ -1,7 +1,5 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import DokarkivVisning from './DokarkivVisning'
-import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
-import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import HistarkVisning from './HistarkVisning'
 import Loading from '@/components/ui/loading/Loading'
 import { Journalpost } from '@/service/services/JoarkDokumentService'
 
@@ -16,20 +14,13 @@ type MiljoDataListe = {
 	data: Array<Journalpost>
 }
 
-type DokarkivTypes = {
-	data?: Journalpost
-	miljo?: string
-}
-
-const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
+const Histark = ({ data }) => {
 	if (!data) return null
 
-	return <DokarkivVisning journalpost={data} miljoe={miljo} />
+	return <HistarkVisning journalpost={data} />
 }
 
-export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) => {
-	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'dokarkiv')
-
+export default ({ data, loading }: Form) => {
 	if (loading) {
 		return <Loading label="Laster dokument-data" />
 	}
@@ -38,25 +29,10 @@ export default ({ data, bestillingIdListe, loading, tilgjengeligMiljoe }: Form) 
 		return null
 	}
 
-	const miljoerMedData = data?.map((miljoData) => miljoData.data && miljoData.miljo)
-	const errorMiljoer = bestilteMiljoer.filter((miljo) => !miljoerMedData?.includes(miljo))
-
-	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
-
-	const filteredData =
-		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
-
 	return (
 		<>
 			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-			<MiljoTabs
-				bestilteMiljoer={bestilteMiljoer}
-				errorMiljoer={errorMiljoer}
-				forsteMiljo={forsteMiljo}
-				data={filteredData || data}
-			>
-				<Dokarkiv />
-			</MiljoTabs>
+			<Histark />
 		</>
 	)
 }
