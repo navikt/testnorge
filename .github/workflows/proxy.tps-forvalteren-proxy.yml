@@ -27,7 +27,7 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
   deploy:
     name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    uses: ./.github/workflows/common.deploy.yml
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
@@ -39,7 +39,7 @@ jobs:
       IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
   deploy-dev:
     name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
+    uses: ./.github/workflows/common.deploy.yml
     needs: build
     if: ${{ github.ref == 'refs/heads/master' }}
     with:
