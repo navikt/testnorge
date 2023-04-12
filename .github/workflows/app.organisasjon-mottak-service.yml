@@ -1,6 +1,7 @@
 name: organisasjon-mottak-service
 
 on:
+  workflow_dispatch:
   push:
     paths:
       - apps/organisasjon-mottak-service/**
