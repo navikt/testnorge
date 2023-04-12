@@ -29,6 +29,11 @@ export const getEksisterendeNyPerson = (
 		(relasjon) =>
 			relasjon?.relatertPerson?.ident === ident && relasjon?.relasjonType === relasjonType
 	)
+
+	if (!relasjon) {
+		return null
+	}
+
 	return {
 		value: relasjon?.relatertPerson?.ident,
 		label: `${relasjon?.relatertPerson?.ident} - ${relasjon?.relatertPerson?.navn?.[0]?.fornavn} ${relasjon?.relatertPerson?.navn?.[0]?.etternavn}`,

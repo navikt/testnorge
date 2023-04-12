@@ -102,7 +102,12 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					ident={ident}
 					relasjoner={data?.relasjoner}
 				/>
-				<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
+				<Fullmakt
+					data={data?.person?.fullmakt}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					relasjoner={data?.relasjoner}
+				/>
 				<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
