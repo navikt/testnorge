@@ -32,3 +32,15 @@ spring:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
           accepted-audience: dev-gcp:dolly:testnav-pdl-forvalter-dev
+
+consumers:
+  adresse-service:
+    url: http://testnav-adresse-service
+  generer-navn-service:
+    url: http://generer-navn-service
+  ident-pool:
+    url: http://testnav-ident-pool
+  org-forvalter:
+    url: http://testnav-organisasjon-forvalter
+  geografiske-kodeverk-service:
+    url: http://testnav-geografiske-kodeverk-service

@@ -11,7 +11,25 @@ spring:
 consumers:
   testnav-profil-api:
     name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.dev.intern.nav.no
+    url: http://testnorge-profil-api-dev
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
-    url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+    url: http://testnav-pdl-forvalter-dev
+  testnav-helsepersonell-service:
+    url: http://testnav-helsepersonell-service
+  testnav-organisasjon-forvalter:
+    url: http://testnav-organisasjon-forvalter
+  testnav-inntektsmelding-service:
+    url: http://testnav-inntektsmelding-service
+  testnav-tps-messaging-service:
+    url: http://testnav-tps-messaging-service
+  testnav-generer-navn-service:
+    url: http://generer-navn-service
+  testnav-person-service:
+    url: http://testnav-person-service
+  testnav-arbeidsforhold-service:
+    url: http://testnav-arbeidsforhold-service
+  testnav-amelding-service:
+    url: http://testnav-amelding-service
+  testnav-organisasjon-service:
+    url: http://testnav-organisasjon-service
