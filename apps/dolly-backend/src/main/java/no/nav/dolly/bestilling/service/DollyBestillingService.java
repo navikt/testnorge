@@ -160,6 +160,8 @@ public class DollyBestillingService {
     protected void doFerdig(Bestilling bestilling) {
 
         transactionHelperService.oppdaterBestillingFerdig(bestilling.getId(), bestillingService.cleanBestilling());
+        transactionHelperService.clearCache();
+
         MDC.remove(MDC_KEY_BESTILLING);
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
