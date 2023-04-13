@@ -20,10 +20,13 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 import java.util.List;
@@ -44,11 +47,18 @@ public class PdlDataConsumer implements ConsumerStatus {
             ObjectMapper objectMapper,
             WebClient.Builder webClientBuilder
     ) {
+        var provider =
+                ConnectionProvider.builder("custom")
+                        .maxConnections(5)
+                        .pendingAcquireMaxCount(500)
+                        .build();
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)))
                 .build();
     }
 
@@ -87,6 +97,7 @@ public class PdlDataConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
     public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
+        log.info("Opprett person til PDL {}", request);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
