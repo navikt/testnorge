@@ -23,7 +23,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class ArenaforvalterPostAap implements Callable<Flux<AapResponse>> {
 
-    private static final String ARENAFORVALTER_BRUKER = "/api/v1/aap";
+    private static final String ARENAFORVALTER_AAP = "/api/v1/aap";
 
     private final WebClient webClient;
     private final AapRequest aapRequest;
@@ -34,7 +34,7 @@ public class ArenaforvalterPostAap implements Callable<Flux<AapResponse>> {
 
         return webClient.post().uri(
                         uriBuilder -> uriBuilder
-                                .path(ARENAFORVALTER_BRUKER)
+                                .path(ARENAFORVALTER_AAP)
                                 .build())
                 .header(HEADER_NAV_CALL_ID, generateCallId())
                 .header(HEADER_NAV_CONSUMER_ID, CONSUMER)

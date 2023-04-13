@@ -94,7 +94,7 @@ public class ArenaAapMappingStrategy implements MappingStrategy {
                         }
 
                         if (aapRequest.getGenSaksopplysninger().isEmpty()) {
-                            aapRequest.getGenSaksopplysninger().addAll(getAlleSaksopplysninger(aapRequest.getFraDato()));
+                            aapRequest.getGenSaksopplysninger().addAll(getSaksopplysninger(aapRequest.getFraDato()));
                         }
 
                         aapRequest.setAktivitetsfase(isBlank(aapRequest.getAktivitetsfase()) ? "UA" :
@@ -135,34 +135,11 @@ public class ArenaAapMappingStrategy implements MappingStrategy {
         );
     }
 
-    private List<Aap.Saksopplysning> getAlleSaksopplysninger(LocalDate startdato) {
+    private List<Aap.Saksopplysning> getSaksopplysninger(LocalDate startdato) {
 
         return List.of(
                 new Aap.Saksopplysning("KDATO", null, startdato.format(FORMAT)),
-                new Aap.Saksopplysning("BTID", null, startdato.format(FORMAT)),
-                new Aap.Saksopplysning("TUUIN", null, null),
-                new Aap.Saksopplysning("UUFOR", null, null),
-                new Aap.Saksopplysning("STUBE", null, null),
-                new Aap.Saksopplysning("OTILF", null, null),
-                new Aap.Saksopplysning("OTSEK", null, null),
-                new Aap.Saksopplysning("OOPPL", null, null),
-                new Aap.Saksopplysning("BDSAT", "OOPPL", null),
-                new Aap.Saksopplysning("UFTID", "OOPPL", null),
-                new Aap.Saksopplysning("BDSRP", "OOPPL", null),
-                new Aap.Saksopplysning("GRDRP", "OOPPL", null),
-                new Aap.Saksopplysning("GRDTU", "OOPPL", null),
-                new Aap.Saksopplysning("BDSTU", "OOPPL", null),
-                new Aap.Saksopplysning("GGRAD", "OOPPL", null),
-                new Aap.Saksopplysning("ORIGG", "OOPPL", null),
-                new Aap.Saksopplysning("YDATO", null, null),
-                new Aap.Saksopplysning("YINNT", null, null),
-                new Aap.Saksopplysning("YGRAD", null, null),
-                new Aap.Saksopplysning("TLONN", null, null),
-                new Aap.Saksopplysning("SPROS", "TLONN", null),
-                new Aap.Saksopplysning("NORIN", "TLONN", null),
-                new Aap.Saksopplysning("FAKIN", "TLONN", null),
-                new Aap.Saksopplysning("EOS", null, null),
-                new Aap.Saksopplysning("LAND", null, null)
+                new Aap.Saksopplysning("BTID", null, startdato.format(FORMAT))
         );
     }
 
