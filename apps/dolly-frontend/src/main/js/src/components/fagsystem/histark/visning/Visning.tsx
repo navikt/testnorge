@@ -17,7 +17,7 @@ type MiljoDataListe = {
 const Histark = ({ data }) => {
 	if (!data) return null
 
-	return <HistarkVisning journalpost={data} />
+	return <HistarkVisning dokument={data} />
 }
 
 export default ({ data, loading }: Form) => {
@@ -31,8 +31,8 @@ export default ({ data, loading }: Form) => {
 
 	return (
 		<>
-			<SubOverskrift label="Dokumenter" iconKind="dokarkiv" />
-			<Histark />
+			<SubOverskrift label="Dokumenter (histark)" iconKind="dokarkiv" />
+			<Histark data={data} />
 		</>
 	)
 }
