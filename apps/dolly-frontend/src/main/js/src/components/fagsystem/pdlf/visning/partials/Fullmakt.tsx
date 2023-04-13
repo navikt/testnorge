@@ -29,16 +29,9 @@ type DataListe = {
 	relasjoner: Array<Relasjon>
 }
 
-const Tema = styled.div`
-	margin-bottom: 20px;
-	h4 {
-		width: 100%;
-		margin-bottom: 10px;
-		margin-top: 0px;
-	}
-
-	TitleValue {
-		margin-bottom: 5px;
+const Omraader = styled(TitleValue)`
+	&& {
+		margin-bottom: 20px;
 	}
 `
 
@@ -52,11 +45,14 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
 	)
 
-	// TODO: Lag ny visning av tema/områder
+	const omraader = fullmaktData.omraader
+		?.map((omraade) => Formatters.showKodeverkLabel(FullmaktKodeverk.Tema, omraade))
+		?.join(', ')
 
 	return (
 		<>
 			<div className="person-visning_redigerbar" key={idx}>
+				<Omraader title="Områder" value={omraader} size={'full-width'} />
 				<div className="person-visning_content">
 					<TitleValue
 						title="Gyldig fra og med"
@@ -76,21 +72,6 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 						/>
 					)}
 				</div>
-				<Tema>
-					<h4>Tema</h4>
-					{fullmaktData.omraader.map((omraade: string) =>
-						omraade.includes('*') ? (
-							<TitleValue key={omraade} value={'Alle (*)'} size={'full-width'} />
-						) : (
-							<TitleValue
-								key={omraade}
-								kodeverk={FullmaktKodeverk.Tema}
-								value={omraade}
-								size={'full-width'}
-							/>
-						)
-					)}
-				</Tema>
 			</div>
 			{(fullmektig || redigertRelatertePersoner) && (
 				<RelatertPerson
