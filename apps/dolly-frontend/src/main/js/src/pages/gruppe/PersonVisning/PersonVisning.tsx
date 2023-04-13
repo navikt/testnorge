@@ -387,7 +387,7 @@ export const PersonVisning = ({
 					loading={loadingDokarkivData}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
-				<HistarkVisning data={histarkData} loading={loadingDokarkivData} />
+				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}
 					ident={ident.ident}

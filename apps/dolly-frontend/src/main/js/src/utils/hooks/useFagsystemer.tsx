@@ -141,15 +141,10 @@ export const useHistarkData = (ident, harHistarkbestilling) => {
 		}
 	}
 
-	const { data, error } = useSWR<any, Error>(
-		journalpostUrl(transaksjonsid, 'NA'),
-		multiFetcherDokarkiv
-	)
-
 	return {
-		histarkData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
-		loading: !error && !data,
-		error: error,
+		histarkData: transaksjonsid,
+		loading: false,
+		error: null,
 	}
 }
 
