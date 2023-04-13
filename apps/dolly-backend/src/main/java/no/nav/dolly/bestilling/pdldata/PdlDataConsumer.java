@@ -56,6 +56,7 @@ public class PdlDataConsumer implements ConsumerStatus {
                         HttpClient.create(ConnectionProvider.builder("custom")
                                 .maxConnections(5)
                                 .pendingAcquireMaxCount(500)
+                                .pendingAcquireTimeout(Duration.ofMinutes(15))
                                 .build())))
                 .build();
     }
