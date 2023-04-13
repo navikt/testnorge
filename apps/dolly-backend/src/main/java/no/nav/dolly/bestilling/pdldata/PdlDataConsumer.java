@@ -45,20 +45,18 @@ public class PdlDataConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             PdlDataForvalterProperties serviceProperties,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
-        var provider =
-                ConnectionProvider.builder("custom")
-                        .maxConnections(5)
-                        .pendingAcquireMaxCount(500)
-                        .build();
+            WebClient.Builder webClientBuilder) {
 
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
-                .clientConnector(new ReactorClientHttpConnector(HttpClient.create(provider)))
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(ConnectionProvider.builder("custom")
+                                .maxConnections(5)
+                                .pendingAcquireMaxCount(500)
+                                .build())))
                 .build();
     }
 
@@ -97,7 +95,6 @@ public class PdlDataConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "pdl_opprett"})
     public Flux<PdlResponse> opprettPdl(BestillingRequestDTO request) {
 
-        log.info("Opprett person til PDL {}", request);
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new PdlDataOpprettingCommand(webClient, request, token.getTokenValue()).call());
     }
