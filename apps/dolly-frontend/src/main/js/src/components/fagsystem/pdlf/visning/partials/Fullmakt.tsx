@@ -44,6 +44,9 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 	const fullmektig = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === fullmektigIdent
 	)
+	const fullmektigRedigert = redigertRelatertePersoner?.find(
+		(item) => item.relatertPerson?.ident === fullmektigIdent
+	)
 
 	const omraader = fullmaktData.omraader
 		?.map((omraade) => Formatters.showKodeverkLabel(FullmaktKodeverk.Tema, omraade))
@@ -62,7 +65,7 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 						title="Gyldig til og med"
 						value={Formatters.formatDate(fullmaktData.gyldigTilOgMed)}
 					/>
-					{!fullmektig && (
+					{!fullmektig && !fullmektigRedigert && (
 						<TitleValue
 							title="Fullmektig"
 							value={
@@ -73,9 +76,9 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 					)}
 				</div>
 			</div>
-			{(fullmektig || redigertRelatertePersoner) && (
+			{(fullmektig || fullmektigRedigert) && (
 				<RelatertPerson
-					data={fullmektig.relatertPerson || redigertRelatertePersoner}
+					data={fullmektigRedigert?.relatertPerson || fullmektig?.relatertPerson}
 					tittel="Fullmektig"
 				/>
 			)}
@@ -93,9 +96,6 @@ export const FullmaktVisning = ({
 }: Data) => {
 	const initFullmakt = Object.assign(_.cloneDeep(initialFullmakt), data[idx])
 	let initialValues = { fullmakt: initFullmakt }
-	console.log('fullmaktData: ', fullmaktData) //TODO - SLETT MEG
-	//TODO: Trenger vi denne?
-	initialValues.fullmakt.nyFullmektig = initialPdlPerson
 
 	const redigertFullmaktPdlf = _.get(tmpPersoner, `${ident}.person.fullmakt`)?.find(
 		(a: FullmaktValues) => a.id === fullmaktData.id
@@ -114,11 +114,6 @@ export const FullmaktVisning = ({
 		  }
 		: null
 
-	//TODO: Trenger vi denne?
-	if (redigertFullmaktValues) {
-		redigertFullmaktValues.fullmakt.nyFullmektig = initialPdlPerson
-	}
-
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(
 				redigertRelatertePersoner,
@@ -126,6 +121,14 @@ export const FullmaktVisning = ({
 				'FULLMEKTIG'
 		  )
 		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, 'FULLMEKTIG')
+
+	if (eksisterendeNyPerson && initialValues?.fullmakt?.nyFullmektig) {
+		initialValues.fullmakt.nyFullmektig = initialPdlPerson
+	}
+
+	if (eksisterendeNyPerson && redigertFullmaktValues?.fullmakt?.nyFullmektig) {
+		redigertFullmaktValues.fullmakt.nyFullmektig = initialPdlPerson
+	}
 
 	return (
 		<VisningRedigerbarConnector
@@ -163,7 +166,6 @@ export const Fullmakt = ({ data, tmpPersoner, ident, relasjoner }: DataListe) =>
 						{(fullmakt: FullmaktData, idx: number) => (
 							<FullmaktVisning
 								fullmaktData={fullmakt}
-								// key={fullmakt.id}
 								idx={idx}
 								data={data}
 								tmpPersoner={tmpPersoner}
