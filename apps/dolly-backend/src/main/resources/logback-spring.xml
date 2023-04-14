@@ -40,4 +40,5 @@
     <logger level="TRACE" name="no.nav.testnav.libs.reactivecore.filter.RequestLogger" />
     <logger level="TRACE" name="no.nav.testnav.libs.servletcore.logging.LogRequestInterceptor" />
     <logger level="ERROR" name="reactor.netty.transport.TransportConnector" />
+    <logger level="DEBUG" name="reactor.netty.http.client" />
 </configuration>

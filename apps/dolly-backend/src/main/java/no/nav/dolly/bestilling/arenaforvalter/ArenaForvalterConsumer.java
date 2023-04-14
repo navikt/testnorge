@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
@@ -54,6 +55,9 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
+//                .clientConnector(new ReactorClientHttpConnector(
+//                        HttpClient.create()
+//                                .wiretap(true)))
                 .build();
     }
 
@@ -99,7 +103,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_postAap"})
     public Flux<AapResponse> postAap(AapRequest aapRequest, AccessToken accessToken) {
 
-        log.info("Arena opprett Aap {}", aapRequest);
+        log.info("Arena opprett Aap {}", Json.pretty(aapRequest));
         return new ArenaforvalterPostAap(webClient, aapRequest, accessToken.getTokenValue()).call()
                 .doOnNext(response -> log.info("Opprettet aap {} mot Arenaforvalter {}",
                         aapRequest.getPersonident(), response));

@@ -76,7 +76,7 @@ public class Aap {
     @AllArgsConstructor
     public static class Saksopplysning {
         private String kode;
-        private String overrdnet;
+        private String overordnet;
         private String verdi;
     }
 
