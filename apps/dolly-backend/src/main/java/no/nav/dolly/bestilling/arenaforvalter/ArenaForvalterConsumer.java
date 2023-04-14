@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
@@ -26,10 +25,12 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 import java.time.Duration;
 import java.util.List;
@@ -55,9 +56,9 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
         this.webClient = webClientBuilder
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
-//                .clientConnector(new ReactorClientHttpConnector(
-//                        HttpClient.create()
-//                                .wiretap(true)))
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create()
+                                .wiretap(true)))
                 .build();
     }
 
@@ -103,7 +104,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = {"operation", "arena_postAap"})
     public Flux<AapResponse> postAap(AapRequest aapRequest, AccessToken accessToken) {
 
-        log.info("Arena opprett Aap {}", Json.pretty(aapRequest));
+        log.info("Arena opprett Aap {}", aapRequest);
         return new ArenaforvalterPostAap(webClient, aapRequest, accessToken.getTokenValue()).call()
                 .doOnNext(response -> log.info("Opprettet aap {} mot Arenaforvalter {}",
                         aapRequest.getPersonident(), response));
