@@ -11,8 +11,6 @@ import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.bestilling.histark.domain.HistarkResponse;
 import no.nav.dolly.bestilling.histark.domain.JoarkHistarkTransaksjon;
-import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.jpa.TransaksjonMapping;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -26,7 +24,6 @@ import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -44,7 +41,6 @@ public class HistarkClient implements ClientRegister {
     private final TransaksjonMappingService transaksjonMappingService;
     private final ObjectMapper objectMapper;
     private final TransactionHelperService transactionHelperService;
-    private final PdlPersonConsumer pdlPersonConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
     @Override
@@ -53,13 +49,12 @@ public class HistarkClient implements ClientRegister {
         if (nonNull(bestilling.getHistark())) {
 
             var bestillingId = progress.getBestilling().getId();
-            return Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
-                            .map(person -> buildRequest(bestilling.getHistark(), person))
-                            .filter(env -> !transaksjonMappingService.existAlready(HISTARK,
-                                    dollyPerson.getIdent(), "NA") || isOpprettEndre)
-                            .flatMap(request -> histarkConsumer.postHistark(request)
-                                    .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestillingId, status)))
-                            .collect(Collectors.joining(",")))
+            return Flux.just(dollyPerson.getIdent())
+                    .map(person -> buildRequest(bestilling.getHistark(), person))
+                    .filter(env -> !transaksjonMappingService.existAlready(HISTARK,
+                            dollyPerson.getIdent(), "NA") || isOpprettEndre)
+                    .flatMap(request -> histarkConsumer.postHistark(request)
+                            .mapNotNull(status -> getStatus(dollyPerson.getIdent(), bestillingId, status)))
                     .map(status -> futurePersist(progress, status));
         }
 
@@ -93,27 +88,17 @@ public class HistarkClient implements ClientRegister {
 
         } else {
 
-            return String.format("NA:FEIL=Teknisk feil se logg! %s",
+            return String.format("FEIL=Teknisk feil se logg! %s",
                     isNotBlank(response.getFeilmelding()) ?
                             ErrorStatusDecoder.encodeStatus(errorStatusDecoder.getStatusMessage(response.getFeilmelding())) :
                             "UKJENT");
         }
     }
 
-    private Flux<PdlPersonBolk.PersonBolk> getPersonData(List<String> identer) {
-
-        return pdlPersonConsumer.getPdlPersoner(identer)
-                .filter(pdlPersonBolk -> nonNull(pdlPersonBolk.getData()))
-                .map(PdlPersonBolk::getData)
-                .map(PdlPersonBolk.Data::getHentPersonBolk)
-                .flatMap(Flux::fromIterable)
-                .filter(personBolk -> nonNull(personBolk.getPerson()));
-    }
-
-    private HistarkRequest buildRequest(RsHistark rsHistark, PdlPersonBolk.PersonBolk personBolk) {
+    private HistarkRequest buildRequest(RsHistark rsHistark, String ident) {
 
         var context = new MappingContext.Factory().getContext();
-        context.setProperty("personBolk", personBolk);
+        context.setProperty("personIdent", ident);
 
         return mapperFacade.map(rsHistark, HistarkRequest.class, context);
     }

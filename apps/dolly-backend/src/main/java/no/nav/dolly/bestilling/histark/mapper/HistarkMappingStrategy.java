@@ -5,7 +5,6 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -20,7 +19,7 @@ import static no.nav.dolly.bestilling.dokarkiv.mapper.PdfVedlegg.PDF_VEDLEGG;
 @Component
 public class HistarkMappingStrategy implements MappingStrategy {
 
-    private static final String PERSON_BOLK = "personBolk";
+    private static final String PERSON_IDENT = "personIdent";
     private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Override
@@ -39,7 +38,7 @@ public class HistarkMappingStrategy implements MappingStrategy {
                                     .file(fysiskDokument)
                                     .metadata(HistarkRequest.HistarkDokument.HistarkMetadata.builder()
                                             .antallSider(String.valueOf(dokument.getAntallSider()))
-                                            .brukerident(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
+                                            .brukerident(((String) context.getProperty(PERSON_IDENT)))
                                             .enhetsnavn(dokument.getEnhetsnavn())
                                             .enhetsnummer(dokument.getEnhetsnummer())
                                             .filnavn(dokument.getTittel())
