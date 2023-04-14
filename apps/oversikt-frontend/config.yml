@@ -28,6 +28,11 @@ spec:
       rules:
         - application: testnorge-profil-api-dev
         - application: testnav-app-tilgang-analyse-service
+      external:
+        - host: testnorge-profil-api-dev.dev.intern.nav.no
+        - host: testnav-app-tilgang-analyse-service.dev.intern.nav.no
+        - host: testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+        - host: testnav-bruker-service-dev.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
