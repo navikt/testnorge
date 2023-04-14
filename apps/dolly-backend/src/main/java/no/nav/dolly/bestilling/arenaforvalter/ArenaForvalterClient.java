@@ -209,7 +209,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(IDENT, ident);
                     context.setProperty(MILJOE, miljoe);
-                    return mapperFacade.map(arenadata1, ArenaDagpenger.class);
+                    return mapperFacade.map(arenadata1, ArenaDagpenger.class, context);
                 })
                 .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
                 .map(response -> {
@@ -222,9 +222,11 @@ public class ArenaForvalterClient implements ClientRegister {
                                         dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
                                 .collect(Collectors.joining(","));
                     } else {
-                        return response.getNyeDagpResponse().stream()
-                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, dagpResponse.getUtfall() +
-                                        ": " + encodeStatus(dagpResponse.getBegrunnelse())))
+                        return response.getNyeDagp().stream()
+                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, "JA".equals(dagpResponse.getNyeDagpResponse().getUtfall()) ?
+                                        "OK" :
+                                        ("Feil: " + dagpResponse.getNyeDagpResponse().getUtfall() + ": " +
+                                                encodeStatus(dagpResponse.getNyeDagpResponse().getBegrunnelse()))))
                                 .collect(Collectors.joining(","));
                     }
                 });

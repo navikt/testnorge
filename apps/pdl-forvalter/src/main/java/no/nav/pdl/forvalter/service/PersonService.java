@@ -196,6 +196,7 @@ public class PersonService {
         if (isNull(request.getPerson())) {
             request.setPerson(new PersonDTO());
         }
+//        RelasjonerAlder.fixRelasjonerAlder(request);
 
         if (isBlank(request.getOpprettFraIdent())) {
             request.getPerson().setIdent(identPoolConsumer.acquireIdents(

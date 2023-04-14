@@ -87,12 +87,12 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> Flux.concat(
-                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase2Klienter(),
-                                                                                    progress, false),
-                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase3Klienter(),
-                                                                                    progress, false)))))
+                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                            fase2Klienter(),
+                                                                            progress, false),
+                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                            fase3Klienter(),
+                                                                            progress, false)))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

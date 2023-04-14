@@ -24,8 +24,11 @@ public class InntektDTO implements ToXmlElement<XMLInntekt> {
     public XMLInntekt toXmlElement() {
         ObjectFactory factory = new ObjectFactory();
         XMLInntekt xmlInntekt = factory.createXMLInntekt();
-        xmlInntekt.setAarsakVedEndring(factory.createXMLInntektAarsakVedEndring(
-                isBlank(aarsakVedEndring) ? null : CaseUtils.toCamelCase(aarsakVedEndring, true, '_')
+        if (isBlank(aarsakVedEndring)) xmlInntekt.setAarsakVedEndring(factory.createXMLInntektAarsakVedEndring(
+                null
+        ));
+        else xmlInntekt.setAarsakVedEndring(factory.createXMLInntektAarsakVedEndring(
+                aarsakVedEndring.contains("_") ? CaseUtils.toCamelCase(aarsakVedEndring, true, '_') : aarsakVedEndring
         ));
         xmlInntekt.setBeloep(factory.createXMLInntektBeloep(beloep != null ? BigDecimal.valueOf(beloep) : null));
         return xmlInntekt;

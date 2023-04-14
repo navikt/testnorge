@@ -34,8 +34,12 @@ public class NaturalYtelseDetaljerDTO implements ToXmlElement<XMLNaturalytelseDe
                 beloepPrMnd != null ? BigDecimal.valueOf(beloepPrMnd) : null
         ));
         xmlNaturalytelseDetaljer.setFom(factory.createXMLNaturalytelseDetaljerFom(fom));
-        xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
-                isBlank(naturalytelseType) ? null : CaseUtils.toCamelCase(naturalytelseType, true, '_')
+        if (isBlank(naturalytelseType))
+            xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
+                    null
+            ));
+        else xmlNaturalytelseDetaljer.setNaturalytelseType(factory.createXMLNaturalytelseDetaljerNaturalytelseType(
+                naturalytelseType.contains("_") ? CaseUtils.toCamelCase(naturalytelseType, true, '_') : naturalytelseType
         ));
 
         return xmlNaturalytelseDetaljer;

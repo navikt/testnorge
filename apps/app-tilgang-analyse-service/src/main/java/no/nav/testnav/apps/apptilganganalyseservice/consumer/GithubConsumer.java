@@ -6,6 +6,7 @@ import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.SearchCodeC
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,11 +18,12 @@ public class GithubConsumer {
     private static final int PAGE_SIZE = 100;
     private final WebClient webClient;
 
-    public GithubConsumer(@Value("${consumers.github.url}") String url) {
+    public GithubConsumer(@Value("${consumers.github.url}") String url, @Value("${consumers.github.token}") String token) {
 
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "token " + token)
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
@@ -36,6 +38,10 @@ public class GithubConsumer {
                 .doOnNext(value -> log.info("Fant {} (søk='{}').", value.getItems().size(), args));
     }
 
+    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
+        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
+    }
+
     private Mono<SearchResults> search(SearchResults results, SearchArgs args, Integer page) {
         var command = new SearchCodeCommand(webClient, args.toString(), page, PAGE_SIZE);
         return command.call().flatMap(dto -> {
@@ -44,9 +50,5 @@ public class GithubConsumer {
             }
             return Mono.just(results.concat(dto));
         });
-    }
-
-    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
-        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
     }
 }
