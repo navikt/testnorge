@@ -1,6 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FullmaktKodeverk } from '@/config/kodeverk'
@@ -20,6 +20,7 @@ type DataListe = {
 
 const Tema = styled.div`
 	margin-bottom: 20px;
+
 	h4 {
 		width: 100%;
 		margin-bottom: 10px;
@@ -41,14 +42,8 @@ export const Visning = ({ data, relasjoner }: Data) => {
 		<>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					<TitleValue
-						title="Gyldig fra og med"
-						value={Formatters.formatDate(data.gyldigFraOgMed)}
-					/>
-					<TitleValue
-						title="Gyldig til og med"
-						value={Formatters.formatDate(data.gyldigTilOgMed)}
-					/>
+					<TitleValue title="Gyldig fra og med" value={formatDate(data.gyldigFraOgMed)} />
+					<TitleValue title="Gyldig til og med" value={formatDate(data.gyldigTilOgMed)} />
 					{!fullmektig && (
 						<TitleValue
 							title="Fullmektig"

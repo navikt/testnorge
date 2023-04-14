@@ -38,10 +38,12 @@ export const FileUploader = ({
 	files,
 	setFiles,
 	feil,
+	isMultiple = true,
 }: {
 	files: File[]
 	setFiles: any
 	feil?: { feilmelding: string } | null
+	isMultiple?: boolean
 }) => {
 	const handleDrop = useCallback((acceptedFiles: File[]) => {
 		const reader = new FileReader()
@@ -51,21 +53,31 @@ export const FileUploader = ({
 			reader.onerror = () => console.error('file reading has failed')
 			reader.onload = () => {
 				const binaryStr = reader.result?.slice(28)
-				setFiles([
-					// @ts-ignore
-					{
-						id: new Date().getTime(),
-						name: file.path,
-						content: { base64: binaryStr },
-					},
-					...files,
-				])
+				isMultiple
+					? setFiles([
+							// @ts-ignore
+							{
+								id: new Date().getTime(),
+								name: file.path,
+								content: { base64: binaryStr },
+							},
+							...files,
+					  ])
+					: setFiles([
+							// @ts-ignore
+							{
+								id: new Date().getTime(),
+								name: file.path,
+								content: { base64: binaryStr },
+							},
+					  ])
 			}
 			reader.readAsDataURL(file)
 		})
 	}, [])
 	const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
-		multiple: true,
+		disabled: !isMultiple && files?.length > 0,
+		multiple: isMultiple,
 		onDrop: handleDrop,
 	})
 

@@ -4,7 +4,7 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { validation } from '@/components/fagsystem/pensjon/form/validation'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import Formatters from '@/utils/DataFormatter'
+import { getYearRangeOptions } from '@/utils/DataFormatter'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import React from 'react'
@@ -30,14 +30,14 @@ export const PensjonForm = ({ formikBag }) => (
 					<FormikSelect
 						name={`${pensjonPath}.fomAar`}
 						label="Fra og med år"
-						options={Formatters.getYearRangeOptions(1968, new Date().getFullYear() - 1)}
+						options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
 						isClearable={false}
 					/>
 
 					<FormikSelect
 						name={`${pensjonPath}.tomAar`}
 						label="Til og med år"
-						options={Formatters.getYearRangeOptions(1968, new Date().getFullYear() - 1)}
+						options={getYearRangeOptions(1968, new Date().getFullYear() - 1)}
 						isClearable={false}
 					/>
 

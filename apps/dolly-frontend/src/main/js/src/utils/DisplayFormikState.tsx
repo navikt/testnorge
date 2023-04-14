@@ -2,9 +2,16 @@ import { useToggle } from 'react-use'
 
 const FormikState = (props) => (
 	<pre>
-		<strong>props</strong> = {JSON.stringify(props, null, 2)}
+		<strong>props</strong> = {JSON.stringify(props, replacer, 2)}
 	</pre>
 )
+
+const replacer = (key: string, value: any) => {
+	const exludedProperties = ['fysiskDokument', 'base64']
+	if (exludedProperties.some((excludedKey) => excludedKey === key)) {
+		return '**Forkortet verdi**'
+	} else return value
+}
 
 export default function DisplayFormikState({ visState = false, ...props }) {
 	const [showState, toggleShowState] = useToggle(visState)

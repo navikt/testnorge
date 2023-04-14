@@ -22,9 +22,18 @@ export const DokarkivPanel = ({ stateModifier, formikBag }: any) => {
 			startOpen={harValgtAttributt(formikBag.values, [dokarkivAttributt, histarkAttributt])}
 		>
 			<AttributtKategori title="Oppretting av dokument" attr={sm.attrs}>
-				<Attributt attr={sm.attrs.dokarkiv} disabled={sm.attrs.digitalInnsending.checked} />
-				<Attributt attr={sm.attrs.digitalInnsending} disabled={sm.attrs.dokarkiv.checked} />
-				<Attributt attr={sm.attrs.histark} />
+				<Attributt
+					attr={sm.attrs.dokarkiv}
+					disabled={sm.attrs.digitalInnsending.checked || sm.attrs.histark.checked}
+				/>
+				<Attributt
+					attr={sm.attrs.digitalInnsending}
+					disabled={sm.attrs.dokarkiv.checked || sm.attrs.histark.checked}
+				/>
+				<Attributt
+					attr={sm.attrs.histark}
+					disabled={sm.attrs.dokarkiv.checked || sm.attrs.digitalInnsending.checked}
+				/>
 			</AttributtKategori>
 		</Panel>
 	)

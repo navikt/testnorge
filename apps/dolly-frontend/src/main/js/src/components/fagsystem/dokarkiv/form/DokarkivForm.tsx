@@ -92,7 +92,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		// @ts-ignore
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
-				heading="Dokumenter (joark)"
+				heading="Dokumenter (Joark)"
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore

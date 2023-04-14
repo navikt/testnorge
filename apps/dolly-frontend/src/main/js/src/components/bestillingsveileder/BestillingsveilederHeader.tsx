@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { Header } from '@/components/ui/header/Header'
-import Formatter from '@/utils/DataFormatter'
+import { arrayToString } from '@/utils/DataFormatter'
 import { BestillingsveilederContext } from './Bestillingsveileder'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 
@@ -36,7 +36,7 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.opprettFraIdenter && (
 					<Header.TitleValue
 						title="Opprett fra eksisterende personer"
-						value={Formatter.arrayToString(opts.opprettFraIdenter)}
+						value={arrayToString(opts.opprettFraIdenter)}
 					/>
 				)}
 				{opts.is.nyBestillingFraMal && (

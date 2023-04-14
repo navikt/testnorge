@@ -792,7 +792,7 @@ export const backendBestillingerMock = [
 			},
 			{
 				id: 'DOKARKIV',
-				navn: 'Dokumentarkiv (JOARK)',
+				navn: 'Dokumentarkiv (Joark)',
 				statuser: [
 					{
 						melding: 'OK',

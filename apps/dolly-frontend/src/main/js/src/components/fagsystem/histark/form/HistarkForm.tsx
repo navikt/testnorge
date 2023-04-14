@@ -18,6 +18,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { FormikDateTimepicker } from '@/components/ui/form/inputs/timepicker/Timepicker'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Yearpicker } from '@/components/ui/form/inputs/yearpicker/Yearpicker'
+import { testDatoFom } from '@/components/fagsystem/utils'
 
 interface HistarkFormProps {
 	formikBag: FormikProps<object>
@@ -45,17 +46,22 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 	const [files, setFiles] = useState(sessionDokumenter || [])
 	const [startAar, setStartAar] = useState(new Date())
 	const [sluttAar, setSluttAar] = useState(new Date())
-	const [selectedNavEnhet, setSelectedNavEnhet] = useState({} as Option)
-	const [skjemaValues, setSkjemaValues] = useState(_.get(formikBag.values, 'histark.skjema'))
+	const [selectedNavEnhet, setSelectedNavEnhet] = useState(
+		_.get(formikBag.values, 'histark.dokumenter.0.enhetsnummer')
+	)
 
 	const { navEnheter = [] } = useNavEnheter()
 
 	useEffect(() => {
 		handleVedleggChange(files)
-	}, [files, skjemaValues])
+	}, [files])
 	const handleVedleggChange = (filer: [Vedlegg]) => {
 		setFiles(filer)
 		formikBag.setFieldValue('histark.vedlegg', filer)
+		formikBag.setFieldValue('histark.dokumenter.0.tittel', null)
+		formikBag.setFieldValue('histark.dokumenter.0.antallSider', null)
+		formikBag.setFieldValue('histark.dokumenter.0.fysiskDokument', null)
+
 		filer.forEach((fil: Vedlegg, index: number) => {
 			formikBag.setFieldValue(`histark.dokumenter.${index}.tittel`, fil.dokNavn || fil.name)
 			formikBag.setFieldValue(`histark.dokumenter.${index}.antallSider`, 1)
@@ -67,7 +73,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 		// @ts-ignore
 		<Vis attributt={histarkAttributt}>
 			<Panel
-				heading="Dokumenter (histark)"
+				heading="Dokumenter (Histark)"
 				hasErrors={panelError(formikBag, histarkAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
@@ -84,21 +90,23 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 						{(path: string) => (
 							<div className="flexbox--column">
 								<div className="flexbox--flex-wrap">
-									<FormikSelect
-										name={`${path}.temakoder`}
-										label="Temakoder"
-										kodeverk={Kodeverk.TEMA}
-										size="xlarge"
-										isClearable={false}
-										isMulti={true}
-									/>
+									<div className="flexbox--full-width">
+										<FormikSelect
+											name={`${path}.temakoder`}
+											label="Temakoder"
+											kodeverk={Kodeverk.TEMA}
+											size="full-width"
+											isClearable={false}
+											isMulti={true}
+										/>
+									</div>
 									<FormikSelect
 										name={'navenhet'}
-										value={selectedNavEnhet?.value}
+										value={selectedNavEnhet}
 										onChange={(selected: Option) => {
 											formikBag.setFieldValue(`${path}.enhetsnummer`, selected.value)
 											formikBag.setFieldValue(`${path}.enhetsnavn`, selected.label)
-											setSelectedNavEnhet(selected)
+											setSelectedNavEnhet(selected?.value)
 										}}
 										label={'NAV-enhet'}
 										fastfield={false}
@@ -157,6 +165,7 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 										<FileUploader
 											files={files}
 											setFiles={setFiles}
+											isMultiple={false}
 											feil={
 												_.has(formikBag.errors, `${path}.tittel`)
 													? { feilmelding: 'Fil er påkrevd' }
@@ -164,7 +173,11 @@ export const HistarkForm = ({ formikBag }: HistarkFormProps) => {
 											}
 										/>
 										{files.length > 0 && (
-											<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
+											<DokumentInfoListe
+												handleChange={handleVedleggChange}
+												filer={files}
+												isMultiple={false}
+											/>
 										)}
 									</Kategori>
 								</div>
@@ -189,9 +202,9 @@ HistarkForm.validation = {
 					enhetsnummer: requiredString,
 					skanner: requiredString,
 					skannested: requiredString,
-					skanningsTidspunkt: requiredDate.nullable().required(),
-					startAar: requiredDate.nullable().required(),
-					sluttAar: requiredDate.nullable().required(),
+					skanningsTidspunkt: requiredDate.nullable(),
+					startAar: testDatoFom(requiredDate.nullable(), 'sluttAar', 'Startår må være før sluttår'),
+					sluttAar: requiredDate.nullable(),
 				})
 			),
 		})

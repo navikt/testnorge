@@ -2,7 +2,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { Personnavn } from '@/components/fagsystem/pdlf/visning/partials/Personnavn'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
@@ -34,10 +34,7 @@ export const Visning = ({ data, relasjoner }) => {
 	return (
 		<div className="person-visning_content">
 			<TitleValue title="Skifteform" value={skifteform} />
-			<TitleValue
-				title="Utstedelsesdato skifteattest"
-				value={Formatters.formatDate(attestutstedelsesdato)}
-			/>
+			<TitleValue title="Utstedelsesdato skifteattest" value={formatDate(attestutstedelsesdato)} />
 			<TitleValue
 				title="Land"
 				value={adresse?.landkode}
@@ -64,10 +61,7 @@ export const Visning = ({ data, relasjoner }) => {
 				<TitleValue title="Identifikasjonsnummer" value={personSomKontakt?.identifikasjonsnummer} />
 			)}
 			{!kontaktperson && (
-				<TitleValue
-					title="Fødselsdato"
-					value={Formatters.formatDate(personSomKontakt?.foedselsdato)}
-				/>
+				<TitleValue title="Fødselsdato" value={formatDate(personSomKontakt?.foedselsdato)} />
 			)}
 			<Personnavn
 				data={

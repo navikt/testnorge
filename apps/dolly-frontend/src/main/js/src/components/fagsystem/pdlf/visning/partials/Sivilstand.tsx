@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -48,20 +48,17 @@ const SivilstandLes = ({
 		<div className="person-visning_redigerbar" key={idx}>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					<TitleValue
-						title="Type"
-						value={Formatters.showLabel('sivilstandType', sivilstandData.type)}
-					/>
+					<TitleValue title="Type" value={showLabel('sivilstandType', sivilstandData.type)} />
 					<TitleValue
 						title="Gyldig fra og med"
 						value={
-							Formatters.formatDate(sivilstandData.sivilstandsdato) ||
-							Formatters.formatDate(sivilstandData.gyldigFraOgMed)
+							formatDate(sivilstandData.sivilstandsdato) ||
+							formatDate(sivilstandData.gyldigFraOgMed)
 						}
 					/>
 					<TitleValue
 						title="Bekreftelsesdato"
-						value={Formatters.formatDate(sivilstandData.bekreftelsesdato)}
+						value={formatDate(sivilstandData.bekreftelsesdato)}
 					/>
 					{!relasjoner && !relasjonRedigert && (
 						<TitleValue title="Relatert person" value={sivilstandData.relatertVedSivilstand} />

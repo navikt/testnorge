@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString } from '@/utils/DataFormatter'
 
 import { useDispatch } from 'react-redux'
 import { GjenopprettModal } from '@/components/bestilling/gjenopprett/GjenopprettModal'
@@ -35,11 +35,7 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 			<br />
 			<div className="flexbox">
 				<TitleValue title="Antall identer" value={gruppe.antallIdenter} />
-				<TitleValue
-					title="Bestilte miljø"
-					value={Formatters.arrayToString(miljoer)}
-					size="medium"
-				/>
+				<TitleValue title="Bestilte miljø" value={arrayToString(miljoer)} size="medium" />
 			</div>
 			<p>
 				Alle personene i gruppen blir gjenopprettet til de valgte miljøene. Miljøene personene
@@ -51,7 +47,7 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 	)
 
 	const submitFormik = async (values: any) => {
-		const envsQuery = Formatters.arrayToString(values.environments).replace(/ /g, '').toLowerCase()
+		const envsQuery = arrayToString(values.environments).replace(/ /g, '').toLowerCase()
 
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
 		dispatch(setUpdateNow())

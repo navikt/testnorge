@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString, formatDate } from '@/utils/DataFormatter'
 
 type HistarkDokument = {
 	dokument: {
@@ -25,13 +25,13 @@ export default ({ dokument }: HistarkDokument) => (
 		<TitleValue title="Enhetsnavn" value={dokument.enhetsNavn} />
 		<TitleValue
 			title="Temakoder"
-			value={dokument?.temaKodeSet && Formatters.arrayToString(dokument?.temaKodeSet)}
+			value={dokument?.temaKodeSet && arrayToString(dokument?.temaKodeSet)}
 		/>
 		<TitleValue title="Startår" value={dokument.startaar} />
 		<TitleValue title="Sluttår" value={dokument.sluttaar} />
 		<TitleValue
 			title="Skanningstidspunkt"
-			value={dokument?.skanningstidspunkt && Formatters.formatDate(dokument.skanningstidspunkt)}
+			value={dokument?.skanningstidspunkt && formatDate(dokument.skanningstidspunkt)}
 		/>
 		<TitleValue title="Filnavn" value={dokument.filnavn} />
 		<TitleValue title="Skanner" value={dokument.skanner} />
