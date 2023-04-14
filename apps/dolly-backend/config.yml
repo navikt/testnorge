@@ -96,7 +96,7 @@ spec:
     max: 1
   port: 8080
   ingresses:
-    - https://dolly-backend.dev.intern.nav.no
+    - https://dolly-backend.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 20

@@ -57,5 +57,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-norg2-proxy.dev.intern.nav.no"
     - "https://testnav-norg2-proxy.dev-fss-pub.nais.io"

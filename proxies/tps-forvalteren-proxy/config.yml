@@ -69,4 +69,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://tps-forvalteren-proxy.dev-fss-pub.nais.io"
-    - "https://tps-forvalteren-proxy.dev.intern.nav.no"
