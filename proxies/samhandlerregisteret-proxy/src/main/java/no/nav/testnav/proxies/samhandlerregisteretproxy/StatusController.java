@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://kuhr-sar-api.dev.adeo.no/naisapi/isalive",
-                "https://kuhr-sar-api.dev.adeo.no/naisapi/isready",
+                "http://kuhr-sar-api.kuhr-sar-api.svc.nais.local/naisapi/isalive",
+                "http://kuhr-sar-api.kuhr-sar-api.svc.nais.local/naisapi/isready",
                 statusWebClient);
         status.put("team", TEAM);
 
