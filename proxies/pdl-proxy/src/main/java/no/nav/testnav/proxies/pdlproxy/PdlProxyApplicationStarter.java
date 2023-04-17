@@ -78,8 +78,8 @@ public class PdlProxyApplicationStarter {
                 .route(createRoute("pdl-api", pdlApiProperties.getUrl(), addPdlApiAuthenticationHeaderFilter))
                 .route(createRoute("pdl-api-q1", pdlQ1ApiProperties.getUrl(), addPdlQ1ApiAuthenticationHeaderFilter))
                 .route(createRoute("pdl-testdata", pdlTestdataProperties.getUrl(), addPdlTestdataAuthenticationHeaderFilter))
-                .route(createRoute("pdl-identhendelse", "https://pdl-identhendelse-lager.dev.intern.nav.no", addHendelselagerApiKeyAuthenticationHeader))
-                .route(createRoute("pdl-npid", "https://pdl-aktor.dev.intern.nav.no", addAktoerAdminApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-identhendelse", "http://pdl-identhendelse-lager.pdl.svc.nais.local", addHendelselagerApiKeyAuthenticationHeader))
+                .route(createRoute("pdl-npid", "http://pdl-aktor.pdl.svc.nais.local", addAktoerAdminApiKeyAuthenticationHeader))
                 .route(createRoute("pdl-elastic", "https://pdl-es-q.adeo.no", addElasticSearchBasicAuthenticationHeader))
                 .build();
     }
