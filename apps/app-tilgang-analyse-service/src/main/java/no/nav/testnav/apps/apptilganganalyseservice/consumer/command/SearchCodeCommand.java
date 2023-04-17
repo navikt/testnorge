@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.apptilganganalyseservice.consumer.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
 import no.nav.testnav.libs.reactivecore.utils.WebClientFilter;
 import org.springframework.http.HttpHeaders;
@@ -13,7 +12,6 @@ import java.time.Duration;
 import java.util.concurrent.Callable;
 
 
-@Slf4j
 @RequiredArgsConstructor
 public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
     private final WebClient webClient;
@@ -23,7 +21,6 @@ public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
 
     @Override
     public Mono<SearchDTO> call() {
-        log.info("Utfører kodesøk med parametere: query: {}, pageSize: {}, pageNumber: {}", search, pageSize, page);
         return webClient
                 .get()
                 .uri(builder -> builder

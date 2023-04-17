@@ -1,7 +1,6 @@
 package no.nav.testnav.apps.apptilganganalyseservice.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.ToString;
 import lombok.Value;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
 
@@ -12,7 +11,6 @@ import java.util.stream.Stream;
 
 @Value
 @AllArgsConstructor
-@ToString
 public class SearchResults {
     String repo;
     String owner;
