@@ -97,7 +97,8 @@ jobs:
       - name: "Docker"
         uses: nais/docker-build-push@v0
         id: docker-build-push
-        if: ${{ github.ref == 'refs/heads/master' || ( contains(github.event.head_commit.message, inputs.deploy-tag-dev) || contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+        # TODO: Reenable, add idporten and unstable tags.
+        #if: ${{ github.ref == 'refs/heads/master' || ( contains(github.event.head_commit.message, inputs.deploy-tag-dev) || contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
