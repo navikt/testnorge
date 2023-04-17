@@ -26,5 +26,5 @@ consumers:
   kontoregister:
     name: sokos-kontoregister-person
     namespace: okonomi
-    url: http://sokos-kontoregister-person.okonomi.svc.cluster.local
+    url: https://sokos-kontoregister-person.okonomi.intern.dev.nav.no
     cluster: dev-gcp

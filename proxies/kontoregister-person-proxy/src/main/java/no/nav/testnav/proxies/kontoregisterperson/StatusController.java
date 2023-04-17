@@ -20,8 +20,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "http://sokos-kontoregister-person.okonomi.svc.cluster.local/internal/is_alive",
-                "http://sokos-kontoregister-person.okonomi.svc.cluster.local/internal/is_ready",
+                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_alive",
+                "https://sokos-kontoregister-person.dev.intern.nav.no/internal/is_ready",
                 statusWebClient);
         pensjonStatus.put("team", TEAM_OKONOMI);
 
