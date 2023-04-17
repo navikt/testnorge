@@ -2,7 +2,6 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
 import { Personnavn } from '@/components/fagsystem/pdlf/visning/partials/Personnavn'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
@@ -10,6 +9,7 @@ import * as _ from 'lodash-es'
 import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { formatDate } from '@/utils/DataFormatter'
 
 const KontaktinformasjonForDoedsboLes = ({
 	data,
@@ -55,7 +55,7 @@ const KontaktinformasjonForDoedsboLes = ({
 					<TitleValue title="Skifteform" value={skifteform} />
 					<TitleValue
 						title="Utstedelsesdato skifteattest"
-						value={Formatters.formatDate(attestutstedelsesdato)}
+						value={formatDate(attestutstedelsesdato)}
 					/>
 				</div>
 				{!kontaktperson && !kontaktpersonRedigert && (
@@ -78,10 +78,7 @@ const KontaktinformasjonForDoedsboLes = ({
 							title="Identifikasjonsnummer"
 							value={personSomKontakt?.identifikasjonsnummer}
 						/>
-						<TitleValue
-							title="Fødselsdato"
-							value={Formatters.formatDate(personSomKontakt?.foedselsdato)}
-						/>
+						<TitleValue title="Fødselsdato" value={formatDate(personSomKontakt?.foedselsdato)} />
 						<Personnavn
 							data={
 								advokatSomKontakt?.kontaktperson ||
