@@ -31,12 +31,10 @@ on:
         required: true
       NAV_TOKEN:
         required: true
+      READER_TOKEN:
+        required: true
       SONAR_TOKEN:
         required: true
-
-# CATO: Remove
-env:
-  IMAGE: ghcr.io/${{ github.repository }}/${{ inputs.app-name }}:${{ github.sha }}
 
 jobs:
 
