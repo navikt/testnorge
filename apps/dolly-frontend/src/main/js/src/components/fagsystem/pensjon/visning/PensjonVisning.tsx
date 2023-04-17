@@ -8,6 +8,7 @@ import { runningCypressE2E } from '@/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
+import useBoolean from '@/utils/hooks/useBoolean'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
@@ -20,11 +21,16 @@ const getTittel = (data) => {
 	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
 }
 
-const PensjonInntekt = ({ data }) => {
+const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 	if (!data) return null
 
 	return (
-		<Panel startOpen={runningCypressE2E()} heading={getTittel(data)}>
+		<Panel
+			startOpen={isPanelOpen || runningCypressE2E()}
+			heading={getTittel(data)}
+			// isPanelOpen={isPanelOpen}
+			setPanelOpen={setPanelOpen}
+		>
 			<DollyFieldArray data={data} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>
@@ -39,6 +45,8 @@ const PensjonInntekt = ({ data }) => {
 
 export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
+	const [isPanelOpen, setPanelOpen] = useBoolean(false)
+	console.log('isPanelOpen: ', isPanelOpen) //TODO - SLETT MEG
 
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
@@ -57,6 +65,10 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 	const filteredData =
 		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
 
+	// const isExpanded = false
+
+	// console.log('isExpanded: ', isExpanded) //TODO - SLETT MEG
+	// console.log('this: ', this) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -75,7 +87,7 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 					forsteMiljo={forsteMiljo}
 					data={filteredData || data}
 				>
-					<PensjonInntekt />
+					<PensjonInntekt isPanelOpen={isPanelOpen} setPanelOpen={setPanelOpen} />
 				</MiljoTabs>
 			)}
 		</ErrorBoundary>
