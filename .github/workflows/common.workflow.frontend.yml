@@ -3,16 +3,16 @@ on:
     inputs:
       working-directory:
         type: string
-        description: "The working directory for the job, e.g. apps/dolly-backend (without leading/trailing slash)."
+        description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
         required: true
       deploy-tag:
         type: string
-        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend."
         required: false
         default: "#deploy-prod"
       deploy-tag-dev:
         type: string
-        description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-dolly-backend-dev."
+        description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-frontend-dev."
         required: false
         default: "#deploy-dev"
       deploy-tag-idporten:
