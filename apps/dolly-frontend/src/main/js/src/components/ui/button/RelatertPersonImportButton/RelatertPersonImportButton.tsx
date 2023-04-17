@@ -9,7 +9,7 @@ import { DollyApi } from '@/service/Api'
 import './RelatertPersonImportButton.less'
 import { DollyCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { FieldArray, Formik } from 'formik'
-import Formatters from '@/utils/DataFormatter'
+import { allCapsToCapitalized } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 
@@ -90,7 +90,7 @@ export const RelatertPersonImportButton = ({
 							<DollyCheckbox
 								key={ident.id}
 								id={ident.id}
-								label={`${Formatters.allCapsToCapitalized(ident.type)} (${ident.id})`}
+								label={`${allCapsToCapitalized(ident.type)} (${ident.id})`}
 								checked={values?.includes(ident.id)}
 								onChange={onClick}
 								size={'grow'}

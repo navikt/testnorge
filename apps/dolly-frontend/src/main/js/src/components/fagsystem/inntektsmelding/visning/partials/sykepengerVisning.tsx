@@ -1,8 +1,8 @@
 import * as _ from 'lodash-es'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
-import { Sykepenger, Periode } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
+import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
+import { Periode, Sykepenger } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface SykepengerVisning {
@@ -20,7 +20,7 @@ export default ({ data }: SykepengerVisning) => {
 				<TitleValue title="Brutto utbetalt" value={data.bruttoUtbetalt} />
 				<TitleValue
 					title="Begrunnelse for reduksjon eller ikke utbetalt"
-					value={Formatters.codeToNorskLabel(data.begrunnelseForReduksjonEllerIkkeUtbetalt)}
+					value={codeToNorskLabel(data.begrunnelseForReduksjonEllerIkkeUtbetalt)}
 				/>
 				{data.arbeidsgiverperiodeListe && (
 					<ErrorBoundary>
@@ -28,8 +28,8 @@ export default ({ data }: SykepengerVisning) => {
 							{(id: Periode) => (
 								<>
 									<div className="person-visning_content">
-										<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
-										<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
+										<TitleValue title="Fra og med dato" value={formatDate(id.fom)} />
+										<TitleValue title="Til og med dato" value={formatDate(id.tom)} />
 									</div>
 								</>
 							)}

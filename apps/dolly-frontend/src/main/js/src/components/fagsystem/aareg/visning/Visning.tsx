@@ -13,7 +13,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
 import { AmeldingBestilling } from '@/components/fagsystem/aareg/visning/partials/AmeldingBestilling'
 
@@ -102,13 +102,13 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 								{arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
 										title="Ansatt fra"
-										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
+										value={formatDate(arbeidsforhold.ansettelsesperiode.periode.fom)}
 									/>
 								)}
 								{arbeidsforhold.ansettelsesperiode.periode && (
 									<TitleValue
 										title="Ansatt til"
-										value={Formatters.formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
+										value={formatDate(arbeidsforhold.ansettelsesperiode.periode.tom)}
 									/>
 								)}
 								<TitleValue

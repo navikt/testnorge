@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 
 export const ArbeidserfaringVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -17,7 +17,7 @@ export const ArbeidserfaringVisning = ({ data }) => {
 						<>
 							<TitleValue
 								title="Stilling/yrke"
-								value={Formatters.showLabel('jobbYrke', arbeidserfaring.styrkkode)}
+								value={showLabel('jobbYrke', arbeidserfaring.styrkkode)}
 							/>
 							<TitleValue title="Alternativ tittel" value={arbeidserfaring.alternativeJobTitle} />
 							<TitleValue title="Bedrift" value={arbeidserfaring.employer} />
@@ -27,18 +27,9 @@ export const ArbeidserfaringVisning = ({ data }) => {
 								value={arbeidserfaring.description}
 								size="medium"
 							/>
-							<TitleValue
-								title="Ansatt fra"
-								value={Formatters.formatDate(arbeidserfaring.fromDate)}
-							/>
-							<TitleValue
-								title="Ansatt til"
-								value={Formatters.formatDate(arbeidserfaring.toDate)}
-							/>
-							<TitleValue
-								title="Nåværende jobb"
-								value={Formatters.oversettBoolean(arbeidserfaring.ongoing)}
-							/>
+							<TitleValue title="Ansatt fra" value={formatDate(arbeidserfaring.fromDate)} />
+							<TitleValue title="Ansatt til" value={formatDate(arbeidserfaring.toDate)} />
+							<TitleValue title="Nåværende jobb" value={oversettBoolean(arbeidserfaring.ongoing)} />
 						</>
 					)}
 				</DollyFieldArray>

@@ -97,7 +97,7 @@ export const validation = {
 			),
 			kontaktinformasjonForDoedsbo: ifPresent(
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
-				kontaktDoedsbo
+				Yup.array().of(kontaktDoedsbo)
 			),
 			forelderBarnRelasjon: ifPresent('$pdldata.person.forelderBarnRelasjon', forelderBarnRelasjon),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', Yup.array().of(sivilstand)),

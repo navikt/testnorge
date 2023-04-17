@@ -1,7 +1,7 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import * as _ from 'lodash-es'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { Foreldreansvar } from '@/components/fagsystem/pdlf/PdlTypes'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
@@ -26,7 +26,7 @@ const PdlForeldreansvarVisning = ({ data, idx }: VisningProps) => {
 					<div className="person-visning_content" key={idx}>
 						<TitleValue
 							title="Fødselsdato"
-							value={Formatters.formatDate(data.ansvarligUtenIdentifikator.foedselsdato)}
+							value={formatDate(data.ansvarligUtenIdentifikator.foedselsdato)}
 						/>
 						<TitleValue title="Kjønn" value={data.ansvarligUtenIdentifikator.kjoenn} />
 						<TitleValue title="Fornavn" value={data.ansvarligUtenIdentifikator.navn?.fornavn} />

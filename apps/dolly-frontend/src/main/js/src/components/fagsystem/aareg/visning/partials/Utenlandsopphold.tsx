@@ -1,5 +1,5 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -23,16 +23,10 @@ export const Utenlandsopphold = ({ data }) => {
 								kodeverk={AdresseKodeverk.ArbeidOgInntektLand}
 							/>
 							{id.periode && (
-								<TitleValue
-									title="Startdato"
-									value={Formatters.formatStringDates(id.periode.fom)}
-								/>
+								<TitleValue title="Startdato" value={formatStringDates(id.periode.fom)} />
 							)}
 							{id.periode && (
-								<TitleValue
-									title="Sluttdato"
-									value={Formatters.formatStringDates(id.periode.tom)}
-								/>
+								<TitleValue title="Sluttdato" value={formatStringDates(id.periode.tom)} />
 							)}
 						</div>
 					)}

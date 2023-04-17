@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 
 export const KursVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -17,15 +17,12 @@ export const KursVisning = ({ data }) => {
 						<>
 							<TitleValue title="Kursnavn" value={kurs.title} />
 							<TitleValue title="Kursholder" value={kurs.issuer} />
-							<TitleValue title="Fullført" value={Formatters.formatDate(kurs.date)} />
-							<TitleValue
-								title="Kurslengde"
-								value={Formatters.showLabel('kursLengde', kurs.durationUnit)}
-							/>
+							<TitleValue title="Fullført" value={formatDate(kurs.date)} />
+							<TitleValue title="Kurslengde" value={showLabel('kursLengde', kurs.durationUnit)} />
 							<TitleValue
 								title={`Antall ${
 									kurs.durationUnit && kurs.durationUnit !== 'UKJENT'
-										? Formatters.showLabel('kursLengde', kurs.durationUnit)
+										? showLabel('kursLengde', kurs.durationUnit)
 										: ''
 								}`}
 								value={kurs.duration}

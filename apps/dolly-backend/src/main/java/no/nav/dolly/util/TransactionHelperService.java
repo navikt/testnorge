@@ -106,7 +106,7 @@ public class TransactionHelperService {
         });
     }
 
-    private void clearCache() {
+    public void clearCache() {
         if (nonNull(cacheManager.getCache(CACHE_BESTILLING))) {
             requireNonNull(cacheManager.getCache(CACHE_BESTILLING)).clear();
         }

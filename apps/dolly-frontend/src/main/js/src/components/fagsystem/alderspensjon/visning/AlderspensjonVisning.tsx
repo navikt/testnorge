@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
 import { erGyldig } from '@/components/transaksjonid/GyldigeBestillinger'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 const DataVisning = ({ apBestilling }) => {
@@ -11,7 +11,7 @@ const DataVisning = ({ apBestilling }) => {
 			<div className="person-visning_content">
 				<TitleValue
 					title="Iverksettelsesdato"
-					value={Formatters.formatDate(apBestilling.iverksettelsesdato)}
+					value={formatDate(apBestilling.iverksettelsesdato)}
 				/>
 				<TitleValue title="Uttaksgrad" value={`${apBestilling.uttaksgrad}%`} />
 				<TitleValue

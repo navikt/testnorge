@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 
 type AdresseData = {
 	adresse: {
@@ -33,17 +33,11 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 					title="Bostedskommune"
 					value={adresse.ukjentBosted.bostedskommune || 'Ikke oppgitt'}
 				/>
-				<TitleValue title="Angitt flyttedato" value={Formatters.formatDate(angittFlyttedato)} />
-				<TitleValue title="Gyldig fra og med" value={Formatters.formatDate(gyldigFraOgMed)} />
-				<TitleValue title="Gyldig til og med" value={Formatters.formatDate(gyldigTilOgMed)} />
-				<TitleValue
-					title="Startdato for kontrakt"
-					value={Formatters.formatDate(startdatoForKontrakt)}
-				/>
-				<TitleValue
-					title="Sluttdato for kontrakt"
-					value={Formatters.formatDate(sluttdatoForKontrakt)}
-				/>
+				<TitleValue title="Angitt flyttedato" value={formatDate(angittFlyttedato)} />
+				<TitleValue title="Gyldig fra og med" value={formatDate(gyldigFraOgMed)} />
+				<TitleValue title="Gyldig til og med" value={formatDate(gyldigTilOgMed)} />
+				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
+				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
 			</div>
 		</>
