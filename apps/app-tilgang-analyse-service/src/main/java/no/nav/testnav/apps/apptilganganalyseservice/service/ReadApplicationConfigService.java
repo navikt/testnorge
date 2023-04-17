@@ -24,7 +24,7 @@ public class ReadApplicationConfigService extends ReadConfigService {
                 .builder()
                 .addLanguage("yml")
                 .addLanguage("yaml")
-                .addSearchString("kind: \"Application\"")
+//                .addSearchString("kind: \"Application\"")
                 .addSearchString("application: " + appName)
                 .repo(repo)
                 .owner(owner)
