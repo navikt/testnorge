@@ -144,19 +144,19 @@ jobs:
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.dev.idporten.yml
           VAR: image=${{steps.docker-build-push.outputs.image}}
-#      - name: "Deploy (development)"
-#        uses: nais/deploy/actions/deploy@v1
-#        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev) }}
-#        env:
-#          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-#          CLUSTER: dev-gcp
-#          RESOURCE: ${{ inputs.working-directory }}/config.dev.yml
-#          VAR: image=${{steps.docker-build-push.outputs.image}}
-#      - name: "Deploy"
-#        uses: nais/deploy/actions/deploy@v1
-#        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) }}
-#        env:
-#          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-#          CLUSTER: dev-gcp
-#          RESOURCE: ${{ inputs.working-directory }}/config.yml
-#          VAR: image=${{steps.docker-build-push.outputs.image}}
+      - name: "Deploy (development)"
+        uses: nais/deploy/actions/deploy@v1
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev) }}
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.working-directory }}/config.dev.yml
+          VAR: image=${{steps.docker-build-push.outputs.image}}
+      - name: "Deploy"
+        uses: nais/deploy/actions/deploy@v1
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) }}
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          VAR: image=${{steps.docker-build-push.outputs.image}}
