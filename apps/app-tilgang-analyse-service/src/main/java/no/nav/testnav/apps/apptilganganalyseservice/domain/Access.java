@@ -1,10 +1,13 @@
 package no.nav.testnav.apps.apptilganganalyseservice.domain;
 
+import io.swagger.v3.core.util.Json;
+import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.apps.apptilganganalyseservice.dto.AccessDTO;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import no.nav.testnav.apps.apptilganganalyseservice.dto.AccessDTO;
-
+@Slf4j
 public class Access {
     private final String name;
     private final List<Application> accessTo;
@@ -24,19 +27,20 @@ public class Access {
                 .collect(Collectors.toList());
     }
 
-    private DeployConfig find(ApplicationConfig config, List<DeployConfig> deploys) {
-        return deploys
-                .stream()
-                .filter(value -> value.isDeploying(config))
-                .findFirst()
-                .orElse(null);
-    }
-
     public AccessDTO toDTO() {
         return new AccessDTO(
                 name,
                 accessTo.stream().map(Application::toDTO).collect(Collectors.toList()),
                 accessFrom.stream().map(Application::toDTO).collect(Collectors.toList())
         );
+    }
+
+    private DeployConfig find(ApplicationConfig config, List<DeployConfig> deploys) {
+        log.info("Deploys: \n{}", Json.pretty(deploys));
+        return deploys
+                .stream()
+                .filter(value -> value.isDeploying(config))
+                .findFirst()
+                .orElse(null);
     }
 }

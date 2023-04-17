@@ -23,6 +23,7 @@ public class SearchCodeCommand implements Callable<Mono<SearchDTO>> {
 
     @Override
     public Mono<SearchDTO> call() {
+        log.info("Utfører kodesøk med parametere: query: {}, pageSize: {}, pageNumber: {}", search, pageSize, page);
         return webClient
                 .get()
                 .uri(builder -> builder
