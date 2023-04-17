@@ -136,7 +136,7 @@ jobs:
         with:
           node-version: 18.x
           registry-url: https://npm.pkg.github.com/
-          scope: @navikt
+          scope: "@navikt"
       - name: "Run"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
