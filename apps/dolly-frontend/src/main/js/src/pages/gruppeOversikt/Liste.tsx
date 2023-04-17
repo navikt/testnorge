@@ -5,7 +5,7 @@ import FavoriteButtonConnector from '@/components/ui/button/FavoriteButton/Favor
 import { GruppeIconItem } from '@/components/ui/icon/IconItem'
 import Icon from '@/components/ui/icon/Icon'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString } from '@/utils/DataFormatter'
 import { useNavigate } from 'react-router-dom'
 import { VisningType } from '@/pages/gruppeOversikt/GruppeOversikt'
 
@@ -93,7 +93,7 @@ export default function Liste({
 			width: '25',
 			dataField: 'tags',
 			formatter: (_cell, row) =>
-				Formatters.arrayToString(row.tags?.length > 1 ? [...row.tags].sort() : row.tags),
+				arrayToString(row.tags?.length > 1 ? [...row.tags].sort() : row.tags),
 		},
 	]
 	return (

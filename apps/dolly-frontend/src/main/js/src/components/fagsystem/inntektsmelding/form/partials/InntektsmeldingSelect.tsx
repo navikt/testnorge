@@ -1,7 +1,7 @@
 import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
-import Formatters from '@/utils/DataFormatter'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 interface InntektsmeldingSelect {
@@ -17,7 +17,7 @@ export default ({ path, label, kodeverk, size = 'medium' }: InntektsmeldingSelec
 			<LoadableComponent
 				onFetch={() =>
 					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then((response) =>
-						response.map((value: string) => ({ value, label: Formatters.codeToNorskLabel(value) }))
+						response.map((value: string) => ({ value, label: codeToNorskLabel(value) }))
 					)
 				}
 				render={(data: Array<Option>, feilmelding: Feilmelding) => (

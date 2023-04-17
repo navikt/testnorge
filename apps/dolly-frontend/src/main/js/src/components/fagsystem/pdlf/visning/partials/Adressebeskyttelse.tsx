@@ -4,7 +4,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 import { initialAdressebeskyttelse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { AdressebeskyttelseData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -38,7 +38,7 @@ const AdressebeskyttelseLes = ({ adressebeskyttelse, idx }: AdressebeskyttelseLe
 			<div className="person-visning_content" key={idx}>
 				<TitleValue
 					title="Gradering"
-					value={Formatters.showLabel('gradering', adressebeskyttelse.gradering)}
+					value={showLabel('gradering', adressebeskyttelse.gradering)}
 				/>
 			</div>
 		</>

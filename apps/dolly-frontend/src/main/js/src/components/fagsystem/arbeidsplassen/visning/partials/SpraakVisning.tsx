@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 
 export const SpraakVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -15,14 +15,14 @@ export const SpraakVisning = ({ data }) => {
 				<DollyFieldArray data={data} header="Språk" nested>
 					{(spraak) => (
 						<>
-							<TitleValue title="Språk" value={Formatters.showLabel('spraak', spraak.language)} />
+							<TitleValue title="Språk" value={showLabel('spraak', spraak.language)} />
 							<TitleValue
 								title="Muntlig"
-								value={Formatters.showLabel('spraakNivaa', spraak.oralProficiency)}
+								value={showLabel('spraakNivaa', spraak.oralProficiency)}
 							/>
 							<TitleValue
 								title="Skriftlig"
-								value={Formatters.showLabel('spraakNivaa', spraak.writtenProficiency)}
+								value={showLabel('spraakNivaa', spraak.writtenProficiency)}
 							/>
 						</>
 					)}

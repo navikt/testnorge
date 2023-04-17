@@ -15,7 +15,7 @@ import * as _ from 'lodash-es'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 
 type KontaktadresseTypes = {
 	data: Array<any>
@@ -41,14 +41,8 @@ type AdresseTypes = {
 
 const Adressedatoer = ({ kontaktadresseData }: any) => (
 	<>
-		<TitleValue
-			title="Gyldig fra og med"
-			value={Formatters.formatDate(kontaktadresseData.gyldigFraOgMed)}
-		/>
-		<TitleValue
-			title="Gyldig til og med"
-			value={Formatters.formatDate(kontaktadresseData.gyldigTilOgMed)}
-		/>
+		<TitleValue title="Gyldig fra og med" value={formatDate(kontaktadresseData.gyldigFraOgMed)} />
+		<TitleValue title="Gyldig til og med" value={formatDate(kontaktadresseData.gyldigTilOgMed)} />
 	</>
 )
 

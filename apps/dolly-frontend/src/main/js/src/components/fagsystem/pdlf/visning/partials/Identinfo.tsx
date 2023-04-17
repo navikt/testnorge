@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Formatters from '@/utils/DataFormatter'
+import { oversettBoolean } from '@/utils/DataFormatter'
 import { Ident } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 
 type Data = {
@@ -37,7 +37,7 @@ export const IdentInfo = ({ pdlResponse }: Data) => {
 								value={ident.ident}
 								visKopier
 							/>
-							<TitleValue title="Historisk" value={Formatters.oversettBoolean(ident.historisk)} />
+							<TitleValue title="Historisk" value={oversettBoolean(ident.historisk)} />
 						</div>
 					</div>
 				))}

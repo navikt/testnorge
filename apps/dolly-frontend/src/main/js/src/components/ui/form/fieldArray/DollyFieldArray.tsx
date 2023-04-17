@@ -199,7 +199,7 @@ export const FormikDollyFieldArray = ({
 	isOrganisasjon = false,
 	handleNewEntry = null,
 	handleRemoveEntry = null,
-	maxEntries = null,
+	maxEntries = null as unknown as number,
 	maxReachedDescription = null,
 	buttonText = null,
 }) => (
@@ -214,7 +214,7 @@ export const FormikDollyFieldArray = ({
 				<ErrorBoundary>
 					<DollyFieldArrayWrapper header={header} hjelpetekst={hjelpetekst} nested={nested}>
 						{values.map((curr, idx) => {
-							const showDeleteButton = canBeEmpty === true ? true : values.length >= 2
+							const showDeleteButton = canBeEmpty ? true : values.length >= 2
 							const path = `${name}.${idx}`
 							const number = tag ? `${tag}.${idx + 1}` : `${idx + 1}`
 							const handleRemove = () => {

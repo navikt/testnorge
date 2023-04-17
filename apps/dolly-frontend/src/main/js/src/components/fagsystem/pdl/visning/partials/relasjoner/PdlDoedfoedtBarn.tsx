@@ -4,7 +4,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/PdlTypes'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 
 type DataProps = {
 	data: DoedfoedtBarnProps[]
@@ -18,7 +18,7 @@ type DoedfoedtBarnProps = {
 const DoedfoedtBarnVisning = ({ doedfoedtBarn, idx }: DoedfoedtBarnProps) => {
 	return (
 		<div key={idx} className="person-visning_content">
-			<TitleValue title="Dødsdato" value={Formatters.formatDate(doedfoedtBarn.dato)} />
+			<TitleValue title="Dødsdato" value={formatDate(doedfoedtBarn.dato)} />
 		</div>
 	)
 }

@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { Personnavn } from '@/components/fagsystem/pdlf/visning/partials/Personnavn'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
@@ -33,7 +33,7 @@ export const FalskIdentitet = ({ data }) => {
 
 						<TitleValue
 							title="Fødselsdato"
-							value={Formatters.formatDate(rettIdentitetVedOpplysninger.foedselsdato)}
+							value={formatDate(rettIdentitetVedOpplysninger.foedselsdato)}
 						/>
 
 						<TitleValue title="Kjønn" value={rettIdentitetVedOpplysninger.kjoenn} />

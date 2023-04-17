@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 
 export const AnnenErfaringVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -17,12 +17,9 @@ export const AnnenErfaringVisning = ({ data }) => {
 						<>
 							<TitleValue title="Rolle" value={annenErfaring.role} />
 							<TitleValue title="Beskrivelse" value={annenErfaring.description} size="medium" />
-							<TitleValue title="Startdato" value={Formatters.formatDate(annenErfaring.fromDate)} />
-							<TitleValue title="Sluttdato" value={Formatters.formatDate(annenErfaring.toDate)} />
-							<TitleValue
-								title="Pågående"
-								value={Formatters.oversettBoolean(annenErfaring.ongoing)}
-							/>
+							<TitleValue title="Startdato" value={formatDate(annenErfaring.fromDate)} />
+							<TitleValue title="Sluttdato" value={formatDate(annenErfaring.toDate)} />
+							<TitleValue title="Pågående" value={oversettBoolean(annenErfaring.ongoing)} />
 						</>
 					)}
 				</DollyFieldArray>
