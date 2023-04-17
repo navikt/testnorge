@@ -125,6 +125,7 @@ jobs:
 #          VAR: image=${{steps.docker-build-push.outputs.image}}
 # CATO: Deploy (IDPorten)
 # CATO: Deploy (unstable)
+
   cypress:
     runs-on: ubuntu-latest
     steps:
@@ -135,7 +136,7 @@ jobs:
         with:
           node-version: 18.x
           registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
+          scope: @navikt
       - name: "Run"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
