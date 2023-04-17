@@ -19,6 +19,11 @@ on:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-frontend-idporten."
         default: "#deploy-idporten"
+      deploy-tag-unstable:
+        type: string
+        description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-frontend-unstable."
+        default: "#deploy-idporten"
+
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
         required: true
