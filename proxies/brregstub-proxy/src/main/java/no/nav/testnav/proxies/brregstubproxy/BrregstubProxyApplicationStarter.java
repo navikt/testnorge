@@ -24,7 +24,7 @@ public class BrregstubProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://brreg-stub.dev.intern.nav.no/"))
+                .route(spec -> spec.path("/**").uri("http://brreg-stub.dolly.svc.nais.local/"))
                 .build();
     }
 
