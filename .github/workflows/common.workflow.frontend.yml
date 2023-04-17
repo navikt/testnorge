@@ -129,7 +129,6 @@ jobs:
           docker_context: ${{ inputs.working-directory }}
       - name: "Deploy (unstable)"
         uses: nais/deploy/actions/deploy@v1
-        needs: cypress
         if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable) }}
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -138,7 +137,6 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
 #      - name: "Deploy (ID-porten)"
 #        uses: nais/deploy/actions/deploy@v1
-#        needs: cypress
 #        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten) }}
 #        env:
 #          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -147,7 +145,6 @@ jobs:
 #          VAR: image=${{steps.docker-build-push.outputs.image}}
 #      - name: "Deploy (development)"
 #        uses: nais/deploy/actions/deploy@v1
-#        needs: cypress
 #        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev) }}
 #        env:
 #          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -156,7 +153,6 @@ jobs:
 #          VAR: image=${{steps.docker-build-push.outputs.image}}
 #      - name: "Deploy"
 #        uses: nais/deploy/actions/deploy@v1
-#        needs: cypress
 #        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) }}
 #        env:
 #          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
