@@ -33,10 +33,10 @@ app:
     services:
       name: aareg-services-nais-{env}
       namespace: arbeidsforhold
-      url: https://aareg-services-{env}.dev.intern.nav.no
+      url: http://aareg-services-{env}.arbeidsforhold.svc.cluster.local
       cluster: dev-fss
     vedlikehold:
       name: aareg-vedlikehold-{env}
       namespace: arbeidsforhold
-      url: https://aareg-vedlikehold-{env}.dev.intern.nav.no
+      url: http://aareg-vedlikehold-{env}.arbeidsforhold.svc.cluster.local
       cluster: dev-fss
