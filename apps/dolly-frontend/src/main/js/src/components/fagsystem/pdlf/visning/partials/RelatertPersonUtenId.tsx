@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 
 import { PersonUtenIdData } from '@/components/fagsystem/pdlf/PdlTypes'
@@ -22,7 +22,7 @@ export const RelatertPersonUtenId = ({ data, tittel, rolle = null }: RelatertPer
 			<TitleValue title="Mellomnavn" value={data.navn?.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.navn?.etternavn} />
 			<TitleValue title="Kjønn" value={data.kjoenn} />
-			<TitleValue title="Fødselsdato" value={Formatters.formatDate(data.foedselsdato)} />
+			<TitleValue title="Fødselsdato" value={formatDate(data.foedselsdato)} />
 			<TitleValue
 				title="Statsborgerskap"
 				value={data.statsborgerskap}

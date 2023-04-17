@@ -163,6 +163,11 @@ consumers:
     namespace: dolly
     url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-histark-proxy:
+    name: testnav-histark-proxy
+    namespace: dolly
+    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
 
 management:
   endpoints:

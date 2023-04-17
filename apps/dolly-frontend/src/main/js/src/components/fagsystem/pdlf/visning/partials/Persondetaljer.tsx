@@ -2,7 +2,7 @@ import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import {
 	initialKjoenn,
@@ -64,10 +64,7 @@ const PersondetaljerLes = ({
 			<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
 			<TitleValue title="Etternavn" value={personNavn?.etternavn} />
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-			<TitleValue
-				title="Personstatus"
-				value={Formatters.showLabel('personstatus', personstatus?.status)}
-			/>
+			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>

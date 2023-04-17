@@ -6,7 +6,7 @@ import {
 	useInstEnvironments,
 	usePensjonEnvironments,
 } from '@/utils/hooks/useEnvironments'
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString } from '@/utils/DataFormatter'
 
 export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 	const { arenaEnvironments, loading: loadingArena, error: errorArena } = useArenaEnvironments()
@@ -40,7 +40,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 		} else if (error && (!environments || environments.length === 0)) {
 			return 'Noe gikk galt i henting av miljøer'
 		} else {
-			return Formatters.arrayToString(filterMiljoe(dollyEnvironments, environments))
+			return arrayToString(filterMiljoe(dollyEnvironments, environments))
 		}
 	}
 
@@ -63,15 +63,17 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 						</li>
 					)}
 
-					{(pensjonforvalter?.inntekt || pensjonforvalter?.tp || pensjonforvalter?.alderspensjon) && (
+					{(pensjonforvalter?.inntekt ||
+						pensjonforvalter?.tp ||
+						pensjonforvalter?.alderspensjon) && (
 						<li>
 							Pensjon ({pensjonforvalter?.inntekt && 'POPP'}
 							{pensjonforvalter?.inntekt && pensjonforvalter?.tp && ', '}
 							{pensjonforvalter?.tp && 'TP'}
-						{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) &&
-							pensjonforvalter?.alderspensjon &&
-							', '}
-						{pensjonforvalter?.alderspensjon && 'PESYS'}
+							{(pensjonforvalter?.inntekt || pensjonforvalter?.tp) &&
+								pensjonforvalter?.alderspensjon &&
+								', '}
+							{pensjonforvalter?.alderspensjon && 'PESYS'}
 							):&nbsp;
 							<span>{getMiljoer(pensjonEnvironments, loadingPensjon, errorPensjon)}</span>
 						</li>
@@ -85,7 +87,7 @@ export const MiljoeInfo = ({ bestillingsdata, dollyEnvironments }) => {
 							<span>
 								{loadingDokarkiv
 									? 'Laster tilgjengelige miljøer..'
-									: Formatters.arrayToString(dokarkivEnvironments)}
+									: arrayToString(dokarkivEnvironments)}
 							</span>
 						</li>
 					)}

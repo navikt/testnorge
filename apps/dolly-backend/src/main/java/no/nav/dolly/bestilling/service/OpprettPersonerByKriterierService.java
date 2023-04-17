@@ -24,9 +24,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Hooks;
 import reactor.core.publisher.Operators;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
@@ -75,10 +73,8 @@ public class OpprettPersonerByKriterierService extends DollyBestillingService {
         if (nonNull(bestKriterier)) {
 
             var originator = OriginatorUtility.prepOriginator(bestKriterier, mapperFacade);
-            var counter = new AtomicInteger(0);
 
             Flux.range(0, bestilling.getAntallIdenter())
-                    .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 10 == 0 ? 20 : 0))
                     .flatMap(index -> opprettPerson(originator)
                             .flatMap(pdlResponse -> opprettProgress(bestilling, PDLF, pdlResponse)
                                     .flatMap(progress -> sendOrdrePerson(progress, pdlResponse)

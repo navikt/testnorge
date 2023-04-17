@@ -20,10 +20,13 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.resources.ConnectionProvider;
 
 import java.time.Duration;
 import java.util.List;
@@ -42,13 +45,19 @@ public class PdlDataConsumer implements ConsumerStatus {
             TokenExchange tokenService,
             PdlDataForvalterProperties serviceProperties,
             ObjectMapper objectMapper,
-            WebClient.Builder webClientBuilder
-    ) {
+            WebClient.Builder webClientBuilder) {
+
         this.tokenService = tokenService;
         this.serviceProperties = serviceProperties;
         this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .exchangeStrategies(JacksonExchangeStrategyUtil.getJacksonStrategy(objectMapper))
+                .clientConnector(new ReactorClientHttpConnector(
+                        HttpClient.create(ConnectionProvider.builder("custom")
+                                .maxConnections(5)
+                                .pendingAcquireMaxCount(500)
+                                .pendingAcquireTimeout(Duration.ofMinutes(15))
+                                .build())))
                 .build();
     }
 

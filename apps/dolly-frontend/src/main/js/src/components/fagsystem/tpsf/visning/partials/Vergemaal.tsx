@@ -1,7 +1,7 @@
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, formatKjonnToString } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
@@ -48,7 +48,7 @@ export const Visning = ({ data }: Data) => {
 						kodeverk={VergemaalKodeverk.Mandattype}
 						value={data.mandatType}
 					/>
-					<TitleValue title="Vedtaksdato" value={Formatters.formatDate(data.vedtakDato)} />
+					<TitleValue title="Vedtaksdato" value={formatDate(data.vedtakDato)} />
 				</ErrorBoundary>
 			</div>
 			<h4 style={{ marginTop: '0px' }}>Verge</h4>
@@ -57,7 +57,7 @@ export const Visning = ({ data }: Data) => {
 				<TitleValue title="Fornavn" value={fornavn} />
 				<TitleValue title="Mellomnavn" value={mellomnavn} />
 				<TitleValue title="Etternavn" value={etternavn} />
-				<TitleValue title="Kjønn" value={Formatters.kjonnToString(kjonn)} />
+				<TitleValue title="Kjønn" value={formatKjonnToString(kjonn)} />
 			</div>
 		</>
 	)

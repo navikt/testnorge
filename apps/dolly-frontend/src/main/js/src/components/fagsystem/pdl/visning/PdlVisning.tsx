@@ -98,7 +98,11 @@ export const PdlVisning = ({
 				<PdlRelasjoner data={hentPerson} />
 				<FalskIdentitet data={falskIdentitet} />
 				<UtenlandsId data={utenlandskIdentifikasjonsnummer} />
-				<KontaktinformasjonForDoedsbo data={kontaktinformasjonForDoedsbo} relasjoner={null} />
+				<KontaktinformasjonForDoedsbo
+					data={kontaktinformasjonForDoedsbo}
+					relasjoner={null}
+					erPdlVisning
+				/>
 			</div>
 		</ErrorBoundary>
 	)

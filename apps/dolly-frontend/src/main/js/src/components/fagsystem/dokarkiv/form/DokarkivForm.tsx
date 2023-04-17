@@ -1,4 +1,4 @@
-import React, { BaseSyntheticEvent, useCallback, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
@@ -8,11 +8,10 @@ import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import styled from 'styled-components'
 import * as _ from 'lodash-es'
 import { Digitalinnsending } from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import { useDropzone } from 'react-dropzone'
+import { FileUploader } from '@/utils/FileUploader/FileUploader'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -36,36 +35,6 @@ export type Vedlegg = {
 	}
 }
 
-const getColor = (props: any) => {
-	if (props.isDragAccept) {
-		return '#06893a'
-	}
-	if (props.isDragReject) {
-		return '#ba3a26'
-	}
-	if (props.isFocused) {
-		return '#0067C5FF'
-	}
-	return '#eeeeee'
-}
-
-const Container = styled.div`
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-bottom: 10px;
-	padding: 20px;
-	border-width: 2px;
-	border-radius: 2px;
-	border-color: ${(props) => getColor(props)};
-	border-style: dashed;
-	background-color: #fafafa;
-	color: #bdbdbd;
-	outline: none;
-	transition: border 0.24s ease-in-out;
-`
-
 enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
@@ -87,43 +56,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		handleSkjemaChange(skjemaValues)
 		handleVedleggChange(files)
 	}, [files, skjemaValues])
-
-	const MyDropzone = () => {
-		const handleDrop = useCallback((acceptedFiles: File[]) => {
-			const reader = new FileReader()
-
-			acceptedFiles.forEach((file: File) => {
-				reader.onabort = () => console.warn('file reading was aborted')
-				reader.onerror = () => console.error('file reading has failed')
-				reader.onload = () => {
-					const binaryStr = reader.result?.slice(28)
-					setFiles([
-						// @ts-ignore
-						{
-							id: new Date().getTime(),
-							name: file.path,
-							content: { base64: binaryStr },
-						},
-						...files,
-					])
-				}
-				reader.readAsDataURL(file)
-			})
-		}, [])
-		const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
-			multiple: true,
-			onDrop: handleDrop,
-		})
-
-		return (
-			<div className="container">
-				<Container {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
-					<input {...getInputProps()} />
-					<p>Dra og slipp filer innenfor rammen eller klikk her for å åpne filvelger</p>
-				</Container>
-			</div>
-		)
-	}
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
@@ -160,7 +92,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		// @ts-ignore
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
-				heading="Dokumenter"
+				heading="Dokumenter (Joark)"
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
@@ -205,7 +137,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 					/>
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
-						<MyDropzone />
+						<FileUploader files={files} setFiles={setFiles} />
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
 						)}

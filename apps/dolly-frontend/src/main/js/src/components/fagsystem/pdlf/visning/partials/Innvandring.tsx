@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	InnvandringValues,
@@ -72,10 +72,7 @@ const InnvandringLes = ({ innvandringData, idx }: InnvandringLesTypes) => {
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 			/>
 			<TitleValue title="Fraflyttingssted" value={innvandringData.fraflyttingsstedIUtlandet} />
-			<TitleValue
-				title="Innflyttingsdato"
-				value={Formatters.formatDate(innvandringData.innflyttingsdato)}
-			/>
+			<TitleValue title="Innflyttingsdato" value={formatDate(innvandringData.innflyttingsdato)} />
 		</div>
 	)
 }

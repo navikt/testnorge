@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatAlder, formatDate, formatKjonn } from '@/utils/DataFormatter'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Adressevalg } from '@/components/fagsystem/tpsf/visning/partials/Adressevalg'
@@ -20,10 +20,7 @@ export const Partner = ({ data }) => {
 					value={forhold?.sivilstand}
 					size="medium"
 				/>
-				<TitleValue
-					title="Sivilstand fra dato"
-					value={Formatters.formatDate(forhold?.sivilstandRegdato)}
-				/>
+				<TitleValue title="Sivilstand fra dato" value={formatDate(forhold?.sivilstandRegdato)} />
 			</div>
 		)
 	}
@@ -35,9 +32,9 @@ export const Partner = ({ data }) => {
 				<TitleValue title="Fornavn" value={data.fornavn} />
 				<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 				<TitleValue title="Etternavn" value={data.etternavn} />
-				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
-				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
-				<TitleValue title="Dødsdato" value={Formatters.formatDate(data.doedsdato)} />
+				<TitleValue title="Kjønn" value={formatKjonn(data.kjonn, data.alder)} />
+				<TitleValue title="Alder" value={formatAlder(data.alder, data.doedsdato)} />
+				<TitleValue title="Dødsdato" value={formatDate(data.doedsdato)} />
 				<TitleValue
 					title="Diskresjonskode"
 					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}

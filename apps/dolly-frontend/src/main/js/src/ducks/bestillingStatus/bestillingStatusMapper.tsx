@@ -10,7 +10,7 @@
  * - Pre-mappe verdier for liste
  */
 
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString, formatDateTimeWithSeconds } from '@/utils/DataFormatter'
 import { Bestilling } from '@/utils/hooks/useBestilling'
 
 export type System = {
@@ -94,10 +94,10 @@ const extractValuesForBestillingListe = (
 	const values = {
 		id: data.id.toString(),
 		antallIdenter: data.antallIdenter ? data.antallIdenter.toString() : null,
-		sistOppdatert: Formatters.formatDateTimeWithSeconds(data.sistOppdatert),
-		environments: Formatters.arrayToString(data.environments),
+		sistOppdatert: formatDateTimeWithSeconds(data.sistOppdatert),
+		environments: arrayToString(data.environments),
 		statusKode,
-		identer: Formatters.arrayToString(identer),
+		identer: arrayToString(identer),
 	}
 
 	return Object.values(values)

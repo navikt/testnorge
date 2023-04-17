@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 
 export const KompetanserVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -17,7 +17,7 @@ export const KompetanserVisning = ({ data }) => {
 						<>
 							<TitleValue
 								title="Kompetanse/ferdighet/verktøy"
-								value={Formatters.showLabel('kompetanse', kompetanse.title)}
+								value={showLabel('kompetanse', kompetanse.title)}
 								size="medium"
 							/>
 						</>

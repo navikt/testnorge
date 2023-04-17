@@ -28,6 +28,7 @@ export const Datepicker = ({
 	excludeDates,
 	minDate,
 	maxDate,
+	...props
 }) => {
 	return (
 		<ReactDatepicker
@@ -48,6 +49,7 @@ export const Datepicker = ({
 			autoComplete="off"
 			customInput={<TextInput icon="calendar" feil={feil} />}
 			excludeDates={excludeDates}
+			{...props}
 		/>
 	)
 }
