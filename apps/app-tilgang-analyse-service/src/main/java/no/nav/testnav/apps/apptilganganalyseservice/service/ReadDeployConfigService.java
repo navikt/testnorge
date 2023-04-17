@@ -1,15 +1,16 @@
 package no.nav.testnav.apps.apptilganganalyseservice.service;
 
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.GithubConsumer;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DeployConfig;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.DocumentRepository;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Service
+@Slf4j
 public class ReadDeployConfigService extends ReadConfigService {
 
     public ReadDeployConfigService(
@@ -29,6 +30,7 @@ public class ReadDeployConfigService extends ReadConfigService {
                 .owner(owner)
                 .build();
         return githubConsumer.search(searchArgs, owner, repo)
+                .doOnSuccess(searchResults -> log.info(searchResults.toString()))
                 .flatMapMany(this::resolve)
                 .map(DeployConfig::new);
     }

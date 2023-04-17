@@ -1,18 +1,18 @@
 package no.nav.testnav.apps.apptilganganalyseservice.domain;
 
 import lombok.AllArgsConstructor;
+import lombok.ToString;
 import lombok.Value;
+import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.ItemDTO;
-import no.nav.testnav.apps.apptilganganalyseservice.consumer.dto.SearchDTO;
-
 @Value
 @AllArgsConstructor
+@ToString
 public class SearchResults {
     String repo;
     String owner;
