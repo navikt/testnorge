@@ -123,9 +123,7 @@ const testDeltBostedAdressetype = (value) => {
 export const nyPerson = Yup.object({
 	identtype: Yup.string().nullable(),
 	kjoenn: Yup.string().nullable(),
-	alder: Yup.number()
-		.transform((i, j) => (j === '' ? null : i))
-		.nullable(),
+	alder: Yup.mixed().nullable(),
 	foedtEtter: testDatoFom(Yup.mixed().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
 	foedtFoer: testDatoTom(
 		Yup.mixed().nullable(),

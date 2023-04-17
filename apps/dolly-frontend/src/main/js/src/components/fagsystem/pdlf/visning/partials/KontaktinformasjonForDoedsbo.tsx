@@ -2,16 +2,33 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate } from '@/utils/DataFormatter'
+import Formatters from '@/utils/DataFormatter'
 import { Personnavn } from '@/components/fagsystem/pdlf/visning/partials/Personnavn'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import * as _ from 'lodash-es'
+import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/initialValues'
+import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
-export const Visning = ({ data, relasjoner }) => {
+const KontaktinformasjonForDoedsboLes = ({
+	data,
+	relasjoner,
+	redigertRelatertePersoner = null,
+	idx,
+}) => {
+	if (!data) {
+		return null
+	}
+
 	const kontaktpersonIdent = data.personSomKontakt?.identifikasjonsnummer
 	const kontaktperson = relasjoner?.find(
 		(relasjon) => relasjon.relatertPerson?.ident === kontaktpersonIdent
 	)
+	const kontaktpersonRedigert = redigertRelatertePersoner?.find(
+		(item) => item.relatertPerson?.ident === kontaktpersonIdent
+	)
+
 	const {
 		skifteform,
 		attestutstedelsesdato,
@@ -32,56 +49,169 @@ export const Visning = ({ data, relasjoner }) => {
 	}
 
 	return (
-		<div className="person-visning_content">
-			<TitleValue title="Skifteform" value={skifteform} />
-			<TitleValue title="Utstedelsesdato skifteattest" value={formatDate(attestutstedelsesdato)} />
-			<TitleValue
-				title="Land"
-				value={adresse?.landkode}
-				kodeverk={AdresseKodeverk.PostadresseLand}
-			/>
-			<TitleValue title="Adresselinje 1" value={adresse?.adresselinje1} />
-			<TitleValue title="Adresselinje 2" value={adresse?.adresselinje2} />
-			<TitleValue
-				title="Postnummer og -sted"
-				value={adresse?.postnummer + ' ' + adresse?.poststedsnavn}
-			/>
-			<TitleValue title="Kontakttype" value={getKontakttype()} />
-			<TitleValue
-				title="Organisasjonsnummer"
-				value={
-					advokatSomKontakt?.organisasjonsnummer || organisasjonSomKontakt?.organisasjonsnummer
-				}
-			/>
-			<TitleValue
-				title="Organisasjonsnavn"
-				value={advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn}
-			/>
-			{!kontaktperson && (
-				<TitleValue title="Identifikasjonsnummer" value={personSomKontakt?.identifikasjonsnummer} />
+		<>
+			<div className="person-visning_redigerbar" key={idx}>
+				<div className="person-visning_content">
+					<TitleValue title="Skifteform" value={skifteform} />
+					<TitleValue
+						title="Utstedelsesdato skifteattest"
+						value={Formatters.formatDate(attestutstedelsesdato)}
+					/>
+				</div>
+				{!kontaktperson && !kontaktpersonRedigert && (
+					<div className="person-visning_content">
+						<h4 style={{ width: '100%', marginTop: '0' }}>{getKontakttype()} som kontakt</h4>
+						<TitleValue
+							title="Organisasjonsnummer"
+							value={
+								advokatSomKontakt?.organisasjonsnummer ||
+								organisasjonSomKontakt?.organisasjonsnummer
+							}
+						/>
+						<TitleValue
+							title="Organisasjonsnavn"
+							value={
+								advokatSomKontakt?.organisasjonsnavn || organisasjonSomKontakt?.organisasjonsnavn
+							}
+						/>
+						<TitleValue
+							title="Identifikasjonsnummer"
+							value={personSomKontakt?.identifikasjonsnummer}
+						/>
+						<TitleValue
+							title="Fødselsdato"
+							value={Formatters.formatDate(personSomKontakt?.foedselsdato)}
+						/>
+						<Personnavn
+							data={
+								advokatSomKontakt?.kontaktperson ||
+								advokatSomKontakt?.personnavn ||
+								organisasjonSomKontakt?.kontaktperson
+							}
+						/>
+						<Personnavn data={personSomKontakt?.navn || personSomKontakt?.personnavn} />
+					</div>
+				)}
+			</div>
+			<div className="person-visning_content">
+				<h4 style={{ width: '100%', marginTop: '0' }}>Adresse</h4>
+				<TitleValue
+					title="Land"
+					value={adresse?.landkode}
+					kodeverk={AdresseKodeverk.PostadresseLand}
+				/>
+				<TitleValue title="Adresselinje 1" value={adresse?.adresselinje1} />
+				<TitleValue title="Adresselinje 2" value={adresse?.adresselinje2} />
+				<TitleValue
+					title="Postnummer og -sted"
+					value={adresse?.postnummer + ' ' + adresse?.poststedsnavn}
+				/>
+			</div>
+			{(kontaktperson || kontaktpersonRedigert) && (
+				<RelatertPerson
+					data={kontaktpersonRedigert?.relatertPerson || kontaktperson.relatertPerson}
+					tittel="Kontaktperson"
+				/>
 			)}
-			{!kontaktperson && (
-				<TitleValue title="Fødselsdato" value={formatDate(personSomKontakt?.foedselsdato)} />
-			)}
-			<Personnavn
-				data={
-					advokatSomKontakt?.kontaktperson ||
-					advokatSomKontakt?.personnavn ||
-					organisasjonSomKontakt?.kontaktperson
-				}
-			/>
-			{!kontaktperson && (
-				<Personnavn data={personSomKontakt?.navn || personSomKontakt?.personnavn} />
-			)}
-			{kontaktperson && (
-				<RelatertPerson data={kontaktperson.relatertPerson} tittel="Kontaktperson" />
-			)}
-		</div>
+		</>
 	)
 }
 
-export const KontaktinformasjonForDoedsbo = ({ data, relasjoner }) => {
-	if (!data || data.length === 0) {
+export const KontaktinformasjonForDoedsboVisning = ({
+	kontaktinfoData,
+	idx,
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning,
+	relasjoner,
+}) => {
+	const initKontaktinfo = Object.assign(_.cloneDeep(initialKontaktinfoForDoedebo), data[idx])
+	let initialValues = { kontaktinformasjonForDoedsbo: initKontaktinfo }
+
+	const redigertKontaktinfoPdlf = _.get(
+		tmpPersoner,
+		`${ident}.person.kontaktinformasjonForDoedsbo`
+	)?.find((a) => a.id === kontaktinfoData.id)
+	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
+
+	const slettetKontaktinfoPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktinfoPdlf
+	if (slettetKontaktinfoPdlf) {
+		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+	}
+
+	const kontaktinfoValues = redigertKontaktinfoPdlf ? redigertKontaktinfoPdlf : kontaktinfoData
+	let redigertKontaktinfoValues = redigertKontaktinfoPdlf
+		? {
+				kontaktinformasjonForDoedsbo: Object.assign(
+					_.cloneDeep(initialKontaktinfoForDoedebo),
+					redigertKontaktinfoPdlf
+				),
+		  }
+		: null
+
+	const eksisterendeNyPerson = redigertRelatertePersoner
+		? getEksisterendeNyPerson(
+				redigertRelatertePersoner,
+				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
+				'KONTAKT_FOR_DOEDSBO'
+		  )
+		: getEksisterendeNyPerson(
+				relasjoner,
+				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
+				'KONTAKT_FOR_DOEDSBO'
+		  )
+
+	if (eksisterendeNyPerson && initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt) {
+		const filteredPerson = Object.fromEntries(
+			Object.entries(initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt).filter(
+				(item) => item[0] !== 'nyKontaktperson'
+			)
+		)
+		initialValues.kontaktinformasjonForDoedsbo.personSomKontakt = filteredPerson
+	}
+
+	if (
+		eksisterendeNyPerson &&
+		redigertKontaktinfoValues?.kontaktinformasjonForDoedsbo?.personSomKontakt
+	) {
+		const filteredPerson = Object.fromEntries(
+			Object.entries(
+				redigertKontaktinfoValues?.kontaktinformasjonForDoedsbo?.personSomKontakt
+			).filter((item) => item[0] !== 'nyKontaktperson')
+		)
+		redigertKontaktinfoValues.kontaktinformasjonForDoedsbo.personSomKontakt = filteredPerson
+	}
+
+	return erPdlVisning ? (
+		<KontaktinformasjonForDoedsboLes data={kontaktinfoData} relasjoner={relasjoner} idx={idx} />
+	) : (
+		<VisningRedigerbarConnector
+			dataVisning={
+				<KontaktinformasjonForDoedsboLes
+					data={kontaktinfoValues}
+					redigertRelatertePersoner={redigertRelatertePersoner}
+					relasjoner={relasjoner}
+					idx={idx}
+				/>
+			}
+			initialValues={initialValues}
+			eksisterendeNyPerson={eksisterendeNyPerson}
+			redigertAttributt={redigertKontaktinfoValues}
+			path="kontaktinformasjonForDoedsbo"
+			ident={ident}
+		/>
+	)
+}
+
+export const KontaktinformasjonForDoedsbo = ({
+	data,
+	tmpPersoner,
+	ident,
+	erPdlVisning = false,
+	relasjoner,
+}) => {
+	if (!data || data.length < 1) {
 		return null
 	}
 
@@ -92,11 +222,23 @@ export const KontaktinformasjonForDoedsbo = ({ data, relasjoner }) => {
 	return (
 		<div>
 			<SubOverskrift label="Kontaktinformasjon for dødsbo" iconKind="doedsbo" />
-			<ErrorBoundary>
-				<DollyFieldArray data={data} nested>
-					{(item, idx) => <Visning key={idx} data={item} relasjoner={kontaktpersonRelasjoner} />}
-				</DollyFieldArray>
-			</ErrorBoundary>
+			<div className="person-visning_content">
+				<ErrorBoundary>
+					<DollyFieldArray data={data} nested>
+						{(kontaktinfo, idx) => (
+							<KontaktinformasjonForDoedsboVisning
+								kontaktinfoData={kontaktinfo}
+								idx={idx}
+								data={data}
+								tmpPersoner={tmpPersoner}
+								ident={ident}
+								erPdlVisning={erPdlVisning}
+								relasjoner={kontaktpersonRelasjoner}
+							/>
+						)}
+					</DollyFieldArray>
+				</ErrorBoundary>
+			</div>
 		</div>
 	)
 }
