@@ -14,7 +14,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/statisk-data-forvalter-proxy"
-      deploy-tag: "#deploy-statisk-data-forvalter-proxy"
+      deploy-tag-prod: "#deploy-statisk-data-forvalter-proxy-prod"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

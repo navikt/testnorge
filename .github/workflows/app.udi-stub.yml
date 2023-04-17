@@ -12,7 +12,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/udi-stub"
-      deploy-tag: "#deploy-udi-stub"
+      deploy-tag-prod: "#deploy-udi-stub-prod"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

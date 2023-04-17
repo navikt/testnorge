@@ -12,7 +12,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/dolly-frontend-redirect"
-      deploy-tag: "#deploy-dolly-frontend-redirect"
+      deploy-tag-prod: "#deploy-dolly-frontend-redirect-prod"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

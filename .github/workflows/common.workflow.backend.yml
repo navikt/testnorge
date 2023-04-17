@@ -10,16 +10,16 @@ on:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-backend (without leading/trailing slash)."
         required: true
-      deploy-tag:
+      deploy-tag-prod:
         type: string
         description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend."
         required: false
-        default: "#deploy-prod"
+        default: "#deploy-all-prod"
       deploy-tag-dev:
         type: string
         description: "The commit message tag that will trigger a deployment to the development environment on a commit to a non-master branch, e.g. #deploy-dolly-backend-dev."
         required: false
-        default: "#deploy-dev"
+        default: "#deploy-all-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
         required: true

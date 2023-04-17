@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/bruker-service"
-      deploy-tag: "#deploy-bruker-service"
+      deploy-tag-prod: "#deploy-bruker-service-prod"
       deploy-tag-dev: "#deploy-bruker-service-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

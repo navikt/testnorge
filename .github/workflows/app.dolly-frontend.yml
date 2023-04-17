@@ -1,4 +1,4 @@
-name: App dolly-frontend
+name: dolly-frontend
 
 on:
   push:
@@ -12,7 +12,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
       working-directory: "apps/dolly-frontend"
-      deploy-tag: "#deploy-frontend"
+      deploy-tag-prod: "#deploy-frontend-prod"
       deploy-tag-dev: "#deploy-frontend-dev"
       deploy-tag-idporten: "#deploy-frontend-idporten"
       deploy-tag-unstable: "#deploy-frontend-unstable"

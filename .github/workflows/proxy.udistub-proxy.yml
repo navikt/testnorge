@@ -14,7 +14,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/udistub-proxy"
-      deploy-tag: "#deploy-udistub-proxy"
+      deploy-tag-prod: "#deploy-udistub-proxy-prod"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

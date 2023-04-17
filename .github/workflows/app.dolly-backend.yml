@@ -12,7 +12,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/dolly-backend"
-      deploy-tag: "#deploy-dolly-backend"
+      deploy-tag-prod: "#deploy-dolly-backend-prod"
       deploy-tag-dev: "#deploy-dolly-backend-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

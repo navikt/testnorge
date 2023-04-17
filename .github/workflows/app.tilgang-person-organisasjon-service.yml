@@ -11,7 +11,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/person-organisasjon-tilgang-service"
-      deploy-tag: "#deploy-person-organisasjon-tilgang-service"
+      deploy-tag-prod: "#deploy-person-organisasjon-tilgang-service-prod"
       deploy-tag-dev: "#deploy-person-organisasjon-tilgang-service-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

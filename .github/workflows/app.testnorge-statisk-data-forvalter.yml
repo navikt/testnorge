@@ -12,7 +12,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/testnorge-statisk-data-forvalter"
-      deploy-tag: "#deploy-testnorge-statisk-data-forvalter"
+      deploy-tag-prod: "#deploy-testnorge-statisk-data-forvalter-prod"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

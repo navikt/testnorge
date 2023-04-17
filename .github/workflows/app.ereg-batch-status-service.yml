@@ -12,7 +12,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/ereg-batch-status-service"
-      deploy-tag: "#deploy-ereg-batch-status-service"
+      deploy-tag-prod: "#deploy-ereg-batch-status-service-prod"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
