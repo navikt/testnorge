@@ -26,7 +26,7 @@ public class KodeverkProxyApplicationStarter {
         return builder.routes()
                 .route(spec -> spec
                         .path("/**")
-                        .uri("http://kodeverk.kodeverk.svc.nais.local/")
+                        .uri("http://kodeverk.org.svc.nais.local/")
                 )
                 .build();
     }
