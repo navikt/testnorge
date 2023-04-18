@@ -9,4 +9,5 @@ public class OrganisasjonServiceApplicationStarter {
     public static void main(String[] args) {
         SpringApplication.run(OrganisasjonServiceApplicationStarter.class, args);
     }
+
 }
