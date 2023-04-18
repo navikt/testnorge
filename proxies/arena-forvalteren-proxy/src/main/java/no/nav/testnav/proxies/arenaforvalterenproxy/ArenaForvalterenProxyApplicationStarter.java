@@ -27,5 +27,4 @@ public class ArenaForvalterenProxyApplicationStarter {
                 .route(spec -> spec.path("/**").uri("http://arena-forvalteren.teamarenanais.svc.nais.local/"))
                 .build();
     }
-
 }
