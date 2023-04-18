@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import * as _ from 'lodash-es'
 
@@ -56,7 +56,7 @@ export const PdlPersonInfo = ({
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 					<TitleValue
 						title="Personstatus"
-						value={Formatters.showLabel('personstatus', personstatus?.status)}
+						value={showLabel('personstatus', personstatus?.status)}
 					/>
 					<TpsMPersonInfo data={tpsMessagingData} loading={tpsMessagingLoading} />
 				</div>

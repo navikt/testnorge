@@ -1,4 +1,4 @@
-POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.dev.nav.no/login
+POST_LOGOUT_REDIRECT_URI: https://dolly-idporten.ekstern.dev.nav.no/login
 IDPORTEN_ISSUER_PROD: https://oidc.difi.no/idporten-oidc-provider/
 REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 

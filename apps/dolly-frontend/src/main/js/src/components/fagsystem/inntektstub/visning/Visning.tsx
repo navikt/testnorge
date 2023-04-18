@@ -7,7 +7,7 @@ import { FradragVisning } from './partials/FradragVisning'
 import { ForskuddstrekkVisning } from './partials/ForskuddstrekkVisning'
 import { ArbeidsforholdVisning } from './partials/ArbeidsforholdVisning'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Formatters from '@/utils/DataFormatter'
+import { formatDateTime } from '@/utils/DataFormatter'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
 import React from 'react'
@@ -54,7 +54,7 @@ const InntektsinformasjonVisning = ({ sortedData, numInntekter }: InfoProps) => 
 						<TitleValue title="År/måned" value={inntektsinformasjon.aarMaaned} />
 						<TitleValue
 							title="Rapporteringstidspunkt"
-							value={Formatters.formatDateTime(inntektsinformasjon.rapporteringsdato)}
+							value={formatDateTime(inntektsinformasjon.rapporteringsdato)}
 						/>
 						<TitleValue title="Virksomhet (orgnr/id)" value={inntektsinformasjon.virksomhet} />
 						<TitleValue

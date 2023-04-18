@@ -7,7 +7,7 @@ import { EksporterExcel } from '@/pages/gruppe/EksporterExcel/EksporterExcel'
 import { SlettButton } from '@/components/ui/button/SlettButton/SlettButton'
 import { LaasButton } from '@/components/ui/button/LaasButton/LaasButton'
 import { Header } from '@/components/ui/header/Header'
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString, formatStringDates } from '@/utils/DataFormatter'
 
 import './GruppeHeader.less'
 import { TagsButton } from '@/components/ui/button/Tags/TagsButton'
@@ -80,15 +80,12 @@ const GruppeHeader = ({
 							value={gruppe.opprettetAv?.brukernavn || gruppe.opprettetAv?.navIdent}
 						/>
 						<Header.TitleValue title="Antall personer" value={antallPersoner} />
-						<Header.TitleValue
-							title="Sist endret"
-							value={Formatters.formatStringDates(gruppe.datoEndret)}
-						/>
+						<Header.TitleValue title="Sist endret" value={formatStringDates(gruppe.datoEndret)} />
 						<Header.TitleValue title="Hensikt" value={gruppe.hensikt} />
 						{gruppe.tags && (
 							<Header.TitleValue
 								title="Tags"
-								value={Formatters.arrayToString(
+								value={arrayToString(
 									gruppe.tags?.length > 1 ? [...gruppe.tags].sort() : gruppe.tags
 								)}
 							/>

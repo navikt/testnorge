@@ -1,4 +1,4 @@
-import Formatters from '@/utils/DataFormatter'
+import { adressetypeToString, formatDate } from '@/utils/DataFormatter'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
@@ -44,7 +44,7 @@ export const Adressevisning = ({ boadresse }) => {
 	return (
 		<>
 			<TitleValue
-				title={adressetype ? Formatters.adressetypeToString(adressetype) : 'Boadresse'}
+				title={adressetype ? adressetypeToString(adressetype) : 'Boadresse'}
 				size="medium"
 			>
 				{(!adressetype || adressetype === 'GATE') && gate}
@@ -56,7 +56,7 @@ export const Adressevisning = ({ boadresse }) => {
 				)}
 			</TitleValue>
 			<TitleValue title="Bruksenhetsnummer" value={bolignr} />
-			<TitleValue title="Flyttedato" value={Formatters.formatDate(flyttedato)} />
+			<TitleValue title="Flyttedato" value={formatDate(flyttedato)} />
 			<TitleValue title="Tilleggsadresse" value={tilleggsadresse} />
 		</>
 	)

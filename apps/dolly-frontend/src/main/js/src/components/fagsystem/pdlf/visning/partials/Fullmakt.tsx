@@ -1,6 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showKodeverkLabel } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { FullmaktKodeverk } from '@/config/kodeverk'
@@ -49,7 +49,7 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 	)
 
 	const omraader = fullmaktData.omraader
-		?.map((omraade) => Formatters.showKodeverkLabel(FullmaktKodeverk.Tema, omraade))
+		?.map((omraade) => showKodeverkLabel(FullmaktKodeverk.Tema, omraade))
 		?.join(', ')
 
 	return (
@@ -57,14 +57,8 @@ const FullmaktLes = ({ fullmaktData, relasjoner, redigertRelatertePersoner = nul
 			<div className="person-visning_redigerbar" key={idx}>
 				<Omraader title="Områder" value={omraader} size={'full-width'} />
 				<div className="person-visning_content">
-					<TitleValue
-						title="Gyldig fra og med"
-						value={Formatters.formatDate(fullmaktData.gyldigFraOgMed)}
-					/>
-					<TitleValue
-						title="Gyldig til og med"
-						value={Formatters.formatDate(fullmaktData.gyldigTilOgMed)}
-					/>
+					<TitleValue title="Gyldig fra og med" value={formatDate(fullmaktData.gyldigFraOgMed)} />
+					<TitleValue title="Gyldig til og med" value={formatDate(fullmaktData.gyldigTilOgMed)} />
 					{!fullmektig && !fullmektigRedigert && (
 						<TitleValue
 							title="Fullmektig"

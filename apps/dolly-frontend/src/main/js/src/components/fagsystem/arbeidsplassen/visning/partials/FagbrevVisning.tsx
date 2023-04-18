@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 
 export const FagbrevVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -17,7 +17,7 @@ export const FagbrevVisning = ({ data }) => {
 						<>
 							<TitleValue
 								title="Fagdokumentasjon"
-								value={Formatters.showLabel('fagbrev', fagbrev.title)}
+								value={showLabel('fagbrev', fagbrev.title)}
 								size="medium"
 							/>
 						</>

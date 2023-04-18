@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { VergemaalKodeverk } from '@/config/kodeverk'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 import { VergemaalData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
@@ -25,21 +25,18 @@ export const Visning = ({ data }: VisningData) => {
 						kodeverk={VergemaalKodeverk.Fylkesmannsembeter}
 						value={data.embete}
 					/>
-					<TitleValue
-						title="Sakstype"
-						value={Formatters.showLabel('pdlVergemaalType', data.type)}
-					/>
+					<TitleValue title="Sakstype" value={showLabel('pdlVergemaalType', data.type)} />
 					<TitleValue
 						title="Mandattype"
-						value={Formatters.showLabel('pdlVergemaalOmfang', data.vergeEllerFullmektig?.omfang)}
+						value={showLabel('pdlVergemaalOmfang', data.vergeEllerFullmektig?.omfang)}
 					/>
 					<TitleValue
 						title="Gyldig f.o.m."
-						value={Formatters.formatDate(data.folkeregistermetadata?.gyldighetstidspunkt)}
+						value={formatDate(data.folkeregistermetadata?.gyldighetstidspunkt)}
 					/>
 					<TitleValue
 						title="Gyldig t.o.m."
-						value={Formatters.formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
+						value={formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
 					/>
 					<Verge data={data.vergeEllerFullmektig} type={data.type} />
 				</div>

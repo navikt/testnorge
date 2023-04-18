@@ -13,7 +13,7 @@ spec:
       allowAllUsers: true
       enabled: true
       tenant: nav.no
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   accessPolicy:
     inbound:
@@ -58,5 +58,6 @@ spec:
       memory: 2048Mi
   envFrom:
     - secret: google-sql-testnav-app-tilgang-analyse-service
+    - secret: dolly-reader-token
   ingresses:
     - "https://testnav-app-tilgang-analyse-service.dev.intern.nav.no"

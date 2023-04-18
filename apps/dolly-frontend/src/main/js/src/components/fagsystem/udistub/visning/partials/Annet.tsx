@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { oversettBoolean, showLabel } from '@/utils/DataFormatter'
 
 export const Annet = ({ data }) => {
 	const { flyktning, soeknadOmBeskyttelseUnderBehandling } = data
@@ -11,10 +11,10 @@ export const Annet = ({ data }) => {
 		<div>
 			<h4>Annet</h4>
 			<div className="person-visning_content">
-				<TitleValue title="Har flyktningstatus" value={Formatters.oversettBoolean(flyktning)} />
+				<TitleValue title="Har flyktningstatus" value={oversettBoolean(flyktning)} />
 				<TitleValue
 					title="Er asylsøker"
-					value={Formatters.showLabel('jaNeiUavklart', soeknadOmBeskyttelseUnderBehandling)}
+					value={showLabel('jaNeiUavklart', soeknadOmBeskyttelseUnderBehandling)}
 				/>
 			</div>
 		</div>

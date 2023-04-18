@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { Statsborgerskap } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
 
@@ -22,14 +22,8 @@ const StatsborgerskapVisning = ({ data, idx }: StatsborgerskapProps) => {
 					kodeverk={AdresseKodeverk.StatsborgerskapLand}
 					value={data.land}
 				/>
-				<TitleValue
-					title="Statsborgerskap registrert"
-					value={Formatters.formatDate(data.gyldigFraOgMed)}
-				/>
-				<TitleValue
-					title="Statsborgerskap til"
-					value={Formatters.formatDate(data.gyldigTilOgMed)}
-				/>
+				<TitleValue title="Statsborgerskap registrert" value={formatDate(data.gyldigFraOgMed)} />
+				<TitleValue title="Statsborgerskap til" value={formatDate(data.gyldigTilOgMed)} />
 			</div>
 		)
 	}

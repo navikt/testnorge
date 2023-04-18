@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { allCapsToCapitalized, formatDate, showLabel } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
@@ -34,10 +34,7 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
 				<TitleValue title="Etternavn" value={data.navn?.[0].etternavn} />
 				<TitleValue title="Kjønn" value={data.kjoenn?.[0].kjoenn} />
-				<TitleValue
-					title="Fødselsdato"
-					value={Formatters.formatDate(data.foedsel?.[0].foedselsdato)}
-				/>
+				<TitleValue title="Fødselsdato" value={formatDate(data.foedsel?.[0].foedselsdato)} />
 				<TitleValue
 					title="Statsborgerskap"
 					value={data.statsborgerskap?.[0].landkode}
@@ -45,12 +42,12 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 				/>
 				<TitleValue
 					title="Gradering"
-					value={Formatters.showLabel('gradering', data.adressebeskyttelse?.[0].gradering)}
+					value={showLabel('gradering', data.adressebeskyttelse?.[0].gradering)}
 				/>
 				{data.foreldreansvar?.[0].ansvarlig && (
 					<TitleValue
 						title="Foreldreansvar"
-						value={`${Formatters.allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
+						value={`${allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
 							data.foreldreansvar?.[0].ansvarlig
 						}`}
 					/>

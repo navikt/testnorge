@@ -26,6 +26,7 @@ import static no.nav.dolly.mapper.BestillingAaregStatusMapper.buildAaregStatusMa
 import static no.nav.dolly.mapper.BestillingArenaforvalterStatusMapper.buildArenaStatusMap;
 import static no.nav.dolly.mapper.BestillingBrregStubStatusMapper.buildBrregStubStatusMap;
 import static no.nav.dolly.mapper.BestillingDokarkivStatusMapper.buildDokarkivStatusMap;
+import static no.nav.dolly.mapper.BestillingHistarkStatusMapper.buildHistarkStatusMap;
 import static no.nav.dolly.mapper.BestillingImportFraPdlStatusMapper.buildImportFraPdlStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektsmeldingStatusMapper.buildInntektsmeldingStatusMap;
 import static no.nav.dolly.mapper.BestillingInntektstubStatusMapper.buildInntektstubStatusMap;
@@ -51,10 +52,6 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
 
     private final JsonBestillingMapper jsonBestillingMapper;
     private final ObjectMapper objectMapper;
-
-    private static List<String> mapIdents(String idents) {
-        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
-    }
 
     @Override
     public void register(MapperFactory factory) {
@@ -91,6 +88,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                         bestillingStatus.getStatus().addAll(buildInntektsmeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildBrregStubStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildDokarkivStatusMap(progresser));
+                        bestillingStatus.getStatus().addAll(buildHistarkStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildImportFraPdlStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSykemeldingStatusMap(progresser));
                         bestillingStatus.getStatus().addAll(buildSkjermingsRegisterStatusMap(progresser));
@@ -110,6 +108,7 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                                 .inntektsmelding(bestillingRequest.getInntektsmelding())
                                 .brregstub(bestillingRequest.getBrregstub())
                                 .dokarkiv(bestillingRequest.getDokarkiv())
+                                .histark(bestillingRequest.getHistark())
                                 .sykemelding(bestillingRequest.getSykemelding())
                                 .skjerming(bestillingRequest.getSkjerming())
                                 .tpsMessaging(bestillingRequest.getTpsMessaging())
@@ -136,5 +135,9 @@ public class BestillingStatusMappingStrategy implements MappingStrategy {
                 })
                 .byDefault()
                 .register();
+    }
+
+    private static List<String> mapIdents(String idents) {
+        return isNotBlank(idents) ? Arrays.asList(idents.split(",")) : Collections.emptyList();
     }
 }

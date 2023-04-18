@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
 import no.nav.dolly.domain.resultset.entity.bruker.RsBrukerUtenFavoritter;
+import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -87,6 +88,7 @@ public class RsMalBestillingWrapper {
         private PensjonData pensjonforvalter;
         private RsBregdata brregstub;
         private RsDokarkiv dokarkiv;
+        private RsHistark histark;
         private RsSykemelding sykemelding;
         private RsTpsMessaging tpsMessaging;
         private RsSkjerming skjerming;

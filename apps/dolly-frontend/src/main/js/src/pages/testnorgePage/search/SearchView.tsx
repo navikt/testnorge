@@ -7,7 +7,7 @@ import { VelgPerson } from '@/pages/testnorgePage/search/VelgPerson'
 import Loading from '@/components/ui/loading/Loading'
 import { PdlData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { getAlder, getKjoenn } from '@/ducks/fagsystem'
-import Formatters from '@/utils/DataFormatter'
+import { formatAlder } from '@/utils/DataFormatter'
 import { getPdlIdent } from '@/pages/testnorgePage/utils'
 import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 import { CopyButton } from '@/components/ui/button/CopyButton/CopyButton'
@@ -119,7 +119,7 @@ export default ({
 					row.hentPerson?.foedsel[0]?.foedselsdato,
 					row.hentPerson?.doedsfall[0]?.doedsdato
 				)
-				return <>{Formatters.formatAlder(alder, row.hentPerson?.doedsfall[0]?.doedsdato)}</>
+				return <>{formatAlder(alder, row.hentPerson?.doedsfall[0]?.doedsdato)}</>
 			},
 		},
 		{

@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import * as _ from 'lodash-es'
@@ -30,7 +30,7 @@ export const Arbeidsavtaler = ({ data }) => {
 					{/* //TODO: Endringsdato stillingsprosent mangler fra Aareg */}
 					<TitleValue
 						title="Endringsdato lønn"
-						value={Formatters.formatStringDates(detaljer.sisteLoennsendringsdato)}
+						value={formatStringDates(detaljer.sisteLoennsendringsdato)}
 					/>
 					<TitleValue
 						title="Arbeidstidsordning"

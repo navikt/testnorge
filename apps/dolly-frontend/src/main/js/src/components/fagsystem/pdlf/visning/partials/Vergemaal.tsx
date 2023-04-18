@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
@@ -88,14 +88,8 @@ const VergemaalLes = ({
 					kodeverk={VergemaalKodeverk.Mandattype}
 					value={vergemaalData.mandatType || vergemaalData.vergeEllerFullmektig?.omfang}
 				/>
-				<TitleValue
-					title="Gyldig f.o.m."
-					value={Formatters.formatDate(vergemaalData.gyldigFraOgMed)}
-				/>
-				<TitleValue
-					title="Gyldig t.o.m."
-					value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
-				/>
+				<TitleValue title="Gyldig f.o.m." value={formatDate(vergemaalData.gyldigFraOgMed)} />
+				<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaalData.gyldigTilOgMed)} />
 				{!relasjon && !relasjonRedigert && (
 					<TitleValue
 						title={harFullmektig ? 'Fullmektig' : 'Verge'}

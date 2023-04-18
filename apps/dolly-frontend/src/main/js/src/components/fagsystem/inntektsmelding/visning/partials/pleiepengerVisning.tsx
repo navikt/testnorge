@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { Pleiepenger } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
@@ -18,8 +18,8 @@ export default ({ data }: PleiepengerVisning) => {
 				{(id: Pleiepenger) => (
 					<>
 						<div className="person-visning_content">
-							<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
-							<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
+							<TitleValue title="Fra og med dato" value={formatDate(id.fom)} />
+							<TitleValue title="Til og med dato" value={formatDate(id.tom)} />
 						</div>
 					</>
 				)}
