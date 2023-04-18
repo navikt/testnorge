@@ -5,13 +5,25 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Textarea } from '@navikt/ds-react'
-import { Label } from '@/components/ui/form/inputs/label/Label'
 import styled from 'styled-components'
 import React from 'react'
 
 export const Arbeidsadgang = ({ formikBag }) => {
 	const StyledTextArea = styled(Textarea)`
-		gap: unset;
+		margin-bottom: 1rem;
+
+		textarea {
+			font-size: 1em;
+		}
+
+		&& {
+			label {
+				font-size: 0.75em;
+				text-transform: uppercase;
+				font-weight: 400;
+				margin-bottom: -8px;
+			}
+		}
 	`
 
 	const harArbeidsAdgang = _.get(formikBag.values, 'udistub.arbeidsadgang.harArbeidsAdgang')
@@ -77,22 +89,15 @@ export const Arbeidsadgang = ({ formikBag }) => {
 			<Kategori title="Innhent vedtakshjemmel" vis="udistub.arbeidsadgang.hjemmel">
 				<FormikTextInput name="udistub.arbeidsadgang.hjemmel" label="Hjemmel" size="xxlarge" />
 				<div className="flexbox--full-width">
-					<Label label={'Forklaring'}>
-						<StyledTextArea
-							value={forklaring ? forklaring : ''}
-							size={'small'}
-							name="udistub.arbeidsadgang.forklaring"
-							label=""
-							placeholder="Skriv inn forklaring"
-							maxLength={MAX_LENGTH}
-							onChange={(event) => endreForklaring(event.target.value)}
-							feil={
-								forklaring && forklaring.length > MAX_LENGTH
-									? { feilmelding: 'Forklaring kan ikke være lenger enn 4000 tegn' }
-									: null
-							}
-						/>
-					</Label>
+					<StyledTextArea
+						defaultValue={forklaring ? forklaring : ''}
+						size={'small'}
+						key="udistub.arbeidsadgang.forklaring"
+						label="Forklaring"
+						placeholder="Skriv inn forklaring"
+						maxLength={MAX_LENGTH}
+						onBlur={(event) => endreForklaring(event.target.value)}
+					/>
 				</div>
 			</Kategori>
 		</>
