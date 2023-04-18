@@ -19,7 +19,7 @@ export enum Modus {
 export const RedigerLoading = ({ visningModus }: LoadingProps) => {
 	switch (visningModus) {
 		case Modus.LoadingPdlf:
-			return <Loading label="Oppdaterer PDL-forvalter..." />
+			return <Loading label="Oppdaterer personinfo..." />
 		case Modus.LoadingPdl:
 			return <Loading label="Oppdaterer PDL..." />
 		case Modus.LoadingSkjerming:
