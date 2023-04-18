@@ -205,7 +205,7 @@ export const VisningRedigerbarSamlet = ({
 						return (
 							<React.Fragment key={idx}>
 								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label={'Oppdaterer PDL-forvalter...'} />
+									<Loading label={'Oppdaterer personinfo...'} />
 								)}
 								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
 									<Loading label={'Oppdaterer PDL...'} />

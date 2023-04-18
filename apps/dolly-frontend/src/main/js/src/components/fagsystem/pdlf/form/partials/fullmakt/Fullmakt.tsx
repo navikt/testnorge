@@ -9,15 +9,52 @@ import { initialFullmakt } from '@/components/fagsystem/pdlf/form/initialValues'
 import { FormikProps } from 'formik'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import * as _ from 'lodash-es'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
-interface FullmaktForm {
+interface FullmaktProps {
 	formikBag: FormikProps<{}>
+	path?: string
+	eksisterendeNyPerson?: any
 }
 
-export const Fullmakt = ({ formikBag }: FullmaktForm) => {
+export const FullmaktForm = ({ formikBag, path, eksisterendeNyPerson = null }: FullmaktProps) => {
 	const fullmaktOmraader = SelectOptionsOppslag.hentFullmaktOmraader()
 	const fullmaktOptions = SelectOptionsOppslag.formatOptions('fullmaktOmraader', fullmaktOmraader)
 
+	return (
+		<div className="flexbox--flex-wrap">
+			<div className="flexbox--full-width">
+				<FormikSelect
+					name={`${path}.omraader`}
+					label="Områder"
+					options={fullmaktOptions}
+					size="grow"
+					isMulti={true}
+					isClearable={false}
+					fastfield={false}
+				/>
+			</div>
+			<DatepickerWrapper>
+				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+			</DatepickerWrapper>
+			<PdlPersonExpander
+				nyPersonPath={`${path}.nyFullmektig`}
+				eksisterendePersonPath={`${path}.motpartsPersonident`}
+				label={'FULLMEKTIG'}
+				formikBag={formikBag}
+				isExpanded={
+					!isEmpty(_.get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
+					_.get(formikBag.values, `${path}.motpartsPersonident`) !== null
+				}
+				eksisterendeNyPerson={eksisterendeNyPerson}
+			/>
+			<AvansertForm path={path} kanVelgeMaster={false} />
+		</div>
+	)
+}
+
+export const Fullmakt = ({ formikBag }: FullmaktProps) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.fullmakt"
@@ -25,36 +62,7 @@ export const Fullmakt = ({ formikBag }: FullmaktForm) => {
 			newEntry={initialFullmakt}
 			canBeEmpty={false}
 		>
-			{(path: string) => {
-				return (
-					<div className="flexbox--flex-wrap">
-						<div className="flexbox--full-width">
-							<FormikSelect
-								name={`${path}.omraader`}
-								label="Områder"
-								options={fullmaktOptions}
-								size="grow"
-								isMulti={true}
-								isClearable={false}
-								fastfield={false}
-							/>
-						</div>
-						<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-						<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
-						<PdlPersonExpander
-							nyPersonPath={`${path}.nyFullmektig`}
-							eksisterendePersonPath={`${path}.motpartsPersonident`}
-							label={'FULLMEKTIG'}
-							formikBag={formikBag}
-							isExpanded={
-								!isEmpty(_.get(formikBag.values, `${path}.nyFullmektig`), ['syntetisk']) ||
-								_.get(formikBag.values, `${path}.motpartsPersonident`) !== null
-							}
-						/>
-						<AvansertForm path={path} kanVelgeMaster={false} />
-					</div>
-				)
-			}}
+			{(path: string) => <FullmaktForm formikBag={formikBag} path={path} />}
 		</FormikDollyFieldArray>
 	)
 }
