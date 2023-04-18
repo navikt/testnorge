@@ -27,5 +27,4 @@ public class BrregstubProxyApplicationStarter {
                 .route(spec -> spec.path("/**").uri("http://brreg-stub.dolly.svc.nais.local/"))
                 .build();
     }
-
 }
