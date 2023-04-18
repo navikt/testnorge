@@ -22,7 +22,7 @@ spring:
 
 consumers:
   testnav-udistub:
-    url: http://udi-stub.dolly.svc.nais.local
+    url: http://testnav-udi-stub.dolly.svc.nais.local
     cluster: dev-fss
     namespace: dolly
     name: testnav-udi-stub
