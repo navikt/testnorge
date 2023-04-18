@@ -1,6 +1,5 @@
-/// <reference types="cypress" />
-
 import 'cypress-react-selector'
+import './commands'
 import {
 	aaregMock,
 	backendBestillingerMock,
@@ -11,6 +10,7 @@ import {
 	eksisterendeGruppeMock,
 	gjeldendeBrukerMock,
 	gjeldendeProfilMock,
+	histarkMock,
 	instMock,
 	joarkDokumentMock,
 	joarkJournalpostMock,
@@ -38,6 +38,7 @@ const current = new RegExp(/current/)
 const bilde = new RegExp(/testnorge-profil-api\/api\/v1\/profil\/bilde$/)
 const profil = new RegExp(/\/profil\/bilde/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
+const histark = new RegExp(/testnav-histark-proxy\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
@@ -50,7 +51,7 @@ const kontoregister = new RegExp(/testnav-kontoregister-person-proxy\/api/)
 const backendTransaksjon = new RegExp(/dolly-backend\/api\/v1\/transaksjonid/)
 const tags = new RegExp(/\/tags$/)
 const kodeverk = new RegExp(/\/v1\/kodeverk\//)
-const dokarkiv = new RegExp(/testnav-dokarkiv-proxy\/rest\/miljoe/)
+const dokarkivMiljoer = new RegExp(/testnav-dokarkiv-proxy\/rest\/miljoe/)
 const aareg = new RegExp(/testnav-aareg-proxy\/q1\/api\/v1\/arbeidstaker/)
 const inst = new RegExp(/testnav-inst-proxy\/api\/v1\/ident/)
 const skjerming = new RegExp(/dolly-backend\/api\/v1\/skjerming/)
@@ -86,13 +87,14 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: bilde }, { statusCode: 404 }).as('bilde')
 	cy.intercept({ method: 'GET', url: personFragmentSearch }, personFragmentSearchMock)
 	cy.intercept({ method: 'GET', url: hentGrupper }, paginerteGrupperMock)
+	cy.intercept({ method: 'GET', url: histark }, histarkMock)
 	cy.intercept({ method: 'GET', url: hentGruppe }, eksisterendeGruppeMock)
 	cy.intercept({ method: 'GET', url: hentGruppeBestilling }, backendBestillingerMock)
 	cy.intercept({ method: 'POST', url: lagNyGruppe }, { statusCode: 201, body: nyGruppeMock })
 	cy.intercept({ method: 'GET', url: pdlPersonBolk }, pdlBulkpersonerMock)
 	cy.intercept({ method: 'GET', url: pdlPersonEnkelt }, pdlPersonEnkeltMock)
 	cy.intercept({ method: 'GET', url: pdlForvalter }, pdlForvalterMock)
-	cy.intercept({ method: 'GET', url: kontoregister }, kontoregisterMock)
+	cy.intercept({ method: 'POST', url: kontoregister }, kontoregisterMock)
 	cy.intercept({ method: 'GET', url: tags }, { body: {} })
 	cy.intercept({ method: 'GET', url: backendTransaksjon }, backendTransaksjonMock)
 	cy.intercept({ method: 'GET', url: brukerMaler }, brukerMalerMock)
@@ -112,7 +114,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: sigrunstub }, sigrunstubMock)
 	cy.intercept({ method: 'GET', url: udistub }, udistubMock)
 	cy.intercept({ method: 'GET', url: kodeverk }, kodeverkMock)
-	cy.intercept({ method: 'GET', url: dokarkiv }, [])
+	cy.intercept({ method: 'GET', url: dokarkivMiljoer }, ['q1', 'q2'])
 	cy.intercept({ method: 'GET', url: organisasjonFraMiljoe }, organisasjonFraMiljoeMock)
 	cy.intercept({ method: 'GET', url: organisasjonerForBruker }, organisasjonerForBrukerMock)
 })

@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+import { CypressSelector } from '../mocks/Selectors'
 
 describe('Åpne en organisasjon med alle tilvalg', () => {
 	it('passes', () => {
@@ -14,9 +14,9 @@ describe('Naviger til organisasjoner og start en bestilling med alle tilvalg', (
 	it('passes', () => {
 		cy.visit('http://localhost:5678/organisasjoner')
 
-		cy.get('[data-cy="button_opprett_organisasjon"]').click()
-		cy.get('[data-cy="button_start_bestilling"]').click()
-		cy.get('[data-cy="button_velg_alle"]').each((btn) => cy.wrap(btn).click())
-		cy.get('[data-cy="button_videre"]').click()
+		cy.dollyGet(CypressSelector.BUTTON_OPPRETT_ORGANISASJON).click()
+		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()
+		cy.dollyGet(CypressSelector.BUTTON_VELG_ALLE).each((btn) => cy.wrap(btn).click())
+		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
 	})
 })

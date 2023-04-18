@@ -5,6 +5,7 @@ import ExpandButton from '@/components/ui/button/ExpandButton/ExpandButton'
 import LinkButton from '@/components/ui/button/LinkButton/LinkButton'
 
 import './Panel.less'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 export default function Panel({
 	startOpen = false,
@@ -49,7 +50,11 @@ export default function Panel({
 				)}
 				<span className="dolly-panel-heading_buttons">
 					{checkAttributeArray && (
-						<LinkButton data-cy={'button_velg_alle'} text="Velg alle" onClick={check} />
+						<LinkButton
+							data-cy={CypressSelector.BUTTON_VELG_ALLE}
+							text="Velg alle"
+							onClick={check}
+						/>
 					)}
 					{uncheckAttributeArray && <LinkButton text="Fjern alle" onClick={uncheck} />}
 					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />

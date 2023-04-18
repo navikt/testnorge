@@ -17,6 +17,7 @@ import StatusListeConnector from '@/components/bestilling/statusListe/StatusList
 import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import { ToggleGroup } from '@navikt/ds-react'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 export type GruppeProps = {
 	visning: string
@@ -108,7 +109,7 @@ export default ({
 				<div className="gruppe--full gruppe--flex-row-center">
 					{!bankIdBruker && (
 						<NavButton
-							data-cy={'button_opprett_personer'}
+							data-cy={CypressSelector.BUTTON_OPPRETT_PERSONER}
 							variant={'primary'}
 							onClick={visStartBestilling}
 							disabled={erLaast}
@@ -146,6 +147,7 @@ export default ({
 						style={{ backgroundColor: '#ffffff' }}
 					>
 						<ToggleGroup.Item
+							data-cy={CypressSelector.TOGGLE_VISNING_PERSONER}
 							key={VisningType.VISNING_PERSONER}
 							value={VisningType.VISNING_PERSONER}
 						>
@@ -157,6 +159,7 @@ export default ({
 							{`Personer (${gruppe.antallIdenter})`}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item
+							data-cy={CypressSelector.TOGGLE_VISNING_BESTILLINGER}
 							key={VisningType.VISNING_BESTILLING}
 							value={VisningType.VISNING_BESTILLING}
 						>

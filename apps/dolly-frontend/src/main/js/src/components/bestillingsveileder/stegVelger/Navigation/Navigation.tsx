@@ -7,6 +7,7 @@ import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { useNavigate } from 'react-router-dom'
 import { setNestedObjectValues } from 'formik'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	const showPrevious = step > 0
@@ -48,7 +49,7 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 					)}
 					{!isLastStep && (
 						<NavButton
-							data-cy={'button_videre'}
+							data-cy={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
 							onClick={

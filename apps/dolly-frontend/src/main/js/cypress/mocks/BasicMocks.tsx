@@ -520,13 +520,11 @@ export const pensjonMock = [
 export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
 export const kontoregisterMock = {
-	aktivKonto: {
-		kontohaver: '12345678912',
-		kontonummer: '99999999999',
-		gyldigFom: '2022-01-01T11:58:24.030845',
-		opprettetAv: 'Dolly',
-		kilde: 'testnav-kontoregister-person-proxy-trygdeetaten',
-	},
+	kontohaver: '12345678912',
+	kontonummer: '99999999999',
+	gyldigFom: '2022-01-01T11:58:24.030845',
+	opprettetAv: 'Dolly',
+	kilde: 'testnav-kontoregister-person-proxy-trygdeetaten',
 }
 
 export const joarkJournalpostMock = {
@@ -1032,6 +1030,7 @@ export const backendBestillingerMock = [
 					},
 				],
 			},
+			histark: {},
 			sykemelding: {
 				syntSykemelding: {
 					orgnummer: '947064649',
@@ -1393,12 +1392,28 @@ export const eksisterendeGruppeMock = {
 	sistEndretAv: gjeldendeBrukerMock,
 	datoEndret: '1980-01-12',
 	antallIdenter: 1,
+	antallBestillinger: 3,
 	antallIBruk: 0,
 	erEierAvGruppe: true,
 	favorittIGruppen: false,
 	erLaast: false,
 	identer: [testidentMock],
 	tags: [],
+}
+
+export const histarkMock = {
+	antallSider: 1,
+	enhetsNr: '1234',
+	enhetsNavn: 'Testy',
+	temaKodeSet: ['ABC'],
+	fnrEllerOrgnr: '123456789012',
+	startaar: 2021,
+	sluttaar: 2023,
+	skanningstidspunkt: '2023-04-14T14:11:32',
+	filnavn: 'small-test.pdf',
+	skanner: 'Skanner',
+	skannerSted: 'Teste',
+	inneholderKlage: false,
 }
 
 export const paginerteGrupperMock = {

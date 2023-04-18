@@ -8,6 +8,7 @@ import {
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 import { MalPanel } from '@/pages/minSide/maler/MalPanel'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 5px;
@@ -37,7 +38,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
 				<SearchField
-					data-cy={'input_minside_mal'}
+					data-cy={CypressSelector.INPUT_MINSIDE_MAL}
 					placeholder={'Søk etter mal'}
 					setText={setSearchText}
 				/>

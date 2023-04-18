@@ -12,6 +12,7 @@ import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type FinnPersonProps = {
 	feilmelding: string
@@ -232,7 +233,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon data-cy={'input_person_soek'} kind={'search'} size={20} />
+				<Icon data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'search'} size={20} />
 			</components.DropdownIndicator>
 		)
 	}
@@ -250,7 +251,7 @@ const FinnPersonBestilling = ({
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
-						data-cy={'select_person_search'}
+						data-cy={CypressSelector.SELECT_PERSON_SEARCH}
 						defaultOptions={false}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}

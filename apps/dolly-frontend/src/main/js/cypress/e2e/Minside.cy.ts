@@ -1,4 +1,4 @@
-/// <reference types="cypress" />
+import { CypressSelector } from '../mocks/Selectors'
 
 describe('Minside mal testing', () => {
 	it('passes', () => {
@@ -6,9 +6,9 @@ describe('Minside mal testing', () => {
 
 		cy.visit('http://localhost:5678/minside')
 
-		cy.get('[data-cy="input_minside_mal"]').type('mal')
-		cy.get('[data-cy="input_minside_mal"]').clear()
-		cy.get('[data-cy="button_maler_slett"]').click()
+		cy.dollyGet(CypressSelector.INPUT_MINSIDE_MAL).type('mal')
+		cy.dollyGet(CypressSelector.INPUT_MINSIDE_MAL).clear()
+		cy.dollyGet(CypressSelector.BUTTON_MALER_SLETT).click()
 
 		cy.get('@slett_mal').should('have.been.calledOnce')
 	})

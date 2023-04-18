@@ -1,55 +1,31 @@
-/// <reference types="cypress" />
+import { CypressSelector } from '../mocks/Selectors'
 
 describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
 	it('passes', () => {
 		cy.visit('http://localhost:5678/gruppe')
 
 		// Naviger mellom tabs
-		cy.get('[data-cy="input_person_soek"]').click({ force: true })
+		cy.dollyGet(CypressSelector.INPUT_PERSON_SOEK).click({ force: true })
 		cy.get('body').type('12345')
 
 		cy.wait(400)
 
-		cy.get('[data-cy="toggle_favoritter"]').click()
-		cy.get('[data-cy="toggle_alle"]').click()
-		cy.get('[data-cy="toggle_mine"]').click()
+		cy.dollyGet(CypressSelector.TOGGLE_FAVORITTER).click()
+		cy.dollyGet(CypressSelector.TOGGLE_ALLE).click()
+		cy.dollyGet(CypressSelector.TOGGLE_MINE).click()
 
 		// Opprett ny gruppe
-		cy.get('[data-cy="button_ny_gruppe"]').click()
-		cy.get('[data-cy="input_navn"]').type('Testing med Cypress')
-		cy.get('[data-cy="input_hensikt"]').type('Masse testing med Cypress')
-		cy.get('[data-cy="button_opprett"]').click()
-		cy.get('[data-cy="button_opprett_personer"]').click()
-		cy.get('[data-cy="toggle_eksisterende_person"]').click()
-		cy.get('[data-cy="toggle_ny_person"]').click()
-		cy.get('[data-cy="toggle_mal"]').click()
+		cy.dollyGet(CypressSelector.BUTTON_NY_GRUPPE).click()
+		cy.dollyGet(CypressSelector.INPUT_NAVN).type('Testing med Cypress')
+		cy.dollyGet(CypressSelector.INPUT_HENSIKT).type('Masse testing med Cypress')
+		cy.dollyGet(CypressSelector.BUTTON_OPPRETT).click()
+		cy.dollyGet(CypressSelector.BUTTON_OPPRETT_PERSONER).click()
+		cy.dollyGet(CypressSelector.TOGGLE_EKSISTERENDE_PERSON).click()
+		cy.dollyGet(CypressSelector.TOGGLE_NY_PERSON).click()
+		cy.dollyGet(CypressSelector.TOGGLE_MAL).click()
 		cy.url().should('include', '/gruppe/2')
-		cy.get('[data-cy="button_start_bestilling"]').click()
-		cy.get('[data-cy="button_velg_alle"]').each((btn) => cy.wrap(btn).click())
-		cy.get('[data-cy="button_videre"]').click()
-	})
-})
-
-describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
-	it('passes', () => {
-		cy.visit('http://localhost:5678/gruppe')
-
-		cy.get('div').contains('Testytest').click()
-
-		cy.get('[data-cy="button_flytt_personer"]').click()
-
-		cy.get('[data-cy="toggle_ny_gruppe"]').click()
-		cy.get('[data-cy="toggle_eksisterende_gruppe"]').click()
-
-		cy.get('[data-cy="button_flytt_personer_avbryt"]').click()
-
-		cy.get('div').contains('12345678912').click()
-		cy.wait(3000)
-
-		cy.get('[data-cy="miljoe_hover"]').each((element) => {
-			cy.wrap(element).invoke('show').click()
-			cy.wait(1000)
-			cy.get('[data-cy="title_visning"]').invoke('show').click()
-		})
+		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()
+		cy.dollyGet(CypressSelector.BUTTON_VELG_ALLE).each((btn) => cy.wrap(btn).click())
+		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
 	})
 })

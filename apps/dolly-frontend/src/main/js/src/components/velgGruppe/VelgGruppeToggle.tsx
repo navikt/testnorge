@@ -3,6 +3,7 @@ import NyGruppe from './NyGruppe'
 import EksisterendeGruppe from '@/components/velgGruppe/EksisterendeGruppe'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 interface VelgGruppeToggleProps {
 	setValgtGruppe: React.Dispatch<React.SetStateAction<string>>
@@ -34,14 +35,18 @@ export const VelgGruppeToggle = ({
 		<div className="toggle--wrapper">
 			<StyledToggleGroup size={'small'} value={gruppevalg} onChange={handleToggleChange}>
 				<ToggleGroup.Item
-					data-cy={'toggle_eksisterende_gruppe'}
+					data-cy={CypressSelector.TOGGLE_EKSISTERENDE_GRUPPE}
 					key={Gruppevalg.EKSISTERENDE}
 					value={Gruppevalg.EKSISTERENDE}
 					style={{ padding: '0 20px' }}
 				>
 					Eksisterende gruppe
 				</ToggleGroup.Item>
-				<ToggleGroup.Item data-cy={'toggle_ny_gruppe'} key={Gruppevalg.NY} value={Gruppevalg.NY}>
+				<ToggleGroup.Item
+					data-cy={CypressSelector.TOGGLE_NY_GRUPPE}
+					key={Gruppevalg.NY}
+					value={Gruppevalg.NY}
+				>
 					Ny gruppe
 				</ToggleGroup.Item>
 			</StyledToggleGroup>

@@ -20,6 +20,7 @@ import { FlyttPersonButton } from '@/components/ui/button/FlyttPersonButton/Flyt
 import { LeggTilPaaGruppe } from '@/pages/gruppe/LeggTilPaaGruppe/LeggTilPaaGruppe'
 import cn from 'classnames'
 import Icon from '@/components/ui/icon/Icon'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 type GruppeHeaderProps = {
 	gruppe: Gruppe
@@ -59,7 +60,7 @@ const GruppeHeader = ({
 
 	return (
 		<Fragment>
-			<div data-cy={'title_visning'} className="page-header flexbox--align-center">
+			<div data-cy={CypressSelector.TITLE_VISNING} className="page-header flexbox--align-center">
 				<h1>{gruppeNavn}</h1>
 				{erLaast && (
 					<Hjelpetekst placement={bottom}>
