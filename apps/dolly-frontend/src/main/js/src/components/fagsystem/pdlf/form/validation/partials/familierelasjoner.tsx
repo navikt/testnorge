@@ -175,26 +175,22 @@ const deltBosted = Yup.object({
 	}),
 })
 
-export const forelderBarnRelasjon = Yup.array().of(
-	Yup.object({
-		minRolleForPerson: requiredString,
-		relatertPersonsRolle: requiredString,
-		relatertPerson: Yup.string().nullable(),
-		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
-			is: 'BARN',
-			then: () => Yup.mixed().notRequired(),
-			otherwise: () => Yup.boolean(),
-		}),
-		nyRelatertPerson: nyPerson.nullable(),
-		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
-			is: 'BARN',
-			then: () => deltBosted.nullable(),
-		}),
-	})
-)
+export const forelderBarnRelasjon = Yup.object({
+	minRolleForPerson: requiredString,
+	relatertPersonsRolle: requiredString,
+	relatertPerson: Yup.string().nullable(),
+	borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
+		is: 'BARN',
+		then: () => Yup.mixed().notRequired(),
+		otherwise: () => Yup.boolean(),
+	}),
+	nyRelatertPerson: nyPerson.nullable(),
+	deltBosted: Yup.mixed().when('relatertPersonsRolle', {
+		is: 'BARN',
+		then: () => deltBosted.nullable(),
+	}),
+})
 
-export const foreldreansvar = Yup.array().of(
-	Yup.object({
-		ansvar: testForeldreansvar(requiredString),
-	})
-)
+export const foreldreansvar = Yup.object({
+	ansvar: testForeldreansvar(requiredString),
+})

@@ -77,6 +77,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 
 	const bankkontoData = getBankkontoData(fagsystemData)
 
+	console.log('data: ', data) //TODO - SLETT MEG
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -142,6 +144,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				/>
 				<ForelderBarnRelasjonVisning
 					data={data?.person?.forelderBarnRelasjon}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
 					relasjoner={data?.relasjoner}
 				/>
 				<DoedfoedtBarnVisning data={data?.person?.doedfoedtBarn} />

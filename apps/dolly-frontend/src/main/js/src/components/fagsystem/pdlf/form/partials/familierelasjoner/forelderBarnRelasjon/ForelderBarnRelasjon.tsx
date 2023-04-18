@@ -21,6 +21,8 @@ import { ToggleGroup } from '@navikt/ds-react'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
+	path?: string
+	idx?: number
 }
 
 type Target = {
@@ -31,7 +33,7 @@ type Target = {
 const RELASJON_BARN = 'Barn'
 const RELASJON_FORELDER = 'Forelder'
 
-export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
+export const ForelderBarnRelasjonForm = ({ formikBag, path, idx }: ForelderForm) => {
 	const relatertPerson = 'relatertPerson'
 	const nyRelatertPerson = 'nyRelatertPerson'
 	const relatertPersonUtenFolkeregisteridentifikator =
@@ -66,6 +68,75 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 		formikBag.setFieldValue(path, forelderBarnClone)
 	}
 
+	const erBarn = _.get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
+	const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
+
+	return (
+		<div className="flexbox--flex-wrap">
+			<div className="toggle--wrapper">
+				<ToggleGroup
+					onChange={(value: string) => {
+						formikBag.setFieldValue(path, value === RELASJON_BARN ? initialBarn : initialForelder)
+					}}
+					size={'small'}
+					defaultValue={RELASJON_BARN}
+					style={{ backgroundColor: '#ffffff' }}
+				>
+					<ToggleGroup.Item value={RELASJON_BARN}>{RELASJON_BARN}</ToggleGroup.Item>
+					<ToggleGroup.Item value={RELASJON_FORELDER}>{RELASJON_FORELDER}</ToggleGroup.Item>
+				</ToggleGroup>
+			</div>
+			<div className="flexbox--flex-wrap">
+				{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
+				{!erBarn && (
+					<>
+						<FormikSelect
+							name={`${path}.relatertPersonsRolle`}
+							label="Foreldretype"
+							options={Options('foreldreTypePDL')}
+							isClearable={false}
+						/>
+						<FormikCheckbox name={`${path}.borIkkeSammen`} label="Bor ikke sammen" checkboxMargin />
+					</>
+				)}
+				<FormikSelect
+					name={`${path}.typeForelderBarn`}
+					label={erBarn ? 'Type barn' : 'Type forelder'}
+					options={Options('typeAnsvarlig')}
+					onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
+					size="medium"
+				/>
+			</div>
+
+			{forelderBarnType === TypeAnsvarlig.EKSISTERENDE && (
+				<PdlEksisterendePerson
+					eksisterendePersonPath={`${path}.relatertPerson`}
+					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
+					formikBag={formikBag}
+					idx={idx}
+				/>
+			)}
+
+			{forelderBarnType === TypeAnsvarlig.UTEN_ID && (
+				<PdlPersonUtenIdentifikator
+					formikBag={formikBag}
+					path={`${path}.relatertPersonUtenFolkeregisteridentifikator`}
+				/>
+			)}
+
+			{forelderBarnType === TypeAnsvarlig.NY && (
+				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
+			)}
+
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+			/>
+		</div>
+	)
+}
+
+export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.forelderBarnRelasjon"
@@ -74,79 +145,7 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
-				const erBarn = _.get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
-				const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
-
-				return (
-					<div className="flexbox--flex-wrap">
-						<div className="toggle--wrapper">
-							<ToggleGroup
-								onChange={(value: string) => {
-									formikBag.setFieldValue(
-										path,
-										value === RELASJON_BARN ? initialBarn : initialForelder
-									)
-								}}
-								size={'small'}
-								defaultValue={RELASJON_BARN}
-								style={{ backgroundColor: '#ffffff' }}
-							>
-								<ToggleGroup.Item value={RELASJON_BARN}>{RELASJON_BARN}</ToggleGroup.Item>
-								<ToggleGroup.Item value={RELASJON_FORELDER}>{RELASJON_FORELDER}</ToggleGroup.Item>
-							</ToggleGroup>
-						</div>
-						<div className="flexbox--flex-wrap">
-							{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
-							{!erBarn && (
-								<>
-									<FormikSelect
-										name={`${path}.relatertPersonsRolle`}
-										label="Foreldretype"
-										options={Options('foreldreTypePDL')}
-										isClearable={false}
-									/>
-									<FormikCheckbox
-										name={`${path}.borIkkeSammen`}
-										label="Bor ikke sammen"
-										checkboxMargin
-									/>
-								</>
-							)}
-							<FormikSelect
-								name={`${path}.typeForelderBarn`}
-								label={erBarn ? 'Type barn' : 'Type forelder'}
-								options={Options('typeAnsvarlig')}
-								onChange={(target: Target) => handleChangeTypeForelderBarn(target, path)}
-								size="medium"
-							/>
-						</div>
-
-						{forelderBarnType === TypeAnsvarlig.EKSISTERENDE && (
-							<PdlEksisterendePerson
-								eksisterendePersonPath={`${path}.relatertPerson`}
-								label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
-								formikBag={formikBag}
-								idx={idx}
-							/>
-						)}
-
-						{forelderBarnType === TypeAnsvarlig.UTEN_ID && (
-							<PdlPersonUtenIdentifikator
-								formikBag={formikBag}
-								path={`${path}.relatertPersonUtenFolkeregisteridentifikator`}
-							/>
-						)}
-
-						{forelderBarnType === TypeAnsvarlig.NY && (
-							<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
-						)}
-
-						<AvansertForm
-							path={path}
-							kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
-						/>
-					</div>
-				)
+				return <ForelderBarnRelasjonForm formikBag={formikBag} path={path} idx={idx} />
 			}}
 		</FormikDollyFieldArray>
 	)

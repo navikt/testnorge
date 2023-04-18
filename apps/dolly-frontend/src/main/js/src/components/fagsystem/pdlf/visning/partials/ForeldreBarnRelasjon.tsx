@@ -52,7 +52,7 @@ export const ForelderBarnRelasjonVisning = ({ data, relasjoner }: FamilieRelasjo
 	if (!data || data.length < 1) {
 		return null
 	}
-
+	console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
 	return (
 		<div>
 			<SubOverskrift label="Barn/foreldre" iconKind="relasjoner" />
