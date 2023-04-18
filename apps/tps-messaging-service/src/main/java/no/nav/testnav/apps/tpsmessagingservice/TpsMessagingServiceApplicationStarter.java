@@ -11,4 +11,3 @@ public class TpsMessagingServiceApplicationStarter {
         SpringApplication.run(TpsMessagingServiceApplicationStarter.class, args);
     }
 }
-
