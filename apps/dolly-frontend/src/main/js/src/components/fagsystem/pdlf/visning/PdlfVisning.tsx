@@ -11,7 +11,7 @@ import { Oppholdsadresse } from '@/components/fagsystem/pdlf/visning/partials/Op
 import { Kontaktadresse } from '@/components/fagsystem/pdlf/visning/partials/Kontaktadresse'
 import { Adressebeskyttelse } from '@/components/fagsystem/pdlf/visning/partials/Adressebeskyttelse'
 import { Sivilstand } from '@/components/fagsystem/pdlf/visning/partials/Sivilstand'
-import { ForelderBarnRelasjonVisning } from '@/components/fagsystem/pdlf/visning/partials/ForeldreBarnRelasjon'
+import { ForelderBarnRelasjon } from '@/components/fagsystem/pdlf/visning/partials/ForelderBarnRelasjon'
 import { DoedfoedtBarnVisning } from '@/components/fagsystem/pdlf/visning/partials/DoedfoedtBarn'
 import { Foedsel } from '@/components/fagsystem/pdlf/visning/partials/Foedsel'
 import { Vergemaal } from '@/components/fagsystem/pdlf/visning/partials/Vergemaal'
@@ -147,7 +147,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}
 				/>
-				<ForelderBarnRelasjonVisning
+				<ForelderBarnRelasjon
 					data={data?.person?.forelderBarnRelasjon}
 					tmpPersoner={tmpPdlforvalter}
 					ident={ident}

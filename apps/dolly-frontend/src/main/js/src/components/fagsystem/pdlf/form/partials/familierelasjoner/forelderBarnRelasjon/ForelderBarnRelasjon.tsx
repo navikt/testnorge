@@ -33,7 +33,11 @@ type Target = {
 const RELASJON_BARN = 'Barn'
 const RELASJON_FORELDER = 'Forelder'
 
-export const ForelderBarnRelasjonForm = ({ formikBag, path, idx }: ForelderForm) => {
+export const ForelderBarnRelasjonForm = ({
+	formikBag,
+	path,
+	eksisterendeNyPerson = null,
+}: ForelderForm) => {
 	const relatertPerson = 'relatertPerson'
 	const nyRelatertPerson = 'nyRelatertPerson'
 	const relatertPersonUtenFolkeregisteridentifikator =
@@ -113,7 +117,8 @@ export const ForelderBarnRelasjonForm = ({ formikBag, path, idx }: ForelderForm)
 					eksisterendePersonPath={`${path}.relatertPerson`}
 					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 					formikBag={formikBag}
-					idx={idx}
+					// idx={idx}
+					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
 
