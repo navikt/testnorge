@@ -64,7 +64,6 @@ public class OversiktFrontendApplicationStarter {
                             .exchange(serverProperties)
                             .map(AccessToken::getTokenValue);
                 });
-
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {
