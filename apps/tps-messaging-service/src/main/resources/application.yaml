@@ -41,7 +41,7 @@ config:
 consumers:
   testmiljoer:
     service:
-      url: https://testnav-miljoer-service.dev.intern.nav.no
+      url: http://testnav-miljoer-service.dolly.svc.cluster.local
       cluster: dev-gcp
       namespace: dolly
       name: testnav-miljoer-service
