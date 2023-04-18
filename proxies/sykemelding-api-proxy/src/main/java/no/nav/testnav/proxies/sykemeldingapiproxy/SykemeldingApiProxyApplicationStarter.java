@@ -42,5 +42,4 @@ public class SykemeldingApiProxyApplicationStarter {
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
                 ).uri(host);
     }
-
 }
