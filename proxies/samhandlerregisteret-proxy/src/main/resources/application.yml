@@ -22,7 +22,7 @@ spring:
 
 consumers:
   samhandlerregisteret:
-    url: http://kuhr-sar-api.kuhr-sar-api.svc.nais.local
+    url: https://kuhr-sar-api.dev.adeo.no
     cluster: dev-fss
     namespace: teamkuhr
     name: kuhr-sar-api
