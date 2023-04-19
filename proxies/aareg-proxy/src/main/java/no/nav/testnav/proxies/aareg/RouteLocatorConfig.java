@@ -44,26 +44,20 @@ public class RouteLocatorConfig {
                             getAuthenticationFilter(tokenService, aaregProperties.vedlikehold.forEnvironment(env));
 
                     routes
-                            .route(createReadableRouteToNewEndpoint(env,
-                                    aaregProperties.services.forEnvironment(env).getUrl(),
-                                    readableAuthentication))
-                            .route(createWriteableRouteToNewEndpoint(env,
-                                    aaregProperties.vedlikehold.forEnvironment(env).getUrl(),
-                                    writeableAuthentication));
+                            .route(createReadableRouteToNewEndpoint(env, readableAuthentication))
+                            .route(createWriteableRouteToNewEndpoint(env, writeableAuthentication));
                 });
         return routes.build();
     }
 
     private GatewayFilter getAuthenticationFilter(TrygdeetatenAzureAdTokenService tokenService, ServerProperties serverProperties) {
-
         return AddAuthenticationRequestGatewayFilterFactory
                 .bearerAuthenticationHeaderFilter(() -> tokenService
                         .exchange(serverProperties)
                         .map(AccessToken::getTokenValue));
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, String url,
-                                                                                       GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createReadableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
 
         return predicateSpec -> predicateSpec
                 .path("/" + miljoe + "/**")
@@ -73,11 +67,10 @@ public class RouteLocatorConfig {
                         .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri(url);
+                .uri("http://aareg-services-" + miljoe + ".arbeidsforhold.svc.nais.local");
     }
 
-    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String miljoe, String url,
-                                                                                        GatewayFilter authentication) {
+    private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
 
         return predicateSpec -> predicateSpec
                 .path("/" + miljoe + "/**")
@@ -87,6 +80,6 @@ public class RouteLocatorConfig {
                         .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri(url);
+                .uri("http://aareg-vedlikehold-" + miljoe + ".arbeidsforhold.svc.nais.local");
     }
 }
