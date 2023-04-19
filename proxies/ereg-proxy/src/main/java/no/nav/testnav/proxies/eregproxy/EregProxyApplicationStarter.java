@@ -45,5 +45,4 @@ public class EregProxyApplicationStarter {
                         .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/${segment}")
                 ).uri("https://ereg-services-" + miljo + ".dev.intern.nav.no/");
     }
-
 }
