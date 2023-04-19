@@ -67,7 +67,7 @@ public class RouteLocatorConfig {
                         .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("http://aareg-services-" + miljoe + ".arbeidsforhold.svc.nais.local");
+                .uri("https://aareg-services-" + miljoe + ".dev.intern.nav.no");
     }
 
     private Function<PredicateSpec, Buildable<Route>> createWriteableRouteToNewEndpoint(String miljoe, GatewayFilter authentication) {
@@ -80,6 +80,6 @@ public class RouteLocatorConfig {
                         .rewritePath("/" + miljoe + "/(?<segment>.*)", "/${segment}")
                         .filter(authentication)
                 )
-                .uri("http://aareg-vedlikehold-" + miljoe + ".arbeidsforhold.svc.nais.local");
+                .uri("https://aareg-vedlikehold-" + miljoe + ".dev.intern.nav.no");
     }
 }
