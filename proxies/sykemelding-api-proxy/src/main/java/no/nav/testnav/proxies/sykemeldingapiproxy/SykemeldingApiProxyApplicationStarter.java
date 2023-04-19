@@ -27,7 +27,7 @@ public class SykemeldingApiProxyApplicationStarter {
 
         return builder
                 .routes()
-                .route(createRoute("sykemelding", "https://testnorge-sykemelding-api.dolly.svc.nais.local"))
+                .route(createRoute("sykemelding", "http://testnorge-sykemelding-api.dolly.svc.nais.local"))
                 .build();
     }
 

@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://testnorge-sykemelding-api.dev.intern.nav.no" + "/internal/isAlive",
-                "https://testnorge-sykemelding-api.dev.intern.nav.no" + "/internal/isReady",
+                "http://testnorge-sykemelding-api.dolly.svc.nais.local" + "/internal/isAlive",
+                "http://testnorge-sykemelding-api.dolly.svc.nais.local" + "/internal/isReady",
                 statusWebClient);
         status.put("team", TEAM);
 

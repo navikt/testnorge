@@ -31,50 +31,39 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: testnav-helsepersonell-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-inntektsmelding-service
-        - application: testnav-tps-messaging-service
-        - application: generer-navn-service
-        - application: testnorge-profil-api-dev
-        - application: testnav-person-service
-        - application: testnav-pdl-forvalter-dev
-        - application: testnav-arbeidsforhold-service
         - application: testnav-amelding-service
+        - application: testnav-arbeidsforhold-service
+        - application: testnav-generer-navn-service
+        - application: testnav-helsepersonell-service
+        - application: testnav-inntektsmelding-service
+        - application: testnav-miljoer-service
+        - application: testnav-organisasjon-forvalter
         - application: testnav-organisasjon-service
+        - application: testnav-pdl-forvalter-dev
+        - application: testnav-person-service
         - application: testnav-synt-sykemelding-api
-        - application: testnav-popp-testdata-proxy
-        - application: testnav-histark-proxy
+        - application: testnav-tps-messaging-service
+        - application: testnorge-profil-api-dev
       external:
-        - host: testnav-helsepersonell-service.dev.intern.nav.no
-        - host: testnav-organisasjon-forvalter.dev.intern.nav.no
-        - host: testnav-inntektsmelding-service.dev.intern.nav.no
-        - host: testnav-tps-messaging-service.dev.intern.nav.no
-        - host: generer-navn-service.dev.intern.nav.no
-        - host: testnorge-profil-api-dev.dev.intern.nav.no
-        - host: testnav-person-service.dev.intern.nav.no
-        - host: testnav-pdl-forvalter-dev.dev.intern.nav.no
-        - host: testnav-arbeidsforhold-service.dev.intern.nav.no
-        - host: testnav-amelding-service.dev.intern.nav.no
-        - host: testnav-organisasjon-service.dev.intern.nav.no
-        - host: testnav-synt-sykemelding-api.dev.intern.nav.no
-        - host: testnav-popp-testdata-proxy.dev.intern.nav.no
-        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
-        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
-        - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
+        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-inst-proxy.dev-fss-pub.nais.io
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
+        - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
+        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
+        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+        - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
         - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-        - host: testnav-histark-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
-        - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:

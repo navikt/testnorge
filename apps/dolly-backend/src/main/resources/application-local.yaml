@@ -41,7 +41,29 @@ management:
 consumers:
   testnav-profil-api:
     name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.dev.intern.nav.no
+    url: https://testnorge-profil-api-dev.intern.dev.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
-    url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
+    url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no
+  testnav-helsepersonell-service:
+    url: https://testnav-helsepersonell-service.intern.dev.nav.no
+  testnav-organisasjon-forvalter:
+    url: https://testnav-organisasjon-forvalter.intern.dev.nav.no
+  testnav-inntektsmelding-service:
+    url: https://testnav-inntektsmelding-service.intern.dev.nav.no
+  testnav-tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no
+  testnav-generer-navn-service:
+    url: https://generer-navn-service.intern.dev.nav.no
+  testnav-person-service:
+    url: https://testnav-person-service.intern.dev.nav.no
+  testnav-arbeidsforhold-service:
+    url: https://testnav-arbeidsforhold-service.intern.dev.nav.no
+  testnav-amelding-service:
+    url: https://testnav-amelding-service.dolly.intern.dev.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.intern.dev.nav.no
+  testnav-synt-sykemelding-api:
+    url: https://testnav-synt-sykemelding-api.intern.dev.nav.no
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.dolly.intern.dev.nav.no
