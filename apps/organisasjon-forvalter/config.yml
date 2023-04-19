@@ -93,6 +93,7 @@ spec:
       memory: 2000Mi
   ingresses:
     - "https://testnav-organisasjon-forvalter.dev.intern.nav.no"
+    - "https://testnav-organisasjon-forvalter.intern.dev.nav.no"
   kafka:
     pool: nav-dev
   envFrom:

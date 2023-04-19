@@ -74,3 +74,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api-dev.dev.intern.nav.no"
+    - "https://testnorge-profil-api-dev.intern.dev.nav.no"

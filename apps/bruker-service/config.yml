@@ -57,3 +57,4 @@ spec:
       value: prod
   ingresses:
     - "https://testnav-bruker-service.dev.intern.nav.no"
+    - "https://testnav-bruker-service.intern.dev.nav.no"

@@ -62,5 +62,6 @@ spec:
     - secret: google-sql-testnav-generer-organisasjon-populasjon-service
   ingresses:
     - "https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no"
+    - "https://testnav-generer-organisasjon-populasjon-service.intern.dev.nav.no"
   kafka:
     pool: nav-dev
