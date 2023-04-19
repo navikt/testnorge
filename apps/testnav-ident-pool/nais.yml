@@ -60,6 +60,8 @@ spec:
       rules:
         - application: testnav-tps-messaging-service
           cluster: dev-gcp
+      external:
+        -host: https://tokendings.dev-gcp.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_14
