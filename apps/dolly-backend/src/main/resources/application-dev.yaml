@@ -11,7 +11,7 @@ spring:
 consumers:
   testnav-profil-api:
     name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.dolly.svc.cluster.local
+    url: http://testnorge-profil-api-dev.dolly.svc.cluster.local
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
-    url: https://testnav-pdl-forvalter-dev.dolly.svc.cluster.local
+    url: http://testnav-pdl-forvalter-dev.dolly.svc.cluster.local

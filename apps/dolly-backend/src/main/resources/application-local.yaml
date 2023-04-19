@@ -60,10 +60,10 @@ consumers:
   testnav-arbeidsforhold-service:
     url: https://testnav-arbeidsforhold-service.intern.dev.nav.no
   testnav-amelding-service:
-    url: https://testnav-amelding-service.dolly.intern.dev.nav.no
+    url: https://testnav-amelding-service.intern.dev.nav.no
   testnav-organisasjon-service:
     url: https://testnav-organisasjon-service.intern.dev.nav.no
   testnav-synt-sykemelding-api:
     url: https://testnav-synt-sykemelding-api.intern.dev.nav.no
   testnav-miljoer-service:
-    url: https://testnav-miljoer-service.dolly.intern.dev.nav.no
+    url: https://testnav-miljoer-service.intern.dev.nav.no
