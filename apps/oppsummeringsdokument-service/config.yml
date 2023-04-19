@@ -65,3 +65,4 @@ spec:
     - secret: teamdolly-opensearch
   ingresses:
     - "https://oppsummeringsdokument-service.dev.intern.nav.no"
+    - "https://oppsummeringsdokument-service.intern.dev.nav.no"

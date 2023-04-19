@@ -48,3 +48,4 @@ spec:
   image: {{ image }}
   ingresses:
     - "https://testnav-faste-data.dev.intern.nav.no"
+    - "https://testnav-faste-data.intern.dev.nav.no"

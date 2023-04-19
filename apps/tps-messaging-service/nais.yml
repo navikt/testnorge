@@ -20,6 +20,7 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-tps-messaging-service.dev.intern.nav.no"
+    - "https://testnav-tps-messaging-service.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

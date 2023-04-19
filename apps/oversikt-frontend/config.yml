@@ -18,7 +18,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-oversikt.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-oversikt.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
@@ -58,3 +58,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-oversikt.dev.intern.nav.no"
+    - "https://testnav-oversikt.intern.dev.nav.no"
