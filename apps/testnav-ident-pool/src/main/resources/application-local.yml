@@ -25,6 +25,3 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default-schema: public
         showSql: true
-
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
