@@ -42,8 +42,8 @@ public class EregProxyApplicationStarter {
         return spec -> spec
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec
-                        .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/ereg/api/${segment}")
-                ).uri("https://modapp-" + miljo + ".adeo.no/ereg/api/");
+                        .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/v2/${segment}")
+                ).uri("https://ereg-services-" + miljo + ".dev.intern.nav.no/");
     }
 
 }
