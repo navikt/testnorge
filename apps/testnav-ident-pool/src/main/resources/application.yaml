@@ -2,7 +2,7 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 application:
   name: testnav-ident-pool
-  version: dummy
+  version: 1.0.0
 
 ### TPS ###
 generer:
@@ -64,9 +64,3 @@ consumers:
         cluster: dev-gcp
         namespace: dolly
         name: testnav-tps-messaging-service
-
-azure:
-  app:
-    client:
-      id: ${client_id}
-      secret: ${client_secret}
