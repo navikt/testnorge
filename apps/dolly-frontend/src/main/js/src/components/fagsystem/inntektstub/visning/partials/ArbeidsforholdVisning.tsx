@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { codeToNorskLabel, formatStringDates } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
@@ -19,10 +19,10 @@ export const ArbeidsforholdVisning = ({ data }) => {
 						<div className="person-visning_content" key={idx}>
 							<TitleValue
 								title="Arbeidsforholdstype"
-								value={Formatters.codeToNorskLabel(id.arbeidsforholdstype)}
+								value={codeToNorskLabel(id.arbeidsforholdstype)}
 							/>
-							<TitleValue title="Startdato" value={Formatters.formatStringDates(id.startdato)} />
-							<TitleValue title="Sluttdato" value={Formatters.formatStringDates(id.sluttdato)} />
+							<TitleValue title="Startdato" value={formatStringDates(id.startdato)} />
+							<TitleValue title="Sluttdato" value={formatStringDates(id.sluttdato)} />
 							<TitleValue
 								title="Timer per uke (full stilling)"
 								value={id.antallTimerPerUkeSomEnFullStillingTilsvarer}
@@ -41,11 +41,11 @@ export const ArbeidsforholdVisning = ({ data }) => {
 							<TitleValue title="Stillingsprosent" value={id.stillingsprosent} />
 							<TitleValue
 								title="Siste lønnsendringsdato"
-								value={Formatters.formatStringDates(id.sisteLoennsendringsdato)}
+								value={formatStringDates(id.sisteLoennsendringsdato)}
 							/>
 							<TitleValue
 								title="Stillingsprosentendring"
-								value={Formatters.formatStringDates(id.sisteDatoForStillingsprosentendring)}
+								value={formatStringDates(id.sisteDatoForStillingsprosentendring)}
 							/>
 						</div>
 					)}

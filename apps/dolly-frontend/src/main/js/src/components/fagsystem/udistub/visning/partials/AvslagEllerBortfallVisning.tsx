@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates } from '@/utils/DataFormatter'
 
 export type AvslagEllerBortfall = {
 	avslagEllerBortfall: {
@@ -14,7 +14,7 @@ export const AvslagEllerBortfallVisning = ({ avslagEllerBortfall }: AvslagEllerB
 			<div className="person-visning_content">
 				<TitleValue
 					title="Avgjørelsesdato"
-					value={Formatters.formatStringDates(avslagEllerBortfall.avgjorelsesDato)}
+					value={formatStringDates(avslagEllerBortfall.avgjorelsesDato)}
 				/>
 			</div>
 		</>

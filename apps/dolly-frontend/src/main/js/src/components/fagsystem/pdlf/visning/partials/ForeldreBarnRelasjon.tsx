@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { ForeldreBarnRelasjon, Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
@@ -34,13 +34,13 @@ export const Visning = ({ data, relasjoner }: VisningData) => {
 				{relasjon && (
 					<RelatertPerson
 						data={relasjon.relatertPerson}
-						tittel={Formatters.showLabel('pdlRelasjonTyper', data.relatertPersonsRolle)}
+						tittel={showLabel('pdlRelasjonTyper', data.relatertPersonsRolle)}
 					/>
 				)}
 				{relatertPersonUtenId && (
 					<RelatertPersonUtenId
 						data={relatertPersonUtenId}
-						tittel={Formatters.showLabel('pdlRelasjonTyper', data.relatertPersonsRolle)}
+						tittel={showLabel('pdlRelasjonTyper', data.relatertPersonsRolle)}
 					/>
 				)}
 			</ErrorBoundary>

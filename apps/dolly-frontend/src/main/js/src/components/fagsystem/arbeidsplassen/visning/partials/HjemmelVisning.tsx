@@ -1,7 +1,7 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import React from 'react'
-import Formatters from '@/utils/DataFormatter'
+import { oversettBoolean } from '@/utils/DataFormatter'
 
 export const HjemmelVisning = ({ hjemmel }) => {
 	return (
@@ -9,7 +9,7 @@ export const HjemmelVisning = ({ hjemmel }) => {
 			<ErrorBoundary>
 				<div className="flexbox--full-width">
 					<h3>Hjemmel</h3>
-					<TitleValue title="Godta hjemmel" value={Formatters.oversettBoolean(hjemmel)} />
+					<TitleValue title="Godta hjemmel" value={oversettBoolean(hjemmel)} />
 				</div>
 			</ErrorBoundary>
 		</div>

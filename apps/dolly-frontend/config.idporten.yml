@@ -51,6 +51,7 @@ spec:
         - host: testnorge-profil-api.dev.intern.nav.no
         - host: testnav-organisasjon-tilgang-service.dev.intern.nav.no
         - host: testnav-joark-dokument-service.dev.intern.nav.no
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-organisasjon-faste-data-service.dev.intern.nav.no
         - host: testnav-tps-messaging-service.dev.intern.nav.no
         - host: testnav-varslinger-service.dev.intern.nav.no

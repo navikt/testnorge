@@ -23,6 +23,7 @@ import { useFormikContext } from 'formik'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
+import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -71,6 +72,7 @@ export const Steg2 = () => {
 			<KrrstubForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 			<DokarkivForm formikBag={formikBag} />
+			<HistarkForm formikBag={formikBag} />
 			<OrganisasjonForm formikBag={formikBag} />
 		</div>
 	)
@@ -93,6 +95,7 @@ Steg2.validation = Yup.object({
 	...UdistubForm.validation,
 	...SkjermingForm.validation,
 	...DokarkivForm.validation,
+	...HistarkForm.validation,
 	...OrganisasjonForm.validation,
 	pensjonforvalter: ifPresent(
 		'$pensjonforvalter',

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, formatKjonn } from '@/utils/DataFormatter'
 import { TpsMessagingApi } from '@/service/Api'
 import { Adressevisning } from '@/components/fagsystem/tpsf/visning/partials/Boadresse'
 import { PostadresseVisning } from '@/components/fagsystem/tpsf/visning/partials/Postadresse'
@@ -68,12 +68,12 @@ export const Foreldre = ({ person, type }: Data) => {
 				<TitleValue title="Fornavn" value={person.fornavn} />
 				<TitleValue title="Mellomnavn" value={person.mellomnavn} />
 				<TitleValue title="Etternavn" value={person.etternavn} />
-				<TitleValue title="Kjønn" value={Formatters.kjonn(person.kjonn, person.alder)} />
+				<TitleValue title="Kjønn" value={formatKjonn(person.kjonn, person.alder)} />
 				<TitleValue
 					title="Alder"
 					value={person.doedsdato ? `${person.alder}(død)` : person.alder}
 				/>
-				<TitleValue title="Dødsdato" value={Formatters.formatDate(person.doedsdato)} />
+				<TitleValue title="Dødsdato" value={formatDate(person.doedsdato)} />
 				<TitleValue title="Foreldretype" value={type} />
 				<TitleValue
 					title="Diskresjonskode"

@@ -1,6 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SikkerhetstiltakData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
@@ -18,14 +18,8 @@ export const Visning = ({ data }: Data) => {
 		<>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue
-						title="Gyldig fra og med"
-						value={Formatters.formatDate(data.gyldigFraOgMed)}
-					/>
-					<TitleValue
-						title="Gyldig til og med"
-						value={Formatters.formatDate(data.gyldigTilOgMed)}
-					/>
+					<TitleValue title="Gyldig fra og med" value={formatDate(data.gyldigFraOgMed)} />
+					<TitleValue title="Gyldig til og med" value={formatDate(data.gyldigTilOgMed)} />
 					<TitleValue title="Tiltakstype" value={data.tiltakstype} />
 					<TitleValue title="Beskrivelse" value={data.beskrivelse} />
 					<TitleValue title="Kontaktperson ident" value={data.kontaktperson.personident} />

@@ -75,7 +75,7 @@ export const validation = {
 				'$pdldata.person.adressebeskyttelse',
 				Yup.array().of(adressebeskyttelse)
 			),
-			fullmakt: ifPresent('$pdldata.person.fullmakt', fullmakt),
+			fullmakt: ifPresent('$pdldata.person.fullmakt', Yup.array().of(fullmakt)),
 			sikkerhetstiltak: ifPresent('$pdldata.person.sikkerhetstiltak', sikkerhetstiltak),
 			tilrettelagtKommunikasjon: ifPresent(
 				'$pdldata.person.tilrettelagtKommunikasjon',
@@ -97,7 +97,7 @@ export const validation = {
 			),
 			kontaktinformasjonForDoedsbo: ifPresent(
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
-				kontaktDoedsbo
+				Yup.array().of(kontaktDoedsbo)
 			),
 			forelderBarnRelasjon: ifPresent('$pdldata.person.forelderBarnRelasjon', forelderBarnRelasjon),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', Yup.array().of(sivilstand)),

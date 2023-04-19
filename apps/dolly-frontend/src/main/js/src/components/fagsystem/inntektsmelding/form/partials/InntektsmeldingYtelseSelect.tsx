@@ -2,7 +2,7 @@ import * as _ from 'lodash-es'
 import LoadableComponent, { Feilmelding } from '@/components/ui/loading/LoadableComponent'
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { Option, SelectOptionsOppslag } from '@/service/SelectOptionsOppslag'
-import Formatters from '@/utils/DataFormatter'
+import { codeToNorskLabel } from '@/utils/DataFormatter'
 import { FormikProps } from 'formik'
 import { Tema, Ytelser } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
@@ -41,7 +41,7 @@ export default ({
 					SelectOptionsOppslag.hentInntektsmeldingOptions(kodeverk).then((response) =>
 						response.map((value: string) => ({
 							value,
-							label: Formatters.codeToNorskLabel(value),
+							label: codeToNorskLabel(value),
 							tema: findTema(value),
 						}))
 					)

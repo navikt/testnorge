@@ -10,6 +10,7 @@ import no.nav.dolly.domain.resultset.aareg.RsAareg;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.breg.RsBregdata;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.histark.RsHistark;
 import no.nav.dolly.domain.resultset.inntektsmeldingstub.RsInntektsmelding;
 import no.nav.dolly.domain.resultset.inntektstub.InntektMultiplierWrapper;
 import no.nav.dolly.domain.resultset.inst.RsInstdata;
@@ -60,6 +61,7 @@ public class RsDollyBestilling {
     private RsInntektsmelding inntektsmelding;
     private RsBregdata brregstub;
     private RsDokarkiv dokarkiv;
+    private RsHistark histark;
     private RsSykemelding sykemelding;
     private RsTpsMessaging tpsMessaging;
     private BankkontoData bankkonto;

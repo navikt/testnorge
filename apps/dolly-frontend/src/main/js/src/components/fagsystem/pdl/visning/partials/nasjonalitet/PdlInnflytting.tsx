@@ -2,7 +2,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { InnflyttingTilNorge } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 
 type InnflyttingProps = {
 	data: InnflyttingTilNorge
@@ -25,7 +25,7 @@ const Innflytting = ({ data, idx }: InnflyttingProps) => {
 				<TitleValue title="Fraflyttingssted" value={data.fraflyttingsstedIUtlandet} />
 				<TitleValue
 					title="Innflyttingsdato"
-					value={Formatters.formatDate(data.folkeregistermetadata?.gyldighetstidspunkt)}
+					value={formatDate(data.folkeregistermetadata?.gyldighetstidspunkt)}
 				/>
 			</div>
 		)

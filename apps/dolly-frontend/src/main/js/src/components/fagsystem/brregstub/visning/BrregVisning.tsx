@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, oversettBoolean } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
@@ -47,7 +47,7 @@ export const BrregVisning = ({ data, loading }) => {
 									<TitleValue title="Rolle" value={enhet.rollebeskrivelse} />
 									<TitleValue
 										title="Registreringsdato"
-										value={Formatters.formatStringDates(enhet.registreringsdato)}
+										value={formatStringDates(enhet.registreringsdato)}
 									/>
 									<TitleValue title="Organisasjonsnummer" value={enhet.orgNr} />
 									<TitleValue title="Foretaksnavn" value={enhet.foretaksNavn.navn1} />
@@ -58,7 +58,7 @@ export const BrregVisning = ({ data, loading }) => {
 													<TitleValue title="Egenskap" value={personrolle.egenskap} />
 													<TitleValue
 														title="Har fratrådt"
-														value={Formatters.oversettBoolean(personrolle.fratraadt)}
+														value={oversettBoolean(personrolle.fratraadt)}
 													/>
 												</div>
 											)}

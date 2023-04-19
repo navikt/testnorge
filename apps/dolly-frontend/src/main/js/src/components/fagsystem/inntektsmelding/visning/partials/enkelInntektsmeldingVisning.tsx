@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
 import ArbeidsforholdVisning from './arbeidsforholdVisning'
 import OmsorgspengerVisning from './omsorgspengerVisning'
 import RefusjonVisning from './refusjonVisning'
@@ -44,9 +44,9 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 							<div className="person-visning_content" key={idx}>
 								<TitleValue
 									title="Årsak til innsending"
-									value={Formatters.codeToNorskLabel(inntekt.aarsakTilInnsending)}
+									value={codeToNorskLabel(inntekt.aarsakTilInnsending)}
 								/>
-								<TitleValue title="Ytelse" value={Formatters.codeToNorskLabel(inntekt.ytelse)} />
+								<TitleValue title="Ytelse" value={codeToNorskLabel(inntekt.ytelse)} />
 								<TitleValue
 									title="Virksomhet (orgnr)"
 									value={inntekt.arbeidsgiver && inntekt.arbeidsgiver.orgnummer}
@@ -57,7 +57,7 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 								/>
 								<TitleValue
 									title="Innsendingstidspunkt"
-									value={Formatters.formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
+									value={formatDate(inntekt.avsendersystem.innsendingstidspunkt)}
 								/>
 								<TitleValue
 									title="Privat arbeidsgiver"
@@ -66,7 +66,7 @@ export const EnkelInntektsmeldingVisning = ({ bestilling, data }: EnkelInntektsm
 								<TitleValue title="Har nær relasjon" value={inntekt.naerRelasjon} />
 								<TitleValue
 									title="Startdato foreldrepenger"
-									value={Formatters.formatDate(inntekt.startdatoForeldrepengeperiode)}
+									value={formatDate(inntekt.startdatoForeldrepengeperiode)}
 								/>
 							</div>
 							<ArbeidsforholdVisning data={inntekt.arbeidsforhold} />

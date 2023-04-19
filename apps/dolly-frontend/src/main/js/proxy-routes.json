@@ -59,6 +59,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/testnav-histark-proxy/api": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/testnav-inntektstub-proxy/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,

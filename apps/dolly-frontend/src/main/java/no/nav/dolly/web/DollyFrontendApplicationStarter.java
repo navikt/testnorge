@@ -67,6 +67,7 @@ public class DollyFrontendApplicationStarter {
     private final KontoregisterProxyProperties kontoregisterProxyProperties;
     private final SkjermingsregisterProxyProperties skjermingsregisterProxyProperties;
     private final TestnavDokarkivProxyProperties testnavDokarkivProxyProperties;
+    private final TestnavHistarkProxyProperties testnavHistarkProxyProperties;
     private final TestnavArbeidsplassenCvProxyProperties testnavArbeidsplassenCvProxyProperties;
 
     @Bean
@@ -94,6 +95,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
                 .route(createRoute(testnavInstProxyProperties, "testnav-inst-proxy"))
+                .route(createRoute(testnavHistarkProxyProperties, "testnav-histark-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))
