@@ -34,6 +34,8 @@ spec:
         - application: dolly-backend
           cluster: dev-gcp
       external:
+        - host: dolly-backend.dev.intern.nav.no
+        - host: dolly-backend-dev.dev.intern.nav.no
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
   liveness:
