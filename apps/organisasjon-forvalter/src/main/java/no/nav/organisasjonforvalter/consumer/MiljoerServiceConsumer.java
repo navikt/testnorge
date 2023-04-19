@@ -8,7 +8,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -39,9 +38,9 @@ public class MiljoerServiceConsumer {
     public Set<String> getOrgMiljoer() {
 
         try {
-            return Stream.of(Objects.requireNonNull(tokenExchange.exchange(serviceProperties)
+            return Stream.of(tokenExchange.exchange(serviceProperties)
                             .flatMap(token ->
-                                    new MiljoerServiceCommand(webClient, token.getTokenValue()).call()).block()))
+                                    new MiljoerServiceCommand(webClient, token.getTokenValue()).call()).block())
                     .filter(env -> !env.equals("u5") && !env.equals("qx"))
                     .collect(Collectors.toSet());
 
