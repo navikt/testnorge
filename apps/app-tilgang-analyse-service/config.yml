@@ -61,3 +61,4 @@ spec:
     - secret: dolly-reader-token
   ingresses:
     - "https://testnav-app-tilgang-analyse-service.dev.intern.nav.no"
+    - "https://testnav-app-tilgang-analyse-service.intern.dev.nav.no"
