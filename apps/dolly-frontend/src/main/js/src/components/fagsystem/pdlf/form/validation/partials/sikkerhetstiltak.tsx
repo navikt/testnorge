@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { requiredDate, requiredString } from '@/utils/YupValidations'
-import { differenceInWeeks, isAfter, isSameDay } from 'date-fns'
+import { differenceInWeeks, isAfter } from 'date-fns'
 import * as _ from 'lodash-es'
 
 export const sikkerhetstiltak = Yup.array().of(
@@ -15,18 +15,14 @@ export const sikkerhetstiltak = Yup.array().of(
 		gyldigTilOgMed: Yup.string()
 			.test(
 				'is-after-startdato',
-				'Dato må være lik eller etter startdato, og ikke mer enn 12 uker etter startdato',
+				'Dato må være etter startdato, og ikke mer enn 12 uker etter startdato',
 				function validDate(dato) {
 					const values = this.options.context
 					return (
-						(isAfter(
+						isAfter(
 							new Date(dato),
 							new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
-						) ||
-							isSameDay(
-								new Date(dato),
-								new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
-							)) &&
+						) &&
 						differenceInWeeks(
 							new Date(dato),
 							new Date(_.get(values, 'pdldata.person.sikkerhetstiltak[0].gyldigFraOgMed'))
