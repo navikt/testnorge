@@ -4,7 +4,10 @@ describe('Minside mal testing', () => {
 	it('passes', () => {
 		cy.intercept('DELETE', '*', cy.spy().as('slett_mal'))
 
-		cy.visit('http://localhost:5678/minside')
+		cy.visit('http://localhost:5678')
+
+		cy.dollyGet(CypressSelector.BUTTON_PROFIL).click()
+		cy.dollyGet(CypressSelector.BUTTON_PROFIL_MINSIDE).click()
 
 		cy.dollyGet(CypressSelector.INPUT_MINSIDE_MAL).type('mal')
 		cy.dollyGet(CypressSelector.INPUT_MINSIDE_MAL).clear()

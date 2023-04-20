@@ -220,12 +220,14 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<Highlighter
-				textToHighlight={children}
-				searchWords={fragment.split(' ')}
-				autoEscape={true}
-				caseSensitive={false}
-			/>
+			<span data-cy={CypressSelector.BUTTON_NAVIGER_PERSON}>
+				<Highlighter
+					textToHighlight={children}
+					searchWords={fragment.split(' ')}
+					autoEscape={true}
+					caseSensitive={false}
+				/>
+			</span>
 		</components.Option>
 	)
 

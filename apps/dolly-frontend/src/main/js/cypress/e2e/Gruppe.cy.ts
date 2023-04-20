@@ -8,7 +8,13 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 		cy.dollyGet(CypressSelector.INPUT_PERSON_SOEK).click({ force: true })
 		cy.get('body').type('12345')
 
+		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_PERSON).click()
+
 		cy.wait(400)
+
+		cy.url().should('include', '/gruppe/1')
+
+		cy.dollyGet(CypressSelector.BUTTON_HEADER_PERSONER).click()
 
 		cy.dollyGet(CypressSelector.TOGGLE_FAVORITTER).click()
 		cy.dollyGet(CypressSelector.TOGGLE_ALLE).click()
@@ -23,7 +29,9 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 		cy.dollyGet(CypressSelector.TOGGLE_EKSISTERENDE_PERSON).click()
 		cy.dollyGet(CypressSelector.TOGGLE_NY_PERSON).click()
 		cy.dollyGet(CypressSelector.TOGGLE_MAL).click()
+
 		cy.url().should('include', '/gruppe/2')
+
 		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()
 		cy.dollyGet(CypressSelector.BUTTON_VELG_ALLE).each((btn) => cy.wrap(btn).click())
 		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()

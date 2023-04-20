@@ -22,12 +22,16 @@ describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 
 		cy.dollyGet(CypressSelector.TOGGLE_VISNING_PERSONER).click()
 
-		cy.get('div').contains('12345678912').click()
-		cy.wait(2000)
+		cy.dollyGet(CypressSelector.BUTTON_OPEN_IDENT).click()
+
+		cy.dollyGet(CypressSelector.BUTTON_OPEN_BESTILLINGSDETALJER)
+		cy.wait(200)
+		cy.dollyGet(CypressSelector.TITLE_VISNING).invoke('show').click()
+		cy.wait(200)
 
 		cy.dollyGet(CypressSelector.MILJOE_HOVER).each((element) => {
 			cy.wrap(element).invoke('show').click()
-			cy.wait(1000)
+			cy.wait(400)
 			cy.dollyGet(CypressSelector.TITLE_VISNING).invoke('show').click()
 		})
 	})

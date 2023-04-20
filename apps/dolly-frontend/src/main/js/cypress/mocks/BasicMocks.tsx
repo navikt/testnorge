@@ -16,9 +16,9 @@ export const gjeldendeBrukerMock = {
 export const personFragmentSearchMock = [
 	{
 		ident: '12345678912',
-		fornavn: 'Teste',
+		fornavn: 'Testytest',
 		mellomnavn: null,
-		etternavn: 'Testesen',
+		etternavn: 'Cafe',
 	},
 ]
 
@@ -1422,3 +1422,10 @@ export const paginerteGrupperMock = {
 }
 
 export const miljoeMock = '["q1","q2","q4","q5","t3"]'
+export const personFragmentNavigerMock = {
+	gruppe: eksisterendeGruppeMock,
+	identHovedperson: '12345678912',
+	identNavigerTil: '12345678912',
+	bestillingNavigerTil: null,
+	sidetall: 0,
+}

@@ -25,6 +25,7 @@ import {
 	paginerteGrupperMock,
 	pensjonMock,
 	pensjonTpMock,
+	personFragmentNavigerMock,
 	personFragmentSearchMock,
 	sigrunstubMock,
 	skjermingMock,
@@ -40,6 +41,7 @@ const profil = new RegExp(/\/profil\/bilde/)
 const hentGrupper = new RegExp(/api\/v1\/gruppe\?pageNo/)
 const histark = new RegExp(/testnav-histark-proxy\/api\//)
 const personFragmentSearch = new RegExp(/\/testnav-pdl-forvalter\/api\/v1\/identiteter\?fragment/)
+const personFragmentNaviger = new RegExp(/dolly-backend\/api\/v1\/ident\/naviger\/12345678912/)
 const hentGruppe = new RegExp(/\/api\/v1\/gruppe\/1/)
 const hentGruppeBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/1/)
 const pdlPersonBolk = new RegExp(/\/api\/v1\/pdlperson\/identer/)
@@ -86,6 +88,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: miljoer }, miljoeMock).as('miljoer')
 	cy.intercept({ method: 'GET', url: bilde }, { statusCode: 404 }).as('bilde')
 	cy.intercept({ method: 'GET', url: personFragmentSearch }, personFragmentSearchMock)
+	cy.intercept({ method: 'GET', url: personFragmentNaviger }, personFragmentNavigerMock)
 	cy.intercept({ method: 'GET', url: hentGrupper }, paginerteGrupperMock)
 	cy.intercept({ method: 'GET', url: histark }, histarkMock)
 	cy.intercept({ method: 'GET', url: hentGruppe }, eksisterendeGruppeMock)
