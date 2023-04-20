@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 
 import { DatePickerFormItem, InputFormItem, Line, SelectFormItem } from '@navikt/dolly-komponenter';
 import reducer, { Action, State } from './FodselsmeldingReducer';
-import EndringsmeldingService from '@/service/EndringsmeldingService';
+import { sendFodselsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
 
 export const initState: State = {
@@ -29,7 +29,7 @@ export default () => {
   };
 
   const onSend = () =>
-    EndringsmeldingService.sendFodselsmelding(
+    sendFodselsmelding(
       {
         adresseFra: state.address,
         identFar: state.farsIdent !== '' ? state.farsIdent.trim() : null,
