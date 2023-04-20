@@ -5,7 +5,5 @@ helsepersonell.controller.cache.hours: 0
 
 consumers:
   dolly-backend:
-    cluster: dev-gcp
-    namespace: dolly
     name: dolly-backend-dev
     url: https://dolly-backend-dev.dev.intern.nav.no
