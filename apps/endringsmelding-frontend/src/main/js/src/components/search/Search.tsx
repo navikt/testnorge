@@ -67,7 +67,11 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
     setError(false);
     return onSearch(value)
       .then((response) => {
-        setSuccess(response && response.length > 0);
+        if (!response || response.length === 0) {
+          setSuccess(false);
+          throw new NotFoundError();
+        }
+        setSuccess(true);
         return response;
       })
       .catch((e) => {
