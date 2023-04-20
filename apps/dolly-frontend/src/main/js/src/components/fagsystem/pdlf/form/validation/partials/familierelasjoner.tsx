@@ -182,12 +182,13 @@ export const forelderBarnRelasjon = Yup.object({
 	borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
 		is: 'BARN',
 		then: () => Yup.mixed().notRequired(),
-		otherwise: () => Yup.boolean(),
+		otherwise: () => Yup.boolean().nullable(),
 	}),
 	nyRelatertPerson: nyPerson.nullable(),
 	deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 		is: 'BARN',
 		then: () => deltBosted.nullable(),
+		otherwise: () => Yup.mixed().notRequired(),
 	}),
 })
 

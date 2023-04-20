@@ -109,12 +109,10 @@ export const FullmaktVisning = ({
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				fullmaktValues?.motpartsPersonident,
-				'FULLMEKTIG'
-		  )
-		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, 'FULLMEKTIG')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, fullmaktValues?.motpartsPersonident, [
+				'FULLMEKTIG',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, ['FULLMEKTIG'])
 
 	if (eksisterendeNyPerson && initialValues?.fullmakt?.nyFullmektig) {
 		initialValues.fullmakt.nyFullmektig = initialPdlPerson

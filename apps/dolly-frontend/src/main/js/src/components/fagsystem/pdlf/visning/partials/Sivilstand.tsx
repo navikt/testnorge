@@ -108,16 +108,12 @@ const SivilstandVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
-		: getEksisterendeNyPerson(
-				relasjoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
+		? getEksisterendeNyPerson(redigertRelatertePersoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
 
 	return (
 		<VisningRedigerbarConnector

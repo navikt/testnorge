@@ -143,8 +143,8 @@ const VergemaalVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, 'VERGE')
-		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, 'VERGE')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, ['VERGE'])
+		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, ['VERGE'])
 
 	return erPdlVisning ? (
 		<VergemaalLes vergemaalData={vergemaalData} relasjoner={relasjoner} idx={idx} />

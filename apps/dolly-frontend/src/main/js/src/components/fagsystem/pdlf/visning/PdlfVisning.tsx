@@ -77,8 +77,6 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 
 	const bankkontoData = getBankkontoData(fagsystemData)
 
-	console.log('data: ', data) //TODO - SLETT MEG
-
 	return (
 		<ErrorBoundary>
 			<div>

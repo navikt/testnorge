@@ -7,7 +7,11 @@ import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/Rel
 import { ForeldreBarnRelasjon, Relasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
 import * as _ from 'lodash-es'
-import { initialBarn, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
+import {
+	initialBarn,
+	initialForelder,
+	initialPdlPerson,
+} from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
@@ -30,6 +34,9 @@ const ForelderBarnRelasjonLes = ({
 	const relatertPersonIdent =
 		forelderBarnData.relatertPerson || forelderBarnData.relatertPersonsIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
+	const relasjonRedigert = redigertRelatertePersoner?.find(
+		(item) => item.relatertPerson?.ident === relatertPersonIdent
+	)
 	const relatertPersonUtenId = forelderBarnData.relatertPersonUtenFolkeregisteridentifikator
 
 	return (
@@ -41,9 +48,9 @@ const ForelderBarnRelasjonLes = ({
 						<TitleValue title="Rolle for barn" value={forelderBarnData.minRolleForPerson} />
 					)}
 				</div>
-				{relasjon && (
+				{(relasjon || relasjonRedigert) && (
 					<RelatertPerson
-						data={relasjon.relatertPerson}
+						data={relasjonRedigert?.relatertPerson || relasjon?.relatertPerson}
 						tittel={showLabel('pdlRelasjonTyper', forelderBarnData.relatertPersonsRolle)}
 					/>
 				)}
@@ -66,8 +73,14 @@ export const ForelderBarnRelasjonVisning = ({
 	ident,
 	relasjoner,
 }: FamilieRelasjonerData) => {
-	//TODO initialBarn må nok tilpasses
-	const initForelderBarn = Object.assign(_.cloneDeep(initialBarn), data[idx])
+	// console.log('forelderBarnRelasjonData: ', forelderBarnRelasjonData) //TODO - SLETT MEG
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
+	// console.log('data[idx]: ', data[idx]) //TODO - SLETT MEG
+	const initForelderBarn = Object.assign(
+		_.cloneDeep(data[idx].relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
+		data[idx]
+	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
 
 	const redigertForelderBarnPdlf = _.get(tmpPersoner, `${ident}.person.forelderBarnRelasjon`)?.find(
@@ -79,20 +92,32 @@ export const ForelderBarnRelasjonVisning = ({
 	if (slettetForelderBarnPdlf) {
 		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 	}
-
+	// console.log('redigertForelderBarnPdlf: ', redigertForelderBarnPdlf) //TODO - SLETT MEG
 	const forelderBarnValues = redigertForelderBarnPdlf
 		? redigertForelderBarnPdlf
 		: forelderBarnRelasjonData
 	let redigertForelderBarnValues = redigertForelderBarnPdlf
 		? {
-				//TODO initialBarn må nok tilpasses
-				forelderBarnRelasjon: Object.assign(_.cloneDeep(initialBarn), redigertForelderBarnPdlf),
+				forelderBarnRelasjon: Object.assign(
+					_.cloneDeep(
+						redigertForelderBarnPdlf.relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder
+					),
+					redigertForelderBarnPdlf
+				),
 		  }
 		: null
 
+	// console.log('forelderBarnValues: ', forelderBarnValues) //TODO - SLETT MEG
+	// console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(redigertRelatertePersoner, forelderBarnValues?.relatertPerson, 'BARN')
-		: getEksisterendeNyPerson(relasjoner, forelderBarnValues?.relatertPerson, 'BARN')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, forelderBarnValues?.relatertPerson, [
+				'FAMILIERELASJON_BARN',
+				'FAMILIERELASJON_FORELDER',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, forelderBarnValues?.relatertPerson, [
+				'FAMILIERELASJON_BARN',
+				'FAMILIERELASJON_FORELDER',
+		  ])
 
 	if (eksisterendeNyPerson && initialValues?.forelderBarnRelasjon?.nyRelatertPerson) {
 		initialValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson

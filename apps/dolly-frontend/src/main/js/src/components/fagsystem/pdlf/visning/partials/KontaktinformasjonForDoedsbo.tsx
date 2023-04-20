@@ -151,12 +151,12 @@ export const KontaktinformasjonForDoedsboVisning = ({
 		? getEksisterendeNyPerson(
 				redigertRelatertePersoner,
 				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
-				'KONTAKT_FOR_DOEDSBO'
+				['KONTAKT_FOR_DOEDSBO']
 		  )
 		: getEksisterendeNyPerson(
 				relasjoner,
 				kontaktinfoValues?.personSomKontakt?.identifikasjonsnummer,
-				'KONTAKT_FOR_DOEDSBO'
+				['KONTAKT_FOR_DOEDSBO']
 		  )
 
 	if (eksisterendeNyPerson && initialValues?.kontaktinformasjonForDoedsbo?.personSomKontakt) {

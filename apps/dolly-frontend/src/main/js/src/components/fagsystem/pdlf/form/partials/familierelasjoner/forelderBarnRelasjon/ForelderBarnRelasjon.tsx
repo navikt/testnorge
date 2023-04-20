@@ -18,6 +18,7 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { ToggleGroup } from '@navikt/ds-react'
+import { useEffect } from 'react'
 
 interface ForelderForm {
 	formikBag: FormikProps<{}>
@@ -30,8 +31,10 @@ type Target = {
 	value: string
 }
 
-const RELASJON_BARN = 'Barn'
-const RELASJON_FORELDER = 'Forelder'
+const RELASJON_BARN = 'BARN'
+const RELASJON_FORELDER = 'FORELDER'
+
+const forelderTyper = ['FORELDER', 'MOR', 'MEDMOR', 'FAR']
 
 export const ForelderBarnRelasjonForm = ({
 	formikBag,
@@ -42,7 +45,10 @@ export const ForelderBarnRelasjonForm = ({
 	const nyRelatertPerson = 'nyRelatertPerson'
 	const relatertPersonUtenFolkeregisteridentifikator =
 		'relatertPersonUtenFolkeregisteridentifikator'
-
+	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
+	// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
+	console.log('path: ', path) //TODO - SLETT MEG
+	// console.log('eksisterendeNyPerson: ', eksisterendeNyPerson) //TODO - SLETT MEG
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
 		const forelderBarnRelasjon = _.get(formikBag.values, path)
 		const forelderBarnClone = _.cloneDeep(forelderBarnRelasjon)
@@ -72,24 +78,52 @@ export const ForelderBarnRelasjonForm = ({
 		formikBag.setFieldValue(path, forelderBarnClone)
 	}
 
-	const erBarn = _.get(formikBag.values, path)?.partnerErIkkeForelder !== undefined
-	const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
+	const relatertPersonsRolle = forelderTyper.includes(
+		_.get(formikBag.values, `${path}.relatertPersonsRolle`)
+	)
+		? RELASJON_FORELDER
+		: RELASJON_BARN
+
+	const erBarn = relatertPersonsRolle === RELASJON_BARN
+
+	const getForelderBarnType = () => {
+		const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
+		if (forelderBarnType) {
+			return forelderBarnType
+		} else if (_.get(formikBag.values, `${path}.relatertPerson`)) {
+			return 'EKSISTERENDE'
+		} else if (_.get(formikBag.values, `${path}.relatertPersonUtenFolkeregisteridentifikator`)) {
+			return 'UTEN_ID'
+		} else return null
+	}
+
+	useEffect(() => {
+		if (!_.get(formikBag.values, `${path}.typeForelderBarn`)) {
+			formikBag.setFieldValue(`${path}.typeForelderBarn`, getForelderBarnType())
+		}
+	}, [])
 
 	return (
 		<div className="flexbox--flex-wrap">
-			<div className="toggle--wrapper">
-				<ToggleGroup
-					onChange={(value: string) => {
-						formikBag.setFieldValue(path, value === RELASJON_BARN ? initialBarn : initialForelder)
-					}}
-					size={'small'}
-					defaultValue={RELASJON_BARN}
-					style={{ backgroundColor: '#ffffff' }}
-				>
-					<ToggleGroup.Item value={RELASJON_BARN}>{RELASJON_BARN}</ToggleGroup.Item>
-					<ToggleGroup.Item value={RELASJON_FORELDER}>{RELASJON_FORELDER}</ToggleGroup.Item>
-				</ToggleGroup>
-			</div>
+			{path?.includes('pdldata') ? (
+				<div className="toggle--wrapper">
+					<ToggleGroup
+						onChange={(value: string) => {
+							formikBag.setFieldValue(path, value === RELASJON_BARN ? initialBarn : initialForelder)
+						}}
+						size={'small'}
+						defaultValue={relatertPersonsRolle || RELASJON_BARN}
+						style={{ backgroundColor: '#ffffff' }}
+					>
+						<ToggleGroup.Item value={RELASJON_BARN}>{'Barn'}</ToggleGroup.Item>
+						<ToggleGroup.Item value={RELASJON_FORELDER}>{'Forelder'}</ToggleGroup.Item>
+					</ToggleGroup>
+				</div>
+			) : (
+				<h4 style={{ marginTop: '10px', marginBottom: '15px', width: '100%' }}>
+					{erBarn ? 'Barn' : 'Forelder'}
+				</h4>
+			)}
 			<div className="flexbox--flex-wrap">
 				{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
 				{!erBarn && (
@@ -112,7 +146,7 @@ export const ForelderBarnRelasjonForm = ({
 				/>
 			</div>
 
-			{forelderBarnType === TypeAnsvarlig.EKSISTERENDE && (
+			{getForelderBarnType() === TypeAnsvarlig.EKSISTERENDE && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.relatertPerson`}
 					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
@@ -122,14 +156,14 @@ export const ForelderBarnRelasjonForm = ({
 				/>
 			)}
 
-			{forelderBarnType === TypeAnsvarlig.UTEN_ID && (
+			{getForelderBarnType() === TypeAnsvarlig.UTEN_ID && (
 				<PdlPersonUtenIdentifikator
 					formikBag={formikBag}
 					path={`${path}.relatertPersonUtenFolkeregisteridentifikator`}
 				/>
 			)}
 
-			{forelderBarnType === TypeAnsvarlig.NY && (
+			{getForelderBarnType() === TypeAnsvarlig.NY && (
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
 			)}
 
