@@ -9,37 +9,39 @@ import { LoadableComponent } from '@navikt/dolly-komponenter'
 import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
 import LoginPage from '@/pages/LoginPage'
 import { UserPage } from '@/pages/UserPage'
+import * as _ from 'lodash-es'
 
 export default () => (
 	<BrowserRouter>
 		<Routes>
-			<Route path="/*" element={<MagicTokenPage />} />
-			<Route path="/login" element={<LoginPage />} />
-			<Route path="/access-token/scope/:scope" element={<ScopeAccessTokenPage />} />
+			<Route path='/*' element={<MagicTokenPage />} />
+			<Route path='/login' element={<LoginPage />} />
+			<Route path='/access-token/scope/:scope' element={<ScopeAccessTokenPage />} />
 			<Route
-				path="/access-token/:name"
+				path='/access-token/:name'
 				element={
 					<LoadableComponent
 						onFetch={ApplicationService.fetchApplications}
-						render={(items) => (
-							<AccessTokenPage
-								navigations={items.map((application) => ({
-									href:
-										'/access-token/' +
-										application.cluster?.replace('unknown', 'dev-gcp') +
-										'.' +
-										application.namespace +
-										'.' +
-										application.name,
-									label: application.name,
-									content: application,
-								}))}
-							/>
-						)}
+						render={(items) =>
+							(
+								<AccessTokenPage
+									navigations={(_.uniq(items).map((application) => ({
+										href:
+											'/access-token/' +
+											application.cluster?.replace('unknown', 'dev-gcp') +
+											'.' +
+											application.namespace +
+											'.' +
+											application.name,
+										label: application.name,
+										content: application
+									}))}
+								/>
+							)}
 					/>
 				}
 			/>
-			<Route path="/user" element={<UserPage />} />
+			<Route path='/user' element={<UserPage />} />
 		</Routes>
 	</BrowserRouter>
 )
