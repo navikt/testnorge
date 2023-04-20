@@ -121,7 +121,6 @@ export default () => {
         <SelectFormItem
           onChange={(value) => dispatch({ type: Action.SET_MILJOER_ACTION, value: value })}
           htmlId="miljo-select"
-          multi={true}
           label="Send til miljo*"
           error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
           options={state.miljoOptions.map((value: string) => ({
