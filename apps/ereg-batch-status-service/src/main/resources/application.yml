@@ -30,12 +30,7 @@ ereg:
     q2: https://modapp-q2.adeo.no
     q4: https://modapp-q4.adeo.no
     q5: https://modapp-q5.adeo.no
-    t0: https://modapp-t0.adeo.no
-    t1: https://modapp-t1.adeo.no
-    t2: https://modapp-t2.adeo.no
     t3: https://modapp-t3.adeo.no
-    t4: https://modapp-t4.adeo.no
-    t5: https://modapp-t5.adeo.no
 
 management:
   endpoints:
