@@ -4,9 +4,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class JoarkDokuemntServiceApplicationStarter {
+public class JoarkDokumentServiceApplicationStarter {
     public static void main(String[] args) {
-        SpringApplication.run(JoarkDokuemntServiceApplicationStarter.class, args);
+        SpringApplication.run(JoarkDokumentServiceApplicationStarter.class, args);
     }
 
 }
