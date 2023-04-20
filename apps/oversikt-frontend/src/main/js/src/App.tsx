@@ -14,18 +14,19 @@ import * as _ from 'lodash-es'
 export default () => (
 	<BrowserRouter>
 		<Routes>
-			<Route path='/*' element={<MagicTokenPage />} />
-			<Route path='/login' element={<LoginPage />} />
-			<Route path='/access-token/scope/:scope' element={<ScopeAccessTokenPage />} />
+			<Route path="/*" element={<MagicTokenPage />} />
+			<Route path="/login" element={<LoginPage />} />
+			<Route path="/access-token/scope/:scope" element={<ScopeAccessTokenPage />} />
 			<Route
-				path='/access-token/:name'
+				path="/access-token/:name"
 				element={
 					<LoadableComponent
 						onFetch={ApplicationService.fetchApplications}
-						render={(items) =>
-							(
+						render={(items) => {
+							const uniqueItems = _.uniq(items)
+							return (
 								<AccessTokenPage
-									navigations={(_.uniq(items).map((application) => ({
+									navigations={uniqueItems.map((application) => ({
 										href:
 											'/access-token/' +
 											application.cluster?.replace('unknown', 'dev-gcp') +
@@ -34,14 +35,15 @@ export default () => (
 											'.' +
 											application.name,
 										label: application.name,
-										content: application
+										content: application,
 									}))}
 								/>
-							)}
+							)
+						}}
 					/>
 				}
 			/>
-			<Route path='/user' element={<UserPage />} />
+			<Route path="/user" element={<UserPage />} />
 		</Routes>
 	</BrowserRouter>
 )
