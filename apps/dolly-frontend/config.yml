@@ -30,6 +30,7 @@ spec:
   port: 8080
   ingresses:
     - https://dolly.dev.intern.nav.no
+    - https://dolly.intern.dev.nav.no
     - https://dolly.ekstern.dev.nav.no
   accessPolicy:
     outbound:

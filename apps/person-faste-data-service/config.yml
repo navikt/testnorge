@@ -69,3 +69,4 @@ spec:
     - secret: google-sql-testnav-person-faste-data-service
   ingresses:
     - "https://testnav-person-faste-data-service.dev.intern.nav.no"
+    - "https://testnav-person-faste-data-service.intern.dev.nav.no"

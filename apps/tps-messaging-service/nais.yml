@@ -20,6 +20,7 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-tps-messaging-service.dev.intern.nav.no"
+    - "https://testnav-tps-messaging-service.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -79,4 +80,13 @@ spec:
         - application: testnav-miljoer-service
           cluster: dev-gcp
       external:
-        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: b27apvl221.preprod.local
+          ports:
+            - name: MQ Q-env
+              port: 1413
+              protocol: TCP
+        - host: d26apvl300.test.local
+          ports:
+            - name: MQ T-env
+              port: 1412
+              protocol: TCP

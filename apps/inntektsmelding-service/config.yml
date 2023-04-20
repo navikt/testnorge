@@ -58,3 +58,4 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://testnav-inntektsmelding-service.dev.intern.nav.no"
+    - "https://testnav-inntektsmelding-service.intern.dev.nav.no"

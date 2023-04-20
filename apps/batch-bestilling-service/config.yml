@@ -52,3 +52,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-batch-bestilling-service.dev.intern.nav.no"
+    - "https://testnav-batch-bestilling-service.intern.dev.nav.no"
