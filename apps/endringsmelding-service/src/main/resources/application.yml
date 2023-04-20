@@ -15,7 +15,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:endringsmelding-service
+          accepted-audience: dev-gcp:dolly:testnav-endringsmelding-service
 
 springdoc:
   swagger-ui:
@@ -23,14 +23,11 @@ springdoc:
     url: /v3/api-docs
 
 consumers:
-  tpsforvalter:
-    url: https://tps-forvalteren.dev.adeo.no
-
-consumers.tps-forvalteren-proxy:
-  url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: tps-forvalteren-proxy
+  tps-forvalteren-proxy:
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: tps-forvalteren-proxy
 
 management:
   endpoints:
