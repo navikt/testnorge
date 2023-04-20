@@ -43,6 +43,6 @@ public class EregProxyApplicationStarter {
                 .path("/api/" + miljo + "/**")
                 .filters(filterSpec -> filterSpec
                         .rewritePath("/api/" + miljo + "/(?<segment>.*)", "/${segment}")
-                ).uri("https://ereg-services-" + miljo + ".dev.intern.nav.no/");
+                ).uri("https://ereg-services-" + miljo + ".arbeidsforhold.svc.nais.local/");
     }
 }
