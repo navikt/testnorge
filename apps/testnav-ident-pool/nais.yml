@@ -3,6 +3,10 @@ kind: Application
 metadata:
   name: testnav-ident-pool
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
   labels:
     team: dolly
 spec:
@@ -11,6 +15,13 @@ spec:
       value: prod
   image: {{ image }}
   webproxy: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  tokenx:
+    enabled: true
   port: 8080
   ingresses:
     - "https://testnav-ident-pool.dev.intern.nav.no"
@@ -38,11 +49,6 @@ spec:
     requests:
       cpu: 3000m
       memory: 2048Mi
-  azure:
-    application:
-      allowAllUsers: true
-      enabled: true
-      tenant: nav.no
   accessPolicy:
     inbound:
       rules:
@@ -61,8 +67,6 @@ spec:
       rules:
         - application: testnav-tps-messaging-service
           cluster: dev-gcp
-      external:
-        - host: https://tokendings.dev-gcp.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_14
