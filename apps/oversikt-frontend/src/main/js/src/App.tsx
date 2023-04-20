@@ -23,7 +23,7 @@ export default () => (
 					<LoadableComponent
 						onFetch={ApplicationService.fetchApplications}
 						render={(items) => {
-							const uniqueItems = _.uniq(items)
+							const uniqueItems = _.uniqBy(items, items.name)
 							return (
 								<AccessTokenPage
 									navigations={uniqueItems.map((application) => ({
