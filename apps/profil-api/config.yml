@@ -29,7 +29,7 @@ spec:
       rules:
         - application: team-dolly-lokal-app
           cluster: dev-gcp
-        - application: endringsmelding-frontend
+        - application: testnav-endringsmelding-frontend
           cluster: dev-gcp
         - application: dolly-backend
           cluster: dev-gcp
