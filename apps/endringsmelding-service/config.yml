@@ -54,5 +54,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://endringsmelding-service.dev.intern.nav.no"
-    - "https://endringsmelding-service.intern.dev.nav.no"
+    - "https://testnav-endringsmelding-service.intern.dev.nav.no"

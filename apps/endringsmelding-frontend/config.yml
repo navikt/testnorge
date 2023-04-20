@@ -12,8 +12,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
-        - "https://endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-endringsmelding.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
@@ -45,5 +44,4 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://endringsmelding.dev.intern.nav.no"
-    - "https://testnav-endringsmelding.dev.intern.nav.no"
+    - "https://testnav-endringsmelding.intern.dev.nav.no"

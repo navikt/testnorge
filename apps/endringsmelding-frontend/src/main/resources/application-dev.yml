@@ -1,8 +1,6 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
 
 consumers:
   endringsmelding-service:
-    url: https://endringsmelding-service.dev.intern.nav.no
+    url: https://testnav-endringsmelding-service.intern.dev.nav.no
   testnorge-profil-api:
-    url: https://testnorge-profil-api.dev.intern.nav.no
+    url: https://testnorge-profil-api.intern.dev.nav.no
