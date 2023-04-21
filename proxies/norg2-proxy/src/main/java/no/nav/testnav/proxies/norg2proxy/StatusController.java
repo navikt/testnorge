@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://norg2.dev.intern.nav.no/norg2/internal/isAlive",
-                "https://norg2.dev.intern.nav.no/norg2/internal/isReady",
+                "http://norg2.org.svc.nais.local/norg2/internal/isAlive",
+                "http://norg2.org.svc.nais.local/norg2/internal/isReady",
                 statusWebClient);
         pensjonStatus.put("team", TEAM);
 

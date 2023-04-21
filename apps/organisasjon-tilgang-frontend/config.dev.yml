@@ -15,7 +15,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-organisasjon-tilgang.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-organisasjon-tilgang.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:

@@ -6,7 +6,7 @@ ekte navn til at data med disse ikke kan forveksles med skarpe data.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://generer-navn-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://generer-navn-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

@@ -20,8 +20,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://inntektstub.dev.adeo.no/internal/isAlive",
-                "https://inntektstub.dev.adeo.no/internal/isReady",
+                "http://inntektstub.team-inntekt.svc.nais.local/internal/isAlive",
+                "http://inntektstub.team-inntekt.svc.nais.local/internal/isReady",
                 statusWebClient);
         pensjonStatus.put("team", TEAM);
 

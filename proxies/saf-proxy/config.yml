@@ -69,4 +69,3 @@ spec:
     - secret: azure-trygdeetaten-testnav-saf-proxy-trygdeetaten
   ingresses:
     - "https://testnav-saf-proxy.dev-fss-pub.nais.io"
-    - "https://testnav-saf-proxy.dev.intern.nav.no"

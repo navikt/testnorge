@@ -5,7 +5,7 @@ Originalt så lå all helsepersonell i en gruppe i TPS-forvalteren (avspillergru
 importert til Dolly gruppe i stedet.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-helsepersonell-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-helsepersonell-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør HelsepersonellApiApplicationStarter med følgende argumenter:

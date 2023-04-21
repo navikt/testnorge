@@ -3,7 +3,7 @@
 Frontend for endringsmeldinger. For å bruke denne appen må brukeren være logget inn med en bruker registrert på
 azure-applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
 
-https://endringsmelding.dev.intern.nav.no
+https://testnav-endringsmelding.intern.dev.nav.no
 
 ## Lokal kjøring
 

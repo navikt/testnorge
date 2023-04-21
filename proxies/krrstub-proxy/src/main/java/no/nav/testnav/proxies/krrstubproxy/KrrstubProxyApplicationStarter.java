@@ -39,6 +39,5 @@ public class KrrstubProxyApplicationStarter {
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                         .uri(properties.getUrl()))
                 .build();
-
     }
 }

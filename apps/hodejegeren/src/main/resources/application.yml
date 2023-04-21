@@ -20,7 +20,7 @@ spring:
 consumers:
   tpsf-proxy:
     name: tps-forvalteren-proxy
-    url: https://tps-forvalteren-proxy.dev.intern.nav.no
+    url: http://tps-forvalteren-proxy.dolly.svc.nais.local
     namespace: dolly
     cluster: dev-fss
 

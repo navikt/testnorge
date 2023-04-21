@@ -70,5 +70,4 @@ spec:
   envFrom:
     - secret: azure-trygdeetaten-testnav-krrstub-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-krrstub-proxy.dev.intern.nav.no"
     - "https://testnav-krrstub-proxy.dev-fss-pub.nais.io"

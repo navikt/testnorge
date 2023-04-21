@@ -19,11 +19,11 @@ https://dolly.ekstern.dev.nav.no/swagger-ui.html
 
 ## Fra utviklerimage
 
-https://dolly-backend.dev.intern.nav.no/swagger-ui.html
+https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 
 ## Kjør lokalt
 
-https://dolly-backend.dev.intern.nav.no/swagger-ui.html
+https://dolly-backend.intern.dev.nav.no/swagger-ui.html
 **NB: `naisdevice` må kjøre og være grønn.**
 
 Så kjør `./gradlew clean build`

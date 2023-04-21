@@ -26,5 +26,8 @@ spring:
         default-schema: public
         showSql: true
 
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+consumers:
+  tps:
+    messaging:
+      service:
+        url: https://testnav-tps-messaging-service.intern.dev.nav.no

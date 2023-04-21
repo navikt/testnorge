@@ -65,3 +65,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-varslinger-service-dev.dev.intern.nav.no"
+    - "https://testnav-varslinger-service-dev.intern.dev.nav.no"

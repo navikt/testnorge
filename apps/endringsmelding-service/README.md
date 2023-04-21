@@ -5,7 +5,7 @@ test identer.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://endringsmelding-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-endringsmelding-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen. For å kunne bruke endringsmelding-endepunktet må det innsendte tokenet ha tilgang via azure
 applikasjonen `dev-gcp:dolly:endringsmelding-frontend`.
 

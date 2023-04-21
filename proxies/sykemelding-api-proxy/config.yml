@@ -61,4 +61,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io"
-    - "https://testnav-sykemelding-api-proxy.dev.intern.nav.no"

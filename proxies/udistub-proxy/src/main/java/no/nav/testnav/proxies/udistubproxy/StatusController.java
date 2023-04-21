@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://udi-stub.dev.intern.nav.no/internal/isAlive",
-                "https://udi-stub.dev.intern.nav.no/internal/isReady",
+                "http://udi-stub.dolly.svc.nais.local/internal/isAlive",
+                "http://udi-stub.dolly.svc.nais.local/internal/isReady",
                 statusWebClient);
         status.put("team", TEAM);
 
