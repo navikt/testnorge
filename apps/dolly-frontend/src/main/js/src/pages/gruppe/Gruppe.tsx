@@ -156,7 +156,7 @@ export default ({
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
-							{`Personer (${gruppe.antallIdenter})`}
+							{`Personer (${gruppe.antallIdenter || 0})`}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item
 							data-cy={CypressSelector.TOGGLE_VISNING_BESTILLINGER}
@@ -168,7 +168,7 @@ export default ({
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
-							{`Bestillinger (${gruppe.antallBestillinger})`}
+							{`Bestillinger (${gruppe.antallBestillinger || 0})`}
 						</ToggleGroup.Item>
 					</ToggleGroup>
 				</div>

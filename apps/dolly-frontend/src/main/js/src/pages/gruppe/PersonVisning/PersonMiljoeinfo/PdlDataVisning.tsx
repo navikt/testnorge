@@ -6,6 +6,7 @@ import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 import { Ident } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { usePdlMiljoeinfo } from '@/utils/hooks/usePdlPerson'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 type PdlDataVisningProps = {
 	ident: Ident
@@ -42,7 +43,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollyTooltip
-				dataCy="miljoe_hover"
+				dataCy={CypressSelector.HOVER_MILJOE}
 				overlay={<PdlPersonInfo ident={ident} />}
 				align={{
 					offset: [0, -10],
@@ -55,7 +56,7 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 			</DollyTooltip>
 			{(!bankIdBruker || miljoe === 'q1') && (
 				<DollyTooltip
-					dataCy="miljoe_hover"
+					dataCy={CypressSelector.HOVER_MILJOE}
 					overlay={<PdlPersonInfo ident={ident} hentQ1={true} />}
 					align={{
 						offset: [0, -10],

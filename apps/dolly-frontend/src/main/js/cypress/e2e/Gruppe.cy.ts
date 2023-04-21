@@ -1,4 +1,12 @@
 import { CypressSelector } from '../mocks/Selectors'
+import {
+	avbruttBestillingMock,
+	uferdigBestillingMock,
+	uferdigeBestillingerMock,
+} from '../mocks/BasicMocks'
+
+const uferdigBestilling = new RegExp(/dolly-backend\/api\/v1\/bestilling\/2$/)
+const uferdigeBestillinger = new RegExp(/dolly-backend\/api\/v1\/bestilling\/gruppe\/2\/ikkeferdig/)
 
 describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg', () => {
 	it('passes', () => {
@@ -34,6 +42,43 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 
 		cy.dollyGet(CypressSelector.BUTTON_START_BESTILLING).click()
 		cy.dollyGet(CypressSelector.BUTTON_VELG_ALLE).each((btn) => cy.wrap(btn).click())
+
 		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
+		cy.wait(500)
+
+		cy.dollyGet(CypressSelector.BUTTON_TILBAKE).click()
+		cy.dollyGet(CypressSelector.BUTTON_FJERN_ALLE).each((btn) => cy.wrap(btn).click())
+
+		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
+		cy.dollyGet(CypressSelector.BUTTON_VIDERE).click()
+
+		cy.dollyGet(CypressSelector.TOGGLE_BESTILLING_MAL).click()
+		cy.dollyGet(CypressSelector.TOGGLE_BESTILLING_MAL).should('be.enabled')
+
+		cy.dollyGet(CypressSelector.INPUT_BESTILLING_MALNAVN)
+			.click()
+			.focused()
+			.type('Fornuftig navn på mal')
+
+		cy.intercept({ method: 'GET', url: uferdigBestilling }, uferdigBestillingMock).as(
+			'uferdig_bestilling'
+		)
+		cy.intercept({ method: 'GET', url: uferdigeBestillinger }, uferdigeBestillingerMock).as(
+			'uferdige_bestillinger'
+		)
+
+		cy.dollyGet(CypressSelector.TITLE_SEND_KOMMENTAR).click()
+		cy.dollyGet(CypressSelector.BUTTON_FULLFOER_BESTILLING).click()
+
+		cy.wait(2000)
+
+		cy.intercept({ method: 'GET', url: uferdigBestilling }, avbruttBestillingMock).as(
+			'avbrutt_bestilling'
+		)
+
+		cy.dollyGet(CypressSelector.BUTTON_AVBRYT_BESTILLING).click()
+		cy.wait(500)
+		cy.dollyGet(CypressSelector.BUTTON_LUKK_BESTILLING_RESULTAT).click()
+		cy.dollyGet(CypressSelector.BUTTON_AVBRYT_BESTILLING).should('not.exist')
 	})
 })

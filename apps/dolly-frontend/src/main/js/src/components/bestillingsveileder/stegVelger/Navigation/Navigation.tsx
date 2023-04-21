@@ -43,7 +43,11 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 
 				<div className="step-navknapper--right">
 					{showPrevious && (
-						<NavButton variant={'secondary'} onClick={() => onPrevious(formikBag)}>
+						<NavButton
+							data-cy={CypressSelector.BUTTON_TILBAKE}
+							variant={'secondary'}
+							onClick={() => onPrevious(formikBag)}
+						>
 							Tilbake
 						</NavButton>
 					)}
@@ -62,7 +66,12 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 						</NavButton>
 					)}
 					{isLastStep && (
-						<NavButton variant={'primary'} onClick={handleSubmit} disabled={isSubmitting}>
+						<NavButton
+							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
+							variant={'primary'}
+							onClick={handleSubmit}
+							disabled={isSubmitting}
+						>
 							{getLastButtonText()}
 						</NavButton>
 					)}

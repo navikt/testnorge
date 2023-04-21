@@ -6,6 +6,7 @@ import { TpsfVisning } from '@/components/fagsystem'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { ApiFeilmelding } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import React from 'react'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 type TpsData = {
 	data: Array<Data>
@@ -47,7 +48,7 @@ export const TpsDataVisning = ({ data }: TpsData) => {
 			{data.map((miljoe, idx) => {
 				return (
 					<DollyTooltip
-						dataCy="miljoe_hover"
+						dataCy={CypressSelector.HOVER_MILJOE}
 						overlay={getPersonInfo(miljoe)}
 						align={{
 							offset: [0, -10],

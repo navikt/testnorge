@@ -56,7 +56,13 @@ export default function Panel({
 							onClick={check}
 						/>
 					)}
-					{uncheckAttributeArray && <LinkButton text="Fjern alle" onClick={uncheck} />}
+					{uncheckAttributeArray && (
+						<LinkButton
+							data-cy={CypressSelector.BUTTON_FJERN_ALLE}
+							text="Fjern alle"
+							onClick={uncheck}
+						/>
+					)}
 					<ExpandButton expanded={shouldOpen} onClick={toggleOpen} />
 				</span>
 			</div>

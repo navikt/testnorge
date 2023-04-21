@@ -60,6 +60,33 @@ export const brukerMalerMock = [
 	},
 ]
 
+export const uferdigBestillingMock = {
+	id: 2,
+	antallIdenter: 1,
+	antallLevert: 0,
+	ferdig: false,
+	sistOppdatert: '2023-04-21T10:38:10.11282',
+	bruker: gjeldendeBrukerMock,
+	gruppeId: 2,
+	stoppet: false,
+	bestilling: {
+		pdldata: {
+			opprettNyPerson: {
+				identtype: 'FNR',
+				syntetisk: true,
+			},
+		},
+	},
+}
+
+export const avbruttBestillingMock = {
+	...uferdigBestillingMock,
+	stoppet: true,
+	ferdig: true,
+}
+
+export const uferdigeBestillingerMock = [uferdigBestillingMock]
+
 export const brukerOrganisasjonMalerMock = [
 	{
 		id: 1,

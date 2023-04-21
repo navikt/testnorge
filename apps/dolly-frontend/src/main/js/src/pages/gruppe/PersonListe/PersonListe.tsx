@@ -137,7 +137,12 @@ export default function PersonListe({
 			dataField: 'ibruk',
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
-			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
+			formatter: (_cell, row) => (
+				<PersonIBrukButtonConnector
+					data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
+					ident={row.ident}
+				/>
+			),
 		},
 		{
 			text: '',
