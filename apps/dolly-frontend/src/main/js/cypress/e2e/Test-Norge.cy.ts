@@ -6,7 +6,7 @@ describe('Test-Norge søk testing', () => {
 
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_TESTNORGE).click()
 
-		cy.dollyGet(CypressSelector.INPUT_TESTNORGE_FNR).type('123456')
+		cy.dollyType(CypressSelector.INPUT_TESTNORGE_FNR, '123456')
 		cy.dollyGet(CypressSelector.TITLE_TESTNORGE).invoke('show').click()
 
 		cy.get('.skjemaelement__feilmelding').should('exist')
@@ -16,5 +16,11 @@ describe('Test-Norge søk testing', () => {
 		cy.wait(200)
 
 		cy.get('.skjemaelement__feilmelding').should('not.exist')
+
+		cy.dollyGet(CypressSelector.BUTTON_HEADER_PERSONER).click()
+		cy.get('div').contains('Testytest').click()
+		cy.dollyGet(CypressSelector.BUTTON_IMPORTER_PERSONER).click()
+
+		cy.dollyGet(CypressSelector.TITLE_TESTNORGE).should('exist')
 	})
 })

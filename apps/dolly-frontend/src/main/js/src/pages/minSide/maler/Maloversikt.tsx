@@ -38,7 +38,7 @@ export default ({ brukerId }: { brukerId: string }) => {
 			<div className="flexbox--space">
 				<h2>Mine maler</h2>
 				<SearchField
-					data-cy={CypressSelector.INPUT_MINSIDE_MAL}
+					data-cy={CypressSelector.INPUT_MINSIDE_SOEK_MAL}
 					placeholder={'Søk etter mal'}
 					setText={setSearchText}
 				/>

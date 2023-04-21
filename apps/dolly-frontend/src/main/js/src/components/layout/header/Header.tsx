@@ -37,7 +37,11 @@ export default () => {
 				<NavLink data-cy={CypressSelector.BUTTON_HEADER_TESTNORGE} to="/testnorge">
 					Test-Norge
 				</NavLink>
-				{!bankidBruker && <NavLink to="/endringsmelding">Endringsmelding</NavLink>}
+				{!bankidBruker && (
+					<NavLink data-cy={CypressSelector.BUTTON_HEADER_ENDRINGSMELDING} to="/endringsmelding">
+						Endringsmelding
+					</NavLink>
+				)}
 				<DokumentasjonDropdown />
 			</div>
 			<BrukerDropdown />

@@ -6,15 +6,27 @@ declare global {
 	namespace Cypress {
 		interface Chainable {
 			/**
-			 * Get dolly component using CypressSelector Enum
+			 * Henter dolly component basert på CypressSelector Enum og returner Cypress Chainable for videre testing
 			 * @example
-			 * cy.dollyGet(CypressSelector.SOME_ENUM)
+			 * cy.dollyGet(CypressSelector.BUTTON_OPPRETT)
 			 */
 			dollyGet(selector: CypressSelector): Chainable
+
+			/**
+			 * Skriver tekst til en dolly komponent og returner Cypress Chainable for videre testing
+			 * @example
+			 * cy.dollyType(CypressSelector.BUTTON_OPPRETT, "text to input")
+			 */
+			dollyType(selector: CypressSelector, text: string): Chainable
 		}
 	}
 }
 
 Cypress.Commands.add('dollyGet', (selector: CypressSelector) => {
 	return cy.get(`[data-cy="${selector}"]`)
+})
+Cypress.Commands.add('dollyType', (selector: CypressSelector, textInput: string) => {
+	const selected = cy.get(`[data-cy="${selector}"]`).click({ force: true }).focused()
+	cy.get('body').type(textInput)
+	return selected
 })

@@ -106,6 +106,7 @@ export const MalPanel = ({
 													</Button>
 												) : (
 													<Button
+														data-cy={CypressSelector.BUTTON_MINSIDE_ENDRE_MALNAVN}
 														onClick={() => {
 															setUnderRedigering(underRedigering.concat([id]))
 														}}

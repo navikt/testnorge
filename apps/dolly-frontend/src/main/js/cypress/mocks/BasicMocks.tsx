@@ -60,6 +60,15 @@ export const brukerMalerMock = [
 	},
 ]
 
+export const brukerMalerEndretMock = [
+	{
+		id: 1,
+		malNavn: 'Nytt navn på mal',
+		bestilling: malBestilling,
+		bruker: gjeldendeBrukerMock,
+	},
+]
+
 export const uferdigBestillingMock = {
 	id: 2,
 	antallIdenter: 1,

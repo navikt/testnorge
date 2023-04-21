@@ -12,18 +12,15 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 	it('passes', () => {
 		cy.visit('http://localhost:5678/gruppe')
 
-		// Naviger mellom tabs
-		cy.dollyGet(CypressSelector.INPUT_PERSON_SOEK).click({ force: true })
-		cy.get('body').type('12345')
+		cy.dollyType(CypressSelector.INPUT_PERSON_SOEK, '12345')
 
 		cy.dollyGet(CypressSelector.BUTTON_NAVIGER_PERSON).click()
-
 		cy.wait(400)
-
 		cy.url().should('include', '/gruppe/1')
 
 		cy.dollyGet(CypressSelector.BUTTON_HEADER_PERSONER).click()
 
+		// Naviger mellom tabs
 		cy.dollyGet(CypressSelector.TOGGLE_FAVORITTER).click()
 		cy.dollyGet(CypressSelector.TOGGLE_ALLE).click()
 		cy.dollyGet(CypressSelector.TOGGLE_MINE).click()
@@ -55,26 +52,19 @@ describe('Navigering, Opprett gruppe og start bestilling med alle mulige tilvalg
 		cy.dollyGet(CypressSelector.TOGGLE_BESTILLING_MAL).click()
 		cy.dollyGet(CypressSelector.TOGGLE_BESTILLING_MAL).should('be.enabled')
 
-		cy.dollyGet(CypressSelector.INPUT_BESTILLING_MALNAVN)
-			.click()
-			.focused()
-			.type('Fornuftig navn på mal')
+		cy.dollyType(CypressSelector.INPUT_BESTILLING_MALNAVN, 'Fornuftig navn på mal')
 
-		cy.intercept({ method: 'GET', url: uferdigBestilling }, uferdigBestillingMock).as(
-			'uferdig_bestilling'
-		)
-		cy.intercept({ method: 'GET', url: uferdigeBestillinger }, uferdigeBestillingerMock).as(
-			'uferdige_bestillinger'
-		)
+		//Midltertidig aktiv bestilling intercept
+		cy.intercept({ method: 'GET', url: uferdigBestilling }, uferdigBestillingMock)
+		cy.intercept({ method: 'GET', url: uferdigeBestillinger }, uferdigeBestillingerMock)
 
 		cy.dollyGet(CypressSelector.TITLE_SEND_KOMMENTAR).click()
 		cy.dollyGet(CypressSelector.BUTTON_FULLFOER_BESTILLING).click()
 
-		cy.wait(2000)
+		cy.wait(1000)
 
-		cy.intercept({ method: 'GET', url: uferdigBestilling }, avbruttBestillingMock).as(
-			'avbrutt_bestilling'
-		)
+		//Avbrutt bestilling intercept
+		cy.intercept({ method: 'GET', url: uferdigBestilling }, avbruttBestillingMock)
 
 		cy.dollyGet(CypressSelector.BUTTON_AVBRYT_BESTILLING).click()
 		cy.wait(500)
