@@ -26,6 +26,7 @@ export default function BestillingResultat({
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
 	const antallOpprettet = antallIdenterOpprettet(bestilling)
+	const harIdenterOpprettet = bestilling?.antallIdenterOpprettet > 0 || bestilling?.antallLevert > 0
 	const mutate = useMatchMutate()
 
 	return (
@@ -54,9 +55,11 @@ export default function BestillingResultat({
 				/>
 				<div className="flexbox--all-center">
 					<BestillingSammendragModal bestilling={bestilling} />
-					<Button onClick={openGjenopprettModal} kind="synchronize">
-						GJENOPPRETT
-					</Button>
+					{harIdenterOpprettet && (
+						<Button onClick={openGjenopprettModal} kind="synchronize">
+							GJENOPPRETT
+						</Button>
+					)}
 				</div>
 				{isGjenopprettModalOpen && (
 					<GjenopprettConnector

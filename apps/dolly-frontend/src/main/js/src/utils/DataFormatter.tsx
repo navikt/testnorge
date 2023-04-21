@@ -1,6 +1,7 @@
 import { format, isDate } from 'date-fns'
 import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
 export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
@@ -195,6 +196,20 @@ export const showLabel = (optionsGruppe, value) => {
 	}
 
 	return value
+}
+
+export const showKodeverkLabel = (kodeverkNavn, value) => {
+	if (!kodeverkNavn || !value) {
+		return value
+	}
+	if (value.includes('*')) {
+		return 'Alle (*)'
+	}
+	const { kodeverk, loading, error } = useKodeverk(kodeverkNavn)
+	if (loading || error) {
+		return value
+	}
+	return kodeverk?.koder?.find((kode) => kode?.value === value)?.label
 }
 
 export const getYearRangeOptions = (start, stop) => {

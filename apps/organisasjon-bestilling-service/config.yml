@@ -68,3 +68,4 @@ spec:
     - secret: google-sql-organisasjon-bestilling-service
   ingresses:
     - "https://organisasjon-bestilling-service.dev.intern.nav.no"
+    - "https://organisasjon-bestilling-service.intern.dev.nav.no"

@@ -46,6 +46,7 @@ export const PdlNyPerson = ({
 	const hasEksisterendePerson =
 		eksisterendePerson &&
 		(gruppeIdenter?.includes(eksisterendePerson) ||
+			eksisterendePerson === eksisterendeNyPerson?.value ||
 			_.get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value ||
 			_.get(formikBag.values, 'sivilstand.relatertVedSivilstand') === eksisterendeNyPerson?.value)
 
