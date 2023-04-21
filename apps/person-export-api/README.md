@@ -8,7 +8,7 @@ parent: Applikasjoner
 Api for å eksportere personer.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-person-export-api.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-person-export-api.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør PersonExportApiApplicationStarter med følgende argumenter:

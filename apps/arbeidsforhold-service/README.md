@@ -2,7 +2,7 @@
 API for arbeidsforhold som hentes fra testnav-aareg-proxy.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-arbeidsforhold-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-arbeidsforhold-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør ArbeidsforholdApiApplicationStarter med følgende argumenter:

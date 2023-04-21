@@ -6,4 +6,4 @@ helsepersonell.controller.cache.hours: 0
 consumers:
   dolly-backend:
     name: dolly-backend-dev
-    url: https://dolly-backend-dev.dev.intern.nav.no
+    url: https://dolly-backend-dev.intern.dev.nav.no

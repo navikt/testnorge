@@ -2,7 +2,7 @@
 App for å sende inn et stort antall bestillinger mot backend over tid, for å ikke overbelaste Dolly
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-batch-bestilling-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-batch-bestilling-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør MiljoerServiceApplicationStarter med følgende argumenter:

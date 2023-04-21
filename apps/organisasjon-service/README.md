@@ -9,7 +9,7 @@ grand_parent: Applikasjoner
 API for organsiasjoner.
 
 ### Swagger
-Swagger finnes under [/swagger](https://testnav-organisasjon-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-organisasjon-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ### Lokal kjøring
 Ha naisdevice kjørende og kjør OrganisasjonApiApplicationStarter med følgende argumenter:

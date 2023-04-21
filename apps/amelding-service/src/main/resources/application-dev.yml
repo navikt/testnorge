@@ -1,4 +1,4 @@
 
 consumers:
   oppsummeringsdokument-service:
-    url: https://oppsummeringsdokument-service.dev.intern.nav.no
+    url: https://oppsummeringsdokument-service.intern.dev.nav.no
