@@ -15,8 +15,8 @@ const BetaTag = styled.h3`
 	padding-bottom: 8px;
 `
 
-export default ({ title, beta = false }: Props) => (
-	<Title>
+export default ({ title, beta = false, ...rest }: Props) => (
+	<Title {...rest}>
 		<h1>{title}</h1>
 		{beta && <BetaTag>(beta)</BetaTag>}
 	</Title>

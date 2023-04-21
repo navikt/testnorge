@@ -1,6 +1,5 @@
-/// <reference types="cypress" />
-
 import { varslingerVelkommenResponseMock } from '../mocks/BasicMocks'
+import { CypressSelector } from '../mocks/Selectors'
 
 describe('Login side og aksepter varsling', () => {
 	it('passes', () => {
@@ -10,7 +9,7 @@ describe('Login side og aksepter varsling', () => {
 		)
 		cy.visit('http://localhost:5678/login')
 
-		cy.get('button').contains('NAV').click()
-		cy.get('button').contains('Lukk').click()
+		cy.dollyGet(CypressSelector.BUTTON_LOGIN_NAV).click()
+		cy.dollyGet(CypressSelector.BUTTON_VARSLING_LUKK).click()
 	})
 })

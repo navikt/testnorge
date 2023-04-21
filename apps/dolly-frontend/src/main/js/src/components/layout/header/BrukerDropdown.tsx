@@ -7,6 +7,7 @@ import { getDefaultImage } from '@/pages/minSide/Profil'
 import { Dropdown, DropdownContext } from '@navikt/ds-react-internal'
 import Icon from '@/components/ui/icon/Icon'
 import styled from 'styled-components'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const StyledIcon = styled(Icon)`
 	&& {
@@ -32,7 +33,11 @@ const DropdownToggle = () => {
 		<Dropdown.Toggle className={isOpen ? 'dropdown-toggle active' : 'dropdown-toggle'}>
 			<div className="profil-area">
 				<div className="img-logo">
-					<img alt="Profilbilde" src={brukerBilde || getDefaultImage()} />
+					<img
+						data-cy={CypressSelector.BUTTON_PROFIL}
+						alt="Profilbilde"
+						src={brukerBilde || getDefaultImage()}
+					/>
 				</div>
 				<div className="profil-navn">
 					<p>{brukerProfil?.visningsNavn}</p>
@@ -53,6 +58,7 @@ export const BrukerDropdown = () => {
 						<Dropdown.Menu.List.Item
 							onClick={() => navigate('/minside')}
 							style={{ color: '#212529' }}
+							data-cy={CypressSelector.BUTTON_PROFIL_MINSIDE}
 						>
 							<StyledIcon kind="person" size={16} />
 							Min side

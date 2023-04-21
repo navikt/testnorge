@@ -18,6 +18,7 @@ import Icon from '@/components/ui/icon/Icon'
 import { Alert } from '@navikt/ds-react'
 import { usePdlOptions, useTestnorgeOptions } from '@/utils/hooks/useSelectOptions'
 import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 type FlyttPersonButtonTypes = {
 	gruppeId: number
@@ -357,7 +358,11 @@ export const FlyttPersonModal = ({ gruppeId, modalIsOpen, closeModal }: FlyttPer
 					{error && <div className="error-message">{`Feil: ${error}`}</div>}
 				</div>
 				<div className="flexbox--justify-center" style={{ marginTop: '15px' }}>
-					<NavButton onClick={handleClose} variant="secondary">
+					<NavButton
+						data-cy={CypressSelector.BUTTON_FLYTT_PERSONER_AVBRYT}
+						onClick={handleClose}
+						variant="secondary"
+					>
 						Avbryt
 					</NavButton>
 					<NavButton

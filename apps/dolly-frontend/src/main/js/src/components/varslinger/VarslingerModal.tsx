@@ -10,6 +10,7 @@ import { VarslingerApi } from '@/service/Api'
 import { useBoolean } from 'react-use'
 import { Stepper } from '@navikt/ds-react'
 import { useDispatch } from 'react-redux'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type Varsling = {
 	fom: string
@@ -103,6 +104,7 @@ export const VarslingerModal = () => {
 							</NavButton>
 						) : (
 							<NavButton
+								data-cy={CypressSelector.BUTTON_VARSLING_LUKK}
 								variant={'primary'}
 								onClick={() => submitSettVarsling(true)}
 								style={{ float: 'right' }}
