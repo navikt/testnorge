@@ -39,12 +39,12 @@ consumers:
     url: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
   testnav-bruker-service:
     name: testnav-bruker-service
-    url: https://testnav-bruker-service.dev.intern.nav.no
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
   testnav-pdl-forvalter:
     url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   dolly-backend:
     name: dolly-backend
-    url: https://dolly-backend.dev.intern.nav.no
+    url: http://dolly-backend.dolly.svc.cluster.local
   # Konsumenter felles
   testnav-tps-messaging-service:
     url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
@@ -52,8 +52,6 @@ consumers:
     url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
   testnav-joark-dokument-service:
     url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
-  testnav-inst-service:
-    url: http://testnav-inst-service.dolly.svc.cluster.local
   testnav-organisasjon-forvalter:
     url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
   testnav-organisasjon-service:

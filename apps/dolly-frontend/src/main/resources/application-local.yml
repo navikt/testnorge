@@ -35,27 +35,42 @@ consumers:
     url: https://tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
   dolly-backend:
     name: dolly-backend-dev
-    url: https://dolly-backend-dev.dev.intern.nav.no
+    url: https://dolly-backend-dev.intern.dev.nav.no
     cluster: dev-gcp
   testnorge-profil-api:
     name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.dev.intern.nav.no
+    url: https://testnorge-profil-api-dev.intern.dev.nav.no
   testnav-organisasjon-tilgang-service:
     name: testnav-organisasjon-tilgang-service
-    url: https://testnav-organisasjon-tilgang-service.dev.intern.nav.no
+    url: https://testnav-organisasjon-tilgang-service.intern.dev.nav.no
     cluster: dev-gcp
   testnav-varslinger-service:
     name: testnav-varslinger-service-dev
-    url: https://testnav-varslinger-service-dev.dev.intern.nav.no
+    url: http://testnav-varslinger-service-dev.intern.dev.nav.no
   testnav-person-organisasjon-tilgang-service:
     name: testnav-person-organisasjon-tilgang-service-dev
-    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+    url: https://testnav-person-organisasjon-tilgang-service-dev.intern.dev.nav.no
   testnav-bruker-service:
     name: testnav-bruker-service-dev
-    url: https://testnav-bruker-service-dev.dev.intern.nav.no
+    url: https://testnav-bruker-service-dev.intern.dev.nav.no
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter-dev
-    url: https://testnav-pdl-forvalter-dev.dev.intern.nav.no
-  testnav-inst-proxy:
-    name: testnav-inst-proxy
-    url: https://testnav-inst-proxy.dev.intern.nav.no
+    url: https://testnav-pdl-forvalter-dev.intern.dev.nav.no
+  testnav-tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no
+  testnav-organisasjon-faste-data-service:
+    url: https://testnav-organisasjon-faste-data-service.intern.dev.nav.no
+  testnav-joark-dokument-service:
+    url: https://testnav-joark-dokument-service.intern.dev.nav.no
+  testnav-organisasjon-forvalter:
+    url: https://testnav-organisasjon-forvalter.intern.dev.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.intern.dev.nav.no
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.intern.dev.nav.no
+  testnav-person-search-service:
+    url: https://testnav-person-search-service.intern.dev.nav.no
+  testnav-adresse-service:
+    url: https://testnav-adresse-service.intern.dev.nav.no
+  testnorge-tilbakemelding-api:
+    url: https://testnorge-tilbakemelding-api.intern.dev.nav.no

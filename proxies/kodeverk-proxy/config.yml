@@ -58,4 +58,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-kodeverk-proxy.dev-fss-pub.nais.io"
-    - "https://testnav-kodeverk-proxy.dev.intern.nav.no"

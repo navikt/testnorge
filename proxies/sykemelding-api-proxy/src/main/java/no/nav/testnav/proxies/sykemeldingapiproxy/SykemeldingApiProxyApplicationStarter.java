@@ -27,7 +27,7 @@ public class SykemeldingApiProxyApplicationStarter {
 
         return builder
                 .routes()
-                .route(createRoute("sykemelding", "https://testnorge-sykemelding-api.dev.intern.nav.no"))
+                .route(createRoute("sykemelding", "http://testnorge-sykemelding-api.dolly.svc.nais.local"))
                 .build();
     }
 
@@ -42,5 +42,4 @@ public class SykemeldingApiProxyApplicationStarter {
                         .rewritePath("/" + segment + "/(?<segment>.*)", "/${segment}")
                 ).uri(host);
     }
-
 }

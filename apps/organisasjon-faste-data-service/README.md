@@ -5,7 +5,7 @@ sende inn organisasjoner fra grupper som er blitt overskrevet.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-organisasjon-faste-data-service.dev.intern.nav.no/swagger) -endepunktet
+Swagger finnes under [/swagger](https://testnav-organisasjon-faste-data-service.intern.dev.nav.no/swagger) -endepunktet
 til applikasjonen.
 
 ## Lokal kjøring

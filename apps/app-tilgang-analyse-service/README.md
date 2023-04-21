@@ -6,7 +6,7 @@
 Appen brukes for å finne avehingheter mellom apper basert på `inbound` og `outbound` regler i nias. 
  
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-app-tilgang-analyse-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-app-tilgang-analyse-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

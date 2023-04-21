@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://skjermede-personer.dev.adeo.no" + "/internal/isAlive",
-                "https://skjermede-personer.dev.adeo.no" + "/internal/isReady",
+                "http://skjermede-personer.nom.svc.nais.local" + "/internal/isAlive",
+                "http://skjermede-personer.nom.svc.nais.local" + "/internal/isReady",
                 statusWebClient);
         status.put("team", TEAM);
 

@@ -1,5 +1,3 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
 
 spring:
   h2:
@@ -15,3 +13,9 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
+
+consumers:
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.intern.dev.nav.no
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.intern.dev.nav.no

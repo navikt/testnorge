@@ -26,16 +26,11 @@ springdoc:
 
 ereg:
   envHostMap:
-    q1: https://modapp-q1.adeo.no
-    q2: https://modapp-q2.adeo.no
-    q4: https://modapp-q4.adeo.no
-    q5: https://modapp-q5.adeo.no
-    t0: https://modapp-t0.adeo.no
-    t1: https://modapp-t1.adeo.no
-    t2: https://modapp-t2.adeo.no
-    t3: https://modapp-t3.adeo.no
-    t4: https://modapp-t4.adeo.no
-    t5: https://modapp-t5.adeo.no
+    q1: https://ereg-services-q1.dev.intern.nav.no
+    q2: https://ereg-services-q2.dev.intern.nav.no
+    q4: https://ereg-services-q4.dev.intern.nav.no
+    q5: https://ereg-services-q5.dev.intern.nav.no
+    t3: https://ereg-services-t3.dev.intern.nav.no
 
 management:
   endpoints:

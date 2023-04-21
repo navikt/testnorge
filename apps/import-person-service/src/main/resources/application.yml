@@ -22,11 +22,12 @@ springdoc:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
-consumers.testnav-pdl-forvalter:
-  url: https://testnav-pdl-forvalter.dev.intern.nav.no
-  cluster: dev-gcp
-  namespace: dolly
-  name: testnav-pdl-forvalter
+consumers:
+  testnav-pdl-forvalter:
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-pdl-forvalter
 
 management:
   endpoints:
