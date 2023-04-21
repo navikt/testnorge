@@ -23,20 +23,26 @@ export default () => (
 					<LoadableComponent
 						onFetch={ApplicationService.fetchApplications}
 						render={(items) => {
-							const uniqueItems = _.uniqBy(items, items.name)
+							const uniqueItems = _.uniqBy(items, 'name')
 							return (
 								<AccessTokenPage
-									navigations={uniqueItems.map((application) => ({
-										href:
-											'/access-token/' +
-											application.cluster?.replace('unknown', 'dev-gcp') +
-											'.' +
-											application.namespace +
-											'.' +
-											application.name,
-										label: application.name,
-										content: application,
-									}))}
+									navigations={uniqueItems.map((application) => {
+										const cluster = application.cluster?.replace(
+											'unknown',
+											application?.name?.includes('proxy') ? 'dev-fss' : 'dev-gcp'
+										)
+										return {
+											href:
+												'/access-token/' +
+												cluster +
+												'.' +
+												application.namespace +
+												'.' +
+												application.name,
+											label: application.name,
+											content: application,
+										}
+									})}
 								/>
 							)
 						}}

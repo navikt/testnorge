@@ -1,8 +1,8 @@
 package no.nav.testnav.apps.apptilganganalyseservice.domain;
 
-import java.util.regex.Pattern;
-
 import no.nav.testnav.apps.apptilganganalyseservice.repository.entity.DocumentEntity;
+
+import java.util.regex.Pattern;
 
 
 public class DeployConfig {
