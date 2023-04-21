@@ -16,12 +16,11 @@ export const validation = {
 			Yup.array().of(
 				Yup.object({
 					nuskode: requiredString,
-					startDate: testDatoFom(requiredDate.nullable(), 'endDate', 'Dato må være før sluttdato'),
+					startDate: testDatoFom(requiredDate, 'endDate', 'Dato må være før sluttdato'),
 					endDate: Yup.mixed()
 						.when('ongoing', {
 							is: false,
-							then: () =>
-								testDatoTom(requiredDate.nullable(), 'startDate', 'Dato må være etter startdato'),
+							then: () => testDatoTom(requiredDate, 'startDate', 'Dato må være etter startdato'),
 						})
 						.nullable(),
 				})

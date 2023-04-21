@@ -262,7 +262,7 @@ InntektsmeldingForm.validation = {
 					),
 				}),
 				avsendersystem: Yup.object({
-					innsendingstidspunkt: requiredDate,
+					innsendingstidspunkt: requiredDate.nullable(),
 				}),
 				ytelse: requiredString,
 			})
