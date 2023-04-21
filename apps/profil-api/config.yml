@@ -10,7 +10,7 @@ spec:
     - name: PERSON_ORG_TILGANG_NAME
       value: testnav-person-organisasjon-tilgang-service
     - name: PERSON_ORG_TILGANG_URL
-      value: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+      value: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   image: {{image}}
   tokenx:
     enabled: true

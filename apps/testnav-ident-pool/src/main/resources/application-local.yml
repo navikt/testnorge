@@ -25,3 +25,9 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         default-schema: public
         showSql: true
+
+consumers:
+  tps:
+    messaging:
+      service:
+        url: https://testnav-tps-messaging-service.intern.dev.nav.no
