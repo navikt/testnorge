@@ -47,6 +47,7 @@ import {
 import { Option } from '@/service/SelectOptionsOppslag'
 import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
+import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -251,11 +252,14 @@ export const VisningRedigerbar = ({
 				)
 			case Attributt.ForelderBarnRelasjon:
 				return (
-					<ForelderBarnRelasjonForm
-						formikBag={formikBag}
-						path={path}
-						eksisterendeNyPerson={eksisterendeNyPerson}
-					/>
+					<>
+						<ForelderBarnRelasjonForm
+							formikBag={formikBag}
+							path={path}
+							eksisterendeNyPerson={eksisterendeNyPerson}
+						/>
+						<ForeldreansvarForm formikBag={formikBag} path={'foreldreansvar'} />
+					</>
 				)
 		}
 	}

@@ -25,6 +25,15 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 		return null
 	}
 
+	const getForeldreansvarValues = (foreldreansvar) => {
+		return foreldreansvar.map(
+			(item, idx) =>
+				`${allCapsToCapitalized(item?.ansvar)}: ${item?.ansvarlig}${
+					idx + 1 < foreldreansvar.length ? ', ' : ''
+				}`
+		)
+	}
+
 	return (
 		<>
 			<div className="person-visning_content">
@@ -47,9 +56,10 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 				{data.foreldreansvar?.[0].ansvarlig && (
 					<TitleValue
 						title="Foreldreansvar"
-						value={`${allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
-							data.foreldreansvar?.[0].ansvarlig
-						}`}
+						// value={`${allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
+						// 	data.foreldreansvar?.[0].ansvarlig
+						// }`}
+						value={getForeldreansvarValues(data.foreldreansvar)}
 					/>
 				)}
 				{data.foreldreansvar?.[0].ansvarligUtenIdentifikator && (

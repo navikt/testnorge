@@ -127,6 +127,23 @@ export const ForelderBarnRelasjonVisning = ({
 		redigertForelderBarnValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson
 	}
 
+	console.log('eksisterendeNyPerson: ', eksisterendeNyPerson) //TODO - SLETT MEG
+	const getForeldreansvar = () => {
+		const relasjon = relasjoner?.find(
+			(relasjon) =>
+				relasjon?.relatertPerson?.ident === forelderBarnValues?.relatertPerson &&
+				relasjon?.relasjonType === 'FAMILIERELASJON_BARN'
+		)
+		return relasjon?.relatertPerson?.foreldreansvar
+	}
+	const foreldreansvar = getForeldreansvar()
+	// console.log('foreldreansvar(): ', foreldreansvar()) //TODO - SLETT MEG
+	if (foreldreansvar) {
+		initialValues.foreldreansvar = foreldreansvar[0]
+		//TODO: Ta høyde for flere foreldreansvar
+	}
+	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={

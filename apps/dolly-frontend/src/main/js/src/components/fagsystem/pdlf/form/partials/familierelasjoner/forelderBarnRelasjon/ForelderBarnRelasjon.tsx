@@ -184,7 +184,7 @@ export const ForelderBarnRelasjon = ({ formikBag }: ForelderForm) => {
 			canBeEmpty={false}
 		>
 			{(path: string, idx: number) => {
-				return <ForelderBarnRelasjonForm formikBag={formikBag} path={path} idx={idx} />
+				return <ForelderBarnRelasjonForm formikBag={formikBag} path={path} />
 			}}
 		</FormikDollyFieldArray>
 	)
