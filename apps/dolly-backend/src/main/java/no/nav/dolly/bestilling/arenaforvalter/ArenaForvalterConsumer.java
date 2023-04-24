@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetBrukerCom
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenaBruker;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
-import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
@@ -19,7 +18,7 @@ import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -29,8 +28,8 @@ import java.util.List;
 
 import static no.nav.dolly.util.JacksonExchangeStrategyUtil.getJacksonStrategy;
 
+@Component
 @Slf4j
-@Service
 public class ArenaForvalterConsumer implements ConsumerStatus {
 
     private final WebClient webClient;
@@ -59,7 +58,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Flux<InaktiverResponse> deleteIdenter(List<String> identer) {
+    public Flux<String> deleteIdenter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new ArenaForvalterGetMiljoeCommand(webClient, token.getTokenValue()).call()
@@ -70,10 +69,9 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Mono<InaktiverResponse> inaktiverBruker(String ident, String miljoe, AccessToken token) {
+    public Flux<String> deleteIdent(String ident, String miljoe, AccessToken token) {
 
-        return new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response));
+        return new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call();
     }
 
     public Mono<AccessToken> getToken() {

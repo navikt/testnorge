@@ -1,13 +1,11 @@
 package no.nav.dolly.bestilling.arenaforvalter.command;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -20,7 +18,7 @@ import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @RequiredArgsConstructor
-public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverResponse>> {
+public class ArenaForvalterDeleteCommand implements Callable<Flux<String>> {
 
     private static final String ARENAFORVALTER_BRUKER = "/api/v1/bruker";
 
@@ -30,7 +28,7 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
     private final String token;
 
     @Override
-    public Mono<InaktiverResponse> call() {
+    public Flux<String> call() {
 
         return webClient.delete().uri(
                         uriBuilder -> uriBuilder
@@ -43,15 +41,10 @@ public class ArenaForvalterDeleteCommand implements Callable<Mono<InaktiverRespo
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .retrieve()
-                .toBodilessEntity()
-                .map(resultat -> InaktiverResponse.builder()
-                        .status(HttpStatus.valueOf(resultat.getStatusCode().value()))
-                        .build())
+                .bodyToFlux(Void.class)
+                .map(resultat -> environment)
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(throwable -> Mono.just(InaktiverResponse.builder()
-                        .status(WebClientFilter.getStatus(throwable))
-                        .feilmelding(WebClientFilter.getMessage(throwable))
-                        .build()))
+                .onErrorResume(throwable -> Flux.empty())
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));
     }

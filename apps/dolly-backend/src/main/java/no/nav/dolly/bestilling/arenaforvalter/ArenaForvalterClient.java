@@ -8,7 +8,6 @@ import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -17,6 +16,7 @@ import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -65,12 +65,14 @@ public class ArenaForvalterClient implements ClientRegister {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe, token)
-                        .flatMap(arbeidssoekerBruker ->
-                                sendArenaBruker(arenadata, arbeidssoekerBruker, ident, miljoe, token)
-                                        .flatMap(brukerStatus -> brukerStatus.contains("OK") &&
-                                                !arenadata.getDagpenger().isEmpty() ?
-                                                sendArenadagpenger(arenadata, ident, miljoe, token) :
-                                                Flux.just(brukerStatus))))
+                        .flatMap(response -> response.getArbeidsokerList().isEmpty() ?
+                                sendArenaBruker(arenadata, ident, miljoe, token) :
+                                Flux.just(String.format(STATUS_FMT, miljoe, "OK")))
+                        .flatMap(brukerStatus -> brukerStatus.contains("OK") &&
+                                !arenadata.getDagpenger().isEmpty() ?
+                                sendArenadagpenger(arenadata, ident, miljoe, token) :
+                                Flux.just(brukerStatus)))
+                .filter(StringUtils::isNotBlank)
                 .collect(Collectors.joining(","));
     }
 
@@ -90,8 +92,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Arena-forvalteren"));
     }
 
-    private Flux<String> sendArenaBruker(Arenadata arenadata, ArenaArbeidssokerBruker arbeidssoker, String
-            ident, String miljoe, AccessToken token) {
+    private Flux<String> sendArenaBruker(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
 
         return Flux.just(arenadata)
                 .map(arenadata1 -> {
@@ -102,27 +103,22 @@ public class ArenaForvalterClient implements ClientRegister {
                     arenaNyeBrukere.getNyeBrukere().get(0).setMiljoe(miljoe);
                     return arenaNyeBrukere;
                 })
-                .flatMap(arenaNyeBrukere -> (!arbeidssoker.getArbeidsokerList().isEmpty() ?
-                        arenaForvalterConsumer.inaktiverBruker(ident, miljoe, token) :
-                        Mono.just("Ingen sletting"))
-                        .map(response -> arenaNyeBrukere))
-                .flatMap(arenaNyeBrukere ->
-                        arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere, token)
-                                .map(respons -> {
-                                    if (!respons.getStatus().is2xxSuccessful()) {
-                                        return String.format(STATUS_FMT, miljoe,
-                                                errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
-                                    } else if (!respons.getNyBrukerFeilList().isEmpty()) {
-                                        return respons.getNyBrukerFeilList().stream()
-                                                .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
-                                                        brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
-                                                .collect(Collectors.joining(","));
-                                    } else {
-                                        return respons.getArbeidsokerList().stream()
-                                                .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
-                                                .collect(Collectors.joining(","));
-                                    }
-                                }));
+                .flatMap(arenaNyeBrukere -> arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere, token)
+                        .map(respons -> {
+                            if (!respons.getStatus().is2xxSuccessful()) {
+                                return String.format(STATUS_FMT, miljoe,
+                                        errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
+                            } else if (!respons.getNyBrukerFeilList().isEmpty()) {
+                                return respons.getNyBrukerFeilList().stream()
+                                        .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
+                                                "Feil: " + brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
+                                        .collect(Collectors.joining(","));
+                            } else {
+                                return respons.getArbeidsokerList().stream()
+                                        .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
+                                        .collect(Collectors.joining(","));
+                            }
+                        }));
     }
 
     private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
