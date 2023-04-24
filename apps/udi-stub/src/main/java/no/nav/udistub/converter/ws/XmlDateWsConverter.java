@@ -29,10 +29,7 @@ public class XmlDateWsConverter implements Converter<LocalDate, XMLGregorianCale
         try {
             var localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
 
-            var xmlGregorianCalendar = getXmlGregorianCalendar(localDateTime.getYear(),
-                    localDateTime.getMonthValue(),
-                    localDateTime.getDayOfMonth());
-
+            var xmlGregorianCalendar = getXmlGregorianCalendar(localDateTime);
             xmlGregorianCalendar.setTime(localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
 
             return xmlGregorianCalendar;
@@ -49,11 +46,9 @@ public class XmlDateWsConverter implements Converter<LocalDate, XMLGregorianCale
             return null;
         }
         try {
-            var xmlGregorianCalendar = getXmlGregorianCalendar(localDateTime.getYear(),
-                    localDateTime.getMonthValue(),
-                    localDateTime.getDayOfMonth());
-
+            var xmlGregorianCalendar = getXmlGregorianCalendar(localDateTime);
             xmlGregorianCalendar.setTime(localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
+
             return xmlGregorianCalendar;
 
         } catch (DatatypeConfigurationException e) {
@@ -62,12 +57,12 @@ public class XmlDateWsConverter implements Converter<LocalDate, XMLGregorianCale
         return null;
     }
 
-    private static XMLGregorianCalendar getXmlGregorianCalendar(int year, int month, int day) throws DatatypeConfigurationException {
+    private static XMLGregorianCalendar getXmlGregorianCalendar(LocalDateTime localDateTime) throws DatatypeConfigurationException {
 
         var xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-        xmlGregorianCalendar.setYear(year);
-        xmlGregorianCalendar.setMonth(month);
-        xmlGregorianCalendar.setDay(day);
+        xmlGregorianCalendar.setYear(localDateTime.getYear());
+        xmlGregorianCalendar.setMonth(localDateTime.getMonthValue());
+        xmlGregorianCalendar.setDay(localDateTime.getDayOfMonth());
         xmlGregorianCalendar.setTimezone(TimeZone.getDefault().getRawOffset() / 1000 / 60);
 
         return xmlGregorianCalendar;
