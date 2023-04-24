@@ -55,11 +55,9 @@ dependencies {
             strictly '20.0'
         }
     }
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:2.3.3'
-    implementation 'com.sun.activation:jakarta.activation:2.0.1'
-    implementation 'jakarta.activation:jakarta.activation-api:2.1.1'
-    implementation 'org.glassfish.jaxb:jaxb-runtime:4.0.2'
-
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+    implementation 'javax.activation:activation:1.1.1'
+    implementation 'org.glassfish.jaxb:jaxb-runtime'
 
     implementation 'no.nav.testnav.libs:servlet-core'
     implementation 'no.nav.testnav.libs:security-core'

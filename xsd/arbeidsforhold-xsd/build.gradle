@@ -1,7 +1,7 @@
 plugins {
     id "org.sonarqube" version "4.0.0.2929"
     id 'java-library'
-    id 'com.github.edeandrea.xjc-generation' version '1.5'
+    id 'com.github.edeandrea.xjc-generation' version '1.6'
 }
 
 sonarqube {
@@ -18,13 +18,15 @@ repositories {
 java.sourceCompatibility = JavaVersion.VERSION_17
 
 dependencies {
-    implementation 'javax.activation:activation:1.1'
-    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'jakarta.activation:jakarta.activation-api:2.1.1'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
 
-    xjc 'javax.xml.bind:jaxb-api:2.3.1'
-    xjc 'com.sun.xml.bind:jaxb-xjc:2.3.1'
-    xjc 'com.sun.xml.bind:jaxb-impl:2.3.1'
-    xjc 'com.sun.istack:istack-commons-runtime:3.0.11'
+//    xjc 'javax.xml.bind:jaxb-api:2.3.1'
+    xjc 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
+//    xjc 'com.sun.xml.bind:jaxb-xjc:2.3.1'
+    xjc 'org.glassfish.jaxb:jaxb-xjc:4.0.2'
+    xjc 'com.sun.xml.bind:jaxb-impl:4.0.2'
+    xjc 'com.sun.istack:istack-commons-runtime:4.2.0'
 }
 
 xjcGeneration {

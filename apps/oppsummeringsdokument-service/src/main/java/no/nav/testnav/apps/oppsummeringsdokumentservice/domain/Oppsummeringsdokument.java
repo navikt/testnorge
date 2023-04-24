@@ -36,9 +36,9 @@ import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.PersonDTO;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.VirksomhetDTO;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
+import jakarta.xml.bind.JAXBContext;
+import jakarta.xml.bind.JAXBElement;
+import jakarta.xml.bind.Marshaller;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
 import java.io.StringWriter;
