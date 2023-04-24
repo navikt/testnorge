@@ -18,7 +18,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 
 import java.util.List;
@@ -37,7 +36,6 @@ import java.util.List;
         TokenXProperties.class,
         GetUserInfo.class,
         GetUserJwt.class,
-        OAuth2TokenValidatorResult.class
 })
 public class SecureOAuth2ServerToServerConfiguration {
 
