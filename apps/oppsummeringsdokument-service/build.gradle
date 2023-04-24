@@ -57,7 +57,7 @@ dependencies {
     }
 
     implementation 'javax.xml.bind:jaxb-api:2.4.0-b180830.0359'
-    
+
     implementation group: 'jakarta.activation', name: 'jakarta.activation-api', version: '2.1.1'
 
 //    implementation 'javax.activation:activation:1.1.1'
@@ -78,11 +78,10 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web:3.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-webflux:3.0.4'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.4'
-   
+
+    implementation 'org.opensearch.client:spring-data-opensearch:1.0.1'
     implementation 'org.opensearch.client:spring-data-opensearch-starter:1.0.1'
 
-    implementation 'org.springframework.cloud:spring-cloud-starter-bootstrap:4.0.1'
-    // TODO remove legacy bootstrap config
     implementation 'org.springframework.cloud:spring-cloud-starter-vault-config:4.0.0'
     implementation 'org.springframework.cloud:spring-cloud-starter-sleuth:3.1.7'
     implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'

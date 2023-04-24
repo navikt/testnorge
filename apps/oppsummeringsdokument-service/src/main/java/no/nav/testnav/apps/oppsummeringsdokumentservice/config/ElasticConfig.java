@@ -3,22 +3,20 @@ package no.nav.testnav.apps.oppsummeringsdokumentservice.config;
 import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.config.credentials.ElasticSearchCredentials;
 import org.opensearch.client.RestHighLevelClient;
+import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
 import org.opensearch.data.client.orhlc.ClientConfiguration;
 import org.opensearch.data.client.orhlc.RestClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.elasticsearch.config.EnableElasticsearchAuditing;
-import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
 
 @Configuration
 @RequiredArgsConstructor
-@EnableElasticsearchRepositories(basePackages = "no.nav.registre.testnorge.oppsummeringsdokumentservice.repository")
-@EnableElasticsearchAuditing
-public class ElasticConfig {
+public class ElasticConfig extends AbstractOpenSearchConfiguration {
     private final ElasticSearchCredentials elasticSearchCredentials;
 
+    @Override
     @Bean
-    public RestHighLevelClient client() {
+    public RestHighLevelClient opensearchClient() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
                 .connectedTo(elasticSearchCredentials.getEndpoints())
                 .usingSsl()
@@ -27,4 +25,5 @@ public class ElasticConfig {
 
         return RestClients.create(clientConfiguration).rest();
     }
+
 }
