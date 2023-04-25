@@ -27,9 +27,9 @@ on:
         default: "#deploy-all-unstable"
       cypress-enabled:
         type: boolean
-        description: "If false, skip the Cypress job."
+        description: "If true, run Cypress tests."
         required: false
-        default: true
+        default: false
 
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
