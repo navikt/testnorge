@@ -38,6 +38,7 @@ import {
 	sivilstand,
 	kontaktDoedsbo,
 	forelderBarnRelasjon,
+	foreldreansvar,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -77,6 +78,7 @@ enum Attributt {
 	Sivilstand = 'sivilstand',
 	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
 	ForelderBarnRelasjon = 'forelderBarnRelasjon',
+	Foreldreansvar = 'foreldreansvar',
 }
 
 const FieldArrayEdit = styled.div`
@@ -252,14 +254,19 @@ export const VisningRedigerbar = ({
 				)
 			case Attributt.ForelderBarnRelasjon:
 				return (
-					// <>
 					<ForelderBarnRelasjonForm
 						formikBag={formikBag}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
-					// <ForeldreansvarForm formikBag={formikBag} path={'foreldreansvar'} />
-					// </>
+				)
+			case Attributt.Foreldreansvar:
+				return (
+					<ForeldreansvarForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
 				)
 		}
 	}
@@ -279,6 +286,7 @@ export const VisningRedigerbar = ({
 			sivilstand: ifPresent('sivilstand', sivilstand),
 			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
 			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
+			foreldreansvar: ifPresent('foreldreansvar', foreldreansvar),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -294,6 +302,7 @@ export const VisningRedigerbar = ({
 			['sivilstand', 'sivilstand'],
 			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
+			['foreldreansvar', 'foreldreansvar'],
 		]
 	)
 

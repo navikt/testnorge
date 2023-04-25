@@ -147,10 +147,10 @@ export const ForeldreansvarEnkeltvisning = ({
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(redigertRelatertePersoner, foreldreansvarValues?.relatertPerson, [
+		? getEksisterendeNyPerson(redigertRelatertePersoner, foreldreansvarValues?.ansvarlig, [
 				'FORELDREANSVAR_FORELDER',
 		  ])
-		: getEksisterendeNyPerson(relasjoner, foreldreansvarValues?.relatertPerson, [
+		: getEksisterendeNyPerson(relasjoner, foreldreansvarValues?.ansvarlig, [
 				'FORELDREANSVAR_FORELDER',
 		  ])
 

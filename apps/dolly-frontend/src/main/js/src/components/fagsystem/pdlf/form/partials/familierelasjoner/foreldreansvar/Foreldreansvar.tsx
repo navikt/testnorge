@@ -16,10 +16,10 @@ import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import styled from 'styled-components'
-import _get from 'lodash/get'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
 interface ForeldreansvarForm {
 	formikBag: FormikProps<{}>
@@ -39,13 +39,11 @@ const StyledAlert = styled(Alert)`
 	}
 `
 
-export const ForeldreansvarForm = ({ formikBag, path }: ForeldreansvarForm) => {
-	// console.log('formikBag.values foreldreansvar: ', formikBag.values) //TODO - SLETT MEG
-	// console.log('path: ', path) //TODO - SLETT MEG
-	// if (!_get(formikBag.values, 'foreldreansvar')) {
-	// 	return null
-	// }
-	//TODO FJERN DENNE!
+export const ForeldreansvarForm = ({
+	formikBag,
+	path,
+	eksisterendeNyPerson = null,
+}: ForeldreansvarForm) => {
 	const ansvarlig = 'ansvarlig'
 	const ansvarligUtenIdentifikator = 'ansvarligUtenIdentifikator'
 	const nyAnsvarlig = 'nyAnsvarlig'
@@ -94,22 +92,39 @@ export const ForeldreansvarForm = ({ formikBag, path }: ForeldreansvarForm) => {
 		formikBag.setFieldValue(path, foreldreansvarClone)
 	}
 
-	const ansvarligType = _.get(formikBag.values, `${path}.typeAnsvarlig`)
+	const getTypeAnsvarlig = () => {
+		const type = _.get(formikBag.values, `${path}.typeAnsvarlig`)
+		if (type) {
+			return type
+		} else if (_.has(formikBag.values, `${path}.ansvarlig`)) {
+			return TypeAnsvarlig.EKSISTERENDE
+		} else if (_.has(formikBag.values, `${path}.nyAnsvarlig`)) {
+			return TypeAnsvarlig.NY
+		} else if (_.has(formikBag.values, `${path}.ansvarligUtenIdentifikator`)) {
+			return TypeAnsvarlig.UTEN_ID
+		} else return null
+	}
+
 	const ansvar = _.get(formikBag.values, `${path}.ansvar`)
+
+	useEffect(() => {
+		if (!_.get(formikBag.values, `${path}.typeAnsvarlig`)) {
+			formikBag.setFieldValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
+		}
+	}, [])
 
 	return (
 		<div className="flexbox--flex-wrap">
-			{!path?.includes('pdldata') && (
-				<h4 style={{ marginTop: '15px', marginBottom: '15px', width: '100%' }}>Foreldreansvar</h4>
-			)}
 			<FormikSelect
 				name={`${path}.ansvar`}
 				label="Hvem har ansvaret"
 				options={Options('foreldreansvar')}
 				onChange={(target: Target) => handleChangeAnsvar(target, path)}
 			/>
-			<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
-			<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+			<DatepickerWrapper>
+				<FormikDatepicker name={`${path}.gyldigFraOgMed`} label="Gyldig fra og med" />
+				<FormikDatepicker name={`${path}.gyldigTilOgMed`} label="Gyldig til og med" />
+			</DatepickerWrapper>
 
 			{ansvar === 'ANDRE' && (
 				<FormikSelect
@@ -121,22 +136,23 @@ export const ForeldreansvarForm = ({ formikBag, path }: ForeldreansvarForm) => {
 				/>
 			)}
 
-			{ansvarligType === TypeAnsvarlig.EKSISTERENDE && (
+			{getTypeAnsvarlig() === TypeAnsvarlig.EKSISTERENDE && (
 				<PdlEksisterendePerson
 					eksisterendePersonPath={`${path}.ansvarlig`}
 					label="Ansvarlig"
 					formikBag={formikBag}
+					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
 
-			{ansvarligType === TypeAnsvarlig.UTEN_ID && (
+			{getTypeAnsvarlig() === TypeAnsvarlig.UTEN_ID && (
 				<PdlPersonUtenIdentifikator
 					formikBag={formikBag}
 					path={`${path}.ansvarligUtenIdentifikator`}
 				/>
 			)}
 
-			{ansvarligType === TypeAnsvarlig.NY && (
+			{getTypeAnsvarlig() === TypeAnsvarlig.NY && (
 				<PdlNyPerson nyPersonPath={`${path}.nyAnsvarlig`} formikBag={formikBag} />
 			)}
 

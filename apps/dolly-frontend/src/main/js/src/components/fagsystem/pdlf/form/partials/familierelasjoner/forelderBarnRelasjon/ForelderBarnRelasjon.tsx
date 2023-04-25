@@ -148,7 +148,6 @@ export const ForelderBarnRelasjonForm = ({
 					eksisterendePersonPath={`${path}.relatertPerson`}
 					label={erBarn ? RELASJON_BARN.toUpperCase() : RELASJON_FORELDER.toUpperCase()}
 					formikBag={formikBag}
-					// idx={idx}
 					eksisterendeNyPerson={eksisterendeNyPerson}
 				/>
 			)}
