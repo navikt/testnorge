@@ -2,6 +2,8 @@ name: person-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/person-service/**
       - .github/workflows/app.person-service.yml

@@ -2,6 +2,8 @@ name: App faste-data-frontend
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/faste-data-frontend/**
       - .github/workflows/app.faste-data-frontend.yml

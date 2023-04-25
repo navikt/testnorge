@@ -2,6 +2,8 @@ name: endringsmelding-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/endringsmelding-service/**
       - .github/workflows/app.endringsmelding-service.yml

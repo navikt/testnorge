@@ -2,6 +2,8 @@ name: organisasjon-bestilling-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/organisasjon-bestilling-service/**
       - .github/workflows/app.organisasjon-bestilling-service.yml

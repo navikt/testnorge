@@ -2,6 +2,8 @@ name: sigrunstub-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/sigrunstub-proxy/**
       - libs/reactive-core/**

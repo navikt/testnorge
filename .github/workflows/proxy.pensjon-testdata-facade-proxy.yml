@@ -2,6 +2,8 @@ name: pensjon-testdata-facade-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/pensjon-testdata-facade-proxy/**
       - libs/reactive-core/**

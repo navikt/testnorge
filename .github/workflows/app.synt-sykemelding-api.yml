@@ -2,6 +2,8 @@ name: synt-sykemelding-api
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/synt-sykemelding-api/**
       - .github/workflows/app.synt-sykemelding-api.yml

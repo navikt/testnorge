@@ -2,6 +2,8 @@ name: brreg-stub
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/brreg-stub/**
       - .github/workflows/app.brreg-stub.yml

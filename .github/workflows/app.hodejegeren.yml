@@ -2,6 +2,8 @@ name: testnorge-hodejegeren
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/hodejegeren/**
       - .github/workflows/app.hodejegeren.yml

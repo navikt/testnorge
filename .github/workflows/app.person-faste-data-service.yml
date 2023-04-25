@@ -2,6 +2,8 @@ name: person-faste-data-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/person-faste-data-service/**
       - .github/workflows/app.person-faste-data-service.yml

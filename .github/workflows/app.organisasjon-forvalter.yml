@@ -2,6 +2,8 @@ name: organisasjon-forvalter
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/organisasjon-forvalter/**
       - .github/workflows/app.organisasjon-forvalter.yml

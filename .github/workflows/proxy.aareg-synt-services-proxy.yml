@@ -2,6 +2,8 @@ name: aareg-synt-services-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/aareg-synt-services-proxy/**
       - libs/reactive-core/**

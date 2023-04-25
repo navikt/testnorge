@@ -2,6 +2,8 @@ name: orgnummer-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/orgnummer-service/**
       - .github/workflows/app.orgnummer-service.yml

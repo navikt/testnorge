@@ -2,6 +2,8 @@ name: krrstub-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/krrstub-proxy/**
       - libs/reactive-core/**

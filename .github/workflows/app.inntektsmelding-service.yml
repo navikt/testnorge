@@ -2,6 +2,8 @@ name: inntektsmelding-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/inntektsmelding-service/**
       - .github/workflows/app.inntektsmelding-service.yml

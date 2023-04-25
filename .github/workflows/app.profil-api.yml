@@ -2,6 +2,8 @@ name: profil-api
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/profil-api/**
       - .github/workflows/app.profil-api.yml

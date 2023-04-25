@@ -2,6 +2,8 @@ name: person-organisasjon-tilgang-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/person-organisasjon-tilgang-service/**
       - .github/workflows/app.person-organisasjon-tilgang-service.yml

@@ -2,6 +2,8 @@ name: jenkins-batch-status-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/jenkins-batch-status-service/**
       - .github/workflows/app.jenkins-batch-status-service.yml

@@ -2,6 +2,8 @@ name: pdl-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/pdl-proxy/**
       - libs/reactive-core/**

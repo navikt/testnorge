@@ -2,6 +2,8 @@ name: arena-forvalteren-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/arena-forvalteren-proxy/**
       - libs/reactive-core/**

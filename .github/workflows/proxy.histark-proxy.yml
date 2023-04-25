@@ -2,6 +2,8 @@ name: Proxy histark-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/histark-proxy/**
       - libs/reactive-core/**

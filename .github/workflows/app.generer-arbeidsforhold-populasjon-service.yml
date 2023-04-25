@@ -2,6 +2,8 @@ name: generer-arbeidsforhold-populasjon-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/generer-arbeidsforhold-populasjon-service/**
       - .github/workflows/app.generer-arbeidsforhold-populasjon-service.yml

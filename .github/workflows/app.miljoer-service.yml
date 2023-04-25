@@ -2,6 +2,8 @@ name: miljoer-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/miljoer-service/**
       - .github/workflows/app.miljoer-service.yml

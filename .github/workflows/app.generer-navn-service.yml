@@ -2,6 +2,8 @@ name: generer-navn-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/generer-navn-service/**
       - .github/workflows/app.generer-navn-service.yml

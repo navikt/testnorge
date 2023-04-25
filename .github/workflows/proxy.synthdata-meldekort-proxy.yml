@@ -2,6 +2,8 @@ name: synthdata-meldekort-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/synthdata-meldekort-proxy/**
       - libs/reactive-core/**

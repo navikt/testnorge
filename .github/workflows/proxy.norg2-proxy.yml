@@ -2,6 +2,8 @@ name: norg2-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/norg2-proxy/**
       - libs/reactive-core/**

@@ -2,6 +2,8 @@ name: oppsummeringsdokument-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/oppsummeringsdokument-service/**
       - .github/workflows/app.oppsummeringsdokument-service.yml

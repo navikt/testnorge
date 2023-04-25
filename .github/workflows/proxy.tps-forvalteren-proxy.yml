@@ -2,6 +2,8 @@ name: tps-forvalteren-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/tps-forvalteren-proxy/**
       - libs/reactive-core/**

@@ -2,6 +2,8 @@ name: App organisasjon-tilgang-frontend
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/organisasjon-tilgang-frontend/**
       - .github/workflows/app.organisasjon-tilgang-frontend.yml

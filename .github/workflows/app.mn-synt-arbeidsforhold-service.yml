@@ -2,6 +2,8 @@ name: mn-synt-arbeidsforhold-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/mn-synt-arbeidsforhold-service/**
       - .github/workflows/app.mn-synt-arbeidsforhold-service.yml

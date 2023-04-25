@@ -2,6 +2,8 @@ name: statisk-data-forvalter-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/statisk-data-forvalter-proxy/**
       - libs/reactive-core/**

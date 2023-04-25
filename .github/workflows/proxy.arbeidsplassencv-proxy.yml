@@ -2,6 +2,8 @@ name: arbeidsplassencv-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/arbeidsplassencv-proxy/**
       - libs/reactive-core/**

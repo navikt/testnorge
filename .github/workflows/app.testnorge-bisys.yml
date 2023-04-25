@@ -3,6 +3,8 @@ name: testnorge-bisys
 on:
   workflow_dispatch:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/testnorge-bisys/**
       - .github/workflows/app.testnorge-bisys.yml

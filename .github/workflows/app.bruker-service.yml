@@ -2,6 +2,8 @@ name: bruker-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/bruker-service/**
       - .github/workflows/app.bruker-service.yml

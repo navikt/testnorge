@@ -2,6 +2,8 @@ name: tps-messaging-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/tps-messaging-service/**
       - .github/workflows/app.tps-messaging-service.yml

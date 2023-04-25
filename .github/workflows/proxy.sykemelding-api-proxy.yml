@@ -2,6 +2,8 @@ name: sykemelding-api-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/sykemelding-api-proxy/**
       - libs/reactive-core/**

@@ -2,6 +2,8 @@ name: amelding-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/amelding-service/**
       - .github/workflows/app.amelding-service.yml

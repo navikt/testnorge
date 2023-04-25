@@ -2,6 +2,8 @@ name: kontoregister-person-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/kontoregister-person-proxy/**
       - libs/reactive-core/**

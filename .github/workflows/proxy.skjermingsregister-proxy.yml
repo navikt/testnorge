@@ -2,6 +2,8 @@ name: skjermingsregister-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/skjermingsregister-proxy/**
       - libs/reactive-core/**

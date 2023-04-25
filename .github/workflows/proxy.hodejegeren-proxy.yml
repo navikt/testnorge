@@ -2,6 +2,8 @@ name: hodejegeren-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/hodejegeren-proxy/**
       - libs/reactive-core/**

@@ -2,6 +2,8 @@ name: helsepersonell-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/helsepersonell-service/**
       - .github/workflows/app.helsepersonell-service.yml

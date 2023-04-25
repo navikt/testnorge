@@ -2,6 +2,8 @@ name: app-tilgang-analyse-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/app-tilgang-analyse-service/**
       - .github/workflows/app.app-tilgang-analyse-service.yml

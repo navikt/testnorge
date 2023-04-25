@@ -2,6 +2,8 @@ name: saf-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/saf-proxy/**
       - libs/reactive-core/**

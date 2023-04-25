@@ -2,6 +2,8 @@ name: udistub-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/udistub-proxy/**
       - libs/reactive-core/**

@@ -2,6 +2,8 @@ name: joark-dokument-service
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/joark-dokument-service/**
       - .github/workflows/app.joark-dokument-service.yml

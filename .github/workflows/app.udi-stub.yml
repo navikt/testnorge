@@ -2,6 +2,8 @@ name: testnav-udi-stub
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/udi-stub/**
       - .github/workflows/app.udi-stub.yml

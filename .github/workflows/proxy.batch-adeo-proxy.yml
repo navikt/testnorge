@@ -2,6 +2,8 @@ name: batch-adeo-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/batch-adeo-proxy/**
       - libs/reactive-core/**

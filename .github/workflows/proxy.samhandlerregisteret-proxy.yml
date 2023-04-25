@@ -2,6 +2,8 @@ name: samhandlerregisteret-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/samhandlerregisteret-proxy/**
       - libs/reactive-core/**

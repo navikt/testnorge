@@ -2,6 +2,8 @@ name: tilbakemelding-api
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/tilbakemelding-api/**
       - .github/workflows/app.tilbakemelding-api.yml

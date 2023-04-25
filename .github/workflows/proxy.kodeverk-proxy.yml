@@ -2,6 +2,8 @@ name: kodeverk-proxy
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - proxies/kodeverk-proxy/**
       - libs/reactive-core/**
