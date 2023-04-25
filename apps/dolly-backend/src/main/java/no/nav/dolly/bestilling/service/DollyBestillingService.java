@@ -166,9 +166,9 @@ public class DollyBestillingService {
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
-    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, PdlResponse pdlResponse) {
+    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
 
-        return opprettProgress(bestilling, master, pdlResponse.getStatus().is2xxSuccessful() ? pdlResponse.getIdent() : "?");
+        return opprettProgress(bestilling, master, null);
     }
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
@@ -180,8 +180,10 @@ public class DollyBestillingService {
                 .build()));
     }
 
-    protected Flux<PdlResponse> opprettPerson(OriginatorUtility.Originator originator) {
+    protected Flux<PdlResponse> opprettPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {
 
+        transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                "Info: Oppretting av person startet ...");
         return pdlDataConsumer.opprettPdl(originator.getPdlBestilling())
                 .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
     }
@@ -193,6 +195,8 @@ public class DollyBestillingService {
                     forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
                             errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
             );
+            transactionHelperService.persister(progress, BestillingProgress::setIdent, forvalterStatus.getStatus().is2xxSuccessful() ?
+                    forvalterStatus.getIdent() : "?");
         }
 
         if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
