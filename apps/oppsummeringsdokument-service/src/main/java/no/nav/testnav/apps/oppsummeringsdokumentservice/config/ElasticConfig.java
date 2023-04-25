@@ -18,7 +18,7 @@ public class ElasticConfig extends AbstractOpenSearchConfiguration {
     @Bean
     public RestHighLevelClient opensearchClient() {
         ClientConfiguration clientConfiguration = ClientConfiguration.builder()
-                .connectedTo(elasticSearchCredentials.getEndpoints())
+                .connectedTo(elasticSearchCredentials.getEndpoints().replace("https://", ""))
                 .usingSsl()
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
                 .build();
