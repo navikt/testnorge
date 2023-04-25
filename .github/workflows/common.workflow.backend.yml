@@ -83,7 +83,7 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
-      - name: "Deploy (development)"
+      - name: "Deploy (dev)"
         uses: nais/deploy/actions/deploy@v1
         if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev)
         env:
@@ -91,7 +91,7 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.dev.yml
           VAR: image=${{steps.docker-build-push.outputs.image}}
-      - name: "Deploy"
+      - name: "Deploy (prod)"
         uses: nais/deploy/actions/deploy@v1
         if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-prod)
         env:

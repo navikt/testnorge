@@ -1,40 +1,21 @@
-name: App faste-data-frontend
+name: faste-data-frontend
 
 on:
   push:
-    branches:
-      - master # TODO: Remove before merge to master.
     paths:
       - apps/faste-data-frontend/**
       - .github/workflows/app.faste-data-frontend.yml
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.frontend.yml
     with:
-      working-directory: 'apps/faste-data-frontend/'
+      working-directory: "apps/faste-data-frontend"
+      deploy-tag-prod: "#deploy-faste-data-frontend-prod"
+      cypress-enabled: false
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
-    with:
-      working-directory: 'apps/faste-data-frontend/'
-      app-name: 'faste-data-frontend'
-    secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
-  deploy-dev:
-    name: Deploy
-    uses: ./.github/workflows/common.deploy.yml
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-faste-data-frontend') }}
-    with:
-      resource: 'apps/faste-data-frontend/config.yml'
-      app-name: 'faste-data-frontend'
-      cluster: 'dev-gcp'
-      project-id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-      IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
