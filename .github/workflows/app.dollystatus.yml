@@ -1,6 +1,7 @@
 name: dollystatus
 
 on:
+  workflow-dispatch:
   push:
     paths:
       - apps/dollystatus/**
