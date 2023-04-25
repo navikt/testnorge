@@ -54,8 +54,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   cypress:
-    if:
-      ${{ inputs.cypress-enabled }}
+    if: inputs.cypress-enabled
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -80,8 +79,8 @@ jobs:
   build:
     needs: cypress
     if: |
-      ${{ github.actor != 'dependabot[bot]' }} &&
-      ${{ always() && !inputs.cypress-enabled }}
+      github.actor != 'dependabot[bot]' &&
+      (always() && !inputs.cypress-enabled)
     permissions:
       contents: "read"
       id-token: "write"

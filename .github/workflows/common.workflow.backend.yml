@@ -40,7 +40,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   build:
-    if: ${{ github.actor != 'dependabot[bot]' }}
+    if: github.actor != 'dependabot[bot]'
     permissions:
       contents: "read"
       id-token: "write"
