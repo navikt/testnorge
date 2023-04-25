@@ -7,7 +7,7 @@ on:
         required: true
       deploy-tag-prod:
         type: string
-        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend-prod."
         required: false
         default: "#deploy-all-prod"
       deploy-tag-dev:
@@ -18,10 +18,12 @@ on:
       deploy-tag-idporten:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-frontend-idporten."
+        required: false
         default: "#deploy-all-idporten"
       deploy-tag-unstable:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-frontend-unstable."
+        required: false
         default: "#deploy-all-unstable"
       cypress-enabled:
         type: boolean
@@ -134,7 +136,7 @@ jobs:
           ( contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ||
             contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ||
             contains(github.event.head_commit.message, inputs.deploy-tag-dev) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+            contains(github.event.head_commit.message, inputs.deploy-tag-prod) ) }}
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -167,7 +169,7 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) }}
+        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-prod) }}
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp

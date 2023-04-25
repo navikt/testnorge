@@ -9,10 +9,9 @@ on:
       working-directory:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-backend (without leading/trailing slash)."
-        required: true
       deploy-tag-prod:
         type: string
-        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend-prod."
         required: false
         default: "#deploy-all-prod"
       deploy-tag-dev:
@@ -74,7 +73,10 @@ jobs:
       - name: "Docker"
         uses: nais/docker-build-push@v0
         id: docker-build-push
-        if: ${{ github.ref == 'refs/heads/master' || ( contains(github.event.head_commit.message, inputs.deploy-tag-dev) || contains(github.event.head_commit.message, inputs.deploy-tag-prod) ) }}
+        if: |
+          ${{ github.ref == 'refs/heads/master' ||
+          ( contains(github.event.head_commit.message, inputs.deploy-tag-dev) ||
+            contains(github.event.head_commit.message, inputs.deploy-tag-prod) ) }}
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
