@@ -237,6 +237,15 @@ export const PersonVisning = ({
 				})
 			})
 
+		data.pdl?.hentPerson?.foreldreansvar
+			?.filter((foreldreansvar) => foreldreansvar.ansvarlig)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'ANSVARLIG',
+					id: person.ansvarlig,
+				})
+			})
+
 		return relatertePersoner
 	}
 

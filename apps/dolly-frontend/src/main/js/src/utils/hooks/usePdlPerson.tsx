@@ -11,9 +11,11 @@ export const usePdlMiljoeinfo = (ident: string, hentQ1 = false) => {
 		fetcher
 	)
 
+	const errorMessage = data?.errors?.[0]?.message
+
 	return {
 		pdlData: data?.data,
 		loading: isLoading,
-		error: error,
+		error: error || errorMessage,
 	}
 }

@@ -17,7 +17,7 @@ import { TypeAnsvarlig } from '@/components/fagsystem/pdlf/PdlTypes'
 import { PdlEksisterendePerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlEksisterendePerson'
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlNyPerson'
-import { ToggleGroup } from '@navikt/ds-react'
+import { Alert, ToggleGroup } from '@navikt/ds-react'
 import { useEffect } from 'react'
 
 interface ForelderForm {
@@ -45,10 +45,7 @@ export const ForelderBarnRelasjonForm = ({
 	const nyRelatertPerson = 'nyRelatertPerson'
 	const relatertPersonUtenFolkeregisteridentifikator =
 		'relatertPersonUtenFolkeregisteridentifikator'
-	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-	// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
-	console.log('path: ', path) //TODO - SLETT MEG
-	// console.log('eksisterendeNyPerson: ', eksisterendeNyPerson) //TODO - SLETT MEG
+
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
 		const forelderBarnRelasjon = _.get(formikBag.values, path)
 		const forelderBarnClone = _.cloneDeep(forelderBarnRelasjon)
@@ -165,6 +162,13 @@ export const ForelderBarnRelasjonForm = ({
 
 			{getForelderBarnType() === TypeAnsvarlig.NY && (
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
+			)}
+
+			{!path?.includes('pdldata') && (
+				<Alert variant={'info'} size={'small'} style={{ marginTop: '10px', marginBottom: '15px' }}>
+					Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importers til
+					Dolly, via knapp øverst på denne personen.
+				</Alert>
 			)}
 
 			<AvansertForm

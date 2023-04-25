@@ -73,10 +73,6 @@ export const ForelderBarnRelasjonVisning = ({
 	ident,
 	relasjoner,
 }: FamilieRelasjonerData) => {
-	// console.log('forelderBarnRelasjonData: ', forelderBarnRelasjonData) //TODO - SLETT MEG
-	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
-	// console.log('data[idx]: ', data[idx]) //TODO - SLETT MEG
 	const initForelderBarn = Object.assign(
 		_.cloneDeep(data[idx].relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
 		data[idx]
@@ -92,7 +88,7 @@ export const ForelderBarnRelasjonVisning = ({
 	if (slettetForelderBarnPdlf) {
 		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
 	}
-	// console.log('redigertForelderBarnPdlf: ', redigertForelderBarnPdlf) //TODO - SLETT MEG
+
 	const forelderBarnValues = redigertForelderBarnPdlf
 		? redigertForelderBarnPdlf
 		: forelderBarnRelasjonData
@@ -107,8 +103,6 @@ export const ForelderBarnRelasjonVisning = ({
 		  }
 		: null
 
-	// console.log('forelderBarnValues: ', forelderBarnValues) //TODO - SLETT MEG
-	// console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
 	const eksisterendeNyPerson = redigertRelatertePersoner
 		? getEksisterendeNyPerson(redigertRelatertePersoner, forelderBarnValues?.relatertPerson, [
 				'FAMILIERELASJON_BARN',
@@ -127,7 +121,6 @@ export const ForelderBarnRelasjonVisning = ({
 		redigertForelderBarnValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson
 	}
 
-	console.log('eksisterendeNyPerson: ', eksisterendeNyPerson) //TODO - SLETT MEG
 	const getForeldreansvar = () => {
 		const relasjon = relasjoner?.find(
 			(relasjon) =>
@@ -137,12 +130,11 @@ export const ForelderBarnRelasjonVisning = ({
 		return relasjon?.relatertPerson?.foreldreansvar
 	}
 	const foreldreansvar = getForeldreansvar()
-	// console.log('foreldreansvar(): ', foreldreansvar()) //TODO - SLETT MEG
+
 	if (foreldreansvar) {
 		initialValues.foreldreansvar = foreldreansvar[0]
-		//TODO: Ta høyde for flere foreldreansvar
+		//TODO: Ta høyde for flere foreldreansvar. Kan evt fjerne alt av foreldreansvar?
 	}
-	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 
 	return (
 		<VisningRedigerbarConnector

@@ -252,14 +252,14 @@ export const VisningRedigerbar = ({
 				)
 			case Attributt.ForelderBarnRelasjon:
 				return (
-					<>
-						<ForelderBarnRelasjonForm
-							formikBag={formikBag}
-							path={path}
-							eksisterendeNyPerson={eksisterendeNyPerson}
-						/>
-						<ForeldreansvarForm formikBag={formikBag} path={'foreldreansvar'} />
-					</>
+					// <>
+					<ForelderBarnRelasjonForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+					// <ForeldreansvarForm formikBag={formikBag} path={'foreldreansvar'} />
+					// </>
 				)
 		}
 	}
