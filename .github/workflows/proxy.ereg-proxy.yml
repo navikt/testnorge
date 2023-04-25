@@ -16,7 +16,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "proxies/ereg-proxy"
-      deploy-tag-dev: "#deploy-ereg-proxy-dev"
+      deploy-tag: "#deploy-ereg-proxy"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

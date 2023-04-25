@@ -14,7 +14,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/testnorge-tp"
-      deploy-tag-dev: "#deploy-testnorge-tp-dev"
+      deploy-tag: "#deploy-testnorge-tp"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/varslinger-service"
-      deploy-tag-dev: "#deploy-varslinger-service-dev"
+      deploy-tag: "#deploy-varslinger-service"
       deploy-tag-test: "#deploy-varslinger-service-test"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

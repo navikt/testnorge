@@ -5,11 +5,11 @@ on:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
         required: true
-      deploy-tag-dev:
+      deploy-tag:
         type: string
-        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend-dev."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend."
         required: false
-        default: "#deploy-all-dev"
+        default: "#deploy-all"
       deploy-tag-test:
         type: string
         description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-frontend-test."
