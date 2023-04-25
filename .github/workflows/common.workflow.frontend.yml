@@ -148,7 +148,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: ${{ inputs.working-directory }}/config.test.unstable.yml
+          RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (ID-porten)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
@@ -156,7 +156,7 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
-          RESOURCE: ${{ inputs.working-directory }}/config.test.idporten.yml
+          RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
