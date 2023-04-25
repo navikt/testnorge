@@ -15,7 +15,7 @@ jobs:
     with:
       working-directory: "apps/dolly-backend"
       deploy-tag: "#deploy-dolly-backend"
-      deploy-tag-test: "#deploy-dolly-backend-test"
+      deploy-tag-test: "#deploy-test-dolly-backend"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

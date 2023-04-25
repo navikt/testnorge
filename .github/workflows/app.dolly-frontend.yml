@@ -14,9 +14,9 @@ jobs:
     with:
       working-directory: "apps/dolly-frontend"
       deploy-tag: "#deploy-frontend"
-      deploy-tag-test: "#deploy-frontend-test"
-      deploy-tag-idporten: "#deploy-frontend-idporten"
-      deploy-tag-unstable: "#deploy-frontend-unstable"
+      deploy-tag-test: "#deploy-test-frontend"
+      deploy-tag-idporten: "#deploy-idporten-frontend"
+      deploy-tag-unstable: "#deploy-unstable-frontend"
       cypress-enabled: true
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

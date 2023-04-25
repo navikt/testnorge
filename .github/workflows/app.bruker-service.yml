@@ -14,7 +14,7 @@ jobs:
     with:
       working-directory: "apps/bruker-service"
       deploy-tag: "#deploy-bruker-service"
-      deploy-tag-test: "#deploy-bruker-service-test"
+      deploy-tag-test: "#deploy-test-bruker-service"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

@@ -7,24 +7,24 @@ on:
         required: true
       deploy-tag:
         type: string
-        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend. Make sure it is not a substring of other deploy tags."
         required: false
         default: "#deploy-all"
       deploy-tag-test:
         type: string
-        description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-frontend-test."
+        description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-test-frontend."
         required: false
-        default: "#deploy-all-test"
+        default: "#deploy-test-all"
       deploy-tag-idporten:
         type: string
-        description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-frontend-idporten."
+        description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-idporten-frontend."
         required: false
-        default: "#deploy-all-idporten"
+        default: "#deploy-idporten-all"
       deploy-tag-unstable:
         type: string
-        description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-frontend-unstable."
+        description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-unstable-frontend."
         required: false
-        default: "#deploy-all-unstable"
+        default: "#deploy-unstable-all"
       cypress-enabled:
         type: boolean
         description: "If true, run Cypress tests."
