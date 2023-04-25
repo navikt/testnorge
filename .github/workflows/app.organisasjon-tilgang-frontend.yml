@@ -5,6 +5,7 @@ on:
     paths:
       - apps/organisasjon-tilgang-frontend/**
       - .github/workflows/app.organisasjon-tilgang-frontend.yml
+  workflow_dispatch:
 
 jobs:
   workflow:
