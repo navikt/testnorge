@@ -7,7 +7,7 @@ spring:
         reactive:
           username: ${OPEN_SEARCH_USERNAME}
           password: ${OPEN_SEARCH_PASSWORD}
-          endpoints: ${OPENSEARCH_HOST}:${OPENSEARCH_PORT}
+          endpoints: ${OPEN_SEARCH_URI}
           use-ssl: true
   security:
     oauth2:
