@@ -134,7 +134,7 @@ public class Oppsummeringsdokument {
                 .getVirksomheter()
                 .stream()
                 .map(value -> create(value, dto.getVersion()))
-                .collect(Collectors.toList());
+                .toList();
 
 
         var opplysningspliktig = new no.nav.registre.testnorge.xsd.arbeidsforhold.v2_1.Opplysningspliktig();
