@@ -24,5 +24,5 @@ consumers:
   statiskdataforvalter:
     name: testnorge-statisk-data-forvalter
     namespace: dolly
-    url: https://testnorge-statisk-data-forvalter.dev.intern.nav.no
+    url: http://testnorge-statisk-data-forvalter.dolly.svc.nais.local
     cluster: dev-fss

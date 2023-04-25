@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { multiFetcherAll, multiFetcherBatchData } from '@/api'
+import { multiFetcherAll } from '@/api'
 
 const sliceGruppe = (gruppe, maxAntall, url) => {
 	let urlListe = []
@@ -73,7 +73,7 @@ export const useTestnorgeOptions = (gruppe) => {
 	}
 
 	const personData = []
-	const dataFlat = data?.flatMap((i) => i.data?.hentPersonBolk)
+	const dataFlat = data?.flatMap((i) => i?.data?.hentPersonBolk)
 	dataFlat?.forEach((id) => {
 		const navn = id?.person?.navn?.[0]
 		const mellomnavn = navn?.mellomnavn ? `${navn.mellomnavn.charAt(0)}.` : ''

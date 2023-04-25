@@ -14,7 +14,7 @@ consumers:
   bidragsmelding:
     url: https://dummy.dev.adeo.no
   synt-bisys:
-    url: https://synthdata-bisys.dev.intern.nav.no
+    url: https://synthdata-bisys.intern.dev.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-bisys

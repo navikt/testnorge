@@ -17,6 +17,7 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-adresse-service.dev.intern.nav.no"
+    - "https://testnav-adresse-service.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30

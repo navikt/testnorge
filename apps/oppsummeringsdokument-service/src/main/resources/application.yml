@@ -31,11 +31,12 @@ springdoc:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
-consumers.aareg-synt-services:
-  url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: aareg-synt-services-proxy
+consumers:
+  aareg-synt-services:
+    url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: aareg-synt-services-proxy
 
 management:
   endpoints:

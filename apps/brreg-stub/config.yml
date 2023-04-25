@@ -31,7 +31,5 @@ spec:
       cpu: 200m
       memory: 1024Mi
   ingresses:
-    - "https://brreg-stub.nais.preprod.local"
     - "https://brreg-stub.dev-fss.nais.io"
-    - "https://brreg-stub.dev.adeo.no"
     - "https://brreg-stub.dev.intern.nav.no"

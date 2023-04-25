@@ -48,13 +48,8 @@ spec:
           namespace: traktor
           cluster: prod-fss
     outbound:
-      external:
-        - host: synthdata-arena-meldekort.dev.intern.nav.no
       rules:
         - application: synthdata-arena-meldekort
-          cluster: dev-gcp
-      external:
-        - host: synthdata-arena-meldekort.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -80,4 +75,5 @@ spec:
   envFrom:
     - secret: azure-nav-testnav-synthdata-meldekort-proxy-nav
   ingresses:
+    - "https://testnav-synthdata-meldekort-proxy.intern.dev.nav.no"
     - "https://testnav-synthdata-meldekort-proxy.dev.intern.nav.no"

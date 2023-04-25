@@ -26,5 +26,5 @@ consumers:
   popp-testdata:
     name: popp-testdata
     namespace: pensjonopptjening
-    url: https://popp-testdata.dev.intern.nav.no
+    url: http://popp-testdata.pensjontestdata.svc.nais.local
     cluster: dev-gcp

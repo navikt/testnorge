@@ -10,7 +10,7 @@ spec:
     - name: PERSON_ORG_TILGANG_NAME
       value: testnav-person-organisasjon-tilgang-service-dev
     - name: PERSON_ORG_TILGANG_URL
-      value: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+      value: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
   image: {{ image }}
   tokenx:
     enabled: true
@@ -74,3 +74,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnorge-profil-api-dev.dev.intern.nav.no"
+    - "https://testnorge-profil-api-dev.intern.dev.nav.no"

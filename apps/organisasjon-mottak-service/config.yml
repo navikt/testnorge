@@ -55,3 +55,4 @@ spec:
     pool: nav-dev
   ingresses:
     - "https://testnav-organisasjon-mottak-service.dev.intern.nav.no"
+    - "https://testnav-organisasjon-mottak-service.intern.dev.nav.no"

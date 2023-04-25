@@ -33,7 +33,6 @@ public class GithubConsumer {
     }
 
     public Mono<SearchResults> search(SearchArgs args, String owner, String repo) {
-        log.info("Søker etter '{}'.", args.toString());
         return search(new SearchResults(repo, owner), args, 1)
                 .doOnNext(value -> log.info("Fant {} (søk='{}').", value.getItems().size(), args));
     }

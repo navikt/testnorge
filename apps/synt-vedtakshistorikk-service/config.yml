@@ -55,3 +55,4 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-synt-vedtakshistorikk-service.dev.intern.nav.no"
+    - "https://testnav-synt-vedtakshistorikk-service.intern.dev.nav.no"

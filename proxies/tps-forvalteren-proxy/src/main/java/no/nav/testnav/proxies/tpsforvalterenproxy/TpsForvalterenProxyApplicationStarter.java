@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Import;
         SecurityConfig.class,
 })
 @SpringBootApplication
-public class TpsForvaterenProxyApplicationStarter {
+public class TpsForvalterenProxyApplicationStarter {
 
     @Value("${username}")
     private String username;
@@ -30,7 +30,7 @@ public class TpsForvaterenProxyApplicationStarter {
     private String url;
 
     public static void main(String[] args) {
-        SpringApplication.run(TpsForvaterenProxyApplicationStarter.class, args);
+        SpringApplication.run(TpsForvalterenProxyApplicationStarter.class, args);
     }
 
     @Bean

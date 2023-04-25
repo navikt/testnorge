@@ -9,6 +9,7 @@ import Icon from '@/components/ui/icon/Icon'
 
 import './eksisterendeIdent.less'
 import { Alert, Table, Textarea } from '@navikt/ds-react'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 export const EksisterendeIdent = ({
 	onAvbryt,
@@ -94,6 +95,7 @@ export const EksisterendeIdent = ({
 
 			{finnesGyldige && (
 				<ModalActionKnapper
+					data-cy={CypressSelector.BUTTON_START_BESTILLING}
 					submitknapp="Start bestilling"
 					onSubmit={_onSubmit}
 					onAvbryt={onAvbryt}
