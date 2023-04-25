@@ -14,7 +14,7 @@ jobs:
     with:
       working-directory: "apps/profil-api"
       deploy-tag-prod: "#deploy-profil-api-prod"
-      deploy-tag-dev: "#deploy-profil-api-dev"
+      deploy-tag-test: "#deploy-profil-api-test"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

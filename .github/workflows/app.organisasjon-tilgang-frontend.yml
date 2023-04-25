@@ -15,7 +15,7 @@ jobs:
     with:
       working-directory: "apps/organisasjon-tilgang-frontend"
       deploy-tag-prod: "#deploy-organisasjon-tilgang-frontend-prod"
-      deploy-tag-dev: "#deploy-organisasjon-tilgang-frontend-dev"
+      deploy-tag-test: "#deploy-organisasjon-tilgang-frontend-test"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
