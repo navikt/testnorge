@@ -14,7 +14,7 @@ jobs:
     with:
       cluster: "dev-fss"
       working-directory: "apps/hodejegeren"
-      deploy-tag-prod: "#deploy-hodejegeren-prod"
+      deploy-tag-dev: "#deploy-hodejegeren-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

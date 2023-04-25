@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/jenkins-batch-status-service"
-      deploy-tag-prod: "#deploy-jenkins-batch-status-service-prod"
+      deploy-tag-dev: "#deploy-jenkins-batch-status-service-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

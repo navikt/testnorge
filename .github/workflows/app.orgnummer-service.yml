@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "apps/orgnummer-service"
-      deploy-tag-prod: "#deploy-orgnummer-service-prod"
+      deploy-tag-dev: "#deploy-orgnummer-service-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

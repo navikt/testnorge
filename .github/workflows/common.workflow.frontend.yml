@@ -5,11 +5,11 @@ on:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
         required: true
-      deploy-tag-prod:
+      deploy-tag-dev:
         type: string
-        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend-prod."
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend-dev."
         required: false
-        default: "#deploy-all-prod"
+        default: "#deploy-all-dev"
       deploy-tag-test:
         type: string
         description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-frontend-test."
@@ -136,7 +136,7 @@ jobs:
           ( contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ||
             contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ||
             contains(github.event.head_commit.message, inputs.deploy-tag-test) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag-prod) )
+            contains(github.event.head_commit.message, inputs.deploy-tag-dev) )
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -169,7 +169,7 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (dev)"
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-prod)
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp

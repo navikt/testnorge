@@ -13,7 +13,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
       working-directory: "apps/endringsmelding-frontend"
-      deploy-tag-prod: "#deploy-endringsmelding-frontend-prod"
+      deploy-tag-dev: "#deploy-endringsmelding-frontend-dev"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
