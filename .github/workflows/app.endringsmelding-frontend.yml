@@ -12,7 +12,6 @@ jobs:
     with:
       working-directory: "apps/endringsmelding-frontend"
       deploy-tag-prod: "#deploy-endringsmelding-frontend-prod"
-      cypress-enabled: false
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
