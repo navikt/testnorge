@@ -78,7 +78,7 @@ export const MiljoVelger = ({
 			return bankIdQ1
 		}
 		return {
-			Q: miljoer.Q.filter((env) => env.id !== 'qx'),
+			Q: miljoer.Q.filter((env) => env.id !== 'qx' && env.id !== 'q5'),
 			T: miljoer.T.filter((env) => env.id !== 't13'),
 		}
 	}
