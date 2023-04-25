@@ -132,11 +132,11 @@ jobs:
         uses: nais/docker-build-push@v0
         id: docker-build-push
         if: |
-          ${{ github.ref == 'refs/heads/master' ||
+          github.ref == 'refs/heads/master' ||
           ( contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ||
             contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ||
             contains(github.event.head_commit.message, inputs.deploy-tag-dev) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag-prod) ) }}
+            contains(github.event.head_commit.message, inputs.deploy-tag-prod) )
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -145,7 +145,7 @@ jobs:
           docker_context: ${{ inputs.working-directory }}
       - name: "Deploy (unstable)"
         uses: nais/deploy/actions/deploy@v1
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable) }}
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -153,7 +153,7 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (ID-porten)"
         uses: nais/deploy/actions/deploy@v1
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten) }}
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -161,7 +161,7 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (development)"
         uses: nais/deploy/actions/deploy@v1
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev) }}
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -169,7 +169,7 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-prod) }}
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-prod)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
