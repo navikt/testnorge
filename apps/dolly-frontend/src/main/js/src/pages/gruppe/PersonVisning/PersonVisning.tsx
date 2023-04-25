@@ -39,7 +39,7 @@ import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiV
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useDokarkivData,
@@ -118,6 +118,11 @@ export const PersonVisning = ({
 	const bestillingerFagsystemer = ident?.bestillinger?.map((i) => i.bestilling)
 
 	const { loading: loadingAareg, arbeidsforhold } = useArbeidsforhold(
+		ident.ident,
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+	)
+
+	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
@@ -327,8 +332,8 @@ export const PersonVisning = ({
 				{visArbeidsforhold && (
 					<AaregVisning
 						liste={arbeidsforhold}
-						loading={loadingAareg}
-						bestillingListe={bestillingListe}
+						ameldinger={ameldinger}
+						loading={loadingAareg || loadingAmelding}
 						bestillingIdListe={bestillingIdListe}
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>

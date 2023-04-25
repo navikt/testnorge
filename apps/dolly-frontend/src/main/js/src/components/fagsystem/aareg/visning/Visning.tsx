@@ -15,11 +15,11 @@ import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
-import { AmeldingBestilling } from '@/components/fagsystem/aareg/visning/partials/AmeldingBestilling'
 
 type AaregVisningProps = {
 	ident?: string
 	liste?: Array<MiljoDataListe>
+	ameldinger?: Array<any>
 	loading?: boolean
 	bestillingIdListe?: Array<string>
 	tilgjengeligMiljoe?: string
@@ -32,6 +32,17 @@ type MiljoDataListe = {
 
 type ArbeidsforholdArray = {
 	data?: Array<Arbeidsforhold>
+}
+
+type AmeldingArray = {
+	data?: Array<Amelding>
+}
+
+type Amelding = {
+	kalendermaaned?: string
+	opplysningspliktigOrganisajonsnummer?: string
+	virksomheter?: any
+	version?: number
 }
 
 type Arbeidsforhold = {
@@ -66,10 +77,34 @@ export const sjekkManglerAaregData = (aaregData) => {
 	return aaregData?.length < 1 || aaregData?.every((miljoData) => miljoData?.data?.length < 1)
 }
 
-const getHeader = (data: Arbeidsforhold) => {
-	return `Arbeidsforhold (${data.arbeidsgiver.type}: ${
-		data.arbeidsgiver.organisasjonsnummer || data.arbeidsgiver.offentligIdent
-	})`
+const getHeader = (data: Arbeidsforhold | Amelding) => {
+	return (
+		data?.kalendermaaned ||
+		`Arbeidsforhold (${data?.arbeidsgiver?.type}: ${
+			data.arbeidsgiver.organisasjonsnummer || data.arbeidsgiver.offentligIdent
+		})`
+	)
+}
+
+const Amelding = ({ data }: AmeldingArray) => {
+	if (!data) return null
+
+	return (
+		<DollyFieldArray
+			header="Amelding"
+			getHeader={getHeader}
+			data={data}
+			expandable={data.length > 1}
+		>
+			{(amelding: Amelding, idx: number) => (
+				<React.Fragment>
+					<div className="person-visning_content" key={idx}>
+						<TitleValue title="Amelding-maaned" value={amelding.kalendermaaned} />
+					</div>
+				</React.Fragment>
+			)}
+		</DollyFieldArray>
+	)
 }
 
 const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
@@ -139,8 +174,8 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 
 export const AaregVisning = ({
 	liste,
+	ameldinger,
 	loading,
-	bestillingListe,
 	bestillingIdListe,
 	tilgjengeligMiljoe,
 }: AaregVisningProps) => {
@@ -156,31 +191,28 @@ export const AaregVisning = ({
 	const manglerFagsystemdata = sjekkManglerAaregData(liste)
 
 	const miljoerMedData = liste?.map((miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo)
+
 	const errorMiljoer = bestilteMiljoer?.filter((miljo) => !miljoerMedData?.includes(miljo))
+
+	const miljoerMedDataAmeldinger = ameldinger?.map(
+		(miljoData) => miljoData?.data?.length > 0 && miljoData?.miljo
+	)
+	const errorMiljoerAmeldinger = bestilteMiljoer?.filter(
+		(miljo) => !miljoerMedDataAmeldinger?.includes(miljo)
+	)
 
 	const forsteMiljo =
 		liste?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
-	const gyldigeAaregBestillinger = bestillingListe?.filter((bestilling) => {
-		const gyldigAareg =
-			bestilling?.data?.aareg?.length > 0 &&
-			bestilling?.status?.some(
-				(reg) => reg?.id === 'AAREG' && reg?.statuser?.some((s) => s?.melding === 'OK')
-			)
-		if (gyldigAareg) return bestilling
-	})
+	const forsteMiljoAmelding =
+		ameldinger?.find((miljoData) => miljoData?.data?.length > 0)?.miljo || liste?.[0]?.miljo
 
-	// Faar ikke hente tilbake a-meldinger, viser derfor bestillingsdata
-	const amelding = gyldigeAaregBestillinger
-		?.map((bestilling) => bestilling?.data?.aareg?.[0]?.amelding)
-		?.filter((amelding) => amelding)
-
-	const harAmeldingBestilling = amelding?.some((bestilling) => bestilling?.length > 0)
+	const harAmeldingBestilling = ameldinger?.some((amelding) => amelding?.data?.length > 0)
 
 	const filteredData =
 		tilgjengeligMiljoe && liste?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	return (
+	const getArbeidsforhold = () => (
 		<div>
 			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
 			{manglerFagsystemdata ? (
@@ -197,9 +229,37 @@ export const AaregVisning = ({
 					>
 						<Arbeidsforhold />
 					</MiljoTabs>
-					{harAmeldingBestilling && <AmeldingBestilling bestillinger={amelding} />}
 				</ErrorBoundary>
 			)}
 		</div>
+	)
+
+	const getAmelding = () => (
+		<div>
+			<SubOverskrift label="Amelding" iconKind="arbeid" isWarning={!harAmeldingBestilling} />
+			{!harAmeldingBestilling ? (
+				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
+					Fant ikke amelding-data på person
+				</Alert>
+			) : (
+				<ErrorBoundary>
+					<MiljoTabs
+						bestilteMiljoer={bestilteMiljoer}
+						errorMiljoer={errorMiljoerAmeldinger}
+						forsteMiljo={forsteMiljoAmelding}
+						data={ameldinger}
+					>
+						<Amelding />
+					</MiljoTabs>
+				</ErrorBoundary>
+			)}
+		</div>
+	)
+
+	return (
+		<>
+			{getArbeidsforhold()}
+			{getAmelding()}
+		</>
 	)
 }

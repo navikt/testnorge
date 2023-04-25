@@ -44,6 +44,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/oppsummeringsdokument-service/api": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/testnav-tps-messaging-service/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,
