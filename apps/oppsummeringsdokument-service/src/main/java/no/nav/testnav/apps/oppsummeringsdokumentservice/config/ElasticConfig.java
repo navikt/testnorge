@@ -9,6 +9,8 @@ import org.opensearch.data.client.orhlc.RestClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
+
 @Configuration
 @RequiredArgsConstructor
 public class ElasticConfig extends AbstractOpenSearchConfiguration {
@@ -21,6 +23,8 @@ public class ElasticConfig extends AbstractOpenSearchConfiguration {
                 .connectedTo(elasticSearchCredentials.getEndpoints().replace("https://", ""))
                 .usingSsl()
                 .withBasicAuth(elasticSearchCredentials.getUsername(), elasticSearchCredentials.getPassword())
+                .withConnectTimeout(Duration.ofSeconds(10))
+                .withSocketTimeout(Duration.ofSeconds(5))
                 .build();
 
         return RestClients.create(clientConfiguration).rest();
