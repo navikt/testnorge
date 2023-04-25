@@ -76,7 +76,7 @@ jobs:
         if: |
           github.ref == 'refs/heads/master' ||
           ( contains(github.event.head_commit.message, inputs.deploy-tag-test) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag-dev) )
+            contains(github.event.head_commit.message, inputs.deploy-tag) )
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -91,9 +91,9 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{steps.docker-build-push.outputs.image}}
-      - name: "Deploy (dev)"
+      - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-dev)
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
