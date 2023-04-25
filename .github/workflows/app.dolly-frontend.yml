@@ -2,6 +2,8 @@ name: dolly-frontend
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/dolly-frontend/**
       - .github/workflows/app.dolly-frontend.yml

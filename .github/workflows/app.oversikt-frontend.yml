@@ -2,6 +2,8 @@ name: oversikt-frontend
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/oversikt-frontend/**
       - .github/workflows/app.oversikt-frontend.yml

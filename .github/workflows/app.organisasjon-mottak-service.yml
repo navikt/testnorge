@@ -1,7 +1,6 @@
 name: organisasjon-mottak-service
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master # TODO: Remove before merge to master.

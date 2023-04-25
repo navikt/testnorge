@@ -2,6 +2,8 @@ name: dollystatus
 
 on:
   push:
+    branches:
+      - master # TODO: Remove before merge to master.
     paths:
       - apps/dollystatus/**
       - .github/workflows/app.dollystatus.yml
