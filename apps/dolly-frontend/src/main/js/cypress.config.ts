@@ -10,6 +10,7 @@ export default defineConfig({
 	},
 	e2e: {
 		setupNodeEvents() {},
+		experimentalRunAllSpecs: true,
 		specPattern: 'cypress/e2e/**/*.cy.{js,ts,jsx,tsx}',
 		excludeSpecPattern: ['**/__snapshots__/*', '**/__image_snapshots__/*'],
 	},

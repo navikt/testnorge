@@ -130,7 +130,7 @@ export const pdlBulkpersonerMock = {
 			geografiskTilknytning: {
 				gtType: 'KOMMUNE',
 				gtLand: null,
-				gtKommune: '1820',
+				gtKommune: '1234',
 				gtBydel: null,
 				regel: '2',
 			},
@@ -255,18 +255,18 @@ export const pdlForvalterMock = [
 					ukjentBosted: null,
 					matrikkeladresse: null,
 					utenlandskAdresse: {
-						adressenavnNummer: '1KOLEJOWA 6/5',
+						adressenavnNummer: 'TESTINGS 123',
 						boenhet: null,
-						bySted: 'CAPITAL WEST',
+						bySted: 'CAPITAL TEST',
 						bygning: null,
 						bygningEtasjeLeilighet: null,
 						distriktsnavn: null,
 						etasjenummer: null,
 						landkode: 'SYC',
 						postboksNummerNavn: null,
-						postkode: '3000',
+						postkode: '1234',
 						region: null,
-						regionDistriktOmraade: '18-500 KOLNO',
+						regionDistriktOmraade: '123456 TESTY',
 					},
 				},
 			],
@@ -474,7 +474,7 @@ export const pdlPersonEnkeltMock = {
 					gruppe: 'FOLKEREGISTERIDENT',
 				},
 				{
-					ident: '2994017826241',
+					ident: '3456789123456',
 					historisk: false,
 					gruppe: 'AKTORID',
 				},
@@ -487,7 +487,7 @@ export const pdlPersonEnkeltMock = {
 		},
 		hentPerson: {
 			falskIdentitet: {
-				rettIdentitetVedIdentifikasjonsnummer: '22456823657',
+				rettIdentitetVedIdentifikasjonsnummer: '12345678912',
 				metadata: {
 					endringer: [
 						{
@@ -508,14 +508,14 @@ export const pdlPersonEnkeltMock = {
 					angittFlyttedato: '1992-01-11',
 					gyldigFraOgMed: '1992-01-11T00:00',
 					vegadresse: {
-						matrikkelId: 410298366,
-						husnummer: '2077',
+						matrikkelId: 123456789,
+						husnummer: '1234',
 						adressenavn: 'Testeveien',
-						postnummer: '3697',
-						kommunenummer: '3819',
+						postnummer: '2346',
+						kommunenummer: '5468',
 						koordinater: {
-							x: 488662.6,
-							y: 6623765.7,
+							x: 123456.6,
+							y: 6549871.7,
 						},
 					},
 					folkeregistermetadata: {

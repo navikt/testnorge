@@ -12,6 +12,7 @@ import Highlighter from 'react-highlight-words'
 import styled from 'styled-components'
 import PersonSearch from '@/service/services/personsearch/PersonSearch'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type FinnPersonProps = {
 	feilmelding: string
@@ -219,12 +220,14 @@ const FinnPersonBestilling = ({
 	const CustomOption = ({ children, ...props }) => (
 		// @ts-ignore
 		<components.Option {...props}>
-			<Highlighter
-				textToHighlight={children}
-				searchWords={fragment.split(' ')}
-				autoEscape={true}
-				caseSensitive={false}
-			/>
+			<span data-cy={CypressSelector.BUTTON_NAVIGER_PERSON}>
+				<Highlighter
+					textToHighlight={children}
+					searchWords={fragment.split(' ')}
+					autoEscape={true}
+					caseSensitive={false}
+				/>
+			</span>
 		</components.Option>
 	)
 
@@ -232,7 +235,7 @@ const FinnPersonBestilling = ({
 		return (
 			// @ts-ignore
 			<components.DropdownIndicator {...props}>
-				<Icon kind={'search'} size={20} />
+				<Icon data-cy={CypressSelector.INPUT_PERSON_SOEK} kind={'search'} size={20} />
 			</components.DropdownIndicator>
 		)
 	}
@@ -250,6 +253,7 @@ const FinnPersonBestilling = ({
 					<VelgSoekTypeToggle soekValg={soekType} setValgtSoekType={setSoekType} />
 					{/*@ts-ignore*/}
 					<StyledAsyncSelect
+						data-cy={CypressSelector.SELECT_PERSON_SEARCH}
 						defaultOptions={false}
 						styles={customAsyncSelectStyles}
 						loadOptions={fetchOptions}

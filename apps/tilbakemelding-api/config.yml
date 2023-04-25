@@ -66,3 +66,4 @@ spec:
     - secret: teamdolly-slack-secret
   ingresses:
     - "https://testnorge-tilbakemelding-api.dev.intern.nav.no"
+    - "https://testnorge-tilbakemelding-api.intern.dev.nav.no"

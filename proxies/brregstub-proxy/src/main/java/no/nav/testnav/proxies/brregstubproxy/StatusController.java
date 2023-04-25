@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var status = checkConsumerStatus(
-                "https://brreg-stub.dev.adeo.no/isAlive",
-                "https://brreg-stub.dev.adeo.no/isReady",
+                "https://brreg-stub.dev.intern.nav.no/isAlive",
+                "https://brreg-stub.dev.intern.nav.no/isReady",
                 statusWebClient);
         status.put("team", TEAM);
 

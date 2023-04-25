@@ -9,6 +9,7 @@ import { Mal } from '@/utils/hooks/useMaler'
 import Icon from '@/components/ui/icon/Icon'
 import { DollyApi } from '@/service/Api'
 import { EndreMalnavn } from './EndreMalnavn'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 type Props = {
 	antallEgneMaler: any
@@ -105,6 +106,7 @@ export const MalPanel = ({
 													</Button>
 												) : (
 													<Button
+														data-cy={CypressSelector.BUTTON_MINSIDE_ENDRE_MALNAVN}
 														onClick={() => {
 															setUnderRedigering(underRedigering.concat([id]))
 														}}
@@ -114,7 +116,10 @@ export const MalPanel = ({
 												)}
 											</Table.HeaderCell>
 											<Table.HeaderCell>
-												<Button onClick={() => slettMal(id, bestilling?.organisasjon)}>
+												<Button
+													data-cy={CypressSelector.BUTTON_MALER_SLETT}
+													onClick={() => slettMal(id, bestilling?.organisasjon)}
+												>
 													<Icon kind={'trashcan'} />
 												</Button>
 											</Table.HeaderCell>

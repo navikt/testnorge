@@ -65,3 +65,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-generer-synt-amelding-service.dev.intern.nav.no"
+    - "https://testnav-generer-synt-amelding-service.intern.dev.nav.no"

@@ -26,7 +26,7 @@ consumer:
   arbeidsplassencv-proxy:
     name: pam-cv-api
     namespace: teampam
-    url: https://pam-cv-api.dev.adeo.no
+    url: http://pam-cv-api.teampam.svc.nais.local
     cluster: dev-fss
   fakedings-token-provider:
     name: fakedings

@@ -8,7 +8,7 @@ parent: Applikasjoner
 API for oppretting og henting av personer fra PDL og TPS
 
 ## Swagger
-Swagger finnes under [/swagger-ui.html](https://testnav-person-service.dev.intern.nav.no/swagger-ui.html) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger-ui.html](https://testnav-person-service.intern.dev.nav.no/swagger-ui.html) -endepunktet til applikasjonen.
  
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør PersonServiceApplicationStarter med følgende argumenter:

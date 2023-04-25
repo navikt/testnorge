@@ -14,6 +14,7 @@ import {
 	useMatchMutate,
 } from '@/utils/hooks/useMutate'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 type ProgresjonProps = {
 	bestillingID: string
@@ -147,9 +148,7 @@ export const BestillingProgresjon = ({
 				</div>
 				<hr />
 			</div>
-			<div>
-				{!erOrganisasjon && <BestillingStatus bestilling={bestilling}/>}
-			</div>
+			<div>{!erOrganisasjon && <BestillingStatus bestilling={bestilling} />}</div>
 			<div className="flexbox--space">
 				<h5>
 					<Loading onlySpinner /> {tittel}
@@ -168,7 +167,11 @@ export const BestillingProgresjon = ({
 							mer tid før du eventuelt avbryter.
 						</h5>
 					</div>
-					<NavButton variant={'danger'} onClick={handleCancelBtn}>
+					<NavButton
+						data-cy={CypressSelector.BUTTON_AVBRYT_BESTILLING}
+						variant={'danger'}
+						onClick={handleCancelBtn}
+					>
 						Avbryt bestilling
 					</NavButton>
 				</div>

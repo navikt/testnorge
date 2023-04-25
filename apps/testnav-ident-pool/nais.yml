@@ -3,6 +3,10 @@ kind: Application
 metadata:
   name: testnav-ident-pool
   namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
   labels:
     team: dolly
 spec:
@@ -11,9 +15,17 @@ spec:
       value: prod
   image: {{ image }}
   webproxy: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  tokenx:
+    enabled: true
   port: 8080
   ingresses:
     - "https://testnav-ident-pool.dev.intern.nav.no"
+    - "https://testnav-ident-pool.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     initialDelay: 30
@@ -37,11 +49,6 @@ spec:
     requests:
       cpu: 3000m
       memory: 2048Mi
-  azure:
-    application:
-      allowAllUsers: true
-      enabled: true
-      tenant: nav.no
   accessPolicy:
     inbound:
       rules:

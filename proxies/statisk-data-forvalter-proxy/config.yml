@@ -58,4 +58,3 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io"
-    - "https://testnav-statisk-data-forvalter-proxy.dev.intern.nav.no"

@@ -68,7 +68,7 @@ const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 }
 
 const ansettelsesPeriode = Yup.object({
-	fom: testDatoFom(requiredDate, 'tom'),
+	fom: testDatoFom(requiredDate.nullable(), 'tom'),
 	tom: testDatoTom(Yup.date().nullable(), 'fom'),
 	sluttaarsak: Yup.string().nullable(),
 })

@@ -57,5 +57,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-arena-forvalteren-proxy.dev.intern.nav.no"
     - "https://testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io"

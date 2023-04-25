@@ -1,2 +1,4 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
+
+consumers:
+  tpsf-proxy:
+    url: https://tps-forvalteren-proxy.dev-fss-pub.nais.io

@@ -2,7 +2,7 @@
 App for å sjekke hvilke miljøer i test og preprod som er tilgjengelige nå.
 
 ## Swagger
-Swagger finnes under [/swagger](https://miljoer-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://miljoer-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør MiljoerServiceApplicationStarter med følgende argumenter:

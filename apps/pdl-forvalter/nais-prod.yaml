@@ -24,6 +24,7 @@ spec:
       tenant: nav.no
   ingresses:
     - "https://testnav-pdl-forvalter.dev.intern.nav.no"
+    - "https://testnav-pdl-forvalter.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
@@ -69,11 +70,6 @@ spec:
           cluster: dev-gcp
       external:
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-        - host: generer-navn-service.dev.intern.nav.no
-        - host: testnav-adresse-service.dev.intern.nav.no
-        - host: testnav-organisasjon-forvalter.dev.intern.nav.no
-        - host: testnav-geografiske-kodeverk-service.dev.intern.nav.no
-        - host: testnav-ident-pool.dev.intern.nav.no
   gcp:
     sqlInstances:
       - type: POSTGRES_12

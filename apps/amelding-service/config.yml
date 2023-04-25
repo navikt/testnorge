@@ -63,3 +63,4 @@ spec:
       memory: 2048Mi
   ingresses:
     - "https://testnav-amelding-service.dev.intern.nav.no"
+    - "https://testnav-amelding-service.intern.dev.nav.no"

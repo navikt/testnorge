@@ -17,6 +17,5 @@ public class AppTilgangAnalyseServiceApplicationStarter {
 
     public static void main(String[] args) {
         SpringApplication.run(AppTilgangAnalyseServiceApplicationStarter.class, args);
-
     }
 }
