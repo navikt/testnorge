@@ -76,8 +76,10 @@ jobs:
           start: npm run preview
 
   build:
-    if: ${{ github.actor != 'dependabot[bot]' }}
     needs: cypress
+    if: |
+      ${{ github.actor != 'dependabot[bot]' }} &&
+      ${{ always() && !inputs.cypress-enabled }}
     permissions:
       contents: "read"
       id-token: "write"
