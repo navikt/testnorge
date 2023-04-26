@@ -11,6 +11,7 @@ import { useBoolean } from 'react-use'
 import { Stepper } from '@navikt/ds-react'
 import { useDispatch } from 'react-redux'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { runningCypressE2E } from '@/service/services/Request'
 
 type Varsling = {
 	fom: string
@@ -20,7 +21,7 @@ type Varsling = {
 
 export const VarslingerModal = () => {
 	const runningLocal = window.location.hostname.includes('localhost')
-	if (runningLocal) {
+	if (runningLocal && !runningCypressE2E()) {
 		return null
 	}
 
