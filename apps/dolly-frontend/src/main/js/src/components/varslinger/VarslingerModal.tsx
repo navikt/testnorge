@@ -19,6 +19,11 @@ type Varsling = {
 }
 
 export const VarslingerModal = () => {
+	const runningLocal = window.location.hostname.includes('localhost')
+	if (runningLocal) {
+		return null
+	}
+
 	const [steg, setSteg] = useState(0)
 	const [modalOpen, setModalOpen] = useState(true)
 	const [varslinger, setVarslinger] = useState(null)
