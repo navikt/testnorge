@@ -1,49 +1,25 @@
-name: Proxy tps-forvalteren-proxy
+name: tps-forvalteren-proxy
 
 on:
-  push:
-    paths:
-      - proxies/tps-forvalteren-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.tps-forvalteren-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/tps-forvalteren-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.tps-forvalteren-proxy.yml
+  workflow_dispatch:
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'proxies/tps-forvalteren-proxy/'
+      cluster: "dev-fss"
+      working-directory: "proxies/tps-forvalteren-proxy"
+      deploy-tag: "#deploy-tps-forvalteren-proxy"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'proxies/tps-forvalteren-proxy/'
-      app-name: 'tps-forvalteren-proxy'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-tps-forvalter-proxy')}}
-    with:
-      resource: 'proxies/tps-forvalteren-proxy/config.yml'
-      app-name: 'tps-forvalteren-proxy'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-tps-forvalter-dev-proxy')}}
-    with:
-      resource: 'proxies/tps-forvalteren-proxy/config.dev.yml'
-      app-name: 'tps-forvalteren-proxy'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
