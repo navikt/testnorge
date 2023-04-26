@@ -133,6 +133,7 @@ jobs:
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
+          image_suffix: ${{ github.workflow }}
       - name: "Deploy (unstable)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
         if: |
