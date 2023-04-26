@@ -40,7 +40,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -191,6 +190,7 @@ public class DollyBestillingService {
     protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse forvalterStatus) {
 
         if (nonNull(forvalterStatus.getStatus())) {
+
             transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
                     forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
                             errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
@@ -211,28 +211,14 @@ public class DollyBestillingService {
                     })
                     .map(resultat -> resultat.getStatus().is2xxSuccessful() ? forvalterStatus.getIdent() : "");
 
+        } else if (progress.getMaster() == PDL) {
+
+            transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
+            return Flux.just(progress.getIdent());
+
         } else {
 
             return Flux.just("");
-        }
-    }
-
-    protected Flux<String> sendOrdrePerson(BestillingProgress progress, String ident) {
-
-        if (progress.getMaster() == PDLF) {
-            return pdlDataConsumer.sendOrdre(ident, true)
-                    .map(resultat -> {
-                        var status = resultat.getStatus().is2xxSuccessful() ?
-                                resultat.getJsonNode() :
-                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
-                        log.info("Sendt ordre til PDL for ident {} ", ident);
-                        return ident;
-                    });
-
-        } else {
-            transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
-            return Flux.just(ident);
         }
     }
 

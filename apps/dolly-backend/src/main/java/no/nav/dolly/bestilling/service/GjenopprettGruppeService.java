@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -83,7 +84,7 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
-                            .flatMap(progress -> sendOrdrePerson(progress, testident.getIdent())
+                            .flatMap(progress -> sendOrdrePerson(progress, new PdlResponse())
                                     .filter(Objects::nonNull)
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))

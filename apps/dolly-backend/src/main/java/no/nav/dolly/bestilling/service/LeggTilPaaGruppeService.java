@@ -23,7 +23,6 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -141,7 +140,6 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         } else {
             return Flux.just(PdlResponse.builder()
                     .ident(ident)
-                    .status(HttpStatus.OK)
                     .build());
         }
     }
