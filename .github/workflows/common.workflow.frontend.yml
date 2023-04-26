@@ -1,0 +1,176 @@
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        type: string
+        description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
+        required: true
+      deploy-tag:
+        type: string
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend. Make sure it is not a substring of other deploy tags."
+        required: false
+        default: "#deploy-all"
+      deploy-tag-test:
+        type: string
+        description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-test-frontend."
+        required: false
+        default: "#deploy-test-all"
+      deploy-tag-idporten:
+        type: string
+        description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-idporten-frontend."
+        required: false
+        default: "#deploy-idporten-all"
+      deploy-tag-unstable:
+        type: string
+        description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-unstable-frontend."
+        required: false
+        default: "#deploy-unstable-all"
+      cypress-enabled:
+        type: boolean
+        description: "If true, run Cypress tests."
+        required: false
+        default: false
+
+    secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY:
+        required: true
+      NAIS_WORKLOAD_IDENTITY_PROVIDER:
+        required: true
+      NAV_TOKEN:
+        required: true
+      READER_TOKEN:
+        required: true
+      SONAR_TOKEN:
+        required: true
+
+jobs:
+
+  sonar:
+    uses: ./.github/workflows/common.sonar.yml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  cypress:
+    if: inputs.cypress-enabled
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Setup"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+      - name: "Run"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        uses: cypress-io/github-action@v5
+        with:
+          config: video=false
+          working-directory: ${{ inputs.working-directory }}/src/main/js
+          browser: chrome
+          build: npm run build
+          start: npm run preview
+
+  build:
+    needs: cypress
+    if: |
+      github.actor != 'dependabot[bot]' &&
+      (always() && !inputs.cypress-enabled)
+    permissions:
+      contents: "read"
+      id-token: "write"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-
+      - name: "Setup (Node)"
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://npm.pkg.github.com'
+          scope: '@navikt'
+      - name: "Install (Node)"
+        run: npm ci
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+      - name: "Build (Node)"
+        run: npm run build
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+      - name: "Move (Node)"
+        run: mv build ../resources/static
+        working-directory: ${{ inputs.working-directory }}/src/main/js
+      - name: "Setup (Java)"
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17.x'
+      - name: "Build (Java)"
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build --scan
+      - name: "Docker"
+        uses: nais/docker-build-push@v0
+        id: docker-build-push
+        if: |
+          github.ref == 'refs/heads/master' ||
+          ( contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ||
+            contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ||
+            contains(github.event.head_commit.message, inputs.deploy-tag-test) ||
+            contains(github.event.head_commit.message, inputs.deploy-tag) )
+        with:
+          team: dolly
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          dockerfile: ${{ inputs.working-directory }}/Dockerfile
+          docker_context: ${{ inputs.working-directory }}
+      - name: "Deploy (unstable)" # Only used by dolly-frontend.
+        uses: nais/deploy/actions/deploy@v1
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable)
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
+          VAR: image=${{steps.docker-build-push.outputs.image}}
+      - name: "Deploy (idporten)" # Only used by dolly-frontend.
+        uses: nais/deploy/actions/deploy@v1
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten)
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
+          VAR: image=${{steps.docker-build-push.outputs.image}}
+      - name: "Deploy (test)"
+        uses: nais/deploy/actions/deploy@v1
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test)
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          VAR: image=${{steps.docker-build-push.outputs.image}}
+      - name: "Deploy"
+        uses: nais/deploy/actions/deploy@v1
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag)
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: dev-gcp
+          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          VAR: image=${{steps.docker-build-push.outputs.image}}

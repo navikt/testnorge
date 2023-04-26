@@ -1,47 +1,23 @@
-name: App profil-api
+name: profil-api
 
 on:
-  push:
-    paths:
-      - apps/profil-api/**
-      - .github/workflows/app.profil-api.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/profil-api/**
+#      - .github/workflows/app.profil-api.yml
+  workflow_dispatch:
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'apps/profil-api/'
+      working-directory: "apps/profil-api"
+      deploy-tag: "#deploy-profil-api"
+      deploy-tag-test: "#deploy-test-profil-api"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'apps/profil-api/'
-      app-name: 'profil-api'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-profil-api') }}
-    with:
-      resource: 'apps/profil-api/config.yml'
-      app-name: 'profil-api'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-profil-api-dev') }}
-    with:
-      resource: 'apps/profil-api/config.dev.yml'
-      app-name: 'profil-api'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
