@@ -1,12 +1,12 @@
 name: oppsummeringsdokument-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/oppsummeringsdokument-service/**
-      - .github/workflows/app.oppsummeringsdokument-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/oppsummeringsdokument-service/**
+#      - .github/workflows/app.oppsummeringsdokument-service.yml
   workflow_dispatch:
 
 jobs:

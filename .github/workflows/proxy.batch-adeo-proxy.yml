@@ -1,14 +1,14 @@
 name: batch-adeo-proxy
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - proxies/batch-adeo-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.batch-adeo-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/batch-adeo-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.batch-adeo-proxy.yml
   workflow_dispatch:
 
 jobs:

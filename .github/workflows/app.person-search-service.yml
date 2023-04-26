@@ -1,12 +1,12 @@
 name: person-search-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/person-search-service/**
-      - .github/workflows/app.person-search-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/person-search-service/**
+#      - .github/workflows/app.person-search-service.yml
   workflow_dispatch:
 
 jobs:

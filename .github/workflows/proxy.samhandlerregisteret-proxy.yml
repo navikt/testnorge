@@ -1,14 +1,14 @@
 name: samhandlerregisteret-proxy
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - proxies/samhandlerregisteret-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.samhandlerregisteret-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/samhandlerregisteret-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.samhandlerregisteret-proxy.yml
   workflow_dispatch:
 
 jobs:

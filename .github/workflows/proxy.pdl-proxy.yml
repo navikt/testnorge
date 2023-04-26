@@ -1,14 +1,14 @@
 name: pdl-proxy
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - proxies/pdl-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.pdl-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/pdl-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.pdl-proxy.yml
   workflow_dispatch:
 
 jobs:

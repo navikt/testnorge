@@ -1,12 +1,12 @@
 name: person-export-api
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/person-export-api/**
-      - .github/workflows/app.person-export-api.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/person-export-api/**
+#      - .github/workflows/app.person-export-api.yml
   workflow_dispatch:
 
 jobs:

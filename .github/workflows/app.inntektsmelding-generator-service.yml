@@ -1,12 +1,12 @@
 name: inntektsmelding-generator-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/inntektsmelding-generator-service/**
-      - .github/workflows/app.inntektsmelding-generator-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/inntektsmelding-generator-service/**
+#      - .github/workflows/app.inntektsmelding-generator-service.yml
   workflow_dispatch:
 
 jobs:

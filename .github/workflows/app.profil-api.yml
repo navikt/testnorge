@@ -1,12 +1,12 @@
 name: profil-api
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/profil-api/**
-      - .github/workflows/app.profil-api.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/profil-api/**
+#      - .github/workflows/app.profil-api.yml
   workflow_dispatch:
 
 jobs:

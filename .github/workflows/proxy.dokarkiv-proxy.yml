@@ -1,14 +1,14 @@
 name: dokarkiv-proxy
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - proxies/dokarkiv-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.dokarkiv-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/dokarkiv-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.dokarkiv-proxy.yml
   workflow_dispatch:
 
 jobs:

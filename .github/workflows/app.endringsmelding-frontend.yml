@@ -1,12 +1,12 @@
 name: endringsmelding-frontend
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/endringsmelding-frontend/**
-      - .github/workflows/app.endringsmelding-frontend.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/endringsmelding-frontend/**
+#      - .github/workflows/app.endringsmelding-frontend.yml
   workflow_dispatch:
 
 jobs:

@@ -1,12 +1,12 @@
 name: testnorge-bisys
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/testnorge-bisys/**
-      - .github/workflows/app.testnorge-bisys.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/testnorge-bisys/**
+#      - .github/workflows/app.testnorge-bisys.yml
   workflow_dispatch:
 
 jobs:

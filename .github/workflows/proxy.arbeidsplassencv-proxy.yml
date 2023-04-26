@@ -1,14 +1,14 @@
 name: arbeidsplassencv-proxy
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - proxies/arbeidsplassencv-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.arbeidsplassencv-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/arbeidsplassencv-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.arbeidsplassencv-proxy.yml
   workflow_dispatch:
 
 jobs:

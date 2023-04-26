@@ -1,12 +1,12 @@
 name: organisasjon-tilgang-frontend
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/organisasjon-tilgang-frontend/**
-      - .github/workflows/app.organisasjon-tilgang-frontend.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/organisasjon-tilgang-frontend/**
+#      - .github/workflows/app.organisasjon-tilgang-frontend.yml
   workflow_dispatch:
 
 jobs:

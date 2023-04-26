@@ -1,12 +1,12 @@
 name: organisasjon-faste-data-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/organisasjon-faste-data-service/**
-      - .github/workflows/app.organisasjon-faste-data-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/organisasjon-faste-data-service/**
+#      - .github/workflows/app.organisasjon-faste-data-service.yml
   workflow_dispatch:
 
 jobs:

@@ -1,13 +1,13 @@
 name: dolly-backend
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/dolly-backend/**
-      - libs/data-transfer-objects/**
-      - .github/workflows/app.dolly-backend.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/dolly-backend/**
+#      - libs/data-transfer-objects/**
+#      - .github/workflows/app.dolly-backend.yml
   workflow_dispatch:
 
 jobs:

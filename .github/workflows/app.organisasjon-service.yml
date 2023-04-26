@@ -1,12 +1,12 @@
 name: organisasjon-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/organisasjon-service/**
-      - .github/workflows/app.organisasjon-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/organisasjon-service/**
+#      - .github/workflows/app.organisasjon-service.yml
   workflow_dispatch:
 
 jobs:

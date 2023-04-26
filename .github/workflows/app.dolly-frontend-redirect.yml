@@ -1,12 +1,12 @@
 name: dolly-frontend-redirect
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/dolly-frontend-redirect/**
-      - .github/workflows/app.dolly-frontend-redirect.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/dolly-frontend-redirect/**
+#      - .github/workflows/app.dolly-frontend-redirect.yml
   workflow_dispatch:
 
 jobs:

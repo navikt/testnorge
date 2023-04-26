@@ -1,12 +1,12 @@
 name: arbeidsforhold-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/arbeidsforhold-service/**
-      - .github/workflows/app.arbeidsforhold-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/arbeidsforhold-service/**
+#      - .github/workflows/app.arbeidsforhold-service.yml
   workflow_dispatch:
 
 jobs:

@@ -1,12 +1,12 @@
 name: person-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/person-service/**
-      - .github/workflows/app.person-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/person-service/**
+#      - .github/workflows/app.person-service.yml
   workflow_dispatch:
 
 jobs:

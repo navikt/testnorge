@@ -1,12 +1,12 @@
 name: adresse-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/adresse-service/**
-      - .github/workflows/app.adresse-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/adresse-service/**
+#      - .github/workflows/app.adresse-service.yml
   workflow_dispatch:
 
 jobs:

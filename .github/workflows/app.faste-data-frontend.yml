@@ -1,12 +1,12 @@
 name: faste-data-frontend
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/faste-data-frontend/**
-      - .github/workflows/app.faste-data-frontend.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/faste-data-frontend/**
+#      - .github/workflows/app.faste-data-frontend.yml
   workflow_dispatch:
 
 jobs:

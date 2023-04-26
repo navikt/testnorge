@@ -1,14 +1,14 @@
 name: statisk-data-forvalter-proxy
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - proxies/statisk-data-forvalter-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - .github/workflows/proxy.statisk-data-forvalter-proxy.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - proxies/statisk-data-forvalter-proxy/**
+#      - libs/reactive-core/**
+#      - libs/reactive-proxy/**
+#      - .github/workflows/proxy.statisk-data-forvalter-proxy.yml
   workflow_dispatch:
 
 jobs:

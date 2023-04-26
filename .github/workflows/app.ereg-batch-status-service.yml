@@ -1,12 +1,12 @@
 name: ereg-batch-status-service
 
 on:
-  push:
-    branches:
-      - master # TODO: Remove after merge to master.
-    paths:
-      - apps/ereg-batch-status-service/**
-      - .github/workflows/app.ereg-batch-status-service.yml
+#  push:
+#    branches:
+#      - master # TODO: Remove after merge to master.
+#    paths:
+#      - apps/ereg-batch-status-service/**
+#      - .github/workflows/app.ereg-batch-status-service.yml
   workflow_dispatch:
 
 jobs:
