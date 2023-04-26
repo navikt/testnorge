@@ -49,6 +49,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: popp-testdata.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
