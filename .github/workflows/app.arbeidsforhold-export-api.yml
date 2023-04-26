@@ -1,12 +1,10 @@
 name: arbeidsforhold-export-api
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/arbeidsforhold-export-api/**
-#      - .github/workflows/app.arbeidsforhold-export-api.yml
+  push:
+    paths:
+      - apps/arbeidsforhold-export-api/**
+      - .github/workflows/app.arbeidsforhold-export-api.yml
   workflow_dispatch:
 
 jobs:

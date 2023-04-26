@@ -1,12 +1,10 @@
 name: bruker-service
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/bruker-service/**
-#      - .github/workflows/app.bruker-service.yml
+  push:
+    paths:
+      - apps/bruker-service/**
+      - .github/workflows/app.bruker-service.yml
   workflow_dispatch:
 
 jobs:
