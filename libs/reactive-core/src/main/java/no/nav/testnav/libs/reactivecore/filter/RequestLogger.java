@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.reactivecore.filter;
 
+import io.micrometer.common.lang.NonNullApi;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -11,14 +12,17 @@ import org.springframework.web.server.WebFilter;
 import org.springframework.web.server.WebFilterChain;
 import reactor.core.publisher.Mono;
 
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 @Order(1)
+@NonNullApi
 public class RequestLogger implements WebFilter {
 
     @Override
@@ -38,28 +42,34 @@ public class RequestLogger implements WebFilter {
             if (!log.isTraceEnabled()) {
                 return;
             }
-            Map<String, String> original = MDC.getCopyOfContextMap();
-            Map<String, String> contextMap = MDC.getCopyOfContextMap();
+            var originalContextMap = MDC.getCopyOfContextMap();
+            var modifiedContextMap = Optional
+                    .of(MDC.getCopyOfContextMap())
+                    .orElse(new HashMap<>());
+            MDC.setContextMap(new HashMap<>());
             var method = request.getMethod().name();
             var uri = request.getPath().toString();
             var queryParrams = request.getQueryParams().isEmpty() ? null : request.getQueryParams().toString();
-            var host = request.getHeaders().getHost().toString();
+            var host = Optional
+                    .ofNullable(request.getHeaders().getHost())
+                    .map(InetSocketAddress::toString)
+                    .orElse("unknown");
             var contentType = request.getHeaders().getContentType();
 
-            contextMap.put("Transaction-Type", "request");
-            contextMap.put("Method", method);
+            modifiedContextMap.put("Transaction-Type", "request");
+            modifiedContextMap.put("Method", method);
             if (contentType != null) {
-                contextMap.put(HttpHeaders.CONTENT_TYPE, contentType.getType());
+                modifiedContextMap.put(HttpHeaders.CONTENT_TYPE, contentType.getType());
             }
-            contextMap.put(HttpHeaders.HOST, host);
-            contextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
-            contextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
-            contextMap.put("Query-Params", queryParrams);
-            contextMap.put("URI", uri);
+            modifiedContextMap.put(HttpHeaders.HOST, host);
+            modifiedContextMap.put(HttpHeaders.ORIGIN, request.getHeaders().getOrigin());
+            modifiedContextMap.put(HttpHeaders.ACCEPT, request.getHeaders().getAccept().toString());
+            modifiedContextMap.put("Query-Params", queryParrams);
+            modifiedContextMap.put("URI", uri);
 
-            MDC.setContextMap(contextMap);
+            MDC.setContextMap(modifiedContextMap);
             log.trace("[Request ] {} {}{}", method, host, uri);
-            MDC.setContextMap(original);
+            MDC.setContextMap(originalContextMap);
 
         };
     }
@@ -74,7 +84,6 @@ public class RequestLogger implements WebFilter {
             Map<String, String> contextMap = MDC.getCopyOfContextMap() != null ? MDC.getCopyOfContextMap() : new HashMap<>();
             var method = request.getMethod().name();
             var uri = request.getPath().toString();
-            var statusCode = response.getStatusCode();
             var queryParrams = request.getQueryParams().isEmpty() ? null : request.getQueryParams().toString();
             var host = Objects.requireNonNull(request.getHeaders().getHost()).toString();
 
@@ -88,7 +97,14 @@ public class RequestLogger implements WebFilter {
             if (!Objects.requireNonNull(response.getStatusCode()).is2xxSuccessful()) {
                 contextMap.put("Body", body == null ? "[empty]" : body);
             }
-            contextMap.put("Http-Status", statusCode.toString());
+
+            var statusCode = response.getStatusCode();
+            contextMap.put(
+                    "Http-Status",
+                    Optional
+                            .ofNullable(statusCode)
+                            .map(Object::toString)
+                            .orElse("unknown"));
             contextMap.put("URI", uri);
 
             MDC.setContextMap(contextMap);
