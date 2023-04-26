@@ -3,10 +3,11 @@ name: testnorge-statisk-data-forvalter
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - apps/testnorge-statisk-data-forvalter/**
       - .github/workflows/app.testnorge-statisk-data-forvalter.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

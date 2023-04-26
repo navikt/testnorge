@@ -3,10 +3,11 @@ name: geografiske-kodeverk-service
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - apps/geografiske-kodeverk-service/**
       - .github/workflows/app.geografiske-kodeverk-service.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

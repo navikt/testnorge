@@ -3,12 +3,13 @@ name: skjermingsregister-proxy
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - proxies/skjermingsregister-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.skjermingsregister-proxy.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

@@ -3,12 +3,13 @@ name: sykemelding-api-proxy
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - proxies/sykemelding-api-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.sykemelding-api-proxy.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

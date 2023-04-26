@@ -3,10 +3,11 @@ name: generer-synt-amelding-service
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - apps/generer-synt-amelding-service/**
       - .github/workflows/app.generer-synt-amelding-service.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

@@ -3,10 +3,11 @@ name: synt-vedtakshistorikk-service
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - apps/synt-vedtakshistorikk-service/**
       - .github/workflows/app.synt-vedtakshistorikk-service.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

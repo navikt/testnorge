@@ -3,12 +3,13 @@ name: aareg-synt-services-proxy
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - proxies/aareg-synt-services-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.aareg-synt-services-proxy.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

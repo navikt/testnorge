@@ -3,10 +3,11 @@ name: miljoer-service
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - apps/miljoer-service/**
       - .github/workflows/app.miljoer-service.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

@@ -3,10 +3,11 @@ name: adresse-service
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - apps/adresse-service/**
       - .github/workflows/app.adresse-service.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

@@ -3,12 +3,13 @@ name: inst-proxy
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - proxies/inst-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.inst-proxy.yml
+  workflow_dispatch:
 
 jobs:
   workflow:

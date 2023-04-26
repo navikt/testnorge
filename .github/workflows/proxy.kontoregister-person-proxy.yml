@@ -3,12 +3,13 @@ name: kontoregister-person-proxy
 on:
   push:
     branches:
-      - master # TODO: Remove before merge to master.
+      - master # TODO: Remove after merge to master.
     paths:
       - proxies/kontoregister-person-proxy/**
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.kontoregister-person-proxy.yml
+  workflow_dispatch:
 
 jobs:
   workflow:
