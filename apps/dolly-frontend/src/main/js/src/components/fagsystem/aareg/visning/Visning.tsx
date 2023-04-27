@@ -14,6 +14,7 @@ import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
 import { arrayToString, formatDate } from '@/utils/DataFormatter'
+import * as _ from 'lodash-es'
 import React from 'react'
 
 type AaregVisningProps = {
@@ -166,14 +167,15 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 const Amelding = ({ data, ident }: any) => {
 	if (!data || data?.length === 0) return null
 
-	const ameldingerSortedByKalendermaaned = data?.sort(
-		(a: Amelding, b: Amelding) => new Date(a.kalendermaaned) - new Date(b.kalendermaaned)
-	)
+	// const ameldingerSortedByKalendermaaned = data?.sort(
+	// 	(a: Amelding, b: Amelding) => new Date(a.kalendermaaned) - new Date(b.kalendermaaned)
+	// )
+	const ameldingerSortedByKalendermaaned = _.sortBy(data, 'kalendermaaned')
 
 	return (
 		<DollyFieldArray
 			header="A-melding"
-			getHeader={getHeader}
+			getHeader={(amelding) => formatDate(amelding?.kalendermaaned)}
 			data={ameldingerSortedByKalendermaaned}
 			expandable={ameldingerSortedByKalendermaaned.length > 1}
 		>
