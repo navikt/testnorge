@@ -5,10 +5,21 @@ on:
     paths:
       - apps/dolly-frontend/**
       - .github/workflows/app.dolly-frontend.yml
+      - .github/workflows/common.cypress.yml # TODO: For testing only.
+      - .github/workflows/common.workflow.frontend.yml # TODO: For testing only.
   workflow_dispatch:
 
 jobs:
+
+  cypress:
+    uses: ./.github/workflows/common.cypress.yml
+    with:
+      working-directory: "apps/dolly-frontend"
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+
   workflow:
+    needs: cypress
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
       working-directory: "apps/dolly-frontend"
@@ -16,7 +27,6 @@ jobs:
       deploy-tag-test: "#deploy-test-frontend"
       deploy-tag-idporten: "#deploy-idporten-frontend"
       deploy-tag-unstable: "#deploy-unstable-frontend"
-      cypress-enabled: true
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
