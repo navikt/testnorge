@@ -35,6 +35,11 @@ describe('Åpne bestilt ident med knytning mot alle fagsystem', () => {
 		cy.dollyGet(CypressSelector.TITLE_VISNING).invoke('show').click()
 		cy.wait(200)
 
+		cy.dollyGet(CypressSelector.BUTTON_OPEN_EXPANDABLE).each((element) => {
+			cy.wrap(element).invoke('show').click()
+			cy.wait(300)
+		})
+
 		cy.dollyGet(CypressSelector.HOVER_MILJOE).each((element) => {
 			cy.wrap(element).invoke('show').click()
 			cy.wait(400)

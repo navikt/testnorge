@@ -70,10 +70,7 @@ export const multiFetcherAmelding = (miljoUrlListe, headers = null, path = null)
 	return Promise.allSettled(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, { miljo: obj.miljo })
-				.then((result) => {
-					console.log('result: ', result) //TODO - SLETT MEG
-					return { miljo: obj.miljo, data: path ? result[path] : result }
-				})
+				.then((result) => ({ miljo: obj.miljo, data: path ? result[path] : result }))
 				.catch((feil) => {
 					return { miljo: obj.miljo, feil: feil }
 				})
@@ -110,10 +107,7 @@ export const fetcher = (url, headers) =>
 			return res.data
 		})
 		.catch((reason) => {
-			if (runningCypressE2E()) {
-				return null
-			}
-			if (reason.status === 401 || reason.status === 403) {
+			if (reason?.response?.status === 401 || reason?.response?.status === 403) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}

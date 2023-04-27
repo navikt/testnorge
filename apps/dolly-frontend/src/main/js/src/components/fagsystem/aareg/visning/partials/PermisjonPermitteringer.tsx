@@ -31,16 +31,25 @@ export const PermisjonPermitteringer = ({ data }) => {
 								<div className="person-visning_content" key={idx}>
 									<TitleValue
 										title="Permisjonstype"
-										value={id.type}
+										value={id.type || id.beskrivelse}
 										kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 									/>
 									{id.periode && (
 										<TitleValue title="Startdato" value={formatStringDates(id.periode.fom)} />
 									)}
+									{id.startdato && (
+										<TitleValue title="Startdato" value={formatStringDates(id.startdato)} />
+									)}
 									{id.periode && (
 										<TitleValue title="Sluttdato" value={formatStringDates(id.periode.tom)} />
 									)}
-									<TitleValue title="Permisjonsprosent" value={id.prosent} />
+									{id.sluttdato && (
+										<TitleValue title="Startdato" value={formatStringDates(id.sluttdato)} />
+									)}
+									<TitleValue
+										title="Permisjonsprosent"
+										value={id.prosent || id.permisjonsprosent}
+									/>
 								</div>
 							)}
 						</DollyFieldArray>

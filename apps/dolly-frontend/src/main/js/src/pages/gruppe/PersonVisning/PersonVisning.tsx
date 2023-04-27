@@ -331,6 +331,7 @@ export const PersonVisning = ({
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
+						ident={ident.ident}
 						liste={arbeidsforhold}
 						ameldinger={ameldinger}
 						loading={loadingAareg || loadingAmelding}

@@ -13,7 +13,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
-import { formatDate } from '@/utils/DataFormatter'
+import { arrayToString, formatDate } from '@/utils/DataFormatter'
 import React from 'react'
 
 type AaregVisningProps = {
@@ -41,8 +41,35 @@ type AmeldingArray = {
 type Amelding = {
 	kalendermaaned?: string
 	opplysningspliktigOrganisajonsnummer?: string
-	virksomheter?: any
+	virksomheter?: AmeldingUnderenhet[]
 	version?: number
+}
+
+type AmeldingUnderenhet = {
+	organisasjonsnummer?: string
+	personer?: Personer[]
+}
+
+type Personer = {
+	ident?: string
+	arbeidsforhold?: AmeldingArbeidsforhold[]
+}
+
+type AmeldingArbeidsforhold = {
+	arbeidsforholdId: string
+	typeArbeidsforhold: string
+	startdato: Date
+	sluttdato: Date
+	antallTimerPerUke: number
+	yrke: string
+	arbeidstidsordning: string
+	stillingsprosent: string
+	sisteLoennsendringsdato: Date
+	permisjoner: any[]
+	fartoey: any
+	inntekter: any[]
+	avvik: any[]
+	historikk: boolean
 }
 
 type Arbeidsforhold = {
@@ -55,6 +82,8 @@ type Arbeidsforhold = {
 	permisjonPermitteringer?: Array<unknown>
 	utenlandsopphold?: Array<unknown>
 	arbeidsforholdId?: string
+	sporingsinformasjon?: { opprettetAv?: string }
+	varsler?: any[]
 }
 
 type ArbeidsgiverProps = {
@@ -85,24 +114,83 @@ const getHeader = (data: Arbeidsforhold | Amelding) => {
 		})`
 	)
 }
-
-const Amelding = ({ data }: AmeldingArray) => {
-	if (!data) return null
+const AmeldingUnderenhet = ({ data, ident }: any) => {
+	if (!data?.virksomheter) return null
 
 	return (
 		<DollyFieldArray
-			header="Amelding"
-			getHeader={getHeader}
-			data={data}
-			expandable={data.length > 1}
+			header="Underenhet"
+			getHeader={(underenhet) => underenhet?.organisajonsnummer}
+			data={data?.virksomheter}
+			expandable={data?.virksomheter?.length > 1}
 		>
-			{(amelding: Amelding, idx: number) => (
-				<React.Fragment>
-					<div className="person-visning_content" key={idx}>
-						<TitleValue title="Amelding-maaned" value={amelding.kalendermaaned} />
-					</div>
-				</React.Fragment>
-			)}
+			{(underenhet: AmeldingUnderenhet, idx: number) => {
+				const gjeldendePerson = underenhet.personer?.find(
+					(person) => person.ident === ident.toString()
+				)
+				const arbeidsforhold = gjeldendePerson?.arbeidsforhold?.[0]
+				return (
+					<React.Fragment>
+						<div className="person-visning_content" key={idx}>
+							<TitleValue title="Ansatt fra" value={formatDate(arbeidsforhold?.startdato)} />
+							<TitleValue title="Sluttdato" value={formatDate(arbeidsforhold?.sluttdato)} />
+							<TitleValue
+								title="Avtalte arbeidstimer per uke"
+								value={arbeidsforhold?.antallTimerPerUke}
+							/>
+							<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold?.arbeidsforholdId} />
+							<TitleValue title="Arbeidstidsordning" value={arbeidsforhold?.arbeidstidsordning} />
+							<TitleValue title="Stillingsprosent" value={arbeidsforhold?.stillingsprosent} />
+							<TitleValue
+								title="Type arbeidsforhold"
+								value={arbeidsforhold?.typeArbeidsforhold}
+								kodeverk={ArbeidKodeverk.Arbeidsforholdstyper}
+							/>
+							<TitleValue
+								title="Yrke"
+								value={arbeidsforhold?.yrke}
+								kodeverk={ArbeidKodeverk.Yrker}
+							/>
+							<TitleValue title="Avvik" value={arrayToString(arbeidsforhold?.avvik)} />
+							<TitleValue title="Inntekter" value={arrayToString(arbeidsforhold?.inntekter)} />
+						</div>
+						<Fartoy data={arbeidsforhold?.fartoey} />
+
+						<PermisjonPermitteringer data={arbeidsforhold?.permisjoner} />
+					</React.Fragment>
+				)
+			}}
+		</DollyFieldArray>
+	)
+}
+const Amelding = ({ data, ident }: any) => {
+	if (!data || data?.length === 0) return null
+
+	const ameldingerSortedByKalendermaaned = data?.sort(
+		(a: Amelding, b: Amelding) => new Date(a.kalendermaaned) - new Date(b.kalendermaaned)
+	)
+
+	return (
+		<DollyFieldArray
+			header="A-melding"
+			getHeader={getHeader}
+			data={ameldingerSortedByKalendermaaned}
+			expandable={ameldingerSortedByKalendermaaned.length > 1}
+		>
+			{(amelding: Amelding, idx: number) => {
+				return (
+					<React.Fragment>
+						<div className="person-visning_content" key={idx}>
+							<TitleValue
+								title="Opplysningspliktig org"
+								value={amelding.opplysningspliktigOrganisajonsnummer}
+							/>
+							<TitleValue title="Arbeidstaker" value={ident} />
+							<AmeldingUnderenhet data={amelding} ident={ident} />
+						</div>
+					</React.Fragment>
+				)
+			}}
 		</DollyFieldArray>
 	)
 }
@@ -173,6 +261,7 @@ const Arbeidsforhold = ({ data }: ArbeidsforholdArray) => {
 }
 
 export const AaregVisning = ({
+	ident,
 	liste,
 	ameldinger,
 	loading,
@@ -209,39 +298,56 @@ export const AaregVisning = ({
 
 	const harAmeldingBestilling = ameldinger?.some((amelding) => amelding?.data?.length > 0)
 
+	const arbeidsforhold = liste
+		?.map((item) => {
+			return {
+				...item,
+				data: item?.data
+					?.map((data) => {
+						return data?.sporingsinformasjon?.opprettetAv?.includes('testnav') ? data : null
+					})
+					?.filter((data) => data),
+			}
+		})
+		?.filter((item) => item.data?.length > 0)
+
 	const filteredData =
-		tilgjengeligMiljoe && liste?.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && arbeidsforhold?.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	const getArbeidsforhold = () => (
-		<div>
-			<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
-			{manglerFagsystemdata ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
-					Fant ikke arbeidsforhold-data på person
-				</Alert>
-			) : (
-				<ErrorBoundary>
-					<MiljoTabs
-						bestilteMiljoer={bestilteMiljoer}
-						errorMiljoer={errorMiljoer}
-						forsteMiljo={forsteMiljo}
-						data={filteredData || liste}
-					>
-						<Arbeidsforhold />
-					</MiljoTabs>
-				</ErrorBoundary>
-			)}
-		</div>
-	)
+	const getArbeidsforhold = () => {
+		if ((manglerFagsystemdata && harAmeldingBestilling) || arbeidsforhold?.length === 0) {
+			return null
+		}
+		return (
+			<div>
+				<SubOverskrift label="Arbeidsforhold" iconKind="arbeid" isWarning={manglerFagsystemdata} />
+				{manglerFagsystemdata ? (
+					<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
+						Fant ikke arbeidsforhold-data på person
+					</Alert>
+				) : (
+					<ErrorBoundary>
+						<MiljoTabs
+							bestilteMiljoer={bestilteMiljoer}
+							errorMiljoer={errorMiljoer}
+							forsteMiljo={forsteMiljo}
+							data={filteredData || arbeidsforhold}
+						>
+							<Arbeidsforhold />
+						</MiljoTabs>
+					</ErrorBoundary>
+				)}
+			</div>
+		)
+	}
 
-	const getAmelding = () => (
-		<div>
-			<SubOverskrift label="Amelding" iconKind="arbeid" isWarning={!harAmeldingBestilling} />
-			{!harAmeldingBestilling ? (
-				<Alert variant={'warning'} size={'small'} inline style={{ margin: '7px' }}>
-					Fant ikke amelding-data på person
-				</Alert>
-			) : (
+	const getAmelding = (ident) => {
+		if (manglerFagsystemdata || !harAmeldingBestilling) {
+			return null
+		}
+		return (
+			<div>
+				<SubOverskrift label="A-melding" iconKind="arbeid" />
 				<ErrorBoundary>
 					<MiljoTabs
 						bestilteMiljoer={bestilteMiljoer}
@@ -249,17 +355,17 @@ export const AaregVisning = ({
 						forsteMiljo={forsteMiljoAmelding}
 						data={ameldinger}
 					>
-						<Amelding />
+						<Amelding data={ameldinger} ident={ident} />
 					</MiljoTabs>
 				</ErrorBoundary>
-			)}
-		</div>
-	)
+			</div>
+		)
+	}
 
 	return (
 		<>
 			{getArbeidsforhold()}
-			{getAmelding()}
+			{getAmelding(ident)}
 		</>
 	)
 }

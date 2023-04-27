@@ -17,7 +17,6 @@ export const personFragmentSearchMock = [
 	{
 		ident: '12345678912',
 		fornavn: 'Testytest',
-		mellomnavn: null,
 		etternavn: 'Cafe',
 	},
 ]
@@ -39,12 +38,7 @@ const malBestilling = {
 	pdldata: {
 		opprettNyPerson: {
 			identtype: 'FNR',
-			foedtEtter: null,
-			foedtFoer: null,
-			alder: null,
-			syntetisk: true,
 		},
-		person: null,
 	},
 	tpsMessaging: {},
 	skjerming: {
@@ -258,7 +252,6 @@ export const krrstubMock = [
 		epostOppdatert: '2023-01-05T15:40:41.696465+01:00',
 		epostVerifisert: '2023-01-05T15:40:41.696468+01:00',
 		sdpAdresse: '',
-		sdpLeverandoer: null,
 		registrert: true,
 		spraak: '',
 		spraakOppdatert: '2023-01-05T15:40:41.696471+01:00',
@@ -312,6 +305,71 @@ export const sigrunstubMock = {
 
 export const aaregMock = [
 	{
+		amelding: [
+			{
+				maaned: '2023-01',
+				arbeidsforhold: [
+					{
+						ansettelsesPeriode: {
+							fom: '2003-04-26T00:00:00',
+						},
+						antallTimerForTimeloennet: [],
+						arbeidsavtale: {
+							yrke: '0030320',
+						},
+						permisjon: [],
+						permittering: [],
+						utenlandsopphold: [],
+						arbeidsgiver: {
+							aktoertype: 'ORG',
+							orgnummer: '961475457',
+						},
+					},
+				],
+			},
+			{
+				maaned: '2023-02',
+				arbeidsforhold: [
+					{
+						ansettelsesPeriode: {
+							fom: '2003-04-26T00:00:00',
+						},
+						antallTimerForTimeloennet: [],
+						arbeidsavtale: {
+							yrke: '0030320',
+						},
+						permisjon: [],
+						permittering: [],
+						utenlandsopphold: [],
+						arbeidsgiver: {
+							aktoertype: 'ORG',
+							orgnummer: '961475457',
+						},
+					},
+				],
+			},
+			{
+				maaned: '2023-03',
+				arbeidsforhold: [
+					{
+						ansettelsesPeriode: {
+							fom: '2003-04-26T00:00:00',
+						},
+						antallTimerForTimeloennet: [],
+						arbeidsavtale: {
+							yrke: '0030320',
+						},
+						permisjon: [],
+						permittering: [],
+						utenlandsopphold: [],
+						arbeidsgiver: {
+							aktoertype: 'ORG',
+							orgnummer: '961475457',
+						},
+					},
+				],
+			},
+		],
 		ansettelsesperiode: {
 			periode: {
 				fom: '2002-10-03',
@@ -426,7 +484,6 @@ export const tpsMessagingMock = [
 			bankkontonrNorsk: {
 				kontonummer: '0043.84.08177',
 				kontoRegdato: '2022-10-03T00:00:00',
-				tilfeldigKontonummer: null,
 			},
 		},
 		status: 'OK',
@@ -440,7 +497,6 @@ export const instMock = [
 		institusjonstype: 'AS',
 		oppholdstype: 'A',
 		startdato: '2022-01-01',
-		sluttdato: null,
 		registrertAv: 'Dolly',
 	},
 ]
@@ -465,8 +521,6 @@ export const udistubMock = {
 		},
 		soeknadOmBeskyttelseUnderBehandling: 'NEI',
 	},
-	reason: null,
-	status: null,
 }
 
 export const skjermingMock = {
@@ -476,7 +530,6 @@ export const skjermingMock = {
 	opprettetDato: '2022-10-03 11:59:24',
 	personident: '12345678912',
 	skjermetFra: '2022-01-01 11:48:14',
-	skjermetTil: null,
 }
 
 export const brregstubMock = {
@@ -484,13 +537,10 @@ export const brregstubMock = {
 	fodselsdato: '1992-01-11',
 	navn: {
 		navn1: 'Cafe',
-		navn2: null,
 		navn3: 'Test',
 	},
 	adresse: {
 		adresse1: 'Testeveien 2077',
-		adresse2: null,
-		adresse3: null,
 		postnr: '1234',
 		poststed: 'UKJENT',
 		landKode: 'NO',
@@ -503,19 +553,14 @@ export const brregstubMock = {
 			orgNr: 905203975,
 			foretaksNavn: {
 				navn1: 'Mitt helt eget selskap',
-				navn2: null,
-				navn3: null,
 			},
 			forretningsAdresse: {
 				adresse1: 'Testeveien 51',
-				adresse2: null,
-				adresse3: null,
 				postnr: '1234',
 				poststed: 'TESTINGS',
 				landKode: 'NO',
 				kommunenr: '1234',
 			},
-			postAdresse: null,
 		},
 	],
 	hovedstatus: 0,
@@ -626,11 +671,93 @@ export const joarkDokumentMock =
 	'    </Skjemainnhold>\n' +
 	'</melding>\n'
 
-export const varslingerVelkommenResponseMock = [
-	{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null },
-]
+export const varslingerVelkommenResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY' }]
 
 export const malerMock = { malbestillinger: ['Cypress, Testytest', []] }
+
+export const oppsummeringsdokumentServiceMock = [
+	{
+		kalendermaaned: '2023-01-01',
+		opplysningspliktigOrganisajonsnummer: '806222747',
+		virksomheter: [
+			{
+				organisajonsnummer: '961475457',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'forenkletOppgjoersordning',
+								startdato: '2003-04-26',
+								antallTimerPerUke: 37.5,
+								yrke: '0030320',
+								permisjoner: [],
+								inntekter: [],
+								avvik: [],
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 7,
+	},
+	{
+		kalendermaaned: '2023-02-01',
+		opplysningspliktigOrganisajonsnummer: '806222747',
+		virksomheter: [
+			{
+				organisajonsnummer: '961475457',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'forenkletOppgjoersordning',
+								startdato: '2003-04-26',
+								antallTimerPerUke: 37.5,
+								yrke: '0030320',
+								permisjoner: [],
+								inntekter: [],
+								avvik: [],
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 7,
+	},
+	{
+		kalendermaaned: '2023-03-01',
+		opplysningspliktigOrganisajonsnummer: '806222747',
+		virksomheter: [
+			{
+				organisajonsnummer: '961475457',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'forenkletOppgjoersordning',
+								startdato: '2003-04-26',
+								antallTimerPerUke: 37.5,
+								yrke: '0030320',
+								permisjoner: [],
+								inntekter: [],
+								avvik: [],
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 5,
+	},
+]
 
 export const backendBestillingerMock = [
 	{
@@ -1385,9 +1512,6 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
-					foedtEtter: null,
-					foedtFoer: null,
-					alder: null,
 					syntetisk: true,
 				},
 			},
@@ -1462,6 +1586,5 @@ export const personFragmentNavigerMock = {
 	gruppe: eksisterendeGruppeMock,
 	identHovedperson: '12345678912',
 	identNavigerTil: '12345678912',
-	bestillingNavigerTil: null,
 	sidetall: 0,
 }
