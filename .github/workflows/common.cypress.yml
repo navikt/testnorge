@@ -9,25 +9,25 @@ on:
       READER_TOKEN:
         required: true
 
-  jobs:
-    scan:
-      runs-on: ubuntu-latest
-      steps:
-        - name: "Checkout"
-          uses: actions/checkout@v3
-        - name: "Setup"
-          uses: actions/setup-node@v3
-          with:
-            node-version: 18.x
-            registry-url: https://npm.pkg.github.com/
-            scope: "@navikt"
-        - name: "Run"
-          env:
-            NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-          uses: cypress-io/github-action@v5
-          with:
-            config: video=false
-            working-directory: ${{ inputs.working-directory }}/src/main/js
-            browser: chrome
-            build: npm run build
-            start: npm run preview
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Setup"
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18.x
+          registry-url: https://npm.pkg.github.com/
+          scope: "@navikt"
+      - name: "Run"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
+        uses: cypress-io/github-action@v5
+        with:
+          config: video=false
+          working-directory: ${{ inputs.working-directory }}/src/main/js
+          browser: chrome
+          build: npm run build
+          start: npm run preview
