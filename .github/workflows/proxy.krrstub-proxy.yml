@@ -1,14 +1,12 @@
 name: krrstub-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/krrstub-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.krrstub-proxy.yml
+  push:
+    paths:
+      - proxies/krrstub-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.krrstub-proxy.yml
   workflow_dispatch:
 
 jobs:

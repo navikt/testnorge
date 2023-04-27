@@ -1,14 +1,12 @@
 name: norg2-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/norg2-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.norg2-proxy.yml
+  push:
+    paths:
+      - proxies/norg2-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.norg2-proxy.yml
   workflow_dispatch:
 
 jobs:
