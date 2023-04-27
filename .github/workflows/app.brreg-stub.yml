@@ -11,6 +11,7 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
+      cluster: "dev-fss"
       working-directory: "apps/brreg-stub"
       deploy-tag: "#deploy-brreg-stub"
     secrets:
