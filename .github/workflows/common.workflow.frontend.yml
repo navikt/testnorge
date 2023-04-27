@@ -21,11 +21,6 @@ on:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-unstable-frontend."
         required: false
-      cypress-enabled:
-        type: boolean
-        description: "If true, run Cypress tests."
-        required: false
-        default: false
 
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
@@ -49,34 +44,8 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  cypress:
-    if: inputs.cypress-enabled
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Setup"
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Run"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        uses: cypress-io/github-action@v5
-        with:
-          config: video=false
-          working-directory: ${{ inputs.working-directory }}/src/main/js
-          browser: chrome
-          build: npm run build
-          start: npm run preview
-
   build:
-    needs: cypress
-    if: |
-      github.actor != 'dependabot[bot]' &&
-      (always() && !inputs.cypress-enabled)
+    if: github.actor != 'dependabot[bot]'
     permissions:
       contents: "read"
       id-token: "write"
