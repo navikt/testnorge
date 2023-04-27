@@ -1,12 +1,10 @@
 name: helsepersonell-service
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/helsepersonell-service/**
-#      - .github/workflows/app.helsepersonell-service.yml
+  push:
+    paths:
+      - apps/helsepersonell-service/**
+      - .github/workflows/app.helsepersonell-service.yml
   workflow_dispatch:
 
 jobs:
