@@ -1,12 +1,10 @@
 name: varslinger-service
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/varslinger-service/**
-#      - .github/workflows/app.varslinger-service.yml
+  push:
+    paths:
+      - apps/varslinger-service/**
+      - .github/workflows/app.varslinger-service.yml
   workflow_dispatch:
 
 jobs:

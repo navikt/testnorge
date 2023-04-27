@@ -1,14 +1,12 @@
 name: aareg-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/aareg-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.aareg-proxy.yml
+  push:
+    paths:
+      - proxies/aareg-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.aareg-proxy.yml
   workflow_dispatch:
 
 jobs:

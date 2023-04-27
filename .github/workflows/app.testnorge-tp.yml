@@ -1,12 +1,10 @@
 name: testnorge-tp
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/testnorge-tp/**
-#      - .github/workflows/app.testnorge-tp.yml
+  push:
+    paths:
+      - apps/testnorge-tp/**
+      - .github/workflows/app.testnorge-tp.yml
   workflow_dispatch:
 
 jobs:
