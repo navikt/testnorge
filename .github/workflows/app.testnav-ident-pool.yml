@@ -1,12 +1,10 @@
 name: testnav-ident-pool
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/testnav-ident-pool/**
-#      - .github/workflows/app.testnav-ident-pool.yml
+  push:
+    paths:
+      - apps/testnav-ident-pool/**
+      - .github/workflows/app.testnav-ident-pool.yml
   workflow_dispatch:
 
 jobs:
