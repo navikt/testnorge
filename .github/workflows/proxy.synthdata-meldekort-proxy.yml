@@ -1,4 +1,4 @@
-name: Proxy synthdata-meldekort-proxy
+name: synthdata-meldekort-proxy
 
 on:
   push:
@@ -8,32 +8,16 @@ on:
       - libs/reactive-proxy/**
       - libs/reactive-security/**
       - .github/workflows/proxy.synthdata-meldekort-proxy.yml
+  workflow_dispatch:
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'proxies/synthdata-meldekort-proxy/'
+      working-directory: "proxies/synthdata-meldekort-proxy"
+      deploy-tag: "#deploy-synthdata-meldekort-proxy"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'proxies/synthdata-meldekort-proxy/'
-      app-name: 'synthdata-meldekort-proxy'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-synthdata-meldekort-proxy')}}
-    with:
-      resource: 'proxies/synthdata-meldekort-proxy/config.yml'
-      app-name: 'synthdata-meldekort-proxy'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
