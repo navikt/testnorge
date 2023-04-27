@@ -1,12 +1,10 @@
 name: dollystatus
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/dollystatus/**
-#      - .github/workflows/app.dollystatus.yml
+  push:
+    paths:
+      - apps/dollystatus/**
+      - .github/workflows/app.dollystatus.yml
   workflow_dispatch:
 
 jobs:
