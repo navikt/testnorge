@@ -106,7 +106,7 @@ jobs:
       - name: "Deploy (unstable)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
         if: |
-          inputs.deploy-tag-unstable != '' &&
+          steps.docker-build-push.outputs.image != '' &&
           ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -116,7 +116,7 @@ jobs:
       - name: "Deploy (idporten)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
         if: |
-          inputs.deploy-tag-idporten != '' &&
+          steps.docker-build-push.outputs.image != '' &&
           ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -126,7 +126,7 @@ jobs:
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
         if: |
-          inputs.deploy-tag-test != '' &&
+          steps.docker-build-push.outputs.image != '' &&
           ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -135,7 +135,7 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag)
+        if: steps.docker-build-push.outputs.image != '' && contains(github.event.head_commit.message, inputs.deploy-tag)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
