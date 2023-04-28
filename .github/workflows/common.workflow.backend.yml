@@ -27,6 +27,11 @@ on:
       SONAR_TOKEN:
         required: true
 
+env:
+  do-deploy: ${{ github.ref == 'refs/heads/master' || ( ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+  do-deploy-test: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
+
+
 jobs:
 
   sonar:
@@ -70,10 +75,7 @@ jobs:
         run: ./gradlew build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ||
-            ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) )
+        if: do-deploy || do-deploy-test
         id: docker-build-push
         with:
           team: dolly
@@ -91,29 +93,24 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Verify"
+      - name: "Dump outputs"
         run: |
-          echo "IMAGE from step: ${{ needs.docker-build-push.outputs.image }}"
-          echo "IMAGE from job: ${{ needs.build.outputs.image }}"
+          echo "Outputs: ${{ needs.docker-build-push.outputs }}"
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) )
+        if: do-deploy-test
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image = ${{ needs.docker-build-push.outputs.image }}
+          VAR: image = ${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) )
+        if: do-deploy
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
-          VAR: image = ${{ needs.docker-build-push.outputs.image }}
+          VAR: image = ${{ needs.build.outputs.image }}
       - name: "Intended failure"
         run: exit 1
