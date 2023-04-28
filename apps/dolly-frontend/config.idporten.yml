@@ -29,6 +29,7 @@ spec:
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
         - application: testnav-organisasjon-forvalter
+        - application: oppsummeringsdokument-service
         - application: testnorge-profil-api
         - application: testnav-organisasjon-tilgang-service
         - application: testnav-joark-dokument-service

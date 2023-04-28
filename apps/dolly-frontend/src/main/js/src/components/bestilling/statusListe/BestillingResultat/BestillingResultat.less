@@ -1,36 +1,37 @@
 @import (reference) '@/styles/variables.less';
 
 .bestilling-resultat {
-	line-height: 1;
-	font-size: 1rem;
-	.status-header {
-		display: flex;
-		align-items: flex-start;
-		justify-content: space-between;
+  line-height: 1;
 
-		h3 {
-			flex: 1 1 0px;
-			text-align: center;
-			font-size: 20px;
-			margin: 0;
-		}
+  .status-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
 
-		p {
-			flex: 1 1 0px;
-			margin: 0;
-		}
+    h3 {
+      flex: 1 1 0px;
+      text-align: center;
+      font-size: 20px;
+      margin: 0;
+    }
 
-		// Må wrappe button for å unngå at den tar opp hele bredden
-		&_button-wrap {
-			flex: 1 1 0px;
-			button {
-				padding: 0;
-				float: right;
+    p {
+      flex: 1 1 0px;
+      margin: 0;
+    }
 
-				svg .st0 {
-					stroke: @color-lightblue;
-				}
-			}
-		}
-	}
+    // Må wrappe button for å unngå at den tar opp hele bredden
+    &_button-wrap {
+      flex: 1 1 0px;
+
+      button {
+        padding: 0;
+        float: right;
+
+        svg .st0 {
+          stroke: @color-lightblue;
+        }
+      }
+    }
+  }
 }
