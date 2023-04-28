@@ -45,7 +45,7 @@ public class RequestLogger implements WebFilter {
             try {
 
                 var modifiedContextMap = Optional
-                        .of(MDC.getCopyOfContextMap())
+                        .ofNullable(MDC.getCopyOfContextMap())
                         .orElse(new HashMap<>());
                 var method = request.getMethod().name();
                 var uri = request.getPath().toString();
