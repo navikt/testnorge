@@ -149,7 +149,6 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 								kodeverk={ArbeidKodeverk.Yrker}
 							/>
 							<TitleValue title="Avvik" value={arrayToString(arbeidsforhold?.avvik)} />
-							<TitleValue title="Inntekter" value={arrayToString(arbeidsforhold?.inntekter)} />
 						</div>
 						<Fartoy data={arbeidsforhold?.fartoey} />
 
