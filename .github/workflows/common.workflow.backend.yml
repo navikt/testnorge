@@ -92,9 +92,6 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Dump outputs"
-        run: |
-          echo "needs: ${{ toJSON(needs) }}"
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
         if: env.do-deploy-test == 'true'
@@ -111,5 +108,3 @@ jobs:
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
           VAR: image=${{ needs.build.outputs.image }}
-      - name: "Intended failure"
-        run: exit 1
