@@ -1,14 +1,12 @@
 name: brregstub-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/brregstub-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.brregstub-proxy.yml
+  push:
+    paths:
+      - proxies/brregstub-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.brregstub-proxy.yml
   workflow_dispatch:
 
 jobs:

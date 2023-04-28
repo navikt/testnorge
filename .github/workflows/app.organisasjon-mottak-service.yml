@@ -1,12 +1,10 @@
 name: organisasjon-mottak-service
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/organisasjon-mottak-service/**
-#      - .github/workflows/app.organisasjon-mottak-service.yml
+  push:
+    paths:
+      - apps/organisasjon-mottak-service/**
+      - .github/workflows/app.organisasjon-mottak-service.yml
   workflow_dispatch:
 
 jobs:

@@ -1,14 +1,12 @@
 name: kodeverk-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/kodeverk-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.kodeverk-proxy.yml
+  push:
+    paths:
+      - proxies/kodeverk-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.kodeverk-proxy.yml
   workflow_dispatch:
 
 jobs:

@@ -1,12 +1,10 @@
 name: pdl-forvalter
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - apps/pdl-forvalter/**
-#      - .github/workflows/app.pdl-forvalter.yml
+  push:
+    paths:
+      - apps/pdl-forvalter/**
+      - .github/workflows/app.pdl-forvalter.yml
   workflow_dispatch:
 
 jobs:

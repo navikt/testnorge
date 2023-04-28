@@ -1,14 +1,12 @@
 name: ereg-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/ereg-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.ereg-proxy.yml
+  push:
+    paths:
+      - proxies/ereg-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.ereg-proxy.yml
   workflow_dispatch:
 
 jobs:

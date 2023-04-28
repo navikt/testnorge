@@ -1,15 +1,13 @@
 name: synthdata-meldekort-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/synthdata-meldekort-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - libs/reactive-security/**
-#      - .github/workflows/proxy.synthdata-meldekort-proxy.yml
+  push:
+    paths:
+      - proxies/synthdata-meldekort-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - libs/reactive-security/**
+      - .github/workflows/proxy.synthdata-meldekort-proxy.yml
   workflow_dispatch:
 
 jobs:

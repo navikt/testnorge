@@ -1,14 +1,12 @@
 name: arena-forvalteren-proxy
 
 on:
-#  push:
-#    branches:
-#      - master # TODO: Remove after merge to master.
-#    paths:
-#      - proxies/arena-forvalteren-proxy/**
-#      - libs/reactive-core/**
-#      - libs/reactive-proxy/**
-#      - .github/workflows/proxy.arena-forvalteren-proxy.yml
+  push:
+    paths:
+      - proxies/arena-forvalteren-proxy/**
+      - libs/reactive-core/**
+      - libs/reactive-proxy/**
+      - .github/workflows/proxy.arena-forvalteren-proxy.yml
   workflow_dispatch:
 
 jobs:

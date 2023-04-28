@@ -8,28 +8,19 @@ on:
       deploy-tag:
         type: string
         description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-frontend. Make sure it is not a substring of other deploy tags."
-        required: false
-        default: "#deploy-all"
+        required: true
       deploy-tag-test:
         type: string
         description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-test-frontend."
         required: false
-        default: "#deploy-test-all"
       deploy-tag-idporten:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'idporten' environment on a commit to a non-master branch, e.g. #deploy-idporten-frontend."
         required: false
-        default: "#deploy-idporten-all"
       deploy-tag-unstable:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-unstable-frontend."
         required: false
-        default: "#deploy-unstable-all"
-      cypress-enabled:
-        type: boolean
-        description: "If true, run Cypress tests."
-        required: false
-        default: false
 
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
@@ -53,34 +44,8 @@ jobs:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-  cypress:
-    if: inputs.cypress-enabled
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Setup"
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-      - name: "Run"
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        uses: cypress-io/github-action@v5
-        with:
-          config: video=false
-          working-directory: ${{ inputs.working-directory }}/src/main/js
-          browser: chrome
-          build: npm run build
-          start: npm run preview
-
   build:
-    needs: cypress
-    if: |
-      github.actor != 'dependabot[bot]' &&
-      (always() && !inputs.cypress-enabled)
+    if: github.actor != 'dependabot[bot]'
     permissions:
       contents: "read"
       id-token: "write"
@@ -130,21 +95,19 @@ jobs:
       - name: "Docker"
         uses: nais/docker-build-push@v0
         id: docker-build-push
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag-test) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag) )
+        if: github.ref == 'refs/heads/master'
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
+          image_suffix: ${{ github.workflow }}
       - name: "Deploy (unstable)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable)
+        if: |
+          inputs.deploy-tag-unstable != '' &&
+          ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -152,7 +115,9 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (idporten)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten)
+        if: |
+          inputs.deploy-tag-idporten != '' &&
+          ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -160,7 +125,9 @@ jobs:
           VAR: image=${{steps.docker-build-push.outputs.image}}
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test)
+        if: |
+          inputs.deploy-tag-test != '' &&
+          ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
