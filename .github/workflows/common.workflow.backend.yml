@@ -94,9 +94,7 @@ jobs:
         uses: actions/checkout@v3
       - name: "Dump outputs"
         run: |
-          echo "Outputs0: ${{ toJSON(needs) }}"
-          echo "Outputs1: ${{ toJSON(needs.build.outputs) }}"
-          echo "Outputs2: ${{ toJSON(needs.build.docker-build-push.outputs) }}"
+          echo "needs: ${{ toJSON(needs) }}"
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
         if: env.do-deploy-test == 'true'
@@ -104,7 +102,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image = ${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
         if: env.do-deploy == 'true'
@@ -112,6 +110,6 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
-          VAR: image = ${{ needs.build.outputs.image }}
+          VAR: image=${{ needs.build.outputs.image }}
       - name: "Intended failure"
         run: exit 1
