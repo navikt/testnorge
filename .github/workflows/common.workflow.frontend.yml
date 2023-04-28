@@ -115,39 +115,58 @@ jobs:
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
 
-  deploy:
+  # Only used by dolly-frontend.
+  deploy-unstable:
     needs: build
+    if: env.do-deploy-unstable == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Deploy (unstable)" # Only used by dolly-frontend.
+      - name: "Deploy (unstable)"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy-unstable == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
-      - name: "Deploy (idporten)" # Only used by dolly-frontend.
+
+  # Only used by dolly-frontend.
+  deploy-idporten:
+    needs: build
+    if: env.do-deploy-idporten == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy (idporten)"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy-idporten == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{ needs.build.outputs.image }}
+
+  deploy-test:
+    needs: build
+    if: env.do-deploy-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy-test == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
+
+  deploy:
+    needs: build
+    if: env.do-deploy == 'true'
+    runs-on: ubuntu-latest
+    steps:
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
