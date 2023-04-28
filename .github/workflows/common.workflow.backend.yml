@@ -91,6 +91,10 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
+      - name: "Verify"
+        run: |
+          echo "IMAGE from step: ${{ needs.docker-build-push.outputs.image }}"
+          echo "IMAGE from job: ${{ needs.build.outputs.image }}"
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
         if: |
@@ -100,7 +104,7 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image = ${{ needs.build.outputs.image }}
+          VAR: image = ${{ needs.docker-build-push.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
         if: |
@@ -110,6 +114,6 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
-          VAR: image = ${{ needs.build.outputs.image }}
+          VAR: image = ${{ needs.docker-build-push.outputs.image }}
       - name: "Intended failure"
         run: exit 1
