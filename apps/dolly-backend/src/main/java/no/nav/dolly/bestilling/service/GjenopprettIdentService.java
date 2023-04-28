@@ -88,7 +88,9 @@ public class GjenopprettIdentService extends DollyBestillingService {
             var countEmptyBestillinger = new AtomicInteger(0);
             Flux.just(tIdent)
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
-                            .flatMap(progress -> sendOrdrePerson(progress, new PdlResponse())
+                            .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
+                                    .ident(testident.getIdent())
+                                    .build())
                                     .filter(Objects::nonNull)
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))

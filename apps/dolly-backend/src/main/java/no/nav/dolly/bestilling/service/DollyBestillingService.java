@@ -201,6 +201,8 @@ public class DollyBestillingService {
 
         if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
 
+            transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
+                    "Info: Ordre til PDL startet ...");
             return pdlDataConsumer.sendOrdre(forvalterStatus.getIdent(), false)
                     .doOnNext(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?

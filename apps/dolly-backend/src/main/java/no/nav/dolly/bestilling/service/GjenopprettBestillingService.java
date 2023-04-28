@@ -76,7 +76,9 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
             Flux.fromIterable(gamleProgresser)
                     .flatMap(gmlProgress -> opprettProgress(bestilling, gmlProgress.getMaster(), gmlProgress.getIdent())
-                            .flatMap(progress -> sendOrdrePerson(progress, new PdlResponse())
+                            .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
+                                    .ident(gmlProgress.getIdent())
+                                    .build())
                                     .filter(Objects::nonNull)
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
