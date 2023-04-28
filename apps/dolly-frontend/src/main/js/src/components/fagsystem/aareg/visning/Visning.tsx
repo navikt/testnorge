@@ -181,6 +181,7 @@ const Amelding = ({ data, ident }: any) => {
 								value={amelding.opplysningspliktigOrganisajonsnummer}
 							/>
 							<TitleValue title="Arbeidstaker" value={ident} />
+							<h3>Arbeidsforhold</h3>
 							<AmeldingUnderenhet data={amelding} ident={ident} />
 						</div>
 					</React.Fragment>

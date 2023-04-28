@@ -5,6 +5,7 @@ import no.nav.testnav.apps.oppsummeringsdokumentservice.config.credentials.Elast
 import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.data.client.orhlc.AbstractOpenSearchConfiguration;
 import org.opensearch.data.client.orhlc.ClientConfiguration;
+import org.opensearch.data.client.orhlc.OpenSearchRestTemplate;
 import org.opensearch.data.client.orhlc.RestClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +14,7 @@ import java.time.Duration;
 
 @Configuration
 @RequiredArgsConstructor
-public class ElasticConfig extends AbstractOpenSearchConfiguration {
+public class OpensearchConfig extends AbstractOpenSearchConfiguration {
     private final ElasticSearchCredentials elasticSearchCredentials;
 
     @Override
@@ -28,6 +29,11 @@ public class ElasticConfig extends AbstractOpenSearchConfiguration {
                 .build();
 
         return RestClients.create(clientConfiguration).rest();
+    }
+
+    @Bean
+    public OpenSearchRestTemplate openSearchRestTemplate() {
+        return new OpenSearchRestTemplate(opensearchClient());
     }
 
 }
