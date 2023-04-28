@@ -87,12 +87,12 @@ jobs:
           image_suffix: ${{ github.workflow }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
-      deploy-test: ${{ env.do-deploy-test == 'true' }}
-      deploy: ${{ env.do-deploy == 'true' }}
+      do-deploy-test: ${{ env.do-deploy-test }}
+      do-deploy: ${{ env.do-deploy }}
 
   deploy-test:
     needs: build
-    if: needs.build.outputs.deploy-test
+    if: needs.build.outputs.deploy-test == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -107,7 +107,7 @@ jobs:
 
   deploy:
     needs: build
-    if: needs.build.outputs.deploy
+    if: needs.build.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
