@@ -96,9 +96,10 @@ jobs:
       - name: "Dump outputs"
         run: |
           echo "Outputs: ${{ needs.docker-build-push.outputs }}"
+          echo "Image: ${{ needs.docker-build-push.outputs.image }}"
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy-test
+        if: env.do-deploy-test = 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
@@ -106,7 +107,7 @@ jobs:
           VAR: image = ${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy
+        if: env.do-deploy == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
