@@ -87,21 +87,31 @@ jobs:
           image_suffix: ${{ github.workflow }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
+      deploy-test: ${{ env.do-deploy-test == 'true' }}
+      deploy: ${{ env.do-deploy = 'true' }}
 
-  deploy:
+  deploy-test:
     needs: build
+    if: needs.build.outputs.deploy-test
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy-test == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
         if: env.do-deploy == 'true'
