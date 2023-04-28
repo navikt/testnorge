@@ -47,7 +47,7 @@ type Amelding = {
 }
 
 type AmeldingUnderenhet = {
-	organisasjonsnummer?: string
+	organisajonsnummer?: string //Skrivefeilen kommer fra endepunkt
 	personer?: Personer[]
 }
 
@@ -119,12 +119,7 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 	if (!data?.virksomheter) return null
 
 	return (
-		<DollyFieldArray
-			header="Underenhet"
-			getHeader={(underenhet) => underenhet?.organisajonsnummer}
-			data={data?.virksomheter}
-			expandable={data?.virksomheter?.length > 1}
-		>
+		<DollyFieldArray data={data?.virksomheter} nested>
 			{(underenhet: AmeldingUnderenhet, idx: number) => {
 				const gjeldendePerson = underenhet.personer?.find(
 					(person) => person.ident === ident.toString()
@@ -133,6 +128,7 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 				return (
 					<React.Fragment>
 						<div className="person-visning_content" key={idx}>
+							<TitleValue title="Organisasjon" value={underenhet?.organisajonsnummer} />
 							<TitleValue title="Ansatt fra" value={formatDate(arbeidsforhold?.startdato)} />
 							<TitleValue title="Sluttdato" value={formatDate(arbeidsforhold?.sluttdato)} />
 							<TitleValue
