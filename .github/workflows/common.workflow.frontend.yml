@@ -118,7 +118,7 @@ jobs:
   # Only used by dolly-frontend.
   deploy-unstable:
     needs: build
-    if: env.do-deploy-unstable == 'true'
+    if: ${{ env.do-deploy-unstable == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -134,7 +134,7 @@ jobs:
   # Only used by dolly-frontend.
   deploy-idporten:
     needs: build
-    if: env.do-deploy-idporten == 'true'
+    if: ${{ env.do-deploy-idporten == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -149,7 +149,7 @@ jobs:
 
   deploy-test:
     needs: build
-    if: env.do-deploy-test == 'true'
+    if: ${{ env.do-deploy-test == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: "Deploy (test)"
@@ -162,7 +162,7 @@ jobs:
 
   deploy:
     needs: build
-    if: env.do-deploy == 'true'
+    if: ${{ env.do-deploy == 'true' }}
     runs-on: ubuntu-latest
     steps:
       - name: "Deploy"
