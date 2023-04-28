@@ -72,8 +72,10 @@ jobs:
         uses: nais/docker-build-push@v0
         if: |
           github.ref == 'refs/heads/master' ||
-          ( contains(github.event.head_commit.message, inputs.deploy-tag-test) ||
-            contains(github.event.head_commit.message, inputs.deploy-tag) )
+          ( ( inputs.deploy-tag-test != '' &&
+              contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ||
+            ( inputs.deploy-tag != '' &&
+              contains(github.event.head_commit.message, inputs.deploy-tag) ) )
         id: docker-build-push
         with:
           team: dolly
@@ -98,6 +100,9 @@ jobs:
         uses: nais/deploy/actions/deploy@v1
         if: |
           github.ref == 'refs/heads/master' ||
+          ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) )
+        if: |
+          github.ref == 'refs/heads/master' ||
           ( inputs.deploy-tag-test != '' &&
             contains(github.event.head_commit.message, inputs.deploy-tag-test) )
         env:
@@ -107,6 +112,9 @@ jobs:
           VAR: image = ${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
+        if: |
+          github.ref == 'refs/heads/master' ||
+          ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) )
         if: |
           github.ref == 'refs/heads/master' ||
           ( inputs.deploy.tag != '' &&
