@@ -136,7 +136,11 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 								value={arbeidsforhold?.antallTimerPerUke}
 							/>
 							<TitleValue title="Arbeidsforhold-ID" value={arbeidsforhold?.arbeidsforholdId} />
-							<TitleValue title="Arbeidstidsordning" value={arbeidsforhold?.arbeidstidsordning} />
+							<TitleValue
+								title="Arbeidstidsordning"
+								value={arbeidsforhold?.arbeidstidsordning}
+								kodeverk={ArbeidKodeverk.Arbeidstidsordninger}
+							/>
 							<TitleValue title="Stillingsprosent" value={arbeidsforhold?.stillingsprosent} />
 							<TitleValue
 								title="Type arbeidsforhold"
@@ -180,8 +184,10 @@ const Amelding = ({ data, ident }: any) => {
 								value={amelding.opplysningspliktigOrganisajonsnummer}
 							/>
 							<TitleValue title="Arbeidstaker" value={ident} />
-							<h3>Arbeidsforhold</h3>
-							<AmeldingUnderenhet data={amelding} ident={ident} />
+							<div className="flexbox--full-width">
+								<h3>Arbeidsforhold</h3>
+								<AmeldingUnderenhet data={amelding} ident={ident} />
+							</div>
 						</div>
 					</React.Fragment>
 				)
