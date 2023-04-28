@@ -75,7 +75,7 @@ jobs:
         run: ./gradlew build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
-        if: do-deploy || do-deploy-test
+        if: env.do-deploy || env.do-deploy-test
         id: docker-build-push
         with:
           team: dolly
@@ -98,7 +98,7 @@ jobs:
           echo "Outputs: ${{ needs.docker-build-push.outputs }}"
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: do-deploy-test
+        if: env.do-deploy-test
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
@@ -106,7 +106,7 @@ jobs:
           VAR: image = ${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: do-deploy
+        if: env.do-deploy
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
