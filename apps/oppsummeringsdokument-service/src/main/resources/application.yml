@@ -7,7 +7,7 @@ spring:
         reactive:
           username: ${OPEN_SEARCH_USERNAME}
           password: ${OPEN_SEARCH_PASSWORD}
-          endpoints: ${OPENSEARCH_HOST}:${OPENSEARCH_PORT}
+          endpoints: ${OPEN_SEARCH_URI}
           use-ssl: true
   security:
     oauth2:
@@ -25,6 +25,9 @@ spring:
       username: ${OPEN_SEARCH_USERNAME}
       password: ${OPEN_SEARCH_PASSWORD}
       uris: ${OPEN_SEARCH_URI}
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
@@ -49,8 +52,10 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
-  metrics.export:
-    prometheus.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   servlet:
     encoding:

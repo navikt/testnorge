@@ -1,4 +1,4 @@
-name: Proxy pensjon-testdata-facade-proxy
+name: pensjon-testdata-facade-proxy
 
 on:
   push:
@@ -7,32 +7,17 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.pensjon-testdata-facade-proxy.yml
+  workflow_dispatch:
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'proxies/pensjon-testdata-facade-proxy/'
+      cluster: "dev-fss"
+      working-directory: "proxies/pensjon-testdata-facade-proxy"
+      deploy-tag: "#deploy-pensjon-testdata-facade-proxy"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'proxies/pensjon-testdata-facade-proxy/'
-      app-name: 'pensjon-testdata-facade-proxy'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-pensjon-testdata-facade-proxy')}}
-    with:
-      resource: 'proxies/pensjon-testdata-facade-proxy/config.yml'
-      app-name: 'pensjon-testdata-facade-proxy'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

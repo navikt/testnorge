@@ -6,7 +6,7 @@ import no.udi.mt_1067_nav_data.v1.HentPersonstatusResultat;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static java.util.Objects.nonNull;
 
@@ -38,7 +38,7 @@ public class PersonWsConverter implements Converter<UdiPerson, HentPersonstatusR
                     beskyttleseUnderBehandlingWsConverter.convert(person)
             );
 
-            hentPersonstatusResultat.setUttrekkstidspunkt(xmlDateWsConverter.convert(LocalDate.now()));
+            hentPersonstatusResultat.setUttrekkstidspunkt(xmlDateWsConverter.convert(LocalDateTime.now()));
 
             return hentPersonstatusResultat;
         }

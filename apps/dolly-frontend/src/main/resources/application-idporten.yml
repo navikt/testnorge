@@ -36,7 +36,7 @@ consumers:
     cluster: dev-gcp
   testnav-person-organisasjon-tilgang-service:
     name: testnav-person-organisasjon-tilgang-service
-    url: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+    url: https://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-bruker-service:
     name: testnav-bruker-service
     url: http://testnav-bruker-service.dolly.svc.cluster.local

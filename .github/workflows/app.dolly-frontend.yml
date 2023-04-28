@@ -1,99 +1,33 @@
-name: App dolly-frontend
+name: dolly-frontend
 
 on:
   push:
     paths:
       - apps/dolly-frontend/**
       - .github/workflows/app.dolly-frontend.yml
+  workflow_dispatch:
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+
+  cypress:
+    uses: ./.github/workflows/common.cypress.yml
     with:
-      working-directory: 'apps/dolly-frontend/'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.frontend.yml@master
-    with:
-      working-directory: 'apps/dolly-frontend/'
-      app-name: 'testnav-dolly-frontend'
+      working-directory: "apps/dolly-frontend"
     secrets:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
-  
-  cypress-run:
-    name: Cypress E2E Testing
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18.x
-          registry-url: https://npm.pkg.github.com/
-          scope: "@navikt"
-
-      - name: Cypress run
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
-        uses: cypress-io/github-action@v5
-        with:
-          config: video=false
-          working-directory: 'apps/dolly-frontend/src/main/js'
-          browser: chrome
-          build: npm run build
-          start: npm run preview
-  
-  deploy:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: [ build, cypress-run ]
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-dolly-frontend') }}
+  workflow:
+    needs: cypress
+    uses: ./.github/workflows/common.workflow.frontend.yml
     with:
-      resource: 'apps/dolly-frontend/config.yml'
-      app-name: 'testnav-dolly-frontend'
-      cluster: 'dev-gcp'
+      working-directory: "apps/dolly-frontend"
+      deploy-tag: "#deploy-frontend"
+      deploy-tag-test: "#deploy-test-frontend"
+      deploy-tag-idporten: "#deploy-idporten-frontend"
+      deploy-tag-unstable: "#deploy-unstable-frontend"
     secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  
-  deploy-idporten:
-    name: Deploy Dolly Idporten
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: [ build, cypress-run ]
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-idporten') }}
-    with:
-      resource: 'apps/dolly-frontend/config.idporten.yml'
-      app-name: 'testnav-dolly-frontend'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  
-  deploy-dev:
-    name: Deploy dev
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-frontend-dev') }}
-    with:
-      resource: 'apps/dolly-frontend/config.dev.yml'
-      app-name: 'testnav-dolly-frontend'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-  
-  deploy-dev-unstable:
-    name: Deploy dev unstable
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ contains(github.event.head_commit.message, '#deploy-frontend-unstable') }}
-    with:
-      resource: 'apps/dolly-frontend/config.dev-unstable.yml'
-      app-name: 'testnav-dolly-frontend'
-      cluster: 'dev-gcp'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

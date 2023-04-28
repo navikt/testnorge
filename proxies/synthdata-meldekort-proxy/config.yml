@@ -50,6 +50,8 @@ spec:
     outbound:
       rules:
         - application: synthdata-arena-meldekort
+      external:
+        - host: synthdata-arena-meldekort.dev.intern.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
