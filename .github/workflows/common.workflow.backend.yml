@@ -72,10 +72,8 @@ jobs:
         uses: nais/docker-build-push@v0
         if: |
           github.ref == 'refs/heads/master' ||
-          ( ( inputs.deploy-tag-test != '' &&
-              contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ||
-            ( inputs.deploy-tag != '' &&
-              contains(github.event.head_commit.message, inputs.deploy-tag) ) )
+          ( ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ||
+            ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) )
         id: docker-build-push
         with:
           team: dolly
@@ -91,20 +89,11 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: "Check image name"
-        run: |
-          echo "IMAGE: ${{ needs.build.outputs.image }}"
-      - name: "Intended failure"
-        run: exit 1
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
         if: |
           github.ref == 'refs/heads/master' ||
           ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) )
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag-test != '' &&
-            contains(github.event.head_commit.message, inputs.deploy-tag-test) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
@@ -115,12 +104,10 @@ jobs:
         if: |
           github.ref == 'refs/heads/master' ||
           ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) )
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy.tag != '' &&
-            contains(github.event.head_commit.message, inputs.deploy-tag) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
           VAR: image = ${{ needs.build.outputs.image }}
+      - name: "Intended failure"
+        run: exit 1
