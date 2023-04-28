@@ -74,7 +74,9 @@ jobs:
         run: ./gradlew build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
-        if: env.do-deploy == 'true' || env.do-deploy-test == 'true'
+        if: |
+          env.do-deploy-test == 'true' ||
+          env.do-deploy == 'true'
         id: docker-build-push
         with:
           team: dolly

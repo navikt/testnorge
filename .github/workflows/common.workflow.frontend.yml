@@ -21,7 +21,6 @@ on:
         type: string
         description: "The commit message tag that will trigger a deployment to the 'unstable' environment on a commit to a non-master branch, e.g. #deploy-unstable-frontend."
         required: false
-
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
         required: true
@@ -33,6 +32,12 @@ on:
         required: true
       SONAR_TOKEN:
         required: true
+
+env:
+  do-deploy-unstable: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-unstable != '' && contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ) }}
+  do-deploy-idporten: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-idporten != '' && contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ) }}
+  do-deploy-test: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
+  do-deploy: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
 
 jobs:
 
@@ -95,11 +100,10 @@ jobs:
       - name: "Docker"
         uses: nais/docker-build-push@v0
         if: |
-          github.ref == 'refs/heads/master' ||
-          ( ( inputs.deploy-tag-unstable != '' && contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ) ||
-            ( inputs.deploy-tag-idporten != '' && contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ) ||
-            ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ||
-            ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) )
+          env.do-deploy-unstable == 'true' ||
+          env.do-deploy-idporten == 'true' ||
+          env.do-deploy-test == 'true' ||
+          env.do-deploy == 'true'
         id: docker-build-push
         with:
           team: dolly
@@ -108,43 +112,44 @@ jobs:
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ github.workflow }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
       - name: "Deploy (unstable)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag-unstable != '' && contains(github.event.head_commit.message, inputs.deploy-tag-unstable) )
+        if: do-deploy-unstable == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
-          VAR: image=${{steps.docker-build-push.outputs.image}}
+          VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy (idporten)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag-idporten != '' && contains(github.event.head_commit.message, inputs.deploy-tag-idporten) )
+        if: do-deploy-idporten == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
-          VAR: image=${{steps.docker-build-push.outputs.image}}
+          VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) )
+        if: do-deploy-test == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{steps.docker-build-push.outputs.image}}
+          VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) )
+        if: do-deploy == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.yml
-          VAR: image=${{steps.docker-build-push.outputs.image}}
+          VAR: image=${{ needs.build.outputs.image }}
