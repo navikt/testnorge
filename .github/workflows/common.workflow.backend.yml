@@ -28,7 +28,7 @@ on:
         required: true
 
 env:
-  do-deploy: ${{ github.ref == 'refs/heads/master' || ( ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+  do-deploy: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
   do-deploy-test: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
 
 
