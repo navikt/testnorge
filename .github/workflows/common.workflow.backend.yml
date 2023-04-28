@@ -92,7 +92,7 @@ jobs:
 
   deploy-test:
     needs: build
-    if: needs.build.outputs.deploy-test == 'true'
+    if: needs.build.outputs.do-deploy-test == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -107,7 +107,7 @@ jobs:
 
   deploy:
     needs: build
-    if: needs.build.outputs.deploy == 'true'
+    if: needs.build.outputs.do-deploy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
