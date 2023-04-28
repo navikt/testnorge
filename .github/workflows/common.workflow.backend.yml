@@ -89,9 +89,17 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: "Check image name"
+        run: |
+          echo "IMAGE: ${{ needs.build.outputs.image }}"
+      - name: "Intended failure"
+        run: exit 1
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test)
+        if: |
+          github.ref == 'refs/heads/master' ||
+          ( inputs.deploy-tag-test != '' &&
+            contains(github.event.head_commit.message, inputs.deploy-tag-test) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
@@ -99,7 +107,10 @@ jobs:
           VAR: image = ${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag)
+        if: |
+          github.ref == 'refs/heads/master' ||
+          ( inputs.deploy.tag != '' &&
+            contains(github.event.head_commit.message, inputs.deploy-tag) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
