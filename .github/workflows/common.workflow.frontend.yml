@@ -114,11 +114,15 @@ jobs:
           image_suffix: ${{ github.workflow }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
+      do-deploy-unstable: ${{ env.do-deploy-unstable }}
+      do-deploy-idporten: ${{ env.do-deploy-idporten }}
+      do-deploy-test: ${{ env.do-deploy-test }}
+      do-deploy: ${{ env.do-deploy }}
 
   # Only used by dolly-frontend.
   deploy-unstable:
     needs: build
-    if: ${{ env.do-deploy-unstable == 'true' }}
+    if: needs.build.outputs.do-deploy-unstable == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -134,7 +138,7 @@ jobs:
   # Only used by dolly-frontend.
   deploy-idporten:
     needs: build
-    if: ${{ env.do-deploy-idporten == 'true' }}
+    if: needs.build.outputs.do-deploy-idporten == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
@@ -149,7 +153,7 @@ jobs:
 
   deploy-test:
     needs: build
-    if: ${{ env.do-deploy-test == 'true' }}
+    if: needs.build.outputs.do-deploy-test == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Deploy (test)"
@@ -162,7 +166,7 @@ jobs:
 
   deploy:
     needs: build
-    if: ${{ env.do-deploy == 'true' }}
+    if: needs.build.outputs.do-deploy == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: "Deploy"
