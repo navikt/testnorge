@@ -447,6 +447,8 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                             .id(relasjon.getBarn().getPerson().getForeldreansvar().stream()
                                     .map(ForeldreansvarDTO::getId)
                                     .findFirst().orElse(0) + 1)
+                            .gyldigFraOgMed(foreldreansvar.getGyldigFraOgMed())
+                            .gyldigTilOgMed(foreldreansvar.getGyldigTilOgMed())
                             .build());
 
             if (isNotBlank(relasjon.getAnsvarlig())) {
