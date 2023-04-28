@@ -29,8 +29,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
@@ -289,14 +289,15 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
             }
 
             setRelasjoner(hovedperson.getForelderBarnRelasjon().stream()
-                    .filter(ForelderBarnRelasjonDTO::isBarn)
+                    .filter(ForelderBarnRelasjonDTO::hasBarn)
                     .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                     .map(personRepository::findByIdent)
+                    .flatMap(Optional::stream)
                     .map(dbperson -> BarnRelasjon.builder()
                             .ansvarlig(foreldreansvar.getAnsvarlig())
-                            .barn(dbperson.get())
+                            .barn(dbperson)
                             .build())
-                    .collect(Collectors.toList()), foreldreansvar);
+                    .toList(), foreldreansvar);
         }
 
         foreldreansvar.setNyAnsvarlig(null);
