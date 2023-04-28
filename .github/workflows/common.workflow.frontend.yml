@@ -123,7 +123,7 @@ jobs:
         uses: actions/checkout@v3
       - name: "Deploy (unstable)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
-        if: do-deploy-unstable == 'true'
+        if: env.do-deploy-unstable == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -131,7 +131,7 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy (idporten)" # Only used by dolly-frontend.
         uses: nais/deploy/actions/deploy@v1
-        if: do-deploy-idporten == 'true'
+        if: env.do-deploy-idporten == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -139,7 +139,7 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: do-deploy-test == 'true'
+        if: env.do-deploy-test == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
@@ -147,7 +147,7 @@ jobs:
           VAR: image=${{ needs.build.outputs.image }}
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: do-deploy == 'true'
+        if: env.do-deploy == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
