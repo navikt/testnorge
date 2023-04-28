@@ -70,8 +70,11 @@ jobs:
         run: ./gradlew build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
+        if: |
+          github.ref == 'refs/heads/master' ||
+          ( contains(github.event.head_commit.message, inputs.deploy-tag-test) ||
+            contains(github.event.head_commit.message, inputs.deploy-tag) )
         id: docker-build-push
-        if: github.ref == 'refs/heads/master'
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -81,9 +84,7 @@ jobs:
           image_suffix: ${{ github.workflow }}
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          inputs.deploy-tag-test != '' &&
-          ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) )
+        if: github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test)
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
