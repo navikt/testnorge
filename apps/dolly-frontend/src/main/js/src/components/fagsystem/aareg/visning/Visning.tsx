@@ -163,9 +163,6 @@ const AmeldingUnderenhet = ({ data, ident }: any) => {
 const Amelding = ({ data, ident }: any) => {
 	if (!data || data?.length === 0) return null
 
-	// const ameldingerSortedByKalendermaaned = data?.sort(
-	// 	(a: Amelding, b: Amelding) => new Date(a.kalendermaaned) - new Date(b.kalendermaaned)
-	// )
 	const ameldingerSortedByKalendermaaned = _.sortBy(data, 'kalendermaaned')
 
 	return (
