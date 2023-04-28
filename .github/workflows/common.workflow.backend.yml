@@ -30,6 +30,7 @@ on:
 env:
   do-deploy-test: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
   do-deploy: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+  do-docker: ${{ env.do-deploy == 'true' || env.do-deploy-test == 'true' }}
 
 jobs:
 
@@ -74,7 +75,7 @@ jobs:
         run: ./gradlew build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
-        if: do-deploy == 'true' || do-deploy-test == 'true'
+        if: env.do-docker == 'true'
         id: docker-build-push
         with:
           team: dolly
