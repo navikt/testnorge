@@ -5,6 +5,7 @@ on:
     paths:
       - apps/dollystatus/**
       - .github/workflows/app.dollystatus.yml
+      - .github/workflows/common.workflow.backend.yml
   workflow_dispatch:
 
 jobs:
