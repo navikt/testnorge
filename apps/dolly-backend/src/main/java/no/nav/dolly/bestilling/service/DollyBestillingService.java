@@ -40,7 +40,6 @@ import static java.util.Collections.emptySet;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.domain.jpa.Testident.Master.PDL;
-import static no.nav.dolly.domain.jpa.Testident.Master.PDLF;
 import static no.nav.dolly.util.MdcUtil.MDC_KEY_BESTILLING;
 import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
@@ -166,9 +165,9 @@ public class DollyBestillingService {
         log.info("Bestilling med id=#{} er ferdig", bestilling.getId());
     }
 
-    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, PdlResponse pdlResponse) {
+    protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master) {
 
-        return opprettProgress(bestilling, master, pdlResponse.getStatus().is2xxSuccessful() ? pdlResponse.getIdent() : "?");
+        return opprettProgress(bestilling, master, null);
     }
 
     protected Flux<BestillingProgress> opprettProgress(Bestilling bestilling, Testident.Master master, String ident) {
@@ -180,23 +179,35 @@ public class DollyBestillingService {
                 .build()));
     }
 
-    protected Flux<PdlResponse> opprettPerson(OriginatorUtility.Originator originator) {
+    protected Flux<PdlResponse> opprettPerson(OriginatorUtility.Originator originator, BestillingProgress progress) {
 
+        transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                "Info: Oppretting av person startet ...");
         return pdlDataConsumer.opprettPdl(originator.getPdlBestilling())
-                .doOnNext(response -> log.info("Opprettet person med ident {} ", response));
+                .doOnNext(response -> log.info("Opprettet person med ident ... {}", response));
     }
 
     protected Flux<String> sendOrdrePerson(BestillingProgress progress, PdlResponse forvalterStatus) {
 
         if (nonNull(forvalterStatus.getStatus())) {
+
             transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
                     forvalterStatus.getStatus().is2xxSuccessful() ? "OK" :
                             errorStatusDecoder.getErrorText(forvalterStatus.getStatus(), forvalterStatus.getFeilmelding())
             );
+            transactionHelperService.persister(progress, BestillingProgress::setIdent, forvalterStatus.getStatus().is2xxSuccessful() ?
+                    forvalterStatus.getIdent() : "?");
         }
 
-        if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
+        if (progress.getMaster() == PDL) {
 
+            transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
+            return Flux.just(progress.getIdent());
+
+        } else if (isNull(forvalterStatus.getStatus()) || forvalterStatus.getStatus().is2xxSuccessful()) {
+
+            transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus,
+                    "Info: Ordre til PDL startet ...");
             return pdlDataConsumer.sendOrdre(forvalterStatus.getIdent(), false)
                     .doOnNext(resultat -> {
                         var status = resultat.getStatus().is2xxSuccessful() ?
@@ -210,25 +221,6 @@ public class DollyBestillingService {
         } else {
 
             return Flux.just("");
-        }
-    }
-
-    protected Flux<String> sendOrdrePerson(BestillingProgress progress, String ident) {
-
-        if (progress.getMaster() == PDLF) {
-            return pdlDataConsumer.sendOrdre(ident, true)
-                    .map(resultat -> {
-                        var status = resultat.getStatus().is2xxSuccessful() ?
-                                resultat.getJsonNode() :
-                                errorStatusDecoder.getErrorText(resultat.getStatus(), resultat.getFeilmelding());
-                        transactionHelperService.persister(progress, BestillingProgress::setPdlOrdreStatus, status);
-                        log.info("Sendt ordre til PDL for ident {} ", ident);
-                        return ident;
-                    });
-
-        } else {
-            transactionHelperService.persister(progress, BestillingProgress::setPdlImportStatus, "OK");
-            return Flux.just(ident);
         }
     }
 
