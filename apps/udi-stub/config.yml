@@ -53,5 +53,5 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://udi-stub.dev.adeo.no"
-    - "https://udi-stub.dev.intern.nav.no"
-    - "https://testnav-udi-stub.dev.intern.nav.no"
+    - "https://udi-stub.intern.dev.nav.no"
+    - "https://testnav-udi-stub.dev.intern.nav.no" # dev-fss
