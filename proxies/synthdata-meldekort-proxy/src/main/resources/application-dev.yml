@@ -7,4 +7,4 @@ azure:
 
 consumers:
   synt-meldekort:
-    url: https://synthdata-arena-meldekort.dev.intern.nav.no
+    url: https://synthdata-arena-meldekort.intern.dev.nav.no
