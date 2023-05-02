@@ -252,36 +252,34 @@ public class ArtifactUpdateService {
 
     public void updateForelderBarnRelasjon(String ident, Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
+        forelderBarnRelasjonService.validate(oppdatertRelasjon);
+
         var person = getPerson(ident);
 
-        var isEksisterendeId = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size();
+        if (id > 0 && id < person.getPerson().getForelderBarnRelasjon().size() &&
+                (person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() !=
+                        oppdatertRelasjon.getMinRolleForPerson() &&
+                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() !=
+                                oppdatertRelasjon.getRelatertPersonsRolle()) ||
+                !person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson()
+                        .equals(oppdatertRelasjon.getRelatertPerson())) {
 
-        var tidligereRelatert = isEksisterendeId ?
-                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson() : null;
-        var tidligereMinRolle = isEksisterendeId ?
-                person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() : null;
-        var tidligereRelatertRolle = isEksisterendeId ?
-                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() : null;
-        var isEksisterendePerson = isEksisterendeId ?
-                person.getPerson().getForelderBarnRelasjon().get(id - 1).getEksisterendePerson() : null;
+            deleteRelasjon(person, person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson(),
+                    getRelasjonstype(person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson()));
+            deleteRelasjon(getPerson(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson()),
+                    ident, getRelasjonstype(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle()));
+
+            if (!person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson()
+                    .equals(oppdatertRelasjon.getRelatertPerson()) &&
+                    (!person.getPerson().getForelderBarnRelasjon().get(id - 1).isEksisterendePerson() ||
+                            person.getRelasjoner().isEmpty())) {
+                personService.deletePerson(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson());
+            }
+        }
 
         person.getPerson().setForelderBarnRelasjon(
                 updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
-
-        forelderBarnRelasjonService.validate(oppdatertRelasjon);
         forelderBarnRelasjonService.convert(person.getPerson());
-
-        if (nonNull(tidligereRelatert) && nonNull(tidligereMinRolle) && nonNull(tidligereRelatertRolle) &&
-                (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson()) ||
-                        !tidligereMinRolle.equals(oppdatertRelasjon.getMinRolleForPerson()) ||
-                        !tidligereRelatertRolle.equals(oppdatertRelasjon.getRelatertPersonsRolle()))) {
-
-            deleteRelasjon(person, tidligereRelatert, getRelasjonstype(tidligereMinRolle));
-            deleteRelasjon(getPerson(tidligereRelatert), ident, getRelasjonstype(tidligereRelatertRolle));
-            if (!tidligereRelatert.equals(oppdatertRelasjon.getRelatertPerson())) {
-                deletePerson(tidligereRelatert, isEksisterendePerson);
-            }
-        }
     }
 
     public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {

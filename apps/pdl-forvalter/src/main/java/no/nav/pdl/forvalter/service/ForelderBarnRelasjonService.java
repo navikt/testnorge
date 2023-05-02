@@ -152,8 +152,8 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
-            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
+        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) { // -> Begge foreldre opprettes
+            var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
                     .kjoenn(getKjoenn(relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == MANN ? KVINNE : MANN)
                     .build());
