@@ -28,8 +28,8 @@ on:
         required: true
 
 env:
-  do-deploy-test: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
-  do-deploy: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+  do-deploy-test: ${{ inputs.deploy-tag-test != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
+  do-deploy: ${{ inputs.deploy-tag != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
 
 jobs:
 

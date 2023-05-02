@@ -5,6 +5,7 @@ on:
     paths:
       - apps/oversikt-frontend/**
       - .github/workflows/app.oversikt-frontend.yml
+      - .github/workflows/common.workflow.frontend.yml
   workflow_dispatch:
 
 jobs:
