@@ -13,6 +13,7 @@ import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { getSisteDato } from '@/components/bestillingsveileder/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type InnvandringTypes = {
 	data: Array<InnvandringValues>
@@ -95,7 +96,7 @@ const InnvandringVisning = ({
 	)
 	const slettetInnvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertInnvandringPdlf
 	if (slettetInnvandringPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const innvandringValues = redigertInnvandringPdlf ? redigertInnvandringPdlf : innvandringData

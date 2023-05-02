@@ -10,6 +10,8 @@ import { initialKontaktinfoForDoedebo } from '@/components/fagsystem/pdlf/form/i
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { formatDate } from '@/utils/DataFormatter'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 const KontaktinformasjonForDoedsboLes = ({
 	data,
@@ -134,7 +136,7 @@ export const KontaktinformasjonForDoedsboVisning = ({
 
 	const slettetKontaktinfoPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktinfoPdlf
 	if (slettetKontaktinfoPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const kontaktinfoValues = redigertKontaktinfoPdlf ? redigertKontaktinfoPdlf : kontaktinfoData

@@ -10,6 +10,7 @@ import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import styled from 'styled-components'
 import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 const StyledPdlData = styled.div`
 	margin-bottom: 10px;
@@ -32,12 +33,22 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig
 	)
 	// TODO: Er det forskjellige for mor/far?
-	//TODO: Ta med redigerteRelatertePersoner
+	//TODO: Ta med redigerteRelatertePersoner når BE er fiksa
 
 	return (
 		<>
 			<div className="person-visning_content" key={idx}>
-				<TitleValue title="Hvem har ansvaret" value={_.capitalize(foreldreansvarData.ansvar)} />
+				<>
+					<TitleValue title="Hvem har ansvaret" value={_.capitalize(foreldreansvarData.ansvar)} />
+					<TitleValue
+						title="Gyldig fra og med"
+						value={formatDate(foreldreansvarData.gyldigFraOgMed)}
+					/>
+					<TitleValue
+						title="Gyldig til og med"
+						value={formatDate(foreldreansvarData.gyldigTilOgMed)}
+					/>
+				</>
 				{!ansvarlig && !foreldreansvarData.ansvarligUtenIdentifikator && (
 					<TitleValue title="Ident" value={foreldreansvarData.ansvarlig} />
 				)}
@@ -71,7 +82,7 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 				{foreldreansvarData.ansvarligUtenIdentifikator && (
 					<div className="flexbox--full-width">
 						<h4 style={{ marginTop: '5px' }}>Ansvarlig uten identifikator</h4>
-						<div className="person-visning_content" key={idx}>
+						<div className="person-visning_content" key={idx} style={{ marginBottom: 0 }}>
 							<TitleValue
 								title="Fødselsdato"
 								value={formatDate(foreldreansvarData.ansvarligUtenIdentifikator.foedselsdato)}
@@ -101,12 +112,14 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 					</div>
 				)}
 			</div>
-			<StyledPdlData>
-				<PdlDataVisning ident={foreldreansvarData.ansvarlig} />
-				<p>
-					<i>Hold pekeren over PDL for å se dataene som finnes på ansvarlig i PDL</i>
-				</p>
-			</StyledPdlData>
+			{ansvarlig && (
+				<StyledPdlData>
+					<PdlDataVisning ident={foreldreansvarData.ansvarlig} />
+					<p>
+						<i>Hold pekeren over PDL for å se dataene som finnes på ansvarlig i PDL</i>
+					</p>
+				</StyledPdlData>
+			)}
 		</>
 	)
 }
@@ -118,6 +131,7 @@ export const ForeldreansvarEnkeltvisning = ({
 	tmpPersoner,
 	ident,
 	relasjoner,
+	personValues,
 }) => {
 	const initForeldreansvar = Object.assign(_.cloneDeep(initialForeldreansvar), data[idx])
 	let initialValues = { foreldreansvar: initForeldreansvar }
@@ -125,12 +139,19 @@ export const ForeldreansvarEnkeltvisning = ({
 	const redigertForeldreansvarPdlf = _.get(tmpPersoner, `${ident}.person.foreldreansvar`)?.find(
 		(a) => a.id === foreldreansvarData.id
 	)
+
+	const redigertForelderBarnRelasjonPdlf = _.get(
+		tmpPersoner,
+		`${ident}.person.forelderBarnRelasjon`
+	)
+
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
 	const slettetForeldreansvarPdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertForeldreansvarPdlf
+
 	if (slettetForeldreansvarPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const foreldreansvarValues = redigertForeldreansvarPdlf
@@ -162,6 +183,11 @@ export const ForeldreansvarEnkeltvisning = ({
 	// 	redigertForelderBarnValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson
 	// }
 
+	let personValuesMedRedigert = _.cloneDeep(personValues)
+	if (redigertForelderBarnRelasjonPdlf && personValuesMedRedigert) {
+		personValuesMedRedigert.forelderBarnRelasjon = redigertForelderBarnRelasjonPdlf
+	}
+
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={
@@ -177,11 +203,12 @@ export const ForeldreansvarEnkeltvisning = ({
 			redigertAttributt={redigertForeldreansvarValues}
 			path="foreldreansvar"
 			ident={ident}
+			personValues={personValuesMedRedigert}
 		/>
 	)
 }
 
-export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner }) => {
+export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner, personValues }) => {
 	if (!data || data?.length === 0) {
 		return null
 	}
@@ -198,6 +225,7 @@ export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner }) 
 						tmpPersoner={tmpPersoner}
 						ident={ident}
 						relasjoner={relasjoner}
+						personValues={personValues}
 					/>
 				)}
 			</DollyFieldArray>

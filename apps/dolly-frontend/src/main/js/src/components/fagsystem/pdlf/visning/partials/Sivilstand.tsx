@@ -10,6 +10,7 @@ import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf
 import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -94,7 +95,7 @@ const SivilstandVisning = ({
 
 	const slettetSivilstandPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertSivilstandPdlf
 	if (slettetSivilstandPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData

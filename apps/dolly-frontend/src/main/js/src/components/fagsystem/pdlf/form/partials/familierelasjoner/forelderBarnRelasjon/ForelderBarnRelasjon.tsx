@@ -102,25 +102,23 @@ export const ForelderBarnRelasjonForm = ({
 
 	return (
 		<div className="flexbox--flex-wrap">
-			{path?.includes('pdldata') ? (
-				<div className="toggle--wrapper">
-					<ToggleGroup
-						onChange={(value: string) => {
-							formikBag.setFieldValue(path, value === RELASJON_BARN ? initialBarn : initialForelder)
-						}}
-						size={'small'}
-						defaultValue={relatertPersonsRolle || RELASJON_BARN}
-						style={{ backgroundColor: '#ffffff' }}
-					>
-						<ToggleGroup.Item value={RELASJON_BARN}>{'Barn'}</ToggleGroup.Item>
-						<ToggleGroup.Item value={RELASJON_FORELDER}>{'Forelder'}</ToggleGroup.Item>
-					</ToggleGroup>
-				</div>
-			) : (
-				<h4 style={{ marginTop: '10px', marginBottom: '15px', width: '100%' }}>
-					{erBarn ? 'Barn' : 'Forelder'}
-				</h4>
-			)}
+			<div className="toggle--wrapper">
+				<ToggleGroup
+					onChange={(value: string) => {
+						formikBag.setFieldValue(path, value === RELASJON_BARN ? initialBarn : initialForelder)
+					}}
+					size={'small'}
+					defaultValue={relatertPersonsRolle || RELASJON_BARN}
+					style={{ backgroundColor: '#ffffff' }}
+				>
+					<ToggleGroup.Item value={RELASJON_BARN} style={{ marginRight: 0 }}>
+						{'Barn'}
+					</ToggleGroup.Item>
+					<ToggleGroup.Item value={RELASJON_FORELDER} style={{ marginRight: 0 }}>
+						{'Forelder'}
+					</ToggleGroup.Item>
+				</ToggleGroup>
+			</div>
 			<div className="flexbox--flex-wrap">
 				{erBarn && <BarnRelasjon formikBag={formikBag} path={path} />}
 				{!erBarn && (
@@ -163,7 +161,7 @@ export const ForelderBarnRelasjonForm = ({
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
 			)}
 
-			{!path?.includes('pdldata') && (
+			{!path?.includes('pdldata') && _.has(formikBag.values, 'foreldreansvar') && (
 				<Alert variant={'info'} size={'small'} style={{ marginTop: '10px', marginBottom: '15px' }}>
 					Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importers til
 					Dolly, via knapp øverst på denne personen.

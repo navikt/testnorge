@@ -8,7 +8,6 @@ const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
 		let feilmelding = null
 		const values = this.options.context
-
 		if (values.leggTilPaaGruppe) return true
 
 		const foreldrerelasjoner = []
@@ -85,6 +84,40 @@ const testForeldreansvar = (val) => {
 		}
 		return feilmelding ? this.createError({ message: feilmelding }) : true
 	})
+}
+
+const testForeldreansvarForBarn = (val) => {
+	return val.test(
+		'er-gyldig-foreldreansvar-for-barn',
+		function erGyldigForeldreansvarForBarn(selected) {
+			let feilmelding = null
+			const values = this.options.context
+			console.log('values: ', values) //TODO - SLETT MEG
+
+			const foreldrerelasjoner = _.get(values, 'personValues.forelderBarnRelasjon')
+				?.map((a) => a?.relatertPersonsRolle)
+				?.filter((a) => {
+					return a && a !== 'BARN'
+				})
+			//TODO: Sjekk at denne funker når man endrer fra forelder til barn
+
+			if (
+				(selected === 'MOR' || selected === 'MEDMOR') &&
+				!foreldrerelasjoner.includes('MOR') &&
+				!foreldrerelasjoner.includes('MEDMOR')
+			) {
+				feilmelding = 'Forelder med rolle mor eller medmor finnes ikke'
+			}
+			if (selected === 'FAR' && !foreldrerelasjoner.includes('FAR')) {
+				feilmelding = 'Forelder med rolle far finnes ikke'
+			}
+			if (selected === 'FELLES' && foreldrerelasjoner.length < 2) {
+				feilmelding = 'Barn har færre enn to foreldre'
+			}
+
+			return feilmelding ? this.createError({ message: feilmelding }) : true
+		}
+	)
 }
 
 const testDeltBostedAdressetype = (value) => {
@@ -194,4 +227,12 @@ export const forelderBarnRelasjon = Yup.object({
 
 export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
+	gyldigFraOgMed: testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed'),
+})
+
+export const foreldreansvarForBarn = Yup.object({
+	ansvar: testForeldreansvarForBarn(requiredString),
+	gyldigFraOgMed: testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed'),
 })

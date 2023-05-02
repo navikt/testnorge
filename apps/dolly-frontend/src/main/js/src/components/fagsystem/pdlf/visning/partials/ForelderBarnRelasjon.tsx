@@ -14,6 +14,8 @@ import {
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 type FamilieRelasjonerData = {
 	data: Array<ForeldreBarnRelasjon>
@@ -85,8 +87,9 @@ export const ForelderBarnRelasjonVisning = ({
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
 
 	const slettetForelderBarnPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertForelderBarnPdlf
+
 	if (slettetForelderBarnPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const forelderBarnValues = redigertForelderBarnPdlf
@@ -129,6 +132,7 @@ export const ForelderBarnRelasjonVisning = ({
 		)
 		return relasjon?.relatertPerson?.foreldreansvar
 	}
+
 	const foreldreansvar = getForeldreansvar()
 
 	if (foreldreansvar) {

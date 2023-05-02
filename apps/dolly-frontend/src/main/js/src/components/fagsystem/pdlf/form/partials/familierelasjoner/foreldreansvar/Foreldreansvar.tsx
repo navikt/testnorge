@@ -96,11 +96,11 @@ export const ForeldreansvarForm = ({
 		const type = _.get(formikBag.values, `${path}.typeAnsvarlig`)
 		if (type) {
 			return type
-		} else if (_.has(formikBag.values, `${path}.ansvarlig`)) {
+		} else if (_.get(formikBag.values, `${path}.ansvarlig`)) {
 			return TypeAnsvarlig.EKSISTERENDE
-		} else if (_.has(formikBag.values, `${path}.nyAnsvarlig`)) {
+		} else if (_.get(formikBag.values, `${path}.nyAnsvarlig`)) {
 			return TypeAnsvarlig.NY
-		} else if (_.has(formikBag.values, `${path}.ansvarligUtenIdentifikator`)) {
+		} else if (_.get(formikBag.values, `${path}.ansvarligUtenIdentifikator`)) {
 			return TypeAnsvarlig.UTEN_ID
 		} else return null
 	}
@@ -112,7 +112,8 @@ export const ForeldreansvarForm = ({
 			formikBag.setFieldValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
 		}
 	}, [])
-
+	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
+	console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikSelect

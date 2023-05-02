@@ -19,6 +19,7 @@ import {
 	Modus,
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -213,7 +214,7 @@ export const VisningRedigerbarSamlet = ({
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
 										{slettetItem || alleSlettet ? (
-											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
+											<OpplysningSlettet />
 										) : (
 											getVisning(redigertItem || item, idx)
 										)}
@@ -295,11 +296,7 @@ export const VisningRedigerbarSamlet = ({
 									nested
 								>
 									{(item: any, idx: number) =>
-										item ? (
-											getForm(`${path}[${idx}]`)
-										) : (
-											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
-										)
+										item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
 									}
 								</DollyFieldArray>
 								<FieldArrayEdit>

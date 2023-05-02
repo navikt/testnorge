@@ -49,6 +49,7 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import { foreldreansvarForBarn } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -120,6 +121,7 @@ export const VisningRedigerbar = ({
 	identtype,
 	disableSlett = false,
 	personFoerLeggTil = null,
+	personValues = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -286,7 +288,7 @@ export const VisningRedigerbar = ({
 			sivilstand: ifPresent('sivilstand', sivilstand),
 			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
 			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
-			foreldreansvar: ifPresent('foreldreansvar', foreldreansvar),
+			foreldreansvar: ifPresent('foreldreansvar', foreldreansvarForBarn),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -311,6 +313,7 @@ export const VisningRedigerbar = ({
 			{
 				...values,
 				personFoerLeggTil: personFoerLeggTil,
+				personValues: personValues,
 			},
 			validationSchema
 		)

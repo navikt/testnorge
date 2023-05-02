@@ -14,6 +14,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FoedselData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type FoedselTypes = {
 	data: Array<FoedselData>
@@ -76,7 +77,7 @@ const FoedselVisning = ({
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
 	if (slettetFoedselPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel
