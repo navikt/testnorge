@@ -131,7 +131,7 @@ public class PersonController {
         metadataTidspunkterService.updateMetadata(ident);
         artifactGjeldendeService.setGjeldendeForRelasjon(ident);
 
-        return pdlOrdreService.send(ident, isTpsMaster, ekskluderEksternePersoner);
+        return pdlOrdreService.send(ident, ekskluderEksternePersoner);
     }
 
     @ResponseBody

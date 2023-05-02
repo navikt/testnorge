@@ -50,5 +50,11 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
                 Rolle.MEDMOR == minRolleForPerson;
     }
 
+    @JsonIgnore
+    public boolean isBarn() {
+
+        return Rolle.BARN == minRolleForPerson;
+    }
+
     public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
 }
