@@ -27,6 +27,10 @@ on:
       SONAR_TOKEN:
         required: true
 
+env:
+  do-deploy-test: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) ) }}
+  do-deploy: ${{ github.ref == 'refs/heads/master' || ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) ) }}
+
 jobs:
 
   sonar:
@@ -71,11 +75,8 @@ jobs:
       - name: "Docker"
         uses: nais/docker-build-push@v0
         if: |
-          github.ref == 'refs/heads/master' ||
-          ( ( inputs.deploy-tag-test != '' &&
-              contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ||
-            ( inputs.deploy-tag != '' &&
-              contains(github.event.head_commit.message, inputs.deploy-tag) ) )
+          env.do-deploy-test == 'true' ||
+          env.do-deploy == 'true'
         id: docker-build-push
         with:
           team: dolly
@@ -84,23 +85,38 @@ jobs:
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ github.workflow }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+      do-deploy-test: ${{ env.do-deploy-test }}
+      do-deploy: ${{ env.do-deploy }}
+
+  deploy-test:
+    needs: build
+    if: needs.build.outputs.do-deploy-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
       - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag-test != '' && contains(github.event.head_commit.message, inputs.deploy-tag-test) )
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{steps.docker-build-push.outputs.image}}
+          VAR: image=${{ needs.build.outputs.image }}
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.do-deploy == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: |
-          github.ref == 'refs/heads/master' ||
-          ( inputs.deploy-tag != '' && contains(github.event.head_commit.message, inputs.deploy-tag) )
+        if: env.do-deploy == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
-          VAR: image=${{steps.docker-build-push.outputs.image}}
+          VAR: image=${{ needs.build.outputs.image }}
