@@ -256,13 +256,15 @@ public class ArtifactUpdateService {
 
         var person = getPerson(ident);
 
-        if (id > 0 && id < person.getPerson().getForelderBarnRelasjon().size() &&
-                (person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() !=
-                        oppdatertRelasjon.getMinRolleForPerson() &&
-                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() !=
-                                oppdatertRelasjon.getRelatertPersonsRolle()) ||
-                !person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson()
-                        .equals(oppdatertRelasjon.getRelatertPerson())) {
+        var endretRelasjon = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() &&
+                (oppdatertRelasjon.getMinRolleForPerson() !=
+                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() ||
+                        oppdatertRelasjon.getRelatertPersonsRolle() !=
+                                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() ||
+                        !person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson().equals(
+                                oppdatertRelasjon.getRelatertPerson()));
+
+        if (endretRelasjon) {
 
             deleteRelasjon(person, person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson(),
                     getRelasjonstype(person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson()));
@@ -274,12 +276,28 @@ public class ArtifactUpdateService {
                     (!person.getPerson().getForelderBarnRelasjon().get(id - 1).isEksisterendePerson() ||
                             person.getRelasjoner().isEmpty())) {
                 personService.deletePerson(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson());
+
+            } else {
+                personRepository.findByIdent(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())
+                        .ifPresent(relasjon -> {
+                            var it = relasjon.getPerson().getForelderBarnRelasjon().iterator();
+                            while (it.hasNext()) {
+                                var relasjon1 = it.next();
+                                if (relasjon1.getRelatertPerson().equals(
+                                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())) {
+                                    it.remove();
+                                }
+                            }
+                        });
             }
         }
 
         person.getPerson().setForelderBarnRelasjon(
                 updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
-        forelderBarnRelasjonService.convert(person.getPerson());
+
+        if (endretRelasjon || id == 0) {
+            forelderBarnRelasjonService.convert(person.getPerson());
+        }
     }
 
     public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
