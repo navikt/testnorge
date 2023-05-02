@@ -85,6 +85,11 @@ jobs:
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ github.workflow }}
+      - name: "Summary"
+        run: |
+          echo "commit: ${{ github.event.head_commit.message }}"
+          echo "do-deploy-test: ${{ env.do-deploy-test }} (${{ github.ref == 'refs/heads/master' }}, ${{ inputs.deploy-tag-test }}
+          echo "do-deploy: ${{ env.do-deploy }} (${{ github.ref == 'refs/heads/master' }}, ${{ inputs.deploy-tag }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       do-deploy-test: ${{ env.do-deploy-test }}
