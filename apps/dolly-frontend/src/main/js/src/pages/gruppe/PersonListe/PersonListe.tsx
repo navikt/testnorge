@@ -100,12 +100,12 @@ export default function PersonListe({
 		},
 		{
 			text: 'Alder',
-			width: '15',
+			width: '10',
 			dataField: 'alder',
 		},
 		{
-			text: 'Bestilling-ID',
-			width: '20',
+			text: 'Bestilling',
+			width: '15',
 			dataField: 'bestillingId',
 			formatter: (_cell, row) => {
 				const arr = row.bestillingId
@@ -125,14 +125,14 @@ export default function PersonListe({
 		},
 		{
 			text: 'Kilde',
-			width: '15',
+			width: '10',
 			dataField: 'kilde',
 			sortField: 'master',
 			headerCssClass: 'header-sort-sortable',
 		},
 		{
 			text: 'Brukt',
-			width: '15',
+			width: '10',
 			style: { paddingLeft: '3px' },
 			dataField: 'ibruk',
 			sortField: 'iBruk',
@@ -143,6 +143,17 @@ export default function PersonListe({
 					ident={row.ident}
 				/>
 			),
+		},
+		{
+			text: 'Temp',
+			width: '15',
+			style: { paddingLeft: '3px' },
+			dataField: 'test',
+			sortField: 'test',
+			headerCssClass: 'header-sort-sortable',
+			formatter: (_cell, row) => {
+				return <div>{row.identNr}</div> //TODO: Må endre denne basert på select f.eks, lage egen komponent
+			},
 		},
 		{
 			text: '',
