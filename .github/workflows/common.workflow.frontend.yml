@@ -112,6 +112,11 @@ jobs:
           dockerfile: ${{ inputs.working-directory }}/Dockerfile
           docker_context: ${{ inputs.working-directory }}
           image_suffix: ${{ github.workflow }}
+      - name: "Debug dump"
+        run: |
+          echo "env: ${{ toJSON(env) }}"
+          echo "github: ${{ toJSON(github) }}"
+          echo "inputs: ${{ toJSON(inputs) }}"
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
       do-deploy-unstable: ${{ env.do-deploy-unstable }}
