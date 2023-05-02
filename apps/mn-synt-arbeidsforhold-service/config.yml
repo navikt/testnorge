@@ -53,4 +53,4 @@ spec:
       cpu: 800m
       memory: 2048Mi
   ingresses:
-    - "https://mn-synt-arbeidsforhold-service.intern.dev.nav.no"
+    - "https://mn-synt-arbeidsforhold-service.dev.intern.nav.no" # dev-fss

@@ -42,4 +42,4 @@ spec:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://testnorge-bisys.intern.dev.nav.no"
+    - "https://testnorge-bisys.dev.intern.nav.no" # dev-fss

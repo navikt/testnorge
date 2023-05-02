@@ -32,4 +32,4 @@ spec:
       memory: 1024Mi
   ingresses:
     - "https://brreg-stub.dev-fss.nais.io"
-    - "https://brreg-stub.intern.dev.nav.no"
+    - "https://brreg-stub.dev.intern.nav.no" # dev-fss
