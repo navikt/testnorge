@@ -51,7 +51,7 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: popp-testdata.dev.intern.nav.no
+        - host: popp-testdata.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
