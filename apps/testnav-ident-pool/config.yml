@@ -24,7 +24,6 @@ spec:
     enabled: true
   port: 8080
   ingresses:
-    - "https://testnav-ident-pool.dev.intern.nav.no"
     - "https://testnav-ident-pool.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive

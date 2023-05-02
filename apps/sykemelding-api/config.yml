@@ -34,4 +34,4 @@ spec:
       cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnorge-sykemelding-api.dev.intern.nav.no"
+    - "https://testnorge-sykemelding-api.intern.dev.nav.no"

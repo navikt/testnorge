@@ -46,5 +46,4 @@ spec:
       memory: 512Mi
   image: {{ image }}
   ingresses:
-    - "https://testnav-organisasjon-tilgang.dev.intern.nav.no"
     - "https://testnav-organisasjon-tilgang.intern.dev.nav.no"

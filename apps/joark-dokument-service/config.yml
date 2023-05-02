@@ -59,5 +59,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-joark-dokument-service.dev.intern.nav.no"
     - "https://testnav-joark-dokument-service.intern.dev.nav.no"

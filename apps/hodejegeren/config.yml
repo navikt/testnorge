@@ -54,4 +54,4 @@ spec:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://testnorge-hodejegeren.dev.intern.nav.no"
+    - "https://testnorge-hodejegeren.intern.dev.nav.no"

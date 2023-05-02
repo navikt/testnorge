@@ -29,7 +29,7 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://testnorge-tp.dev.intern.nav.no"
+    - "https://testnorge-tp.intern.dev.nav.no"
   webproxy: true
   azure:
     application:

@@ -78,4 +78,3 @@ spec:
     - secret: azure-nav-testnav-synthdata-meldekort-proxy-nav
   ingresses:
     - "https://testnav-synthdata-meldekort-proxy.intern.dev.nav.no"
-    - "https://testnav-synthdata-meldekort-proxy.dev.intern.nav.no"

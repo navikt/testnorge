@@ -55,5 +55,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-arbeidsforhold-service.dev.intern.nav.no"
     - "https://testnav-arbeidsforhold-service.intern.dev.nav.no"
