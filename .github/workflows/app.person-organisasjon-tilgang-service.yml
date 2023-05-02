@@ -1,18 +1,19 @@
-name: synt-sykemelding-api
+name: person-organisasjon-tilgang-service
 
 on:
   push:
     paths:
-      - apps/synt-sykemelding-api/**
-      - .github/workflows/app.synt-sykemelding-api.yml
+      - apps/person-organisasjon-tilgang-service/**
+      - .github/workflows/app.person-organisasjon-tilgang-service.yml
   workflow_dispatch:
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/synt-sykemelding-api"
-      deploy-tag: "#deploy-synt-sykemelding-api"
+      working-directory: "apps/person-organisasjon-tilgang-service"
+      deploy-tag: "#deploy-person-organisasjon-tilgang-service"
+      deploy-tag-test: "#deploy-test-person-organisasjon-tilgang-service"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

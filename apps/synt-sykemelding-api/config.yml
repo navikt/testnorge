@@ -68,5 +68,4 @@ spec:
         - host: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
-    - "https://testnav-synt-sykemelding-api.dev.intern.nav.no"
     - "https://testnav-synt-sykemelding-api.intern.dev.nav.no"

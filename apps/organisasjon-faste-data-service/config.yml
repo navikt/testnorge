@@ -74,5 +74,4 @@ spec:
   envFrom:
     - secret: google-sql-testnav-organisasjon-faste-data-service
   ingresses:
-    - "https://testnav-organisasjon-faste-data-service.dev.intern.nav.no"
     - "https://testnav-organisasjon-faste-data-service.intern.dev.nav.no"

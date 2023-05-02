@@ -20,8 +20,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     limits:
       cpu: 1000m
@@ -31,7 +29,7 @@ spec:
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://testnorge-tp.dev.intern.nav.no"
+    - "https://testnorge-tp.dev.intern.nav.no" # dev-fss
   webproxy: true
   azure:
     application:

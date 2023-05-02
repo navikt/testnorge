@@ -62,5 +62,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://generer-navn-service.dev.intern.nav.no"
     - "https://generer-navn-service.intern.dev.nav.no"

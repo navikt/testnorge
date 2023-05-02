@@ -23,7 +23,8 @@ public class ReadDeployConfigService extends ReadConfigService {
                 .builder()
                 .addLanguage("yml")
                 .addLanguage("yaml")
-                .addSearchString("uses: navikt/testnorge/.github/workflows/common.deploy.yml")
+                .addSearchString("uses: ./.github/workflows/common.workflow.backend.yml")
+                .addSearchString("uses: ./.github/workflows/common.workflow.frontend.yml")
                 .repo(repo)
                 .owner(owner)
                 .build();

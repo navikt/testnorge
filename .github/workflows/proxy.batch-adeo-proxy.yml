@@ -1,4 +1,4 @@
-name: Proxy batch-adeo-proxy
+name: batch-adeo-proxy
 
 on:
   push:
@@ -7,32 +7,17 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.batch-adeo-proxy.yml
+  workflow_dispatch:
 
 jobs:
-  scan:
-    name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: 'proxies/batch-adeo-proxy/'
+      cluster: "dev-fss"
+      working-directory: "proxies/batch-adeo-proxy"
+      deploy-tag: "#deploy-batch-adeo-proxy"
     secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-  build:
-    name: Build
-    uses: navikt/testnorge/.github/workflows/common.build-and-publish.backend.yml@master
-    with:
-      working-directory: 'proxies/batch-adeo-proxy/'
-      app-name: 'batch-adeo-proxy'
-    secrets:
-      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-  deploy-dev:
-    name: Deploy
-    uses: navikt/testnorge/.github/workflows/common.deploy.yml@master
-    needs: build
-    if: ${{ github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, '#deploy-batch-adeo-proxy')}}
-    with:
-      resource: 'proxies/batch-adeo-proxy/config.yml'
-      app-name: 'batch-adeo-proxy'
-      cluster: 'dev-fss'
-    secrets:
-      API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

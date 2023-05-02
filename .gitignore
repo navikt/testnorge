@@ -24,3 +24,7 @@ navikt/*/lib/
 ##brreg-stub
 apps/brreg-stub/src/generated
 apps/brreg-stub/src/jaxb2
+
+### VS Code ###
+.vscode
+**/bin/*

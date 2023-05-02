@@ -1,19 +1,19 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: testnav-pdl-forvalter-dev
+  name: testnav-pdl-forvalter
   namespace: dolly
   annotations:
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-    nginx.ingress.kubernetes.io/proxy-connect-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
   labels:
     team: dolly
 spec:
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: dev
-  image: {{ image }}
+      value: prod
+  image: {{image}}
   webproxy: true
   tokenx:
     enabled: true
@@ -23,41 +23,37 @@ spec:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://testnav-pdl-forvalter-dev.dev.intern.nav.no"
-    - "https://testnav-pdl-forvalter-dev.intern.dev.nav.no"
+    - "https://testnav-pdl-forvalter.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     periodSeconds: 30
-    initialDelay: 60
+    initialDelay: 30
   readiness:
     path: /internal/isReady
-    initialDelay: 60
+    initialDelay: 30
   prometheus:
     enabled: true
     path: /internal/metrics
   replicas:
-    min: 1
-    max: 1
+    min: 2
+    max: 10
   resources:
     requests:
-      cpu: 1000m
-      memory: 2000Mi
+      cpu: 3000m
+      memory: 500Mi
     limits:
-      cpu: 2000m
-      memory: 4000Mi
+      cpu: 5000m
+      memory: 2000Mi
   accessPolicy:
     inbound:
       rules:
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
-        - application: team-dolly-lokal-app
+        - application: dolly-backend
           cluster: dev-gcp
-        - application: dolly-backend-dev
+        - application: dolly-frontend
           cluster: dev-gcp
-        - application: dolly-frontend-dev
-          cluster: dev-gcp
-        - application: app-1
-          namespace: plattformsikkerhet
+        - application: dolly-idporten
           cluster: dev-gcp
     outbound:
       rules:
@@ -77,4 +73,5 @@ spec:
     sqlInstances:
       - type: POSTGRES_12
         databases:
-          - name: testnav-pdl-forvalter-dev-db
+          - name: testnav-pdl-forvalter-db
+        tier: db-custom-2-3840

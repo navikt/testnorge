@@ -23,17 +23,19 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend
+        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: prod-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
-        - host: altinn.no
+        - host: tt02.altinn.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -47,26 +49,26 @@ spec:
   prometheus:
     enabled: true
     path: /internal/metrics
-  envFrom:
-    - secret: altinn
-    - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
     max: 1
+  envFrom:
+    - secret: altinn-dev
+    - secret: google-sql-testnav-organisasjon-tilgang-service
   resources:
     requests:
       cpu: 200m
-      memory: 1024Mi
+      memory: 512Mi
     limits:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-organisasjon-tilgang-service.intern.nav.no"
+    - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
-      value: prod
+      value: dev
     - name: ACCEPTED_AUDIENCE
-      value: prod-gcp:dolly:testnav-organisasjon-tilgang-service
+      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
       value: https://tokendings.dev-gcp.nais.io
   gcp:

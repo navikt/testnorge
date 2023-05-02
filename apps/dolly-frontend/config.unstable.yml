@@ -1,7 +1,7 @@
 apiVersion: nais.io/v1alpha1
 kind: Application
 metadata:
-  name: dolly-frontend-dev
+  name: dolly-frontend-dev-unstable
   namespace: dolly
   labels:
     team: dolly
@@ -14,8 +14,8 @@ spec:
   azure:
     sidecar:
       enabled: true
-      autologin: true
-      autologinignorepaths:
+      autoLogin: true
+      autoLoginIgnorePaths:
         - /login
       errorPath: /login
     application:
@@ -23,7 +23,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - https://dolly-frontend-dev.intern.dev.nav.no/login/oauth2/code/aad
+        - https://dolly-frontend-dev-unstable.intern.dev.nav.no/login/oauth2/code/aad
         - http://localhost:8020/login/oauth2/code/aad
         - http://localhost:3000/login/oauth2/code/aad
   accessPolicy:
@@ -51,10 +51,11 @@ spec:
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
-        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-dev-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
         - host: testnav-norg2-proxy.dev-fss-pub.nais.io
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
@@ -62,11 +63,10 @@ spec:
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
   replicas:
     min: 1
-    max: 2
+    max: 1
   port: 8080
   ingresses:
-    - https://dolly-frontend-dev.dev.intern.nav.no
-    - https://dolly-frontend-dev.intern.dev.nav.no
+    - "https://dolly-frontend-dev-unstable.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     initialDelay: 20
