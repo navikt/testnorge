@@ -114,7 +114,6 @@ jobs:
         uses: actions/checkout@v3
       - name: "Deploy"
         uses: nais/deploy/actions/deploy@v1
-        if: env.do-deploy == 'true'
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
