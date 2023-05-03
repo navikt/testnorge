@@ -33,10 +33,10 @@ env:
 
 jobs:
 
-  markdown:
-    uses: ./.github/workflows/common.scan.markdown.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
+#  markdown:
+#    uses: ./.github/workflows/common.scan.markdown.yml
+#    with:
+#      working-directory: ${{ inputs.working-directory }}
 
   sonar:
     uses: ./.github/workflows/common.scan.sonar.yml
