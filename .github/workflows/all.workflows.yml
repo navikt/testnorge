@@ -33,6 +33,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
+      image-suffix: ${{ inputs.name }}
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
@@ -47,6 +48,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
+      image-suffix: ${{ inputs.name }}
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
