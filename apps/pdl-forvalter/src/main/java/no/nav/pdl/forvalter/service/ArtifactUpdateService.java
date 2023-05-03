@@ -291,7 +291,7 @@ public class ArtifactUpdateService {
 
         var endretAnsvar = id > 0 && id <= person.getPerson().getForeldreansvar().size() &&
                 (oppdatertAnsvar.getAnsvar() != person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() ||
-                !oppdatertAnsvar.getAnsvarlig().equals(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig()));
+                !person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig()));
 
         if (endretAnsvar) {
             person.getPerson().getForeldreansvar().stream()
