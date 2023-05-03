@@ -9,13 +9,13 @@ on:
           - "frontend"
       type:
         type: choice
-        description: "App or proxy. Used to resolve the working directory together with name."
+        description: "App or proxy. Used to resolve the working directory together with name, as <type>/<name>."
         options:
           - "apps"
           - "proxies"
       name:
         type: string
-        description: "The workflow name, e.g. dolly-backend. Used to resolve the working directory together with type."
+        description: "The workflow name, e.g. dolly-backend. Used to resolve the working directory together with type, as <type>/<name>."
         required: true
       force-deploy:
         type: boolean
@@ -33,6 +33,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
+      deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
     secrets:
