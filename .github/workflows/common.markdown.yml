@@ -1,8 +1,11 @@
 on:
   push:
     paths:
-      - '**.md'
+      - "**.md"
   workflow_dispatch:
+
+env:
+  working-directory: "proxies/kontoregister-person-proxy"
 
 jobs:
   markdown:
@@ -11,4 +14,6 @@ jobs:
       - uses: actions/checkout@v3
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
-          args: '**/*.md'
+          folder-path: ${{ env.working-directory }}
+          check-modified-files-only: false # Set to true once repo is in stable state.
+          use-verbose-mode: true # Remove after testing.
