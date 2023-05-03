@@ -20,4 +20,5 @@ jobs:
       - uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           folder-path: ${{ inputs.working-directory }}
+          config-file: .github/workflows/markdown-link-check-config.json
           use-quiet-mode: yes
