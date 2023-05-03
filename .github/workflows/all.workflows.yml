@@ -1,7 +1,7 @@
 on:
   workflow_dispatch:
     inputs:
-      target:
+      workflow:
         type: choice
         description: "Backend or frontend."
         options:
@@ -15,7 +15,7 @@ on:
           - "proxies"
       cluster:
         type: choice
-        description: "The cluster to deploy to. Only relevant if target is backend."
+        description: "The cluster to deploy to. Only relevant if workflow is backend."
         options:
           - "dev-gcp"
           - "dev-fss"
@@ -43,7 +43,7 @@ jobs:
 
   backend:
     needs: start
-    if: inputs.target == 'backend'
+    if: inputs.workflow == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       cluster: ${{ inputs.cluster }}
@@ -60,7 +60,7 @@ jobs:
 
   frontend:
     needs: start
-    if: inputs.target == 'frontend'
+    if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
