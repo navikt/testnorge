@@ -34,7 +34,14 @@ on:
 
 jobs:
 
+  start:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "Inputs for this workflow: ${{ toJSON(inputs) }}"
+
   backend:
+    needs: start
     if: inputs.target == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
@@ -51,6 +58,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   frontend:
+    needs: start
     if: inputs.target == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
