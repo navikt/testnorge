@@ -37,8 +37,9 @@ jobs:
   start:
     runs-on: ubuntu-latest
     steps:
-    - run: |
-        echo "Inputs for this workflow: ${{ toJSON(inputs) }}"
+      - name: "Log inputs"
+        run:
+          echo ${{ toJSON(inputs) }}
 
   backend:
     needs: start
