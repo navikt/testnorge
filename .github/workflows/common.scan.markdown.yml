@@ -16,8 +16,10 @@ jobs:
   markdown:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: gaurav-nelson/github-action-markdown-link-check@v1
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Markdown"
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
         with:
           folder-path: ${{ inputs.working-directory }}
           config-file: .github/workflows/common.scan.markdown.json

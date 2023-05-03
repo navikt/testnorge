@@ -15,28 +15,10 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v3
       - name: "Checkout"
-        run: git fetch --unshallow
-      - name: Cache SonarCloud packages
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            ${{ runner.os }}-gradle-
-            ${{ runner.os }}-
+        uses: actions/checkout@v3
       - name: "Cache"
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle
+        uses: burrunan/gradle-cache-action@v1
       - name: "Java"
         uses: actions/setup-java@v3
         with:

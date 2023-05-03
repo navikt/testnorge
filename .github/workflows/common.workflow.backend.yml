@@ -71,16 +71,7 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Cache"
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            ${{ runner.os }}-gradle-
-            ${{ runner.os }}-
+        uses: burrunan/gradle-cache-action@v1
       - name: "Java"
         uses: actions/setup-java@v3
         with:
