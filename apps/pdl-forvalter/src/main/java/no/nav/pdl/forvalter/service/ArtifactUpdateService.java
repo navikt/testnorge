@@ -257,12 +257,12 @@ public class ArtifactUpdateService {
         var person = getPerson(ident);
 
         var endretRelasjon = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() &&
-                (oppdatertRelasjon.getMinRolleForPerson() !=
-                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() ||
+                (((oppdatertRelasjon.getMinRolleForPerson() !=
+                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getMinRolleForPerson() &&
                         oppdatertRelasjon.getRelatertPersonsRolle() !=
-                                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle() ||
+                                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle()) ||
                         !person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson().equals(
-                                oppdatertRelasjon.getRelatertPerson()));
+                                oppdatertRelasjon.getRelatertPerson())));
 
         if (endretRelasjon) {
 
