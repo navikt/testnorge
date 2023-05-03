@@ -41,8 +41,13 @@ env:
 
 jobs:
 
+  #  markdown:
+  #    uses: ./.github/workflows/common.scan.markdown.yml
+  #    with:
+  #      working-directory: ${{ inputs.working-directory }}
+
   sonar:
-    uses: ./.github/workflows/common.sonar.yml
+    uses: ./.github/workflows/common.scan.sonar.yml
     with:
       working-directory: ${{ inputs.working-directory }}
     secrets:
