@@ -5,7 +5,6 @@ on:
     paths:
       - apps/generer-organisasjon-populasjon-service/**
       - .github/workflows/app.generer-organisasjon-populasjon-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

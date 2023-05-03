@@ -7,7 +7,6 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.pensjon-testdata-facade-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:
