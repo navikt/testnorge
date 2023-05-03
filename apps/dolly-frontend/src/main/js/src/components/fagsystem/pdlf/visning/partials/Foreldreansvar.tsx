@@ -34,6 +34,8 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 	)
 	// TODO: Er det forskjellige for mor/far?
 	//TODO: Ta med redigerteRelatertePersoner når BE er fiksa
+	console.log('foreldreansvarData: ', foreldreansvarData) //TODO - SLETT MEG
+	console.log('redigertRelatertePersoner: ', redigertRelatertePersoner) //TODO - SLETT MEG
 
 	return (
 		<>
