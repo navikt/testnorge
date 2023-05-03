@@ -7,6 +7,7 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.kontoregister-person-proxy.yml
+      - .github/workflows/common.markdown.yml
   workflow_dispatch:
 
 jobs:
