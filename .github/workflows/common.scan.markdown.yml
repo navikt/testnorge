@@ -4,6 +4,13 @@ on:
       working-directory:
         type: string
         required: true
+  workflow_dispatch:
+    inputs:
+      working-directory:
+        type: string
+        description: "Directory to scan, e.g. apps/dolly-backend. Defaults to whole repo."
+        default: "."
+        required: true
 
 jobs:
   markdown:
