@@ -39,7 +39,8 @@ jobs:
     steps:
       - name: "Log inputs"
         run:
-          echo "${{ toJSON(inputs) }}"
+          echo "branch: ${{ github.ref_name }}"
+          echo "inputs: ${{ toJSON(inputs) }}"
 
   backend:
     needs: start
