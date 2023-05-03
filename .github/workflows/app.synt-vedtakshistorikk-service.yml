@@ -5,7 +5,6 @@ on:
     paths:
       - apps/synt-vedtakshistorikk-service/**
       - .github/workflows/app.synt-vedtakshistorikk-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

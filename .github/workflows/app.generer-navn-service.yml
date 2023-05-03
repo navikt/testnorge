@@ -5,7 +5,6 @@ on:
     paths:
       - apps/generer-navn-service/**
       - .github/workflows/app.generer-navn-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

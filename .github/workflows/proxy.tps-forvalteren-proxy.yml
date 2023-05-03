@@ -7,7 +7,6 @@ on:
       - libs/reactive-core/**
       - libs/reactive-proxy/**
       - .github/workflows/proxy.tps-forvalteren-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

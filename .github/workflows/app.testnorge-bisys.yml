@@ -5,7 +5,6 @@ on:
     paths:
       - apps/testnorge-bisys/**
       - .github/workflows/app.testnorge-bisys.yml
-  workflow_dispatch:
 
 jobs:
   workflow:
