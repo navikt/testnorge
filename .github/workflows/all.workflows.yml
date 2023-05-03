@@ -39,7 +39,7 @@ jobs:
     steps:
       - name: "Log inputs"
         run:
-          echo ${{ toJSON(inputs) }}
+          echo "${{ toJSON(inputs) }}"
 
   backend:
     needs: start
