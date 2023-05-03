@@ -9,7 +9,7 @@ on:
 jobs:
   scan:
     name: Scan
-    uses: navikt/testnorge/.github/workflows/common.sonar.yml@master
+    uses: navikt/testnorge/.github/workflows/common.scan.sonar.yml@master
     with:
       working-directory: 'libs/domain/'
     secrets:
