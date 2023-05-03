@@ -56,5 +56,4 @@ spec:
       cpu: 800m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-generer-arbeidsforhold-populasjon-service.dev.intern.nav.no"
     - "https://testnav-generer-arbeidsforhold-populasjon-service.intern.dev.nav.no"

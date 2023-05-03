@@ -61,6 +61,5 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-person-search-service.dev.intern.nav.no"
     - "https://testnav-person-search-service.intern.dev.nav.no"
 

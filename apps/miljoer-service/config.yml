@@ -81,5 +81,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-miljoer-service.dev.intern.nav.no"
     - "https://testnav-miljoer-service.intern.dev.nav.no"

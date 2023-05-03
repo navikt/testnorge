@@ -44,7 +44,7 @@ spec:
   kafka:
     pool: nav-dev
   ingresses:
-    - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no"
+    - "https://testnorge-statisk-data-forvalter.dev.intern.nav.no" # dev-fss
   accessPolicy:
     inbound:
       rules:
