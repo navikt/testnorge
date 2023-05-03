@@ -276,20 +276,19 @@ public class ArtifactUpdateService {
                     (!person.getPerson().getForelderBarnRelasjon().get(id - 1).isEksisterendePerson() ||
                             person.getRelasjoner().isEmpty())) {
                 personService.deletePerson(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson());
-
-            } else {
-                personRepository.findByIdent(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())
-                        .ifPresent(relasjon -> {
-                            var it = relasjon.getPerson().getForelderBarnRelasjon().iterator();
-                            while (it.hasNext()) {
-                                var relasjon1 = it.next();
-                                if (relasjon1.getRelatertPerson().equals(
-                                        person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())) {
-                                    it.remove();
-                                }
-                            }
-                        });
             }
+
+            personRepository.findByIdent(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())
+                    .ifPresent(relasjon -> {
+                        var it = relasjon.getPerson().getForelderBarnRelasjon().iterator();
+                        while (it.hasNext()) {
+                            var relasjon1 = it.next();
+                            if (relasjon1.getRelatertPerson().equals(
+                                    person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())) {
+                                it.remove();
+                            }
+                        }
+                    });
         }
 
         person.getPerson().setForelderBarnRelasjon(
@@ -307,7 +306,7 @@ public class ArtifactUpdateService {
 
         var endretAnsvar = id > 1 && id < person.getPerson().getForeldreansvar().size() &&
                 (oppdatertAnsvar.getAnsvar() != person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() ||
-                !oppdatertAnsvar.getAnsvarlig().equals(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig()));
+                        !oppdatertAnsvar.getAnsvarlig().equals(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig()));
 
         if (endretAnsvar) {
             person.getPerson().getForeldreansvar().stream()
