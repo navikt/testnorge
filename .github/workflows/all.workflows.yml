@@ -13,6 +13,12 @@ on:
         options:
           - "apps"
           - "proxies"
+      cluster:
+        type: choice
+        description: "The cluster to deploy to. Only relevant if target is backend."
+        options:
+          - "dev-gcp"
+          - "dev-fss"
       name:
         type: string
         description: "The workflow name, e.g. dolly-backend. Used to resolve the working directory together with type, as <type>/<name>."
@@ -32,6 +38,7 @@ jobs:
     if: inputs.target == 'backend'
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
+      cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
