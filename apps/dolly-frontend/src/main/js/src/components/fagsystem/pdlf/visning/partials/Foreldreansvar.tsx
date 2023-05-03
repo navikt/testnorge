@@ -8,19 +8,8 @@ import { formatDate } from '@/utils/DataFormatter'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import styled from 'styled-components'
-import { PdlDataVisning } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataVisning'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-
-const StyledPdlData = styled.div`
-	margin-bottom: 10px;
-	display: flex;
-	flex-wrap: wrap;
-
-	p {
-		margin: 0;
-	}
-`
+import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 
 const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, relasjoner, idx }) => {
 	if (!foreldreansvarData) {
@@ -32,10 +21,12 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 			relasjon.relasjonType === 'FORELDREANSVAR_FORELDER' &&
 			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig
 	)
-	// TODO: Er det forskjellige for mor/far?
-	//TODO: Ta med redigerteRelatertePersoner når BE er fiksa
-	console.log('foreldreansvarData: ', foreldreansvarData) //TODO - SLETT MEG
-	console.log('redigertRelatertePersoner: ', redigertRelatertePersoner) //TODO - SLETT MEG
+
+	const ansvarligRedigert = redigertRelatertePersoner?.find(
+		(relasjon) =>
+			relasjon.relasjonType === 'FORELDREANSVAR_FORELDER' &&
+			relasjon.relatertPerson?.ident === foreldreansvarData.ansvarlig
+	)
 
 	return (
 		<>
@@ -51,35 +42,15 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 						value={formatDate(foreldreansvarData.gyldigTilOgMed)}
 					/>
 				</>
-				{!ansvarlig && !foreldreansvarData.ansvarligUtenIdentifikator && (
+				{!ansvarlig && !ansvarligRedigert && !foreldreansvarData.ansvarligUtenIdentifikator && (
 					<TitleValue title="Ident" value={foreldreansvarData.ansvarlig} />
 				)}
-				{ansvarlig && (
-					<div className="flexbox--full-width">
-						<h4 style={{ marginTop: '5px' }}>Ansvarlig</h4>
-						<div className="person-visning_content" key={idx} style={{ marginBottom: 0 }}>
-							<TitleValue title="Ident" value={ansvarlig.relatertPerson?.ident} visKopier />
-							<TitleValue title="Fornavn" value={ansvarlig.relatertPerson?.navn?.[0]?.fornavn} />
-							<TitleValue
-								title="Mellomnavn"
-								value={ansvarlig.relatertPerson?.navn?.[0]?.mellomnavn}
-							/>
-							<TitleValue
-								title="Etternavn"
-								value={ansvarlig.relatertPerson?.navn?.[0]?.etternavn}
-							/>
-							<TitleValue title="Kjønn" value={ansvarlig.relatertPerson?.kjoenn?.[0]?.kjoenn} />
-							<TitleValue
-								title="Fødselsdato"
-								value={formatDate(ansvarlig.relatertPerson?.foedsel?.[0]?.foedselsdato)}
-							/>
-							<TitleValue
-								title="Statsborgerskap"
-								value={ansvarlig.relatertPerson?.statsborgerskap?.[0]?.landkode}
-								kodeverk={AdresseKodeverk.StatsborgerskapLand}
-							/>
-						</div>
-					</div>
+				{(ansvarlig || ansvarligRedigert) && (
+					<RelatertPerson
+						data={ansvarligRedigert?.relatertPerson || ansvarlig?.relatertPerson}
+						tittel="Ansvarlig"
+						marginTop="10px"
+					/>
 				)}
 				{foreldreansvarData.ansvarligUtenIdentifikator && (
 					<div className="flexbox--full-width">
@@ -114,14 +85,6 @@ const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, rela
 					</div>
 				)}
 			</div>
-			{ansvarlig && (
-				<StyledPdlData>
-					<PdlDataVisning ident={foreldreansvarData.ansvarlig} />
-					<p>
-						<i>Hold pekeren over PDL for å se dataene som finnes på ansvarlig i PDL</i>
-					</p>
-				</StyledPdlData>
-			)}
 		</>
 	)
 }
@@ -176,14 +139,6 @@ export const ForeldreansvarEnkeltvisning = ({
 		: getEksisterendeNyPerson(relasjoner, foreldreansvarValues?.ansvarlig, [
 				'FORELDREANSVAR_FORELDER',
 		  ])
-
-	// if (eksisterendeNyPerson && initialValues?.forelderBarnRelasjon?.nyRelatertPerson) {
-	// 	initialValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson
-	// }
-	//
-	// if (eksisterendeNyPerson && redigertForelderBarnValues?.forelderBarnRelasjon?.nyRelatertPerson) {
-	// 	redigertForelderBarnValues.forelderBarnRelasjon.nyRelatertPerson = initialPdlPerson
-	// }
 
 	let personValuesMedRedigert = _.cloneDeep(personValues)
 	if (redigertForelderBarnRelasjonPdlf && personValuesMedRedigert) {

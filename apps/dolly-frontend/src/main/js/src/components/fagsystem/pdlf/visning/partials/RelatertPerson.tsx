@@ -18,9 +18,10 @@ const StyledPdlData = styled.div`
 type RelatertPersonData = {
 	data: PersonData
 	tittel: string
+	marginTop: string
 }
 
-export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
+export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPersonData) => {
 	if (!data) {
 		return null
 	}
@@ -37,7 +38,7 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 	return (
 		<>
 			<div className="person-visning_content">
-				<h4 style={{ width: '100%', marginTop: '0' }}>{tittel}</h4>
+				<h4 style={{ width: '100%', marginTop: marginTop }}>{tittel}</h4>
 				<TitleValue title="Ident" value={data.ident} visKopier />
 				<TitleValue title="Fornavn" value={data.navn?.[0].fornavn} />
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
