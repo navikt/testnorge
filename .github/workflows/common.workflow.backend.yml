@@ -80,8 +80,8 @@ jobs:
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        working-directory: ${{ inputs.working-directory }}
         with:
+          build-root-directory: ${{ inputs.working-directory }}
           arguments: build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
