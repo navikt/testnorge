@@ -114,6 +114,9 @@ public final class BestillingTpsMessagingStatusMapper {
             return decodeMsg(FEIL + message.replace(" FEIL", "")
                     .replace("_", " "));
         }
+        if (StringUtils.containsIgnoreCase(message, "Startet ")) {
+            return decodeMsg(message.replace("Startet ",""));
+        }
         return message;
     }
 

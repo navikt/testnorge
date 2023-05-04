@@ -4,7 +4,7 @@ App for å opprette organisasjoner i EREG som lytter fra en kafka kø.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-organisasjon-mottak-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-organisasjon-mottak-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

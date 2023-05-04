@@ -1,0 +1,141 @@
+on:
+  workflow_call:
+    inputs:
+      cluster:
+        type: string
+        description: "The cluster to deploy to, e.g. dev-fss."
+        required: false
+        default: "dev-gcp"
+      working-directory:
+        type: string
+        description: "The working directory for the job, e.g. apps/dolly-backend (without leading/trailing slash)."
+      image-suffix:
+        type: string
+        description: "The Docker image suffix used for this particular workflow, e.g. dolly-backend. Defaults to the workflow name."
+        required: false
+        default: ${{ github.workflow }}
+      deploy-tag:
+        type: string
+        description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend. Make sure it is not a substring of other deploy tags."
+        required: true
+      deploy-tag-test:
+        type: string
+        description: "The commit message tag that will trigger a deployment to the test environment on a commit to a non-master branch, e.g. #deploy-test-dolly-backend."
+        required: false
+      force-deploy-test:
+        type: boolean
+        description: "Used to force deployment to test. Make sure the working-directory contains a config.test.yml!"
+        required: false
+        default: false
+      force-deploy:
+        type: boolean
+        description: "Used to force deployment."
+        required: false
+        default: false
+    secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY:
+        required: true
+      NAIS_WORKLOAD_IDENTITY_PROVIDER:
+        required: true
+      NAV_TOKEN:
+        required: true
+      SONAR_TOKEN:
+        required: true
+
+env:
+  do-deploy-test: ${{ inputs.force-deploy-test || ( inputs.deploy-tag-test != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ) }}
+  do-deploy: ${{ inputs.force-deploy || ( inputs.deploy-tag != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) ) ) }}
+
+jobs:
+
+#  markdown:
+#    uses: ./.github/workflows/common.scan.markdown.yml
+#    with:
+#      working-directory: ${{ inputs.working-directory }}
+
+  sonar:
+    uses: ./.github/workflows/common.scan.sonar.yml
+    with:
+      working-directory: ${{ inputs.working-directory }}
+    secrets:
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  build:
+    if: github.actor != 'dependabot[bot]'
+    permissions:
+      contents: "read"
+      id-token: "write"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Cache"
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+            ${{ runner.os }}-gradle-
+            ${{ runner.os }}-
+      - name: "Java"
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 17
+      - name: "Compile"
+        env:
+          GITHUB_USERNAME: token
+          NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+        working-directory: ${{ inputs.working-directory }}
+        run: ./gradlew build --scan
+      - name: "Docker"
+        uses: nais/docker-build-push@v0
+        if: |
+          env.do-deploy-test == 'true' ||
+          env.do-deploy == 'true'
+        id: docker-build-push
+        with:
+          team: dolly
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+          dockerfile: ${{ inputs.working-directory }}/Dockerfile
+          docker_context: ${{ inputs.working-directory }}
+          image_suffix: ${{ inputs.image-suffix }}
+    outputs:
+      image: ${{ steps.docker-build-push.outputs.image }}
+      do-deploy-test: ${{ env.do-deploy-test }}
+      do-deploy: ${{ env.do-deploy }}
+
+  deploy-test:
+    needs: build
+    if: needs.build.outputs.do-deploy-test == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy (test)"
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          VAR: image=${{ needs.build.outputs.image }}
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.do-deploy == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy"
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          VAR: image=${{ needs.build.outputs.image }}

@@ -102,7 +102,12 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					ident={ident}
 					relasjoner={data?.relasjoner}
 				/>
-				<Fullmakt data={data?.person?.fullmakt} relasjoner={data?.relasjoner} />
+				<Fullmakt
+					data={data?.person?.fullmakt}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+					relasjoner={data?.relasjoner}
+				/>
 				<PdlSikkerhetstiltak data={data?.person?.sikkerhetstiltak} />
 				<TilrettelagtKommunikasjon data={data?.person?.tilrettelagtKommunikasjon} />
 				<TpsMBankkonto
@@ -150,6 +155,8 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo
 					data={data?.person?.kontaktinformasjonForDoedsbo}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
 					relasjoner={data?.relasjoner}
 				/>
 			</div>

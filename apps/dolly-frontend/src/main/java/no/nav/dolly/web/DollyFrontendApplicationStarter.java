@@ -2,7 +2,34 @@ package no.nav.dolly.web;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.web.credentials.*;
+import no.nav.dolly.web.credentials.DollyBackendProperties;
+import no.nav.dolly.web.credentials.KontoregisterProxyProperties;
+import no.nav.dolly.web.credentials.PersonSearchServiceProperties;
+import no.nav.dolly.web.credentials.SkjermingsregisterProxyProperties;
+import no.nav.dolly.web.credentials.TestnavAaregProxyProperties;
+import no.nav.dolly.web.credentials.TestnavAdresseServiceProperties;
+import no.nav.dolly.web.credentials.TestnavArbeidsplassenCvProxyProperties;
+import no.nav.dolly.web.credentials.TestnavArenaForvalterenProxyProperties;
+import no.nav.dolly.web.credentials.TestnavBrregstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavDokarkivProxyProperties;
+import no.nav.dolly.web.credentials.TestnavHistarkProxyProperties;
+import no.nav.dolly.web.credentials.TestnavInntektstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavInstProxyProperties;
+import no.nav.dolly.web.credentials.TestnavJoarkDokumentServiceProperties;
+import no.nav.dolly.web.credentials.TestnavKrrstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavMiljoerServiceProperties;
+import no.nav.dolly.web.credentials.TestnavNorg2ProxyProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonFasteDataServiceProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonForvalterProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonServiceProperties;
+import no.nav.dolly.web.credentials.TestnavOrganisasjonTilgangServiceProperties;
+import no.nav.dolly.web.credentials.TestnavPdlForvalterProperties;
+import no.nav.dolly.web.credentials.TestnavPensjonTestdataFacadeProxyProperties;
+import no.nav.dolly.web.credentials.TestnavPersonOrganisasjonTilgangServiceProperties;
+import no.nav.dolly.web.credentials.TestnavSigrunstubProxyProperties;
+import no.nav.dolly.web.credentials.TestnavVarslingerServiceProperties;
+import no.nav.dolly.web.credentials.TestnorgeProfilApiProperties;
+import no.nav.dolly.web.credentials.TpsMessagingServiceProperties;
 import no.nav.dolly.web.service.AccessService;
 import no.nav.testnav.libs.reactivecore.config.CoreConfig;
 import no.nav.testnav.libs.reactivefrontend.config.FrontendConfig;
@@ -67,6 +94,7 @@ public class DollyFrontendApplicationStarter {
     private final KontoregisterProxyProperties kontoregisterProxyProperties;
     private final SkjermingsregisterProxyProperties skjermingsregisterProxyProperties;
     private final TestnavDokarkivProxyProperties testnavDokarkivProxyProperties;
+    private final TestnavHistarkProxyProperties testnavHistarkProxyProperties;
     private final TestnavArbeidsplassenCvProxyProperties testnavArbeidsplassenCvProxyProperties;
 
     @Bean
@@ -94,6 +122,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
                 .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
                 .route(createRoute(testnavInstProxyProperties, "testnav-inst-proxy"))
+                .route(createRoute(testnavHistarkProxyProperties, "testnav-histark-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))

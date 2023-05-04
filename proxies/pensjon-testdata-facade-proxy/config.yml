@@ -49,6 +49,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: popp-testdata.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -72,5 +75,4 @@ spec:
   envFrom:
     - secret: azure-testnav-pensjon-testdata-facade-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-pensjon-testdata-facade-proxy.dev.intern.nav.no"
     - "https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io"

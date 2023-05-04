@@ -1,6 +1,6 @@
 consumers:
   inntektsmelding-generator-service:
-    url: https://testnav-inntektsmelding-generator-service.dev.intern.nav.no
+    url: https://testnav-inntektsmelding-generator-service.intern.dev.nav.no
 
 spring:
   h2:

@@ -28,8 +28,8 @@ consumers:
   endringsmelding-service:
     cluster: dev-gcp
     namespace: dolly
-    name: endringsmelding-service
-    url: http://endringsmelding-service.dolly.svc.cluster.local
+    name: testnav-endringsmelding-service
+    url: http://testnav-endringsmelding-service.dolly.svc.cluster.local
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly

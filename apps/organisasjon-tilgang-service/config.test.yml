@@ -1,0 +1,80 @@
+﻿apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: testnav-organisasjon-tilgang-service
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  tokenx:
+    enabled: true
+  image: {{ image }}
+  port: 8080
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  maskinporten:
+    enabled: true
+    scopes:
+      consumes:
+        - name: "altinn:serviceowner"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: dolly-frontend-dev
+          cluster: dev-gcp
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: testnav-organisasjon-tilgang-frontend
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
+    outbound:
+      external:
+        - host: tt02.altinn.no
+  liveness:
+    path: /internal/isAlive
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  readiness:
+    path: /internal/isReady
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 1
+    max: 1
+  envFrom:
+    - secret: altinn-dev
+    - secret: google-sql-testnav-organisasjon-tilgang-service
+  resources:
+    requests:
+      cpu: 200m
+      memory: 512Mi
+    limits:
+      cpu: 500m
+      memory: 2048Mi
+  ingresses:
+    - "https://testnav-organisasjon-tilgang-service.intern.dev.nav.no"
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: dev
+    - name: ACCEPTED_AUDIENCE
+      value: dev-gcp:dolly:testnav-organisasjon-tilgang-service
+    - name: TOKENDINGS_URL
+      value: https://tokendings.dev-gcp.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_14
+        name: testnav-organisasjon-tilgang
+        databases:
+          - name: testnav-organisasjon-tilgang
+        autoBackupTime: "02:00"

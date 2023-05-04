@@ -4,7 +4,7 @@ App for å hente ut joark dokumenter.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-joark-dokument-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-joark-dokument-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 

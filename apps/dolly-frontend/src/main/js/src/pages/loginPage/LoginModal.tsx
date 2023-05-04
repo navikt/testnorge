@@ -3,6 +3,7 @@ import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { top } from '@popperjs/core'
 import React from 'react'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 const brukerveiledning = (
 	<a
@@ -37,22 +38,23 @@ const getAdvarsel: () => string = () => {
 	return null
 }
 
-export const redirectOnClick = (path: string) => (event: React.MouseEvent<HTMLButtonElement>) => {
-	event.preventDefault()
-	redirectTo(path)
-}
+export const redirectOnClick =
+	(path: string, toIdporten: boolean) => (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault()
+		redirectTo(path, toIdporten)
+	}
 
-const redirectTo = (path: string) => {
-	const toIdporten = path.includes('idporten') && !window.location.hostname?.includes('localhost')
+const redirectTo = (path: string, toIdporten: boolean) => {
+	const navigateToIdporten = toIdporten && !window.location.hostname?.includes('localhost')
 	const isIdporten =
 		window.location.hostname?.includes('idporten') &&
 		!window.location.hostname?.includes('localhost')
 
-	if (toIdporten && !isIdporten) {
+	if (navigateToIdporten && !isIdporten) {
 		location.replace('https://dolly-idporten.ekstern.dev.nav.no/login')
 		return
 	}
-	if (!toIdporten && isIdporten) {
+	if (!navigateToIdporten && isIdporten) {
 		location.replace('https://dolly.ekstern.dev.nav.no/login')
 		return
 	}
@@ -80,20 +82,20 @@ export default () => {
 					</Alert>
 				)}
 				<NavButton
+					data-cy={CypressSelector.BUTTON_LOGIN_NAV}
 					className="login-modal_button-nav"
 					variant={'primary'}
-					onClick={redirectOnClick(runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login')}
+					onClick={redirectOnClick(
+						runningLocal ? '/oauth2/authorization/aad' : '/oauth2/login',
+						false
+					)}
 				>
 					Logg inn med NAV epost
 				</NavButton>
 				<NavButton
 					className="login-modal_button-bankid"
 					variant={'primary'}
-					onClick={redirectOnClick(
-						runningLocal
-							? '/oauth2/authorization/idporten'
-							: 'https://dolly-idporten.ekstern.dev.nav.no/oauth2/login'
-					)}
+					onClick={redirectOnClick('/oauth2/authorization/idporten', true)}
 				>
 					Logg inn med BankId
 				</NavButton>

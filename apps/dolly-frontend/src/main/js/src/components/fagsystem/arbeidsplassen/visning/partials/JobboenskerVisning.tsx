@@ -1,7 +1,7 @@
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString, showLabel } from '@/utils/DataFormatter'
 
 export const JobboenskerVisning = ({ data }) => {
 	if (
@@ -24,34 +24,31 @@ export const JobboenskerVisning = ({ data }) => {
 					<div className="flexbox--flex-wrap">
 						<TitleValue
 							title="Jobber og yrker"
-							value={Formatters.arrayToString(data.occupations?.map((jobb) => jobb?.title))}
+							value={arrayToString(data.occupations?.map((jobb) => jobb?.title))}
 						/>
 						<TitleValue
 							title="Områder"
-							value={Formatters.arrayToString(data.locations?.map((omraade) => omraade?.location))}
+							value={arrayToString(data.locations?.map((omraade) => omraade?.location))}
 						/>
 						<TitleValue
 							title="Arbeidsmengde"
-							value={Formatters.arrayToString(
-								data.workLoadTypes?.map((type) => Formatters.showLabel('arbeidsmengde', type))
+							value={arrayToString(
+								data.workLoadTypes?.map((type) => showLabel('arbeidsmengde', type))
 							)}
 						/>
 						<TitleValue
 							title="Arbeidstider"
-							value={Formatters.arrayToString(
-								data.workScheduleTypes?.map((type) => Formatters.showLabel('arbeidstid', type))
+							value={arrayToString(
+								data.workScheduleTypes?.map((type) => showLabel('arbeidstid', type))
 							)}
 						/>
 						<TitleValue
 							title="Ansettelsestyper"
-							value={Formatters.arrayToString(
-								data.occupationTypes?.map((type) => Formatters.showLabel('ansettelsestype', type))
+							value={arrayToString(
+								data.occupationTypes?.map((type) => showLabel('ansettelsestype', type))
 							)}
 						/>
-						<TitleValue
-							title="Oppstart"
-							value={Formatters.showLabel('oppstart', data.startOption)}
-						/>
+						<TitleValue title="Oppstart" value={showLabel('oppstart', data.startOption)} />
 					</div>
 				</div>
 			</ErrorBoundary>

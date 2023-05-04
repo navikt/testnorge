@@ -10,6 +10,7 @@ import useBoolean from '@/utils/hooks/useBoolean'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
 import { Bestillingsstatus } from '@/utils/hooks/useOrganisasjoner'
 import { BestillingStatus } from '@/components/bestilling/statusListe/BestillingProgresjon/BestillingStatus'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 type ResultatProps = {
 	bestilling: Bestillingsstatus
@@ -26,6 +27,7 @@ export default function BestillingResultat({
 	const [isGjenopprettModalOpen, openGjenopprettModal, closeGjenoprettModal] = useBoolean(false)
 
 	const antallOpprettet = antallIdenterOpprettet(bestilling)
+	const harIdenterOpprettet = bestilling?.antallIdenterOpprettet > 0 || bestilling?.antallLevert > 0
 	const mutate = useMatchMutate()
 
 	return (
@@ -36,6 +38,7 @@ export default function BestillingResultat({
 					<h3>Bestillingsstatus</h3>
 					<div className="status-header_button-wrap">
 						<Button
+							data-cy={CypressSelector.BUTTON_LUKK_BESTILLING_RESULTAT}
 							kind="remove-circle"
 							onClick={() => {
 								lukkBestilling(bestilling.id)
@@ -54,9 +57,11 @@ export default function BestillingResultat({
 				/>
 				<div className="flexbox--all-center">
 					<BestillingSammendragModal bestilling={bestilling} />
-					<Button onClick={openGjenopprettModal} kind="synchronize">
-						GJENOPPRETT
-					</Button>
+					{harIdenterOpprettet && (
+						<Button onClick={openGjenopprettModal} kind="synchronize">
+							GJENOPPRETT
+						</Button>
+					)}
 				</div>
 				{isGjenopprettModalOpen && (
 					<GjenopprettConnector

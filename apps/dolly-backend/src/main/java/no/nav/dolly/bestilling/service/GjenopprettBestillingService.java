@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
 import no.nav.dolly.bestilling.pdldata.PdlDataConsumer;
+import no.nav.dolly.bestilling.pdldata.dto.PdlResponse;
 import no.nav.dolly.bestilling.personservice.PersonServiceClient;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingProgress;
@@ -75,7 +76,9 @@ public class GjenopprettBestillingService extends DollyBestillingService {
 
             Flux.fromIterable(gamleProgresser)
                     .flatMap(gmlProgress -> opprettProgress(bestilling, gmlProgress.getMaster(), gmlProgress.getIdent())
-                            .flatMap(progress -> sendOrdrePerson(progress, gmlProgress.getIdent())
+                            .flatMap(progress -> sendOrdrePerson(progress, PdlResponse.builder()
+                                    .ident(gmlProgress.getIdent())
+                                    .build())
                                     .filter(Objects::nonNull)
                                     .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())
                                             .doOnNext(dollyPerson -> counterCustomRegistry.invoke(bestKriterier))
@@ -87,12 +90,12 @@ public class GjenopprettBestillingService extends DollyBestillingService {
                                                             .map(ClientFuture::get)
                                                             .filter(BestillingProgress::isPdlSync)
                                                             .flatMap(pdlSync -> Flux.concat(
-                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase2Klienter(),
-                                                                                    progress, false),
-                                                                            gjenopprettKlienter(dollyPerson, bestKriterier,
-                                                                                    fase3Klienter(),
-                                                                                    progress, false)))))
+                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                            fase2Klienter(),
+                                                                            progress, false),
+                                                                    gjenopprettKlienter(dollyPerson, bestKriterier,
+                                                                            fase3Klienter(),
+                                                                            progress, false)))))
                                             .onErrorResume(throwable -> {
                                                 var error = errorStatusDecoder.getErrorText(
                                                         WebClientFilter.getStatus(throwable), WebClientFilter.getMessage(throwable));

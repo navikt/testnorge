@@ -47,7 +47,8 @@ public class InntektstubClient implements ClientRegister {
                     .collectList()
                     .flatMap(eksisterende -> Flux.fromIterable(inntektsinformasjonWrapper.getInntektsinformasjon())
                             .filter(nyinntekt -> eksisterende.stream().noneMatch(entry ->
-                                    entry.getAarMaaned().equals(nyinntekt.getAarMaaned())))
+                                    entry.getAarMaaned().equals(nyinntekt.getAarMaaned()) &&
+                                    entry.getVirksomhet().equals(nyinntekt.getVirksomhet())))
                             .collectList()
                             .flatMapMany(inntektstubConsumer::postInntekter)
                             .collectList()

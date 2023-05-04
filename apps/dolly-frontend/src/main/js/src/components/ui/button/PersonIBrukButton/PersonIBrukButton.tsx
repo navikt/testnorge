@@ -12,7 +12,7 @@ const StyledSwitch = styled(DollyCheckbox)`
 	}
 `
 
-export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
+export const PersonIBrukButton = ({ ident, updateIdentIbruk, ...props }) => {
 	const [brukt, setBrukt] = useState(ident.ibruk)
 	const handleOnChange = (event) => {
 		const erIBruk = event.target.checked
@@ -27,6 +27,7 @@ export const PersonIBrukButton = ({ ident, updateIdentIbruk }) => {
 			onChange={handleOnChange}
 			onClick={(e) => e.stopPropagation()}
 			isSwitch
+			{...props}
 		/>
 	)
 }

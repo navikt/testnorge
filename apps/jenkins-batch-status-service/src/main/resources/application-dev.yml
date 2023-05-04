@@ -1,9 +1,7 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
 
 consumers:
   organisasjon-bestilling-service:
-    url: https://organisasjon-bestilling-service.dev.intern.nav.no
+    url: https://organisasjon-bestilling-service.intern.dev.nav.no
     name: organisasjon-bestilling-service
     cluster: dev-gcp
     namespace: dolly

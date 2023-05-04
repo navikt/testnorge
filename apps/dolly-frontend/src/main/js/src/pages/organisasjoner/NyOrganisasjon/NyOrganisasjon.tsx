@@ -14,6 +14,7 @@ import {
 	getMalOptions,
 	NyBestillingProps,
 } from '@/components/bestillingsveileder/startModal/NyIdent/NyIdent'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const initialValues = {
 	mal: null as unknown as string,
@@ -94,6 +95,7 @@ export const NyOrganisasjon = ({ onAvbryt, onSubmit, brukernavn }: NyBestillingP
 							</div>
 						</div>
 						<ModalActionKnapper
+							data-cy={CypressSelector.BUTTON_START_BESTILLING}
 							submitknapp="Start bestilling"
 							disabled={!formikBag.isValid || formikBag.isSubmitting}
 							onSubmit={formikBag.handleSubmit}

@@ -56,4 +56,4 @@ spec:
   envFrom:
     - secret: testnav-person-export-api-slack-secret
   ingresses:
-    - "https://testnav-person-export-api.dev.intern.nav.no"
+    - "https://testnav-person-export-api.intern.dev.nav.no"

@@ -82,27 +82,26 @@ consumers:
   testnav-helsepersonell-service:
     name: testnav-helsepersonell-service
     namespace: dolly
-    url: https://testnav-helsepersonell-service.dev.intern.nav.no
-    cluster: dev-gcp
+    url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
     namespace: dolly
-    url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-inntektsmelding-service:
     name: testnav-inntektsmelding-service
     namespace: dolly
-    url: https://testnav-inntektsmelding-service.dev.intern.nav.no
+    url: http://testnav-inntektsmelding-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-tps-messaging-service:
     name: testnav-tps-messaging-service
     namespace: dolly
-    url: https://testnav-tps-messaging-service.dev.intern.nav.no
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-miljoer-service:
     name: testnav-miljoer-service
     namespace: dolly
-    url: https://testnav-miljoer-service.dev.intern.nav.no
+    url: http://testnav-miljoer-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-norg2-proxy:
     name: testnav-norg2-proxy
@@ -112,17 +111,17 @@ consumers:
   testnav-generer-navn-service:
     name: generer-navn-service
     namespace: dolly
-    url: https://generer-navn-service.dev.intern.nav.no
+    url: http://generer-navn-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-profil-api:
     name: testnorge-profil-api
     namespace: dolly
-    url: https://testnorge-profil-api.dev.intern.nav.no
+    url: http://testnorge-profil-api.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-person-service:
     name: testnav-person-service
     namespace: dolly
-    url: https://testnav-person-service.dev.intern.nav.no
+    url:  http://testnav-person-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-kodeverk-proxy:
     name: testnav-kodeverk-proxy
@@ -189,20 +188,25 @@ consumers:
     namespace: dolly
     url: https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-histark-proxy:
+    name: testnav-histark-proxy
+    namespace: dolly
+    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-pdl-forvalter:
     name: testnav-pdl-forvalter
     namespace: dolly
-    url: https://testnav-pdl-forvalter.dev.intern.nav.no
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-arbeidsforhold-service:
     name: testnav-arbeidsforhold-service
     namespace: dolly
-    url: https://testnav-arbeidsforhold-service.dev.intern.nav.no
+    url: http://testnav-arbeidsforhold-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-amelding-service:
     name: testnav-amelding-service
     namespace: dolly
-    url: https://testnav-amelding-service.dev.intern.nav.no
+    url: http://testnav-amelding-service.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-sykemelding-api-proxy:
     name: testnav-sykemelding-api-proxy
@@ -212,12 +216,12 @@ consumers:
   testnav-synt-sykemelding-api:
     name: testnav-synt-sykemelding-api
     namespace: dolly
-    url: https://testnav-synt-sykemelding-api.dev.intern.nav.no
+    url: http://testnav-synt-sykemelding-api.dolly.svc.cluster.local
     cluster: dev-gcp
   testnav-organisasjon-service:
     name: testnav-organisasjon-service
     namespace: dolly
-    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
     cluster: dev-gcp
     threads: 5
   testnav-udistub-proxy:
@@ -235,3 +239,4 @@ consumers:
     namespace: dolly
     url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+    

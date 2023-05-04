@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 import * as _ from 'lodash-es'
 import { yupToFormErrors } from 'formik'
-import Formatters from '@/utils/DataFormatter'
+import { parseDate } from '@/utils/DataFormatter'
 import { isDate } from 'date-fns'
 
 /*
@@ -30,11 +30,13 @@ export const messages = {
 }
 
 // Dato som kommer fra Maler er av typen String
-export const requiredDate = Yup.mixed().test('reqDate', messages.required, (value) => {
-	let _value = value
-	if (_.isString(value)) _value = Formatters.parseDate(_value)
-	return isDate(_value)
-})
+export const requiredDate = Yup.mixed()
+	.nullable()
+	.test('reqDate', messages.required, (value) => {
+		let _value = value
+		if (_.isString(value)) _value = parseDate(_value)
+		return isDate(_value)
+	})
 export const requiredString = Yup.string().required(messages.required)
 export const requiredBoolean = Yup.boolean().required(messages.required)
 export const requiredNumber = Yup.number().required(messages.required)

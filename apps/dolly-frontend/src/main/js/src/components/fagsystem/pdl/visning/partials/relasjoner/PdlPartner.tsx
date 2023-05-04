@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { getSortedSivilstand } from '@/components/fagsystem/pdl/visning/partials/utils'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { ArrayHistorikk } from '@/components/ui/historikk/ArrayHistorikk'
@@ -28,7 +28,7 @@ const Visning = ({ data, idx }: VisningProps) => {
 			{harPartner && (
 				<TitleValue title="Partnerident" value={data.relatertVedSivilstand} visKopier />
 			)}
-			<TitleValue title="Sivilstand fra dato" value={Formatters.formatDate(data.gyldigFraOgMed)} />
+			<TitleValue title="Sivilstand fra dato" value={formatDate(data.gyldigFraOgMed)} />
 		</div>
 	)
 }

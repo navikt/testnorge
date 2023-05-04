@@ -1,4 +1,4 @@
-import Formatters from '@/utils/DataFormatter'
+import { arrayToString } from '@/utils/DataFormatter'
 
 const uri = `/dolly-backend/api/v1`
 
@@ -122,10 +122,7 @@ export default class DollyEndpoints {
 	}
 
 	static personoppslagMange(identer) {
-		return `${personoppslagBase}/identer?identer=${Formatters.arrayToString(identer).replaceAll(
-			' ',
-			''
-		)}`
+		return `${personoppslagBase}/identer?identer=${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
 	static gruppeExcelFil(gruppeId) {
@@ -196,10 +193,7 @@ export default class DollyEndpoints {
 	}
 
 	static flyttPersonerTilGruppe(gruppeId, identer) {
-		return `${groupBase}/${gruppeId}/identer/${Formatters.arrayToString(identer).replaceAll(
-			' ',
-			''
-		)}`
+		return `${groupBase}/${gruppeId}/identer/${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
 	static malBestilling(malId) {

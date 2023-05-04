@@ -1,0 +1,77 @@
+apiVersion: nais.io/v1alpha1
+kind: Application
+metadata:
+  name: testnav-pdl-forvalter
+  namespace: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "900"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "900"
+  labels:
+    team: dolly
+spec:
+  env:
+    - name: SPRING_PROFILES_ACTIVE
+      value: prod
+  image: {{image}}
+  webproxy: true
+  tokenx:
+    enabled: true
+  azure:
+    application:
+      allowAllUsers: true
+      enabled: true
+      tenant: nav.no
+  ingresses:
+    - "https://testnav-pdl-forvalter.intern.dev.nav.no"
+  liveness:
+    path: /internal/isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /internal/isReady
+    initialDelay: 30
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 2
+    max: 10
+  resources:
+    requests:
+      cpu: 3000m
+      memory: 500Mi
+    limits:
+      cpu: 5000m
+      memory: 2000Mi
+  accessPolicy:
+    inbound:
+      rules:
+        - application: testnav-oversikt-frontend
+          cluster: dev-gcp
+        - application: dolly-backend
+          cluster: dev-gcp
+        - application: dolly-frontend
+          cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: generer-navn-service
+          cluster: dev-gcp
+        - application: testnav-adresse-service
+          cluster: dev-gcp
+        - application: testnav-organisasjon-forvalter
+          cluster: dev-gcp
+        - application: testnav-geografiske-kodeverk-service
+          cluster: dev-gcp
+        - application: testnav-ident-pool
+          cluster: dev-gcp
+      external:
+        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+  gcp:
+    sqlInstances:
+      - type: POSTGRES_12
+        databases:
+          - name: testnav-pdl-forvalter-db
+        tier: db-custom-2-3840

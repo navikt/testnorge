@@ -1,6 +1,6 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { addDays, isBefore } from 'date-fns'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 
 type SkjermingProps = {
@@ -21,9 +21,9 @@ export const SkjermingVisning = ({ data }: SkjermingProps) => {
 						: 'JA'
 				}
 			/>
-			<TitleValue title="Skjerming fra" value={Formatters.formatDate(data.skjermetFra)} />
+			<TitleValue title="Skjerming fra" value={formatDate(data.skjermetFra)} />
 			{data?.skjermetTil && (
-				<TitleValue title="Skjerming til" value={Formatters.formatDate(data.skjermetTil)} />
+				<TitleValue title="Skjerming til" value={formatDate(data.skjermetTil)} />
 			)}
 		</>
 	)

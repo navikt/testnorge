@@ -6,6 +6,7 @@ import { PdlVisning } from '@/components/fagsystem/pdl/visning/PdlVisning'
 import { Ident } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { usePdlMiljoeinfo } from '@/utils/hooks/usePdlPerson'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 type PdlDataVisningProps = {
 	ident: Ident
@@ -26,12 +27,12 @@ export const ApiFeilmelding = ({ feil }) => {
 	)
 }
 
-const PdlPersonInfo = ({ ident, id, hentQ1 = false }) => {
+const PdlPersonInfo = ({ ident, hentQ1 = false }) => {
 	const { pdlData, loading, error } = usePdlMiljoeinfo(ident.ident || ident, hentQ1)
 	if (error) {
 		return <ApiFeilmelding feil={error} />
 	}
-	return <PdlVisning pdlData={pdlData} loading={loading} miljoeVisning key={id} />
+	return <PdlVisning pdlData={pdlData} loading={loading} miljoeVisning />
 }
 
 export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningProps) => {
@@ -42,7 +43,8 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 	return (
 		<div className="flexbox--flex-wrap">
 			<DollyTooltip
-				overlay={<PdlPersonInfo ident={ident} id={'pdl'} hentQ1={false} />}
+				dataCy={CypressSelector.HOVER_MILJOE}
+				overlay={<PdlPersonInfo ident={ident} />}
 				align={{
 					offset: [0, -10],
 				}}
@@ -54,7 +56,8 @@ export const PdlDataVisning = ({ ident, bankIdBruker, miljoe }: PdlDataVisningPr
 			</DollyTooltip>
 			{(!bankIdBruker || miljoe === 'q1') && (
 				<DollyTooltip
-					overlay={<PdlPersonInfo ident={ident} id={'pdlq1'} hentQ1={true} />}
+					dataCy={CypressSelector.HOVER_MILJOE}
+					overlay={<PdlPersonInfo ident={ident} hentQ1={true} />}
 					align={{
 						offset: [0, -10],
 					}}

@@ -38,6 +38,9 @@ const journalpostUrl = (transaksjonsid, miljoer) =>
 		}
 	})
 
+const histarkUrl = (transaksjonsid: string) =>
+	transaksjonsid ? `/testnav-histark-proxy/api/saksmapper/${transaksjonsid}` : null
+
 const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
 const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
@@ -128,6 +131,26 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	return {
 		dokarkivData: data?.filter((journalpost) => journalpost.data?.journalpostId !== null),
 		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useHistarkData = (ident, harHistarkbestilling) => {
+	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
+
+	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
+
+	const { data, isLoading, error } = useSWR<any, Error>(histarkUrl(histarkId), fetcher)
+
+	if (!harHistarkbestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	return {
+		histarkData: data,
+		loading: isLoading,
 		error: error,
 	}
 }

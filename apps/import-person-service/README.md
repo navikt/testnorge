@@ -4,7 +4,7 @@ Service for å opprette liste med identer i pdl forvalter.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-import-person-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-import-person-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

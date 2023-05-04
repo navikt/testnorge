@@ -9,6 +9,8 @@ spec:
   image: {{image}}
   port: 8080
   webproxy: true
+  tokenx:
+    enabled: true
   tracing:
     enabled: true
   accessPolicy:
@@ -51,4 +53,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-batch-bestilling-service.dev.intern.nav.no"
+    - "https://testnav-batch-bestilling-service.intern.dev.nav.no"

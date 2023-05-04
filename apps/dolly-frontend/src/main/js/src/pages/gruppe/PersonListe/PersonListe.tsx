@@ -18,6 +18,7 @@ import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -118,7 +119,9 @@ export default function PersonListe({
 			width: '10',
 			dataField: 'status',
 
-			formatter: (cell) => <Icon kind={ikonTypeMap[cell]} title={cell} />,
+			formatter: (cell) => (
+				<Icon data-cy={CypressSelector.BUTTON_OPEN_IDENT} kind={ikonTypeMap[cell]} title={cell} />
+			),
 		},
 		{
 			text: 'Kilde',
@@ -134,7 +137,12 @@ export default function PersonListe({
 			dataField: 'ibruk',
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
-			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
+			formatter: (_cell, row) => (
+				<PersonIBrukButtonConnector
+					data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
+					ident={row.ident}
+				/>
+			),
 		},
 		{
 			text: '',

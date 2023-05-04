@@ -16,7 +16,11 @@ const GruppeBreadcrumb = (props) => <span>Gruppe #{props.match?.params?.gruppeId
 
 const allRoutes = [
 	{ path: '/', breadcrumb: 'Hjem', element: () => <Navigate to="/gruppe" replace /> },
-	{ path: '/gruppe', breadcrumb: 'Personer', element: () => <GruppeOversikt /> },
+	{
+		path: '/gruppe',
+		breadcrumb: 'Personer',
+		element: () => <GruppeOversikt />,
+	},
 	{ path: '/gruppe/:gruppeId', breadcrumb: GruppeBreadcrumb, element: () => <GruppeConnector /> },
 	{
 		path: '/gruppe/:gruppeId/bestilling/:personId',

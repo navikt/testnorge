@@ -79,7 +79,7 @@ public class OpprettPersonerFraIdenterMedKriterierService extends DollyBestillin
                     .flatMap(availIdent -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier,
                                     availIdent, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, PDLF, availIdent)
-                                    .flatMap(progress -> opprettPerson(originator)
+                                    .flatMap(progress -> opprettPerson(originator, progress)
                                             .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse))
                                             .filter(StringUtils::isNotBlank)
                                             .flatMap(ident -> opprettDollyPerson(ident, progress, bestilling.getBruker())

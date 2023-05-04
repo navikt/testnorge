@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive",
-                "https://sigrun-skd-stub.dev.adeo.no/internal/isAlive", // samme url brukes for begge
+                "http://sigrun-skd-stub.team-inntekt.svc.nais.local/internal/isAlive",
+                "http://sigrun-skd-stub.team-inntekt.svc.nais.local/internal/isAlive", // samme url brukes for begge
                 statusWebClient);
         pensjonStatus.put("team", TEAM_INNTEKT);
 

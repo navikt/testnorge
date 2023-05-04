@@ -9,7 +9,7 @@ import {
   SuccessAlertstripe,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import EndringsmeldingService from '@/service/EndringsmeldingService';
+import { fetchMiljoer } from '@/service/EndringsmeldingService';
 import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
 
@@ -50,7 +50,7 @@ export default <T extends {}>({
   }
 
   const onSearch = (value: string) =>
-    EndringsmeldingService.fetchMiljoer(value)
+    fetchMiljoer(value)
       .then((response) => {
         setMiljoer(response);
         dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });

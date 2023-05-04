@@ -12,6 +12,7 @@ import { TpVisning } from '@/components/fagsystem/tjenestepensjon/visning/TpVisn
 import { BrregVisning } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { TpsfVisning } from '@/components/fagsystem/tpsf/visning/Visning'
 import { DokarkivVisning } from '@/components/fagsystem/dokarkiv/visning'
+import { HistarkVisning } from '@/components/fagsystem/histark/visning'
 import { SykemeldingVisning } from '@/components/fagsystem/sykdom/visning/Visning'
 
 export {
@@ -29,5 +30,6 @@ export {
 	PensjonVisning,
 	TpVisning,
 	DokarkivVisning,
+	HistarkVisning,
 	SykemeldingVisning,
 }

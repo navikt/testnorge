@@ -54,4 +54,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-jenkins-batch-status-service.dev.intern.nav.no"
+    - "https://testnav-jenkins-batch-status-service.intern.dev.nav.no"

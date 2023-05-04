@@ -7,6 +7,8 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullPersonDTO;
 import org.springframework.stereotype.Component;
 
+import static java.util.Objects.nonNull;
+
 @Component
 public class PersonMappingStrategy implements MappingStrategy {
 
@@ -19,7 +21,8 @@ public class PersonMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(DbRelasjon kilde, FullPersonDTO.RelasjonDTO destinasjon, MappingContext context) {
 
-                        destinasjon.setRelatertPerson(kilde.getRelatertPerson().getPerson());
+                        destinasjon.setRelatertPerson(nonNull(kilde.getRelatertPerson()) ?
+                                kilde.getRelatertPerson().getPerson() : null);
                     }
                 })
                 .byDefault()

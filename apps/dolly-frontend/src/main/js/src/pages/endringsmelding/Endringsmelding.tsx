@@ -21,7 +21,7 @@ export default () => {
 					<LinkPanel
 						className={'linkPanel'}
 						target="_blank"
-						href="https://endringsmelding.dev.intern.nav.no"
+						href="https://testnav-endringsmelding.intern.dev.nav.no"
 					>
 						<LinkPanel.Title>Endringsmelding</LinkPanel.Title>
 					</LinkPanel>

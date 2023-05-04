@@ -40,13 +40,13 @@ public class WebClientConfig {
                             new ReactorClientHttpConnector(
                                     HttpClient
                                             .create()
-                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 30000)
+                                            .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 60000)
                                             .option(ChannelOption.SO_KEEPALIVE, true)
                                             .option(EpollChannelOption.TCP_KEEPIDLE, 300)
                                             .option(EpollChannelOption.TCP_KEEPINTVL, 60)
                                             .option(EpollChannelOption.TCP_KEEPCNT, 8)
-                                            .responseTimeout(Duration.ofSeconds(30))
-                                            .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(30)))));
+                                            .responseTimeout(Duration.ofSeconds(60))
+                                            .resolver(spec -> spec.queryTimeout(Duration.ofSeconds(60)))));
 
         } catch (NoSuchBeanDefinitionException e) {
 

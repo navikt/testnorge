@@ -1,7 +1,7 @@
 import * as _ from 'lodash-es'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import {
 	EndringIRefusjon,
 	Refusjon,
@@ -21,13 +21,13 @@ export default ({ data }: RefusjonVisning) => {
 			<h4>Refusjon</h4>
 			<div className="person-visning_content">
 				<TitleValue title="Refusjonsbeløp per måned" value={data.refusjonsbeloepPrMnd} />
-				<TitleValue title="Opphørsdato" value={Formatters.formatDate(data.refusjonsopphoersdato)} />
+				<TitleValue title="Opphørsdato" value={formatDate(data.refusjonsopphoersdato)} />
 				{data.endringIRefusjonListe && (
 					<ErrorBoundary>
 						<DollyFieldArray data={data.endringIRefusjonListe} header="Endring i refusjon">
 							{(id: EndringIRefusjon) => (
 								<div className="person-visning_content">
-									<TitleValue title="Ednringsdato" value={Formatters.formatDate(id.endringsdato)} />
+									<TitleValue title="Ednringsdato" value={formatDate(id.endringsdato)} />
 									<TitleValue title="Refusjonsbeløp per måned" value={id.refusjonsbeloepPrMnd} />
 								</div>
 							)}

@@ -1,7 +1,7 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, showLabel } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { Alert } from '@navikt/ds-react'
@@ -72,16 +72,10 @@ export const InstVisning = ({ data, loading, bestillingIdListe, tilgjengeligMilj
 							<div className="person-visning_content" key={idx}>
 								<TitleValue
 									title="Institusjonstype"
-									value={Formatters.showLabel('institusjonstype', opphold.institusjonstype)}
+									value={showLabel('institusjonstype', opphold.institusjonstype)}
 								/>
-								<TitleValue
-									title="Startdato"
-									value={Formatters.formatStringDates(opphold.startdato)}
-								/>
-								<TitleValue
-									title="Sluttdato"
-									value={Formatters.formatStringDates(opphold.sluttdato)}
-								/>
+								<TitleValue title="Startdato" value={formatStringDates(opphold.startdato)} />
+								<TitleValue title="Sluttdato" value={formatStringDates(opphold.sluttdato)} />
 							</div>
 						)}
 					</DollyFieldArray>

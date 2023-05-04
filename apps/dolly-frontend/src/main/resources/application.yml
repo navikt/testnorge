@@ -1,6 +1,5 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
-POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.dev.intern.nav.no/login
-
+POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
 
 spring:
   cloud:
@@ -17,17 +16,17 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-tps-messaging-service
-    url: https://testnav-tps-messaging-service.dev.intern.nav.no
+    url: http://testnav-tps-messaging-service.dolly.svc.cluster.local
   testnav-organisasjon-faste-data-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-faste-data-service
-    url: https://testnav-organisasjon-faste-data-service.dev.intern.nav.no
+    url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
   testnav-joark-dokument-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-joark-dokument-service
-    url: https://testnav-joark-dokument-service.dev.intern.nav.no
+    url: http://testnav-joark-dokument-service.dolly.svc.cluster.local
   testnav-brregstub-proxy:
     cluster: dev-fss
     namespace: dolly
@@ -77,12 +76,12 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: dolly-backend
-    url: https://dolly-backend.dev.intern.nav.no
+    url: http://dolly-backend.dolly.svc.cluster.local
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
     name: testnorge-profil-api
-    url: https://testnorge-profil-api.dev.intern.nav.no
+    url: http://testnorge-profil-api.dolly.svc.cluster.local
   testnav-organisasjon-tilgang-service:
     cluster: prod-gcp
     namespace: dolly
@@ -92,52 +91,52 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-varslinger-service
-    url: https://testnav-varslinger-service.dev.intern.nav.no
+    url: http://testnav-varslinger-service.dolly.svc.cluster.local
   testnav-organisasjon-forvalter:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-forvalter
-    url: https://testnav-organisasjon-forvalter.dev.intern.nav.no
+    url: http://testnav-organisasjon-forvalter.dolly.svc.cluster.local
   testnav-organisasjon-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-service
-    url: https://testnav-organisasjon-service.dev.intern.nav.no
+    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
   testnav-miljoer-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-miljoer-service
-    url: https://testnav-miljoer-service.dev.intern.nav.no
+    url: http://testnav-miljoer-service.dolly.svc.cluster.local
   testnav-person-search-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-search-service
-    url: https://testnav-person-search-service.dev.intern.nav.no
+    url: http://testnav-person-search-service.dolly.svc.cluster.local
   testnav-adresse-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-adresse-service
-    url: https://testnav-adresse-service.dev.intern.nav.no
+    url: http://testnav-adresse-service.dolly.svc.cluster.local
   testnorge-tilbakemelding-api:
     cluster: dev-gcp
     namespace: dolly
     name: testnorge-tilbakemelding-api
-    url: https://testnorge-tilbakemelding-api.dev.intern.nav.no
+    url: http://testnorge-tilbakemelding-api.dolly.svc.cluster.local
   testnav-person-organisasjon-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service
-    url: https://testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
+    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-bruker-service
-    url: https://testnav-bruker-service.dev.intern.nav.no
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
   testnav-pdl-forvalter:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-pdl-forvalter
-    url: https://testnav-pdl-forvalter.dev.intern.nav.no
+    url: http://testnav-pdl-forvalter.dolly.svc.cluster.local
   testnav-kontoregister-person-proxy:
     name: testnav-kontoregister-person-proxy
     namespace: dolly
@@ -162,6 +161,11 @@ consumers:
     name: testnav-arbeidsplassencv-proxy
     namespace: dolly
     url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-histark-proxy:
+    name: testnav-histark-proxy
+    namespace: dolly
+    url: https://testnav-histark-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
 
 management:

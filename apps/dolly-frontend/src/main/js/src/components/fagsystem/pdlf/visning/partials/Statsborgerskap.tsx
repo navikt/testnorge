@@ -7,7 +7,7 @@ import { PersonData, StatsborgerskapData } from '@/components/fagsystem/pdlf/Pdl
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 
 type StatsborgerskapTypes = {
 	data: Array<StatsborgerskapData>
@@ -41,11 +41,11 @@ const StatsborgerskapLes = ({ statsborgerskapData, idx }: StatsborgerskapLesType
 				/>
 				<TitleValue
 					title="Statsborgerskap registrert"
-					value={Formatters.formatDate(statsborgerskapData.gyldigFraOgMed)}
+					value={formatDate(statsborgerskapData.gyldigFraOgMed)}
 				/>
 				<TitleValue
 					title="Statsborgerskap til"
-					value={Formatters.formatDate(statsborgerskapData.gyldigTilOgMed)}
+					value={formatDate(statsborgerskapData.gyldigTilOgMed)}
 				/>
 			</div>
 		)

@@ -3,7 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDoedsfall, initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
@@ -33,7 +33,7 @@ type DoedsfallLesTypes = {
 const DoedsfallLes = ({ doedsfall, idx }: DoedsfallLesTypes) => {
 	return (
 		<div className="person-visning_content" key={idx}>
-			<TitleValue title="Dødsdato" value={Formatters.formatDate(doedsfall.doedsdato)} />
+			<TitleValue title="Dødsdato" value={formatDate(doedsfall.doedsdato)} />
 		</div>
 	)
 }

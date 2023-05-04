@@ -31,6 +31,7 @@ public class GetAuthenticatedResourceServerType extends JwtResolver implements C
     @Override
     public Mono<ResourceServerType> call() {
         return getJwtAuthenticationToken()
+                .onErrorResume(JwtResolverException.class, throwable -> Mono.empty())
                 .flatMap(token -> getResourceTypeForm(token)
                         .map(Mono::just)
                         .orElseGet(Mono::empty)

@@ -39,5 +39,6 @@ public class KontoregisterProxyApplicationStarter {
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                         .uri(properties.getUrl()))
                 .build();
+
     }
 }

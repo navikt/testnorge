@@ -13,7 +13,7 @@ import {
 import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
-import Formatters from '@/utils/DataFormatter'
+import { formatAlder, formatKjonn } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 
 export const actions = createActions(
@@ -367,10 +367,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		kilde: 'PDL',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
-		alder: Formatters.formatAlder(
-			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
-			getPdlDoedsdato(pdlIdent)
-		),
+		alder: formatAlder(pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato), getPdlDoedsdato(pdlIdent)),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
@@ -398,8 +395,8 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		importFra: 'Test-Norge',
 		identtype: person?.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
-		kjonn: Formatters.kjonn(kjonn, alder),
-		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
+		kjonn: formatKjonn(kjonn, alder),
+		alder: formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
