@@ -119,7 +119,7 @@ public class OppdaterPersonService extends DollyBestillingService {
 
             transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
                     "Info: Oppdatering av person startet ...");
-            return pdlDataConsumer.oppdaterPdl(originator.getPdlBestilling().getOpprettFraIdent(),
+            return pdlDataConsumer.oppdaterPdl(originator.getIdent(),
                             PersonUpdateRequestDTO.builder()
                                     .person(originator.getPdlBestilling().getPerson())
                                     .build())

@@ -20,7 +20,7 @@ spec:
     max: 2
   port: 8080
   ingresses:
-    - https://dolly-idporten.ekstern.dev.nav.no
+    - "https://dolly-idporten.ekstern.dev.nav.no"
   accessPolicy:
     outbound:
       rules:

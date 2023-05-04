@@ -5,7 +5,6 @@ on:
     paths:
       - apps/tps-messaging-service/**
       - .github/workflows/app.tps-messaging-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

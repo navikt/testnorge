@@ -13,5 +13,4 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 public class OpprettRequest {
 
     private DbPerson person;
-    private boolean skalSlettes;
 }

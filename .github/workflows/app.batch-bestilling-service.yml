@@ -5,7 +5,6 @@ on:
     paths:
       - apps/batch-bestilling-service/**
       - .github/workflows/app.batch-bestilling-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:
