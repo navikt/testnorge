@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -8,6 +9,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
@@ -31,5 +33,11 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     public boolean isEksisterendePerson() {
 
         return isTrue(eksisterendePerson);
+    }
+
+    @JsonIgnore
+    public boolean isAnsvarligMedIdentifikator() {
+
+        return nonNull(ansvarlig);
     }
 }
