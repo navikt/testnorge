@@ -70,19 +70,19 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Cache"
-        uses: burrunan/gradle-cache-action@v1
       - name: "Java"
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
-      - name: "Compile"
+      - name: "Gradle"
+        uses: gradle/gradle-build-action@v2
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
         working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build --scan
+        with:
+          arguments: build --scan
       - name: "Docker"
         uses: nais/docker-build-push@v0
         if: |
