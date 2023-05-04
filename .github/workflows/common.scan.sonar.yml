@@ -17,17 +17,18 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Cache"
-        uses: burrunan/gradle-cache-action@v1
       - name: "Java"
         uses: actions/setup-java@v3
         with:
           distribution: temurin
           java-version: 17
-      - name: "Sonar"
-        working-directory: ${{ inputs.working-directory }}
+      - name: "Gradle"
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew sonar --scan
+        uses: gradle/gradle-build-action@v2
+        with:
+          build-root-directory: ${{ inputs.working-directory }}
+          arguments: sonar --scan
+          cache-read-only: false

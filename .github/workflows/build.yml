@@ -14,20 +14,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Fetch git history
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Git"
         run: git fetch --unshallow
-      - name: Gradle cache
-        uses: burrunan/gradle-cache-action@v1
-      - name: Set up JDK 1.17
+      - name: "Java"
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: 17
-      - name: Build
+      - name: "Gradle"
         env:
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
-        run: |
-          ./gradlew build --info --scan
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build --info --scan
