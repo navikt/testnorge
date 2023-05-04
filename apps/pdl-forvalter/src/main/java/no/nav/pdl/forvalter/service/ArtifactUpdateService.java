@@ -296,6 +296,7 @@ public class ArtifactUpdateService {
         if (endretAnsvar) {
             person.getPerson().getForeldreansvar().stream()
                     .filter(ansvar -> id.equals(ansvar.getId()))
+                    .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
                     .forEach(ansvar -> {
 
                         if (ansvar.getAnsvar() != ForeldreansvarDTO.Ansvar.FELLES) {
