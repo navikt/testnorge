@@ -83,6 +83,7 @@ jobs:
         with:
           build-root-directory: ${{ inputs.working-directory }}
           arguments: build --scan
+          cache-read-only: false # Will normally only write to cache on main/master, but for testing...
       - name: "Docker"
         uses: nais/docker-build-push@v0
         if: |
