@@ -92,7 +92,12 @@ export const ForeldreansvarForm = ({
 		formikBag.setFieldValue(path, foreldreansvarClone)
 	}
 
+	const ansvar = _.get(formikBag.values, `${path}.ansvar`)
+
 	const getTypeAnsvarlig = () => {
+		if (ansvar !== 'ANDRE') {
+			return null
+		}
 		const type = _.get(formikBag.values, `${path}.typeAnsvarlig`)
 		if (type) {
 			return type
@@ -104,8 +109,6 @@ export const ForeldreansvarForm = ({
 			return TypeAnsvarlig.UTEN_ID
 		} else return null
 	}
-
-	const ansvar = _.get(formikBag.values, `${path}.ansvar`)
 
 	useEffect(() => {
 		if (!_.get(formikBag.values, `${path}.typeAnsvarlig`)) {

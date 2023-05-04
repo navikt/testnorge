@@ -227,12 +227,12 @@ export const forelderBarnRelasjon = Yup.object({
 
 export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
-	gyldigFraOgMed: testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed'),
-	gyldigTilOgMed: testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed'),
+	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
 })
 
 export const foreldreansvarForBarn = Yup.object({
 	ansvar: testForeldreansvarForBarn(requiredString),
-	gyldigFraOgMed: testDatoFom(Yup.date().nullable(), 'gyldigTilOgMed'),
-	gyldigTilOgMed: testDatoTom(Yup.date().nullable(), 'gyldigFraOgMed'),
+	gyldigFraOgMed: testDatoFom(Yup.mixed().nullable(), 'gyldigTilOgMed'),
+	gyldigTilOgMed: testDatoTom(Yup.mixed().nullable(), 'gyldigFraOgMed'),
 })
