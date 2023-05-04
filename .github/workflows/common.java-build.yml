@@ -16,16 +16,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            ${{ runner.os }}-gradle-
-            ${{ runner.os }}-
+        uses: burrunan/gradle-cache-action@v1
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
