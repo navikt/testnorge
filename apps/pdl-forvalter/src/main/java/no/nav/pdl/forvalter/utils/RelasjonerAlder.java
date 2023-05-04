@@ -35,16 +35,16 @@ public class RelasjonerAlder {
                 .max(Comparator.comparing(integer -> integer))
                 .ifPresent(eldsteBarn -> {
                     if (isNull(request.getAlder()) && isNull(request.getFoedtEtter())) {
-                        request.setAlder(18 + eldsteBarn);
+                        request.setFoedtFoer(LocalDateTime.now().minusYears(18 + eldsteBarn));
                     }
                     request.getPerson().getSivilstand().stream()
-                            .filter(SivilstandDTO::isGift)
+                            .filter(SivilstandDTO::isGiftOrSamboer)
                             .forEach(partner -> {
                                 if (nonNull(partner.getNyRelatertPerson()) &&
                                         isNull(partner.getNyRelatertPerson().getAlder()) &&
                                         isNull(partner.getNyRelatertPerson().getFoedtEtter())) {
-                                    partner.getNyRelatertPerson().setAlder(
-                                            getAlderNyPerson(partner.getNyRelatertPerson(), 18 + eldsteBarn));
+                                    partner.getNyRelatertPerson().setFoedtFoer(LocalDateTime.now().minusYears(
+                                            getAlderNyPerson(partner.getNyRelatertPerson(), 18 + eldsteBarn)));
                                 }
                             });
                 });

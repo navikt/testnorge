@@ -43,7 +43,9 @@ class RelasjonerAlderTest {
                         .build())
                 .build();
         var oppdatertBestilling = RelasjonerAlder.fixRelasjonerAlder(bestilling);
-        assertThat(oppdatertBestilling.getAlder(), is(equalTo(18 + 23)));
-        assertThat(oppdatertBestilling.getPerson().getSivilstand().get(0).getNyRelatertPerson().getAlder(), is(equalTo(18 + 23)));
+        assertThat(oppdatertBestilling.getFoedtFoer().toLocalDate(),
+                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+        assertThat(oppdatertBestilling.getPerson().getSivilstand().get(0).getNyRelatertPerson().getFoedtFoer().toLocalDate(),
+                is(equalTo(LocalDate.now().minusYears(18 + 23))));
     }
 }
