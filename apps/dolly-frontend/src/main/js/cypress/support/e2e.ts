@@ -20,6 +20,7 @@ import {
 	malerMock,
 	miljoeMock,
 	nyGruppeMock,
+	oppsummeringsdokumentServiceMock,
 	organisasjonerForBrukerMock,
 	organisasjonFraMiljoeMock,
 	paginerteGrupperMock,
@@ -66,6 +67,9 @@ const brregstub = new RegExp(/testnav-brregstub/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
 const alleMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling$/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\/bruker/)
+const oppsummeringsdokService = new RegExp(
+	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/
+)
 const brukerOrganisasjonMaler = new RegExp(
 	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\/bruker\?/
 )
@@ -101,6 +105,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: tags }, { body: {} })
 	cy.intercept({ method: 'GET', url: backendTransaksjon }, backendTransaksjonMock)
 	cy.intercept({ method: 'GET', url: brukerMaler }, brukerMalerMock)
+	cy.intercept({ method: 'GET', url: oppsummeringsdokService }, oppsummeringsdokumentServiceMock)
 	cy.intercept({ method: 'GET', url: alleMaler }, malerMock)
 	cy.intercept({ method: 'GET', url: brukerOrganisasjonMaler }, brukerOrganisasjonMalerMock)
 	cy.intercept({ method: 'GET', url: brregstub }, brregstubMock)
