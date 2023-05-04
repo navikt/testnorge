@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
@@ -329,6 +330,15 @@ public class ArtifactUpdateService {
         if (endretAnsvar || id == 0) {
             foreldreansvarService.handleBarn(oppdatertAnsvar, person.getPerson());
         }
+
+        person.getPerson().getForeldreansvar().stream()
+                .max(Comparator.comparing(ForeldreansvarDTO::getId))
+                .ifPresent(max -> {
+                    if (max.getId() > person.getPerson().getForeldreansvar().size()) {
+                        person.getPerson().getForeldreansvar()
+                                .forEach(ansvar -> ansvar.setId(ansvar.getId() - 1));
+                    }
+                });
     }
 
     private static void deleteFellesAnsvar(int id, List<ForeldreansvarDTO> foreldreansvar) {
