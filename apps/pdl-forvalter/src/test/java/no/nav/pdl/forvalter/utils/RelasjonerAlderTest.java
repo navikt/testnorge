@@ -34,10 +34,6 @@ class RelasjonerAlderTest {
                         .sivilstand(List.of(
                                 SivilstandDTO.builder()
                                         .type(SivilstandDTO.Sivilstand.GIFT)
-                                        .nyRelatertPerson(PersonRequestDTO.builder()
-                                                .foedtFoer(LocalDateTime.of(LocalDate.now().getYear() - 30,
-                                                        LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth(), 1, 1))
-                                                .build())
                                         .build()
                         ))
                         .build())
