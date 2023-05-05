@@ -62,12 +62,12 @@ jobs:
   #      working-directory: ${{ inputs.working-directory }}
 
   sonar:
-    uses: ./.github/workflows/common.scan.sonar.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    uses: ./.github/workflows/common.scan.sonar.yml
+    with:
+      working-directory: ${{ inputs.working-directory }}
 
   build:
     if: github.actor != 'dependabot[bot]'
@@ -78,17 +78,6 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
-      - name: "Cache"
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            ${{ runner.os }}-gradle-
-            ${{ runner.os }}-
       - name: "Setup (Node)"
         uses: actions/setup-node@v3
         with:
@@ -96,35 +85,38 @@ jobs:
           registry-url: 'https://npm.pkg.github.com'
           scope: '@navikt'
       - name: "Install (Node)"
-        run: npm ci
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
         working-directory: ${{ inputs.working-directory }}/src/main/js
+        run: npm ci
       - name: "Build (Node)"
+        working-directory: ${{ inputs.working-directory }}/src/main/js
         run: npm run build
-        working-directory: ${{ inputs.working-directory }}/src/main/js
       - name: "Move (Node)"
-        run: mv build ../resources/static
         working-directory: ${{ inputs.working-directory }}/src/main/js
-      - name: "Setup (Java)"
+        run: mv build ../resources/static
+      - name: "Java"
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17.x'
-      - name: "Build (Java)"
+      - name: "Gradle"
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build --scan
+        uses: gradle/gradle-build-action@v2
+        with:
+          build-root-directory: ${{ inputs.working-directory }}
+          arguments: build --scan
+          cache-read-only: false
       - name: "Docker"
-        uses: nais/docker-build-push@v0
+        id: docker-build-push
         if: |
           env.do-deploy-unstable == 'true' ||
           env.do-deploy-idporten == 'true' ||
           env.do-deploy-test == 'true' ||
           env.do-deploy == 'true'
-        id: docker-build-push
+        uses: nais/docker-build-push@v0
         with:
           team: dolly
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
@@ -148,12 +140,12 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (unstable)"
-        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
+        uses: nais/deploy/actions/deploy@v1
 
   # Only used by dolly-frontend.
   deploy-idporten:
@@ -164,12 +156,12 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (idporten)"
-        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{ needs.build.outputs.image }}
+        uses: nais/deploy/actions/deploy@v1
 
   deploy-test:
     needs: build
@@ -179,12 +171,12 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (test)"
-        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
+        uses: nais/deploy/actions/deploy@v1
 
   deploy:
     needs: build
@@ -194,9 +186,9 @@ jobs:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy"
-        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: dev-gcp
           RESOURCE: ${{ inputs.working-directory }}/config.yml
           VAR: image=${{ needs.build.outputs.image }}
+        uses: nais/deploy/actions/deploy@v1
