@@ -56,13 +56,48 @@ public class RelasjonerAlder {
                                     if (isNull(partner.getNyRelatertPerson().getAlder()) &&
                                             isNull(partner.getNyRelatertPerson().getFoedtFoer())) {
                                         partner.getNyRelatertPerson()
-                                                .setFoedtFoer(adjustDate(LocalDateTime.now(), 18 + eldsteBarn, request.getFoedtEtter()));
+                                                .setFoedtFoer(adjustDate(LocalDateTime.now(), 18 + eldsteBarn,
+                                                        partner.getNyRelatertPerson().getFoedtEtter()));
                                     }
                                 }
                             });
                 });
 
+        request.getPerson()
+                .getForelderBarnRelasjon().stream()
+                .filter(ForelderBarnRelasjonDTO::isBarn)
+                .filter(forelder -> request.hasAlder())
+                .forEach(forelder -> {
+                    if (isBlank(forelder.getRelatertPerson())) {
+                        if (isNull(forelder.getNyRelatertPerson())) {
+                            forelder.setNyRelatertPerson(new PersonRequestDTO());
+                        }
+                        if (isNull(forelder.getNyRelatertPerson().getAlder()) &&
+                                isNull(forelder.getNyRelatertPerson().getFoedtFoer())) {
+                            forelder.getNyRelatertPerson()
+                                    .setFoedtFoer(adjustDate(LocalDateTime.now(), 18L + getAlder(request),
+                                            forelder.getNyRelatertPerson().getFoedtEtter()));
+                        }
+                    }
+                });
+
         return request;
+    }
+
+    private static int getAlder(BestillingRequestDTO request) {
+
+        if (nonNull(request.getAlder())) {
+
+            return request.getAlder();
+
+        } else if (nonNull(request.getFoedtFoer())) {
+
+            return getAlder(request.getFoedtFoer());
+
+        } else {
+
+            return getAlder(request.getFoedtEtter());
+        }
     }
 
     private static LocalDateTime adjustDate(LocalDateTime foedtFoer, long minusYears, LocalDateTime foedtEtter) {
