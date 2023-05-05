@@ -49,11 +49,6 @@ env:
 
 jobs:
 
-  markdown:
-    uses: ./.github/workflows/common.scan.markdown.yml
-    with:
-      working-directory: ${{ inputs.working-directory }}
-
   sonar:
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
