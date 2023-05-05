@@ -47,8 +47,8 @@ export const GjenopprettGruppe = ({ onClose, gruppe }: GjenopprettGruppeProps) =
 	)
 
 	const submitFormik = async (values: any) => {
-		const envsQuery = arrayToString(values.environments).replace(/ /g, '').toLowerCase()
-
+		const filteredEnvs = values.environments?.filter((env) => env !== 'q5')
+		const envsQuery = arrayToString(filteredEnvs).replace(/ /g, '').toLowerCase()
 		await DollyApi.gjenopprettGruppe(gruppe.id, envsQuery)
 		dispatch(setUpdateNow())
 		onClose()
