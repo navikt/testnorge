@@ -50,6 +50,8 @@ consumers:
   testnav-person-organisasjon-tilgang-service:
     name: testnav-person-organisasjon-tilgang-service-dev
     url: https://testnav-person-organisasjon-tilgang-service-dev.intern.dev.nav.no
+  oppsummeringsdokument-service:
+    url: https://oppsummeringsdokument-service.intern.dev.nav.no
   testnav-bruker-service:
     name: testnav-bruker-service-dev
     url: https://testnav-bruker-service-dev.intern.dev.nav.no

@@ -66,6 +66,18 @@ export const multiFetcherAareg = (miljoUrlListe, headers = null, path = null) =>
 	).then((liste) => liste?.map((item) => item?.value))
 }
 
+export const multiFetcherAmelding = (miljoUrlListe, headers = null, path = null) => {
+	return Promise.allSettled(
+		miljoUrlListe.map((obj) =>
+			fetcher(obj.url, { miljo: obj.miljo })
+				.then((result) => ({ miljo: obj.miljo, data: path ? result[path] : result }))
+				.catch((feil) => {
+					return { miljo: obj.miljo, feil: feil }
+				})
+		)
+	).then((liste) => liste?.map((item) => item?.value))
+}
+
 export const multiFetcherPensjon = (miljoUrlListe, headers = null as any) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
@@ -95,10 +107,7 @@ export const fetcher = (url, headers) =>
 			return res.data
 		})
 		.catch((reason) => {
-			if (runningCypressE2E()) {
-				return null
-			}
-			if (reason.status === 401 || reason.status === 403) {
+			if (reason?.response?.status === 401 || reason?.response?.status === 403) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}

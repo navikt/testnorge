@@ -13,7 +13,7 @@ import java.time.Duration;
 
 @Configuration
 @RequiredArgsConstructor
-public class ElasticConfig extends AbstractOpenSearchConfiguration {
+public class OpensearchConfig extends AbstractOpenSearchConfiguration {
     private final ElasticSearchCredentials elasticSearchCredentials;
 
     @Override
@@ -29,5 +29,4 @@ public class ElasticConfig extends AbstractOpenSearchConfiguration {
 
         return RestClients.create(clientConfiguration).rest();
     }
-
 }

@@ -38,8 +38,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Log inputs"
-        run:
-          echo "${{ toJSON(inputs) }}"
+        run: |
+          echo "branch: ${{ github.ref_name }}"
+          echo "inputs: ${{ toJSON(inputs) }}"
 
   backend:
     needs: start
