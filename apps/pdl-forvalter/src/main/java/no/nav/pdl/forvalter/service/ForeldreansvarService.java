@@ -22,6 +22,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO.Kjoenn;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonnavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.RelatertBiPersonDTO;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -288,19 +289,28 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 opprettNyAsvarlig(foreldreansvar, hovedperson);
             }
 
-            setRelasjoner(hovedperson.getForelderBarnRelasjon().stream()
-                    .filter(ForelderBarnRelasjonDTO::hasBarn)
-                    .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                    .map(personRepository::findByIdent)
-                    .flatMap(Optional::stream)
-                    .map(dbperson -> BarnRelasjon.builder()
-                            .ansvarlig(foreldreansvar.getAnsvarlig())
-                            .barn(dbperson)
-                            .build())
-                    .toList(), foreldreansvar);
+            setRelasjoner(getBarnRelasjoner(foreldreansvar, hovedperson), foreldreansvar);
+
+        } else if (foreldreansvar.getAnsvar() == Ansvar.UKJENT) {
+
+            makeAnsvarligUtenIdentifikator(foreldreansvar, hovedperson);
+            setRelasjoner(getBarnRelasjoner(foreldreansvar, hovedperson), foreldreansvar);
         }
 
         foreldreansvar.setNyAnsvarlig(null);
+    }
+
+    private List<BarnRelasjon> getBarnRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
+        return hovedperson.getForelderBarnRelasjon().stream()
+                .filter(ForelderBarnRelasjonDTO::hasBarn)
+                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                .map(personRepository::findByIdent)
+                .flatMap(Optional::stream)
+                .map(dbperson -> BarnRelasjon.builder()
+                        .ansvarlig(foreldreansvar.getAnsvarlig())
+                        .barn(dbperson)
+                        .build())
+                .toList();
     }
 
     public void handleBarn(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
@@ -323,12 +333,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
             if (nonNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
 
-                barn.getForelderBarnRelasjon().stream()
-                        .filter(ForelderBarnRelasjonDTO::isBarn)
-                        .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                        .findFirst()
-                        .flatMap(personRepository::findByIdent)
-                        .ifPresent(person -> makeAnsvarligUtenIdentifikator(foreldreansvar, person.getPerson()));
+                setAnsvarUtenIdentifikator(foreldreansvar, barn);
 
             } else if (isNull(foreldreansvar.getAnsvarlig())) {
 
@@ -339,9 +344,21 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
                 relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
             }
+        } else if (foreldreansvar.getAnsvar() == Ansvar.UKJENT) {
+
+            setAnsvarUtenIdentifikator(foreldreansvar, barn);
         }
 
         foreldreansvar.setNyAnsvarlig(null);
+    }
+
+    private void setAnsvarUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
+        barn.getForelderBarnRelasjon().stream()
+                .filter(ForelderBarnRelasjonDTO::isBarn)
+                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                .findFirst()
+                .flatMap(personRepository::findByIdent)
+                .ifPresent(person -> makeAnsvarligUtenIdentifikator(foreldreansvar, person.getPerson()));
     }
 
     private void opprettNyAsvarlig(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
@@ -400,6 +417,10 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     }
 
     private void makeAnsvarligUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO person) {
+
+        if (isNull(foreldreansvar.getAnsvarligUtenIdentifikator())) {
+            foreldreansvar.setAnsvarligUtenIdentifikator(new RelatertBiPersonDTO());
+        }
 
         if (isBlank(foreldreansvar.getAnsvarligUtenIdentifikator().getStatsborgerskap())) {
             foreldreansvar.getAnsvarligUtenIdentifikator().setStatsborgerskap("NOR");

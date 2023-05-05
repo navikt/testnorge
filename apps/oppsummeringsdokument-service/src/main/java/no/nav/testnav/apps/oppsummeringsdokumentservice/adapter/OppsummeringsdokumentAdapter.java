@@ -9,6 +9,7 @@ import no.nav.testnav.apps.oppsummeringsdokumentservice.domain.Oppsummeringsdoku
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.OppsummeringsdokumentRepository;
 import no.nav.testnav.apps.oppsummeringsdokumentservice.repository.model.OppsummeringsdokumentModel;
 import no.nav.testnav.libs.dto.oppsummeringsdokumentservice.v2.Populasjon;
+import org.opensearch.client.RestHighLevelClient;
 import org.opensearch.data.client.orhlc.NativeSearchQueryBuilder;
 import org.opensearch.index.query.QueryBuilder;
 import org.opensearch.index.query.QueryBuilders;
@@ -38,6 +39,7 @@ public class OppsummeringsdokumentAdapter {
     private final ObjectMapper objectMapper;
     private final OppsummeringsdokumentRepository repository;
     private final ElasticsearchOperations operations;
+    private final RestHighLevelClient client;
     private final AaregSyntConsumer aaregSyntConsumer;
 
     public void deleteAllBy(String miljo, Populasjon populasjon) {
@@ -143,7 +145,7 @@ public class OppsummeringsdokumentAdapter {
 
     private Page<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder, Pageable pageable) {
 
-        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
+//        builder.withSorts(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
         var searchHist = operations.search(
                 builder.build(),
                 OppsummeringsdokumentModel.class
@@ -158,7 +160,7 @@ public class OppsummeringsdokumentAdapter {
     }
 
     private List<Oppsummeringsdokument> getAllCurrentDocumentsBy(NativeSearchQueryBuilder builder) {
-        builder.withSort(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
+        builder.withSorts(SortBuilders.fieldSort("lastModified").order(SortOrder.ASC));
         var list = operations.search(
                 builder.build(),
                 OppsummeringsdokumentModel.class

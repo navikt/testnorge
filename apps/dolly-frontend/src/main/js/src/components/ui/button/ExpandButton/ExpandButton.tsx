@@ -12,6 +12,7 @@ export default function ExpandButton({
 	expanded = false,
 	disabled = false,
 	onClick,
+	...props
 }: ExpandButtonProps): JSX.Element {
 	const iconType = expanded ? 'chevron-up' : 'chevron-down'
 	const label: string = expanded ? 'Lukk' : 'Åpne'
@@ -23,6 +24,7 @@ export default function ExpandButton({
 			onClick={onClick}
 			disabled={disabled}
 			aria-label={label}
+			{...props}
 		>
 			{label}
 		</Button>

@@ -174,7 +174,12 @@ export const DollyFieldArray = ({
 						)
 					} else {
 						return (
-							<DollyFaBlokk key={idx} idx={idx} header={header} hjelpetekst={hjelpetekst}>
+							<DollyFaBlokk
+								key={idx}
+								idx={idx}
+								header={getHeader ? getHeader(curr) : header}
+								hjelpetekst={hjelpetekst}
+							>
 								{children(curr, idx)}
 							</DollyFaBlokk>
 						)
