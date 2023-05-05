@@ -5,7 +5,7 @@ import no.nav.organisasjonforvalter.dto.requests.BestillingRequest.AdresseReques
 
 import java.util.List;
 
-import static io.micrometer.core.instrument.util.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 
 @UtilityClass
 public class UtenlandskAdresseUtil {

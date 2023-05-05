@@ -10,9 +10,3 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
-consumers:
-  testnav-organisasjon-service:
-    url: http://testnav-organisasjon-service.dolly.svc.cluster.local
-  testnav-miljoer-service:
-    url: http://testnav-miljoer-service.dolly.svc.cluster.local

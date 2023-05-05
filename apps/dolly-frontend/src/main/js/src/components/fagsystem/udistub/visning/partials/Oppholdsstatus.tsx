@@ -1,6 +1,6 @@
 import * as _ from 'lodash-es'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, showLabel } from '@/utils/DataFormatter'
 import { AvslagEllerBortfall, AvslagEllerBortfallVisning } from './AvslagEllerBortfallVisning'
 
 type Opphold = {
@@ -57,12 +57,12 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 				/>
 				<TitleValue
 					title="Type opphold"
-					value={Formatters.showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)}
+					value={showLabel('eosEllerEFTAtypeOpphold', currentOppholdsrettType)}
 				/>
 				<TitleValue title="Status" value={currentTredjelandsborgereStatus()} />
 				<TitleValue
 					title="Oppholdstillatelse fra"
-					value={Formatters.formatStringDates(
+					value={formatStringDates(
 						tredjelandsborger
 							? _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.fra')
 							: _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.fra`)
@@ -70,7 +70,7 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 				/>
 				<TitleValue
 					title="Oppholdstillatelse til"
-					value={Formatters.formatStringDates(
+					value={formatStringDates(
 						tredjelandsborger
 							? _.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarPeriode.til')
 							: _.get(oppholdsstatus, `${currentOppholdsrettType}Periode.til`)
@@ -78,21 +78,21 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 				/>
 				<TitleValue
 					title="Effektueringsdato"
-					value={Formatters.formatStringDates(
+					value={formatStringDates(
 						_.get(oppholdsstatus, `${currentOppholdsrettType}Effektuering`) ||
 							_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdSammeVilkaarEffektuering')
 					)}
 				/>
 				<TitleValue
 					title="Type oppholdstillatelse"
-					value={Formatters.showLabel(
+					value={showLabel(
 						'oppholdstillatelseType',
 						_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseType')
 					)}
 				/>
 				<TitleValue
 					title="Vedtaksdato"
-					value={Formatters.formatStringDates(
+					value={formatStringDates(
 						_.get(oppholdsstatus, 'oppholdSammeVilkaar.oppholdstillatelseVedtaksDato')
 					)}
 				/>
@@ -101,7 +101,7 @@ export const Oppholdsstatus = ({ oppholdsstatus, oppholdstillatelse }: Opphold) 
 					value={
 						oppholdsrett &&
 						// @ts-ignore
-						Formatters.showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
+						showLabel([currentOppholdsrettType], oppholdsstatus[currentOppholdsrettType])
 					}
 				/>
 				{oppholdstillatelse && <TitleValue title="Har oppholdstillatelse" value="Ja" />}

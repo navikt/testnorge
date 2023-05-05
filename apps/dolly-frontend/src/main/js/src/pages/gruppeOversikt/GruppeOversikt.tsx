@@ -13,6 +13,7 @@ import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
 import { ToggleGroup } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type GruppeOversiktProps = {
 	importerteZIdenter: any
@@ -69,7 +70,10 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 	return (
 		<div className="oversikt-container">
 			<div className="toolbar">
-				<div className="page-header flexbox--align-center--justify-start">
+				<div
+					data-cy={CypressSelector.TITLE_VISNING}
+					className="page-header flexbox--align-center--justify-start"
+				>
 					<h1>Grupper</h1>
 					<Hjelpetekst placement={bottom}>
 						Gruppene inneholder alle personene dine (FNR/DNR/NPID).
@@ -77,11 +81,18 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 				</div>
 			</div>
 			<div className="toolbar gruppe--full">
-				<StyledNavButton variant="primary" onClick={visNyGruppe}>
+				<StyledNavButton
+					data-cy={CypressSelector.BUTTON_NY_GRUPPE}
+					variant="primary"
+					onClick={visNyGruppe}
+				>
 					Ny gruppe
 				</StyledNavButton>
 				{!bankIdBruker && <FinnPersonBestillingConnector />}
 			</div>
+
+			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
+
 			{!bankIdBruker && (
 				<StyledDiv className="gruppe--flex-column-center">
 					<ToggleGroup
@@ -90,26 +101,27 @@ const GruppeOversikt = ({ searchActive, sideStoerrelse, sidetall }: GruppeOversi
 						size={'small'}
 						style={{ backgroundColor: '#ffffff' }}
 					>
-						<StyledToggleItem value={VisningType.MINE}>
+						<StyledToggleItem data-cy={CypressSelector.TOGGLE_MINE} value={VisningType.MINE}>
 							<Icon size={16} kind={visning === VisningType.MINE ? 'man2Light' : 'man2'} />
 							Mine
 						</StyledToggleItem>
-						<StyledToggleItem value={VisningType.FAVORITTER}>
+						<StyledToggleItem
+							data-cy={CypressSelector.TOGGLE_FAVORITTER}
+							value={VisningType.FAVORITTER}
+						>
 							<Icon
 								size={16}
 								kind={visning === VisningType.FAVORITTER ? 'starLight' : 'starDark'}
 							/>
 							Favoritter
 						</StyledToggleItem>
-						<StyledToggleItem value={VisningType.ALLE}>
+						<StyledToggleItem data-cy={CypressSelector.TOGGLE_ALLE} value={VisningType.ALLE}>
 							<Icon size={16} kind={visning === VisningType.ALLE ? 'groupLight' : 'groupDark'} />
 							Alle
 						</StyledToggleItem>
 					</ToggleGroup>
 				</StyledDiv>
 			)}
-
-			{visNyGruppeState && <RedigerGruppeConnector onCancel={skjulNyGruppe} />}
 
 			<Liste
 				gruppeDetaljer={{

@@ -5,7 +5,7 @@ orgnr når de sendes videre mot EREG.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-organisasjon-forvalter.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-organisasjon-forvalter.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

@@ -23,7 +23,6 @@ import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonUpdateRequestDTO;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.MDC;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
@@ -88,7 +87,7 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
                     .flatMap(testident -> Flux.just(OriginatorUtility.prepOriginator(bestKriterier, testident, mapperFacade))
                             .flatMap(originator -> opprettProgress(bestilling, originator.getMaster(), testident.getIdent())
                                     .flatMap(progress -> (originator.isPdlf() ?
-                                            oppdaterPdlPerson(originator, testident.getIdent())
+                                            oppdaterPdlPerson(originator, progress, testident.getIdent())
                                                     .flatMap(pdlResponse -> sendOrdrePerson(progress, pdlResponse)) :
                                             Flux.just(testident.getIdent()))
                                             .filter(StringUtils::isNotBlank)
@@ -126,10 +125,12 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         }
     }
 
-    private Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, String ident) {
+    private Flux<PdlResponse> oppdaterPdlPerson(OriginatorUtility.Originator originator, BestillingProgress progress, String ident) {
 
         if (nonNull(originator.getPdlBestilling()) && nonNull(originator.getPdlBestilling().getPerson())) {
 
+            transactionHelperService.persister(progress, BestillingProgress::setPdlForvalterStatus,
+                    "Info: Oppdatering av person startet ...");
             return pdlDataConsumer.oppdaterPdl(ident,
                             PersonUpdateRequestDTO.builder()
                                     .person(originator.getPdlBestilling().getPerson())
@@ -139,7 +140,6 @@ public class LeggTilPaaGruppeService extends DollyBestillingService {
         } else {
             return Flux.just(PdlResponse.builder()
                     .ident(ident)
-                    .status(HttpStatus.OK)
                     .build());
         }
     }

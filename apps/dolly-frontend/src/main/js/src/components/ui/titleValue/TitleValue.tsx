@@ -30,7 +30,11 @@ const P_TitleValue = ({
 	)
 }
 
-export const TitleValue = ({ kodeverk = null, visKopier = false, ...restProps }) => {
+export const TitleValue = ({
+	kodeverk = null as unknown as any,
+	visKopier = false,
+	...restProps
+}) => {
 	if (!restProps.value && !restProps.children) {
 		return null
 	}

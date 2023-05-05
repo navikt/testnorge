@@ -19,22 +19,22 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnorge-profil-api-dev
-    url: https://testnorge-profil-api-dev.dev.intern.nav.no/api
+    url: http://testnorge-profil-api-dev.dolly.svc.cluster.local/api
   testnav-app-tilgang-analyse-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-app-tilgang-analyse-service
-    url: https://testnav-app-tilgang-analyse-service.dev.intern.nav.no
+    url: http://testnav-app-tilgang-analyse-service.dolly.svc.cluster.local
   testnav-person-organisasjon-tilgang-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service-dev
-    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+    url: http://testnav-person-organisasjon-tilgang-service-dev.dolly.svc.cluster.local
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-bruker-service-dev
-    url: https://testnav-bruker-service-dev.dev.intern.nav.no
+    url: http://testnav-bruker-service-dev.dolly.svc.cluster.local
 
 management:
   endpoints:

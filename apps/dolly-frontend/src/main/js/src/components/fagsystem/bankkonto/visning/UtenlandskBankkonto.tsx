@@ -10,12 +10,14 @@ import Icon from '@/components/ui/icon/Icon'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import DollyModal from '@/components/ui/modal/DollyModal'
 import { BankkontoApi, TpsMessagingApi } from '@/service/Api'
+import { formatDate } from '@/utils/DataFormatter'
 
 const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 0;
 	top: 0;
 	margin: -5px 10px 0 0;
+
 	&&& {
 		button {
 			position: relative;
@@ -31,6 +33,7 @@ type Data = {
 
 type UtenlandskBankkontoData = {
 	kontonummer: string
+	gyldig: string
 	tilfeldigKontonummer: boolean
 	swift: string
 	landkode: string
@@ -74,6 +77,7 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 						title={'TilfeldigKontonummer'}
 						value={data.tilfeldigKontonummer ? 'Ja' : ''}
 					/>
+					<TitleValue title={'Gyldig f.o.m.'} value={formatDate(data.gyldig)} />
 					<TitleValue title={'Swift kode'} value={data.swift} />
 					<TitleValue title={'Land'} kodeverk={GtKodeverk.LAND} value={data.landkode} />
 					<TitleValue title={'Banknavn'} value={data.banknavn} />
@@ -95,7 +99,9 @@ export const Visning = ({ data, extraButtons, ident }: Data) => {
 								<h4>Er du sikker på at du vil slette denne bankkontoen fra personen?</h4>
 							</div>
 							<div className="slettModal-actions">
-								<NavButton onClick={closeModal}>Nei</NavButton>
+								<NavButton onClick={closeModal} variant={'secondary'}>
+									Nei
+								</NavButton>
 								<NavButton
 									onClick={() => {
 										closeModal()

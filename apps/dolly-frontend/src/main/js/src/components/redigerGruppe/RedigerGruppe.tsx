@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Form, Formik, getIn } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
@@ -7,6 +7,8 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 
 import './RedigerGruppe.less'
 import { useNavigate } from 'react-router-dom'
+import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type Props = {
 	gruppe: {
@@ -32,6 +34,7 @@ const RedigerGruppe = ({
 }: Props): JSX.Element => {
 	const navigate = useNavigate()
 	const erRedigering = Boolean(getIn(gruppe, 'id', false))
+	const mutate = useMatchMutate()
 
 	const onHandleSubmit = async (values: { hensikt: any; navn: any }, _actions: any) => {
 		const groupValues = {
@@ -39,7 +42,9 @@ const RedigerGruppe = ({
 			navn: values.navn,
 		}
 		erRedigering
-			? await updateGruppe(gruppe.id, groupValues)
+			? await updateGruppe(gruppe.id, groupValues).then(() => {
+					return mutate(REGEX_BACKEND_GRUPPER)
+			  })
 			: await createGruppe(groupValues).then((response: { value: { data: { id: any } } }) => {
 					const gruppeId = response.value?.data?.id
 					if (gruppeId) {
@@ -59,7 +64,7 @@ const RedigerGruppe = ({
 			hensikt: yup
 				.string()
 				.trim()
-				.required('Gi en liten beskrivelse av hensikten med gruppen')
+				.required('Gi en beskrivelse av hensikten med gruppen')
 				.max(200, 'Maksimalt 200 bokstaver'),
 		})
 
@@ -73,14 +78,14 @@ const RedigerGruppe = ({
 	}
 
 	const buttons = (
-		<Fragment>
+		<>
+			<NavButton data-cy={CypressSelector.BUTTON_OPPRETT} variant={'primary'} type={'submit'}>
+				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
+			</NavButton>
 			<NavButton type={'reset'} variant={'danger'} onClick={() => onCancel()}>
 				Avbryt
 			</NavButton>
-			<NavButton variant={'primary'} type={'submit'}>
-				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
-			</NavButton>
-		</Fragment>
+		</>
 	)
 
 	return (
@@ -88,8 +93,21 @@ const RedigerGruppe = ({
 			{() => (
 				<Form className="opprett-tabellrad" autoComplete="off">
 					<div className="fields">
-						<FormikTextInput name="navn" label="NAVN" size="grow" autoFocus />
-						<FormikTextInput name="hensikt" label="HENSIKT" size="grow" useOnChange={true} />
+						<FormikTextInput
+							data-cy={CypressSelector.INPUT_NAVN}
+							name="navn"
+							label="NAVN"
+							size="grow"
+							useOnChange={true}
+							autoFocus
+						/>
+						<FormikTextInput
+							data-cy={CypressSelector.INPUT_HENSIKT}
+							name="hensikt"
+							label="HENSIKT"
+							size="grow"
+							useOnChange={true}
+						/>
 						{buttons}
 					</div>
 					{error && (

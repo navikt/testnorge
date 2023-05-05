@@ -60,8 +60,6 @@ spec:
   replicas:
     min: 1
     max: 1
-  vault:
-    enabled: true
   resources:
     requests:
       cpu: 200m
@@ -72,5 +70,4 @@ spec:
   envFrom:
     - secret: azure-trygdeetaten-testnav-kontoregister-person-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-kontoregister-person-proxy.dev.intern.nav.no"
     - "https://testnav-kontoregister-person-proxy.dev-fss-pub.nais.io"

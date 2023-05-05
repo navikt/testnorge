@@ -7,6 +7,7 @@ import { AvbrytButton } from '@/components/ui/button/AvbrytButton/AvbrytButton'
 import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { useNavigate } from 'react-router-dom'
 import { setNestedObjectValues } from 'formik'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 	const showPrevious = step > 0
@@ -41,9 +42,18 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 				</AvbrytButton>
 
 				<div className="step-navknapper--right">
-					{showPrevious && <NavButton onClick={() => onPrevious(formikBag)}>Tilbake</NavButton>}
+					{showPrevious && (
+						<NavButton
+							data-cy={CypressSelector.BUTTON_TILBAKE}
+							variant={'secondary'}
+							onClick={() => onPrevious(formikBag)}
+						>
+							Tilbake
+						</NavButton>
+					)}
 					{!isLastStep && (
 						<NavButton
+							data-cy={CypressSelector.BUTTON_VIDERE}
 							variant={'primary'}
 							disabled={isSubmitting || disabledVidere}
 							onClick={
@@ -56,7 +66,12 @@ export const Navigation = ({ step, onPrevious, isLastStep, formikBag }) => {
 						</NavButton>
 					)}
 					{isLastStep && (
-						<NavButton variant={'primary'} onClick={handleSubmit} disabled={isSubmitting}>
+						<NavButton
+							data-cy={CypressSelector.BUTTON_FULLFOER_BESTILLING}
+							variant={'primary'}
+							onClick={handleSubmit}
+							disabled={isSubmitting}
+						>
 							{getLastButtonText()}
 						</NavButton>
 					)}

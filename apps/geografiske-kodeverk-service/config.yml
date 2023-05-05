@@ -52,4 +52,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-geografiske-kodeverk-service.dev.intern.nav.no"
+    - "https://testnav-geografiske-kodeverk-service.intern.dev.nav.no"

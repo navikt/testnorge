@@ -4,13 +4,13 @@ plugins {
 
 rootProject.name = 'orgnummer-service'
 
-
-includeBuild '../../libs/database'
-includeBuild '../../libs/security-core'
-includeBuild '../../libs/servlet-security'
-includeBuild '../../libs/servlet-core'
-includeBuild '../../libs/data-transfer-objects'
 includeBuild '../../libs/commands'
+includeBuild '../../libs/data-transfer-objects'
+includeBuild '../../libs/database'
+includeBuild '../../libs/reactive-core'
+includeBuild '../../libs/security-core'
+includeBuild '../../libs/servlet-core'
+includeBuild '../../libs/servlet-security'
 
 gradleEnterprise {
     buildScan {

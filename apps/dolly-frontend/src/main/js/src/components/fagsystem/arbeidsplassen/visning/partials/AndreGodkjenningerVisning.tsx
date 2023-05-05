@@ -2,7 +2,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import React from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 
 export const AndreGodkjenningerVisning = ({ data }) => {
 	if (!data || data.length < 1) {
@@ -17,17 +17,11 @@ export const AndreGodkjenningerVisning = ({ data }) => {
 						<>
 							<TitleValue
 								title="Annen godkjenning"
-								value={Formatters.showLabel(
-									'offentligGodkjenning',
-									annenGodkjenning.certificateName
-								)}
+								value={showLabel('offentligGodkjenning', annenGodkjenning.certificateName)}
 							/>
 							<TitleValue title="Utsteder" value={annenGodkjenning.issuer} />
-							<TitleValue
-								title="Fullført"
-								value={Formatters.formatDate(annenGodkjenning.fromDate)}
-							/>
-							<TitleValue title="Utløper" value={Formatters.formatDate(annenGodkjenning.toDate)} />
+							<TitleValue title="Fullført" value={formatDate(annenGodkjenning.fromDate)} />
+							<TitleValue title="Utløper" value={formatDate(annenGodkjenning.toDate)} />
 						</>
 					)}
 				</DollyFieldArray>

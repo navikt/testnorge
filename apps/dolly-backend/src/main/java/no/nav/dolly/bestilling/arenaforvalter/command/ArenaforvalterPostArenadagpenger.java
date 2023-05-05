@@ -6,12 +6,12 @@ import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.securitycore.config.UserConstant;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
-import java.util.List;
+import java.time.Duration;
 import java.util.concurrent.Callable;
 
 import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
@@ -43,16 +43,19 @@ public class ArenaforvalterPostArenadagpenger implements Callable<Flux<ArenaNyeD
                 .bodyValue(arenaDagpenger)
                 .retrieve()
                 .bodyToFlux(ArenaNyeDagpengerResponse.class)
+                .map(response -> {
+                    response.setStatus(HttpStatus.OK);
+                    response.setMiljoe(arenaDagpenger.getMiljoe());
+                    return response;
+                })
                 .doOnError(WebClientFilter::logErrorMessage)
-                .onErrorResume(error ->
+                .onErrorResume(throwable ->
                         Flux.just(ArenaNyeDagpengerResponse.builder()
-                                .nyeDagpFeilList(List.of(ArenaNyeDagpengerResponse.NyDagpFeilV1.builder()
-                                        .miljoe(arenaDagpenger.getMiljoe())
-                                        .personident(arenaDagpenger.getPersonident())
-                                        .melding(WebClientFilter.getMessage(error))
-                                        .build()))
+                                .status(WebClientFilter.getStatus(throwable))
+                                .feilmelding(WebClientFilter.getMessage(throwable))
+                                .miljoe(arenaDagpenger.getMiljoe())
                                 .build()))
-                .onErrorResume(throwable -> throwable instanceof WebClientResponseException.InternalServerError,
-                        throwable -> Mono.empty());
+                .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
+                        .filter(WebClientFilter::is5xxException));
     }
 }

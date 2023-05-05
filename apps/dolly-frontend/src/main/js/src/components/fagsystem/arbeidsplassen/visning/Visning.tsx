@@ -14,8 +14,9 @@ import { KursVisning } from '@/components/fagsystem/arbeidsplassen/visning/parti
 import { SammendragVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/SammendragVisning'
 import { JobboenskerVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/JobboenskerVisning'
 import Panel from '@/components/ui/panel/Panel'
+import { HjemmelVisning } from '@/components/fagsystem/arbeidsplassen/visning/partials/HjemmelVisning'
 
-export const ArbeidsplassenVisning = ({ data, loading }) => {
+export const ArbeidsplassenVisning = ({ data, loading, hjemmel }) => {
 	if (loading) return <Loading label="Laster CV" />
 	if (!data) {
 		return null
@@ -37,6 +38,7 @@ export const ArbeidsplassenVisning = ({ data, loading }) => {
 				<FoererkortVisning data={data.foererkort} />
 				<KursVisning data={data.kurs} />
 				<SammendragVisning data={data.sammendrag} />
+				<HjemmelVisning hjemmel={hjemmel} />
 			</Panel>
 		</>
 	)

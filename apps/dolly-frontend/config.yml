@@ -23,14 +23,14 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad
+        - "https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad"
   replicas:
     min: 1
     max: 2
   port: 8080
   ingresses:
-    - https://dolly.dev.intern.nav.no
-    - https://dolly.ekstern.dev.nav.no
+    - "https://dolly.intern.dev.nav.no"
+    - "https://dolly.ekstern.dev.nav.no"
   accessPolicy:
     outbound:
       rules:
@@ -38,6 +38,7 @@ spec:
         - application: testnav-adresse-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
+        - application: oppsummeringsdokument-service
         - application: testnav-organisasjon-forvalter
         - application: testnorge-profil-api
         - application: testnav-organisasjon-tilgang-service
@@ -57,6 +58,7 @@ spec:
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io

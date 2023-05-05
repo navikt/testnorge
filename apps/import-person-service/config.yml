@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   webproxy: true
   tokenx:
@@ -25,6 +25,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-pdl-forvalter
           cluster: dev-gcp
+    outbound:
+      rules:
+        - application: testnav-pdl-forvalter
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -49,4 +52,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-import-person-service.dev.intern.nav.no"
+    - "https://testnav-import-person-service.intern.dev.nav.no"

@@ -13,6 +13,14 @@ export const gjeldendeBrukerMock = {
 	epost: 'BeASt@bugexterminator.no',
 }
 
+export const personFragmentSearchMock = [
+	{
+		ident: '12345678912',
+		fornavn: 'Testytest',
+		etternavn: 'Cafe',
+	},
+]
+
 export const kodeverkMock = {
 	name: 'Tema',
 	koder: [
@@ -30,12 +38,7 @@ const malBestilling = {
 	pdldata: {
 		opprettNyPerson: {
 			identtype: 'FNR',
-			foedtEtter: null,
-			foedtFoer: null,
-			alder: null,
-			syntetisk: true,
 		},
-		person: null,
 	},
 	tpsMessaging: {},
 	skjerming: {
@@ -50,6 +53,42 @@ export const brukerMalerMock = [
 		bruker: gjeldendeBrukerMock,
 	},
 ]
+
+export const brukerMalerEndretMock = [
+	{
+		id: 1,
+		malNavn: 'Nytt navn på mal',
+		bestilling: malBestilling,
+		bruker: gjeldendeBrukerMock,
+	},
+]
+
+export const uferdigBestillingMock = {
+	id: 2,
+	antallIdenter: 1,
+	antallLevert: 0,
+	ferdig: false,
+	sistOppdatert: '2023-04-21T10:38:10.11282',
+	bruker: gjeldendeBrukerMock,
+	gruppeId: 2,
+	stoppet: false,
+	bestilling: {
+		pdldata: {
+			opprettNyPerson: {
+				identtype: 'FNR',
+				syntetisk: true,
+			},
+		},
+	},
+}
+
+export const avbruttBestillingMock = {
+	...uferdigBestillingMock,
+	stoppet: true,
+	ferdig: true,
+}
+
+export const uferdigeBestillingerMock = [uferdigBestillingMock]
 
 export const brukerOrganisasjonMalerMock = [
 	{
@@ -84,22 +123,22 @@ export const organisasjonerForBrukerMock = [
 			{
 				id: 2,
 				adressetype: 'PADR',
-				adresselinjer: ['Hollendergata 10'],
-				postnr: '4616',
-				poststed: 'KRISTIANSAND S',
-				kommunenr: '4204',
+				adresselinjer: ['Teste testings 4'],
+				postnr: '9999',
+				poststed: 'ØVRE TESTE',
+				kommunenr: '8888',
 				landkode: 'NO',
-				vegadresseId: '219118707',
+				vegadresseId: '123456789',
 			},
 			{
 				id: 3,
 				adressetype: 'FADR',
-				adresselinjer: ['Bjødnatunvegen 5'],
-				postnr: '5784',
-				poststed: 'ØVRE EIDFJORD',
-				kommunenr: '4619',
+				adresselinjer: ['Teste testings 5'],
+				postnr: '9999',
+				poststed: 'ØVRE TESTE',
+				kommunenr: '8888',
 				landkode: 'NO',
-				vegadresseId: '138078915',
+				vegadresseId: '123456789',
 			},
 		],
 		underenheter: [
@@ -119,22 +158,22 @@ export const organisasjonerForBrukerMock = [
 					{
 						id: 2,
 						adressetype: 'PADR',
-						adresselinjer: ['Olaus Fjørtofts vei 71'],
-						postnr: '0982',
+						adresselinjer: ['Teste testes vei 71'],
+						postnr: '1234',
 						poststed: 'OSLO',
-						kommunenr: '0301',
+						kommunenr: '1234',
 						landkode: 'NO',
-						vegadresseId: '285747353',
+						vegadresseId: '123456789',
 					},
 					{
 						id: 3,
 						adressetype: 'FADR',
-						adresselinjer: ['Bjerkebakken 78'],
-						postnr: '0757',
+						adresselinjer: ['Teste testings 70'],
+						postnr: '1234',
 						poststed: 'OSLO',
-						kommunenr: '0301',
+						kommunenr: '1234',
 						landkode: 'NO',
-						vegadresseId: '285818674',
+						vegadresseId: '123456789',
 					},
 				],
 			},
@@ -148,24 +187,24 @@ export const organisasjonFraMiljoeMock = {
 		organisasjonsnavn: 'LOJAL LOGARITME',
 		adresser: [
 			{
-				id: null,
+				id: 1,
 				adressetype: 'PADR',
-				adresselinjer: ['HOLLENDERGATA 10'],
-				postnr: '4616',
-				poststed: 'KRISTIANSAND S',
-				kommunenr: '4204',
+				adresselinjer: ['Teste testes vei 71'],
+				postnr: '1234',
+				poststed: 'OSLO',
+				kommunenr: '1234',
 				landkode: 'NO',
-				vegadresseId: null,
+				vegadresseId: '123456789',
 			},
 			{
-				id: null,
+				id: 2,
 				adressetype: 'FADR',
-				adresselinjer: ['BJØDNATUNVEGEN 5'],
-				postnr: '5784',
-				poststed: 'ØVRE EIDFJORD',
-				kommunenr: '4619',
+				adresselinjer: ['Teste testes vei 72'],
+				postnr: '1234',
+				poststed: 'OSLO',
+				kommunenr: '1234',
 				landkode: 'NO',
-				vegadresseId: null,
+				vegadresseId: '123456789',
 			},
 		],
 		underenheter: [
@@ -175,24 +214,24 @@ export const organisasjonFraMiljoeMock = {
 				organisasjonsnavn: 'HORISONTAL FEIL',
 				adresser: [
 					{
-						id: null,
+						id: 1,
 						adressetype: 'PADR',
-						adresselinjer: ['OLAUS FJØRTOFTS VEI 71'],
-						postnr: '0982',
+						adresselinjer: ['Teste testes vei 71'],
+						postnr: '1234',
 						poststed: 'OSLO',
-						kommunenr: '0301',
+						kommunenr: '1234',
 						landkode: 'NO',
-						vegadresseId: null,
+						vegadresseId: '123456789',
 					},
 					{
-						id: null,
+						id: 2,
 						adressetype: 'FADR',
-						adresselinjer: ['BJERKEBAKKEN 78'],
-						postnr: '0757',
+						adresselinjer: ['Teste testes vei 72'],
+						postnr: '1234',
 						poststed: 'OSLO',
-						kommunenr: '0301',
+						kommunenr: '1234',
 						landkode: 'NO',
-						vegadresseId: null,
+						vegadresseId: '123456789',
 					},
 				],
 			},
@@ -213,7 +252,6 @@ export const krrstubMock = [
 		epostOppdatert: '2023-01-05T15:40:41.696465+01:00',
 		epostVerifisert: '2023-01-05T15:40:41.696468+01:00',
 		sdpAdresse: '',
-		sdpLeverandoer: null,
 		registrert: true,
 		spraak: '',
 		spraakOppdatert: '2023-01-05T15:40:41.696471+01:00',
@@ -267,6 +305,71 @@ export const sigrunstubMock = {
 
 export const aaregMock = [
 	{
+		amelding: [
+			{
+				maaned: '2023-01',
+				arbeidsforhold: [
+					{
+						ansettelsesPeriode: {
+							fom: '2003-04-26T00:00:00',
+						},
+						antallTimerForTimeloennet: [],
+						arbeidsavtale: {
+							yrke: '0030320',
+						},
+						permisjon: [],
+						permittering: [],
+						utenlandsopphold: [],
+						arbeidsgiver: {
+							aktoertype: 'ORG',
+							orgnummer: '961475457',
+						},
+					},
+				],
+			},
+			{
+				maaned: '2023-02',
+				arbeidsforhold: [
+					{
+						ansettelsesPeriode: {
+							fom: '2003-04-26T00:00:00',
+						},
+						antallTimerForTimeloennet: [],
+						arbeidsavtale: {
+							yrke: '0030320',
+						},
+						permisjon: [],
+						permittering: [],
+						utenlandsopphold: [],
+						arbeidsgiver: {
+							aktoertype: 'ORG',
+							orgnummer: '961475457',
+						},
+					},
+				],
+			},
+			{
+				maaned: '2023-03',
+				arbeidsforhold: [
+					{
+						ansettelsesPeriode: {
+							fom: '2003-04-26T00:00:00',
+						},
+						antallTimerForTimeloennet: [],
+						arbeidsavtale: {
+							yrke: '0030320',
+						},
+						permisjon: [],
+						permittering: [],
+						utenlandsopphold: [],
+						arbeidsgiver: {
+							aktoertype: 'ORG',
+							orgnummer: '961475457',
+						},
+					},
+				],
+			},
+		],
 		ansettelsesperiode: {
 			periode: {
 				fom: '2002-10-03',
@@ -310,12 +413,12 @@ export const tpsMessagingMock = [
 			egenAnsattDatoFom: '2022-10-03T00:00:00',
 			boadresse: {
 				adressetype: 'GATE',
-				kommunenr: '3819',
+				kommunenr: '9876',
 				flyttedato: '1992-01-11T00:00:00',
 				postnr: '3697',
 				adresse: 'TESTEVEIEN',
 				husnummer: '2077',
-				gatekode: '01007',
+				gatekode: '01234',
 			},
 			relasjoner: [
 				{
@@ -367,7 +470,7 @@ export const tpsMessagingMock = [
 			],
 			sprakKode: 'AB',
 			gtType: 'KNR',
-			gtVerdi: '3819',
+			gtVerdi: '0987',
 			gtRegel: 'A',
 			personStatus: 'BOSA',
 			importFra: 'TPS',
@@ -381,7 +484,6 @@ export const tpsMessagingMock = [
 			bankkontonrNorsk: {
 				kontonummer: '0043.84.08177',
 				kontoRegdato: '2022-10-03T00:00:00',
-				tilfeldigKontonummer: null,
 			},
 		},
 		status: 'OK',
@@ -395,7 +497,6 @@ export const instMock = [
 		institusjonstype: 'AS',
 		oppholdstype: 'A',
 		startdato: '2022-01-01',
-		sluttdato: null,
 		registrertAv: 'Dolly',
 	},
 ]
@@ -406,7 +507,7 @@ export const udistubMock = {
 		arbeidsadgang: {
 			harArbeidsAdgang: 'JA',
 			typeArbeidsadgang: 'BESTEMT_ARBEIDSGIVER_ELLER_OPPDRAGSGIVER',
-			hjemmel: 'kapplah',
+			hjemmel: 'testetest',
 		},
 		flyktning: true,
 		foedselsDato: '1992-01-11',
@@ -420,8 +521,6 @@ export const udistubMock = {
 		},
 		soeknadOmBeskyttelseUnderBehandling: 'NEI',
 	},
-	reason: null,
-	status: null,
 }
 
 export const skjermingMock = {
@@ -431,7 +530,6 @@ export const skjermingMock = {
 	opprettetDato: '2022-10-03 11:59:24',
 	personident: '12345678912',
 	skjermetFra: '2022-01-01 11:48:14',
-	skjermetTil: null,
 }
 
 export const brregstubMock = {
@@ -439,17 +537,14 @@ export const brregstubMock = {
 	fodselsdato: '1992-01-11',
 	navn: {
 		navn1: 'Cafe',
-		navn2: null,
 		navn3: 'Test',
 	},
 	adresse: {
 		adresse1: 'Testeveien 2077',
-		adresse2: null,
-		adresse3: null,
-		postnr: '3697',
+		postnr: '1234',
 		poststed: 'UKJENT',
 		landKode: 'NO',
-		kommunenr: '3819',
+		kommunenr: '9876',
 	},
 	enheter: [
 		{
@@ -458,19 +553,14 @@ export const brregstubMock = {
 			orgNr: 905203975,
 			foretaksNavn: {
 				navn1: 'Mitt helt eget selskap',
-				navn2: null,
-				navn3: null,
 			},
 			forretningsAdresse: {
 				adresse1: 'Testeveien 51',
-				adresse2: null,
-				adresse3: null,
-				postnr: '4372',
-				poststed: 'EGERSUND',
+				postnr: '1234',
+				poststed: 'TESTINGS',
 				landKode: 'NO',
-				kommunenr: '1101',
+				kommunenr: '1234',
 			},
-			postAdresse: null,
 		},
 	],
 	hovedstatus: 0,
@@ -511,13 +601,11 @@ export const pensjonMock = [
 export const pensjonTpMock = [{ ordning: '4095' }, { ordning: '3010' }]
 
 export const kontoregisterMock = {
-	aktivKonto: {
-		kontohaver: '12345678912',
-		kontonummer: '99999999999',
-		gyldigFom: '2022-01-01T11:58:24.030845',
-		opprettetAv: 'Dolly',
-		kilde: 'testnav-kontoregister-person-proxy-trygdeetaten',
-	},
+	kontohaver: '12345678912',
+	kontonummer: '99999999999',
+	gyldigFom: '2022-01-01T11:58:24.030845',
+	opprettetAv: 'Dolly',
+	kilde: 'testnav-kontoregister-person-proxy-trygdeetaten',
 }
 
 export const joarkJournalpostMock = {
@@ -539,7 +627,7 @@ export const joarkJournalpostMock = {
 
 export const joarkDokumentMock =
 	'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\n' +
-	'<melding xmlns="http://seres.no/xsd/NAV/Inntektsmelding_M/20181211">\n' +
+	'<melding xmlns="http://testings.no">\n' +
 	'    <Skjemainnhold>\n' +
 	'        <ytelse>Sykepenger</ytelse>\n' +
 	'        <aarsakTilInnsending>Ny</aarsakTilInnsending>\n' +
@@ -583,11 +671,93 @@ export const joarkDokumentMock =
 	'    </Skjemainnhold>\n' +
 	'</melding>\n'
 
-export const varslingerVelkommenResponseMock = [
-	{ varslingId: 'VELKOMMEN_TIL_DOLLY', fom: null, tom: null },
-]
+export const varslingerVelkommenResponseMock = [{ varslingId: 'VELKOMMEN_TIL_DOLLY' }]
 
 export const malerMock = { malbestillinger: ['Cypress, Testytest', []] }
+
+export const oppsummeringsdokumentServiceMock = [
+	{
+		kalendermaaned: '2023-01-01',
+		opplysningspliktigOrganisajonsnummer: '806222747',
+		virksomheter: [
+			{
+				organisajonsnummer: '961475457',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'forenkletOppgjoersordning',
+								startdato: '2003-04-26',
+								antallTimerPerUke: 37.5,
+								yrke: '0030320',
+								permisjoner: [],
+								inntekter: [],
+								avvik: [],
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 7,
+	},
+	{
+		kalendermaaned: '2023-02-01',
+		opplysningspliktigOrganisajonsnummer: '806222747',
+		virksomheter: [
+			{
+				organisajonsnummer: '961475457',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'forenkletOppgjoersordning',
+								startdato: '2003-04-26',
+								antallTimerPerUke: 37.5,
+								yrke: '0030320',
+								permisjoner: [],
+								inntekter: [],
+								avvik: [],
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 7,
+	},
+	{
+		kalendermaaned: '2023-03-01',
+		opplysningspliktigOrganisajonsnummer: '806222747',
+		virksomheter: [
+			{
+				organisajonsnummer: '961475457',
+				personer: [
+					{
+						ident: '12345678912',
+						arbeidsforhold: [
+							{
+								arbeidsforholdId: '1',
+								typeArbeidsforhold: 'forenkletOppgjoersordning',
+								startdato: '2003-04-26',
+								antallTimerPerUke: 37.5,
+								yrke: '0030320',
+								permisjoner: [],
+								inntekter: [],
+								avvik: [],
+							},
+						],
+					},
+				],
+			},
+		],
+		version: 5,
+	},
+]
 
 export const backendBestillingerMock = [
 	{
@@ -792,7 +962,7 @@ export const backendBestillingerMock = [
 			},
 			{
 				id: 'DOKARKIV',
-				navn: 'Dokumentarkiv (JOARK)',
+				navn: 'Dokumentarkiv (Joark)',
 				statuser: [
 					{
 						melding: 'OK',
@@ -972,7 +1142,7 @@ export const backendBestillingerMock = [
 							},
 						},
 						arbeidsgiver: {
-							virksomhetsnummer: '947064649',
+							virksomhetsnummer: '123456789',
 						},
 						avsendersystem: {
 							innsendingstidspunkt: '2022-10-03T11:48:20',
@@ -994,13 +1164,13 @@ export const backendBestillingerMock = [
 							navn1: 'Mitt helt eget selskap',
 						},
 						forretningsAdresse: {
-							adresse1: 'Sokndalsveien 51',
-							kommunenr: '1101',
+							adresse1: 'Testeveien 123',
+							kommunenr: '1234',
 							landKode: 'NO',
-							postnr: '4372',
-							poststed: 'EGERSUND',
+							postnr: '4321',
+							poststed: 'TESTER',
 						},
-						orgNr: 905203975,
+						orgNr: 987654321,
 						registreringsdato: '2022-10-03T11:48:27',
 						rolle: 'BOBE',
 						personroller: [],
@@ -1023,9 +1193,10 @@ export const backendBestillingerMock = [
 					},
 				],
 			},
+			histark: {},
 			sykemelding: {
 				syntSykemelding: {
-					orgnummer: '947064649',
+					orgnummer: '987654321',
 					startDato: '2022-10-03T11:48:22',
 				},
 			},
@@ -1078,7 +1249,7 @@ export const backendBestillingerMock = [
 							master: 'FREG',
 							gyldigFraOgMed: '2022-09-26T01:00:00',
 							vegadresse: {
-								postnummer: '7318',
+								postnummer: '1234',
 							},
 						},
 					],
@@ -1146,7 +1317,7 @@ export const backendBestillingerMock = [
 									mellomnavn: 'REFLEKTERENDE',
 								},
 								organisasjonsnavn: 'Sjokkerende elektriker',
-								organisasjonsnummer: '947064649',
+								organisasjonsnummer: '123456789',
 							},
 						},
 					],
@@ -1294,7 +1465,7 @@ export const backendBestillingerMock = [
 				statuser: [
 					{
 						melding: 'OK',
-						identer: ['01418221999'],
+						identer: ['12345678912'],
 					},
 				],
 			},
@@ -1304,7 +1475,7 @@ export const backendBestillingerMock = [
 				statuser: [
 					{
 						melding: 'Kombinasjonen av feltene i inntekten er ikke gyldig',
-						identer: ['01418221999'],
+						identer: ['12345678912'],
 					},
 				],
 			},
@@ -1317,7 +1488,7 @@ export const backendBestillingerMock = [
 						detaljert: [
 							{
 								miljo: 'q1',
-								identer: ['01418221999'],
+								identer: ['12345678912'],
 							},
 						],
 					},
@@ -1341,9 +1512,6 @@ export const backendBestillingerMock = [
 			pdldata: {
 				opprettNyPerson: {
 					identtype: 'FNR',
-					foedtEtter: null,
-					foedtFoer: null,
-					alder: null,
 					syntetisk: true,
 				},
 			},
@@ -1384,6 +1552,7 @@ export const eksisterendeGruppeMock = {
 	sistEndretAv: gjeldendeBrukerMock,
 	datoEndret: '1980-01-12',
 	antallIdenter: 1,
+	antallBestillinger: 3,
 	antallIBruk: 0,
 	erEierAvGruppe: true,
 	favorittIGruppen: false,
@@ -1392,9 +1561,30 @@ export const eksisterendeGruppeMock = {
 	tags: [],
 }
 
+export const histarkMock = {
+	antallSider: 1,
+	enhetsNr: '1234',
+	enhetsNavn: 'Testy',
+	temaKodeSet: ['ABC'],
+	fnrEllerOrgnr: '123456789012',
+	startaar: 2021,
+	sluttaar: 2023,
+	skanningstidspunkt: '2023-04-14T14:11:32',
+	filnavn: 'small-test.pdf',
+	skanner: 'Skanner',
+	skannerSted: 'Teste',
+	inneholderKlage: false,
+}
+
 export const paginerteGrupperMock = {
 	contents: [eksisterendeGruppeMock],
 	favoritter: [nyGruppeMock],
 }
 
 export const miljoeMock = '["q1","q2","q4","q5","t3"]'
+export const personFragmentNavigerMock = {
+	gruppe: eksisterendeGruppeMock,
+	identHovedperson: '12345678912',
+	identNavigerTil: '12345678912',
+	sidetall: 0,
+}

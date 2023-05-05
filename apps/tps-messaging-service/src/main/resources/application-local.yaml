@@ -16,3 +16,8 @@ config:
       password: passw0rd
     channel: DEV.ADMIN.SVRCONN
     queue: DEV.QUEUE.1
+
+consumers:
+  testmiljoer:
+    service:
+      url: https://testnav-miljoer-service.intern.dev.nav.no

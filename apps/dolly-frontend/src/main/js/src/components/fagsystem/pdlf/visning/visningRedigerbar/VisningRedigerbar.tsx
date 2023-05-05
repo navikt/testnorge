@@ -18,6 +18,7 @@ import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/ad
 import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import { FullmaktForm } from '@/components/fagsystem/pdlf/form/partials/fullmakt/Fullmakt'
 import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
@@ -33,7 +34,9 @@ import {
 	kontaktadresse,
 	oppholdsadresse,
 	vergemaal,
+	fullmakt,
 	sivilstand,
+	kontaktDoedsbo,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -41,6 +44,7 @@ import {
 	Modus,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -62,11 +66,13 @@ enum Attributt {
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
 	Vergemaal = 'vergemaal',
+	Fullmakt = 'fullmakt',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
 	Adressebeskyttelse = 'adressebeskyttelse',
 	Sivilstand = 'sivilstand',
+	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
 }
 
 const FieldArrayEdit = styled.div`
@@ -134,7 +140,7 @@ export const VisningRedigerbar = ({
 			const id = _.get(data, `${path}.id`)
 			const itemData = _.get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
+			await PdlforvalterApi.putAttributt(ident, path?.toLowerCase(), id, itemData)
 				.catch((error: Error) => {
 					pdlfError(error)
 				})
@@ -160,7 +166,7 @@ export const VisningRedigerbar = ({
 		const slett = async () => {
 			const id = _.get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.deleteAttributt(ident, path, id)
+			await PdlforvalterApi.deleteAttributt(ident, path?.toLowerCase(), id)
 				.catch((error: Error) => {
 					pdlfError(error)
 				})
@@ -202,6 +208,14 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.Fullmakt:
+				return (
+					<FullmaktForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 			case Attributt.Boadresse:
 				return <BostedsadresseForm formikBag={formikBag} path={path} identtype={identtype} />
 			case Attributt.Oppholdsadresse:
@@ -224,6 +238,14 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.KontaktinformasjonForDoedsbo:
+				return (
+					<KontaktinformasjonForDoedsboForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 		}
 	}
 
@@ -234,11 +256,13 @@ export const VisningRedigerbar = ({
 			innflytting: ifPresent('innflytting', innflytting),
 			utflytting: ifPresent('utflytting', utflytting),
 			vergemaal: ifPresent('vergemaal', vergemaal),
+			fullmakt: ifPresent('fullmakt', fullmakt),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
 			sivilstand: ifPresent('sivilstand', sivilstand),
+			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
 		},
 		[
 			['doedsfall', 'doedsfall'],
@@ -246,11 +270,13 @@ export const VisningRedigerbar = ({
 			['innflytting', 'innflytting'],
 			['utflytting', 'utflytting'],
 			['vergemaal', 'vergemaal'],
+			['fullmakt', 'fullmakt'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
 			['sivilstand', 'sivilstand'],
+			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 		]
 	)
 

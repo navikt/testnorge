@@ -35,7 +35,7 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 		<div className="bestilling-detaljer">
 			<BestillingSammendrag bestilling={bestilling} />
 
-			{harIdenterOpprettet && (
+			{harIdenterOpprettet && !erOrganisasjon && (
 				<div className="flexbox--align-center--justify-end info-block">
 					{!iLaastGruppe && (
 						<Button

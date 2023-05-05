@@ -351,7 +351,9 @@ export const VisningRedigerbarPersondetaljer = ({
 						</div>
 					</div>
 					<div className="slettModal-actions">
-						<NavButton onClick={close}>Avbryt</NavButton>
+						<NavButton onClick={close} variant={'secondary'}>
+							Avbryt
+						</NavButton>
 						<NavButton
 							onClick={() => {
 								close()
@@ -407,7 +409,7 @@ export const VisningRedigerbarPersondetaljer = ({
 									</div>
 									<Knappegruppe>
 										<NavButton
-											variant={'primary'}
+											variant={'secondary'}
 											onClick={() => setVisningModus(Modus.Les)}
 											disabled={formikBag.isSubmitting}
 											style={{ top: '1.75px' }}

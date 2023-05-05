@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +19,13 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArenaNyeDagpengerResponse {
 
-    public enum DagpFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, AKTIVER_DAGP}
+    private HttpStatus status;
+    private String feilmelding;
+    private String miljoe;
 
+    public enum DagpFeilstatus {DUPLIKAT, MILJOE_IKKE_STOETTET, AKTIVER_DAGP}
     private List<Dagp> nyeDagp;
+    private List<NyeDagpResponse> nyeDagpResponse;
     private List<NyDagpFeilV1> nyeDagpFeilList;
 
     @Data
@@ -70,6 +75,13 @@ public class ArenaNyeDagpengerResponse {
             nyeDagp = new ArrayList<>();
         }
         return nyeDagp;
+    }
+
+    public List<NyeDagpResponse> getNyeDagpResponse() {
+        if (isNull(nyeDagpResponse)) {
+            nyeDagpResponse = new ArrayList<>();
+        }
+        return nyeDagpResponse;
     }
 
     public List<NyDagpFeilV1> getNyeDagpFeilList() {

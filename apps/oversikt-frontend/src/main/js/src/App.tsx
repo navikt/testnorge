@@ -9,6 +9,7 @@ import { LoadableComponent } from '@navikt/dolly-komponenter'
 import { ScopeAccessTokenPage } from '@/pages/ScopeAccessTokenPage'
 import LoginPage from '@/pages/LoginPage'
 import { UserPage } from '@/pages/UserPage'
+import * as _ from 'lodash-es'
 
 export default () => (
 	<BrowserRouter>
@@ -21,21 +22,30 @@ export default () => (
 				element={
 					<LoadableComponent
 						onFetch={ApplicationService.fetchApplications}
-						render={(items) => (
-							<AccessTokenPage
-								navigations={items.map((application) => ({
-									href:
-										'/access-token/' +
-										application.cluster?.replace('unknown', 'dev-gcp') +
-										'.' +
-										application.namespace +
-										'.' +
-										application.name,
-									label: application.name,
-									content: application,
-								}))}
-							/>
-						)}
+						render={(items) => {
+							const uniqueItems = _.uniqBy(items, 'name')
+							return (
+								<AccessTokenPage
+									navigations={uniqueItems.map((application) => {
+										const cluster = application.cluster?.replace(
+											'unknown',
+											application?.name?.includes('proxy') ? 'dev-fss' : 'dev-gcp'
+										)
+										return {
+											href:
+												'/access-token/' +
+												cluster +
+												'.' +
+												application.namespace +
+												'.' +
+												application.name,
+											label: application.name,
+											content: application,
+										}
+									})}
+								/>
+							)
+						}}
 					/>
 				}
 			/>

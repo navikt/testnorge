@@ -19,12 +19,12 @@ export const initialJobboenskerVerdier = {
 			styrk08: '9212',
 		},
 		{
-			title: 'Typograf',
-			styrk08: '7321',
+			title: 'Saueklipper',
+			styrk08: '6121',
 		},
 		{
-			title: 'Utvikler',
-			styrk08: '9999',
+			title: 'Ullklassifisør',
+			styrk08: '7543',
 		},
 	],
 	locations: [
@@ -209,3 +209,52 @@ export const initialKursVerdier = {
 
 export const initialSammendragVerdi =
 	'Trivelig person med kjærlighet for sau, som har tonnevis med allsidig kompetanse og fantastiske personlige egenskaper.'
+
+export const initialHistark = {
+	dokumenter: [
+		{
+			tittel: '',
+			antallSider: -1,
+			skanner: '',
+			skannested: '',
+			skanningsTidspunkt: new Date(),
+			temakoder: [],
+			enhetsnavn: '',
+			enhetsnummer: '',
+			startAar: new Date(),
+			sluttAar: new Date(),
+			fysiskDokument: '',
+		},
+	],
+}
+
+export const initialDigitalInnsending = {
+	tittel: '',
+	tema: '',
+	kanal: 'NAV_NO',
+	avsenderMottaker: {
+		id: '',
+		navn: '',
+		idType: '',
+	},
+	journalfoerendeEnhet: undefined,
+	dokumenter: [
+		{
+			tittel: '',
+			brevkode: '',
+		},
+	],
+}
+
+export const initialDokarkiv = {
+	tittel: '',
+	tema: '',
+	kanal: 'SKAN_IM',
+	journalfoerendeEnhet: undefined,
+	dokumenter: [
+		{
+			tittel: '',
+			brevkode: '',
+		},
+	],
+}

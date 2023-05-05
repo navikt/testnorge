@@ -3,7 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import * as _ from 'lodash-es'
 import {
@@ -39,7 +39,7 @@ type FoedselVisningTypes = {
 const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 	return (
 		<div className="person-visning_redigerbar" key={idx}>
-			<TitleValue title="Fødselsdato" value={Formatters.formatDate(foedsel.foedselsdato)} />
+			<TitleValue title="Fødselsdato" value={formatDate(foedsel.foedselsdato)} />
 			<TitleValue title="Fødselsår" value={foedsel.foedselsaar} />
 			<TitleValue title="Fødested" value={foedsel.foedested} />
 			<TitleValue title="Fødekommune">

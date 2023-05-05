@@ -45,4 +45,4 @@ spec:
       cpu: 200m
       memory: 1024Mi
   ingresses:
-    - "https://testnav-inntektsmelding-generator-service.dev.intern.nav.no"
+    - "https://testnav-inntektsmelding-generator-service.intern.dev.nav.no"

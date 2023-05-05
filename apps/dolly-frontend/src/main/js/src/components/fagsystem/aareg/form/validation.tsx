@@ -68,7 +68,7 @@ const fullArbeidsforholdTest = (arbeidsforholdValidation) => {
 }
 
 const ansettelsesPeriode = Yup.object({
-	fom: testDatoFom(requiredDate, 'tom'),
+	fom: testDatoFom(requiredDate.nullable(), 'tom'),
 	tom: testDatoTom(Yup.date().nullable(), 'fom'),
 	sluttaarsak: Yup.string().nullable(),
 })
@@ -77,15 +77,17 @@ const arbeidsgiver = Yup.object({
 	aktoertype: requiredString,
 	orgnummer: Yup.string().when('aktoertype', {
 		is: 'ORG',
-		then: Yup.string()
-			.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
-			.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9),
+		then: () =>
+			Yup.string()
+				.matches(/^\d*$/, 'Orgnummer må være et tall med 9 sifre')
+				.test('len', 'Orgnummer må være et tall med 9 sifre', (val) => val && val.length === 9),
 	}),
 	ident: Yup.string().when('aktoertype', {
 		is: 'PERS',
-		then: Yup.string()
-			.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
-			.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
+		then: () =>
+			Yup.string()
+				.matches(/^\d*$/, 'Ident må være et tall med 11 sifre')
+				.test('len', 'Ident må være et tall med 11 sifre', (val) => val && val.length === 11),
 	}),
 })
 
@@ -117,15 +119,15 @@ const fartoy = Yup.array()
 const requiredPeriode = Yup.mixed()
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'frilanserOppdragstakerHonorarPersonerMm',
-		then: requiredDate,
+		then: () => requiredDate,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'maritimtArbeidsforhold',
-		then: requiredDate,
+		then: () => requiredDate,
 	})
 	.when('$aareg[0].arbeidsforholdstype', {
 		is: 'ordinaertArbeidsforhold',
-		then: requiredDate,
+		then: () => requiredDate,
 	})
 	.nullable()
 

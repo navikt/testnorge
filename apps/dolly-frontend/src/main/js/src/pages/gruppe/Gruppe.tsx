@@ -17,6 +17,7 @@ import StatusListeConnector from '@/components/bestilling/statusListe/StatusList
 import './Gruppe.less'
 import { GruppeFeil, GruppeFeilmelding } from '@/pages/gruppe/GruppeFeil/GruppeFeilmelding'
 import { ToggleGroup } from '@navikt/ds-react'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 export type GruppeProps = {
 	visning: string
@@ -108,6 +109,7 @@ export default ({
 				<div className="gruppe--full gruppe--flex-row-center">
 					{!bankIdBruker && (
 						<NavButton
+							data-cy={CypressSelector.BUTTON_OPPRETT_PERSONER}
 							variant={'primary'}
 							onClick={visStartBestilling}
 							disabled={erLaast}
@@ -120,6 +122,7 @@ export default ({
 						</NavButton>
 					)}
 					<NavButton
+						data-cy={CypressSelector.BUTTON_IMPORTER_PERSONER}
 						variant={bankIdBruker ? 'primary' : 'secondary'}
 						onClick={() =>
 							navigate(`/testnorge`, {
@@ -145,6 +148,7 @@ export default ({
 						style={{ backgroundColor: '#ffffff' }}
 					>
 						<ToggleGroup.Item
+							data-cy={CypressSelector.TOGGLE_VISNING_PERSONER}
 							key={VisningType.VISNING_PERSONER}
 							value={VisningType.VISNING_PERSONER}
 						>
@@ -153,9 +157,10 @@ export default ({
 								size={13}
 								kind={visning === VisningType.VISNING_PERSONER ? 'manLight' : 'man'}
 							/>
-							{`Personer (${gruppe.antallIdenter})`}
+							{`Personer (${gruppe.antallIdenter || 0})`}
 						</ToggleGroup.Item>
 						<ToggleGroup.Item
+							data-cy={CypressSelector.TOGGLE_VISNING_BESTILLINGER}
 							key={VisningType.VISNING_BESTILLING}
 							value={VisningType.VISNING_BESTILLING}
 						>
@@ -164,7 +169,7 @@ export default ({
 								size={13}
 								kind={visning === VisningType.VISNING_BESTILLING ? 'bestillingLight' : 'bestilling'}
 							/>
-							{`Bestillinger (${gruppe.antallBestillinger})`}
+							{`Bestillinger (${gruppe.antallBestillinger || 0})`}
 						</ToggleGroup.Item>
 					</ToggleGroup>
 				</div>

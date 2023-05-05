@@ -9,7 +9,7 @@ grand_parent: Applikasjoner
 
 API for å sende inn oppsummeringsdokumenter til AAreg, og søke i de innsendte dokumentene.
 
-Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.dev.intern.nav.no/swagger) -endepunktet.
+Applikasjonen kan nås fra [/swagger](https://oppsummeringsdokument-service.intern.dev.nav.no/swagger) -endepunktet.
 
 ## Lokal utvikling
 

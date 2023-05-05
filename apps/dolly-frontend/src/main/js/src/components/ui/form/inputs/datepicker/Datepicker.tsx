@@ -28,6 +28,7 @@ export const Datepicker = ({
 	excludeDates,
 	minDate,
 	maxDate,
+	...props
 }) => {
 	return (
 		<ReactDatepicker
@@ -38,7 +39,7 @@ export const Datepicker = ({
 			onChange={onChange}
 			showMonthDropdown
 			showYearDropdown
-			minDate={minDate || subYears(new Date(), 100)}
+			minDate={minDate || subYears(new Date(), 125)}
 			maxDate={maxDate || addYears(new Date(), 5)}
 			dropdownMode="select"
 			disabled={disabled}
@@ -48,6 +49,7 @@ export const Datepicker = ({
 			autoComplete="off"
 			customInput={<TextInput icon="calendar" feil={feil} />}
 			excludeDates={excludeDates}
+			{...props}
 		/>
 	)
 }

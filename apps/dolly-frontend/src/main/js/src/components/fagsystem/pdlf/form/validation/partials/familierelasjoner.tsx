@@ -123,9 +123,7 @@ const testDeltBostedAdressetype = (value) => {
 export const nyPerson = Yup.object({
 	identtype: Yup.string().nullable(),
 	kjoenn: Yup.string().nullable(),
-	alder: Yup.number()
-		.transform((i, j) => (j === '' ? null : i))
-		.nullable(),
+	alder: Yup.mixed().nullable(),
 	foedtEtter: testDatoFom(Yup.mixed().nullable(), 'foedtFoer', 'Dato må være før født før-dato'),
 	foedtFoer: testDatoTom(
 		Yup.mixed().nullable(),
@@ -146,7 +144,7 @@ export const doedfoedtBarn = Yup.array().of(
 )
 
 export const sivilstand = Yup.object({
-	type: requiredString.nullable(),
+	type: requiredString,
 	sivilstandsdato: Yup.string().nullable(),
 	relatertVedSivilstand: Yup.string().nullable(),
 	bekreftelsesdato: Yup.string().nullable(),
@@ -155,7 +153,7 @@ export const sivilstand = Yup.object({
 })
 
 const deltBosted = Yup.object({
-	adressetype: testDeltBostedAdressetype(requiredString.nullable()),
+	adressetype: testDeltBostedAdressetype(requiredString),
 	startdatoForKontrakt: testDatoFom(
 		Yup.date().optional().nullable(),
 		'sluttdatoForKontrakt',
@@ -170,9 +168,10 @@ const deltBosted = Yup.object({
 	matrikkeladresse: matrikkeladresse.nullable(),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
-		then: Yup.object({
-			bostedskommune: requiredString.nullable(),
-		}),
+		then: () =>
+			Yup.object({
+				bostedskommune: requiredString,
+			}),
 	}),
 })
 
@@ -183,19 +182,19 @@ export const forelderBarnRelasjon = Yup.array().of(
 		relatertPerson: Yup.string().nullable(),
 		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
-			then: Yup.mixed().notRequired(),
-			otherwise: Yup.boolean(),
+			then: () => Yup.mixed().notRequired(),
+			otherwise: () => Yup.boolean(),
 		}),
 		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('relatertPersonsRolle', {
 			is: 'BARN',
-			then: deltBosted.nullable(),
+			then: () => deltBosted.nullable(),
 		}),
 	})
 )
 
 export const foreldreansvar = Yup.array().of(
 	Yup.object({
-		ansvar: testForeldreansvar(requiredString.nullable()),
+		ansvar: testForeldreansvar(requiredString),
 	})
 )

@@ -15,11 +15,12 @@ import styled from 'styled-components'
 import * as _ from 'lodash-es'
 import { tpsfAttributter } from '@/components/bestillingsveileder/utils'
 import { Mal, useDollyMaler } from '@/utils/hooks/useMaler'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 const initialValues = {
 	antall: 1,
 	identtype: Options('identtype')[0].value,
-	mal: null as string,
+	mal: null as unknown as string,
 }
 
 export type NyBestillingProps = {
@@ -90,6 +91,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 						<div className="ny-bestilling-form_maler">
 							<div>
 								<DollyCheckbox
+									data-cy={CypressSelector.TOGGLE_MAL}
 									name="aktiver-maler"
 									onChange={() => handleMalChange(formikBag)}
 									label="Opprett fra mal"
@@ -135,6 +137,7 @@ export const NyIdent = ({ brukernavn, onAvbryt, onSubmit }: NyBestillingProps) =
 							</div>
 						</div>
 						<ModalActionKnapper
+							data-cy={CypressSelector.BUTTON_START_BESTILLING}
 							submitknapp="Start bestilling"
 							disabled={!formikBag.isValid || formikBag.isSubmitting}
 							onSubmit={formikBag.handleSubmit}

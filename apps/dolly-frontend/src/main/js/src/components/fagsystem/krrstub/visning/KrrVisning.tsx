@@ -1,6 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean, showLabel } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { KrrApi } from '@/service/Api'
 import DollyModal from '@/components/ui/modal/DollyModal'
@@ -18,6 +18,7 @@ const EditDeleteKnapper = styled.div`
 	position: absolute;
 	right: 8px;
 	margin-top: -10px;
+
 	&&& {
 		button {
 			position: relative;
@@ -77,22 +78,18 @@ export const Visning = ({ data }: VisningProps) => {
 				render={(response) =>
 					data && (
 						<>
-							<TitleValue title="Gyldig fra" value={Formatters.formatDate(data.gyldigFra)} />
-							<TitleValue
-								title="Registrert i KRR"
-								value={Formatters.oversettBoolean(data.registrert)}
-							/>
+							<TitleValue title="Gyldig fra" value={formatDate(data.gyldigFra)} />
+							<TitleValue title="Registrert i KRR" value={oversettBoolean(data.registrert)} />
 							<TitleValue
 								title="Reservert mot digitalkommunikasjon"
-								value={Formatters.oversettBoolean(data.reservert)}
+								value={oversettBoolean(data.reservert)}
 							/>
 							<TitleValue title="E-post" value={data.epost} />
 							<TitleValue title="Mobilnummer" value={data.mobil} />
 							<TitleValue
 								title="Språk"
 								value={
-									data.spraak &&
-									Formatters.showLabel('spraaktype', data.spraak.toLowerCase().replace(' ', ''))
+									data.spraak && showLabel('spraaktype', data.spraak.toLowerCase().replace(' ', ''))
 								}
 							/>
 							<TitleValue title="SDP Adresse" value={data.sdpAdresse} />
@@ -123,7 +120,9 @@ export const Visning = ({ data }: VisningProps) => {
 											</h4>
 										</div>
 										<div className="slettModal-actions">
-											<NavButton onClick={closeModal}>Nei</NavButton>
+											<NavButton onClick={closeModal} variant={'secondary'}>
+												Nei
+											</NavButton>
 											<NavButton
 												onClick={() => {
 													closeModal()

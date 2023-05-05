@@ -50,7 +50,8 @@ spec:
     outbound:
       rules:
         - application: synthdata-arena-meldekort
-          cluster: dev-gcp
+      external:
+        - host: synthdata-arena-meldekort.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -76,4 +77,4 @@ spec:
   envFrom:
     - secret: azure-nav-testnav-synthdata-meldekort-proxy-nav
   ingresses:
-    - "https://testnav-synthdata-meldekort-proxy.dev.intern.nav.no"
+    - "https://testnav-synthdata-meldekort-proxy.intern.dev.nav.no"

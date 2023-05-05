@@ -30,10 +30,13 @@ const weekDay = new Date().getDay()
 const isHalloween = (month === 9 && day > 14) || (month === 10 && day === 0)
 const isWinter = month === 0 || month === 1
 const isChristmas = month === 11
+const isEaster = (month === 2 && day > 21) || (month === 3 && day === 1)
 
 const DefaultBackground = styled.div`
 	background-image: url(${() => {
-		if (month >= 2 && month <= 4) {
+		if (isEaster) {
+			return Paaske
+		} else if (month >= 2 && month <= 4) {
 			return Spring
 		} else if (month >= 5 && month <= 7) {
 			return Sommer
@@ -61,14 +64,6 @@ const DefaultBackground = styled.div`
 		}
 		return '#cce4ee'
 	}};
-`
-
-const PaaskeBackground = styled.div`
-	background-image: url(${Paaske});
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-position: bottom;
-	background-color: #cce4ee;
 `
 
 const animateNedboer = (millimeterNedboer: number) => {
@@ -106,7 +101,7 @@ export const Background = (props: any) => {
 	const nedboer = animateNedboer(millimeterNedboer)
 	return (
 		<>
-			{nedboer}
+			{!isEaster && nedboer}
 			<DefaultBackground>{props.children}</DefaultBackground>
 		</>
 	)

@@ -12,15 +12,16 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 
 @Slf4j
+@SuppressWarnings("java:S1610")
 abstract class JwtResolver {
 
     Mono<JwtAuthenticationToken> getJwtAuthenticationToken() {
         return ReactiveSecurityContextHolder
                 .getContext()
-                .switchIfEmpty(Mono.error(new IllegalStateException("ReactiveSecurityContext is empty")))
+                .switchIfEmpty(Mono.error(new JwtResolverException("ReactiveSecurityContext is empty")))
                 .map(SecurityContext::getAuthentication)
                 .map(JwtAuthenticationToken.class::cast)
-                .doOnError(throwable -> log.error("Klarte ikke hente Jwt Auth Token: ", throwable))
+                .doOnError(throwable -> log.warn("Klarte ikke hente Jwt Auth Token", throwable))
                 .doOnSuccess(jwtAuthenticationToken -> {
                     Jwt credentials = (Jwt) jwtAuthenticationToken.getCredentials();
                     Instant expiresAt = credentials.getExpiresAt();
@@ -29,4 +30,5 @@ abstract class JwtResolver {
                     }
                 });
     }
+
 }

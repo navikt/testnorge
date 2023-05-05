@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as _ from 'lodash-es'
@@ -38,7 +38,7 @@ const Visning = ({ data }) => {
 				<DollyFieldArray header="11.5 vedtak" data={arenaData.aap115} nested>
 					{(vedtak, idx) => (
 						<React.Fragment key={idx}>
-							<TitleValue title="Fra dato" value={Formatters.formatDate(vedtak.fraDato)} />
+							<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />
 						</React.Fragment>
 					)}
 				</DollyFieldArray>
@@ -48,8 +48,8 @@ const Visning = ({ data }) => {
 				<DollyFieldArray header="AAP-UA vedtak" data={arenaData.aap} nested>
 					{(vedtak, idx) => (
 						<React.Fragment key={idx}>
-							<TitleValue title="Fra dato" value={Formatters.formatDate(vedtak.fraDato)} />
-							<TitleValue title="Til dato" value={Formatters.formatDate(vedtak.tilDato)} />
+							<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />
+							<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />
 						</React.Fragment>
 					)}
 				</DollyFieldArray>
@@ -60,9 +60,9 @@ const Visning = ({ data }) => {
 					{(vedtak, idx) => (
 						<React.Fragment key={idx}>
 							<TitleValue title="Rettighet kode" value={vedtak.rettighetKode} />
-							<TitleValue title="Fra dato" value={Formatters.formatDate(vedtak.fraDato)} />
-							<TitleValue title="Til dato" value={Formatters.formatDate(vedtak.tilDato)} />
-							<TitleValue title="Mottatt dato" value={Formatters.formatDate(vedtak.mottattDato)} />
+							<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />
+							<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />
+							<TitleValue title="Mottatt dato" value={formatDate(vedtak.mottattDato)} />
 						</React.Fragment>
 					)}
 				</DollyFieldArray>
@@ -212,10 +212,8 @@ function fyllVisningData(bestilling, visningData) {
 	visningData.brukertype =
 		arenaBrukertype === 'MED_SERVICEBEHOV' ? 'Med servicebehov' : 'Uten servicebehov'
 	visningData.servicebehov = servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
-	visningData.inaktiveringDato = Formatters.formatDate(inaktiveringDato)
-	visningData.automatiskInnsendingAvMeldekort = Formatters.oversettBoolean(
-		automatiskInnsendingAvMeldekort
-	)
+	visningData.inaktiveringDato = formatDate(inaktiveringDato)
+	visningData.automatiskInnsendingAvMeldekort = oversettBoolean(automatiskInnsendingAvMeldekort)
 
 	if (aap115) visningData.aap115 = visningData.aap115.concat(aap115)
 	if (aap) visningData.aap = visningData.aap.concat(aap)

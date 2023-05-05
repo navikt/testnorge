@@ -25,8 +25,6 @@ spec:
           cluster: dev-gcp
         - application: testnav-batch-bestilling-service
           cluster: dev-gcp
-        - application: testnav-import-fra-tpsf-service
-          cluster: dev-gcp
         - application: etterlatte-testdata
           cluster: dev-gcp
           namespace: etterlatte
@@ -40,34 +38,39 @@ spec:
           cluster: dev-gcp
     outbound:
       rules:
-        - application: testnav-helsepersonell-service
-        - application: testnav-organisasjon-forvalter
-        - application: testnav-inntektsmelding-service
-        - application: testnav-tps-messaging-service
         - application: generer-navn-service
-        - application: testnorge-profil-api
-        - application: testnav-person-service
-        - application: testnav-pdl-forvalter
-        - application: testnav-arbeidsforhold-service
         - application: testnav-amelding-service
-        - application: testnav-organisasjon-service
-        - application: testnav-synt-sykemelding-api
+        - application: testnav-arbeidsforhold-service
+        - application: testnav-helsepersonell-service
+        - application: testnav-inntektsmelding-service
         - application: testnav-miljoer-service
+        - application: testnav-organisasjon-forvalter
+        - application: testnav-organisasjon-service
+        - application: testnav-pdl-forvalter
+        - application: testnav-person-service
+        - application: testnav-synt-sykemelding-api
+        - application: testnav-tps-messaging-service
+        - application: testnorge-profil-api
       external:
-        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
-        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
-        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
-        - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
+        - host: testnav-inntektstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-inst-proxy.dev-fss-pub.nais.io
+        - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
+        - host: testnav-kontoregister-person-proxy.dev-fss-pub.nais.io
+        - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
+        - host: testnav-norg2-proxy.dev-fss-pub.nais.io
+        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-pdl-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
-        - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
+        - host: testnav-skjermingsregister-proxy.dev-fss-pub.nais.io
+        - host: testnav-statisk-data-forvalter-proxy.dev-fss-pub.nais.io
         - host: testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
         - host: testnav-udistub-proxy.dev-fss-pub.nais.io
+        - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   webproxy: true
   azure:
     application:
@@ -85,7 +88,7 @@ spec:
     max: 1
   port: 8080
   ingresses:
-    - https://dolly-backend.dev.intern.nav.no
+    - "https://dolly-backend.intern.dev.nav.no"
   liveness:
     path: /internal/isAlive
     initialDelay: 20

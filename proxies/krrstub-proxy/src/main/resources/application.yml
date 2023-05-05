@@ -19,11 +19,12 @@ spring:
     gateway:
       httpclient:
         response-timeout: 600s
-
+    vault:
+      enabled: false
 
 consumers:
   krrstub:
     name: digdir-krr-stub
     namespace: team-rocket
-    url: https://digdir-krr-stub.dev.intern.nav.no
+    url: https://digdir-krr-stub.intern.dev.nav.no
     cluster: dev-gcp

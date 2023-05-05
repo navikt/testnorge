@@ -38,7 +38,11 @@ const journalpostUrl = (transaksjonsid, miljoer) =>
 		}
 	})
 
-const arbeidsforholdcvUrl = (ident: string) => `/testnav-arbeidsplassencv-proxy/rest/v2/cv`
+const histarkUrl = (transaksjonsid: string) =>
+	transaksjonsid ? `/testnav-histark-proxy/api/saksmapper/${transaksjonsid}` : null
+
+const arbeidsforholdcvUrl = '/testnav-arbeidsplassencv-proxy/rest/v2/cv'
+const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel'
 
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
@@ -131,6 +135,26 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	}
 }
 
+export const useHistarkData = (ident, harHistarkbestilling) => {
+	const { transaksjonsid } = useTransaksjonsid('HISTARK', ident)
+
+	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
+
+	const { data, isLoading, error } = useSWR<any, Error>(histarkUrl(histarkId), fetcher)
+
+	if (!harHistarkbestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	return {
+		histarkData: data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
 export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
 	if (!harArbeidsplassenBestilling) {
 		return {
@@ -139,12 +163,25 @@ export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilli
 	}
 
 	const { data, error } = useSWR<any, Error>(
-		[arbeidsforholdcvUrl(ident), { fnr: ident }],
+		[arbeidsforholdcvUrl, { fnr: ident }],
 		([url, headers]) => fetcher(url, headers)
 	)
 
 	return {
 		arbeidsplassencvData: data,
+		loading: !error && !data,
+		error: error,
+	}
+}
+
+export const useArbeidsplassencvHjemmel = (ident: string) => {
+	const { data, error } = useSWR<any, Error>(
+		[arbeidsforholdcvHjemmelUrl, { fnr: ident }],
+		([url, headers]) => fetcher(url, headers)
+	)
+
+	return {
+		arbeidsplassencvHjemmel: data,
 		loading: !error && !data,
 		error: error,
 	}

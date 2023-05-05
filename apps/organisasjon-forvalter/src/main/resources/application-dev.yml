@@ -1,5 +1,3 @@
-azure.app.client.id: ${client_id}
-azure.app.client.secret: ${client_secret}
 
 spring:
   flyway:
@@ -32,3 +30,17 @@ spring:
         backend: postgresql/preprod-fss
         enabled: true
         role: organisasjon-forvalter-test-admin
+
+consumers:
+  generer-navn-service:
+    url: https://generer-navn-service.inten.dev.nav.no
+  testnav-orgnummer-service:
+    url: https://testnav-orgnummer-service.inten.dev.nav.no
+  organisasjon-bestilling-service:
+    url: https://organisasjon-bestilling-service.inten.dev.nav.no
+  testnav-adresse-service:
+    url: https://testnav-adresse-service.inten.dev.nav.no
+  testnav-organisasjon-service:
+    url: https://testnav-organisasjon-service.inten.dev.nav.no
+  testnav-miljoer-service:
+    url: https://testnav-miljoer-service.inten.dev.nav.no

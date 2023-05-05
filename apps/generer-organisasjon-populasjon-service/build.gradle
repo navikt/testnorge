@@ -40,15 +40,16 @@ repositories {
 }
 dependencies {
 
-    implementation 'no.nav.testnav.libs:security-core'
-    implementation 'no.nav.testnav.libs:database'
-    implementation 'no.nav.testnav.libs:servlet-security'
-    implementation 'no.nav.testnav.libs:servlet-core'
-    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation 'no.nav.testnav.libs:avro-schema'
     implementation 'no.nav.testnav.libs:commands'
+    implementation 'no.nav.testnav.libs:data-transfer-objects'
+    implementation 'no.nav.testnav.libs:database'
     implementation 'no.nav.testnav.libs:kafka-config'
     implementation 'no.nav.testnav.libs:kafka-producers'
-    implementation 'no.nav.testnav.libs:avro-schema'
+    implementation 'no.nav.testnav.libs:reactive-core'
+    implementation 'no.nav.testnav.libs:security-core'
+    implementation 'no.nav.testnav.libs:servlet-core'
+    implementation 'no.nav.testnav.libs:servlet-security'
 
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -65,7 +66,7 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
     implementation 'org.springframework.kafka:spring-kafka'
 
-    implementation 'io.confluent:kafka-avro-serializer:7.0.0'
+    implementation 'io.confluent:kafka-avro-serializer:7.3.2'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
     implementation 'org.flywaydb:flyway-core'
     implementation 'com.h2database:h2'

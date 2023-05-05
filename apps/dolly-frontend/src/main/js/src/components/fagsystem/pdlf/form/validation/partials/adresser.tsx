@@ -144,9 +144,9 @@ const utenlandskAdresse = Yup.object({
 })
 
 export const postboksadresse = Yup.object({
-	postboks: requiredString.nullable(),
+	postboks: requiredString,
 	postbokseier: Yup.string().nullable(),
-	postnummer: requiredString.nullable(),
+	postnummer: requiredString,
 })
 
 const ukjentBosted = Yup.object({
@@ -162,19 +162,23 @@ export const bostedsadresse = Yup.object({
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
-		then: vegadresse,
+		then: () => vegadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	matrikkeladresse: Yup.mixed().when('adressetype', {
 		is: 'MATRIKKELADRESSE',
-		then: matrikkeladresse,
+		then: () => matrikkeladresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
-		then: utenlandskAdresse,
+		then: () => utenlandskAdresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	ukjentBosted: Yup.mixed().when('adressetype', {
 		is: 'UKJENT_BOSTED',
-		then: ukjentBosted,
+		then: () => ukjentBosted,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 })
 
@@ -184,19 +188,23 @@ export const oppholdsadresse = Yup.object({
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
-		then: vegadresse,
+		then: () => vegadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	matrikkeladresse: Yup.mixed().when('adressetype', {
 		is: 'MATRIKKELADRESSE',
-		then: matrikkeladresse,
+		then: () => matrikkeladresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
-		then: utenlandskAdresse,
+		then: () => utenlandskAdresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	oppholdAnnetSted: Yup.mixed().when('adressetype', {
 		is: 'OPPHOLD_ANNET_STED',
-		then: requiredString.nullable(),
+		then: () => requiredString,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 })
 
@@ -206,18 +214,21 @@ export const kontaktadresse = Yup.object({
 	gyldigTilOgMed: gyldigDatoTom,
 	vegadresse: Yup.mixed().when('adressetype', {
 		is: 'VEGADRESSE',
-		then: vegadresse,
+		then: () => vegadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	utenlandskAdresse: Yup.mixed().when('adressetype', {
 		is: 'UTENLANDSK_ADRESSE',
-		then: utenlandskAdresse,
+		then: () => utenlandskAdresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 	postboksadresse: Yup.mixed().when('adressetype', {
 		is: 'POSTBOKSADRESSE',
-		then: postboksadresse,
+		then: () => postboksadresse,
+		otherwise: () => Yup.mixed().nullable(),
 	}),
 })
 
 export const adressebeskyttelse = Yup.object({
-	gradering: requiredString.nullable(),
+	gradering: requiredString,
 })

@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.kontoregisterservice.command;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.util.WebClientFilter;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.KontoregisterResponseDTO;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.SlettKontoRequestDTO;
@@ -17,7 +16,6 @@ import java.util.concurrent.Callable;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
-@Slf4j
 public class KontoregisterDeleteCommand implements Callable<Mono<KontoregisterResponseDTO>> {
 
     private static final String KONTOREGISTER_API_URL = "/api/system/v1/slett-konto";

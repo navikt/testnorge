@@ -8,4 +8,5 @@ public class GenererNavnServiceApplicationStarter {
     public static void main(String[] args) {
         SpringApplication.run(GenererNavnServiceApplicationStarter.class, args);
     }
+
 }

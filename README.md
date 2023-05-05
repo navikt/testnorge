@@ -4,7 +4,7 @@
 
 # testnav
 
-Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.io/dolly/).
+Info/lenker til Team Dollys interne verktøy finnes [her](https://navikt.github.io/testnorge/).
 
 ## Bygging/Kjøring
 ### Kjør lokalt
@@ -35,7 +35,7 @@ systemProp.https.nonProxyHosts=localhost|127.0.0.1|*.local|*.adeo.no|*.nav.no|*.
 systemProp.javax.net.ssl.trustStorePassword=TRUSTSTORE_PASS
 systemProp.javax.net.ssl.trustStore=TRUSTSTORE_PATH
 ```
-- Legg til sertifikat til truststore: https://plugins.gradle.org, https://dl.bintray.com/gradle/gradle-plugins og https://repository-cdn.liferay.com/nexus/content/groups/public 
+- Legg til sertifikat til truststore: https://plugins.gradle.org og https://repository-cdn.liferay.com/nexus/content/groups/public 
     - Åpne URL i nettleser
     - Trykk på hengelås til venstre for URL og klikk på "Sertifikat"
     - Velg fanen "Detaljer" og klikk "Kopier til fil". Last ned DER-kodet binær. Merk at sertifikatet får filformat .cer

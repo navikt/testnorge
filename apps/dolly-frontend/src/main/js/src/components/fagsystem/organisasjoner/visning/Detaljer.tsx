@@ -3,7 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { OrganisasjonKodeverk } from '@/config/kodeverk'
 import '@/pages/gruppe/PersonVisning/PersonVisning.less'
 import { EnhetData } from '../types'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, showLabel } from '@/utils/DataFormatter'
 import AdresseDetaljer from './AdresseDetaljer'
 import KontaktdataDetaljer from './KontaktdataDetaljer'
 
@@ -30,11 +30,8 @@ export const Detaljer = ({ data }: DetaljerProps) => {
 					value={data[0].sektorkode}
 				/>
 				<TitleValue title="Formål" value={data[0].formaal} />
-				<TitleValue
-					title="Stiftelsesdato"
-					value={Formatters.formatStringDates(data[0].stiftelsesdato)}
-				/>
-				<TitleValue title="Målform" value={Formatters.showLabel('maalform', data[0].maalform)} />
+				<TitleValue title="Stiftelsesdato" value={formatStringDates(data[0].stiftelsesdato)} />
+				<TitleValue title="Målform" value={showLabel('maalform', data[0].maalform)} />
 			</div>
 
 			{(data[0].telefon || data[0].epost || data[0].nettside) && (

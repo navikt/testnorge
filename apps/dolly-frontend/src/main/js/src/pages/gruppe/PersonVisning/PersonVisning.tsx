@@ -7,6 +7,7 @@ import {
 	ArenaVisning,
 	BrregVisning,
 	DokarkivVisning,
+	HistarkVisning,
 	InntektsmeldingVisning,
 	InntektstubVisning,
 	InstVisning,
@@ -38,10 +39,11 @@ import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiV
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useDokarkivData,
+	useHistarkData,
 	useInstData,
 	usePoppData,
 	useTpData,
@@ -53,6 +55,7 @@ import {
 	harApBestilling,
 	harArbeidsplassenBestilling,
 	harDokarkivBestilling,
+	harHistarkBestilling,
 	harInstBestilling,
 	harPoppBestilling,
 	harTpBestilling,
@@ -60,6 +63,7 @@ import {
 import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visning/AlderspensjonVisning'
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
+import _has from 'lodash/has'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -118,6 +122,11 @@ export const PersonVisning = ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
 
+	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
+		ident.ident,
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+	)
+
 	const visArbeidsforhold =
 		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
 
@@ -134,6 +143,11 @@ export const PersonVisning = ({
 	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(
 		ident.ident,
 		harDokarkivBestilling(bestillingerFagsystemer)
+	)
+
+	const { loading: loadingHistarkData, histarkData } = useHistarkData(
+		ident.ident,
+		harHistarkBestilling(bestillingerFagsystemer)
 	)
 
 	const { loading: loadingInstData, instData } = useInstData(
@@ -236,6 +250,14 @@ export const PersonVisning = ({
 		gruppeIdenter?.includes(ident.id)
 	)
 
+	const getArbeidsplassencvHjemmel = () => {
+		if (!harArbeidsplassenBestilling(bestillingerFagsystemer)) return null
+		const arbeidsplassenBestillinger = bestillingListe.filter((bestilling) =>
+			_has(bestilling.data, 'arbeidsplassenCV')
+		)
+		return arbeidsplassenBestillinger?.[0]?.data?.arbeidsplassenCV?.harHjemmel
+	}
+
 	return (
 		<ErrorBoundary>
 			<div className="person-visning">
@@ -252,6 +274,9 @@ export const PersonVisning = ({
 								}
 								if (arbeidsforhold) {
 									personData.aareg = arbeidsforhold
+								}
+								if (arbeidsplassencvData) {
+									personData.arbeidsplassenCV = { harHjemmel: getArbeidsplassencvHjemmel() }
 								}
 								leggTilPaaPerson(
 									personData,
@@ -306,9 +331,10 @@ export const PersonVisning = ({
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
+						ident={ident.ident}
 						liste={arbeidsforhold}
-						loading={loadingAareg}
-						bestillingListe={bestillingListe}
+						ameldinger={ameldinger}
+						loading={loadingAareg || loadingAmelding}
 						bestillingIdListe={bestillingIdListe}
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
@@ -319,7 +345,11 @@ export const PersonVisning = ({
 					liste={InntektsmeldingVisning.filterValues(bestillingListe, ident.ident)}
 					ident={ident.ident}
 				/>
-				<ArbeidsplassenVisning data={arbeidsplassencvData} loading={loadingArbeidsplassencvData} />
+				<ArbeidsplassenVisning
+					data={arbeidsplassencvData}
+					loading={loadingArbeidsplassencvData}
+					hjemmel={getArbeidsplassencvHjemmel()}
+				/>
 				<PensjonVisning
 					data={poppData}
 					loading={loadingPoppData}
@@ -363,6 +393,7 @@ export const PersonVisning = ({
 					loading={loadingDokarkivData}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}
 					ident={ident.ident}

@@ -22,9 +22,9 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 })
 @RequiredArgsConstructor
 @VaultPropertySource(value = "secret/dolly/lokal", ignoreSecretNotFound = false)
-@VaultPropertySource(value = "serviceuser/dev/srvtestnorge", propertyNamePrefix = "serviceuser.", ignoreSecretNotFound = false)
 class LocalConfig extends AbstractVaultConfiguration {
 
+    private static final String VAULT_PROPERTY = "spring.cloud.vault.token";
     @Override
     public VaultEndpoint vaultEndpoint() {
         return VaultEndpoint.create("vault.adeo.no", 443);
@@ -33,12 +33,12 @@ class LocalConfig extends AbstractVaultConfiguration {
     @Override
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
-            System.setProperty("spring.cloud.vault.token", System.getenv("VAULT_TOKEN"));
+            System.setProperty(VAULT_PROPERTY, System.getenv("VAULT_TOKEN"));
         }
-        var token = System.getProperty("spring.cloud.vault.token");
+        var token = System.getProperty(VAULT_PROPERTY);
         if (token == null) {
-            throw new IllegalArgumentException("Påkreved property 'spring.cloud.vault.token' er ikke satt.");
+            throw new IllegalArgumentException(String.format("Påkrevet property '%s' er ikke satt.", VAULT_PROPERTY));
         }
-        return new TokenAuthentication(System.getProperty("spring.cloud.vault.token"));
+        return new TokenAuthentication(System.getProperty(VAULT_PROPERTY));
     }
 }

@@ -37,7 +37,9 @@ export const LaasButton = ({ action, gruppeId, loading, children }: LaasButtonPr
 						<h4>{children}</h4>
 					</div>
 					<div className="laasModal-actions">
-						<NavButton onClick={closeModal}>Nei</NavButton>
+						<NavButton onClick={closeModal} variant={'secondary'}>
+							Nei
+						</NavButton>
 						<NavButton
 							onClick={() => {
 								closeModal()

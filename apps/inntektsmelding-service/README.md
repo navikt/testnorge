@@ -4,7 +4,7 @@ Service for å opprette og validere inntektsmeldinger som sendes inn på testper
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-inntektsmelding-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-inntektsmelding-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

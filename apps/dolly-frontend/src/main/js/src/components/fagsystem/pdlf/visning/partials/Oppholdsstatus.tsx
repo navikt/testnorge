@@ -1,6 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, uppercaseAndUnderscoreToCapitalized } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { OppholdData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
@@ -18,17 +18,11 @@ export const Visning = ({ data }: Data) => {
 		<>
 			<div className="person-visning_content">
 				<ErrorBoundary>
-					<TitleValue
-						title="Oppholdstillatelse fra dato"
-						value={Formatters.formatDate(data?.oppholdFra)}
-					/>
-					<TitleValue
-						title="Oppholdstillatelse til dato"
-						value={Formatters.formatDate(data?.oppholdTil)}
-					/>
+					<TitleValue title="Oppholdstillatelse fra dato" value={formatDate(data?.oppholdFra)} />
+					<TitleValue title="Oppholdstillatelse til dato" value={formatDate(data?.oppholdTil)} />
 					<TitleValue
 						title="Type oppholdstillatelse"
-						value={Formatters.uppercaseAndUnderscoreToCapitalized(data?.type)}
+						value={uppercaseAndUnderscoreToCapitalized(data?.type)}
 						size={'medium'}
 					/>
 				</ErrorBoundary>

@@ -27,16 +27,10 @@ public class XmlDateWsConverter implements Converter<LocalDate, XMLGregorianCale
             return null;
         }
         try {
-            LocalDateTime localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
+            var localDateTime = LocalDateTime.of(localDate, LocalTime.MIDNIGHT);
 
-            XMLGregorianCalendar xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
-            xmlGregorianCalendar.setYear(localDateTime.getYear());
-            xmlGregorianCalendar.setMonth(localDateTime.getMonthValue());
-            xmlGregorianCalendar.setDay(localDateTime.getDayOfMonth());
-
+            var xmlGregorianCalendar = getXmlGregorianCalendar(localDateTime);
             xmlGregorianCalendar.setTime(localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
-
-            xmlGregorianCalendar.setTimezone(TimeZone.getDefault().getRawOffset() / 1000 / 60);
 
             return xmlGregorianCalendar;
 
@@ -44,5 +38,33 @@ public class XmlDateWsConverter implements Converter<LocalDate, XMLGregorianCale
             log.error("Kunne ikke konvertere datatype: ", e);
         }
         return null;
+    }
+
+    public XMLGregorianCalendar convert(@Nullable LocalDateTime localDateTime) {
+
+        if (isNull(localDateTime)) {
+            return null;
+        }
+        try {
+            var xmlGregorianCalendar = getXmlGregorianCalendar(localDateTime);
+            xmlGregorianCalendar.setTime(localDateTime.getHour(), localDateTime.getMinute(), localDateTime.getSecond());
+
+            return xmlGregorianCalendar;
+
+        } catch (DatatypeConfigurationException e) {
+            log.error("Kunne ikke konvertere datatype: ", e);
+        }
+        return null;
+    }
+
+    private static XMLGregorianCalendar getXmlGregorianCalendar(LocalDateTime localDateTime) throws DatatypeConfigurationException {
+
+        var xmlGregorianCalendar = DatatypeFactory.newInstance().newXMLGregorianCalendar();
+        xmlGregorianCalendar.setYear(localDateTime.getYear());
+        xmlGregorianCalendar.setMonth(localDateTime.getMonthValue());
+        xmlGregorianCalendar.setDay(localDateTime.getDayOfMonth());
+        xmlGregorianCalendar.setTimezone(TimeZone.getDefault().getRawOffset() / 1000 / 60);
+
+        return xmlGregorianCalendar;
     }
 }

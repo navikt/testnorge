@@ -11,10 +11,13 @@ spring:
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
   codec:
     max-in-memory-size: 15MB
+  cloud:
+    vault:
+      enabled: false
 
 consumers:
   synt-meldekort:
-    url: https://synthdata-arena-meldekort.dev.intern.nav.no
+    url: https://synthdata-arena-meldekort.intern.dev.nav.no
     cluster: dev-gcp
     namespace: dolly
     name: synthdata-arena-meldekort

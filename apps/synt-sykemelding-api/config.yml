@@ -61,15 +61,11 @@ spec:
     outbound:
       rules:
         - application: synthdata-elsam-gcp
-          cluster: dev-gcp
         - application: testnav-organisasjon-service
-          cluster: dev-gcp
         - application: testnav-arbeidsforhold-service
-          cluster: dev-gcp
         - application: testnav-helsepersonell-service
-          cluster: dev-gcp
       external:
         - host: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
-    - "https://testnav-synt-sykemelding-api.dev.intern.nav.no"
+    - "https://testnav-synt-sykemelding-api.intern.dev.nav.no"

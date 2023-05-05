@@ -6,6 +6,7 @@ import no.nav.testnav.apps.apptilganganalyseservice.consumer.command.SearchCodeC
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchResults;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -17,11 +18,12 @@ public class GithubConsumer {
     private static final int PAGE_SIZE = 100;
     private final WebClient webClient;
 
-    public GithubConsumer(@Value("${consumers.github.url}") String url) {
+    public GithubConsumer(@Value("${consumers.github.url}") String url, @Value("${consumers.github.token}") String token) {
 
         this.webClient = WebClient
                 .builder()
                 .baseUrl(url)
+                .defaultHeader(HttpHeaders.AUTHORIZATION, "token " + token)
                 .exchangeStrategies(ExchangeStrategies.builder()
                         .codecs(configurer -> configurer
                                 .defaultCodecs()
@@ -31,9 +33,12 @@ public class GithubConsumer {
     }
 
     public Mono<SearchResults> search(SearchArgs args, String owner, String repo) {
-        log.info("Søker etter '{}'.", args.toString());
         return search(new SearchResults(repo, owner), args, 1)
                 .doOnNext(value -> log.info("Fant {} (søk='{}').", value.getItems().size(), args));
+    }
+
+    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
+        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
     }
 
     private Mono<SearchResults> search(SearchResults results, SearchArgs args, Integer page) {
@@ -44,9 +49,5 @@ public class GithubConsumer {
             }
             return Mono.just(results.concat(dto));
         });
-    }
-
-    public Mono<byte[]> getBlobFromSha(String sha, String owner, String repo) {
-        return new GetBlobFromShaCommand(webClient, sha, owner, repo).call();
     }
 }

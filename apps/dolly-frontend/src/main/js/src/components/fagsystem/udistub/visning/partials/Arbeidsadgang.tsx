@@ -1,5 +1,5 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, showLabel } from '@/utils/DataFormatter'
 
 export const Arbeidsadgang = ({ arbeidsadgang }) => {
 	if (!arbeidsadgang) return false
@@ -14,14 +14,11 @@ export const Arbeidsadgang = ({ arbeidsadgang }) => {
 				<TitleValue title="Har arbeidsadgang" value={harArbeidsAdgang} />
 				<TitleValue
 					title="Type arbeidsadgang"
-					value={Formatters.showLabel('typeArbeidsadgang', typeArbeidsadgang)}
+					value={showLabel('typeArbeidsadgang', typeArbeidsadgang)}
 				/>
-				<TitleValue
-					title="Arbeidsomfang"
-					value={Formatters.showLabel('arbeidsOmfang', arbeidsOmfang)}
-				/>
-				<TitleValue title="Fra dato" value={Formatters.formatStringDates(periode && periode.fra)} />
-				<TitleValue title="Til dato" value={Formatters.formatStringDates(periode && periode.til)} />
+				<TitleValue title="Arbeidsomfang" value={showLabel('arbeidsOmfang', arbeidsOmfang)} />
+				<TitleValue title="Fra dato" value={formatStringDates(periode && periode.fra)} />
+				<TitleValue title="Til dato" value={formatStringDates(periode && periode.til)} />
 				<TitleValue title="Hjemmel" value={hjemmel} />
 				<TitleValue title="Forklaring" value={forklaring} />
 			</div>

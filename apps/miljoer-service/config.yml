@@ -54,8 +54,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
-        - "https://miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-miljoer-service.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
@@ -82,5 +81,4 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://miljoer-service.dev.intern.nav.no"
-    - "https://testnav-miljoer-service.dev.intern.nav.no"
+    - "https://testnav-miljoer-service.intern.dev.nav.no"

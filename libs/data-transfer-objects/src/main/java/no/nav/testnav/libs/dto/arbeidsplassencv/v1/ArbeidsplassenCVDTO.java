@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.arbeidsplassencv.v1;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -18,6 +19,9 @@ import static java.util.Objects.isNull;
 @AllArgsConstructor
 public class ArbeidsplassenCVDTO {
 
+    @Schema(description = "harHjemmel er ikke en del av CV, men er lagt her for bakover-kompabilitet. " +
+            "Den styrer lesetilgang ved \"rekrutteringsbistand\" i target system.")
+    private Boolean harHjemmel;
     private Boolean harBil;
     private List<Arbeidserfaring> arbeidserfaring;
     private List<Utdanning> utdanning;
