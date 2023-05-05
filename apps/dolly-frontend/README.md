@@ -64,11 +64,11 @@ For Mac:
 
 - Trykk på hengelåsen til venstre for URL og klikk deretter på sertifikat
 
-![Microsoft Sertifikat](docs/assets/microsoft_keychain.png)
+![Microsoft Sertifikat](../../docs/applications/dolly/assets/microsoft_keychain.png)
 
 - Klikk på pilen ved siden av detaljer og bla helt ned
 
-![Sertifikat Detaljer](docs/assets/cert_details.png)
+![Sertifikat Detaljer](../../docs/applications/dolly/assets/cert_details.png)
 
 - Ved å trykke på linken vil sertifikat lastes ned og man kan deretter legge denne til i Truststore ved hjelp av
   kommandoen:
@@ -77,7 +77,7 @@ For Mac:
 keytool -import -trustcacerts -alias MicrosoftLoginCert -file DIN_DOWNLOAD_DIR/DigiCertSHA2SecureServerCA.crt -keystore PATH_TIL_DIN_KEYSTORE.jts
 ```
 
-![Sertifikat Download](docs/assets/cert_download.png)
+![Sertifikat Download](../../docs/applications/dolly/assets/cert_download.png)
 
 ### Kjøre Redis lokalt
 
