@@ -38,7 +38,6 @@ import {
 	sivilstand,
 	kontaktDoedsbo,
 	forelderBarnRelasjon,
-	foreldreansvar,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -49,7 +48,11 @@ import { Option } from '@/service/SelectOptionsOppslag'
 import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
 import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
-import { foreldreansvarForBarn } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import {
+	deltBosted,
+	foreldreansvarForBarn,
+} from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -76,6 +79,7 @@ enum Attributt {
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
 	Adressebeskyttelse = 'adressebeskyttelse',
+	DeltBosted = 'deltBosted',
 	Sivilstand = 'sivilstand',
 	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
 	ForelderBarnRelasjon = 'forelderBarnRelasjon',
@@ -238,6 +242,8 @@ export const VisningRedigerbar = ({
 						identtype={getIdenttype(formikBag, identtype)}
 					/>
 				)
+			case Attributt.DeltBosted:
+				return <DeltBostedForm formikBag={formikBag} path={path} />
 			case Attributt.Sivilstand:
 				return (
 					<SivilstandForm
@@ -285,6 +291,7 @@ export const VisningRedigerbar = ({
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
+			// deltBosted: ifPresent('deltBosted', deltBosted),
 			sivilstand: ifPresent('sivilstand', sivilstand),
 			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
 			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
@@ -301,6 +308,7 @@ export const VisningRedigerbar = ({
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
+			// ['deltBosted', 'deltBosted'],
 			['sivilstand', 'sivilstand'],
 			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 			['forelderBarnRelasjon', 'forelderBarnRelasjon'],

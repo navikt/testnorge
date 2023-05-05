@@ -25,8 +25,22 @@ type Target = {
 	value: string
 }
 
-export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
-	const [adressetype, setAdressetype] = useState(_.get(formikBag.values, `${path}.adressetype`))
+export const DeltBostedForm = ({ formikBag, path }: DeltBostedValues) => {
+	const getAdressetype = () => {
+		const type = _.get(formikBag.values, `${path}.adressetype`)
+		//TODO: Sjekk for adresse fra partner?
+		if (type) {
+			return type
+		} else if (_.get(formikBag.values, `${path}.vegadresse`)) {
+			return 'VEGADRESSE'
+		} else if (_.get(formikBag.values, `${path}.matrikkeladresse`)) {
+			return 'MATRIKKELADRESSE'
+		} else if (_.get(formikBag.values, `${path}.ukjentBosted`)) {
+			return 'UKJENT_BOSTED'
+		}
+	}
+
+	const [adressetype, setAdressetype] = useState(getAdressetype())
 
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
 		const adresse = _.get(formikBag.values, adressePath)
@@ -54,8 +68,11 @@ export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
 		_.set(adresseClone, 'adressetype', target?.value || null)
 		formikBag.setFieldValue(path, adresseClone)
 	}
+	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
+	console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
+	console.log('adressetype: ', adressetype) //TODO - SLETT MEG
 	return (
-		<Kategori title="Delt bosted">
+		<>
 			<FormikSelect
 				name={`${path}.adressetype`}
 				value={adressetype}
@@ -78,6 +95,14 @@ export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
 				<FormikDatepicker name={`${path}.startdatoForKontrakt`} label="Startdato for kontrakt" />
 				<FormikDatepicker name={`${path}.sluttdatoForKontrakt`} label="Sluttdato for kontrakt" />
 			</div>
+		</>
+	)
+}
+
+export const DeltBosted = ({ formikBag, path }: DeltBostedValues) => {
+	return (
+		<Kategori title="Delt bosted">
+			<DeltBostedForm formikBag={formikBag} path={path} />
 		</Kategori>
 	)
 }

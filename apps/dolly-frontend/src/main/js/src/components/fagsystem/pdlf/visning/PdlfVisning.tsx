@@ -123,7 +123,7 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 					ident={ident}
 					identtype={data?.person?.identtype}
 				/>
-				<DeltBosted data={data?.person?.deltBosted} />
+				<DeltBosted data={data?.person?.deltBosted} tmpPersoner={tmpPdlforvalter} ident={ident} />
 				<Oppholdsadresse
 					data={data?.person?.oppholdsadresse}
 					tmpPersoner={tmpPdlforvalter}

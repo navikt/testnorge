@@ -33,6 +33,10 @@ const ForelderBarnRelasjonLes = ({
 	relasjoner,
 	idx,
 }: VisningData) => {
+	if (!forelderBarnData) {
+		return null
+	}
+
 	const relatertPersonIdent =
 		forelderBarnData.relatertPerson || forelderBarnData.relatertPersonsIdent
 	const relasjon = relasjoner?.find((item) => item.relatertPerson?.ident === relatertPersonIdent)
@@ -40,7 +44,7 @@ const ForelderBarnRelasjonLes = ({
 		(item) => item.relatertPerson?.ident === relatertPersonIdent
 	)
 	const relatertPersonUtenId = forelderBarnData.relatertPersonUtenFolkeregisteridentifikator
-
+	console.log('forelderBarnData: ', forelderBarnData) //TODO - SLETT MEG
 	return (
 		<>
 			<ErrorBoundary>
@@ -49,6 +53,7 @@ const ForelderBarnRelasjonLes = ({
 					{forelderBarnData.relatertPersonsRolle === 'BARN' && (
 						<TitleValue title="Rolle for barn" value={forelderBarnData.minRolleForPerson} />
 					)}
+					<TitleValue title="Har delt bosted" value={forelderBarnData.deltBosted && 'Ja'} />
 				</div>
 				{(relasjon || relasjonRedigert) && (
 					<RelatertPerson

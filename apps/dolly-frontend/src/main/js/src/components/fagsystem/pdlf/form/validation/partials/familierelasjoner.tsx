@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import * as _ from 'lodash-es'
@@ -185,7 +185,7 @@ export const sivilstand = Yup.object({
 	nyRelatertPerson: nyPerson,
 })
 
-const deltBosted = Yup.object({
+export const deltBosted = Yup.object({
 	adressetype: testDeltBostedAdressetype(requiredString),
 	startdatoForKontrakt: testDatoFom(
 		Yup.date().optional().nullable(),
@@ -208,22 +208,27 @@ const deltBosted = Yup.object({
 	}),
 })
 
-export const forelderBarnRelasjon = Yup.object({
-	minRolleForPerson: requiredString,
-	relatertPersonsRolle: requiredString,
-	relatertPerson: Yup.string().nullable(),
-	borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
-		is: 'BARN',
-		then: () => Yup.mixed().notRequired(),
-		otherwise: () => Yup.boolean().nullable(),
-	}),
-	nyRelatertPerson: nyPerson.nullable(),
-	deltBosted: Yup.mixed().when('relatertPersonsRolle', {
-		is: 'BARN',
-		then: () => deltBosted.nullable(),
-		otherwise: () => Yup.mixed().notRequired(),
-	}),
-})
+export const forelderBarnRelasjon = Yup.object(
+	{
+		minRolleForPerson: requiredString,
+		relatertPersonsRolle: requiredString,
+		relatertPerson: Yup.string().nullable(),
+		borIkkeSammen: Yup.mixed().when('relatertPersonsRolle', {
+			is: 'BARN',
+			then: () => Yup.mixed().notRequired(),
+			otherwise: () => Yup.boolean().nullable(),
+		}),
+		nyRelatertPerson: nyPerson.nullable(),
+		// deltBosted: Yup.mixed().when('relatertPersonsRolle', {
+		// 	is: 'BARN',
+		// 	then: () => deltBosted.nullable(),
+		// 	otherwise: () => Yup.mixed().notRequired(),
+		// }),
+		//TODO: Funker ikke!
+		// deltBosted: ifPresent('deltBosted', deltBosted.nullable()),
+	}
+	// ['deltBosted', 'deltBosted']
+)
 
 export const foreldreansvar = Yup.object({
 	ansvar: testForeldreansvar(requiredString),
