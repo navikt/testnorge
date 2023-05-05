@@ -3,6 +3,7 @@ on:
     inputs:
       working-directory:
         type: string
+        description: "Directory to scan, e.g. apps/dolly-frontend."
         required: true
   workflow_dispatch:
     inputs:

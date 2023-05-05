@@ -9,6 +9,7 @@ on:
       working-directory:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-backend (without leading/trailing slash)."
+        required: true
       image-suffix:
         type: string
         description: "The Docker image suffix used for this particular workflow, e.g. dolly-backend. Defaults to the workflow name."
@@ -48,10 +49,10 @@ env:
 
 jobs:
 
-#  markdown:
-#    uses: ./.github/workflows/common.scan.markdown.yml
-#    with:
-#      working-directory: ${{ inputs.working-directory }}
+  markdown:
+    uses: ./.github/workflows/common.scan.markdown.yml
+    with:
+      working-directory: ${{ inputs.working-directory }}
 
   sonar:
     secrets:
