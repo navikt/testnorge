@@ -26,6 +26,18 @@ public class RelasjonerAlder {
 
     public BestillingRequestDTO fixRelasjonerAlder(BestillingRequestDTO request) {
 
+        request.getPerson().getFoedsel()
+                .forEach(foedsel -> {
+
+                    if (nonNull(foedsel.getFoedselsdato())) {
+                        request.setFoedtEtter(foedsel.getFoedselsdato().minusDays(1));
+                        request.setFoedtFoer(foedsel.getFoedselsdato().plusDays(1));
+                    } else if (nonNull(foedsel.getFoedselsaar())) {
+                        request.setFoedtEtter(LocalDateTime.of(foedsel.getFoedselsaar() - 1, 12, 31, 23, 59));
+                        request.setFoedtFoer(LocalDateTime.of(foedsel.getFoedselsaar() + 1, 1, 1, 0, 0));
+                    }
+                });
+
         request.getPerson().getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isForeldre)
                 .map(relasjon -> {
@@ -45,6 +57,7 @@ public class RelasjonerAlder {
                 .ifPresent(eldsteBarn -> {
                     if (isNull(request.getAlder()) && isNull(request.getFoedtFoer())) {
                         request.setFoedtFoer(adjustDate(LocalDateTime.now(), 18 + eldsteBarn, request.getFoedtEtter()));
+                        request.setFoedtEtter(adjustDate(request.getFoedtFoer(), 18, request.getFoedtEtter()));
                     }
                     request.getPerson().getSivilstand().stream()
                             .filter(SivilstandDTO::isGiftOrSamboer)
@@ -58,6 +71,9 @@ public class RelasjonerAlder {
                                         partner.getNyRelatertPerson()
                                                 .setFoedtFoer(adjustDate(LocalDateTime.now(), 18 + eldsteBarn,
                                                         partner.getNyRelatertPerson().getFoedtEtter()));
+                                        partner.getNyRelatertPerson()
+                                                .setFoedtEtter(adjustDate(partner.getNyRelatertPerson().getFoedtFoer(),
+                                                        18, partner.getNyRelatertPerson().getFoedtEtter()));
                                     }
                                 }
                             });
