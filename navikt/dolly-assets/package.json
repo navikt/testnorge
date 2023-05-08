@@ -13,11 +13,11 @@
   },
   "license": "MIT",
   "devDependencies": {
-    "@vitejs/plugin-react": "^3.0.0",
-    "prettier": "^2.8.4",
-    "vite": "^4.0.3",
-    "vite-plugin-svgr": "^2.2.2",
-    "vite-tsconfig-paths": "^4.0.0"
+    "@vitejs/plugin-react": "^4.0.0",
+    "prettier": "^2.8.8",
+    "vite": "^4.3.5",
+    "vite-plugin-svgr": "^3.2.0",
+    "vite-tsconfig-paths": "^4.2.0"
   },
   "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
