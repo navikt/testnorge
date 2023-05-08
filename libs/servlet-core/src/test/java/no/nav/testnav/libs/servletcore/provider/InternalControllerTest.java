@@ -17,19 +17,20 @@ class InternalControllerTest {
 
         var env = Mockito.mock(Environment.class);
         when(env.getProperty("NAIS_APP_IMAGE")).thenReturn(null);
+        var expectedResponse = new InternalController.JsonResponse("OK", null, null);
 
         var controller = new InternalController(env);
         assertThat(controller.isAlive())
                 .isNotNull()
                 .satisfies(response -> {
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isEqualTo("OK");
+                    assertThat(response.getBody()).isEqualTo(expectedResponse);
                 });
         assertThat(controller.isReady())
                 .isNotNull()
                 .satisfies(response -> {
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isEqualTo("OK");
+                    assertThat(response.getBody()).isEqualTo(expectedResponse);
                 });
 
     }
@@ -40,17 +41,18 @@ class InternalControllerTest {
 
         var env = Mockito.mock(Environment.class);
         when(env.getProperty("NAIS_APP_IMAGE")).thenReturn("europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348");
+        var expectedResponse = new InternalController.JsonResponse("OK", "europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348", "https://github.com/navikt/testnorge/commit/36aa348");
 
         var controller = new InternalController(env);
         assertThat(controller.isAlive())
                 .satisfies(response -> {
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isEqualTo("OK - image is <a href=https://github.com/navikt/testnorge/commit/36aa348>europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348</a>");
+                    assertThat(response.getBody()).isEqualTo(expectedResponse);
                 });
         assertThat(controller.isReady())
                 .satisfies(response -> {
                     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
-                    assertThat(response.getBody()).isEqualTo("OK - image is <a href=https://github.com/navikt/testnorge/commit/36aa348>europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348</a>");
+                    assertThat(response.getBody()).isEqualTo(expectedResponse);
                 });
 
     }

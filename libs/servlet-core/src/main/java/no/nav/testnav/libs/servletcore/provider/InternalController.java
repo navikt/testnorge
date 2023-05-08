@@ -1,46 +1,58 @@
 package no.nav.testnav.libs.servletcore.provider;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/internal")
+@RequestMapping(
+        path = "/internal",
+        produces = {MediaType.APPLICATION_JSON_VALUE}
+)
 @RequiredArgsConstructor
 public class InternalController {
 
     private final Environment env;
-    private String html;
+    private JsonResponse json;
 
     @GetMapping("/isAlive")
     @Operation(hidden = true)
-    public ResponseEntity<String> isAlive() {
+    public ResponseEntity<JsonResponse> isAlive() {
         return ResponseEntity.ok(body());
     }
 
     @GetMapping("/isReady")
     @Operation(hidden = true)
-    public ResponseEntity<String> isReady() {
+    public ResponseEntity<JsonResponse> isReady() {
         return ResponseEntity.ok(body());
     }
 
-    private synchronized String body() {
-        if (html == null) {
-            html = "OK";
-            var naisAppImage = env.getProperty("NAIS_APP_IMAGE");
-            if (naisAppImage != null) {
-                var i = naisAppImage.lastIndexOf("-");
+    private synchronized JsonResponse body() {
+        if (json == null) {
+            json = new JsonResponse("OK", null, null);
+            var naisImage = env.getProperty("NAIS_APP_IMAGE");
+            if (naisImage != null) {
+                var i = naisImage.lastIndexOf("-");
                 if (i > 0) {
-                    var hash = naisAppImage.substring(i + 1);
-                    html = "OK - image is <a href=https://github.com/navikt/testnorge/commit/%s>%s</a>".formatted(hash, naisAppImage);
+                    json = new JsonResponse("OK", naisImage, "https://github.com/navikt/testnorge/commit/" + naisImage.substring(i + 1));
                 }
             }
         }
-        return html;
+        return json;
+    }
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    record JsonResponse(
+            String status,
+            String image,
+            String commit
+    ) {
     }
 
 }
