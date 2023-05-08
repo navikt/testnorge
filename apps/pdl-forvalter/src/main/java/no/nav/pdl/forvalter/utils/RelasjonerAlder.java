@@ -16,7 +16,6 @@ import java.util.Random;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
@@ -26,17 +25,7 @@ public class RelasjonerAlder {
 
     public BestillingRequestDTO fixRelasjonerAlder(BestillingRequestDTO request) {
 
-        request.getPerson().getFoedsel()
-                .forEach(foedsel -> {
-
-                    if (nonNull(foedsel.getFoedselsdato())) {
-                        request.setFoedtEtter(foedsel.getFoedselsdato().minusDays(1));
-                        request.setFoedtFoer(foedsel.getFoedselsdato().plusDays(1));
-                    } else if (nonNull(foedsel.getFoedselsaar())) {
-                        request.setFoedtEtter(LocalDateTime.of(foedsel.getFoedselsaar() - 1, 12, 31, 23, 59));
-                        request.setFoedtFoer(LocalDateTime.of(foedsel.getFoedselsaar() + 1, 1, 1, 0, 0));
-                    }
-                });
+        fixFoedsel(request);
 
         request.getPerson().getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isForeldre)
@@ -44,7 +33,7 @@ public class RelasjonerAlder {
                     if (isNotBlank(relasjon.getRelatertPerson())) {
                         return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
                     } else if (nonNull(relasjon.getNyRelatertPerson())) {
-                        return getAlderNyPerson(relasjon.getNyRelatertPerson());
+                        return getAlderNyPersonBarn(relasjon.getNyRelatertPerson());
                     } else if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
                         return getAlder(relasjon.getRelatertPersonUtenFolkeregisteridentifikator().getFoedselsdato());
                     } else {
@@ -56,79 +45,82 @@ public class RelasjonerAlder {
                 .map(Integer::longValue)
                 .ifPresent(eldsteBarn -> {
                     if (isNull(request.getAlder()) && isNull(request.getFoedtFoer())) {
-                        request.setFoedtFoer(adjustDate(LocalDateTime.now(), 18 + eldsteBarn, request.getFoedtEtter()));
-                        request.setFoedtEtter(adjustDate(request.getFoedtFoer(), 18, request.getFoedtEtter()));
+                        request.setFoedtFoer(LocalDateTime.now().minusYears(18 + eldsteBarn));
+                        request.setFoedtEtter(request.getFoedtFoer().minusYears(18));
                     }
                     request.getPerson().getSivilstand().stream()
                             .filter(SivilstandDTO::isGiftOrSamboer)
                             .forEach(partner -> {
-                                if (isBlank(partner.getRelatertVedSivilstand())) {
+                                if (isNull(getAlderSivilstand(partner))) {
                                     if (isNull(partner.getNyRelatertPerson())) {
                                         partner.setNyRelatertPerson(new PersonRequestDTO());
                                     }
-                                    if (isNull(partner.getNyRelatertPerson().getAlder()) &&
-                                            isNull(partner.getNyRelatertPerson().getFoedtFoer())) {
-                                        partner.getNyRelatertPerson()
-                                                .setFoedtFoer(adjustDate(LocalDateTime.now(), 18 + eldsteBarn,
-                                                        partner.getNyRelatertPerson().getFoedtEtter()));
-                                        partner.getNyRelatertPerson()
-                                                .setFoedtEtter(adjustDate(partner.getNyRelatertPerson().getFoedtFoer(),
-                                                        18, partner.getNyRelatertPerson().getFoedtEtter()));
-                                    }
+                                    partner.getNyRelatertPerson().setFoedtFoer(request.getFoedtFoer());
+                                    partner.getNyRelatertPerson().setFoedtEtter(request.getFoedtEtter());
                                 }
                             });
                 });
 
+        fixForeldre(request);
+
+        return request;
+    }
+
+    private static void fixForeldre(BestillingRequestDTO request) {
         request.getPerson()
                 .getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isBarn)
                 .filter(forelder -> request.hasAlder())
                 .forEach(forelder -> {
-                    if (isBlank(forelder.getRelatertPerson())) {
+                    if (isNull(getAlderForelder(forelder))) {
                         if (isNull(forelder.getNyRelatertPerson())) {
                             forelder.setNyRelatertPerson(new PersonRequestDTO());
                         }
-                        if (isNull(forelder.getNyRelatertPerson().getAlder()) &&
-                                isNull(forelder.getNyRelatertPerson().getFoedtFoer())) {
-                            forelder.getNyRelatertPerson()
-                                    .setFoedtFoer(adjustDate(LocalDateTime.now(), 18L + getAlder(request),
-                                            forelder.getNyRelatertPerson().getFoedtEtter()));
-                        }
+                        forelder.getNyRelatertPerson().setFoedtFoer(request.getFoedtEtter().minusYears(18));
+                        forelder.getNyRelatertPerson().setFoedtEtter(request.getFoedtEtter().minusYears(18).minusYears(18));
                     }
                 });
-
-        return request;
     }
 
-    private static int getAlder(BestillingRequestDTO request) {
+    private static void fixFoedsel(BestillingRequestDTO request) {
+        request.getPerson().getFoedsel()
+                .forEach(foedsel -> {
 
-        if (nonNull(request.getAlder())) {
+                    if (nonNull(foedsel.getFoedselsdato())) {
+                        request.setFoedtEtter(foedsel.getFoedselsdato().minusDays(1));
+                        request.setFoedtFoer(foedsel.getFoedselsdato().plusDays(1));
+                    } else if (nonNull(foedsel.getFoedselsaar())) {
+                        request.setFoedtEtter(LocalDateTime.of(foedsel.getFoedselsaar() - 1, 12, 31, 23, 59));
+                        request.setFoedtFoer(LocalDateTime.of(foedsel.getFoedselsaar() + 1, 1, 1, 0, 0));
+                    }
+                });
+    }
 
-            return request.getAlder();
+    private static Integer getAlderForelder(ForelderBarnRelasjonDTO relasjon) {
 
-        } else if (nonNull(request.getFoedtFoer())) {
-
-            return getAlder(request.getFoedtFoer());
-
+        if (isNotBlank(relasjon.getRelatertPerson())) {
+            return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
+        } else if (nonNull(relasjon.getNyRelatertPerson())) {
+            return getAlderNyPersonVoksen(relasjon.getNyRelatertPerson());
+        } else if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
+            return getAlder(relasjon.getRelatertPersonUtenFolkeregisteridentifikator().getFoedselsdato());
         } else {
-
-            return getAlder(request.getFoedtEtter());
+            return null;
         }
     }
 
-    private static LocalDateTime adjustDate(LocalDateTime foedtFoer, long minusYears, LocalDateTime foedtEtter) {
+    private static Integer getAlderSivilstand(SivilstandDTO relasjon) {
 
-        if (isNull(foedtEtter)) {
-
-            return foedtFoer.minusYears(minusYears);
-
+        if (isNotBlank(relasjon.getRelatertVedSivilstand())) {
+            return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertVedSivilstand()));
+        } else if (nonNull(relasjon.getNyRelatertPerson())) {
+            return getAlderNyPersonVoksen(relasjon.getNyRelatertPerson());
         } else {
-
-            return foedtFoer.minusYears(minusYears).isBefore(foedtEtter) ? foedtEtter : foedtFoer.minusYears(minusYears);
+            return null;
         }
     }
 
-    private static Integer getAlderNyPerson(PersonRequestDTO relasjon) {
+    private static Integer getAlderNyPersonBarn(PersonRequestDTO relasjon) {
 
         if (nonNull(relasjon.getAlder())) {
             return relasjon.getAlder();
@@ -137,16 +129,32 @@ public class RelasjonerAlder {
             return null;
 
         } else if (nonNull(relasjon.getFoedtEtter()) && nonNull(relasjon.getFoedtFoer())) {
-
             return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())), getAlder(relasjon.getFoedtFoer()));
 
         } else if (nonNull(relasjon.getFoedtEtter())) {
-
             return RANDOM.nextInt(getAlder(relasjon.getFoedtEtter()));
 
         } else {
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtFoer().minusYears(3))), getAlder(relasjon.getFoedtFoer()));
+        }
+    }
 
-            return getAlder(relasjon.getFoedtFoer());
+    private static Integer getAlderNyPersonVoksen(PersonRequestDTO relasjon) {
+
+        if (nonNull(relasjon.getAlder())) {
+            return relasjon.getAlder();
+
+        } else if (isNull(relasjon.getFoedtEtter()) && isNull(relasjon.getFoedtFoer())) {
+            return null;
+
+        } else if (nonNull(relasjon.getFoedtEtter()) && nonNull(relasjon.getFoedtFoer())) {
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())), getAlder(relasjon.getFoedtFoer()));
+
+        } else if (nonNull(relasjon.getFoedtEtter())) {
+            return getAlder(relasjon.getFoedtEtter());
+
+        } else {
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtFoer().minusYears(18))), getAlder(relasjon.getFoedtFoer()));
         }
     }
 
