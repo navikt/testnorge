@@ -12,6 +12,7 @@ import * as _ from 'lodash-es'
 import { Digitalinnsending } from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
 import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
 import { FileUploader } from '@/utils/FileUploader/FileUploader'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -135,6 +136,7 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 						name="dokarkiv.journalfoerendeEnhet"
 						label="Journalførende enhet"
 					/>
+					<FormikCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
 						<FileUploader files={files} setFiles={setFiles} />

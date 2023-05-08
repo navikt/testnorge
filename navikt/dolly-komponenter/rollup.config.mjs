@@ -6,7 +6,7 @@ import image from '@rollup/plugin-image'
 import postcss from 'rollup-plugin-postcss'
 import NpmImport from 'less-plugin-npm-import'
 
-import packageJson from "./package.json" assert { type: "json" };
+import packageJson from './package.json' assert { type: 'json' }
 
 export default {
 	input: 'src/index.ts',
