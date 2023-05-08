@@ -57,6 +57,8 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+        - host: testnav-organisasjon-tilgang-service.dolly.svc.cluster.local
+        - host: testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
   liveness:
     path: /internal/isAlive
     initialDelay: 20
