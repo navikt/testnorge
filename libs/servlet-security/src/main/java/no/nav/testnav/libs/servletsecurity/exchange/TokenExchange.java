@@ -1,11 +1,7 @@
 package no.nav.testnav.libs.servletsecurity.exchange;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -20,11 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Slf4j
 @Service
 public class TokenExchange implements ExchangeToken {
 
-    private final String FMT = "%s:%s";
     private final GetAuthenticatedResourceServerType getAuthenticatedTypeAction;
     private final Map<ResourceServerType, ExchangeToken> exchanges = new HashMap<>();
     private final Map<String, AccessToken> tokenCache = new HashMap<>();
@@ -44,41 +38,39 @@ public class TokenExchange implements ExchangeToken {
 
         var type = getAuthenticatedTypeAction.call();
         var oid = getAuthenticatedId.call();
-        var key = String.format(FMT, oid, serverProperties.getName());
+        var key = String.format("%s:%s", oid, serverProperties.getScope(type));
 
-        if (tokenCache.containsKey(key) &&
+        if (!tokenCache.containsKey(key) ||
                 expires(tokenCache.get(key))
                         .minusSeconds(300)
-                        .isAfter(Instant.now())) {
+                        .isBefore(Instant.now())) {
 
-            return Mono.just(tokenCache.get(key));
+            synchronized (this) {
+                if (!tokenCache.containsKey(key) ||
+                        expires(tokenCache.get(key))
+                                .minusSeconds(300)
+                                .isBefore(Instant.now())) {
+                    return exchanges.get(type).exchange(serverProperties)
+                            .doOnNext(token ->
+                                    tokenCache.put(key, token));
+                } else {
+
+                    return Mono.just(tokenCache.get(key));
+                }
+            }
 
         } else {
-            return exchanges.get(type).exchange(serverProperties)
-                    .doOnNext(token ->
-                        tokenCache.put(key, token));
+
+            return Mono.just(tokenCache.get(key));
         }
     }
 
     @SneakyThrows
-    private Instant expires (AccessToken accessToken) {
+    private Instant expires(AccessToken accessToken) {
 
-        var start = System.currentTimeMillis();
         var chunks = accessToken.getTokenValue().split("\\.");
-        var payload = new String(Base64.getDecoder().decode(chunks[1]));
-        var decoded = objectMapper.readValue(payload, Payload.class);
-        return decoded.getExp();
+        var body = new String(Base64.getDecoder().decode(chunks[1]));
+
+        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt());
     }
-
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-public static class Payload {
-
-    private String aud;
-    private String oid;
-    private Instant iat;
-    private Instant nbf;
-    private Instant exp;
-}
 }
