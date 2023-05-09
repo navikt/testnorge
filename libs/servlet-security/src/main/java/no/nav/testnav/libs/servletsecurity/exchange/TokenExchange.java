@@ -2,6 +2,7 @@ package no.nav.testnav.libs.servletsecurity.exchange;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
 public class TokenExchange implements ExchangeToken {
 
@@ -38,6 +40,8 @@ public class TokenExchange implements ExchangeToken {
 
         var type = getAuthenticatedTypeAction.call();
         var oid = getAuthenticatedId.call();
+        log.info("AuthenticatedId: {}", oid);
+
         var key = String.format("%s:%s", oid, serverProperties.getScope(type));
 
         if (!tokenCache.containsKey(key) ||
