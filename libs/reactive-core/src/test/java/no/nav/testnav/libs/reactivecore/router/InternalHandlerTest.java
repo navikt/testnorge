@@ -52,7 +52,7 @@ class InternalHandlerTest {
                             response.writeTo(exchange, CONTEXT).block();
                             assertThat(exchange.getResponse().getBodyAsString().block())
                                     .isNotNull()
-                                    .satisfies(html -> assertThat(html).isEqualTo("OK"));
+                                    .satisfies(body -> assertThat(body).isEqualTo("{\"status\":\"OK\"}"));
                         }));
 
         assertThat(controller.isReady(null))
@@ -65,7 +65,7 @@ class InternalHandlerTest {
                             response.writeTo(exchange, CONTEXT).block();
                             assertThat(exchange.getResponse().getBodyAsString().block())
                                     .isNotNull()
-                                    .satisfies(html -> assertThat(html).isEqualTo("OK"));
+                                    .satisfies(body -> assertThat(body).isEqualTo("{\"status\":\"OK\"}"));
                         }));
 
     }
@@ -88,7 +88,7 @@ class InternalHandlerTest {
                             response.writeTo(exchange, CONTEXT).block();
                             assertThat(exchange.getResponse().getBodyAsString().block())
                                     .isNotNull()
-                                    .satisfies(html -> assertThat(html).isEqualTo("OK - image is <a href=https://github.com/navikt/testnorge/commit/36aa348>europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348</a>"));
+                                    .satisfies(body -> assertThat(body).isEqualTo("{\"status\":\"OK\",\"image\":\"europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348\",\"commit\":\"https://github.com/navikt/testnorge/commit/36aa348\"}"));
                         }));
 
         assertThat(controller.isReady(null))
@@ -101,7 +101,7 @@ class InternalHandlerTest {
                             response.writeTo(exchange, CONTEXT).block();
                             assertThat(exchange.getResponse().getBodyAsString().block())
                                     .isNotNull()
-                                    .satisfies(html -> assertThat(html).isEqualTo("OK - image is <a href=https://github.com/navikt/testnorge/commit/36aa348>europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348</a>"));
+                                    .satisfies(body -> assertThat(body).isEqualTo("{\"status\":\"OK\",\"image\":\"europe-north1-docker.pkg.dev/nais-management-233d/dolly/testnorge-dolly-backend:2023.05.04-13.27-36aa348\",\"commit\":\"https://github.com/navikt/testnorge/commit/36aa348\"}"));
                         }));
 
     }
