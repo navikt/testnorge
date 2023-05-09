@@ -76,7 +76,8 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 nyeRelasjoner.addAll(handle(type, person));
             }
         }
-        person.getForelderBarnRelasjon().addAll(nyeRelasjoner);
+        nyeRelasjoner
+                .forEach(relasjon -> person.getForelderBarnRelasjon().add(0, relasjon));
         return person.getForelderBarnRelasjon();
     }
 
