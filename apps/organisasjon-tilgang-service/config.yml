@@ -31,6 +31,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
           cluster: prod-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: altinn.no
