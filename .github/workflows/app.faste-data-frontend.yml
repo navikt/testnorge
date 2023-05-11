@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/faste-data-frontend/**
+      - libs/**
       - .github/workflows/app.faste-data-frontend.yml
 
 jobs:

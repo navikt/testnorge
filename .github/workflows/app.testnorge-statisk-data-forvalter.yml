@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/testnorge-statisk-data-forvalter/**
+      - libs/**
       - .github/workflows/app.testnorge-statisk-data-forvalter.yml
 
 jobs:

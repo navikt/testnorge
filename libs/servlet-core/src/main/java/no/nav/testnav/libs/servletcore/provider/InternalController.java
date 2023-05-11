@@ -3,7 +3,6 @@ package no.nav.testnav.libs.servletcore.provider;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,11 +19,13 @@ import static java.util.Objects.nonNull;
         path = "/internal",
         produces = {MediaType.APPLICATION_JSON_VALUE}
 )
-@RequiredArgsConstructor
 public class InternalController {
 
-    @Value("${NAIS_APP_IMAGE:null}")
     private final String image;
+
+    public InternalController(@Value("${NAIS_APP_IMAGE:null}") String image) {
+        this.image = image;
+    }
 
     @GetMapping("/isAlive")
     @Operation(hidden = true)

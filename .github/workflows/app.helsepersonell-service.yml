@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/helsepersonell-service/**
+      - libs/**
       - .github/workflows/app.helsepersonell-service.yml
 
 jobs:

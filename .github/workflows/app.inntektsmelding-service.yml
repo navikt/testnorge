@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/inntektsmelding-service/**
+      - libs/**
       - .github/workflows/app.inntektsmelding-service.yml
 
 jobs:

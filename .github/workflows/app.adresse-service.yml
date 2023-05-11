@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/adresse-service/**
+      - libs/**
       - .github/workflows/app.adresse-service.yml
 
 jobs:

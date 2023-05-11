@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/pdl-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.pdl-proxy.yml
 
 jobs:

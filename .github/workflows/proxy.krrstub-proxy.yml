@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/krrstub-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.krrstub-proxy.yml
 
 jobs:

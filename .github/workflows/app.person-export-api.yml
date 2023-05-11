@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/person-export-api/**
+      - libs/**
       - .github/workflows/app.person-export-api.yml
 
 jobs:
