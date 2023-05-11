@@ -15,12 +15,14 @@ type NavnTypes = {
 }
 
 const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) =>
-	SelectOptionsOppslag.formatOptions(type, navnInfo).concat(
-		selectedFornavn?.map((navn) => ({
-			value: navn,
-			label: navn,
-		}))
-	)
+	SelectOptionsOppslag.formatOptions(type, navnInfo)
+		.concat(
+			selectedFornavn?.map((navn) => ({
+				value: navn,
+				label: navn,
+			}))
+		)
+		?.sort((first, second) => (first.label > second.label ? 1 : -1))
 
 export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	if (!_.get(formikBag?.values, path)) {

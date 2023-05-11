@@ -48,6 +48,13 @@ export const ifPresent = (key, schema) =>
 		otherwise: () => Yup.mixed().notRequired(),
 	})
 
+export const ifNotBlank = (key, schema) =>
+	Yup.mixed().when(key, {
+		is: (v) => !_.isNull(v) && !_.isEmpty(v),
+		then: () => schema,
+		otherwise: () => Yup.mixed().notRequired(),
+	})
+
 export const ifKeyHasValue = (key, values, schema) =>
 	Yup.mixed().when(key, {
 		is: (v) => values.includes(v),

@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifNotBlank, ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import {
 	adressebeskyttelse,
 	bostedsadresse,
@@ -34,9 +34,9 @@ export const kjoenn = Yup.object({
 })
 
 export const navn = Yup.object({
-	fornavn: Yup.string().nullable(),
+	fornavn: ifNotBlank('$pdldata.person.navn[0].etternavn', requiredString),
 	mellomnavn: Yup.string().nullable(),
-	etternavn: Yup.string().nullable(),
+	etternavn: ifNotBlank('$pdldata.person.navn[0].fornavn', requiredString),
 	hasMellomnavn: Yup.boolean().nullable(),
 })
 
