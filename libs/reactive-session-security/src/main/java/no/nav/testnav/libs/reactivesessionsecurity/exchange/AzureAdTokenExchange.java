@@ -36,7 +36,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
     private final TokenResolver tokenResolver;
     private final ClientCredential clientCredential;
     private final ObjectMapper objectMapper;
-    private final Map<String, AccessToken> tokenCache = new HashMap<>();
+    private final Map<String, AccessToken> tokenCache;
 
     public AzureAdTokenExchange(
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
@@ -52,6 +52,7 @@ public class AzureAdTokenExchange implements ExchangeToken {
         this.tokenResolver = tokenResolver;
         this.clientCredential = clientCredential;
         this.objectMapper = objectMapper;
+        this.tokenCache = new HashMap<>();
     }
 
     @Override
