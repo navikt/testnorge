@@ -24,6 +24,8 @@ class VerifyNavnServiceTest {
     @InjectMocks
     private VerifyNavnService verifyNavnService;
     private NavnDTO gyldigNavnDTO;
+
+    private NavnDTO gyldigNavnDTOMedTomtMellomnavn;
     private NavnDTO ikkeGyldigNavnDTO;
 
     @BeforeEach
@@ -31,6 +33,12 @@ class VerifyNavnServiceTest {
         gyldigNavnDTO = NavnDTO.builder()
                 .adjektiv(GYLDIG_ADJEKTIV)
                 .adverb(GYLDIG_ADVERB)
+                .substantiv(GYLDIG_SUBSTANTIV)
+                .build();
+
+        gyldigNavnDTOMedTomtMellomnavn = NavnDTO.builder()
+                .adjektiv(GYLDIG_ADJEKTIV)
+                .adverb(null)
                 .substantiv(GYLDIG_SUBSTANTIV)
                 .build();
 
@@ -44,9 +52,11 @@ class VerifyNavnServiceTest {
     @Test
     void testVerifyNavn() {
         var gyldigNavnResult = verifyNavnService.verifyNavn(gyldigNavnDTO);
+        var gyldigNavnMedTomtMellomnavnResult = verifyNavnService.verifyNavn(gyldigNavnDTOMedTomtMellomnavn);
         var ikkeGyldigNavnResult = verifyNavnService.verifyNavn(ikkeGyldigNavnDTO);
 
         assertThat(gyldigNavnResult, is(Boolean.TRUE));
+        assertThat(gyldigNavnMedTomtMellomnavnResult, is(Boolean.TRUE));
         assertThat(ikkeGyldigNavnResult, is(Boolean.FALSE));
     }
 }

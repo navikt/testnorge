@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static net.logstash.logback.util.StringUtils.isBlank;
 
 @Service
 public class VerifyNavnService {
@@ -17,7 +18,7 @@ public class VerifyNavnService {
     public boolean verifyNavn(NavnDTO navnDTO) {
 
         var alleAdjektiv = navnDTO.getAdjektiv().split(" ");
-        var alleAdverb = navnDTO.getAdverb().split(" ");
+        var alleAdverb = !isBlank(navnDTO.getAdverb()) ? navnDTO.getAdverb().split(" ") : new String[]{};
         var alleSubstantiv = navnDTO.getSubstantiv().split(" ");
 
         return Arrays.stream(alleAdjektiv).allMatch(adjektiv -> verify(adjektiv, ADJEKTIVER)) &&
