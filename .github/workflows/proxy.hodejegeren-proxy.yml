@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/hodejegeren-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.hodejegeren-proxy.yml
 
 jobs:

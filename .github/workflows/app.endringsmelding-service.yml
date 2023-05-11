@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/endringsmelding-service/**
+      - libs/**
       - .github/workflows/app.endringsmelding-service.yml
 
 jobs:

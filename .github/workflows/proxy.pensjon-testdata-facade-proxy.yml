@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/pensjon-testdata-facade-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.pensjon-testdata-facade-proxy.yml
 
 jobs:

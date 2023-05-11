@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/tps-forvalteren-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.tps-forvalteren-proxy.yml
 
 jobs:

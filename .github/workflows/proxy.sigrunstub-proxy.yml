@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/sigrunstub-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.sigrunstub-proxy.yml
 
 jobs:

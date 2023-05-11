@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/inst-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.inst-proxy.yml
 
 jobs:

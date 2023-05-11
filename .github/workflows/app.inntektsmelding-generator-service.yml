@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/inntektsmelding-generator-service/**
+      - libs/**
       - .github/workflows/app.inntektsmelding-generator-service.yml
 
 jobs:

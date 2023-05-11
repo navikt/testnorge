@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/endringsmelding-frontend/**
+      - libs/**
       - .github/workflows/app.endringsmelding-frontend.yml
 
 jobs:

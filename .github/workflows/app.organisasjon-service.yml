@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/organisasjon-service/**
+      - libs/**
       - .github/workflows/app.organisasjon-service.yml
 
 jobs:

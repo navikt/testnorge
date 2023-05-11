@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/kontoregister-person-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.kontoregister-person-proxy.yml
 
 jobs:

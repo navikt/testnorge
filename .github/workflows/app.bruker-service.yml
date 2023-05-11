@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/bruker-service/**
+      - libs/**
       - .github/workflows/app.bruker-service.yml
 
 jobs:
