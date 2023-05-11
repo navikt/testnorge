@@ -20,11 +20,13 @@ import static java.util.Objects.nonNull;
         path = "/internal",
         produces = {MediaType.APPLICATION_JSON_VALUE}
 )
-@RequiredArgsConstructor
 public class InternalController {
 
-    @Value("${NAIS_APP_IMAGE:null}")
     private final String image;
+
+    public InternalController(@Value("${NAIS_APP_IMAGE:null}") String image) {
+        this.image = image;
+    }
 
     @GetMapping("/isAlive")
     @Operation(hidden = true)
