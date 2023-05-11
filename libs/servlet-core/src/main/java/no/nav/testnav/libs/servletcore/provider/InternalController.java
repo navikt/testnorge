@@ -24,7 +24,7 @@ import static java.util.Objects.nonNull;
 public class InternalController {
 
     @Value("${NAIS_APP_IMAGE:null}")
-    private String image;
+    private final String image;
 
     @GetMapping("/isAlive")
     @Operation(hidden = true)
@@ -44,7 +44,6 @@ public class InternalController {
     public JsonResponse getVersion() {
 
         return JsonResponse.builder()
-
                 .image(image)
                 .commit(nonNull(image) && image.lastIndexOf("-") > 0 ?
                         "https://github.com/navikt/testnorge/commit/" +
