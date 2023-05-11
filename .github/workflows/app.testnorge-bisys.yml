@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/testnorge-bisys/**
+      - libs/**
       - .github/workflows/app.testnorge-bisys.yml
 
 jobs:

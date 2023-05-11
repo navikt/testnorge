@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/inntektstub-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.inntektstub-proxy.yml
 
 jobs:

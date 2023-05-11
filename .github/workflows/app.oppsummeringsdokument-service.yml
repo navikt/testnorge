@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/oppsummeringsdokument-service/**
+      - libs/**
       - .github/workflows/app.oppsummeringsdokument-service.yml
 
 jobs:

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/person-service/**
+      - libs/**
       - .github/workflows/app.person-service.yml
 
 jobs:

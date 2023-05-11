@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/udistub-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.udistub-proxy.yml
 
 jobs:

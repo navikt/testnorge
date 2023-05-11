@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/miljoer-service/**
+      - libs/**
       - .github/workflows/app.miljoer-service.yml
 
 jobs:

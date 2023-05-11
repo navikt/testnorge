@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/testnorge-tp/**
+      - libs/**
       - .github/workflows/app.testnorge-tp.yml
 
 jobs:

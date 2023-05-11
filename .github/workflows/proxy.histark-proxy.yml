@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/histark-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.histark-proxy.yml
 
 jobs:
