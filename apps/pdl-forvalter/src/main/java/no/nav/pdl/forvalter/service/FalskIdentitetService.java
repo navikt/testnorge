@@ -38,7 +38,7 @@ public class FalskIdentitetService implements Validation<FalskIdentitetDTO> {
     private static final String VALIDATION_UGYLDIG_INTERVAL_ERROR = "Ugyldig datointervall: gyldigFom må være før gyldigTom";
     private static final String VALIDATION_FALSK_IDENTITET_ER_FALSK_MISSING = "Falskidentitet: attribute erFalsk må oppgis";
     private static final String VALIDATION_FALSK_IDENTITET_ERROR = "Oppgitt person for falsk identitet %s ikke funnet i database";
-    private static final String VALIDATION_UGYLDIG_NAVN_ERROR = "Falsik identitet: Navn er ikke i liste over gyldige verdier";
+    private static final String VALIDATION_UGYLDIG_NAVN_ERROR = "Falsk identitet: Navn er ikke i liste over gyldige verdier";
     private static final String VALIDATION_TOO_MANY_RETT_IDENTIT = "Falsk identitet: Maksimalt en av disse skal være satt: " +
             "rettIdentitetVedOpplysninger, rettIdentitetErUkjent, rettIdentitetVedIdentifikasjonsnummer eller nyFalskIdentitet";
     private static final String VALIDATION_STATSBORGERSKAP_MISSING = "Falsk identitet: statborgerskap må oppgis";
