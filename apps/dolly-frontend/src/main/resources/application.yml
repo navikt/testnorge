@@ -131,7 +131,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly

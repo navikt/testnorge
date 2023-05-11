@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/aareg-synt-services-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.aareg-synt-services-proxy.yml
 
 jobs:

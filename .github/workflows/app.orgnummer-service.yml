@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/orgnummer-service/**
+      - libs/**
       - .github/workflows/app.orgnummer-service.yml
 
 jobs:

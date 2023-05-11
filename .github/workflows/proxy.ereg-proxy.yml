@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/ereg-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.ereg-proxy.yml
 
 jobs:

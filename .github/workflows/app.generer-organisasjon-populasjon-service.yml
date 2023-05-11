@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/generer-organisasjon-populasjon-service/**
+      - libs/**
       - .github/workflows/app.generer-organisasjon-populasjon-service.yml
 
 jobs:

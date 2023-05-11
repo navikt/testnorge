@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/organisasjon-mottak-service/**
+      - libs/**
       - .github/workflows/app.organisasjon-mottak-service.yml
 
 jobs:

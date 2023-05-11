@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/arena-forvalteren-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.arena-forvalteren-proxy.yml
 
 jobs:

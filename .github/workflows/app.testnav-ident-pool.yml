@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/testnav-ident-pool/**
+      - libs/**
       - .github/workflows/app.testnav-ident-pool.yml
 
 jobs:

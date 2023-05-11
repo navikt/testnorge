@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/hodejegeren/**
+      - libs/**
       - .github/workflows/app.hodejegeren.yml
 
 jobs:

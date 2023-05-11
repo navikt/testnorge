@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/arbeidsplassencv-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.arbeidsplassencv-proxy.yml
 
 jobs:

@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/person-faste-data-service/**
+      - libs/**
       - .github/workflows/app.person-faste-data-service.yml
 
 jobs:

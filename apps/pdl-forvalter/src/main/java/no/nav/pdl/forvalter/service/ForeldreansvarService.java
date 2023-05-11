@@ -215,17 +215,17 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private List<BarnRelasjon> getBarnMorRelasjoner(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream()
-                .map(barnRelasjon -> {
-                    DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
-                    return barn.getPerson().getForelderBarnRelasjon().stream()
-                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
-                                    foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
-                            .map(foreldreRelasjon -> BarnRelasjon.builder()
-                                    .barn(barn)
-                                    .ansvarlig(foreldreRelasjon.getRelatertPerson())
-                                    .build())
-                            .toList();
-                })
+                .map(barnRelasjon ->
+                        personRepository.findByIdent(barnRelasjon.getRelatertPerson())
+                                .map(barn -> barn.getPerson().getForelderBarnRelasjon().stream()
+                                        .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
+                                                foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
+                                        .map(foreldreRelasjon -> BarnRelasjon.builder()
+                                                .barn(barn)
+                                                .ansvarlig(foreldreRelasjon.getRelatertPerson())
+                                                .build())
+                                        .toList()))
+                .flatMap(Optional::stream)
                 .flatMap(Collection::stream)
                 .toList();
     }
@@ -247,16 +247,16 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private List<BarnRelasjon> getBarnFarRelasjoner(PersonDTO hovedperson) {
 
         return hovedperson.getForelderBarnRelasjon().stream()
-                .map(barnRelasjon -> {
-                    DbPerson barn = personRepository.findByIdent(barnRelasjon.getRelatertPerson()).get();
-                    return barn.getPerson().getForelderBarnRelasjon().stream()
-                            .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
-                            .map(foreldreRelasjon -> BarnRelasjon.builder()
-                                    .barn(barn)
-                                    .ansvarlig(foreldreRelasjon.getRelatertPerson())
-                                    .build())
-                            .toList();
-                })
+                .map(barnRelasjon ->
+                        personRepository.findByIdent(barnRelasjon.getRelatertPerson())
+                                .map(barn -> barn.getPerson().getForelderBarnRelasjon().stream()
+                                        .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
+                                        .map(foreldreRelasjon -> BarnRelasjon.builder()
+                                                .barn(barn)
+                                                .ansvarlig(foreldreRelasjon.getRelatertPerson())
+                                                .build())
+                                        .toList()))
+                .flatMap(Optional::stream)
                 .flatMap(Collection::stream)
                 .toList();
     }

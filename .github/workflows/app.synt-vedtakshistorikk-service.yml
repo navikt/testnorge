@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - apps/synt-vedtakshistorikk-service/**
+      - libs/**
       - .github/workflows/app.synt-vedtakshistorikk-service.yml
 
 jobs:

@@ -4,8 +4,7 @@ on:
   push:
     paths:
       - proxies/norg2-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.norg2-proxy.yml
 
 jobs:
