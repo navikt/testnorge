@@ -488,6 +488,44 @@ export const tpsMessagingMock = [
 		},
 		status: 'OK',
 	},
+	{
+		miljoe: 'q2',
+		person: {
+			ident: '12345678912',
+			identtype: 'FNR',
+			kjonn: 'K',
+			fornavn: 'Cafe',
+			etternavn: 'Test',
+			forkortetNavn: 'Test Cafe',
+			statsborgerskap: {
+				statsborgerskap: 'NOR',
+				statsborgerskapRegdato: '1956-07-07T00:00:00',
+			},
+			spesregDato: '2023-05-12T09:15:53.579093117',
+			sivilstand: {
+				sivilstand: 'ENKE',
+				sivilstandRegdato: '2023-01-10T00:00:00',
+			},
+			midlertidigAdresse: {
+				gyldigTom: '2024-05-11T00:00:00',
+				adressetype: 'UTAD',
+				postLinje1: '1KOLEJOWA 6/5',
+				postLinje2: 'CAPITAL WEST 3000',
+				postLinje3: '18-500 KOLNO',
+				postLand: 'TYSKLAND',
+			},
+			gtType: 'LAND',
+			gtVerdi: 'DEU',
+			gtRegel: 'C',
+			personStatus: 'UTVA',
+			importFra: 'TPS',
+			bankkontonrNorsk: {
+				kontonummer: '1234.06.12345',
+				kontoRegdato: '2023-05-11T00:00:00',
+			},
+		},
+		status: 'OK',
+	},
 ]
 
 export const instMock = [
