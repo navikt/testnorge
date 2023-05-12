@@ -1,58 +1,51 @@
 package no.nav.testnav.libs.reactivecore.router;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.env.Environment;
+import lombok.Builder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import static java.util.Objects.nonNull;
 
 @Component
-@SuppressWarnings("java:S1172")
-@RequiredArgsConstructor
 public class InternalHandler {
 
-    private final Environment env;
-    private JsonResponse json;
+    private final String image;
+
+    public InternalHandler(@Value("${NAIS_APP_IMAGE:null}") String image) {
+        this.image = image;
+    }
 
     public Mono<ServerResponse> isAlive(ServerRequest ignored) {
-        return ServerResponse
-                .ok()
-                .contentType(APPLICATION_JSON)
-                .body(BodyInserters.fromValue(body()));
+        return ServerResponse.ok().build();
     }
 
     public Mono<ServerResponse> isReady(ServerRequest ignored) {
+        return ServerResponse.ok().build();
+    }
+
+    public Mono<ServerResponse> getVersion(ServerRequest ignored) {
+
         return ServerResponse
                 .ok()
-                .contentType(APPLICATION_JSON)
-                .body(BodyInserters.fromValue(body()));
+                .body(BodyInserters.fromValue(
+                        JsonResponse.builder()
+                                .image(image)
+                                .commit(nonNull(image) && image.lastIndexOf("-") > 0 ?
+                                        "https://github.com/navikt/testnorge/commit/" +
+                                                image.substring(image.lastIndexOf("-") + 1) : null)
+                                .build()));
     }
 
-    private synchronized JsonResponse body() {
-        if (json == null) {
-            json = new JsonResponse("OK", null, null);
-            var naisImage = env.getProperty("NAIS_APP_IMAGE");
-            if (naisImage != null) {
-                var i = naisImage.lastIndexOf("-");
-                if (i > 0) {
-                    json = new JsonResponse("OK", naisImage, "https://github.com/navikt/testnorge/commit/" + naisImage.substring(i + 1));
-                }
-            }
-        }
-        return json;
-    }
-
+    @Builder
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private record JsonResponse(
-            String status,
+    record JsonResponse(
             String image,
             String commit
     ) {
     }
-
 }

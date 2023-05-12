@@ -1,4 +1,4 @@
-import { adressetypeToString } from '@/utils/DataFormatter'
+import { adressetypeToString, formatDate } from '@/utils/DataFormatter'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
