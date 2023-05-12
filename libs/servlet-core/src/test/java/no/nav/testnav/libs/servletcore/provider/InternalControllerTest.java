@@ -9,13 +9,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 class InternalControllerTest {
 
-    private InternalController internalController;
-
     @Test
     @DisplayName("Test response body with null NAIS_APP_IMAGE")
     void testNullNaisAppImage() {
 
-        internalController = new InternalController(null);
+        var internalController = new InternalController(null);
 
         assertThat(internalController.isAlive())
                 .isNotNull()
