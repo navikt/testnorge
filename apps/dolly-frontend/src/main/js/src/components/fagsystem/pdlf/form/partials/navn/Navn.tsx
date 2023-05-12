@@ -8,13 +8,24 @@ import * as _ from 'lodash-es'
 import { FormikProps } from 'formik'
 import { isEmpty } from 'lodash'
 import { useEffect, useState } from 'react'
+import { DollyApi } from '@/service/Api'
+import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
+import { Button } from '@navikt/ds-react'
+import styled from 'styled-components'
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
 	path?: string
 }
 
+const RefreshButton = styled(Button)`
+	margin: 8px 0 0 -10px;
+`
+
 const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) => {
+	if (!navnInfo) {
+		return []
+	}
 	const navnOptions = SelectOptionsOppslag.formatOptions(type, navnInfo)
 		.concat(
 			selectedFornavn?.map((navn) => ({
@@ -45,7 +56,15 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	const [fornavnOptions, setFornavnOptions] = useState([])
 	const [mellomnavnOptions, setMellomnavnOptions] = useState([])
 	const [etternavnOptions, setetternavnOptions] = useState([])
-	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
+	const [navnInfo, setNavnInfo] = useState(null)
+
+	function refreshNavn() {
+		DollyApi.getPersonnavn().then((result) => setNavnInfo({ value: result, loading: false }))
+	}
+
+	useEffect(() => {
+		refreshNavn()
+	}, [])
 
 	useEffect(() => {
 		setFornavnOptions(concatNavnMedTidligereValgt('fornavn', navnInfo, selectedFornavn))
@@ -55,56 +74,77 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 
 	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, path)
 
+	function getRefreshButton() {
+		return (
+			<RefreshButton
+				title={'Hent nye navn'}
+				size={'small'}
+				onClick={refreshNavn}
+				icon={<ArrowCirclepathIcon />}
+				variant={'tertiary'}
+			></RefreshButton>
+		)
+	}
+
 	return (
 		<>
 			<div className="flexbox--full-width">
-				<FormikSelect
-					name={`${path}.alleFornavn`}
-					label="Fornavn"
-					placeholder={fornavn || 'Velg..'}
-					value={selectedFornavn}
-					options={fornavnOptions}
-					afterChange={(change) => {
-						const fornavn = change?.map((option: Option) => option.value)
-						setSelectedFornavn(fornavn)
-						formikBag.setFieldValue(`${path}.fornavn`, fornavn?.join(' '))
-					}}
-					isMulti={true}
-					size="grow"
-					isClearable={false}
-					fastfield={false}
-				/>
-				<FormikSelect
-					name={`${path}.alleMellomnavn`}
-					label="Mellomnavn"
-					placeholder={mellomnavn || 'Velg..'}
-					options={mellomnavnOptions}
-					afterChange={(change) => {
-						const mellomnavn = change?.map((option: Option) => option.value)
-						setSelectedMellomnavn(mellomnavn)
-						formikBag.setFieldValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
-					}}
-					isDisabled={_.get(formikBag?.values, `${path}.hasMellomnavn`)}
-					isMulti={true}
-					size="grow"
-					isClearable={true}
-					fastfield={false}
-				/>
-				<FormikSelect
-					name={`${path}.alleEtternavn`}
-					label="Etternavn"
-					placeholder={etternavn || 'Velg..'}
-					options={etternavnOptions}
-					afterChange={(change) => {
-						const etternavn = change?.map((option: Option) => option.value)
-						setSelectedEtternavn(etternavn)
-						formikBag.setFieldValue(`${path}.etternavn`, etternavn.join(' '))
-					}}
-					isMulti={true}
-					size="grow"
-					isClearable={false}
-					fastfield={false}
-				/>
+				<div style={{ display: 'flex', alignItems: 'center' }}>
+					<FormikSelect
+						name={`${path}.alleFornavn`}
+						label="Fornavn"
+						placeholder={fornavn || 'Velg..'}
+						value={selectedFornavn}
+						options={fornavnOptions}
+						afterChange={(change) => {
+							const fornavn = change?.map((option: Option) => option.value)
+							setSelectedFornavn(fornavn)
+							formikBag.setFieldValue(`${path}.fornavn`, fornavn?.join(' '))
+						}}
+						isMulti={true}
+						size="grow"
+						isClearable={false}
+						fastfield={false}
+					/>
+					{getRefreshButton()}
+				</div>
+				<div style={{ display: 'flex', alignItems: 'center' }}>
+					<FormikSelect
+						name={`${path}.alleMellomnavn`}
+						label="Mellomnavn"
+						placeholder={mellomnavn || 'Velg..'}
+						options={mellomnavnOptions}
+						afterChange={(change) => {
+							const mellomnavn = change?.map((option: Option) => option.value)
+							setSelectedMellomnavn(mellomnavn)
+							formikBag.setFieldValue(`${path}.mellomnavn`, mellomnavn?.join(' '))
+						}}
+						isDisabled={_.get(formikBag?.values, `${path}.hasMellomnavn`)}
+						isMulti={true}
+						size="grow"
+						isClearable={true}
+						fastfield={false}
+					/>
+					{getRefreshButton()}
+				</div>
+				<div style={{ display: 'flex', alignItems: 'center' }}>
+					<FormikSelect
+						name={`${path}.alleEtternavn`}
+						label="Etternavn"
+						placeholder={etternavn || 'Velg..'}
+						options={etternavnOptions}
+						afterChange={(change) => {
+							const etternavn = change?.map((option: Option) => option.value)
+							setSelectedEtternavn(etternavn)
+							formikBag.setFieldValue(`${path}.etternavn`, etternavn.join(' '))
+						}}
+						isMulti={true}
+						size="grow"
+						isClearable={false}
+						fastfield={false}
+					/>
+					{getRefreshButton()}
+				</div>
 			</div>
 			<FormikCheckbox
 				name={`${path}.hasMellomnavn`}
