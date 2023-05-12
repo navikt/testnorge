@@ -14,8 +14,8 @@ type NavnTypes = {
 	path?: string
 }
 
-const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) =>
-	SelectOptionsOppslag.formatOptions(type, navnInfo)
+const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) => {
+	const navnOptions = SelectOptionsOppslag.formatOptions(type, navnInfo)
 		.concat(
 			selectedFornavn?.map((navn) => ({
 				value: navn,
@@ -23,6 +23,9 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) =>
 			}))
 		)
 		?.sort((first, second) => (first.label > second.label ? 1 : -1))
+
+	return _.uniqBy(navnOptions, 'label')
+}
 
 export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	if (!_.get(formikBag?.values, path)) {
@@ -50,12 +53,15 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 		setetternavnOptions(concatNavnMedTidligereValgt('etternavn', navnInfo, selectedEtternavn))
 	}, [navnInfo])
 
+	const { fornavn, mellomnavn, etternavn } = _.get(formikBag?.values, path)
+
 	return (
 		<>
 			<div className="flexbox--full-width">
 				<FormikSelect
 					name={`${path}.alleFornavn`}
 					label="Fornavn"
+					placeholder={fornavn || 'Velg..'}
 					value={selectedFornavn}
 					options={fornavnOptions}
 					afterChange={(change) => {
@@ -71,6 +77,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 				<FormikSelect
 					name={`${path}.alleMellomnavn`}
 					label="Mellomnavn"
+					placeholder={mellomnavn || 'Velg..'}
 					options={mellomnavnOptions}
 					afterChange={(change) => {
 						const mellomnavn = change?.map((option: Option) => option.value)
@@ -86,6 +93,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 				<FormikSelect
 					name={`${path}.alleEtternavn`}
 					label="Etternavn"
+					placeholder={etternavn || 'Velg..'}
 					options={etternavnOptions}
 					afterChange={(change) => {
 						const etternavn = change?.map((option: Option) => option.value)

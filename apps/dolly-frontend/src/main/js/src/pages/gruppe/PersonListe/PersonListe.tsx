@@ -78,8 +78,17 @@ export default function PersonListe({
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
 		return (
-			<div style={{ maxWidth: 200 }}>
+			<div style={{ maxWidth: 170 }}>
 				<p>{beskrivelse}</p>
+			</div>
+		)
+	}
+
+	const getNavnLimited = (tekst) => {
+		const navn = tekst.length > 18 ? tekst.substring(0, 18) + '...' : tekst
+		return (
+			<div style={{ maxWidth: '170px' }}>
+				<p>{navn}</p>
 			</div>
 		)
 	}
@@ -97,6 +106,17 @@ export default function PersonListe({
 			text: 'Navn',
 			width: '30',
 			dataField: 'navn',
+			formatter: (_cell, row) => {
+				return (
+					<DollyTooltip
+						overlay={row.navn?.length > 18 ? row.navn : null}
+						destroyTooltipOnHide={true}
+						mouseEnterDelay={0}
+					>
+						{getNavnLimited(row.navn)}
+					</DollyTooltip>
+				)
+			},
 		},
 		{
 			text: 'Alder',
