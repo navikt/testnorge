@@ -1,7 +1,10 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesessionsecurity.action.GetAuthenticatedResourceServerType;
+import no.nav.testnav.libs.reactivesessionsecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -9,6 +12,7 @@ import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange
 import no.nav.testnav.libs.reactivesessionsecurity.repository.OidcReactiveMapSessionRepository;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.InMemoryTokenResolver;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.session.SessionProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,11 +30,15 @@ import java.util.concurrent.ConcurrentHashMap;
         AzureAdTokenExchange.class,
         TokenXExchange.class,
         ClientRegistrationIdResolver.class,
-        UserJwtExchange.class
+        UserJwtExchange.class,
+        GetAuthenticatedResourceServerType.class,
+        GetAuthenticatedUserId.class
 })
 @RequiredArgsConstructor
 public class OicdInMemorySessionConfiguration {
 
+    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final SessionProperties sessionProperties;
 
     @Bean
@@ -48,14 +56,15 @@ public class OicdInMemorySessionConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
             TokenXExchange tokenXExchange,
-            AzureAdTokenExchange azureAdTokenExchange
-    ) {
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
-        tokenExchange.addExchange("aad", azureAdTokenExchange);
-        tokenExchange.addExchange("idporten", tokenXExchange);
+            AzureAdTokenExchange azureAdTokenExchange,
+            ClientRegistrationIdResolver clientRegistrationIdResolver,
+            ObjectMapper objectMapper) {
+
+        var tokenExchange = new TokenExchange(getAuthenticatedResourceServerType, getAuthenticatedUserId, clientRegistrationIdResolver, objectMapper);
+        tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
+        tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
+
         return tokenExchange;
     }
-
 }

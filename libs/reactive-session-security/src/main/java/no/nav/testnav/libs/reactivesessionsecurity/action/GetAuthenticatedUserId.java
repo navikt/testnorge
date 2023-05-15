@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.action;
+package no.nav.testnav.libs.reactivesessionsecurity.action;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

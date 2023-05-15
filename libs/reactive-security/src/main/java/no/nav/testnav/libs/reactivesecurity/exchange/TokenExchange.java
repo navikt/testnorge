@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 
 import java.time.Instant;
 import java.util.Base64;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class TokenExchange implements ExchangeToken {
         this.getAuthenticatedTypeAction = getAuthenticatedTypeAction;
         this.getAuthenticatedUserId = getAuthenticatedUserId;
         this.objectMapper = objectMapper;
-        this.exchanges = new HashMap<>();
+        this.exchanges = new EnumMap<>(ResourceServerType.class);
         this.tokenCache = new HashMap<>();
         tokenServices.forEach(tokenService -> exchanges.put(tokenService.getType(), tokenService));
     }

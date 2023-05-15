@@ -39,21 +39,16 @@ public class TokenExchange implements ExchangeToken {
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
 
         var type = getAuthenticatedTypeAction.call();
-        var oid = getAuthenticatedId.call();
-        log.info("AuthenticatedId: {}", oid);
+        var user = getAuthenticatedId.call();
 
-        var key = String.format("%s:%s", oid, serverProperties.getScope(type));
+        var key = String.format("%s:%s", user, serverProperties.getScope(type));
 
         if (!tokenCache.containsKey(key) ||
-                expires(tokenCache.get(key))
-                        .minusSeconds(300)
-                        .isBefore(Instant.now())) {
+                expires(tokenCache.get(key))) {
 
             synchronized (this) {
                 if (!tokenCache.containsKey(key) ||
-                        expires(tokenCache.get(key))
-                                .minusSeconds(300)
-                                .isBefore(Instant.now())) {
+                        expires(tokenCache.get(key))) {
                     return exchanges.get(type).exchange(serverProperties)
                             .doOnNext(token ->
                                     tokenCache.put(key, token));
@@ -70,11 +65,13 @@ public class TokenExchange implements ExchangeToken {
     }
 
     @SneakyThrows
-    private Instant expires(AccessToken accessToken) {
+    private boolean expires(AccessToken accessToken) {
 
         var chunks = accessToken.getTokenValue().split("\\.");
         var body = new String(Base64.getDecoder().decode(chunks[1]));
 
-        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt());
+        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
+                .minusSeconds(300)
+                .isBefore(Instant.now());
     }
 }
