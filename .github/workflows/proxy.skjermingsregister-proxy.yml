@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/skjermingsregister-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.skjermingsregister-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/organisasjon-faste-data-service/**
+      - libs/**
       - .github/workflows/app.organisasjon-faste-data-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

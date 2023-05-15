@@ -14,25 +14,19 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.actor != 'dependabot[bot]' }}
     steps:
-      - uses: actions/checkout@v3
-      - name: Gradle cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-            ${{ runner.os }}-gradle-
-            ${{ runner.os }}-
-      - uses: actions/setup-java@v3
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Java"
+        uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
           java-version: '17.x'
-      - name: Compile
+      - name: "Gradle"
         env:
           GITHUB_USERNAME: token
           NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
-        working-directory: ${{ inputs.working-directory }}
-        run: ./gradlew build --scan
+        uses: gradle/gradle-build-action@v2
+        with:
+          build-root-directory: ${{ inputs.working-directory }}
+          arguments: build --scan
+          cache-read-only: false

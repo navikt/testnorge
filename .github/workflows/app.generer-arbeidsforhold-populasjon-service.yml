@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/generer-arbeidsforhold-populasjon-service/**
+      - libs/**
       - .github/workflows/app.generer-arbeidsforhold-populasjon-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

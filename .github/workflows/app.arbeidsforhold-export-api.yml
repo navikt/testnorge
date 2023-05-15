@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/arbeidsforhold-export-api/**
+      - libs/**
       - .github/workflows/app.arbeidsforhold-export-api.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

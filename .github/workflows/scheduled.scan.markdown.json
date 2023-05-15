@@ -1,0 +1,10 @@
+{
+  "ignorePatterns": [
+    { "pattern": ".*swagger.*" },
+    { "pattern": "^http://localhost" },
+    { "pattern": "^https://.*.adeo.no"},
+    { "pattern": "^https://.*.intern.nav.no"},
+    { "pattern": "^https://github.com/navikt/.*"},
+    { "pattern": "^https://.*.intern.dev.nav.no"}
+  ]
+}

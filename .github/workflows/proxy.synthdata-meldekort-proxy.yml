@@ -4,11 +4,8 @@ on:
   push:
     paths:
       - proxies/synthdata-meldekort-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
-      - libs/reactive-security/**
+      - libs/**
       - .github/workflows/proxy.synthdata-meldekort-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

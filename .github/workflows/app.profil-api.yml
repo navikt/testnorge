@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/profil-api/**
+      - libs/**
       - .github/workflows/app.profil-api.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

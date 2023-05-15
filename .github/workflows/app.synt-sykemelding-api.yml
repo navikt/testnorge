@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/synt-sykemelding-api/**
+      - libs/**
       - .github/workflows/app.synt-sykemelding-api.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

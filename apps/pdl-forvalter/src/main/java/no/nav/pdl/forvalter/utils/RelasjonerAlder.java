@@ -6,65 +6,155 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 
+import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
+import java.util.Objects;
+import java.util.Random;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class RelasjonerAlder {
 
+    private static final Random RANDOM = new SecureRandom();
+
     public BestillingRequestDTO fixRelasjonerAlder(BestillingRequestDTO request) {
+
+        fixFoedsel(request);
 
         request.getPerson().getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isForeldre)
                 .map(relasjon -> {
-                    if (relasjon.isEksisterendePerson()) {
+                    if (isNotBlank(relasjon.getRelatertPerson())) {
                         return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
+                    } else if (nonNull(relasjon.getNyRelatertPerson())) {
+                        return getAlderNyPersonBarn(relasjon.getNyRelatertPerson());
                     } else if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
                         return getAlder(relasjon.getRelatertPersonUtenFolkeregisteridentifikator().getFoedselsdato());
-                    } else if (nonNull(relasjon.getNyRelatertPerson())) {
-                        return getAlderNyPerson(relasjon.getNyRelatertPerson(), 18);
                     } else {
-                        return 18;
+                        return null;
                     }
                 })
+                .filter(Objects::nonNull)
                 .max(Comparator.comparing(integer -> integer))
+                .map(Integer::longValue)
                 .ifPresent(eldsteBarn -> {
-                    if (isNull(request.getAlder()) && isNull(request.getFoedtEtter())) {
-                        request.setAlder(18 + eldsteBarn);
+                    if (isNull(request.getAlder()) && isNull(request.getFoedtFoer())) {
+                        request.setFoedtFoer(LocalDateTime.now().minusYears(18 + eldsteBarn));
+                        request.setFoedtEtter(request.getFoedtFoer().minusYears(18));
                     }
                     request.getPerson().getSivilstand().stream()
-                            .filter(SivilstandDTO::isGift)
+                            .filter(SivilstandDTO::isGiftOrSamboer)
                             .forEach(partner -> {
-                                if (nonNull(partner.getNyRelatertPerson()) &&
-                                        isNull(partner.getNyRelatertPerson().getAlder()) &&
-                                        isNull(partner.getNyRelatertPerson().getFoedtEtter())) {
-                                    partner.getNyRelatertPerson().setAlder(
-                                            getAlderNyPerson(partner.getNyRelatertPerson(), 18 + eldsteBarn));
+                                if (isNull(getAlderSivilstand(partner))) {
+                                    if (isNull(partner.getNyRelatertPerson())) {
+                                        partner.setNyRelatertPerson(new PersonRequestDTO());
+                                    }
+                                    partner.getNyRelatertPerson().setFoedtFoer(request.getFoedtFoer());
+                                    partner.getNyRelatertPerson().setFoedtEtter(request.getFoedtEtter());
                                 }
                             });
                 });
 
+        fixForeldre(request);
+
         return request;
     }
 
-    private static int getAlderNyPerson(PersonRequestDTO relasjon, int nyAlder) {
+    private static void fixForeldre(BestillingRequestDTO request) {
+        request.getPerson()
+                .getForelderBarnRelasjon().stream()
+                .filter(ForelderBarnRelasjonDTO::isBarn)
+                .filter(forelder -> request.hasAlder())
+                .forEach(forelder -> {
+                    if (isNull(getAlderForelder(forelder))) {
+                        if (isNull(forelder.getNyRelatertPerson())) {
+                            forelder.setNyRelatertPerson(new PersonRequestDTO());
+                        }
+                        forelder.getNyRelatertPerson().setFoedtFoer(request.getFoedtEtter().minusYears(18));
+                        forelder.getNyRelatertPerson().setFoedtEtter(request.getFoedtEtter().minusYears(18).minusYears(18));
+                    }
+                });
+    }
+
+    private static void fixFoedsel(BestillingRequestDTO request) {
+        request.getPerson().getFoedsel()
+                .forEach(foedsel -> {
+
+                    if (nonNull(foedsel.getFoedselsdato())) {
+                        request.setFoedtEtter(foedsel.getFoedselsdato().minusDays(1));
+                        request.setFoedtFoer(foedsel.getFoedselsdato().plusDays(1));
+                    } else if (nonNull(foedsel.getFoedselsaar())) {
+                        request.setFoedtEtter(LocalDateTime.of(foedsel.getFoedselsaar() - 1, 12, 31, 23, 59));
+                        request.setFoedtFoer(LocalDateTime.of(foedsel.getFoedselsaar() + 1, 1, 1, 0, 0));
+                    }
+                });
+    }
+
+    private static Integer getAlderForelder(ForelderBarnRelasjonDTO relasjon) {
+
+        if (isNotBlank(relasjon.getRelatertPerson())) {
+            return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
+        } else if (nonNull(relasjon.getNyRelatertPerson())) {
+            return getAlderNyPersonVoksen(relasjon.getNyRelatertPerson());
+        } else if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
+            return getAlder(relasjon.getRelatertPersonUtenFolkeregisteridentifikator().getFoedselsdato());
+        } else {
+            return null;
+        }
+    }
+
+    private static Integer getAlderSivilstand(SivilstandDTO relasjon) {
+
+        if (isNotBlank(relasjon.getRelatertVedSivilstand())) {
+            return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertVedSivilstand()));
+        } else if (nonNull(relasjon.getNyRelatertPerson())) {
+            return getAlderNyPersonVoksen(relasjon.getNyRelatertPerson());
+        } else {
+            return null;
+        }
+    }
+
+    private static Integer getAlderNyPersonBarn(PersonRequestDTO relasjon) {
 
         if (nonNull(relasjon.getAlder())) {
             return relasjon.getAlder();
 
         } else if (isNull(relasjon.getFoedtEtter()) && isNull(relasjon.getFoedtFoer())) {
-            return nyAlder;
+            return null;
+
+        } else if (nonNull(relasjon.getFoedtEtter()) && nonNull(relasjon.getFoedtFoer())) {
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())), getAlder(relasjon.getFoedtFoer()));
+
+        } else if (nonNull(relasjon.getFoedtEtter())) {
+            return RANDOM.nextInt(getAlder(relasjon.getFoedtEtter()));
+
+        } else {
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtFoer().minusYears(3))), getAlder(relasjon.getFoedtFoer()));
+        }
+    }
+
+    private static Integer getAlderNyPersonVoksen(PersonRequestDTO relasjon) {
+
+        if (nonNull(relasjon.getAlder())) {
+            return relasjon.getAlder();
+
+        } else if (isNull(relasjon.getFoedtEtter()) && isNull(relasjon.getFoedtFoer())) {
+            return null;
+
+        } else if (nonNull(relasjon.getFoedtEtter()) && nonNull(relasjon.getFoedtFoer())) {
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())), getAlder(relasjon.getFoedtFoer()));
 
         } else if (nonNull(relasjon.getFoedtEtter())) {
             return getAlder(relasjon.getFoedtEtter());
 
         } else {
-            return Math.max(getAlder(relasjon.getFoedtFoer()), nyAlder);
+            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtFoer().minusYears(18))), getAlder(relasjon.getFoedtFoer()));
         }
     }
 

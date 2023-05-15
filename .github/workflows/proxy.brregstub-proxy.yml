@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/brregstub-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.brregstub-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

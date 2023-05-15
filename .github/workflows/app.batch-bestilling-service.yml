@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/batch-bestilling-service/**
+      - libs/**
       - .github/workflows/app.batch-bestilling-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

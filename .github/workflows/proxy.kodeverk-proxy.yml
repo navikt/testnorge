@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/kodeverk-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.kodeverk-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

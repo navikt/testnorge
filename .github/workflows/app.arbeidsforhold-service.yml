@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/arbeidsforhold-service/**
+      - libs/**
       - .github/workflows/app.arbeidsforhold-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

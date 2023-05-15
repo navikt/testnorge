@@ -199,6 +199,7 @@ public class PdlOrdreService {
                 .relasjoner(requesterTilOppretting.stream()
                         .map(OpprettRequest::getPerson)
                         .map(DbPerson::getIdent)
+                        .filter(relasjon -> !relasjon.equals(ident))
                         .map(personIdent -> PersonHendelserDTO.builder()
                                 .ident(personIdent)
                                 .ordrer(getPersonHendelser(personIdent, resultat))

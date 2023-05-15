@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/batch-adeo-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.batch-adeo-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

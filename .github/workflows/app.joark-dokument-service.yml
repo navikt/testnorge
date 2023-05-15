@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/joark-dokument-service/**
+      - libs/**
       - .github/workflows/app.joark-dokument-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

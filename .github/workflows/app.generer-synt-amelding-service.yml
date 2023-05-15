@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/generer-synt-amelding-service/**
+      - libs/**
       - .github/workflows/app.generer-synt-amelding-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

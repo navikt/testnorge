@@ -1,9 +1,9 @@
 import { startOfToday } from 'date-fns'
 
 const navn = {
-	fornavn: null as unknown as string,
-	mellomnavn: null as unknown as string,
-	etternavn: null as unknown as string,
+	fornavn: undefined as unknown as string,
+	mellomnavn: undefined as unknown as string,
+	etternavn: undefined as unknown as string,
 }
 
 export const initialPdlPerson = {
@@ -229,9 +229,9 @@ export const initialKjoenn = {
 }
 
 export const initialNavn = {
-	fornavn: null as unknown as string,
-	mellomnavn: null as unknown as string,
-	etternavn: null as unknown as string,
+	fornavn: undefined as unknown as string,
+	mellomnavn: undefined as unknown as string,
+	etternavn: undefined as unknown as string,
 	hasMellomnavn: false,
 	kilde: 'Dolly',
 	master: 'FREG',

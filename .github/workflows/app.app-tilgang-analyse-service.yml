@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/app-tilgang-analyse-service/**
+      - libs/**
       - .github/workflows/app.app-tilgang-analyse-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

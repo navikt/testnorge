@@ -32,6 +32,10 @@ repositories {
 
 java.sourceCompatibility = JavaVersion.VERSION_17
 
+test {
+    useJUnitPlatform()
+}
+
 dependencies {
 
     implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'

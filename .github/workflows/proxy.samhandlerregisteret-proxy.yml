@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/samhandlerregisteret-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.samhandlerregisteret-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

@@ -8,19 +8,24 @@ const DollyTooltip = ({
 	children,
 	dataCy = null as unknown as CypressSelector,
 	...rest
-}: TooltipProps) => (
-	<span data-cy={dataCy}>
-		<Tooltip
-			overlay={overlay}
-			placement="top"
-			mouseEnterDelay={0.1}
-			mouseLeaveDelay={0.1}
-			{...rest}
-		>
-			{children}
-		</Tooltip>
-	</span>
-)
+}: TooltipProps) => {
+	if (!overlay) {
+		return <>{children}</>
+	}
+	return (
+		<span data-cy={dataCy}>
+			<Tooltip
+				overlay={overlay}
+				placement="top"
+				mouseEnterDelay={0.1}
+				mouseLeaveDelay={0.1}
+				{...rest}
+			>
+				{children}
+			</Tooltip>
+		</span>
+	)
+}
 
 DollyTooltip.displayname = 'DollyTooltip'
 

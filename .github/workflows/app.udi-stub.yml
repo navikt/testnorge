@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/udi-stub/**
+      - libs/**
       - .github/workflows/app.udi-stub.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

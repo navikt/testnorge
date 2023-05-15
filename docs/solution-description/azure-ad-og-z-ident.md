@@ -14,10 +14,10 @@ parent: Løsningsbeskrivelser
 
 ## Problemstilling
 
-I dagens Dolly-applikasjon brukes Z-bruker opprettet via IDA-portalen til innlogging i Dolly. Dette er et system som er opprettet av NAV for å styre tilgangskontroll i NAV. Dolly har ikke det samme behovet i vårt system. Vi har ikke bruk for å bestemme tilgang til hvert enkelt system. (Det kan være vi skal skille mellom noen brukere, 
+I dagens Dolly-applikasjon brukes Z-bruker opprettet via [IDA-portalen](https://ida.intern.nav.no/) til innlogging i Dolly. Dette er et system som er opprettet av NAV for å styre tilgangskontroll i NAV. Dolly har ikke det samme behovet i vårt system. Vi har ikke bruk for å bestemme tilgang til hvert enkelt system. (Det kan være vi skal skille mellom noen brukere, 
 men da kun på funksjonalitet i Dolly, ikke enkelte underliggende systemer.)
 
-Disse z-brukerne, fra vårt perspektiv, er ikke personligeere brukere. Vi henter ikke ut eiere og vi vet at de deles mellom personer i NAV. Derfor mister vi kontrollen på hvem som har opprettet brukeren. Prosessen for å opprette brukere er også kompleks (se [Hvordan opprette z-Bruker i dolly](https://navikt.github.io/dolly-frontend/z_bruker/). Dette betyr også at vi heller ikke kan gi personlige tilbakemelding dirkete fra Dolly.
+Disse z-brukerne, fra vårt perspektiv, er ikke personligeere brukere. Vi henter ikke ut eiere og vi vet at de deles mellom personer i NAV. Derfor mister vi kontrollen på hvem som har opprettet brukeren. Prosessen for å opprette brukere er også kompleks. Dette betyr også at vi heller ikke kan gi personlige tilbakemelding dirkete fra Dolly.
 
 Videre planene for Dolly er å kunne tilby eksterne brukere tilgang til Dolly. Med Z-bruker må vi også kunne dele ut til eksterne partnere, noe som jeg er svert usikker på at NAV ønsker. 
 
@@ -81,6 +81,3 @@ I Dolly frontend vil vi nå ha mulighet til å hente ut personlige informasjon o
 I en periode vil vi legge til funksjonalitet for å kunne kopiere en Z-bruker over til din personlige bruker. På den måten vil ingen miste allerede opprettede brukere.
 
 [Prototype](https://invis.io/ENXCGRI6XD8#/429665609_Innlogging_Personlig_ident_1)
-
-## Ressurser
-[https://security.labs.nais.io/](https://security.labs.nais.io/)

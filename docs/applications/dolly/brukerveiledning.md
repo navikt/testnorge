@@ -191,7 +191,7 @@ Dersom du har gjentatte problemer med å få logget inn (eller du blir konstant 
 cookies på nettsiden. Det er to ting du kan gjøre for å prøve for å fikse problemet:
 
 * Logg ut manuelt:
-    * Du kan manuelt logge ut av Dolly ved å trykke på den følgende linken: https://dolly.ekstern.dev.nav.no/logout
+    * Du kan manuelt logge ut av Dolly ved å trykke på den følgende linken: https://dolly.intern.dev.nav.no/oauth2/logout
 * Clear cookies i nettleser:
   * Nedenfor finner du en demo-video for hvordan dette kan gjøres. 
 

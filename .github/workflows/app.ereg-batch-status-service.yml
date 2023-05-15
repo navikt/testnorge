@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/ereg-batch-status-service/**
+      - libs/**
       - .github/workflows/app.ereg-batch-status-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

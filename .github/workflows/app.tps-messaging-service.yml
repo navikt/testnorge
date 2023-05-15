@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/tps-messaging-service/**
+      - libs/**
       - .github/workflows/app.tps-messaging-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

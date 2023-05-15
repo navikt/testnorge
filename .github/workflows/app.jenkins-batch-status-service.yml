@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/jenkins-batch-status-service/**
+      - libs/**
       - .github/workflows/app.jenkins-batch-status-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

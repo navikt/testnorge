@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/oversikt-frontend/**
+      - libs/**
       - .github/workflows/app.oversikt-frontend.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

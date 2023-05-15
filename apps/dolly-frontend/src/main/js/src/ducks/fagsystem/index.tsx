@@ -347,9 +347,19 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
 	}
 	const pdlFornavn = pdlIdent?.navn?.[0]?.fornavn || ''
-	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
-		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
-		: ''
+
+	const formaterPdlMellomnavn = (mellomnavn: string) => {
+		if (!mellomnavn) {
+			return ''
+		}
+		const harFlereMellomnavn = mellomnavn?.includes(' ')
+		if (harFlereMellomnavn) {
+			return mellomnavn
+		}
+		return `${mellomnavn.charAt(0)}.`
+	}
+
+	const pdlMellomnavn = formaterPdlMellomnavn(pdlIdent?.navn?.[0]?.mellomnavn)
 	const pdlEtternavn = pdlIdent?.navn?.[0]?.etternavn || ''
 
 	const pdlAlder = (foedselsdato) => {

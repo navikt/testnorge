@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/pdl-forvalter/**
+      - libs/**
       - .github/workflows/app.pdl-forvalter.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

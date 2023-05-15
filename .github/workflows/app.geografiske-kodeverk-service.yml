@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/geografiske-kodeverk-service/**
+      - libs/**
       - .github/workflows/app.geografiske-kodeverk-service.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/organisasjon-forvalter/**
+      - libs/**
       - .github/workflows/app.organisasjon-forvalter.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

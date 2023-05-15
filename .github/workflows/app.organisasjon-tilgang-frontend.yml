@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/organisasjon-tilgang-frontend/**
+      - libs/**
       - .github/workflows/app.organisasjon-tilgang-frontend.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

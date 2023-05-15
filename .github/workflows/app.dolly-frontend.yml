@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - apps/dolly-frontend/**
+      - libs/**
       - .github/workflows/app.dolly-frontend.yml
-  workflow_dispatch:
 
 jobs:
 

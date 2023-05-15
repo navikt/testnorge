@@ -3,7 +3,6 @@ import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import * as _ from 'lodash-es'
-import { object } from 'yup'
 
 const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
@@ -127,7 +126,6 @@ const testDeltBostedAdressetype = (value) => {
 		if (selected === 'PARTNER_ADRESSE') {
 			const values = this.options.context
 			const personFoerLeggTil = values.personFoerLeggTil
-			console.log('VALUES!!!', values) //TODO - SLETT MEG
 			let fantPartner = false
 			const nyePartnere = _.get(values, 'pdldata.person.sivilstand')
 			if (nyePartnere?.length > 0) {
@@ -152,31 +150,6 @@ const testDeltBostedAdressetype = (value) => {
 
 		return feilmelding ? this.createError({ message: feilmelding }) : true
 	})
-}
-
-const testDeltBostedAdressetypeForBarn = (value) => {
-	return value.test(
-		'har-gyldig-adressetype-for-barn',
-		function harGyldigAdressetypeForBarn(selected) {
-			let feilmelding = null
-			console.log('selected: ', selected) //TODO - SLETT MEG
-			if (selected === 'PARTNER_ADRESSE') {
-				const values = this.options.context
-
-				const foreldrerelasjoner = _.get(values, 'personValues.forelderBarnRelasjon')
-					?.map((a) => a?.relatertPersonsRolle)
-					?.filter((a) => {
-						return a && a !== 'BARN'
-					})
-				console.log('values: ', values) //TODO - SLETT MEG
-				console.log('foreldrerelasjoner: ', foreldrerelasjoner) //TODO - SLETT MEG
-				//TODO fortsett her!!!
-				feilmelding =
-					foreldrerelasjoner.length > 1 ? null : 'Fant ikke gyldig partner for delt bosted'
-			}
-			return feilmelding ? this.createError({ message: feilmelding }) : true
-		}
-	)
 }
 
 export const nyPerson = Yup.object({
@@ -211,16 +184,8 @@ export const sivilstand = Yup.object({
 	nyRelatertPerson: nyPerson,
 })
 
-// const getAdressetypeValidation = () => {
-//
-// }
-
-// const deltBostedProps =
-
 export const deltBosted = Yup.object({
-	//TODO må ha begge!
 	adressetype: testDeltBostedAdressetype(requiredString),
-	// adressetype: Yup.mixed().when()
 	startdatoForKontrakt: testDatoFom(
 		Yup.mixed().optional().nullable(),
 		'sluttdatoForKontrakt',
@@ -242,10 +207,6 @@ export const deltBosted = Yup.object({
 				}).nullable(),
 		})
 		.nullable(),
-})
-
-export const deltBostedForBarn = Yup.object({
-	adressetype: testDeltBostedAdressetypeForBarn(requiredString),
 })
 
 export const forelderBarnRelasjon = Yup.object().shape(

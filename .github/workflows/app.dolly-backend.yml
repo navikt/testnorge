@@ -4,9 +4,8 @@ on:
   push:
     paths:
       - apps/dolly-backend/**
-      - libs/data-transfer-objects/**
+      - libs/**
       - .github/workflows/app.dolly-backend.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

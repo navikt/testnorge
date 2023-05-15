@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/statisk-data-forvalter-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.statisk-data-forvalter-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

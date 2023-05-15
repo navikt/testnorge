@@ -54,7 +54,9 @@ export enum CypressSelector {
 	BUTTON_MINSIDE_ENDRE_MALNAVN = 'button-minside-endre-malnavn',
 	BUTTON_MINSIDE_LAGRE_MALNAVN = 'button-minside-lagre-malnavn',
 	BUTTON_LUKK_BESTILLING_RESULTAT = 'button-lukk-bestilling-resultat',
+	BUTTON_OPEN_EXPANDABLE = 'button-open-expandable',
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	HOVER_MILJOE = 'hover-miljoe',
 	CHECKBOX_FORBEDRING_ANONYM = 'checkbox-forbedring-anonym',
+	ERROR_MESSAGE_NAVIGERING = 'error-message-navigering',
 }

@@ -4,10 +4,8 @@ on:
   push:
     paths:
       - proxies/dokarkiv-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
+      - libs/**
       - .github/workflows/proxy.dokarkiv-proxy.yml
-  workflow_dispatch:
 
 jobs:
   workflow:

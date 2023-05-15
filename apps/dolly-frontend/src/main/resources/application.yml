@@ -22,6 +22,11 @@ consumers:
     namespace: dolly
     name: testnav-organisasjon-faste-data-service
     url: http://testnav-organisasjon-faste-data-service.dolly.svc.cluster.local
+  oppsummeringsdokument-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: oppsummeringsdokument-service
+    url: http://oppsummeringsdokument-service.dolly.svc.cluster.local
   testnav-joark-dokument-service:
     cluster: dev-gcp
     namespace: dolly
@@ -126,7 +131,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly
