@@ -254,8 +254,9 @@ export const PersonVisning = ({
 		return relatertePersoner
 	}
 
-	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
-	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
+	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
+	const harPdlRelatertPerson = relatertePersoner?.length > 0
+	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
 		gruppeIdenter?.includes(ident.id)
 	)
 
@@ -305,7 +306,7 @@ export const PersonVisning = ({
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
-							relatertPersonIdenter={pdlRelatertPerson()}
+							relatertPersonIdenter={relatertePersoner}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>

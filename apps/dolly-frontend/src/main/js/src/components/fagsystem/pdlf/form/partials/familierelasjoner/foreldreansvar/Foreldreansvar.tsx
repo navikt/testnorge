@@ -115,8 +115,7 @@ export const ForeldreansvarForm = ({
 			formikBag.setFieldValue(`${path}.typeAnsvarlig`, getTypeAnsvarlig())
 		}
 	}, [])
-	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-	console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikSelect
@@ -168,15 +167,31 @@ export const ForeldreansvarForm = ({
 export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 	const { personFoerLeggTil, leggTilPaaGruppe } = useContext(BestillingsveilederContext)
 
+	const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
+	const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
+
 	const harBarn = () => {
-		const relasjoner = _.get(formikBag.values, 'pdldata.person.forelderBarnRelasjon')
-		const eksisterendeRelasjoner = _.get(personFoerLeggTil, 'pdl.hentPerson.forelderBarnRelasjon')
 		return (
 			relasjoner?.some(
 				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
 			) ||
 			eksisterendeRelasjoner?.some(
 				(relasjon: ForeldreBarnRelasjon) => relasjon.relatertPersonsRolle === 'BARN'
+			)
+		)
+	}
+
+	const harBarnUtenIdentifikator = () => {
+		return (
+			relasjoner?.some(
+				(relasjon: ForeldreBarnRelasjon) =>
+					relasjon.relatertPersonsRolle === 'BARN' &&
+					relasjon.relatertPersonUtenFolkeregisteridentifikator
+			) ||
+			eksisterendeRelasjoner?.some(
+				(relasjon: ForeldreBarnRelasjon) =>
+					relasjon.relatertPersonsRolle === 'BARN' &&
+					relasjon.relatertPersonUtenFolkeregisteridentifikator
 			)
 		)
 	}
@@ -190,6 +205,13 @@ export const Foreldreansvar = ({ formikBag }: ForeldreansvarForm) => {
 					typen barn.
 				</StyledAlert>
 			)}
+
+			{!leggTilPaaGruppe && harBarnUtenIdentifikator() && (
+				<StyledAlert variant={'warning'} size={'small'}>
+					Personen har ett eller flere barn uten identifikator, disse vil ikke få foreldreansvar.
+				</StyledAlert>
+			)}
+
 			<FormikDollyFieldArray
 				name="pdldata.person.foreldreansvar"
 				header={'Foreldreansvar'}
