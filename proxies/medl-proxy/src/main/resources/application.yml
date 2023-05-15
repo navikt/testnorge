@@ -2,8 +2,8 @@ AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535
 
 spring:
   application:
-    name: testnav-krrstub-proxy
-    desciption: Proxy for krr-stub som legger på sikkerhet.
+    name: testnav-medl-proxy
+    desciption: Proxy for medl-stub som legger på sikkerhet.
   security:
     oauth2:
       resourceserver:
@@ -23,8 +23,8 @@ spring:
       enabled: false
 
 consumers:
-  krrstub:
-    name: digdir-krr-stub
+  medlstub:
+    name: digdir-medl-stub
     namespace: team-rocket
-    url: https://digdir-krr-stub.intern.dev.nav.no
+    url: https://digdir-medl-stub.intern.dev.nav.no
     cluster: dev-gcp
