@@ -3,6 +3,7 @@ package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesecurity.domain.AzureTrygdeetatenClientCredential;
 import no.nav.testnav.libs.reactivesecurity.exchange.ExchangeToken;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
@@ -38,13 +39,16 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
     private final ClientCredential clientCredential;
     private final ObjectMapper objectMapper;
     private final Map<String, AccessToken> tokenCache;
+    private final GetAuthenticatedUserId getAuthenticatedUserId;
 
     public TrygdeetatenAzureAdTokenService(
             @Value("${http.proxy:#{null}}") String proxyHost,
             AzureTrygdeetatenClientCredential azureTrygdeetatenClientCredential,
+            GetAuthenticatedUserId getAuthenticatedUserId,
             ObjectMapper objectMapper) {
 
         this.clientCredential = azureTrygdeetatenClientCredential;
+        this.getAuthenticatedUserId = getAuthenticatedUserId;
         this.objectMapper = objectMapper;
         tokenCache = new HashMap<>();
 
@@ -58,12 +62,12 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
             log.info("Setter opp proxy host {} for Client Credentials", proxyHost);
             var uri = URI.create(proxyHost);
             builder.clientConnector(new ReactorClientHttpConnector(
-                HttpClient
-                    .create()
-                    .proxy(proxy -> proxy
-                        .type(ProxyProvider.Proxy.HTTP)
-                        .host(uri.getHost())
-                        .port(uri.getPort()))
+                    HttpClient
+                            .create()
+                            .proxy(proxy -> proxy
+                                    .type(ProxyProvider.Proxy.HTTP)
+                                    .host(uri.getHost())
+                                    .port(uri.getPort()))
             ));
         }
         this.webClient = builder.build();
@@ -72,8 +76,7 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
 
-        return ReactiveSecurityContextHolder.getContext()
-                .map(this::getUser)
+        return getAuthenticatedUserId.call()
                 .map(user -> String.format("%s:%s", user, serverProperties.toAzureAdScope()))
                 .flatMap(key -> {
                     if (!tokenCache.containsKey(key) ||
@@ -84,9 +87,9 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
                                     expires(tokenCache.get(key))) {
 
                                 return new ClientCredentialExchangeCommand(
-                                                webClient,
-                                                clientCredential,
-                                                serverProperties.toAzureAdScope())
+                                        webClient,
+                                        clientCredential,
+                                        serverProperties.toAzureAdScope())
                                         .call()
                                         .doOnNext(token -> tokenCache.put(key, token));
                             } else {
@@ -99,11 +102,6 @@ public class TrygdeetatenAzureAdTokenService implements ExchangeToken {
                         return Mono.just(tokenCache.get(key));
                     }
                 });
-    }
-
-    private String getUser(SecurityContext context) {
-
-        return ((OAuth2AuthenticationToken) context.getAuthentication()).getPrincipal().getName();
     }
 
     @SneakyThrows
