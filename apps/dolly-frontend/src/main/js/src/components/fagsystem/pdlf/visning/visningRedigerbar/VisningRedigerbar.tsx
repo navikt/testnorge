@@ -126,6 +126,7 @@ export const VisningRedigerbar = ({
 	disableSlett = false,
 	personFoerLeggTil = null,
 	personValues = null,
+	relasjoner = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -243,7 +244,14 @@ export const VisningRedigerbar = ({
 					/>
 				)
 			case Attributt.DeltBosted:
-				return <DeltBostedForm formikBag={formikBag} path={path} />
+				return (
+					<DeltBostedForm
+						formikBag={formikBag}
+						path={path}
+						relasjoner={relasjoner}
+						personValues={personValues}
+					/>
+				)
 			case Attributt.Sivilstand:
 				return (
 					<SivilstandForm
@@ -291,7 +299,7 @@ export const VisningRedigerbar = ({
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
-			// deltBosted: ifPresent('deltBosted', deltBosted),
+			deltBosted: ifPresent('deltBosted', deltBosted),
 			sivilstand: ifPresent('sivilstand', sivilstand),
 			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
 			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
@@ -308,7 +316,7 @@ export const VisningRedigerbar = ({
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
-			// ['deltBosted', 'deltBosted'],
+			['deltBosted', 'deltBosted'],
 			['sivilstand', 'sivilstand'],
 			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 			['forelderBarnRelasjon', 'forelderBarnRelasjon'],

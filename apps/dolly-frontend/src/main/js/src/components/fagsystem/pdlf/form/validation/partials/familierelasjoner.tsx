@@ -1,8 +1,9 @@
 import * as Yup from 'yup'
-import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
+import { requiredDate, requiredString } from '@/utils/YupValidations'
 import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import * as _ from 'lodash-es'
+import { object } from 'yup'
 
 const testForeldreansvar = (val) => {
 	return val.test('er-gyldig-foreldreansvar', function erGyldigForeldreansvar(selected) {
@@ -126,7 +127,7 @@ const testDeltBostedAdressetype = (value) => {
 		if (selected === 'PARTNER_ADRESSE') {
 			const values = this.options.context
 			const personFoerLeggTil = values.personFoerLeggTil
-
+			console.log('VALUES!!!', values) //TODO - SLETT MEG
 			let fantPartner = false
 			const nyePartnere = _.get(values, 'pdldata.person.sivilstand')
 			if (nyePartnere?.length > 0) {
@@ -151,6 +152,31 @@ const testDeltBostedAdressetype = (value) => {
 
 		return feilmelding ? this.createError({ message: feilmelding }) : true
 	})
+}
+
+const testDeltBostedAdressetypeForBarn = (value) => {
+	return value.test(
+		'har-gyldig-adressetype-for-barn',
+		function harGyldigAdressetypeForBarn(selected) {
+			let feilmelding = null
+			console.log('selected: ', selected) //TODO - SLETT MEG
+			if (selected === 'PARTNER_ADRESSE') {
+				const values = this.options.context
+
+				const foreldrerelasjoner = _.get(values, 'personValues.forelderBarnRelasjon')
+					?.map((a) => a?.relatertPersonsRolle)
+					?.filter((a) => {
+						return a && a !== 'BARN'
+					})
+				console.log('values: ', values) //TODO - SLETT MEG
+				console.log('foreldrerelasjoner: ', foreldrerelasjoner) //TODO - SLETT MEG
+				//TODO fortsett her!!!
+				feilmelding =
+					foreldrerelasjoner.length > 1 ? null : 'Fant ikke gyldig partner for delt bosted'
+			}
+			return feilmelding ? this.createError({ message: feilmelding }) : true
+		}
+	)
 }
 
 export const nyPerson = Yup.object({
@@ -185,30 +211,44 @@ export const sivilstand = Yup.object({
 	nyRelatertPerson: nyPerson,
 })
 
+// const getAdressetypeValidation = () => {
+//
+// }
+
+// const deltBostedProps =
+
 export const deltBosted = Yup.object({
+	//TODO må ha begge!
 	adressetype: testDeltBostedAdressetype(requiredString),
+	// adressetype: Yup.mixed().when()
 	startdatoForKontrakt: testDatoFom(
-		Yup.date().optional().nullable(),
+		Yup.mixed().optional().nullable(),
 		'sluttdatoForKontrakt',
 		'Dato må være før sluttdato'
 	),
 	sluttdatoForKontrakt: testDatoTom(
-		Yup.date().optional().nullable(),
+		Yup.mixed().optional().nullable(),
 		'startdatoForKontrakt',
 		'Dato må være etter startdato'
 	),
 	vegadresse: vegadresse.nullable(),
 	matrikkeladresse: matrikkeladresse.nullable(),
-	ukjentBosted: Yup.mixed().when('adressetype', {
-		is: 'UKJENT_BOSTED',
-		then: () =>
-			Yup.object({
-				bostedskommune: requiredString,
-			}),
-	}),
+	ukjentBosted: Yup.mixed()
+		.when('adressetype', {
+			is: 'UKJENT_BOSTED',
+			then: () =>
+				Yup.object({
+					bostedskommune: requiredString,
+				}).nullable(),
+		})
+		.nullable(),
 })
 
-export const forelderBarnRelasjon = Yup.object(
+export const deltBostedForBarn = Yup.object({
+	adressetype: testDeltBostedAdressetypeForBarn(requiredString),
+})
+
+export const forelderBarnRelasjon = Yup.object().shape(
 	{
 		minRolleForPerson: requiredString,
 		relatertPersonsRolle: requiredString,
@@ -219,15 +259,13 @@ export const forelderBarnRelasjon = Yup.object(
 			otherwise: () => Yup.boolean().nullable(),
 		}),
 		nyRelatertPerson: nyPerson.nullable(),
-		// deltBosted: Yup.mixed().when('relatertPersonsRolle', {
-		// 	is: 'BARN',
-		// 	then: () => deltBosted.nullable(),
-		// 	otherwise: () => Yup.mixed().notRequired(),
-		// }),
-		//TODO: Funker ikke!
-		// deltBosted: ifPresent('deltBosted', deltBosted.nullable()),
-	}
-	// ['deltBosted', 'deltBosted']
+		deltBosted: Yup.mixed().when('deltBosted', {
+			is: (deltBosted) => deltBosted != null,
+			then: () => deltBosted.nullable(),
+			otherwise: () => Yup.mixed().notRequired(),
+		}),
+	},
+	[['deltBosted', 'deltBosted']]
 )
 
 export const foreldreansvar = Yup.object({

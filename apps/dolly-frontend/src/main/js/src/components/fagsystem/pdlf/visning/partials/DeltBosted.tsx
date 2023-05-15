@@ -34,7 +34,15 @@ export const Adresse = ({ adresse, idx }: AdresseProps) => {
 	)
 }
 
-export const DeltBostedVisning = ({ adresseData, idx, data, tmpPersoner, ident }) => {
+export const DeltBostedVisning = ({
+	adresseData,
+	idx,
+	data,
+	tmpPersoner,
+	ident,
+	personValues,
+	relasjoner,
+}) => {
 	const initBosted = Object.assign(_.cloneDeep(initialDeltBosted), data[idx])
 	let initialValues = { deltBosted: initBosted }
 
@@ -74,6 +82,14 @@ export const DeltBostedVisning = ({ adresseData, idx, data, tmpPersoner, ident }
 	// 	redigertFullmaktValues.fullmakt.nyFullmektig = initialPdlPerson
 	// }
 
+	let personValuesMedRedigert = _.cloneDeep(personValues)
+	if (redigertBostedPdlf && personValuesMedRedigert) {
+		personValuesMedRedigert.deltBosted = redigertBostedPdlf
+	}
+
+	console.log('data: ', data) //TODO - SLETT MEG
+	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+	//TODO: lag redigerte relasjoner også.
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={<Adresse adresse={bostedValues} idx={idx} />}
@@ -82,11 +98,13 @@ export const DeltBostedVisning = ({ adresseData, idx, data, tmpPersoner, ident }
 			redigertAttributt={redigertBostedValues}
 			path="deltBosted"
 			ident={ident}
+			personValues={personValuesMedRedigert}
+			relasjoner={relasjoner}
 		/>
 	)
 }
 
-export const DeltBosted = ({ data, tmpPersoner, ident }: Data) => {
+export const DeltBosted = ({ data, tmpPersoner, ident, personValues, relasjoner }: Data) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -104,6 +122,8 @@ export const DeltBosted = ({ data, tmpPersoner, ident }: Data) => {
 								data={data}
 								tmpPersoner={tmpPersoner}
 								ident={ident}
+								personValues={personValues}
+								relasjoner={relasjoner}
 							/>
 						)}
 					</DollyFieldArray>

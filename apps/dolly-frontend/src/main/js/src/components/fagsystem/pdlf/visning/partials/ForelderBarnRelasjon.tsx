@@ -85,7 +85,8 @@ export const ForelderBarnRelasjonVisning = ({
 		data[idx]
 	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
-
+	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+	console.log('data: ', data) //TODO - SLETT MEG
 	const redigertForelderBarnPdlf = _.get(tmpPersoner, `${ident}.person.forelderBarnRelasjon`)?.find(
 		(a: ForeldreBarnRelasjon) => a.id === forelderBarnRelasjonData.id
 	)
@@ -143,6 +144,10 @@ export const ForelderBarnRelasjonVisning = ({
 	if (foreldreansvar) {
 		initialValues.foreldreansvar = foreldreansvar[0]
 		//TODO: Ta høyde for flere foreldreansvar. Kan evt fjerne alt av foreldreansvar?
+	}
+
+	if (initialValues.forelderBarnRelasjon.minRolleForPerson === 'BARN') {
+		initialValues.forelderBarnRelasjon.deltBosted = null
 	}
 
 	return (

@@ -28,24 +28,28 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 
 	return (
 		<>
-			<FormikSelect
-				name={`${path}.minRolleForPerson`}
-				label="Forelders rolle for barn"
-				options={Options('foreldreTypePDL')}
-				isClearable={false}
-			/>
-			<FormikCheckbox
-				name={`${path}.partnerErIkkeForelder`}
-				label="Partner ikke forelder"
-				checkboxMargin
-			/>
-			<DollyCheckbox
-				label="Har delt bosted"
-				checked={deltBosted}
-				checkboxMargin
-				onChange={() => setDeltBosted(!deltBosted)}
-				size="small"
-			/>
+			<div className="flexbox--flex-wrap">
+				<FormikSelect
+					name={`${path}.minRolleForPerson`}
+					label="Forelders rolle for barn"
+					options={Options('foreldreTypePDL')}
+					isClearable={false}
+				/>
+				<FormikCheckbox
+					name={`${path}.partnerErIkkeForelder`}
+					label="Partner ikke forelder"
+					id={`${path}.partnerErIkkeForelder`}
+					checkboxMargin
+				/>
+				<DollyCheckbox
+					label="Har delt bosted"
+					id={`${path}.deltBosted`}
+					checked={deltBosted}
+					checkboxMargin
+					onChange={() => setDeltBosted(!deltBosted)}
+					size="small"
+				/>
+			</div>
 			{deltBosted && <DeltBosted formikBag={formikBag} path={`${path}.deltBosted`} />}
 		</>
 	)

@@ -46,6 +46,9 @@ export const ForelderBarnRelasjonForm = ({
 	const relatertPersonUtenFolkeregisteridentifikator =
 		'relatertPersonUtenFolkeregisteridentifikator'
 
+	console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
+	console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
+
 	const handleChangeTypeForelderBarn = (target: Target, path: string) => {
 		const forelderBarnRelasjon = _.get(formikBag.values, path)
 		const forelderBarnClone = _.cloneDeep(forelderBarnRelasjon)
@@ -98,6 +101,9 @@ export const ForelderBarnRelasjonForm = ({
 		if (!_.get(formikBag.values, `${path}.typeForelderBarn`)) {
 			formikBag.setFieldValue(`${path}.typeForelderBarn`, getForelderBarnType())
 		}
+		// if (_.get(formikBag.values, `${path}.minRolleForPerson`) === 'BARN') {
+		// 	formikBag.setFieldValue(`${path}.deltBosted`, null)
+		// }
 	}, [])
 
 	return (
