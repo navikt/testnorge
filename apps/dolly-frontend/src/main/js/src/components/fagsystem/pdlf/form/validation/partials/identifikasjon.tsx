@@ -1,10 +1,10 @@
 import * as Yup from 'yup'
-import { requiredString } from '@/utils/YupValidations'
+import { ifNotBlank, requiredString } from '@/utils/YupValidations'
 
 const personnavnSchema = Yup.object({
-	fornavn: Yup.string(),
-	mellomnavn: Yup.string(),
-	etternavn: Yup.string(),
+	fornavn: ifNotBlank('$pdldata.person.navn[0].etternavn', requiredString),
+	mellomnavn: Yup.string().nullable(),
+	etternavn: ifNotBlank('$pdldata.person.navn[0].fornavn', requiredString),
 })
 
 export const falskIdentitet = Yup.array().of(

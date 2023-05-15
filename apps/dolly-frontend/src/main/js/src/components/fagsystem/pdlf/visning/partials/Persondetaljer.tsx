@@ -117,7 +117,7 @@ export const Persondetaljer = ({
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />
-				<div className="person-visning_content">
+				<div className="person-visning_content" style={{ flexDirection: 'column' }}>
 					{erPdlVisning ? (
 						<PersondetaljerLes
 							person={data}
