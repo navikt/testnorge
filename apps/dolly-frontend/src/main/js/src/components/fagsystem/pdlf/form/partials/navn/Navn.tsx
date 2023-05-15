@@ -93,7 +93,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 					<FormikSelect
 						name={`${path}.alleFornavn`}
 						label="Fornavn"
-						placeholder={fornavn || 'Velg..'}
+						placeholder={fornavn || 'Velg...'}
 						value={selectedFornavn}
 						options={fornavnOptions}
 						afterChange={(change) => {
@@ -112,7 +112,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 					<FormikSelect
 						name={`${path}.alleMellomnavn`}
 						label="Mellomnavn"
-						placeholder={mellomnavn || 'Velg..'}
+						placeholder={mellomnavn || 'Velg...'}
 						options={mellomnavnOptions}
 						afterChange={(change) => {
 							const mellomnavn = change?.map((option: Option) => option.value)
@@ -131,7 +131,7 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 					<FormikSelect
 						name={`${path}.alleEtternavn`}
 						label="Etternavn"
-						placeholder={etternavn || 'Velg..'}
+						placeholder={etternavn || 'Velg...'}
 						options={etternavnOptions}
 						afterChange={(change) => {
 							const etternavn = change?.map((option: Option) => option.value)

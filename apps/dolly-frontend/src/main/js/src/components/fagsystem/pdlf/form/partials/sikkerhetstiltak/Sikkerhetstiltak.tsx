@@ -123,7 +123,7 @@ export const Sikkerhetstiltak = ({ formikBag }: SikkerhetstiltakProps) => {
 									options={randomNavUsers}
 									isClearable={false}
 									name={`${path}.kontaktperson.personident`}
-									placeholder={personident ? personident : 'Velg..'}
+									placeholder={personident ? personident : 'Velg...'}
 									label={'Kontaktperson'}
 									fastfield={false}
 								/>

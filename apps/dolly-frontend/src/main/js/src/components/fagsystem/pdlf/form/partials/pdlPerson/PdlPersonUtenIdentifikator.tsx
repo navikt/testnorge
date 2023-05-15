@@ -39,19 +39,19 @@ export const PdlPersonUtenIdentifikator = ({
 			<FormikSelect
 				name={`${path}.navn.fornavn`}
 				label="Fornavn"
-				placeholder={fornavn ? fornavn : 'Velg..'}
+				placeholder={fornavn ? fornavn : 'Velg...'}
 				options={fornavnOptions}
 			/>
 			<FormikSelect
 				name={`${path}.navn.mellomnavn`}
 				label="Mellomnavn"
-				placeholder={mellomnavn ? mellomnavn : 'Velg..'}
+				placeholder={mellomnavn ? mellomnavn : 'Velg...'}
 				options={mellomnavnOptions}
 			/>
 			<FormikSelect
 				name={`${path}.navn.etternavn`}
 				label="Etternavn"
-				placeholder={etternavn ? etternavn : 'Velg..'}
+				placeholder={etternavn ? etternavn : 'Velg...'}
 				options={etternavnOptions}
 			/>
 		</div>
