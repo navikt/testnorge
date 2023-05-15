@@ -232,6 +232,7 @@ export const initialDigitalInnsending = {
 	tittel: '',
 	tema: '',
 	kanal: 'NAV_NO',
+	ferdigstill: true,
 	avsenderMottaker: {
 		id: '',
 		navn: '',
@@ -250,6 +251,7 @@ export const initialDokarkiv = {
 	tittel: '',
 	tema: '',
 	kanal: 'SKAN_IM',
+	ferdigstill: true,
 	journalfoerendeEnhet: undefined,
 	dokumenter: [
 		{

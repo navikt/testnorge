@@ -31,6 +31,7 @@ public class DokarkivRequest {
     private Bruker bruker;
     private Sak sak;
     private List<Dokument> dokumenter;
+    private Boolean ferdigstill;
 
     public List<Dokument> getDokumenter() {
         if (isNull(dokumenter)) {

@@ -277,7 +277,11 @@ const FinnPersonBestilling = ({
 					/>
 				</div>
 				{error && (
-					<div className="error-message" style={{ marginTop: '10px', maxWidth: '330px' }}>
+					<div
+						data-cy={CypressSelector.ERROR_MESSAGE_NAVIGERING}
+						className="error-message"
+						style={{ marginTop: '10px', maxWidth: '330px' }}
+					>
 						{error}
 					</div>
 				)}

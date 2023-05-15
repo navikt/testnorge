@@ -58,6 +58,9 @@ public class RsDokarkiv {
             + "Øvrige dokumenter tilknyttes som vedlegg. Rekkefølgen på vedlegg beholdes ikke ved uthenting av journalpost.")
     private List<Dokument> dokumenter;
 
+    @Schema(description = "Forsøker å ferdigstille dokument etter innsending")
+    private Boolean ferdigstill;
+
     public List<Dokument> getDokumenter() {
         if (isNull(dokumenter)) {
             dokumenter = new ArrayList<>();

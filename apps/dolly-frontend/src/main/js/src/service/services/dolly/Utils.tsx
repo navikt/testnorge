@@ -129,7 +129,12 @@ export const SortKodeverkArray = (data) => {
 
 	if (data.name === 'Tema') {
 		const ugyldigeKoder = ['BII', 'KLA', 'KNA', 'KOM', 'LGA', 'MOT', 'OVR']
-		return kodeverk.filter((kode) => !ugyldigeKoder.includes(kode.value))
+		return kodeverk
+			.filter((kode) => !ugyldigeKoder.includes(kode.value))
+			.map((kode) => ({
+				label: kode.label?.includes('Tiltaks') ? `${kode.label}/Individstønad` : `${kode.label}`,
+				value: kode.value,
+			}))
 	}
 
 	if (data.name === 'Vergemål_Mandattype') {

@@ -4,6 +4,7 @@ import { onFailure, onSuccess } from '@/ducks/utils/requestActions'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
 import { LOCATION_CHANGE } from 'redux-first-history'
 import { VisningType } from '@/pages/gruppe/Gruppe'
+import { isEmpty } from 'lodash'
 
 export const {
 	navigerTilPerson,
@@ -54,11 +55,13 @@ export default handleActions(
 			state.feilmelding = action.payload.data?.message
 		},
 		[onSuccess(navigerTilPerson)](state, action) {
-			state.feilmelding = action.payload?.data?.message
+			state.feilmelding = isEmpty(action.payload?.data)
+				? 'Klarte ikke å navigere til person'
+				: action.payload?.data?.message
 			state.hovedperson = action.payload.data.identHovedperson
 			state.visPerson = action.payload.data.identNavigerTil
 			state.sidetall = action.payload.data.sidetall
-			state.navigerTilGruppe = action.payload.data.gruppe?.id
+			state.navigerTilGruppe = action.payload.data?.gruppe?.id
 			state.visning = VisningType.VISNING_PERSONER
 		},
 		[onSuccess(navigerTilBestilling)](state, action) {
