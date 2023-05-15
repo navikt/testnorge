@@ -163,8 +163,8 @@ public class RelasjonerAlder {
         return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now());
     }
 
-    private int getAlder(LocalDateTime start) {
+    private Integer getAlder(LocalDateTime start) {
 
-        return getAlder(start.toLocalDate());
+        return nonNull(start) ? getAlder(start.toLocalDate()) : null;
     }
 }
