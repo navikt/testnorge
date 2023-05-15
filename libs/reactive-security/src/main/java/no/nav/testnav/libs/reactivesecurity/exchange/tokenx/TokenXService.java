@@ -1,13 +1,13 @@
 package no.nav.testnav.libs.reactivesecurity.exchange.tokenx;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
-import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
 import no.nav.testnav.libs.securitycore.command.tokenx.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;

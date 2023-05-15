@@ -2,10 +2,9 @@ package no.nav.testnav.libs.reactivesecurity.properties;
 
 import lombok.Getter;
 import lombok.Setter;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 
 import java.util.List;
-
-import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 
 @Getter
 @Setter
