@@ -58,4 +58,5 @@ export enum CypressSelector {
 	SELECT_PERSON_SEARCH = 'select-person-search',
 	HOVER_MILJOE = 'hover-miljoe',
 	CHECKBOX_FORBEDRING_ANONYM = 'checkbox-forbedring-anonym',
+	ERROR_MESSAGE_NAVIGERING = 'error-message-navigering',
 }
