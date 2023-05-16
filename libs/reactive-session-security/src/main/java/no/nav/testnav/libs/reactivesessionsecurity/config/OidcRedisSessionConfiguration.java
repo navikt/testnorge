@@ -2,8 +2,6 @@ package no.nav.testnav.libs.reactivesessionsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.libs.reactivesessionsecurity.action.GetAuthenticatedResourceServerType;
-import no.nav.testnav.libs.reactivesessionsecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -36,9 +34,7 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
         UserJwtExchange.class
 })
 @RequiredArgsConstructor
-public class OicdRedisSessionConfiguration {
-    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
+public class OidcRedisSessionConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
@@ -48,7 +44,7 @@ public class OicdRedisSessionConfiguration {
             ClientRegistrationIdResolver clientRegistrationIdResolver,
             ObjectMapper objectMapper) {
 
-        var tokenExchange = new TokenExchange(getAuthenticatedResourceServerType, getAuthenticatedUserId, clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
 
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);

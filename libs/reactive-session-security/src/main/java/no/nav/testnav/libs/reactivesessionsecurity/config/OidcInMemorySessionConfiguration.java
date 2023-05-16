@@ -3,8 +3,6 @@ package no.nav.testnav.libs.reactivesessionsecurity.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivesessionsecurity.action.GetAuthenticatedResourceServerType;
-import no.nav.testnav.libs.reactivesessionsecurity.action.GetAuthenticatedUserId;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
@@ -30,15 +28,11 @@ import java.util.concurrent.ConcurrentHashMap;
         AzureAdTokenExchange.class,
         TokenXExchange.class,
         ClientRegistrationIdResolver.class,
-        UserJwtExchange.class,
-        GetAuthenticatedResourceServerType.class,
-        GetAuthenticatedUserId.class
+        UserJwtExchange.class
 })
 @RequiredArgsConstructor
-public class OicdInMemorySessionConfiguration {
+public class OidcInMemorySessionConfiguration {
 
-    private final GetAuthenticatedResourceServerType getAuthenticatedResourceServerType;
-    private final GetAuthenticatedUserId getAuthenticatedUserId;
     private final SessionProperties sessionProperties;
 
     @Bean
@@ -61,7 +55,7 @@ public class OicdInMemorySessionConfiguration {
             ClientRegistrationIdResolver clientRegistrationIdResolver,
             ObjectMapper objectMapper) {
 
-        var tokenExchange = new TokenExchange(getAuthenticatedResourceServerType, getAuthenticatedUserId, clientRegistrationIdResolver, objectMapper);
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
         tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
         tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
 
