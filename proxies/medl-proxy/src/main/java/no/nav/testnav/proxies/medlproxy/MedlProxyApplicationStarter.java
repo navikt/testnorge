@@ -35,7 +35,7 @@ public class MedlProxyApplicationStarter {
                 .bearerAuthenticationHeaderFilter(() -> tokenService.exchange(properties).map(AccessToken::getTokenValue));
 
         return builder.routes()
-                .route(spec -> spec.path("/api/v2/**")
+                .route(spec -> spec.path("/rest/v1/**")
                         .filters(filterSpec -> filterSpec.filter(addAuthenticationHeaderDevFilter))
                         .uri(properties.getUrl()))
                 .build();

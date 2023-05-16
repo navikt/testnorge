@@ -24,7 +24,7 @@ spring:
 
 consumers:
   medlstub:
-    name: digdir-medl-stub
+    name: medlemskap-medl-testdata
     namespace: team-rocket
-    url: https://digdir-medl-stub.intern.dev.nav.no
+    url: https://medlemskap-medl-testdata.intern.dev.nav.no
     cluster: dev-gcp
