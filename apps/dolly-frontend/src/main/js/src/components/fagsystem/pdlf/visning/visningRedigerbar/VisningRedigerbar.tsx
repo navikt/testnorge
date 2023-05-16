@@ -303,7 +303,14 @@ export const VisningRedigerbar = ({
 			sivilstand: ifPresent('sivilstand', sivilstand),
 			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
 			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
-			foreldreansvar: ifPresent('foreldreansvar', foreldreansvarForBarn),
+			foreldreansvar: ifPresent(
+				'foreldreansvar',
+				Yup.mixed().when('foreldreansvar', {
+					is: (foreldreansvar) => Array.isArray(foreldreansvar),
+					then: () => Yup.array().of(foreldreansvarForBarn),
+					otherwise: () => foreldreansvarForBarn,
+				})
+			),
 		},
 		[
 			['doedsfall', 'doedsfall'],

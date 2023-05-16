@@ -142,6 +142,7 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 				}
 				onChange={(target: Target) => handleChangeAdressetype(target, path)}
 				size="large"
+				isClearable={false}
 			/>
 
 			{adressetype === 'VEGADRESSE' && (

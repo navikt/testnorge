@@ -168,10 +168,16 @@ export const ForelderBarnRelasjonForm = ({
 			)}
 
 			{!path?.includes('pdldata') && _.has(formikBag.values, 'foreldreansvar') && (
-				<Alert variant={'info'} size={'small'} style={{ marginTop: '10px', marginBottom: '15px' }}>
-					Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importers til
-					Dolly, via knapp øverst på denne personen.
-				</Alert>
+				<div className="flexbox--full-width">
+					<Alert
+						variant={'info'}
+						size={'small'}
+						style={{ marginTop: '10px', marginBottom: '15px' }}
+					>
+						Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importers til
+						Dolly, via knapp øverst på denne personen.
+					</Alert>
+				</div>
 			)}
 
 			<AvansertForm

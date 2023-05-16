@@ -44,7 +44,7 @@ const ForelderBarnRelasjonLes = ({
 		(item) => item.relatertPerson?.ident === relatertPersonIdent
 	)
 	const relatertPersonUtenId = forelderBarnData.relatertPersonUtenFolkeregisteridentifikator
-	console.log('forelderBarnData: ', forelderBarnData) //TODO - SLETT MEG
+	// console.log('forelderBarnData: ', forelderBarnData) //TODO - SLETT MEG
 	return (
 		<>
 			<ErrorBoundary>
@@ -85,8 +85,8 @@ export const ForelderBarnRelasjonVisning = ({
 		data[idx]
 	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
-	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-	console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+	// console.log('data: ', data) //TODO - SLETT MEG
 	const redigertForelderBarnPdlf = _.get(tmpPersoner, `${ident}.person.forelderBarnRelasjon`)?.find(
 		(a: ForeldreBarnRelasjon) => a.id === forelderBarnRelasjonData.id
 	)
@@ -140,10 +140,8 @@ export const ForelderBarnRelasjonVisning = ({
 	}
 
 	const foreldreansvar = getForeldreansvar()
-
 	if (foreldreansvar) {
-		initialValues.foreldreansvar = foreldreansvar[0]
-		//TODO: Ta høyde for flere foreldreansvar. Kan evt fjerne alt av foreldreansvar?
+		initialValues.foreldreansvar = foreldreansvar
 	}
 
 	if (initialValues.forelderBarnRelasjon.minRolleForPerson === 'BARN') {

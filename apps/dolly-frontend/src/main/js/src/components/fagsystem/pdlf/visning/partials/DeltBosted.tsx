@@ -4,7 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
-import { FullmaktValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { DeltBostedValues, FullmaktValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -47,12 +47,13 @@ export const DeltBostedVisning = ({
 	let initialValues = { deltBosted: initBosted }
 
 	_.set(initialValues, 'deltBosted.adresseIdentifikatorFraMatrikkelen', undefined)
+	console.log('adresseData: ', adresseData) //TODO - SLETT MEG
 
-	//TODO: Lag DeltBostedValues
 	const redigertBostedPdlf = _.get(tmpPersoner, `${ident}.person.deltBosted`)?.find(
-		(a: FullmaktValues) => a.id === adresseData.id
+		(a: DeltBostedValues) => a.id === adresseData.id
 	)
-	// const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
+	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
+	console.log('redigertRelatertePersoner: ', redigertRelatertePersoner) //TODO - SLETT MEG
 
 	const slettetBostedtPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBostedPdlf
 	if (slettetBostedtPdlf) {
@@ -87,8 +88,8 @@ export const DeltBostedVisning = ({
 		personValuesMedRedigert.deltBosted = redigertBostedPdlf
 	}
 
-	console.log('data: ', data) //TODO - SLETT MEG
-	console.log('initialValues: ', initialValues) //TODO - SLETT MEG
+	// console.log('data: ', data) //TODO - SLETT MEG
+	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
 	//TODO: lag redigerte relasjoner også.
 	return (
 		<VisningRedigerbarConnector
