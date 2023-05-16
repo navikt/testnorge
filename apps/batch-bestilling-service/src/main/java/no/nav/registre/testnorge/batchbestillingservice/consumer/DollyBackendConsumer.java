@@ -10,26 +10,29 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
 public class DollyBackendConsumer {
 
-
     private final WebClient webClient;
     private final TokenExchange tokenService;
     private final ServerProperties serviceProperties;
 
-    public DollyBackendConsumer(DollyBackendServiceProperties properties,
-                                TokenExchange tokenService
+    public DollyBackendConsumer(
+            DollyBackendServiceProperties properties,
+            TokenExchange tokenService,
+            WebClient.Builder webClientBuilder
     ) {
 
         this.serviceProperties = properties;
         this.tokenService = tokenService;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(serviceProperties.getUrl())
                 .build();
     }
