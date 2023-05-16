@@ -10,7 +10,6 @@ import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.Collections;
 import java.util.List;
@@ -51,14 +50,21 @@ public class DollyBackendConsumer {
 
     public List<Object> getAktiveBestillinger(Long gruppeId) {
 
-        return tokenService
-                .exchange(serviceProperties)
-                .map(token -> new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId).call())
-                .doOnError(error -> log.error("Henting av aktive bestillinger feilet for gruppe {}", gruppeId, error))
-                .onErrorReturn(Flux.empty())
-                .block()
-                .collectList()
-                .onErrorReturn(Collections.emptyList())
-                .block();
+        return Optional
+                .ofNullable(
+                        tokenService
+                                .exchange(serviceProperties)
+                                .map(token -> new GetAktiveBestillingerCommand(webClient, token.getTokenValue(), gruppeId).call())
+                                .doOnError(error -> log.error("Henting av aktive bestillinger feilet for gruppe {}", gruppeId, error))
+                                .onErrorReturn(Flux.empty())
+                                .block()
+                )
+                .map(flux -> flux
+                        .collectList()
+                        .onErrorReturn(Collections.emptyList())
+                        .block())
+                .orElse(Collections.emptyList());
+
     }
+    
 }
