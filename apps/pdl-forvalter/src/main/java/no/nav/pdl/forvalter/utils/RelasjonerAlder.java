@@ -55,6 +55,7 @@ public class RelasjonerAlder {
                                     if (isNull(partner.getNyRelatertPerson())) {
                                         partner.setNyRelatertPerson(new PersonRequestDTO());
                                     }
+                                    partner.getNyRelatertPerson().setAlder(request.getAlder());
                                     partner.getNyRelatertPerson().setFoedtFoer(request.getFoedtFoer());
                                     partner.getNyRelatertPerson().setFoedtEtter(request.getFoedtEtter());
                                 }
@@ -129,14 +130,18 @@ public class RelasjonerAlder {
             return null;
 
         } else if (nonNull(relasjon.getFoedtEtter()) && nonNull(relasjon.getFoedtFoer())) {
-            return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())), getAlder(relasjon.getFoedtFoer()));
+            return Math.max(getRandomAlder(relasjon), getAlder(relasjon.getFoedtFoer()));
 
         } else if (nonNull(relasjon.getFoedtEtter())) {
-            return RANDOM.nextInt(getAlder(relasjon.getFoedtEtter()));
+            return getRandomAlder(relasjon);
 
         } else {
             return Math.max(RANDOM.nextInt(getAlder(relasjon.getFoedtFoer().minusYears(3))), getAlder(relasjon.getFoedtFoer()));
         }
+    }
+
+    private static Integer getRandomAlder(PersonRequestDTO relasjon) {
+        return getAlder(relasjon.getFoedtEtter()) > 0 ? RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())) : 0;
     }
 
     private static Integer getAlderNyPersonVoksen(PersonRequestDTO relasjon) {
@@ -158,7 +163,7 @@ public class RelasjonerAlder {
         }
     }
 
-    private int getAlder(LocalDate start) {
+    private Integer getAlder(LocalDate start) {
 
         return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now());
     }
