@@ -26,15 +26,11 @@ public class TokenExchange {
         var key = String.format(serverProperties.toAzureAdScope());
 
         if (!tokenCache.containsKey(key) ||
-                expires(tokenCache.get(key))
-                        .minusSeconds(300)
-                        .isBefore(Instant.now())) {
+                expires(tokenCache.get(key))) {
 
             synchronized (this) {
                 if (!tokenCache.containsKey(key) ||
-                        expires(tokenCache.get(key))
-                                .minusSeconds(300)
-                                .isBefore(Instant.now())) {
+                        expires(tokenCache.get(key))) {
                     return azureAdTokenService.exchange(serverProperties)
                             .doOnNext(token ->
                                     tokenCache.put(key, token));
@@ -51,11 +47,13 @@ public class TokenExchange {
     }
 
     @SneakyThrows
-    private Instant expires(AccessToken accessToken) {
+    private boolean expires(AccessToken accessToken) {
 
         var chunks = accessToken.getTokenValue().split("\\.");
         var body = new String(Base64.getDecoder().decode(chunks[1]));
 
-        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt());
+        return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
+                .minusSeconds(300)
+                .isBefore(Instant.now());
     }
 }
