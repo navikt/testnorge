@@ -29,6 +29,8 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
           cluster: prod-gcp
         - application: app-1
