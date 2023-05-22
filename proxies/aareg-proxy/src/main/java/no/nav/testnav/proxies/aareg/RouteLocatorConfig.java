@@ -82,4 +82,5 @@ public class RouteLocatorConfig {
                 )
                 .uri("https://aareg-vedlikehold-" + miljoe + ".dev.intern.nav.no");
     }
+
 }
