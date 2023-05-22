@@ -16,7 +16,7 @@ spec:
       rules:
         - alert: Applikasjon er nede
           expr: kube_deployment_status_replicas_available{namespace = "dolly"} == 0
-          for: 2m
+          for: 3m
           annotations:
             summary: "Applikasjonen {{ $labels.deployment }} er nede"
             action: "`kubectl describe pod -l app={{ $labels.deployment }}` for events, og `kubectl logs -l app={{ $labels.deployment }}` for logger"
