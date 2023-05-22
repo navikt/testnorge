@@ -5,6 +5,7 @@ on:
     paths:
       - libs/reactive-core/**
       - .github/workflows/lib.reactive-core.yml
+      - .github/workflows/common.scan.sonar.yml # Temporarily
 
 jobs:
   scan:
