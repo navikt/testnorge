@@ -6,8 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedResourceServerType;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -25,21 +27,19 @@ public class TokenExchange implements ExchangeToken {
     private final Map<ResourceServerType, ExchangeToken> exchanges = new HashMap<>();
     private final Map<String, AccessToken> tokenCache = new HashMap<>();
     private final ObjectMapper objectMapper;
-    private final GetAuthenticatedId getAuthenticatedId;
 
     public TokenExchange(GetAuthenticatedResourceServerType getAuthenticatedTypeAction, List<TokenService> tokenServices,
-                         ObjectMapper objectMapper, GetAuthenticatedId getAuthenticatedId) {
+                         ObjectMapper objectMapper) {
         this.getAuthenticatedTypeAction = getAuthenticatedTypeAction;
         tokenServices.forEach(tokenService -> exchanges.put(tokenService.getType(), tokenService));
         this.objectMapper = objectMapper;
-        this.getAuthenticatedId = getAuthenticatedId;
     }
 
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties) {
 
         var type = getAuthenticatedTypeAction.call();
-        var user = getAuthenticatedId.call();
+        var user = ReactiveSecurityContextHolder.getContext().map(this::getUser);
 
         var key = String.format("%s:%s", user, serverProperties.getScope(type));
 
@@ -73,5 +73,10 @@ public class TokenExchange implements ExchangeToken {
         return Instant.ofEpochSecond(objectMapper.readTree(body).get("exp").asInt())
                 .minusSeconds(300)
                 .isBefore(Instant.now());
+    }
+
+    private String getUser(SecurityContext context) {
+
+        return ((OAuth2AuthenticationToken) context.getAuthentication()).getPrincipal().getName();
     }
 }
