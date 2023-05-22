@@ -1,4 +1,4 @@
-READER_TOKEN: test
+DOLLY_READER_TOKEN: test
 
 spring:
   flyway:
