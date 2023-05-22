@@ -17,7 +17,6 @@ jobs:
       READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
   workflow:
-    needs: cypress
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
       working-directory: "apps/dolly-frontend"
