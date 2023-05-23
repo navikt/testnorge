@@ -20,6 +20,8 @@ const Advarsler = {
 		'Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller velg en annen innloggingsmetode. ',
 	unknown_error: 'Ukjent feil oppsto og du ble logget ut. ',
 	miljoe_error: 'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. ',
+	person_org_error:
+		'Du er blitt logget ut. Det oppsto et problem med å hente organisasjon tilganger. ',
 	azure_error:
 		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. ',
 }

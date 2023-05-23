@@ -7,6 +7,8 @@ const logoutBruker = (feilmelding?: string) => {
 			return 'miljoe_error'
 		} else if (stackTrace?.includes('current')) {
 			return 'azure_error'
+		} else if (stackTrace?.includes('person_org')) {
+			return 'person_org_error'
 		} else {
 			return 'unknown_error'
 		}
