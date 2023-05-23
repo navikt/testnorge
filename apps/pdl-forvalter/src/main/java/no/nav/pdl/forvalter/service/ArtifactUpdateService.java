@@ -312,31 +312,30 @@ public class ArtifactUpdateService {
 
         var endretAnsvar = id > 0 && id <= person.getPerson().getForeldreansvar().size() &&
                 (oppdatertAnsvar.getAnsvar() != person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() ||
-                        !person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig()));
+                        person.getPerson().getForeldreansvar().get(id - 1).isAnsvarligMedIdentifikator() &&
+                                !person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig()));
 
         if (endretAnsvar && person.getPerson().getForeldreansvar().get(id - 1).isAnsvarligMedIdentifikator()) {
 
-            if (person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() != Ansvar.FELLES) {
-                deleteRelasjon(person, person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig(),
-                        RelasjonType.FORELDREANSVAR_FORELDER);
-                deleteRelasjon(getPerson(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig()),
-                        person.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
+            var ansvar = person.getPerson().getForeldreansvar().get(id - 1);
+            if (ansvar.getAnsvar() != Ansvar.FELLES) {
+                deleteRelasjon(person, ansvar.getAnsvarlig(), RelasjonType.FORELDREANSVAR_FORELDER);
+                deleteRelasjon(getPerson(ansvar.getAnsvarlig()), person.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
 
             } else {
                 person.getPerson().getForelderBarnRelasjon().stream()
                         .filter(ForelderBarnRelasjonDTO::isBarn)
+                        .filter(relasjon -> relasjon.getRelatertPerson().equals(ansvar.getAnsvarlig()))
                         .forEach(relasjon -> {
                             deleteRelasjon(person, relasjon.getRelatertPerson(), RelasjonType.FORELDREANSVAR_FORELDER);
                             deleteRelasjon(getPerson(relasjon.getRelatertPerson()), person.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
                         });
 
-                if (person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() == Ansvar.ANDRE &&
-                        !person.getPerson().getForeldreansvar().get(id - 1).isEksisterendePerson()) {
-                    personService.deletePerson(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig());
+                if (ansvar.getAnsvar() == Ansvar.ANDRE && !ansvar.isEksisterendePerson()) {
+                    personService.deletePerson(ansvar.getAnsvarlig());
                 }
                 deleteFellesAnsvar(id, person.getPerson().getForeldreansvar());
             }
-
         }
 
         person.getPerson().setForeldreansvar(
