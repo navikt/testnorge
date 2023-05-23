@@ -5,14 +5,16 @@ on:
     paths:
       - apps/organisasjon-tilgang-service/**
       - libs/**
-      - .github/workflows/app.organisasjon-tilgang-service-test.yml
+      - .github/workflows/app.organisasjon-tilgang-service-prod.yml
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
+      cluster: "prod-gcp"
+      nais-manifest: "config.prod.yml"
       working-directory: "apps/organisasjon-tilgang-service"
-      deploy-tag-test: "#deploy-test-organisasjon-tilgang-service"
+      deploy-tag: "#deploy-organisasjon-tilgang-service"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
