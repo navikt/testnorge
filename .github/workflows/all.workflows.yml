@@ -15,7 +15,7 @@ on:
           - "proxies"
       cluster:
         type: choice
-        description: "The cluster to deploy to. Only relevant if workflow is backend."
+        description: "The cluster to deploy to."
         options:
           - "dev-gcp"
           - "dev-fss"
