@@ -57,7 +57,6 @@ jobs:
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
-      nais-manifest: ${{ inputs.nais-manifest }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
