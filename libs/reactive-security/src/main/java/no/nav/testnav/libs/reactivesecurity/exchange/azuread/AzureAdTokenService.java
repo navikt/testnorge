@@ -2,11 +2,11 @@ package no.nav.testnav.libs.reactivesecurity.exchange.azuread;
 
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesecurity.action.GetAuthenticatedToken;
-import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenService;
 import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.securitycore.domain.Token;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;

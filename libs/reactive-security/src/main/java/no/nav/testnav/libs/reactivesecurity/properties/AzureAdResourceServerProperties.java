@@ -1,10 +1,9 @@
 package no.nav.testnav.libs.reactivesecurity.properties;
 
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-
-import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
 
 @Configuration
 @ConfigurationProperties(prefix = "spring.security.oauth2.resourceserver.aad")
@@ -15,8 +14,4 @@ public class AzureAdResourceServerProperties extends ResourceServerProperties {
     public ResourceServerType getType() {
         return ResourceServerType.AZURE_AD;
     }
-
-
-
-
 }

@@ -1,6 +1,11 @@
 on:
   workflow_call:
     inputs:
+      cluster:
+        type: string
+        description: "The cluster to deploy to, e.g. dev-gcp."
+        required: false
+        default: "dev-gcp"
       working-directory:
         type: string
         description: "The working directory for the job, e.g. apps/dolly-frontend (without leading/trailing slash)."
@@ -137,7 +142,7 @@ jobs:
       - name: "Deploy (unstable)"
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
+          CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
         uses: nais/deploy/actions/deploy@v1
@@ -153,7 +158,7 @@ jobs:
       - name: "Deploy (idporten)"
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
+          CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{ needs.build.outputs.image }}
         uses: nais/deploy/actions/deploy@v1
@@ -168,7 +173,7 @@ jobs:
       - name: "Deploy (test)"
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
+          CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
         uses: nais/deploy/actions/deploy@v1
@@ -183,7 +188,7 @@ jobs:
       - name: "Deploy"
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: dev-gcp
+          CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.yml
           VAR: image=${{ needs.build.outputs.image }}
         uses: nais/deploy/actions/deploy@v1

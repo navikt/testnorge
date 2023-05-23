@@ -14,14 +14,12 @@ spec:
   groups:
     - name: dolly-alerts
       rules:
-        - alert: applikasjon nede
-          expr: kube_deployment_status_replicas_available{deployment=~"dolly-backend|dolly-frontend"} == 0
-          for: 2m
+        - alert: Applikasjon er nede
+          expr: kube_deployment_status_replicas_available{namespace = "dolly"} == 0
+          for: 3m
           annotations:
-            consequence: Application is unavailable
-            action: "`kubectl describe pod -l app={{ $labels.app }} -n {{ $labels.namespace }}` for events, og `kubectl logs -l app={{ $labels.app }} -n {{ $labels.namespace }}` for logger"
-            summary: |-
-              "App {{ $labels.app }} er nede i namespace {{ $labels.kubernetes_namespace }}"
+            summary: "Applikasjonen {{ $labels.deployment }} er nede"
+            action: "`kubectl describe pod -l app={{ $labels.deployment }}` for events, og `kubectl logs -l app={{ $labels.deployment }}` for logger"
             labels:
               namespace: dolly
               severity: critical
