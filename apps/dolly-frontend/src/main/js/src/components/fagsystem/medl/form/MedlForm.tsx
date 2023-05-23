@@ -122,10 +122,11 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 }
 
 MedlForm.validation = {
-	dokarkiv: ifPresent(
+	medl: ifPresent(
 		'$medl',
 		Yup.object({
 			fraOgMed: Yup.date().optional(),
+			tilOgMed: Yup.date().optional(),
 		})
 	),
 }

@@ -79,6 +79,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 						attr={sm.attrs.utenlandskBankkonto}
 						disabled={sm.attrs.norskBankkonto.checked}
 					/>
+					<Attributt attr={sm.attrs.medl} />
 				</AttributtKategori>
 			</Panel>
 		)
@@ -124,6 +125,7 @@ export const PersoninformasjonPanel = ({ stateModifier, testnorgeIdent }) => {
 				<Attributt attr={sm.attrs.fullmakt} />
 				<Attributt attr={sm.attrs.sikkerhetstiltak} />
 				<Attributt attr={sm.attrs.tilrettelagtKommunikasjon} />
+				<Attributt attr={sm.attrs.medl} />
 			</AttributtKategori>
 		</Panel>
 	)
@@ -176,6 +178,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		tilrettelagtKommunikasjon: 'pdldata.person.tilrettelagtKommunikasjon',
 		utenlandskBankkonto: 'bankkonto.utenlandskBankkonto',
 		norskBankkonto: 'bankkonto.norskBankkonto',
+		medl: 'medl',
 	}
 
 	return {
@@ -384,6 +387,15 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 					tilfeldigKontonummer: opts.antall && opts.antall > 1,
 				}),
 			remove: () => del(paths.norskBankkonto),
+		},
+		medl: {
+			label: 'Medlemskapsperiode',
+			checked: has(paths.medl),
+			add: () =>
+				set(paths.medl, {
+					fraOgMed: new Date(),
+				}),
+			remove: () => del(paths.medl),
 		},
 	}
 }
