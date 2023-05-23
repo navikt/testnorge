@@ -100,6 +100,7 @@ const testForeldreansvarForBarn = (val) => {
 					return a && a !== 'BARN'
 				})
 			//TODO: Sjekk at denne funker når man endrer fra forelder til barn
+			console.log('foreldrerelasjoner: ', foreldrerelasjoner) //TODO - SLETT MEG
 
 			if (
 				(selected === 'MOR' || selected === 'MEDMOR') &&
@@ -222,7 +223,7 @@ export const forelderBarnRelasjon = Yup.object().shape(
 		}),
 		nyRelatertPerson: nyPerson.nullable(),
 		deltBosted: Yup.mixed().when('deltBosted', {
-			is: (deltBosted) => deltBosted != null,
+			is: (deltBosted) => deltBosted != undefined && deltBosted != null,
 			then: () => deltBosted.nullable(),
 			otherwise: () => Yup.mixed().notRequired(),
 		}),

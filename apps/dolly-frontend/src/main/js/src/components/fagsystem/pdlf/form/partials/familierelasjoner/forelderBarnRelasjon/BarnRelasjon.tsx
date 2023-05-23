@@ -13,13 +13,18 @@ interface BarnRelasjonValues {
 }
 
 export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
+	console.log('path: ', path) //TODO - SLETT MEG
+	const erRedigering = !path?.includes('pdldata')
+
 	const [deltBosted, setDeltBosted] = useState(
-		_.get(formikBag.values, `${path}.deltBosted`) !== null
+		erRedigering ? false : _.get(formikBag.values, `${path}.deltBosted`) !== null
 	)
 
 	useEffect(() => {
 		const currentValues = _.get(formikBag.values, `${path}.deltBosted`)
-		if (deltBosted && currentValues === null) {
+		if (erRedigering) {
+			formikBag.setFieldValue(`${path}.deltBosted`, undefined)
+		} else if (deltBosted && currentValues === null) {
 			formikBag.setFieldValue(`${path}.deltBosted`, initialDeltBosted)
 		} else if (!deltBosted) {
 			formikBag.setFieldValue(`${path}.deltBosted`, null)
@@ -41,14 +46,16 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 					id={`${path}.partnerErIkkeForelder`}
 					checkboxMargin
 				/>
-				<DollyCheckbox
-					label="Har delt bosted"
-					id={`${path}.deltBosted`}
-					checked={deltBosted}
-					checkboxMargin
-					onChange={() => setDeltBosted(!deltBosted)}
-					size="small"
-				/>
+				{path?.includes('pdldata') && (
+					<DollyCheckbox
+						label="Har delt bosted"
+						id={`${path}.deltBosted`}
+						checked={deltBosted}
+						checkboxMargin
+						onChange={() => setDeltBosted(!deltBosted)}
+						size="small"
+					/>
+				)}
 			</div>
 			{deltBosted && <DeltBosted formikBag={formikBag} path={`${path}.deltBosted`} />}
 		</>

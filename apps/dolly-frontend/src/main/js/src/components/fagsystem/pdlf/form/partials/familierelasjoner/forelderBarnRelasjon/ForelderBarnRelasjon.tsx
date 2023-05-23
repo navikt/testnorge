@@ -86,6 +86,8 @@ export const ForelderBarnRelasjonForm = ({
 
 	const erBarn = relatertPersonsRolle === RELASJON_BARN
 
+	const id = _.get(formikBag.values, `${path}.id`)
+
 	const getForelderBarnType = () => {
 		const forelderBarnType = _.get(formikBag.values, `${path}.typeForelderBarn`)
 		if (forelderBarnType) {
@@ -111,7 +113,10 @@ export const ForelderBarnRelasjonForm = ({
 			<div className="toggle--wrapper">
 				<ToggleGroup
 					onChange={(value: string) => {
-						formikBag.setFieldValue(path, value === RELASJON_BARN ? initialBarn : initialForelder)
+						formikBag.setFieldValue(
+							path,
+							value === RELASJON_BARN ? { ...initialBarn, id: id } : { ...initialForelder, id: id }
+						)
 					}}
 					size={'small'}
 					defaultValue={relatertPersonsRolle || RELASJON_BARN}
@@ -165,6 +170,19 @@ export const ForelderBarnRelasjonForm = ({
 
 			{getForelderBarnType() === TypeAnsvarlig.NY && (
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
+			)}
+
+			{!path?.includes('pdldata') && erBarn && (
+				<div className="flexbox--full-width">
+					<Alert
+						variant={'info'}
+						size={'small'}
+						style={{ marginTop: '10px', marginBottom: '15px' }}
+					>
+						Dersom barn har delt bosted kan dette endres direkte på barnet. For å gjøre dette må
+						barnet importers til Dolly, via knapp øverst på denne personen.
+					</Alert>
+				</div>
 			)}
 
 			{!path?.includes('pdldata') && _.has(formikBag.values, 'foreldreansvar') && (
