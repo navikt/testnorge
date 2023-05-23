@@ -23,7 +23,7 @@ spec:
   accessPolicy:
     inbound:
       rules:
-        - application: dolly-frontend
+        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: team-dolly-lokal-app
           cluster: dev-gcp
@@ -38,7 +38,7 @@ spec:
           cluster: dev-gcp
     outbound:
       external:
-        - host: altinn.no
+        - host: tt02.altinn.no
   liveness:
     path: /internal/isAlive
     initialDelay: 10
@@ -53,7 +53,7 @@ spec:
     enabled: true
     path: /internal/metrics
   envFrom:
-    - secret: altinn-prod
+    - secret: altinn-dev
     - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
