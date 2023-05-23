@@ -19,6 +19,7 @@ on:
         options:
           - "dev-gcp"
           - "dev-fss"
+          - "prod-gcp"
       name:
         type: string
         description: "The workflow name, e.g. dolly-backend. Used to resolve the working directory together with type, as <type>/<name>."
