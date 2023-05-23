@@ -21,7 +21,7 @@ const Advarsler = {
 	unknown_error: 'Ukjent feil oppsto og du ble logget ut. ',
 	miljoe_error: 'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. ',
 	person_org_error:
-		'Du er blitt logget ut. Det oppsto et problem med å hente organisasjon tilganger. ',
+		'Du er blitt logget ut. Det oppsto et problem med å hente organisasjonstilganger. ',
 	azure_error:
 		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. ',
 }
