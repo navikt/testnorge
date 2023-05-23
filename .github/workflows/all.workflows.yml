@@ -65,6 +65,7 @@ jobs:
     if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
+      cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
