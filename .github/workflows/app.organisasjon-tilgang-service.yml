@@ -11,9 +11,8 @@ jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      cluster: "prod-gcp"
       working-directory: "apps/organisasjon-tilgang-service"
-      deploy-tag: "#deploy-organisasjon-tilgang-service"
+      deploy-tag-test: "#deploy-test-organisasjon-tilgang-service"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
