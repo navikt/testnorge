@@ -1,4 +1,4 @@
-name: organisasjon-tilgang-service
+name: organisasjon-tilgang-service-prod
 
 on:
   push:
