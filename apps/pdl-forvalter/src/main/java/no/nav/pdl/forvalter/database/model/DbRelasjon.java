@@ -11,21 +11,15 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-@Getter
-@Setter
-@ToString
+@Data
 @Entity
 @Table(name = "relasjon")
 @Builder
@@ -56,17 +50,4 @@ public class DbRelasjon {
     @ManyToOne
     @JoinColumn(name = "relatert_person_id", nullable = false, updatable = false)
     private DbPerson relatertPerson;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        DbRelasjon that = (DbRelasjon) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }
