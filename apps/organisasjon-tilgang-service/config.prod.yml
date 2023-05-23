@@ -62,7 +62,7 @@ spec:
       cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://testnav-organisasjon-tilgang-service.dev.intern.nav.no"
+    - "https://testnav-organisasjon-tilgang-service.intern.nav.no"
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod

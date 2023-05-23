@@ -15,6 +15,11 @@ on:
         description: "The Docker image suffix used for this particular workflow, e.g. dolly-backend. Defaults to the workflow name."
         required: false
         default: ${{ github.workflow }}
+      nais-manifest:
+        type: string
+        description: "The NAIS manifest file. Make sure it exists in the working-directory. Defaults to config.yml."
+        required: false
+        default: "config.yml"
       deploy-tag:
         type: string
         description: "The commit message tag that will trigger a deployment on a commit to a non-master branch, e.g. #deploy-dolly-backend. Make sure it is not a substring of other deploy tags."
@@ -124,6 +129,6 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
           VAR: image=${{ needs.build.outputs.image }}
         uses: nais/deploy/actions/deploy@v1
