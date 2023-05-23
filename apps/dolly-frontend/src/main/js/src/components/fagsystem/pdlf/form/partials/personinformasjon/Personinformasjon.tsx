@@ -31,7 +31,6 @@ const diversePaths = [
 	'tpsMessaging.spraakKode',
 	'skjerming.egenAnsattDatoFom',
 	'skjerming.egenAnsattDatoTom',
-	'medl',
 ]
 
 const alderPaths = [

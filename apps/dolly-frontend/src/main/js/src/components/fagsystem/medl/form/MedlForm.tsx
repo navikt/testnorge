@@ -63,57 +63,82 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 				startOpen={erForsteEllerTest(formikBag.values, [MedlAttributt])}
 			>
 				<Kategori title={`Oppretting av medlemskapsperiode`} vis={MedlAttributt}>
-					<div className="flexbox--full-width">
-						<FormikSelect name="medl.kilde" label="Kilde" kodeverk={Kodeverk.KILDE} />
+					<div className="flexbox--flex-wrap">
 						<FormikSelect
+							size={'medium'}
+							name="medl.kilde"
+							label="Kilde"
+							kodeverk={Kodeverk.KILDE}
+						/>
+						<FormikSelect
+							size={'medium'}
 							name="medl.kildedokument"
 							label="Kilde dokument"
 							kodeverk={Kodeverk.KILDE_DOK}
 						/>
 						<DollyDatepicker name="medl.fraOgMed" label="Fra og med" />
 						<DollyDatepicker name="medl.tilOgMed" label="Til og med" />
-						<FormikSelect name="medl.grunnlag" label="Grunnlag" kodeverk={Kodeverk.GRUNNLAG} />
 						<FormikSelect
+							size={'xxlarge'}
+							name="medl.grunnlag"
+							label="Grunnlag"
+							kodeverk={Kodeverk.GRUNNLAG}
+						/>
+						<FormikSelect
+							size={'xxlarge'}
 							name="medl.dekning"
 							label="Dekning periode"
 							kodeverk={Kodeverk.PERIODE_DEKNING}
 						/>
 						<FormikSelect
+							size={'medium'}
 							name="medl.lovvalg"
 							label="Lovvalg periode"
 							kodeverk={Kodeverk.LOVVALG_PERIODE}
 						/>
 						<FormikSelect
+							size={'xlarge'}
 							name="medl.lovvalgsland"
 							label="Lovvalg landkode"
 							kodeverk={Kodeverk.LANDKODER}
 						/>
 						<FormikSelect
+							size={'medium'}
 							name="medl.status"
 							label="Status periode"
 							kodeverk={Kodeverk.PERIODE_STATUS}
 						/>
 						<FormikSelect
+							size={'medium'}
 							name="medl.statusaarsak"
 							label="Statusårsak"
 							kodeverk={Kodeverk.PERIODE_ST_AARSAK}
 						/>
 						<FormikSelect
+							size={'xlarge'}
 							name="medl.studieinformasjon.statsborgerland"
 							label="Statsborgerland"
 							kodeverk={Kodeverk.LANDKODER}
 						/>
 						<FormikSelect
+							size={'medium'}
 							name="medl.studieinformasjon.studieland"
 							label="Studieland"
 							kodeverk={Kodeverk.LANDKODER}
 						/>
-						<FormikCheckbox name="medl.studieinformasjon.delstudie" label="Er delstudie" />
-						<FormikCheckbox name="medl.helsedel" label="Har helsedel" />
-						<FormikCheckbox
-							name="medl.studieinformasjon.soeknadInnvilget"
-							label="Søknad innvilget"
-						/>
+						<div className={'flexbox--full-width'}>
+							<FormikCheckbox
+								checkboxMargin
+								name="medl.studieinformasjon.delstudie"
+								label="Er delstudie"
+							/>
+							<FormikCheckbox checkboxMargin name="medl.helsedel" label="Har helsedel" />
+							<FormikCheckbox
+								checkboxMargin
+								name="medl.studieinformasjon.soeknadInnvilget"
+								label="Søknad innvilget"
+							/>
+						</div>
 					</div>
 				</Kategori>
 			</Panel>
