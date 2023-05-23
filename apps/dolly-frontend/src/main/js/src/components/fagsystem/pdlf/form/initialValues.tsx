@@ -127,6 +127,25 @@ export const initialSikkerhetstiltak = {
 	master: 'PDL',
 }
 
+export const initialMedl = {
+	fraOgMed: new Date(),
+	tilOgMed: new Date(),
+	grunnlag: '',
+	dekning: '',
+	lovvalg: '',
+	lovvalgsland: '',
+	status: '',
+	statusaarsak: '',
+	kilde: '',
+	kildedokument: '',
+	studieinformasjon: {
+		statsborgerland: '',
+		studieland: '',
+		delstudie: false,
+		soeknadInnvilget: false,
+	},
+}
+
 export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',

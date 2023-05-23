@@ -9,7 +9,7 @@ import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
-import { DollyDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 interface MedlFormProps {
 	formikBag: FormikProps<{}>
@@ -76,8 +76,8 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 							label="Kilde dokument"
 							kodeverk={Kodeverk.KILDE_DOK}
 						/>
-						<DollyDatepicker name="medl.fraOgMed" label="Fra og med" />
-						<DollyDatepicker name="medl.tilOgMed" label="Til og med" />
+						<FormikDatepicker name="medl.fraOgMed" label="Fra og med" />
+						<FormikDatepicker name="medl.tilOgMed" label="Til og med" />
 						<FormikSelect
 							size={'xxlarge'}
 							name="medl.grunnlag"
@@ -109,7 +109,7 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 							kodeverk={Kodeverk.PERIODE_STATUS}
 						/>
 						<FormikSelect
-							size={'medium'}
+							size={'xlarge'}
 							name="medl.statusaarsak"
 							label="Statusårsak"
 							kodeverk={Kodeverk.PERIODE_ST_AARSAK}
@@ -127,11 +127,7 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 							kodeverk={Kodeverk.LANDKODER}
 						/>
 						<div className={'flexbox--full-width'}>
-							<FormikCheckbox
-								checkboxMargin
-								name="medl.studieinformasjon.delstudie"
-								label="Er delstudie"
-							/>
+							<FormikCheckbox name="medl.studieinformasjon.delstudie" label="Er delstudie" />
 							<FormikCheckbox checkboxMargin name="medl.helsedel" label="Har helsedel" />
 							<FormikCheckbox
 								checkboxMargin

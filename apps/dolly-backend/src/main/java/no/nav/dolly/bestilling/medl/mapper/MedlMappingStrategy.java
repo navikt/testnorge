@@ -18,8 +18,15 @@ public class MedlMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsMedl rsMedl, MedlData medlDataRequest, MappingContext context) {
 
                         medlDataRequest.setIdent((String) context.getProperty("ident"));
+                        medlDataRequest.setStudieinformasjon(MedlData.Studieinformasjon.builder()
+                                .delstudie(rsMedl.getStudieinformasjon().getDelstudie())
+                                .soeknadInnvilget(rsMedl.getStudieinformasjon().getSoeknadInnvilget())
+                                .studieland(rsMedl.getStudieinformasjon().getStudieland())
+                                .statsborgerland(rsMedl.getStudieinformasjon().getStudieland())
+                                .build());
                     }
                 })
+                .exclude("studieinformasjon")
                 .byDefault()
                 .register();
     }

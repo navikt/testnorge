@@ -8,6 +8,7 @@ import {
 	initialFoedsel,
 	initialFullmakt,
 	initialKjoenn,
+	initialMedl,
 	initialNavn,
 	initialSikkerhetstiltak,
 	initialStatsborgerskap,
@@ -391,10 +392,7 @@ PersoninformasjonPanel.initialValues = ({ set, setMulti, del, has, opts }) => {
 		medl: {
 			label: 'Medlemskapsperiode',
 			checked: has(paths.medl),
-			add: () =>
-				set(paths.medl, {
-					fraOgMed: new Date(),
-				}),
+			add: () => set(paths.medl, initialMedl),
 			remove: () => del(paths.medl),
 		},
 	}
