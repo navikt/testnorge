@@ -2,12 +2,10 @@ package no.nav.testnav.libs.securitycore.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,5 +21,16 @@ public class ServerProperties {
 
     public String toAzureAdScope() {
         return "api://" + cluster + "." + namespace + "." + name + "/.default";
+    }
+
+    public String getScope(ResourceServerType scope) {
+
+        if (scope == ResourceServerType.AZURE_AD) {
+            return toAzureAdScope();
+        }
+        if (scope == ResourceServerType.TOKEN_X) {
+            return toTokenXScope();
+        }
+        return null;
     }
 }

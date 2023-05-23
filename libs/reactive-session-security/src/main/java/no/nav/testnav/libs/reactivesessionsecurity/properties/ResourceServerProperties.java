@@ -1,4 +1,4 @@
-package no.nav.testnav.libs.reactivesecurity.properties;
+package no.nav.testnav.libs.reactivesessionsecurity.properties;
 
 import lombok.Getter;
 import lombok.Setter;

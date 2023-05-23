@@ -1,6 +1,6 @@
 package no.nav.testnav.libs.reactivesecurity.properties;
 
-import no.nav.testnav.libs.reactivesecurity.domain.ResourceServerType;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

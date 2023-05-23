@@ -29,21 +29,22 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
           cluster: prod-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: altinn.no
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 15
   readiness:
     path: /internal/isReady
-    initialDelay: 4
-    periodSeconds: 5
-    failureThreshold: 500
+    initialDelay: 15
   prometheus:
     enabled: true
     path: /internal/metrics
