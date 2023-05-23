@@ -38,12 +38,14 @@ spec:
         - host: tt02.altinn.no
   liveness:
     path: /internal/isAlive
-    initialDelay: 15
-    failureThreshold: 100
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
   readiness:
     path: /internal/isReady
-    initialDelay: 15
-    failureThreshold: 100
+    initialDelay: 4
+    periodSeconds: 5
+    failureThreshold: 500
   prometheus:
     enabled: true
     path: /internal/metrics
