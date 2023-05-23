@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.medl.command;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
 import no.nav.dolly.domain.resultset.medl.MedlData;
 import no.nav.dolly.util.WebClientFilter;
@@ -17,6 +18,7 @@ import java.util.concurrent.Callable;
 
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
+@Slf4j
 @RequiredArgsConstructor
 public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
 
@@ -39,10 +41,15 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
                 .bodyValue(medlData)
                 .retrieve()
                 .toBodilessEntity()
-                .map(response -> MedlPostResponse.builder()
-                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
-                        .build())
-                .doOnError(WebClientFilter::logErrorMessage)
+                .map(response -> {
+                    log.info("Mottok response fra Medl: \n{}", response);
+                    return MedlPostResponse.builder()
+                            .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                            .build();
+                })
+                .doOnError(throwable -> {
+                    log.error(throwable.getLocalizedMessage());
+                })
                 .onErrorResume(error -> Mono.just(MedlPostResponse.builder()
                         .status(WebClientFilter.getStatus(error))
                         .melding(WebClientFilter.getMessage(error))
