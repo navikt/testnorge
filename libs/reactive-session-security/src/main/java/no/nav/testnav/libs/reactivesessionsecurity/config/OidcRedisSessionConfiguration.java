@@ -29,7 +29,6 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
         RedisTokenResolver.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
-        AzureAdTokenExchange.class,
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
@@ -59,8 +58,8 @@ public class OidcRedisSessionConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public RedisStandaloneConfiguration redisStandaloneConfiguration(
-            @Value("${spring.data.redis.host:#{localhost}}") String host,
-            @Value("${spring.data.redis.post:#{6379}}") Integer post
+            @Value("${spring.data.redis.host}") String host,
+            @Value("${spring.data.redis.port}") Integer post
     ) {
         var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
