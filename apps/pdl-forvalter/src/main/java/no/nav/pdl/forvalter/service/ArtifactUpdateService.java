@@ -268,7 +268,8 @@ public class ArtifactUpdateService {
                 isEndretAnsvarligUtenIdentifikator(id, oppdatertRelasjon, person) ||
                 isEndretRelatertPerson(id, oppdatertRelasjon, person));
 
-        if (endretRelasjon) {
+        if (endretRelasjon && isNotBlank(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())) {
+
             var relasjon = person.getPerson().getForelderBarnRelasjon().get(id - 1);
             deleteRelasjon(person, relasjon.getRelatertPerson(), getRelasjonstype(relasjon.getMinRolleForPerson()));
             deleteRelasjon(getPerson(relasjon.getRelatertPerson()), ident, getRelasjonstype(relasjon.getRelatertPersonsRolle()));
