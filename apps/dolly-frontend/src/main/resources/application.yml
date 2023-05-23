@@ -10,6 +10,21 @@ spring:
   main:
     banner-mode: off
     allow-circular-references: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
   testnav-tps-messaging-service:
