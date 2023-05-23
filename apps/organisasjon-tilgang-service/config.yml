@@ -41,12 +41,12 @@ spec:
         - host: altinn.no
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
+    initialDelay: 10
     periodSeconds: 5
     failureThreshold: 500
   readiness:
     path: /internal/isReady
-    initialDelay: 4
+    initialDelay: 10
     periodSeconds: 5
     failureThreshold: 500
   prometheus:
