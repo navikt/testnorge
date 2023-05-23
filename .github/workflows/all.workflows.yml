@@ -26,8 +26,12 @@ on:
         required: true
       force-deploy:
         type: boolean
-        description: "Deploy?"
+        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below!"
         default: false
+      nais-manifest:
+        type: string
+        description: "Custom NAIS manifest filename."
+        default: "config.yml"
       force-deploy-test:
         type: boolean
         description: "Deploy to test? Make sure the effective working directory contains a config.test.yml!"
@@ -53,6 +57,7 @@ jobs:
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
+      nais-manifest: ${{ inputs.nais-manifest }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
@@ -70,6 +75,7 @@ jobs:
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
+      nais-manifest: ${{ inputs.nais-manifest }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

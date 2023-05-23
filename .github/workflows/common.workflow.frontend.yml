@@ -41,6 +41,10 @@ on:
         description: "Used to force deployment."
         required: false
         default: false
+      nais-manifest:
+        type: string
+        description: "Used to override the config.yml filename for ordinary forced deployments (excluding 'idporten', 'unstable' and test). Make sure the working-directory contains this file!"
+        default: "config.yml"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
         required: true
@@ -189,6 +193,6 @@ jobs:
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.yml
+          RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
           VAR: image=${{ needs.build.outputs.image }}
         uses: nais/deploy/actions/deploy@v1
