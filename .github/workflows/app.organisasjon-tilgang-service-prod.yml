@@ -12,6 +12,7 @@ jobs:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
       cluster: "prod-gcp"
+      nais-manifest: "config.prod.yml"
       working-directory: "apps/organisasjon-tilgang-service"
       deploy-tag: "#deploy-organisasjon-tilgang-service"
     secrets:

@@ -184,12 +184,13 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         if (isNull(relasjon.getRelatertPerson())) {
             return relasjon;
         }
+        createMotsattRelasjon(relasjon, hovedperson.getIdent());
+
         relasjonService.setRelasjoner(hovedperson.getIdent(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
                 relasjon.getRelatertPerson(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
 
-        createMotsattRelasjon(relasjon, hovedperson.getIdent());
         return relasjon;
     }
 
