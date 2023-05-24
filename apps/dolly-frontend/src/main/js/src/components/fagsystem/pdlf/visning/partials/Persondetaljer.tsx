@@ -14,6 +14,7 @@ import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsM
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 type PersondetaljerTypes = {
 	data: any
@@ -46,6 +47,23 @@ const getCurrentPersonstatus = (data: any) => {
 	return null
 }
 
+const NavnVisning = ({ navn }) => {
+	return (
+		<>
+			<TitleValue title="Fornavn" value={navn.fornavn} />
+			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
+			<TitleValue title="Etternavn" value={navn.etternavn} />
+		</>
+	)
+}
+
+const NavnListeVisning = ({ navnListe }) => {
+	return (
+		<DollyFieldArray data={navnListe} header="Navn" nested>
+			{(navn, idx) => <NavnVisning navn={navn} />}
+		</DollyFieldArray>
+	)
+}
 const PersondetaljerLes = ({
 	person,
 	skjerming,
@@ -53,18 +71,17 @@ const PersondetaljerLes = ({
 	tpsMessaging,
 	tpsMessagingLoading,
 }: PersonTypes) => {
-	const personNavn = person?.navn?.[0]
+	const navnListe = person?.navn
 	const personKjoenn = person?.kjoenn?.[0]
 	const personstatus = getCurrentPersonstatus(redigertPerson || person)
 
 	return (
 		<div className="person-visning_redigerbar">
 			<TitleValue title="Ident" value={person?.ident} />
-			<TitleValue title="Fornavn" value={personNavn?.fornavn} />
-			<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
-			<TitleValue title="Etternavn" value={personNavn?.etternavn} />
+			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
+			{navnListe?.length > 1 && <NavnListeVisning navnListe={navnListe} />}
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
