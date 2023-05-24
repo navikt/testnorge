@@ -19,7 +19,7 @@ export const ArrayHistorikk = ({ component, data, historiskData, header }) => {
 			{historiskData?.length > 0 && (
 				<Panel heading={historikkHeader}>
 					<ErrorBoundary>
-						<DollyFieldArray data={historiskData} header={header} nested>
+						<DollyFieldArray data={historiskData} nested>
 							{(element, idx) => <Main idx={idx} data={element} />}
 						</DollyFieldArray>
 					</ErrorBoundary>

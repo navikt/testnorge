@@ -48,6 +48,10 @@ const getCurrentPersonstatus = (data: any) => {
 }
 
 const NavnVisning = ({ navn }) => {
+	if (!navn) {
+		return null
+	}
+
 	return (
 		<>
 			<TitleValue title="Fornavn" value={navn.fornavn} />
