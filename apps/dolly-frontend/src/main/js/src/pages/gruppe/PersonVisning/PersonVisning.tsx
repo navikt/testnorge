@@ -57,6 +57,7 @@ import {
 	harDokarkivBestilling,
 	harHistarkBestilling,
 	harInstBestilling,
+	harMedlBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
@@ -64,6 +65,8 @@ import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visni
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
+import { MedlVisning } from '@/components/fagsystem/medl/visning'
+import { useMedlperson } from '@/utils/hooks/useMedl'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -125,6 +128,11 @@ export const PersonVisning = ({
 	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+	)
+
+	const { loading: loadingMedl, medl } = useMedlperson(
+		ident.ident,
+		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
 
 	const visArbeidsforhold =
@@ -383,6 +391,7 @@ export const PersonVisning = ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
+				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
