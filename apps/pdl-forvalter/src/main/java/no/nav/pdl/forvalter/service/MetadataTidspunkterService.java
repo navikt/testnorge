@@ -117,10 +117,7 @@ public class MetadataTidspunkterService {
         if (kjoennDTO.getId() == 1) {
 
             kjoennDTO.getFolkeregistermetadata().setAjourholdstidspunkt(personDTO.getFoedsel().stream()
-                    .map(foedsel -> nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
-                            LocalDate.of(foedsel.getFoedselsaar(),
-                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
-                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay())
+                    .map(foedsel -> getFoedselsdato(personDTO, foedsel))
                     .findFirst().orElse(LocalDateTime.now().minusHours(1)));
 
         } else {
@@ -244,21 +241,40 @@ public class MetadataTidspunkterService {
 
         fixFolkeregisterMetadata(navnDTO);
 
-        if (navnDTO.getId() == 1) {
+        if (isNull(navnDTO.getGyldigFraOgMed())) {
 
-            navnDTO.setGyldigFraOgMed(personDTO.getFoedsel().stream()
-                    .map(foedsel -> nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
-                            LocalDate.of(foedsel.getFoedselsaar(),
-                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
-                                    DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay())
-                    .findFirst().orElse(LocalDateTime.now().minusHours(1)));
-
-        } else {
-            navnDTO.setGyldigFraOgMed(LocalDateTime.now().minusMinutes(1).plusSeconds(navnDTO.getId()));
+            navnDTO.setGyldigFraOgMed(navnDTO.getId() == 1 ?
+                    personDTO.getFoedsel().stream()
+                            .map(foedsel -> getFoedselsdato(personDTO, foedsel))
+                            .findFirst()
+                            .orElse(LocalDateTime.now().minusHours(1)) :
+                    LocalDateTime.now().minusMinutes(1).plusSeconds(navnDTO.getId()));
         }
 
-        navnDTO.getFolkeregistermetadata().setAjourholdstidspunkt(navnDTO.getGyldigFraOgMed());
-        navnDTO.getFolkeregistermetadata().setGyldighetstidspunkt(navnDTO.getGyldigFraOgMed());
+        if (isNull(navnDTO.getFolkeregistermetadata().getAjourholdstidspunkt())) {
+            navnDTO.getFolkeregistermetadata().setAjourholdstidspunkt(navnDTO.getGyldigFraOgMed());
+        }
+
+        if (isNull(navnDTO.getFolkeregistermetadata().getGyldighetstidspunkt())) {
+            navnDTO.getFolkeregistermetadata().setGyldighetstidspunkt(navnDTO.getGyldigFraOgMed());
+        }
+
+        personDTO.getNavn().stream()
+                .filter(navn -> navnDTO.getId() - 1 == navn.getId())
+                .filter(navn -> isNull(navn.getFolkeregistermetadata()) || isNull(navn.getFolkeregistermetadata().getOpphoerstidspunkt()))
+                .forEach(navn -> {
+                    fixFolkeregisterMetadata(navn);
+                    navn.getFolkeregistermetadata().setOpphoerstidspunkt(
+                            navnDTO.getFolkeregistermetadata().getGyldighetstidspunkt());
+                });
+    }
+
+    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselDTO foedsel) {
+
+        return nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
+                LocalDate.of(foedsel.getFoedselsaar(),
+                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
+                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay();
     }
 
     private void fixDoedsfall(DoedsfallDTO doedsfallDTO) {
@@ -273,10 +289,7 @@ public class MetadataTidspunkterService {
 
         fixFolkeregisterMetadata(foedselDTO);
 
-        var dato = nonNull(foedselDTO.getFoedselsdato()) ? foedselDTO.getFoedselsdato() :
-                LocalDate.of(foedselDTO.getFoedselsaar(),
-                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
-                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay();
+        var dato = getFoedselsdato(personDTO, foedselDTO);
 
         foedselDTO.getFolkeregistermetadata().setAjourholdstidspunkt(dato);
         foedselDTO.getFolkeregistermetadata().setGyldighetstidspunkt(dato);
