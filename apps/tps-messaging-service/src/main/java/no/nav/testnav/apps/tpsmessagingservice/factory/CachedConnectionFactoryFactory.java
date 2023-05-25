@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.apps.tpsmessagingservice.config.CacheConfig;
 import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.jms.connection.CachingConnectionFactory;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -21,20 +20,11 @@ public class CachedConnectionFactoryFactory implements ConnectionFactoryFactory 
 
     @Override
     @Cacheable(value = CacheConfig.CACHE_TPSCONFIG, key = "#queueManager.channel")
-    public ConnectionFactory createConnectionFactory(QueueManager queueManager)
-            throws JMSException {
-        var factory = new CachingConnectionFactory();
-        factory.setTargetConnectionFactory(createMQQueueConnectionFactory(queueManager));
-        factory.setReconnectOnException(true);
-        factory.setExceptionListener(listener -> log.error("Exception caught, should reconnect: {}", listener.getMessage(), listener.getCause()));
-        return factory;
-    }
-
-    private static MQQueueConnectionFactory createMQQueueConnectionFactory(QueueManager queueManager)
-            throws JMSException {
-        var factory = new MQQueueConnectionFactory();
+    public ConnectionFactory createConnectionFactory(QueueManager queueManager) throws JMSException {
+        MQQueueConnectionFactory factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);
         factory.setTransportType(CommonConstants.WMQ_CM_CLIENT);
+        factory.setClientReconnectOptions(CommonConstants.WMQ_CLIENT_RECONNECT_Q_MGR);
         factory.setIntProperty(JmsConstants.JMS_IBM_ENCODING, CMQC.MQENC_NATIVE);
         factory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, true);
         factory.setIntProperty(JmsConstants.JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
@@ -43,14 +33,15 @@ public class CachedConnectionFactoryFactory implements ConnectionFactoryFactory 
         factory.setPort(queueManager.port());
         factory.setChannel(queueManager.channel());
 
-        log.info(String.format("Creating connection factory '%s@%s:%d' on channel '%s' using transport type '%d'",
-                factory.getQueueManager(),
-                factory.getHostName(),
-                factory.getPort(),
-                factory.getChannel(),
-                factory.getTransportType()));
+        if (log.isInfoEnabled()) {
+            log.info(String.format("Creating connection factory '%s@%s:%d' on channel '%s' using transport type '%d'",
+                    factory.getQueueManager(),
+                    factory.getHostName(),
+                    factory.getPort(),
+                    factory.getChannel(),
+                    factory.getTransportType()));
+        }
 
         return factory;
     }
-
 }

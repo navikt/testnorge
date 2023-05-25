@@ -1,8 +1,10 @@
 package no.nav.testnav.apps.tpsmessagingservice.factory;
 
+import com.ibm.mq.constants.CMQC;
+import com.ibm.mq.jakarta.jms.MQQueueConnectionFactory;
+import com.ibm.msg.client.jakarta.jms.JmsConstants;
+import com.ibm.msg.client.jakarta.wmq.common.CommonConstants;
 import jakarta.jms.JMSException;
-import lombok.RequiredArgsConstructor;
-import no.nav.testnav.apps.tpsmessagingservice.dto.QueueManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,11 +12,12 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.jms.connection.UserCredentialsConnectionFactoryAdapter;
 
 @Configuration
-@RequiredArgsConstructor
 public class HealthConnectionFactory {
 
+    private static final int UTF_8_WITH_PUA = 1208;
+
     @Value("${config.mq.preprod.queueManager}")
-    private String queueManagerName;
+    private String queueManager;
     @Value("${config.mq.preprod.host}")
     private String host;
     @Value("${config.mq.preprod.port}")
@@ -24,17 +27,26 @@ public class HealthConnectionFactory {
     @Value("${config.mq.preprod.password}")
     private String password;
 
-    private final CachedConnectionFactoryFactory factoryFactory;
-
     @Bean
     @Primary
-    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter()
-            throws JMSException {
-        var factory = factoryFactory.createConnectionFactory(new QueueManager(queueManagerName, host, port, "Q1_TESTNAV_TPS_MSG_S"));
+    public UserCredentialsConnectionFactoryAdapter userCredentialsConnectionFactoryAdapter() throws JMSException, JMSException {
+
+        var factory = new MQQueueConnectionFactory();
+        factory.setCCSID(UTF_8_WITH_PUA);
+        factory.setTransportType(CommonConstants.WMQ_CM_CLIENT);
+        factory.setIntProperty(JmsConstants.JMS_IBM_ENCODING, CMQC.MQENC_NATIVE);
+        factory.setBooleanProperty(JmsConstants.USER_AUTHENTICATION_MQCSP, true);
+        factory.setIntProperty(JmsConstants.JMS_IBM_CHARACTER_SET, UTF_8_WITH_PUA);
+        factory.setQueueManager(queueManager);
+        factory.setHostName(host);
+        factory.setPort(port);
+        factory.setChannel("Q1_TESTNAV_TPS_MSG_S");
+
         var userCredentialsConnectionFactoryAdapter = new UserCredentialsConnectionFactoryAdapter();
         userCredentialsConnectionFactoryAdapter.setUsername(username);
         userCredentialsConnectionFactoryAdapter.setPassword(password);
         userCredentialsConnectionFactoryAdapter.setTargetConnectionFactory(factory);
+
         return userCredentialsConnectionFactoryAdapter;
     }
 }
