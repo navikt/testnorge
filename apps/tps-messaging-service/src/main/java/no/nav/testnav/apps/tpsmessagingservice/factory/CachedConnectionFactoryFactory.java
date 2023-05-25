@@ -30,7 +30,7 @@ public class CachedConnectionFactoryFactory implements ConnectionFactoryFactory 
         return factory;
     }
 
-    private static MQQueueConnectionFactory createMQQueueConnectionFactory(QueueManager queueManager)
+    static MQQueueConnectionFactory createMQQueueConnectionFactory(QueueManager queueManager)
             throws JMSException {
         var factory = new MQQueueConnectionFactory();
         factory.setCCSID(UTF_8_WITH_PUA);
