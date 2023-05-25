@@ -265,10 +265,11 @@ public class ArtifactUpdateService {
 
         var endretRelasjon = id > 0 && id <= person.getPerson().getForelderBarnRelasjon().size() &&
                 (isEndretRolle(id, oppdatertRelasjon, person) ||
-                isEndretAnsvarligUtenIdentifikator(id, oppdatertRelasjon, person) ||
-                isEndretRelatertPerson(id, oppdatertRelasjon, person));
+                        person.getPerson().getForelderBarnRelasjon().get(id - 1).isRelatertMedIdentifikator() &&
+                                !person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson()
+                                        .equals(oppdatertRelasjon.getRelatertPerson()));
 
-        if (endretRelasjon && isNotBlank(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson())) {
+        if (endretRelasjon && person.getPerson().getForelderBarnRelasjon().get(id - 1).isRelatertMedIdentifikator()) {
 
             var relasjon = person.getPerson().getForelderBarnRelasjon().get(id - 1);
             deleteRelasjon(person, relasjon.getRelatertPerson(), getRelasjonstype(relasjon.getMinRolleForPerson()));
@@ -330,64 +331,35 @@ public class ArtifactUpdateService {
                         person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonsRolle();
     }
 
-    private static boolean isEndretAnsvarligUtenIdentifikator(Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon, DbPerson person) {
-
-        return nonNull(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonUtenFolkeregisteridentifikator()) &&
-                isNull(oppdatertRelasjon.getRelatertPersonUtenFolkeregisteridentifikator()) ||
-
-                isNull(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPersonUtenFolkeregisteridentifikator()) &&
-                        nonNull(oppdatertRelasjon.getRelatertPersonUtenFolkeregisteridentifikator());
-    }
-
-    private static boolean isEndretRelatertPerson(Integer id, ForelderBarnRelasjonDTO oppdatertRelasjon, DbPerson person) {
-
-        return nonNull(person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson()) &&
-                !person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson().equals(
-                        oppdatertRelasjon.getRelatertPerson()) ||
-
-                nonNull(oppdatertRelasjon.getRelatertPerson()) &&
-                        !oppdatertRelasjon.getRelatertPerson().equals(
-                                person.getPerson().getForelderBarnRelasjon().get(id - 1).getRelatertPerson());
-    }
-
     public void updateForeldreansvar(String ident, Integer id, ForeldreansvarDTO oppdatertAnsvar) {
 
         var person = getPerson(ident);
         foreldreansvarService.validateBarn(oppdatertAnsvar, person.getPerson());
 
-        var endretAnsvar = id > 0 && id <= person.getPerson().getForeldreansvar().size() &&
-                (oppdatertAnsvar.getAnsvar() != person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() ||
-                        !person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig()));
+        var foreldreansvar = person.getPerson().getForeldreansvar().stream()
+                .filter(relasjon -> relasjon.getId().equals(id))
+                .findFirst();
 
-        if (endretAnsvar && person.getPerson().getForeldreansvar().get(id - 1).isAnsvarligMedIdentifikator()) {
+        foreldreansvar.ifPresent(ansvar -> {
+            var endretAnsvar = oppdatertAnsvar.getAnsvar() != ansvar.getAnsvar() ||
+                    ansvar.isAnsvarligMedIdentifikator() &&
+                            !ansvar.getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig());
 
-            if (person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() != Ansvar.FELLES) {
-                deleteRelasjon(person, person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig(),
-                        RelasjonType.FORELDREANSVAR_FORELDER);
-                deleteRelasjon(getPerson(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig()),
-                        person.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
+            if (endretAnsvar && ansvar.isAnsvarligMedIdentifikator()) {
 
-            } else {
-                person.getPerson().getForelderBarnRelasjon().stream()
-                        .filter(ForelderBarnRelasjonDTO::isBarn)
-                        .forEach(relasjon -> {
-                            deleteRelasjon(person, relasjon.getRelatertPerson(), RelasjonType.FORELDREANSVAR_FORELDER);
-                            deleteRelasjon(getPerson(relasjon.getRelatertPerson()), person.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
-                        });
-
-                if (person.getPerson().getForeldreansvar().get(id - 1).getAnsvar() == Ansvar.ANDRE &&
-                        !person.getPerson().getForeldreansvar().get(id - 1).isEksisterendePerson()) {
-                    personService.deletePerson(person.getPerson().getForeldreansvar().get(id - 1).getAnsvarlig());
-                }
-                deleteFellesAnsvar(id, person.getPerson().getForeldreansvar());
+                deleteRelasjonerAnsvar(id, person, ansvar);
             }
-
-        }
+        });
 
         person.getPerson().setForeldreansvar(
                 updateArtifact(person.getPerson().getForeldreansvar(), oppdatertAnsvar, id, "Foreldreansvar"));
 
-        if (endretAnsvar || id == 0) {
+        if (id == 0 ||
+                foreldreansvar.isPresent() &&
+                        (foreldreansvar.get().getAnsvar() != oppdatertAnsvar.getAnsvar() ||
+                                foreldreansvar.get().isAnsvarligMedIdentifikator() &&
+                                        !foreldreansvar.get().getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig()))) {
+
             foreldreansvarService.handleBarn(oppdatertAnsvar, person.getPerson());
         }
 
@@ -401,15 +373,25 @@ public class ArtifactUpdateService {
                 });
     }
 
-    private static void deleteFellesAnsvar(int id, List<ForeldreansvarDTO> foreldreansvar) {
+    private void deleteRelasjonerAnsvar(Integer id, DbPerson person, ForeldreansvarDTO ansvar) {
 
-        var iterForeldreansvar = foreldreansvar.iterator();
-        while (iterForeldreansvar.hasNext()) {
-            var ansvar1 = iterForeldreansvar.next();
-            if (ansvar1.getAnsvar() == Ansvar.FELLES &&
-                    !ansvar1.getId().equals(id)) {
-                iterForeldreansvar.remove();
+        var it = person.getPerson().getForeldreansvar().iterator();
+        while (it.hasNext()) {
+            var relasjon = it.next();
+            if (ansvar.getAnsvar() == Ansvar.FELLES && relasjon.getAnsvar() == Ansvar.FELLES ||
+                    relasjon.getId().equals(id)) {
+
+                deleteRelasjon(person, relasjon.getAnsvarlig(), RelasjonType.FORELDREANSVAR_FORELDER);
+                deleteRelasjon(getPerson(relasjon.getAnsvarlig()), person.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
+
+                if (!relasjon.getId().equals(id)) {
+                    it.remove();
+                }
             }
+        }
+
+        if (ansvar.getAnsvar() == Ansvar.ANDRE && !ansvar.isEksisterendePerson()) {
+            personService.deletePerson(ansvar.getAnsvarlig());
         }
     }
 
