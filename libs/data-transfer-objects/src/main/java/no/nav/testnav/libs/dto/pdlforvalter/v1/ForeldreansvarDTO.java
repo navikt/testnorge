@@ -9,8 +9,8 @@ import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @SuperBuilder
@@ -38,6 +38,6 @@ public class ForeldreansvarDTO extends DbVersjonDTO {
     @JsonIgnore
     public boolean isAnsvarligMedIdentifikator() {
 
-        return nonNull(ansvarlig);
+        return isNotBlank(ansvarlig);
     }
 }
