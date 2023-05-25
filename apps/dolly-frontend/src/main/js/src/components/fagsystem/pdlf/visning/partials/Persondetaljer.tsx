@@ -15,6 +15,7 @@ import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 
 type PersondetaljerTypes = {
 	data: any
@@ -61,13 +62,6 @@ const NavnVisning = ({ navn }) => {
 	)
 }
 
-const NavnListeVisning = ({ navnListe }) => {
-	return (
-		<DollyFieldArray data={navnListe} header="Navn" nested>
-			{(navn, idx) => <NavnVisning navn={navn} />}
-		</DollyFieldArray>
-	)
-}
 const PersondetaljerLes = ({
 	person,
 	skjerming,
@@ -85,7 +79,6 @@ const PersondetaljerLes = ({
 			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
-			{navnListe?.length > 1 && <NavnListeVisning navnListe={navnListe} />}
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
@@ -106,8 +99,16 @@ export const Persondetaljer = ({
 	}
 	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
+	const getNavn = () => {
+		if (data?.navn?.length > 1) {
+			return undefined
+		} else if (data?.navn?.length === 1) {
+			return [data.navn[0]]
+		} else return [initialNavn]
+	}
+
 	const initPerson = {
-		navn: [data?.navn?.[0] || initialNavn],
+		navn: getNavn(),
 		kjoenn: [data?.kjoenn?.[0] || initialKjoenn],
 		folkeregisterpersonstatus: [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus],
 		skjermingsregister: skjermingData,
@@ -134,6 +135,8 @@ export const Persondetaljer = ({
 		skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
 	}
 
+	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -148,22 +151,51 @@ export const Persondetaljer = ({
 							tpsMessagingLoading={tpsMessagingLoading}
 						/>
 					) : (
-						<VisningRedigerbarPersondetaljerConnector
-							dataVisning={
-								<PersondetaljerLes
-									person={personValues}
-									skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
-									redigertPerson={redigertPerson}
-									tpsMessaging={tpsMessaging}
-									tpsMessagingLoading={tpsMessagingLoading}
-								/>
-							}
-							initialValues={initPerson}
-							redigertAttributt={redigertPersonValues}
-							path="person"
-							ident={ident}
-							tpsMessagingData={tpsMessaging}
-						/>
+						<>
+							<VisningRedigerbarPersondetaljerConnector
+								dataVisning={
+									<PersondetaljerLes
+										person={personValues}
+										skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
+										redigertPerson={redigertPerson}
+										tpsMessaging={tpsMessaging}
+										tpsMessagingLoading={tpsMessagingLoading}
+									/>
+								}
+								initialValues={initPerson}
+								redigertAttributt={redigertPersonValues}
+								path="person"
+								ident={ident}
+								tpsMessagingData={tpsMessaging}
+							/>
+							{(tmpNavn ? tmpNavn.length > 1 : data?.navn?.length > 1) && (
+								<DollyFieldArray data={data?.navn} header="Navn" nested>
+									{(navn) => {
+										const redigertNavn = _.get(
+											tmpPersoner?.pdlforvalter,
+											`${ident}.person.navn`
+										)?.find((a) => a.id === navn.id)
+
+										const slettetNavn =
+											tmpPersoner?.pdlforvalter?.hasOwnProperty(ident) && !redigertNavn
+										if (slettetNavn) {
+											return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+										}
+
+										return (
+											<VisningRedigerbarConnector
+												dataVisning={<NavnVisning navn={redigertNavn ? redigertNavn : navn} />}
+												initialValues={{ navn: navn }}
+												redigertAttributt={redigertNavn && { navn: redigertNavn }}
+												path="navn"
+												ident={ident}
+												tpsMessagingData={tpsMessaging}
+											/>
+										)
+									}}
+								</DollyFieldArray>
+							)}
+						</>
 					)}
 				</div>
 			</div>
