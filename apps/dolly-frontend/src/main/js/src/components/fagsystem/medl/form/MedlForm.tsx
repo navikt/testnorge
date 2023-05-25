@@ -1,39 +1,34 @@
-import React from 'react'
-import * as Yup from 'yup'
-import { ifPresent } from '@/utils/YupValidations'
+import React, { useEffect, useState } from 'react'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
-import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { MedlValidation } from '@/components/fagsystem/medl/form/MedlValidation'
+import {
+	initialMedlAvgangssystem,
+	initialMedlGosysMelosys,
+	initialMedlLaanekassen,
+} from '@/components/fagsystem/pdlf/form/initialValues'
+import { MedlSelect } from '@/components/fagsystem/medl/form/MedlSelect'
+import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 
 interface MedlFormProps {
 	formikBag: FormikProps<{}>
 }
 
-type Skjema = {
-	data: string
-	label: string
-	lowercaseLabel: string
-	value: string
+export enum MEDL_KILDER {
+	SRVMELOSYS = 'srvmelosys',
+	SRVGOSYS = 'srvgosys',
+	AVGSYS = 'AVGSYS',
+	LAANEKASSEN = 'LAANEKASSEN',
 }
 
-export type Vedlegg = {
-	id: string
-	name: string
-	dokNavn: string
-	mimetype: string
-	size: number
-	content: {
-		base64: string
-	}
-}
-
-enum Kodeverk {
+export enum MedlKodeverk {
 	LANDKODER = 'Landkoder',
 	GRUNNLAG = 'GrunnlagMedl',
 	KILDE_DOK = 'KildedokumentMedl',
@@ -42,7 +37,6 @@ enum Kodeverk {
 	PERIODE_ST_AARSAK = 'StatusaarsakMedl',
 	PERIODE_DEKNING = 'DekningMedl',
 	PERIODE_STATUS = 'PeriodestatusMedl',
-	PERIODE_TYPE = 'PeriodetypeMedl',
 }
 
 export const MedlAttributt = 'medl'
@@ -51,6 +45,27 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 	if (!_.has(formikBag.values, MedlAttributt)) {
 		return null
 	}
+
+	const [aktivKilde, setAktivKilde] = useState(
+		_.get(formikBag.values, 'medl.kilde') || MEDL_KILDER.SRVMELOSYS
+	)
+
+	function getInitialValue(aktivKilde: string) {
+		switch (aktivKilde) {
+			case MEDL_KILDER.SRVGOSYS:
+			case MEDL_KILDER.SRVMELOSYS:
+				return initialMedlGosysMelosys
+			case MEDL_KILDER.LAANEKASSEN:
+				return initialMedlLaanekassen
+			case MEDL_KILDER.AVGSYS:
+				return initialMedlAvgangssystem
+		}
+	}
+
+	useEffect(() => {
+		formikBag.setFieldValue('medl', getInitialValue(aktivKilde))
+		formikBag.setFieldValue('medl.kilde', aktivKilde)
+	}, [aktivKilde])
 
 	return (
 		// @ts-ignore
@@ -68,72 +83,86 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 							size={'medium'}
 							name="medl.kilde"
 							label="Kilde"
-							kodeverk={Kodeverk.KILDE}
-						/>
-						<FormikSelect
-							size={'medium'}
-							name="medl.kildedokument"
-							label="Kilde dokument"
-							kodeverk={Kodeverk.KILDE_DOK}
+							options={Options('medlKilder')}
+							isClearable={false}
+							afterChange={(selected) => {
+								setAktivKilde(selected?.value)
+							}}
 						/>
 						<FormikDatepicker name="medl.fraOgMed" label="Fra og med" />
 						<FormikDatepicker name="medl.tilOgMed" label="Til og med" />
 						<FormikSelect
-							size={'xxlarge'}
-							name="medl.grunnlag"
-							label="Grunnlag"
-							kodeverk={Kodeverk.GRUNNLAG}
-						/>
-						<FormikSelect
-							size={'xxlarge'}
-							name="medl.dekning"
-							label="Dekning periode"
-							kodeverk={Kodeverk.PERIODE_DEKNING}
-						/>
-						<FormikSelect
-							size={'medium'}
-							name="medl.lovvalg"
-							label="Lovvalg periode"
-							kodeverk={Kodeverk.LOVVALG_PERIODE}
-						/>
-						<FormikSelect
-							size={'xlarge'}
-							name="medl.lovvalgsland"
-							label="Lovvalg landkode"
-							kodeverk={Kodeverk.LANDKODER}
-						/>
-						<FormikSelect
 							size={'medium'}
 							name="medl.status"
 							label="Status periode"
-							kodeverk={Kodeverk.PERIODE_STATUS}
+							kodeverk={MedlKodeverk.PERIODE_STATUS}
 						/>
 						<FormikSelect
 							size={'xlarge'}
 							name="medl.statusaarsak"
 							label="Statusårsak"
-							kodeverk={Kodeverk.PERIODE_ST_AARSAK}
+							kodeverk={MedlKodeverk.PERIODE_ST_AARSAK}
 						/>
-						<FormikSelect
+						<MedlSelect
+							aktivKilde={aktivKilde}
+							size={'medium'}
+							name="medl.kildedokument"
+							label="Kilde dokument"
+							kodeverk={MedlKodeverk.KILDE_DOK}
+						/>
+						<MedlSelect
+							size={'xxlarge'}
+							name="medl.grunnlag"
+							label="Grunnlag"
+							kodeverk={MedlKodeverk.GRUNNLAG}
+							aktivKilde={aktivKilde}
+						/>
+						<MedlSelect
+							size={'xxlarge'}
+							name="medl.dekning"
+							label="Dekning periode"
+							kodeverk={MedlKodeverk.PERIODE_DEKNING}
+							aktivKilde={aktivKilde}
+						/>
+						<MedlSelect
+							size={'medium'}
+							name="medl.lovvalg"
+							label="Lovvalg periode"
+							kodeverk={MedlKodeverk.LOVVALG_PERIODE}
+							aktivKilde={aktivKilde}
+						/>
+						<MedlSelect
+							size={'xlarge'}
+							name="medl.lovvalgsland"
+							label="Lovvalg landkode"
+							kodeverk={MedlKodeverk.LANDKODER}
+							aktivKilde={aktivKilde}
+						/>
+						<MedlSelect
 							size={'xlarge'}
 							name="medl.studieinformasjon.statsborgerland"
 							label="Statsborgerland"
-							kodeverk={Kodeverk.LANDKODER}
+							kodeverk={MedlKodeverk.LANDKODER}
+							aktivKilde={aktivKilde}
 						/>
-						<FormikSelect
+						<MedlSelect
 							size={'medium'}
 							name="medl.studieinformasjon.studieland"
 							label="Studieland"
-							kodeverk={Kodeverk.LANDKODER}
+							kodeverk={MedlKodeverk.LANDKODER}
+							aktivKilde={aktivKilde}
 						/>
 						<div className={'flexbox--full-width'}>
-							<FormikCheckbox name="medl.studieinformasjon.delstudie" label="Er delstudie" />
-							<FormikCheckbox checkboxMargin name="medl.helsedel" label="Har helsedel" />
-							<FormikCheckbox
-								checkboxMargin
-								name="medl.studieinformasjon.soeknadInnvilget"
-								label="Søknad innvilget"
-							/>
+							{aktivKilde === MEDL_KILDER.LAANEKASSEN && (
+								<FormikCheckbox name="medl.studieinformasjon.delstudie" label="Er delstudie" />
+							)}
+							{aktivKilde === MEDL_KILDER.LAANEKASSEN && (
+								<FormikCheckbox
+									checkboxMargin
+									name="medl.studieinformasjon.soeknadInnvilget"
+									label="Søknad innvilget"
+								/>
+							)}
 						</div>
 					</div>
 				</Kategori>
@@ -142,12 +171,4 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 	)
 }
 
-MedlForm.validation = {
-	medl: ifPresent(
-		'$medl',
-		Yup.object({
-			fraOgMed: Yup.date().optional(),
-			tilOgMed: Yup.date().optional(),
-		})
-	),
-}
+MedlForm.validation = MedlValidation

@@ -130,13 +130,23 @@ export const initialSikkerhetstiltak = {
 export const initialMedl = {
 	fraOgMed: new Date(),
 	tilOgMed: new Date(),
+	status: '',
+	kilde: 'srvmelosys',
+}
+
+export const initialMedlGosysMelosys = {
+	...initialMedl,
 	grunnlag: '',
 	dekning: '',
 	lovvalg: '',
 	lovvalgsland: '',
-	status: '',
 	statusaarsak: '',
-	kilde: '',
+	kildedokument: '',
+}
+
+export const initialMedlLaanekassen = {
+	...initialMedl,
+	kilde: 'LAANEKASSEN',
 	kildedokument: '',
 	studieinformasjon: {
 		statsborgerland: '',
@@ -144,6 +154,13 @@ export const initialMedl = {
 		delstudie: false,
 		soeknadInnvilget: false,
 	},
+}
+
+export const initialMedlAvgangssystem = {
+	...initialMedl,
+	kilde: 'AVGSYS',
+	grunnlag: '',
+	dekning: '',
 }
 
 export const initialTpsSikkerhetstiltak = {

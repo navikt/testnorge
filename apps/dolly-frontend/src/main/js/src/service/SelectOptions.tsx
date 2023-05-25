@@ -602,6 +602,13 @@ const selectOptions = {
 		{ value: '9999', label: 'Utvikler' },
 	],
 
+	medlKilder: [
+		{ value: 'srvmelosys', label: 'Melosys' },
+		{ value: 'srvgosys', label: 'Gosys' },
+		{ value: 'AVGSYS', label: 'Aviftsystemet' },
+		{ value: 'LAANEKASSEN', label: 'Lånekassen' },
+	],
+
 	omraade: [
 		{ value: 'NO20.2012', label: 'Alta' },
 		{ value: 'NO46.4601', label: 'Bergen' },
