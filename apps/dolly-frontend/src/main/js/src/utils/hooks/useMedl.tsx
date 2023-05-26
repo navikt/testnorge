@@ -7,7 +7,7 @@ type MedlResponse = {
 	response: any
 }
 
-export const useMedlperson = (ident: string, harMedlBestilling: boolean) => {
+export const useMedlPerson = (ident: string, harMedlBestilling: boolean) => {
 	const { data, error, mutate } = useSWR<MedlResponse, Error>(getMedlUrl(ident), fetcher, {})
 
 	if (!ident) {
@@ -24,7 +24,7 @@ export const useMedlperson = (ident: string, harMedlBestilling: boolean) => {
 	}
 
 	return {
-		maler: data?.malbestillinger,
+		medl: data,
 		loading: !error && !data,
 		error: error,
 		mutate: mutate,

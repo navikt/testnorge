@@ -1,5 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import MedlVisning from './MedlVisning'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 export type Medlemskapsperioder = {
 	kilde: string
@@ -10,9 +11,19 @@ type MedlTypes = {
 }
 
 const Medl = ({ data }: MedlTypes) => {
-	if (!data) return null
+	if (!data) {
+		return null
+	}
 
-	return <MedlVisning medlemskapsperioder={data} />
+	return (
+		<DollyFieldArray data={data} header="Medlemskapsperiode">
+			{(medlemskap, idx) => (
+				<div className="person-visning_content" key={idx}>
+					<MedlVisning medlemskapsperiode={medlemskap} />
+				</div>
+			)}
+		</DollyFieldArray>
+	)
 }
 
 export default ({ data }: any) => {
@@ -23,7 +34,7 @@ export default ({ data }: any) => {
 	return (
 		<>
 			<SubOverskrift label="Medlemskapsperioder" iconKind="calendar" />
-			<Medl />
+			<Medl data={data} />
 		</>
 	)
 }

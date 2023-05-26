@@ -66,7 +66,7 @@ import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
-import { useMedlperson } from '@/utils/hooks/useMedl'
+import { useMedlPerson } from '@/utils/hooks/useMedl'
 
 export const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
@@ -130,7 +130,7 @@ export const PersonVisning = ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
 
-	const { loading: loadingMedl, medl } = useMedlperson(
+	const { loading: loadingMedl, medl } = useMedlPerson(
 		ident.ident,
 		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
