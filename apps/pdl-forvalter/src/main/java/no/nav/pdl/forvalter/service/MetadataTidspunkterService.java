@@ -243,12 +243,10 @@ public class MetadataTidspunkterService {
 
         if (isNull(navnDTO.getGyldigFraOgMed())) {
 
-            navnDTO.setGyldigFraOgMed(navnDTO.getId() == 1 ?
-                    personDTO.getFoedsel().stream()
-                            .map(foedsel -> getFoedselsdato(personDTO, foedsel))
-                            .findFirst()
-                            .orElse(LocalDateTime.now().minusHours(1)) :
-                    LocalDateTime.now().minusDays(1).plusHours(navnDTO.getId()));
+            personDTO.getFoedsel().stream()
+                    .map(foedsel -> getFoedselsdato(personDTO, foedsel))
+                    .findFirst()
+                    .ifPresent(dato -> navnDTO.setGyldigFraOgMed(dato.plusDays(navnDTO.getId() - 1L)));
         }
 
         if (isNull(navnDTO.getFolkeregistermetadata().getAjourholdstidspunkt())) {
