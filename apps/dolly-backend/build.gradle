@@ -3,7 +3,7 @@ plugins {
     id "org.sonarqube" version "4.0.0.2929"
     id 'org.springframework.boot' version "3.0.4"
     id 'io.spring.dependency-management' version "1.1.0"
-    id 'jacoco'
+    id "jacoco"
 }
 
 test {
@@ -19,9 +19,9 @@ jacocoTestReport {
 
 sonarqube {
     properties {
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.language", "java"
         property "sonar.login", System.getenv("SONAR_TOKEN")

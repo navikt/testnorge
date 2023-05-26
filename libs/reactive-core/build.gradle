@@ -3,14 +3,24 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'io.spring.dependency-management' version "1.1.0"
-    id 'jacoco'
+    id "jacoco"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
 }
 
 sonarqube {
     properties {
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
         property "sonar.dynamicAnalysis", "reuseReports"
         property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.jacoco.reportPaths", "${project.buildDir}/jacoco/test.exec"
         property "sonar.java.coveragePlugin", "jacoco"
         property "sonar.language", "java"
         property "sonar.login", System.getenv("SONAR_TOKEN")
@@ -68,10 +78,6 @@ publishing {
             }
         }
     }
-}
-
-test {
-    useJUnitPlatform()
 }
 
 dependencies {
