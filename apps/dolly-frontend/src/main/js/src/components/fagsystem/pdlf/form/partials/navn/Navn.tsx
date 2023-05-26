@@ -12,6 +12,8 @@ import { DollyApi } from '@/service/Api'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
@@ -38,7 +40,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) => {
 	return _.uniqBy(navnOptions, 'label')
 }
 
-export const NavnForm = ({ formikBag, path }: NavnTypes) => {
+export const NavnForm = ({ formikBag, path, idx, personValues }: NavnTypes) => {
 	if (!_.get(formikBag?.values, path)) {
 		return null
 	}
@@ -85,6 +87,14 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 			></RefreshButton>
 		)
 	}
+
+	const isLast = _.get(formikBag?.values, 'pdldata.person.navn')?.length === idx + 1
+
+	const gjeldendeNavnId = _.get(personValues, 'navn[0].id')
+	const erGjeldendeNavn =
+		gjeldendeNavnId &&
+		_.get(formikBag.values, 'navn.id') === gjeldendeNavnId &&
+		!_.get(formikBag.values, 'navn.folkeregistermetadata.opphoerstidspunkt')
 
 	return (
 		<>
@@ -146,17 +156,40 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 					{getRefreshButton()}
 				</div>
 			</div>
-			<FormikCheckbox
-				name={`${path}.hasMellomnavn`}
-				label="Har tilfeldig mellomnavn"
-				isDisabled={!isEmpty(selectedMellomnavn)}
-			/>
+			<div className="flexbox--flex-wrap">
+				<FormikCheckbox
+					name={`${path}.hasMellomnavn`}
+					label="Har tilfeldig mellomnavn"
+					isDisabled={!isEmpty(selectedMellomnavn)}
+					checkboxMargin
+				/>
+				<DatepickerWrapper>
+					<FormikDatepicker
+						name={`${path}.folkeregistermetadata.opphoerstidspunkt`}
+						label="Opphørt dato"
+						disabled={isLast || erGjeldendeNavn}
+						fastfield={false}
+					/>
+				</DatepickerWrapper>
+			</div>
 			<AvansertForm path={path} kanVelgeMaster={true} />
 		</>
 	)
 }
 
 export const Navn = ({ formikBag }: NavnTypes) => {
+	const handleRemoveEntry = (idx: number) => {
+		const navnListe = _.get(formikBag?.values, 'pdldata.person.navn')
+		navnListe.splice(idx, 1)
+		const lastIndex = navnListe?.length - 1
+
+		formikBag.setFieldValue('pdldata.person.navn', navnListe)
+		formikBag.setFieldValue(
+			`pdldata.person.navn[${lastIndex}].folkeregistermetadata.opphoerstidspunkt`,
+			null
+		)
+	}
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -164,8 +197,9 @@ export const Navn = ({ formikBag }: NavnTypes) => {
 				header="Navn"
 				newEntry={initialNavn}
 				canBeEmpty={false}
+				handleRemoveEntry={handleRemoveEntry}
 			>
-				{(path: string) => <NavnForm formikBag={formikBag} path={path} />}
+				{(path: string, idx: number) => <NavnForm formikBag={formikBag} path={path} idx={idx} />}
 			</FormikDollyFieldArray>
 		</div>
 	)

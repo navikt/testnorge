@@ -2,7 +2,7 @@ import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { showLabel } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import {
 	initialKjoenn,
@@ -58,6 +58,10 @@ const NavnVisning = ({ navn }) => {
 			<TitleValue title="Fornavn" value={navn.fornavn} />
 			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
 			<TitleValue title="Etternavn" value={navn.etternavn} />
+			<TitleValue
+				title="Navn opphørt"
+				value={formatDate(navn.folkeregistermetadata?.opphoerstidspunkt)}
+			/>
 		</>
 	)
 }
@@ -137,6 +141,11 @@ export const Persondetaljer = ({
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
 
+	const personValuesMedRedigert = _.cloneDeep(data)
+	if (tmpNavn && personValuesMedRedigert) {
+		personValuesMedRedigert.navn = tmpNavn
+	}
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -190,6 +199,7 @@ export const Persondetaljer = ({
 												path="navn"
 												ident={ident}
 												tpsMessagingData={tpsMessaging}
+												personValues={personValuesMedRedigert}
 											/>
 										)
 									}}

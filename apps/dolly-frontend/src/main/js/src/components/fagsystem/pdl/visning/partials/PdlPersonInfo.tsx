@@ -1,7 +1,7 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import { showLabel } from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsMessaging/TpsMPersonInfo'
 import * as _ from 'lodash-es'
 import React from 'react'
@@ -30,6 +30,10 @@ const PdlNavnVisning = ({ data }) => {
 			<TitleValue title="Fornavn" value={data.fornavn} />
 			<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.etternavn} />
+			<TitleValue
+				title="Navn opphørt"
+				value={formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
+			/>
 		</>
 	)
 }
