@@ -51,7 +51,6 @@ spec:
       cpu: 200m
       memory: 4000Mi
     limits:
-      cpu: 500m
       memory: 5000Mi
   ingresses:
     - "https://testnav-endringsmelding-service.intern.dev.nav.no"
