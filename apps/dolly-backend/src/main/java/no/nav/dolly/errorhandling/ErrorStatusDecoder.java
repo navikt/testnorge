@@ -119,8 +119,7 @@ public class ErrorStatusDecoder {
         if (json.contains("{")) {
             try {
                 Map<String, Object> status = objectMapper.readValue(json, Map.class);
-                if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR)) &&
-                        !((String) status.get(ERROR)).toLowerCase().contains("bad request")) {
+                if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR))) {
                     builder.append("error=").append(status.get(ERROR)).append("; ");
                 } else if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
@@ -146,10 +145,7 @@ public class ErrorStatusDecoder {
         } else {
             builder.append(encodeStatus(json));
         }
-        if (builder.length() > 1000) {
-            log.info("!!! lengde > 1000: {}", builder);
-            return builder.substring(0,1000);
-        }
+
         return builder.toString();
     }
 }
