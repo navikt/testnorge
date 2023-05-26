@@ -146,7 +146,10 @@ public class ErrorStatusDecoder {
         } else {
             builder.append(encodeStatus(json));
         }
-
+        if (builder.length() > 1000) {
+            log.info("!!! lengde > 1000: {}", builder);
+            return builder.substring(0,1000);
+        }
         return builder.toString();
     }
 }
