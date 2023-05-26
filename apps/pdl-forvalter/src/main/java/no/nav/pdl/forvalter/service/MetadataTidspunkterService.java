@@ -248,11 +248,11 @@ public class MetadataTidspunkterService {
                             .map(foedsel -> getFoedselsdato(personDTO, foedsel))
                             .findFirst()
                             .orElse(LocalDateTime.now().minusHours(1)) :
-                    LocalDateTime.now().minusMinutes(1).plusSeconds(navnDTO.getId()));
+                    LocalDateTime.now().minusDays(1).plusHours(navnDTO.getId()));
         }
 
         if (isNull(navnDTO.getFolkeregistermetadata().getAjourholdstidspunkt())) {
-            navnDTO.getFolkeregistermetadata().setAjourholdstidspunkt(navnDTO.getGyldigFraOgMed());
+            navnDTO.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now());
         }
 
         if (isNull(navnDTO.getFolkeregistermetadata().getGyldighetstidspunkt())) {
