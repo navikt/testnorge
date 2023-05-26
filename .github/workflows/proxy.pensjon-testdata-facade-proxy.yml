@@ -3,8 +3,11 @@ name: pensjon-testdata-facade-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/pensjon-testdata-facade-proxy/**
-      - libs/**
       - .github/workflows/proxy.pensjon-testdata-facade-proxy.yml
 
 jobs:

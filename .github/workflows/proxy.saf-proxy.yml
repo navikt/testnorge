@@ -3,8 +3,11 @@ name: saf-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/saf-proxy/**
-      - libs/**
       - .github/workflows/proxy.saf-proxy.yml
 
 jobs:

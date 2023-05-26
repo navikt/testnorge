@@ -3,8 +3,11 @@ name: hodejegeren-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/hodejegeren-proxy/**
-      - libs/**
       - .github/workflows/proxy.hodejegeren-proxy.yml
 
 jobs:

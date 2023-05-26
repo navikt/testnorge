@@ -3,8 +3,11 @@ name: endringsmelding-service
 on:
   push:
     paths:
+      - libs/data-transfer-objects
+      - libs/reactive-core
+      - libs/reactive-security
+      - libs/security-core
       - apps/endringsmelding-service/**
-      - libs/**
       - .github/workflows/app.endringsmelding-service.yml
 
 jobs:

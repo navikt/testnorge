@@ -3,8 +3,11 @@ name: organisasjon-tilgang-frontend
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-frontend
+      - libs/reactive-session-security
+      - libs/security-core
       - apps/organisasjon-tilgang-frontend/**
-      - libs/**
       - .github/workflows/app.organisasjon-tilgang-frontend-test.yml
 
 jobs:

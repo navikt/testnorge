@@ -3,8 +3,13 @@ name: person-service
 on:
   push:
     paths:
+      - libs/commands
+      - libs/data-transfer-objects
+      - libs/reactive-core
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-security
       - apps/person-service/**
-      - libs/**
       - .github/workflows/app.person-service.yml
 
 jobs:

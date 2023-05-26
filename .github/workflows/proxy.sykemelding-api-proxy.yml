@@ -3,8 +3,11 @@ name: sykemelding-api-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/sykemelding-api-proxy/**
-      - libs/**
       - .github/workflows/proxy.sykemelding-api-proxy.yml
 
 jobs:
