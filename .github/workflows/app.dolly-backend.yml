@@ -6,7 +6,6 @@ on:
       - apps/dolly-backend/**
       - libs/**
       - .github/workflows/app.dolly-backend.yml
-      - .github/workflows/common.scan.sonar.yml # Temporarily
 
 jobs:
   workflow:
