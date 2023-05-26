@@ -120,7 +120,7 @@ public class ErrorStatusDecoder {
             try {
                 Map<String, Object> status = objectMapper.readValue(json, Map.class);
                 if (status.containsKey(ERROR) && isNotBlank((String) status.get(ERROR)) &&
-                        !status.get(ERROR).equals("Bad Request")) {
+                        !((String) status.get(ERROR)).toLowerCase().contains("bad request")) {
                     builder.append("error=").append(status.get(ERROR)).append("; ");
                 } else if (status.containsKey(MESSAGE) && isNotBlank((String) status.get(MESSAGE))) {
                     builder.append("message=").append(encodeStatus((String) status.get(MESSAGE))).append("; ");
