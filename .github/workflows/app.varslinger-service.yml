@@ -3,8 +3,12 @@ name: varslinger-service
 on:
   push:
     paths:
+      - libs/data-transfer-objects
+      - libs/database
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-security
       - apps/varslinger-service/**
-      - libs/**
       - .github/workflows/app.varslinger-service.yml
 
 jobs:

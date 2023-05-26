@@ -3,8 +3,12 @@ name: person-export-api
 on:
   push:
     paths:
+      - libs/csv-converter
+      - libs/reactive-core
+      - libs/servlet-core
+      - libs/servlet-security
+      - libs/slack
       - apps/person-export-api/**
-      - libs/**
       - .github/workflows/app.person-export-api.yml
 
 jobs:
