@@ -39,6 +39,7 @@ import reactor.core.publisher.Flux;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -116,12 +117,14 @@ public class PersonService {
         var identer = Stream.of(List.of(dbPerson.getIdent()),
                         dbPerson.getRelasjoner().stream()
                                 .map(DbRelasjon::getRelatertPerson)
+                                .filter(Objects::nonNull)
                                 .map(DbPerson::getPerson)
                                 .map(PersonDTO::getIdent)
                                 .toList(),
                         dbPerson.getRelasjoner().stream()
                                 .filter(relasjon -> FAMILIERELASJON_BARN == relasjon.getRelasjonType())
                                 .map(DbRelasjon::getRelatertPerson)
+                                .filter(Objects::nonNull)
                                 .map(DbPerson::getPerson)
                                 .map(PersonDTO::getForeldreansvar)
                                 .flatMap(Collection::stream)

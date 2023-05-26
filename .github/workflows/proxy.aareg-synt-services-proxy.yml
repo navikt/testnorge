@@ -3,8 +3,9 @@ name: aareg-synt-services-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
       - proxies/aareg-synt-services-proxy/**
-      - libs/**
       - .github/workflows/proxy.aareg-synt-services-proxy.yml
 
 jobs:

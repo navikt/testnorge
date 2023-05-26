@@ -15,18 +15,23 @@ on:
           - "proxies"
       cluster:
         type: choice
-        description: "The cluster to deploy to. Only relevant if workflow is backend."
+        description: "The cluster to deploy to."
         options:
           - "dev-gcp"
           - "dev-fss"
+          - "prod-gcp"
       name:
         type: string
         description: "The workflow name, e.g. dolly-backend. Used to resolve the working directory together with type, as <type>/<name>."
         required: true
       force-deploy:
         type: boolean
-        description: "Deploy?"
+        description: "Deploy? Make sure the effective working directory contains a NAIS manifest as named below!"
         default: false
+      nais-manifest:
+        type: string
+        description: "Custom NAIS manifest filename."
+        default: "config.yml"
       force-deploy-test:
         type: boolean
         description: "Deploy to test? Make sure the effective working directory contains a config.test.yml!"
@@ -64,10 +69,12 @@ jobs:
     if: inputs.workflow == 'frontend'
     uses: ./.github/workflows/common.workflow.frontend.yml
     with:
+      cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
       image-suffix: ${{ inputs.name }}
       deploy-tag: ""
       force-deploy: ${{ inputs.force-deploy }}
+      nais-manifest: ${{ inputs.nais-manifest }}
       force-deploy-test: ${{ inputs.force-deploy-test }}
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}

@@ -1,20 +1,21 @@
-name: person-faste-data-service
+name: organisasjon-tilgang-service-prod
 
 on:
   push:
     paths:
-      - libs/data-transfer-objects
       - libs/reactive-core
       - libs/reactive-security
-      - apps/person-faste-data-service/**
-      - .github/workflows/app.person-faste-data-service.yml
+      - apps/organisasjon-tilgang-service/**
+      - .github/workflows/app.organisasjon-tilgang-service-prod.yml
 
 jobs:
   workflow:
     uses: ./.github/workflows/common.workflow.backend.yml
     with:
-      working-directory: "apps/person-faste-data-service"
-      deploy-tag: "#deploy-person-faste-data-service"
+      cluster: "prod-gcp"
+      nais-manifest: "config.prod.yml"
+      working-directory: "apps/organisasjon-tilgang-service"
+      deploy-tag: "#deploy-organisasjon-tilgang-service"
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
       NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}

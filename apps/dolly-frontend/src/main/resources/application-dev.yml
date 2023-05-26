@@ -2,24 +2,6 @@
 POST_LOGOUT_REDIRECT_URI: http://dolly-frontend-dev.dolly.svc.cluster.local/login
 REDIS_HOST: dolly-dev-redis-session.dolly.svc.cluster.local
 
-spring:
-  data:
-    redis:
-      host: ${REDIS_HOST}
-      port: 6379
-  security:
-    oauth2:
-      resourceserver:
-        idporten:
-          issuer-uri: ${IDPORTEN_ISSUER}
-        aad:
-          issuer-uri: ${AAD_ISSUER_URI}/v2.0
-          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
-          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
-        tokenx:
-          issuer-uri: ${TOKEN_X_ISSUER}
-          jwk-set-uri: ${TOKEN_X_JWKS_URI}
-
 consumers:
   # Konsumenter for dev-miljø
   tps-forvalteren-proxy:

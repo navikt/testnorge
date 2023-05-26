@@ -3,8 +3,13 @@ name: testnav-ident-pool
 on:
   push:
     paths:
+      - libs/database
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-insecure-security
+      - libs/servlet-security
+      - libs/testing
       - apps/testnav-ident-pool/**
-      - libs/**
       - .github/workflows/app.testnav-ident-pool.yml
 
 jobs:
