@@ -240,18 +240,27 @@ public class MetadataTidspunkterService {
 
     private void fixNavn(PersonDTO personDTO) {
 
+        var foedselsdato = personDTO.getFoedsel().stream()
+                .map(foedsel -> getFoedselsdato(personDTO, foedsel))
+                .findFirst()
+                .orElse(LocalDateTime.now());
+
         var maksDato = personDTO.getNavn().stream()
                 .filter(navn -> nonNull(navn.getGyldigFraOgMed()))
                 .max(Comparator.comparing(NavnDTO::getGyldigFraOgMed))
                 .map(NavnDTO::getGyldigFraOgMed)
-                .orElse(personDTO.getFoedsel().stream()
-                        .map(foedsel -> getFoedselsdato(personDTO, foedsel))
-                        .findFirst()
-                        .orElse(LocalDateTime.now()));
+                .orElse(null);
 
+        var counter = new AtomicInteger(0);
         personDTO.getNavn().stream()
                 .filter(navn -> isNull(navn.getGyldigFraOgMed()))
-                .forEach(navn -> navn.setGyldigFraOgMed(maksDato.plusDays(navn.getId() - 1L)));
+                .forEach(navn -> {
+                    if (nonNull(maksDato)) {
+                        navn.setGyldigFraOgMed(maksDato.plusDays(counter.incrementAndGet()));
+                    } else {
+                        navn.setGyldigFraOgMed(foedselsdato.plusDays(counter.getAndIncrement()));
+                    }
+                });
 
         var version = new AtomicInteger(0);
         personDTO.setNavn(personDTO.getNavn().stream()
