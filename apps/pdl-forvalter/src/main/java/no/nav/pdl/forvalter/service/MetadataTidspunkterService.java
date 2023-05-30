@@ -29,6 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -86,8 +88,7 @@ public class MetadataTidspunkterService {
                 .forEach(this::fixAdresser);
         person.getKontaktinformasjonForDoedsbo()
                 .forEach(this::fixVersioning);
-        person.getNavn()
-                .forEach(navn -> fixNavn(navn, person));
+        fixNavn(person);
         person.getOpphold()
                 .forEach(this::fixOpphold);
         person.getOppholdsadresse()
@@ -237,33 +238,38 @@ public class MetadataTidspunkterService {
         utflyttingDTO.getFolkeregistermetadata().setGyldighetstidspunkt(utflyttingDTO.getUtflyttingsdato());
     }
 
-    private void fixNavn(NavnDTO navnDTO, PersonDTO personDTO) {
+    private void fixNavn(PersonDTO personDTO) {
 
-        fixFolkeregisterMetadata(navnDTO);
-
-        if (isNull(navnDTO.getGyldigFraOgMed())) {
-
-            personDTO.getFoedsel().stream()
-                    .map(foedsel -> getFoedselsdato(personDTO, foedsel))
-                    .findFirst()
-                    .ifPresent(dato -> navnDTO.setGyldigFraOgMed(dato.plusDays(navnDTO.getId() - 1L)));
-        }
-
-        if (isNull(navnDTO.getFolkeregistermetadata().getAjourholdstidspunkt())) {
-            navnDTO.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now());
-        }
-
-        if (isNull(navnDTO.getFolkeregistermetadata().getGyldighetstidspunkt())) {
-            navnDTO.getFolkeregistermetadata().setGyldighetstidspunkt(navnDTO.getGyldigFraOgMed());
-        }
+        var maksDato = personDTO.getNavn().stream()
+                .filter(navn -> nonNull(navn.getGyldigFraOgMed()))
+                .max(Comparator.comparing(NavnDTO::getGyldigFraOgMed))
+                .map(NavnDTO::getGyldigFraOgMed)
+                .orElse(personDTO.getFoedsel().stream()
+                        .map(foedsel -> getFoedselsdato(personDTO, foedsel))
+                        .findFirst()
+                        .orElse(LocalDateTime.now()));
 
         personDTO.getNavn().stream()
-                .filter(navn -> navnDTO.getId() - 1 == navn.getId())
-                .filter(navn -> isNull(navn.getFolkeregistermetadata()) || isNull(navn.getFolkeregistermetadata().getOpphoerstidspunkt()))
+                .filter(navn -> isNull(navn.getGyldigFraOgMed()))
+                .forEach(navn -> navn.setGyldigFraOgMed(maksDato.plusDays(navn.getId() - 1L)));
+
+        var version = new AtomicInteger(0);
+        personDTO.setNavn(personDTO.getNavn().stream()
+                .sorted(Comparator.comparing(NavnDTO::getGyldigFraOgMed).reversed())
+                .toList());
+
+        personDTO.getNavn()
                 .forEach(navn -> {
+                    navn.setId(personDTO.getNavn().size() - version.getAndIncrement());
+
                     fixFolkeregisterMetadata(navn);
-                    navn.getFolkeregistermetadata().setOpphoerstidspunkt(
-                            navnDTO.getFolkeregistermetadata().getGyldighetstidspunkt());
+                    navn.getFolkeregistermetadata().setGyldighetstidspunkt(navn.getGyldigFraOgMed());
+                    navn.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now());
+                    navn.getFolkeregistermetadata().setOpphoerstidspunkt(personDTO.getNavn().stream()
+                            .filter(navn1 -> navn1.getId() == navn.getId() + 1)
+                            .map(NavnDTO::getGyldigFraOgMed)
+                            .findFirst()
+                            .orElse(null));
                 });
     }
 

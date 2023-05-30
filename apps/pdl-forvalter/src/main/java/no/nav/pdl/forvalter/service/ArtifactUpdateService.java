@@ -42,6 +42,7 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -176,6 +177,19 @@ public class ArtifactUpdateService {
 
         navnService.validate(oppdatertNavn);
         navnService.convert(person.getPerson().getNavn());
+
+        var versjon = new AtomicInteger(0);
+        person.getPerson().setNavn(person.getPerson().getNavn().stream()
+                .sorted((o1, o2) -> {
+                    if (nonNull(o1.getGyldigFraOgMed()) && nonNull(o2.getGyldigFraOgMed())) {
+                        return o2.getGyldigFraOgMed().compareTo(o1.getGyldigFraOgMed());
+                    } else {
+                        return o2.getId().compareTo(o1.getId());
+                    }
+                })
+                .toList());
+        person.getPerson().getNavn()
+                .forEach(navn -> navn.setId(person.getPerson().getNavn().size() - versjon.getAndIncrement()));
 
         person.getPerson().getNavn().stream().findFirst()
                 .ifPresent(navn -> {
