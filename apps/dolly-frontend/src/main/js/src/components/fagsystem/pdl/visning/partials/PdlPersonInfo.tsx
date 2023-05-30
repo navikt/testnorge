@@ -31,10 +31,6 @@ const PdlNavnVisning = ({ data }) => {
 			<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.etternavn} />
 			<TitleValue title="Navn gyldig f.o.m." value={formatDate(data.gyldigFraOgMed)} />
-			<TitleValue
-				title="Navn opphørt"
-				value={formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
-			/>
 		</>
 	)
 }

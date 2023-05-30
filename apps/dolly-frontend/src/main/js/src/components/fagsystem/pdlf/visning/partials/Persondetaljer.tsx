@@ -59,10 +59,6 @@ const NavnVisning = ({ navn }) => {
 			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
 			<TitleValue title="Etternavn" value={navn.etternavn} />
 			<TitleValue title="Navn gyldig f.o.m." value={formatDate(navn.gyldigFraOgMed)} />
-			<TitleValue
-				title="Navn opphørt"
-				value={formatDate(navn.folkeregistermetadata?.opphoerstidspunkt)}
-			/>
 		</>
 	)
 }
@@ -142,11 +138,6 @@ export const Persondetaljer = ({
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
 
-	const personValuesMedRedigert = _.cloneDeep(data)
-	if (tmpNavn && personValuesMedRedigert) {
-		personValuesMedRedigert.navn = tmpNavn
-	}
-
 	return (
 		<ErrorBoundary>
 			<div>
@@ -200,7 +191,6 @@ export const Persondetaljer = ({
 												path="navn"
 												ident={ident}
 												tpsMessagingData={tpsMessaging}
-												personValues={personValuesMedRedigert}
 											/>
 										)
 									}}

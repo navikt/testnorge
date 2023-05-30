@@ -236,9 +236,6 @@ export const initialNavn = {
 	gyldigFraOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
-	folkeregistermetadata: {
-		opphoerstidspunkt: null as unknown as string,
-	},
 }
 
 export const initialVergemaal = {

@@ -116,7 +116,6 @@ export const VisningRedigerbar = ({
 	identtype,
 	disableSlett = false,
 	personFoerLeggTil = null,
-	personValues = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -194,7 +193,7 @@ export const VisningRedigerbar = ({
 	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {
 			case Attributt.Navn:
-				return <NavnForm formikBag={formikBag} path={path} personValues={personValues} />
+				return <NavnForm formikBag={formikBag} path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:

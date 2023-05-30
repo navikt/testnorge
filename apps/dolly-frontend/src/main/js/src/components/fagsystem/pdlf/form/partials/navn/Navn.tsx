@@ -40,7 +40,7 @@ const concatNavnMedTidligereValgt = (type, navnInfo, selectedFornavn) => {
 	return _.uniqBy(navnOptions, 'label')
 }
 
-export const NavnForm = ({ formikBag, path, idx, personValues }: NavnTypes) => {
+export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 	if (!_.get(formikBag?.values, path)) {
 		return null
 	}
@@ -87,14 +87,6 @@ export const NavnForm = ({ formikBag, path, idx, personValues }: NavnTypes) => {
 			></RefreshButton>
 		)
 	}
-
-	const isLast = _.get(formikBag?.values, 'pdldata.person.navn')?.length === idx + 1
-
-	const gjeldendeNavnId = _.get(personValues, 'navn[0].id')
-	const erGjeldendeNavn =
-		gjeldendeNavnId &&
-		_.get(formikBag.values, 'navn.id') === gjeldendeNavnId &&
-		!_.get(formikBag.values, 'navn.folkeregistermetadata.opphoerstidspunkt')
 
 	return (
 		<>
@@ -169,12 +161,6 @@ export const NavnForm = ({ formikBag, path, idx, personValues }: NavnTypes) => {
 						label="Gyldig f.o.m. dato"
 						fastfield={false}
 					/>
-					<FormikDatepicker
-						name={`${path}.folkeregistermetadata.opphoerstidspunkt`}
-						label="Opphørt dato"
-						disabled={isLast || erGjeldendeNavn}
-						fastfield={false}
-					/>
 				</DatepickerWrapper>
 			</div>
 			<AvansertForm path={path} kanVelgeMaster={true} />
@@ -183,18 +169,6 @@ export const NavnForm = ({ formikBag, path, idx, personValues }: NavnTypes) => {
 }
 
 export const Navn = ({ formikBag }: NavnTypes) => {
-	const handleRemoveEntry = (idx: number) => {
-		const navnListe = _.get(formikBag?.values, 'pdldata.person.navn')
-		navnListe.splice(idx, 1)
-		const lastIndex = navnListe?.length - 1
-
-		formikBag.setFieldValue('pdldata.person.navn', navnListe)
-		formikBag.setFieldValue(
-			`pdldata.person.navn[${lastIndex}].folkeregistermetadata.opphoerstidspunkt`,
-			null
-		)
-	}
-
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikDollyFieldArray
@@ -202,7 +176,6 @@ export const Navn = ({ formikBag }: NavnTypes) => {
 				header="Navn"
 				newEntry={initialNavn}
 				canBeEmpty={false}
-				handleRemoveEntry={handleRemoveEntry}
 			>
 				{(path: string, idx: number) => <NavnForm formikBag={formikBag} path={path} idx={idx} />}
 			</FormikDollyFieldArray>
