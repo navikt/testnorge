@@ -177,7 +177,7 @@ export const Navn = ({ formikBag }: NavnTypes) => {
 				newEntry={initialNavn}
 				canBeEmpty={false}
 			>
-				{(path: string, idx: number) => <NavnForm formikBag={formikBag} path={path} idx={idx} />}
+				{(path: string) => <NavnForm formikBag={formikBag} path={path} />}
 			</FormikDollyFieldArray>
 		</div>
 	)
