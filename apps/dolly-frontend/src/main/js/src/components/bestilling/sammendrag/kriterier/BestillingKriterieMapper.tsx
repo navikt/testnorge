@@ -204,6 +204,7 @@ const mapNavn = (navn, data) => {
 					obj('Mellomnavn', item.mellomnavn),
 					obj('Etternavn', item.etternavn),
 					obj('Har tilfeldig mellomnavn', oversettBoolean(item.hasMellomnavn)),
+					obj('Gyldig f.o.m. dato', formatDate(item.gyldigFraOgMed)),
 					obj('Opphørt dato', formatDate(item.folkeregistermetadata?.opphoerstidspunkt)),
 				]
 			}),

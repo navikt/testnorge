@@ -30,6 +30,7 @@ const PdlNavnVisning = ({ data }) => {
 			<TitleValue title="Fornavn" value={data.fornavn} />
 			<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 			<TitleValue title="Etternavn" value={data.etternavn} />
+			<TitleValue title="Navn gyldig f.o.m." value={formatDate(data.gyldigFraOgMed)} />
 			<TitleValue
 				title="Navn opphørt"
 				value={formatDate(data.folkeregistermetadata?.opphoerstidspunkt)}
@@ -74,7 +75,7 @@ export const PdlPersonInfo = ({
 				<div className="person-visning_content">
 					<TitleValue title="Ident" value={data?.ident} />
 					{gyldigeNavn?.length === 1 && (!historiskeNavn || historiskeNavn.length < 1) && (
-						<PdlNavnVisning navn={gyldigeNavn[0]} />
+						<PdlNavnVisning data={gyldigeNavn[0]} />
 					)}
 					<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
 					<TitleValue

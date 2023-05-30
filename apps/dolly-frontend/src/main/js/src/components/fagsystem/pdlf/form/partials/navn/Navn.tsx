@@ -165,6 +165,11 @@ export const NavnForm = ({ formikBag, path, idx, personValues }: NavnTypes) => {
 				/>
 				<DatepickerWrapper>
 					<FormikDatepicker
+						name={`${path}.gyldigFraOgMed`}
+						label="Gyldig f.o.m. dato"
+						fastfield={false}
+					/>
+					<FormikDatepicker
 						name={`${path}.folkeregistermetadata.opphoerstidspunkt`}
 						label="Opphørt dato"
 						disabled={isLast || erGjeldendeNavn}

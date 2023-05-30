@@ -58,6 +58,7 @@ const NavnVisning = ({ navn }) => {
 			<TitleValue title="Fornavn" value={navn.fornavn} />
 			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
 			<TitleValue title="Etternavn" value={navn.etternavn} />
+			<TitleValue title="Navn gyldig f.o.m." value={formatDate(navn.gyldigFraOgMed)} />
 			<TitleValue
 				title="Navn opphørt"
 				value={formatDate(navn.folkeregistermetadata?.opphoerstidspunkt)}
