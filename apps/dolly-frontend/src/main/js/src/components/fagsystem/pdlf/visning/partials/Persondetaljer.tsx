@@ -138,14 +138,6 @@ export const Persondetaljer = ({
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
 
-	const navnFoerLeggTil = {
-		pdlforvalter: {
-			person: {
-				navn: data?.navn,
-			},
-		},
-	}
-
 	return (
 		<ErrorBoundary>
 			<div>
@@ -189,6 +181,18 @@ export const Persondetaljer = ({
 											tmpPersoner?.pdlforvalter?.hasOwnProperty(ident) && !redigertNavn
 										if (slettetNavn) {
 											return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+										}
+
+										const filtrertNavn = tmpNavn
+											? tmpNavn?.filter((navnData) => navnData?.id !== navn?.id)
+											: data?.navn?.filter((navnData) => navnData?.id !== navn?.id)
+
+										const navnFoerLeggTil = {
+											pdlforvalter: {
+												person: {
+													navn: filtrertNavn,
+												},
+											},
 										}
 
 										return (
