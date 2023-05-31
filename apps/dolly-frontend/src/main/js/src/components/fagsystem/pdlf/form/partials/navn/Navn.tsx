@@ -107,6 +107,11 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 						size="grow"
 						isClearable={false}
 						fastfield={false}
+						feil={
+							_.get(formikBag.errors, `${path}.fornavn`) && {
+								feilmelding: _.get(formikBag.errors, `${path}.fornavn`),
+							}
+						}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -144,6 +149,11 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 						size="grow"
 						isClearable={false}
 						fastfield={false}
+						feil={
+							_.get(formikBag.errors, `${path}.etternavn`) && {
+								feilmelding: _.get(formikBag.errors, `${path}.etternavn`),
+							}
+						}
 					/>
 					{getRefreshButton()}
 				</div>

@@ -28,6 +28,9 @@ import { isSameDay } from 'date-fns'
 
 const testGyldigFom = (val) => {
 	return val.test('is-unique', function datoErUnik(selected) {
+		if (selected === null || selected === '') {
+			return true
+		}
 		const values = this?.options?.context
 		const navn = values?.navn ? [values.navn] : values?.pdldata?.person?.navn
 		const navnFoerLeggTil = values?.personFoerLeggTil?.pdlforvalter?.person?.navn
