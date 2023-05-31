@@ -29,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -240,37 +238,8 @@ public class MetadataTidspunkterService {
 
     private void fixNavn(PersonDTO personDTO) {
 
-        var foedselsdato = personDTO.getFoedsel().stream()
-                .map(foedsel -> getFoedselsdato(personDTO, foedsel))
-                .findFirst()
-                .orElse(LocalDateTime.now());
-
-        var maksDato = personDTO.getNavn().stream()
-                .filter(navn -> nonNull(navn.getGyldigFraOgMed()))
-                .max(Comparator.comparing(NavnDTO::getGyldigFraOgMed))
-                .map(NavnDTO::getGyldigFraOgMed)
-                .orElse(null);
-
-        var counter = new AtomicInteger(0);
-        personDTO.getNavn().stream()
-                .filter(navn -> isNull(navn.getGyldigFraOgMed()))
-                .forEach(navn -> {
-                    if (nonNull(maksDato)) {
-                        navn.setGyldigFraOgMed(maksDato.plusDays(counter.incrementAndGet()));
-                    } else {
-                        navn.setGyldigFraOgMed(foedselsdato.plusDays(counter.getAndIncrement()));
-                    }
-                });
-
-        var version = new AtomicInteger(0);
-        personDTO.setNavn(personDTO.getNavn().stream()
-                .sorted(Comparator.comparing(NavnDTO::getGyldigFraOgMed).reversed())
-                .toList());
-
         personDTO.getNavn()
                 .forEach(navn -> {
-                    navn.setId(personDTO.getNavn().size() - version.getAndIncrement());
-
                     fixFolkeregisterMetadata(navn);
                     navn.getFolkeregistermetadata().setGyldighetstidspunkt(navn.getGyldigFraOgMed());
                     navn.getFolkeregistermetadata().setAjourholdstidspunkt(LocalDateTime.now());

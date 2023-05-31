@@ -2,6 +2,7 @@ package no.nav.pdl.forvalter.service;
 
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +44,7 @@ class NavnServiceTest {
         when(genererNavnServiceConsumer.verifyNavn(any(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.class))).thenReturn(false);
 
         var exception = assertThrows(HttpClientErrorException.class, () ->
-                navnService.validate(request));
+                navnService.validate(request, new PersonDTO()));
 
         assertThat(exception.getMessage(), containsString("Navn er ikke i liste over gyldige verdier"));
     }
@@ -51,14 +52,16 @@ class NavnServiceTest {
     @Test
     void whenNameVerifies_acceptProposal() {
 
-        var request = List.of(NavnDTO.builder()
-                .fornavn("Gyldig")
-                .mellomnavn("Sjanglende")
-                .etternavn("Sjømann")
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .navn(List.of(NavnDTO.builder()
+                        .fornavn("Gyldig")
+                        .mellomnavn("Sjanglende")
+                        .etternavn("Sjømann")
+                        .isNew(true)
+                        .build()))
+                .build();
 
-        var target = navnService.convert((List<NavnDTO>) request).get(0);
+        var target = navnService.convert(request).get(0);
 
         assertThat(target.getFornavn(), is(equalTo("Gyldig")));
         assertThat(target.getMellomnavn(), is(equalTo("Sjanglende")));
@@ -68,9 +71,11 @@ class NavnServiceTest {
     @Test
     void whenNamesNotProvidedWithoutMellomnavn_provideNames() {
 
-        var request = List.of(NavnDTO.builder()
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .navn(List.of(NavnDTO.builder()
+                        .isNew(true)
+                        .build()))
+                .build();
 
         when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Optional.of(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
                 .adjektiv("Full")
@@ -78,7 +83,7 @@ class NavnServiceTest {
                 .substantiv("Sjømann")
                 .build()));
 
-        var target = navnService.convert((List<NavnDTO>) request).get(0);
+        var target = navnService.convert(request).get(0);
 
         assertThat(target.getFornavn(), is(equalTo("Full")));
         assertThat(target.getMellomnavn(), nullValue());
@@ -88,10 +93,12 @@ class NavnServiceTest {
     @Test
     void whenNamesNotProvidedWithMellomnavn_provideNames() {
 
-        var request = List.of(NavnDTO.builder()
-                .hasMellomnavn(true)
-                .isNew(true)
-                .build());
+        var request = PersonDTO.builder()
+                .navn(List.of(NavnDTO.builder()
+                        .hasMellomnavn(true)
+                        .isNew(true)
+                        .build()))
+                .build();
 
         when(genererNavnServiceConsumer.getNavn(1)).thenReturn(Optional.of(no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO.builder()
                 .adjektiv("Full")
@@ -99,7 +106,7 @@ class NavnServiceTest {
                 .substantiv("Sjømann")
                 .build()));
 
-        var target = navnService.convert((List<NavnDTO>) request).get(0);
+        var target = navnService.convert(request).get(0);
 
         assertThat(target.getFornavn(), is(equalTo("Full")));
         assertThat(target.getMellomnavn(), is(equalTo("Sjanglende")));
