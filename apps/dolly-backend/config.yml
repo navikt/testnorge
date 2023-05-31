@@ -107,7 +107,6 @@ spec:
       cpu: 5000m
       memory: 4096Mi
     limits:
-      cpu: 10000m
       memory: 8192Mi
   gcp:
     sqlInstances:

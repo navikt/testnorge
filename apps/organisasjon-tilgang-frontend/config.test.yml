@@ -39,7 +39,6 @@ spec:
         - application: testnav-organisasjon-tilgang-service
   resources:
     limits:
-      cpu: 500m
       memory: 1024Mi
     requests:
       cpu: 300m
