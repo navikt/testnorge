@@ -34,7 +34,6 @@ spec:
       cpu: 100m
       memory: 256Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   ingresses:
     - "https://dollystatus.intern.dev.nav.no"

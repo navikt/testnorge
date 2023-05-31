@@ -3,17 +3,32 @@ plugins {
     id "org.sonarqube" version "4.0.0.2929"
     id 'org.springframework.boot' version "3.0.4"
     id 'io.spring.dependency-management' version "1.1.0"
+    id "jacoco"
+}
+
+test {
+    useJUnitPlatform()
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
 }
 
 sonarqube {
     properties {
-        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.dynamicAnalysis", "reuseReports"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.language", "java"
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+        property "sonar.organization", "navikt"
+        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnorge-batch-adeo-proxy"
         property "sonar.projectName", "testnorge-batch-adeo-proxy"
-        property "sonar.organization", "navikt"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.project.monorepo.enabled", true
-        property "sonar.login", System.getenv("SONAR_TOKEN")
+        property "sonar.sourceEncoding", "UTF-8"
     }
 }
 bootJar {
@@ -30,10 +45,6 @@ dependencyManagement {
 repositories {
     mavenCentral()
     mavenLocal()
-}
-
-test {
-    useJUnitPlatform()
 }
 
 dependencies {

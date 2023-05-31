@@ -42,7 +42,6 @@ spec:
       cpu: 1000m
       memory: 2000Mi
     limits:
-      cpu: 2000m
       memory: 4000Mi
   accessPolicy:
     inbound:
