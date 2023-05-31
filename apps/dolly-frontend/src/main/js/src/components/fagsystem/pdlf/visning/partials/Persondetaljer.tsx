@@ -138,6 +138,14 @@ export const Persondetaljer = ({
 
 	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
 
+	const navnFoerLeggTil = {
+		pdlforvalter: {
+			person: {
+				navn: data?.navn,
+			},
+		},
+	}
+
 	return (
 		<ErrorBoundary>
 			<div>
@@ -191,6 +199,7 @@ export const Persondetaljer = ({
 												path="navn"
 												ident={ident}
 												tpsMessagingData={tpsMessaging}
+												personFoerLeggTil={navnFoerLeggTil}
 											/>
 										)
 									}}
