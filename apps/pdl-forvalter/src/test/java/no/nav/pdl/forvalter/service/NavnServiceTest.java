@@ -32,6 +32,7 @@ class NavnServiceTest {
     private NavnService navnService;
 
     @Test
+    @SuppressWarnings("java:S5778")
     void whenNameDoesNotVerify_thenThrowExecption() {
 
         var request = NavnDTO.builder()
