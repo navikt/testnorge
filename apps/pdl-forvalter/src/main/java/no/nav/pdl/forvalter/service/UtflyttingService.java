@@ -64,6 +64,13 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
             utflytting.setUtflyttingsdato(LocalDateTime.now());
         }
 
+        var it = person.getBostedsadresse().iterator();
+        while (it.hasNext()) {
+            var bostedsadresse = it.next();
+            if (bostedsadresse.isAdresseNorge() && bostedsadresse.getGyldigFraOgMed().isAfter(utflytting.getUtflyttingsdato())) {
+                it.remove();
+            }
+        }
         if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().get(0).isAdresseNorge()) {
             person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
         }
