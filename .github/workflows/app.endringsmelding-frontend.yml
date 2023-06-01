@@ -3,6 +3,10 @@ name: endringsmelding-frontend
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-frontend
+      - libs/reactive-session-security
+      - libs/security-core
       - apps/endringsmelding-frontend/**
       - .github/workflows/app.endringsmelding-frontend.yml
 

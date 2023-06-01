@@ -3,9 +3,9 @@ name: sigrunstub-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
       - proxies/sigrunstub-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
       - .github/workflows/proxy.sigrunstub-proxy.yml
 
 jobs:

@@ -50,7 +50,6 @@ spec:
       cpu: 500m
       memory: 1024Mi
     limits:
-      cpu: 800m
       memory: 2048Mi
   ingresses:
     - "https://mn-synt-arbeidsforhold-service.dev.intern.nav.no" # dev-fss

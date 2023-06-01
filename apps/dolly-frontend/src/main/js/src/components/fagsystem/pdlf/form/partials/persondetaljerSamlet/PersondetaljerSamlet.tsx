@@ -4,6 +4,7 @@ import { PersonstatusForm } from '@/components/fagsystem/pdlf/form/partials/pers
 import { FormikProps } from 'formik'
 import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
+import * as _ from 'lodash-es'
 
 type PersondetaljerSamletTypes = {
 	formikBag: FormikProps<{}>
@@ -28,12 +29,19 @@ export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: Persondetaljer
 	return (
 		<>
 			<div className="flexbox--full-width">
-				<Alert variant={'info'}>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
+				<Alert
+					size={'small'}
+					variant={'info'}
+				>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
 
-				<h3>Navn</h3>
-				<div className="flexbox--flex-wrap">
-					<NavnForm formikBag={formikBag} path="navn[0]" />
-				</div>
+				{_.get(formikBag.values, 'navn') && (
+					<>
+						<h3>Navn</h3>
+						<div className="flexbox--flex-wrap">
+							<NavnForm formikBag={formikBag} path="navn[0]" />
+						</div>
+					</>
+				)}
 
 				<h3>Kjønn</h3>
 				<KjoennForm path="kjoenn[0]" />

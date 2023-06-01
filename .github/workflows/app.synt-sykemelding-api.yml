@@ -3,6 +3,12 @@ name: synt-sykemelding-api
 on:
   push:
     paths:
+      - libs/commands
+      - libs/data-transfer-objects
+      - libs/reactive-core
+      - libs/servlet-core
+      - libs/servlet-security
+      - libs/testing
       - apps/synt-sykemelding-api/**
       - .github/workflows/app.synt-sykemelding-api.yml
 

@@ -3,6 +3,10 @@ name: testnorge-hodejegeren
 on:
   push:
     paths:
+      - libs/domain
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-security
       - apps/hodejegeren/**
       - .github/workflows/app.hodejegeren.yml
 

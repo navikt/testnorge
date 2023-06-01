@@ -1,17 +1,31 @@
 package no.nav.testnav.libs.servletcore.provider;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.context.annotation.Profile;
+import lombok.Builder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-@Profile({"prod","dev"})
+import static java.util.Objects.nonNull;
+
 @RestController
-@RequestMapping("/internal")
+@RequestMapping(
+        path = "/internal",
+        produces = {MediaType.APPLICATION_JSON_VALUE}
+)
 public class InternalController {
+
+    private final String image;
+
+    public InternalController(@Value("${NAIS_APP_IMAGE:null}") String image) {
+        this.image = image;
+    }
 
     @GetMapping("/isAlive")
     @Operation(hidden = true)
@@ -25,4 +39,24 @@ public class InternalController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/image")
+    @Operation(hidden = true)
+    @ResponseStatus(HttpStatus.OK)
+    public JsonResponse getVersion() {
+
+        return JsonResponse.builder()
+                .image(image)
+                .commit(nonNull(image) && image.lastIndexOf("-") > 0 ?
+                        "https://github.com/navikt/testnorge/commit/" +
+                                image.substring(image.lastIndexOf("-") + 1) : null)
+                .build();
+    }
+
+    @Builder
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    record JsonResponse(
+            String image,
+            String commit
+    ) {
+    }
 }

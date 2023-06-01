@@ -3,9 +3,9 @@ name: histark-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
       - proxies/histark-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
       - .github/workflows/proxy.histark-proxy.yml
 
 jobs:

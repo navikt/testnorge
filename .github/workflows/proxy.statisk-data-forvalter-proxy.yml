@@ -3,9 +3,11 @@ name: statisk-data-forvalter-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/statisk-data-forvalter-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
       - .github/workflows/proxy.statisk-data-forvalter-proxy.yml
 
 jobs:

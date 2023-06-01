@@ -1,6 +1,6 @@
 package no.nav.dolly.web.config;
 
-import no.nav.testnav.libs.reactivesessionsecurity.config.OicdRedisSessionConfiguration;
+import no.nav.testnav.libs.reactivesessionsecurity.config.OidcRedisSessionConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,7 +11,7 @@ import redis.clients.jedis.Jedis;
 @Configuration
 @Profile({ "prod", "dev", "idporten" })
 @Import({
-        OicdRedisSessionConfiguration.class
+        OidcRedisSessionConfiguration.class
 })
 public class ProdConfig {
 

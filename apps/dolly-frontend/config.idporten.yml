@@ -32,6 +32,7 @@ spec:
         - application: oppsummeringsdokument-service
         - application: testnorge-profil-api
         - application: testnav-organisasjon-tilgang-service
+          cluster: prod-gcp
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service
@@ -57,6 +58,9 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
+        - host: testnav-organisasjon-tilgang.intern.nav.no
+        - host: testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
+    
   liveness:
     path: /internal/isAlive
     initialDelay: 20
@@ -75,7 +79,6 @@ spec:
       cpu: 1000m
       memory: 1024Mi
     limits:
-      cpu: 1500m
       memory: 2048Mi
   image: {{image}}
   envFrom:

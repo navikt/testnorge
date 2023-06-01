@@ -1,5 +1,6 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 POST_LOGOUT_REDIRECT_URI: https://dolly-frontend.intern.dev.nav.no/login
+REDIS_HOST: dolly-redis-session.dolly.svc.cluster.local
 
 spring:
   cloud:
@@ -10,6 +11,21 @@ spring:
   main:
     banner-mode: off
     allow-circular-references: true
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          issuer-uri: ${AAD_ISSUER_URI}/v2.0
+          jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: ${TOKEN_X_CLIENT_ID}
 
 consumers:
   testnav-tps-messaging-service:
@@ -131,7 +147,7 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-person-organisasjon-tilgang-service
-    url: http://testnav-person-organisasjon-tilgang-service.dolly.svc.cluster.local
+    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   testnav-bruker-service:
     cluster: dev-gcp
     namespace: dolly

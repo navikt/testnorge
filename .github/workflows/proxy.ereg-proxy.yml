@@ -3,9 +3,9 @@ name: ereg-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
       - proxies/ereg-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
       - .github/workflows/proxy.ereg-proxy.yml
 
 jobs:

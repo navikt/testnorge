@@ -1,5 +1,4 @@
-azure.app.client.id: ${local.client.id}
-azure.app.client.secret: ${local.client.secret}
+
 ALTINN_URL: https://tt02.altinn.no
 TOKENDINGS_URL: https://tokendings.dev-gcp.nais.io
 

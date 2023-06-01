@@ -3,6 +3,8 @@ name: brreg-stub
 on:
   push:
     paths:
+      - libs/database
+      - libs/servlet-core
       - apps/brreg-stub/**
       - .github/workflows/app.brreg-stub.yml
 

@@ -21,6 +21,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: dolly-backend
@@ -50,7 +52,6 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   ingresses:
     - "https://testnav-udistub-proxy.dev-fss-pub.nais.io"

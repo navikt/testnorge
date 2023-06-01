@@ -5,12 +5,14 @@ import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.DOED;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.FORSVUNNET;
@@ -36,7 +38,13 @@ public class ArtifactGjeldendeService {
 
     private static void setAlleGjeldende(List<? extends DbVersjonDTO> artifact, boolean status) {
 
-        artifact.forEach(info -> info.setGjeldende(status));
+        artifact.forEach(info -> {
+            info.setGjeldende(status);
+            if (isNull(info.getFolkeregistermetadata())) {
+                info.setFolkeregistermetadata(new FolkeregistermetadataDTO());
+            }
+            info.getFolkeregistermetadata().setGjeldende(info.getGjeldende());
+        });
     }
 
     private static void setIngenNorskAdresse(List<? extends AdresseDTO> adresser, boolean relevance) {
@@ -54,16 +62,15 @@ public class ArtifactGjeldendeService {
     @Transactional
     public void setGjeldendeForRelasjon(String ident) {
 
-        var hovedperson = personRepository.findByIdent(ident);
+        personRepository.findByIdent(ident)
+                .ifPresent(hovedperson -> {
+                    setGjeldendeForRelasjon(hovedperson.getPerson());
+                    var relasjoner = hovedperson.getRelasjoner().stream()
+                            .map(DbRelasjon::getRelatertPerson)
+                            .toList();
 
-        if (hovedperson.isPresent()) {
-            setGjeldendeForRelasjon(hovedperson.get().getPerson());
-            var relasjoner = hovedperson.get().getRelasjoner().stream()
-                    .map(DbRelasjon::getRelatertPerson)
-                    .toList();
-
-            relasjoner.forEach(relasjon -> setGjeldendeForRelasjon(relasjon.getPerson()));
-        }
+                    relasjoner.forEach(relasjon -> setGjeldendeForRelasjon(relasjon.getPerson()));
+                });
     }
 
     private void setGjeldendeForRelasjon(PersonDTO person) {
@@ -72,8 +79,8 @@ public class ArtifactGjeldendeService {
         setSisteGjeldende(person.getNavn(), !person.isStatusIn(OPPHOERT));
         setSisteGjeldende(person.getKjoenn(), !person.isStatusIn(OPPHOERT));
         setSisteGjeldende(person.getBostedsadresse(), !person.isStatusIn(OPPHOERT, IKKE_BOSATT, FORSVUNNET, DOED));
-        setSisteGjeldende(person.getKontaktadresse(), !person.isStatusIn(OPPHOERT, FORSVUNNET, DOED));
-        setSisteGjeldende(person.getOppholdsadresse(), !person.isStatusIn(OPPHOERT, FORSVUNNET, DOED));
+        setAlleGjeldende(person.getKontaktadresse(), !person.isStatusIn(OPPHOERT, FORSVUNNET, DOED));
+        setAlleGjeldende(person.getOppholdsadresse(), !person.isStatusIn(OPPHOERT, FORSVUNNET, DOED));
         setIngenNorskAdresse(person.getBostedsadresse(), person.isStatusIn(UTFLYTTET, MIDLERTIDIG, INAKTIV));
         setIngenNorskAdresse(person.getOppholdsadresse(), person.isStatusIn(UTFLYTTET));
         setIngenNorskAdresse(person.getKontaktadresse(), person.isStatusIn(UTFLYTTET));

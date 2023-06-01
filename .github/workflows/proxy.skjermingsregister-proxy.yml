@@ -3,9 +3,10 @@ name: skjermingsregister-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/security-token-service
       - proxies/skjermingsregister-proxy/**
-      - libs/reactive-core/**
-      - libs/reactive-proxy/**
       - .github/workflows/proxy.skjermingsregister-proxy.yml
 
 jobs:

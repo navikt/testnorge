@@ -3,6 +3,10 @@ name: arbeidsforhold-export-api
 on:
   push:
     paths:
+      - libs/csv-converter
+      - libs/servlet-core
+      - libs/servlet-security
+      - xsd/arbeidsforhold-xsd
       - apps/arbeidsforhold-export-api/**
       - .github/workflows/app.arbeidsforhold-export-api.yml
 

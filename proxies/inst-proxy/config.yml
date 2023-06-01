@@ -25,17 +25,11 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: team-dolly-lokal-app
-          cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
-        - application: dolly-frontend
-          cluster: dev-gcp
-        - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
@@ -60,7 +54,6 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   ingresses:
     - "https://testnav-inst-proxy.dev-fss-pub.nais.io"

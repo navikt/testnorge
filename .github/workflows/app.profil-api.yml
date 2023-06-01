@@ -3,6 +3,11 @@ name: profil-api
 on:
   push:
     paths:
+      - libs/data-transfer-objects
+      - libs/reactive-core
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-security
       - apps/profil-api/**
       - .github/workflows/app.profil-api.yml
 

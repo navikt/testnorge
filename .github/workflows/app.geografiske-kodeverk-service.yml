@@ -3,6 +3,9 @@ name: geografiske-kodeverk-service
 on:
   push:
     paths:
+      - libs/servlet-core
+      - libs/servlet-security
+      - libs/testing
       - apps/geografiske-kodeverk-service/**
       - .github/workflows/app.geografiske-kodeverk-service.yml
 
