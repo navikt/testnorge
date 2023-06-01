@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -80,28 +79,18 @@ public class CreatePersonService {
         var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO()),
                 new PersonDTO());
 
-        var delivery = Optional
-                .ofNullable(Stream
-                        .of(
-                                identPoolConsumer.acquireIdents(mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
-                                Flux.just(navnService.convert(mergedPerson.getNavn()))
-                        )
-                        .reduce(Flux.empty(), Flux::merge)
-                        .collectList()
-                        .block())
-                .orElse(List.of());
-
-        mergedPerson.setIdent(delivery.stream()
-                .filter(list -> list.stream().anyMatch(IdentDTO.class::isInstance))
-                .flatMap(Collection::stream)
-                .map(IdentDTO.class::cast)
-                .findFirst().orElseGet(IdentDTO::new).getIdent());
+        mergedPerson.setIdent(identPoolConsumer.acquireIdents(
+                        mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class))
+                .flatMap(Flux::fromIterable)
+                .map(IdentDTO::getIdent)
+                .blockFirst());
 
         Stream.of(
+                        Flux.just(foedselService.convert(mergedPerson)),
+                        Flux.just(navnService.convert(mergedPerson)),
                         Flux.just(bostedAdresseService.convert(mergedPerson, null)),
                         Flux.just(kjoennService.convert(mergedPerson)),
                         Flux.just(statsborgerskapService.convert(mergedPerson)),
-                        Flux.just(foedselService.convert(mergedPerson)),
                         Flux.just(adressebeskyttelseService.convert(mergedPerson)))
                 .reduce(Flux.empty(), Flux::merge)
                 .collectList()
