@@ -25,5 +25,4 @@ public class GetAuthenticatedUserId extends JwtResolver implements Callable<Mono
     private Mono<String> getTokenAttribute(String attribute) {
         return getJwtAuthenticationToken().map(value -> value.getTokenAttributes().get(attribute).toString());
     }
-
 }

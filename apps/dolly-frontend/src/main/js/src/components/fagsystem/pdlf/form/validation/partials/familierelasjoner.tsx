@@ -179,9 +179,9 @@ export const doedfoedtBarn = Yup.array().of(
 
 export const sivilstand = Yup.object({
 	type: requiredString,
-	sivilstandsdato: Yup.string().nullable(),
+	sivilstandsdato: Yup.mixed().nullable(),
 	relatertVedSivilstand: Yup.string().nullable(),
-	bekreftelsesdato: Yup.string().nullable(),
+	bekreftelsesdato: Yup.mixed().nullable(),
 	borIkkeSammen: Yup.boolean().nullable(),
 	nyRelatertPerson: nyPerson,
 })

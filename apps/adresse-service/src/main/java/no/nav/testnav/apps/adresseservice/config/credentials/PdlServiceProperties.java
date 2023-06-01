@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Configuration;
 
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
-
 @Configuration
 @ConfigurationProperties(prefix = "consumers.pdl-services")
 public class PdlServiceProperties extends ServerProperties {

@@ -3,8 +3,11 @@ name: samhandlerregisteret-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/samhandlerregisteret-proxy/**
-      - libs/**
       - .github/workflows/proxy.samhandlerregisteret-proxy.yml
 
 jobs:

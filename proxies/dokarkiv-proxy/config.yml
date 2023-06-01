@@ -47,6 +47,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: app-1
@@ -70,7 +72,6 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   envFrom:
     - secret: azure-trygdeetaten-testnav-dokarkiv-proxy-trygdeetaten

@@ -24,7 +24,7 @@ import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { doedsfall } from '@/components/fagsystem/pdlf/form/validation/validation'
+import { doedsfall, navn } from '@/components/fagsystem/pdlf/form/validation/validation'
 import {
 	innflytting,
 	statsborgerskap,
@@ -46,6 +46,7 @@ import {
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
 import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
 import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
 import {
@@ -68,6 +69,7 @@ type VisningTypes = {
 }
 
 enum Attributt {
+	Navn = 'navn',
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
@@ -203,6 +205,8 @@ export const VisningRedigerbar = ({
 
 	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {
+			case Attributt.Navn:
+				return <NavnForm formikBag={formikBag} path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:
@@ -289,6 +293,7 @@ export const VisningRedigerbar = ({
 
 	const validationSchema = Yup.object().shape(
 		{
+			navn: ifPresent('navn', navn),
 			doedsfall: ifPresent('doedsfall', doedsfall),
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 			innflytting: ifPresent('innflytting', innflytting),
@@ -313,6 +318,7 @@ export const VisningRedigerbar = ({
 			),
 		},
 		[
+			['navn', 'navn'],
 			['doedsfall', 'doedsfall'],
 			['statsborgerskap', 'statsborgerskap'],
 			['innflytting', 'innflytting'],

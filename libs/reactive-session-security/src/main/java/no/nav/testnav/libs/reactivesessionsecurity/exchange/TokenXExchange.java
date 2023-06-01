@@ -1,16 +1,17 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
-import no.nav.testnav.libs.securitycore.command.tokenx.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
-import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
 import org.springframework.context.annotation.Import;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+
+import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
+import no.nav.testnav.libs.securitycore.command.tokenx.OnBehalfOfExchangeCommand;
+import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.tokenx.TokenXProperties;
 
 @Slf4j
 @Service
@@ -27,7 +28,6 @@ public class TokenXExchange implements ExchangeToken {
         this.tokenX = tokenX;
         this.tokenService = tokenService;
     }
-
 
     @Override
     public Mono<AccessToken> exchange(ServerProperties serverProperties, ServerWebExchange exchange) {

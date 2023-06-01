@@ -24,6 +24,27 @@ import {
 import { bankkontoValidation } from '@/components/fagsystem/bankkonto/form'
 import { tpsMessagingValidation } from '@/components/fagsystem/tpsmessaging/form/validation'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
+import { isSameDay } from 'date-fns'
+
+const testGyldigFom = (val) => {
+	return val.test('is-unique', function datoErUnik(selected) {
+		if (selected === null || selected === '') {
+			return true
+		}
+		const values = this?.options?.context
+		const navn = values?.navn ? [values.navn] : values?.pdldata?.person?.navn
+		const navnFoerLeggTil = values?.personFoerLeggTil?.pdlforvalter?.person?.navn
+		let antallLike = 0
+		navn?.concat(navnFoerLeggTil)?.forEach((navn) => {
+			if (isSameDay(new Date(navn?.gyldigFraOgMed), new Date(selected))) {
+				antallLike = antallLike + 1
+			}
+		})
+		return antallLike > 1
+			? this.createError({ message: 'Denne datoen er valgt for et annet navn' })
+			: true
+	})
+}
 
 export const doedsfall = Yup.object({
 	doedsdato: requiredDate.nullable(),
@@ -33,12 +54,24 @@ export const kjoenn = Yup.object({
 	kjoenn: requiredString,
 })
 
-export const navn = Yup.object({
-	fornavn: ifNotBlank('$pdldata.person.navn[0].etternavn', requiredString),
-	mellomnavn: Yup.string().nullable(),
-	etternavn: ifNotBlank('$pdldata.person.navn[0].fornavn', requiredString),
-	hasMellomnavn: Yup.boolean().nullable(),
-})
+export const navn = Yup.object().shape(
+	{
+		fornavn: Yup.mixed().when('etternavn', {
+			is: (etternavn) => etternavn != null && etternavn != '',
+			then: () => requiredString,
+			otherwise: () => Yup.mixed().notRequired(),
+		}),
+		mellomnavn: Yup.string().nullable(),
+		etternavn: Yup.mixed().when('fornavn', {
+			is: (fornavn) => fornavn != null && fornavn != '',
+			then: () => requiredString,
+			otherwise: () => Yup.mixed().notRequired(),
+		}),
+		hasMellomnavn: Yup.boolean().nullable(),
+		gyldigFraOgMed: testGyldigFom(Yup.mixed().nullable()),
+	},
+	['fornavn', 'etternavn']
+)
 
 export const folkeregisterpersonstatus = Yup.object({
 	status: requiredString,

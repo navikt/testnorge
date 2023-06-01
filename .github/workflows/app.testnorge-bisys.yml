@@ -3,8 +3,11 @@ name: testnorge-bisys
 on:
   push:
     paths:
+      - libs/data-transfer-objects
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-insecure-security
       - apps/testnorge-bisys/**
-      - libs/**
       - .github/workflows/app.testnorge-bisys.yml
 
 jobs:

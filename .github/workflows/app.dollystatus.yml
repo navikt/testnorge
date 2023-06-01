@@ -4,7 +4,6 @@ on:
   push:
     paths:
       - apps/dollystatus/**
-      - libs/**
       - .github/workflows/app.dollystatus.yml
 
 jobs:

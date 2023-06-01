@@ -3,8 +3,10 @@ name: testnorge-tp
 on:
   push:
     paths:
+      - libs/security-core
+      - libs/servlet-core
+      - libs/servlet-security
       - apps/testnorge-tp/**
-      - libs/**
       - .github/workflows/app.testnorge-tp.yml
 
 jobs:

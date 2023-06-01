@@ -3,8 +3,11 @@ name: faste-data-frontend
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-frontend
+      - libs/reactive-session-security
+      - libs/security-core
       - apps/faste-data-frontend/**
-      - libs/**
       - .github/workflows/app.faste-data-frontend.yml
 
 jobs:

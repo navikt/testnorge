@@ -46,7 +46,8 @@ public class DummyAdresseService {
                 .regionDistriktOmraade(ADRESSE_BY_STED)
                 .bySted(ADRESSE_3_UTLAND)
                 .postkode(ADRESSE_POSTKODE)
-                .landkode(isNotBlank(landkode) ? landkode : geografiskeKodeverkConsumer.getTilfeldigLand())
+                .landkode(isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
+                        geografiskeKodeverkConsumer.getTilfeldigLand())
                 .build();
     }
 }

@@ -1,12 +1,14 @@
 package no.nav.testnav.libs.reactivesessionsecurity.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.AzureAdTokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.TokenXExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.exchange.user.UserJwtExchange;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.ClientRegistrationIdResolver;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.RedisTokenResolver;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -27,22 +29,24 @@ import org.springframework.session.data.redis.config.annotation.web.server.Enabl
         RedisTokenResolver.class,
         AzureAdTokenExchange.class,
         TokenXExchange.class,
-        AzureAdTokenExchange.class,
-        TokenXExchange.class,
         ClientRegistrationIdResolver.class,
         UserJwtExchange.class
 })
-public class OicdRedisSessionConfiguration {
+@RequiredArgsConstructor
+public class OidcRedisSessionConfiguration {
+
     @Bean
     @ConditionalOnMissingBean
     public TokenExchange tokenExchange(
-            ClientRegistrationIdResolver clientRegistrationIdResolver,
             TokenXExchange tokenXExchange,
-            AzureAdTokenExchange azureAdTokenExchange
-    ) {
-        var tokenExchange = new TokenExchange(clientRegistrationIdResolver);
-        tokenExchange.addExchange("aad", azureAdTokenExchange);
-        tokenExchange.addExchange("idporten", tokenXExchange);
+            AzureAdTokenExchange azureAdTokenExchange,
+            ClientRegistrationIdResolver clientRegistrationIdResolver,
+            ObjectMapper objectMapper) {
+
+        var tokenExchange = new TokenExchange(clientRegistrationIdResolver, objectMapper);
+
+        tokenExchange.addExchange(ResourceServerType.AZURE_AD, azureAdTokenExchange);
+        tokenExchange.addExchange(ResourceServerType.TOKEN_X, tokenXExchange);
         return tokenExchange;
     }
 
@@ -54,8 +58,8 @@ public class OicdRedisSessionConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public RedisStandaloneConfiguration redisStandaloneConfiguration(
-            @Value("${spring.data.redis.host:#{localhost}}") String host,
-            @Value("${spring.data.redis.post:#{6379}}") Integer post
+            @Value("${spring.data.redis.host}") String host,
+            @Value("${spring.data.redis.port}") Integer post
     ) {
         var redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
