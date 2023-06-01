@@ -44,7 +44,7 @@ const ForelderBarnRelasjonLes = ({
 		(item) => item.relatertPerson?.ident === relatertPersonIdent
 	)
 	const relatertPersonUtenId = forelderBarnData.relatertPersonUtenFolkeregisteridentifikator
-	// console.log('forelderBarnData: ', forelderBarnData) //TODO - SLETT MEG
+
 	return (
 		<>
 			<ErrorBoundary>
@@ -85,7 +85,6 @@ export const ForelderBarnRelasjonVisning = ({
 		data[idx]
 	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
-	initialValues.forelderBarnRelasjon.deltBosted = null
 
 	const redigertForelderBarnPdlf = _.get(tmpPersoner, `${ident}.person.forelderBarnRelasjon`)?.find(
 		(a: ForeldreBarnRelasjon) => a.id === forelderBarnRelasjonData.id
@@ -141,7 +140,14 @@ export const ForelderBarnRelasjonVisning = ({
 
 	const foreldreansvar = getForeldreansvar()
 	if (foreldreansvar) {
-		initialValues.foreldreansvar = foreldreansvar
+		initialValues.harForeldreansvar = true
+	}
+
+	if (_.get(initialValues, 'forelderBarnRelasjon.deltBosted')) {
+		initialValues.harDeltBosted = true
+	}
+	if (_.get(redigertForelderBarnValues, 'forelderBarnRelasjon.deltBosted')) {
+		redigertForelderBarnValues.harDeltBosted = true
 	}
 
 	return (

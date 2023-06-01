@@ -103,9 +103,6 @@ export const ForelderBarnRelasjonForm = ({
 		if (!_.get(formikBag.values, `${path}.typeForelderBarn`)) {
 			formikBag.setFieldValue(`${path}.typeForelderBarn`, getForelderBarnType())
 		}
-		// if (_.get(formikBag.values, `${path}.minRolleForPerson`) === 'BARN') {
-		// 	formikBag.setFieldValue(`${path}.deltBosted`, null)
-		// }
 	}, [])
 
 	return (
@@ -172,27 +169,27 @@ export const ForelderBarnRelasjonForm = ({
 				<PdlNyPerson nyPersonPath={`${path}.nyRelatertPerson`} formikBag={formikBag} />
 			)}
 
-			{!path?.includes('pdldata') && erBarn && (
+			{!path?.includes('pdldata') && erBarn && _.get(formikBag.values, 'harDeltBosted') && (
 				<div className="flexbox--full-width">
 					<Alert
 						variant={'info'}
 						size={'small'}
 						style={{ marginTop: '10px', marginBottom: '15px' }}
 					>
-						Dersom barn har delt bosted kan dette endres direkte på barnet. For å gjøre dette må
-						barnet importers til Dolly, via knapp øverst på denne personen.
+						Delt bosted kan endres direkte på barnet. For å gjøre dette må barnet importeres til
+						Dolly, via knapp øverst på denne personen.
 					</Alert>
 				</div>
 			)}
 
-			{!path?.includes('pdldata') && _.has(formikBag.values, 'foreldreansvar') && (
+			{!path?.includes('pdldata') && _.get(formikBag.values, 'harForeldreansvar') && (
 				<div className="flexbox--full-width">
 					<Alert
 						variant={'info'}
 						size={'small'}
 						style={{ marginTop: '10px', marginBottom: '15px' }}
 					>
-						Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importers til
+						Foreldreansvar kan endres direkte på barnet. For å gjøre dette må barnet importeres til
 						Dolly, via knapp øverst på denne personen.
 					</Alert>
 				</div>

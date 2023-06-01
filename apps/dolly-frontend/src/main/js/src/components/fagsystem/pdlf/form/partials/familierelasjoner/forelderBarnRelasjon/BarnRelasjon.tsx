@@ -13,18 +13,15 @@ interface BarnRelasjonValues {
 }
 
 export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
-	console.log('path: ', path) //TODO - SLETT MEG
 	const erRedigering = !path?.includes('pdldata')
 
 	const [deltBosted, setDeltBosted] = useState(
-		erRedigering ? false : _.get(formikBag.values, `${path}.deltBosted`) !== null
+		_.get(formikBag.values, `${path}.deltBosted`) !== null
 	)
 
 	useEffect(() => {
 		const currentValues = _.get(formikBag.values, `${path}.deltBosted`)
-		if (erRedigering) {
-			formikBag.setFieldValue(`${path}.deltBosted`, undefined)
-		} else if (deltBosted && currentValues === null) {
+		if (deltBosted && currentValues === null) {
 			formikBag.setFieldValue(`${path}.deltBosted`, initialDeltBosted)
 		} else if (!deltBosted) {
 			formikBag.setFieldValue(`${path}.deltBosted`, null)
@@ -46,7 +43,7 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 					id={`${path}.partnerErIkkeForelder`}
 					checkboxMargin
 				/>
-				{path?.includes('pdldata') && (
+				{!erRedigering && (
 					<DollyCheckbox
 						label="Har delt bosted"
 						id={`${path}.deltBosted`}
@@ -57,7 +54,9 @@ export const BarnRelasjon = ({ formikBag, path }: BarnRelasjonValues) => {
 					/>
 				)}
 			</div>
-			{deltBosted && <DeltBosted formikBag={formikBag} path={`${path}.deltBosted`} />}
+			{deltBosted && !erRedigering && (
+				<DeltBosted formikBag={formikBag} path={`${path}.deltBosted`} />
+			)}
 		</>
 	)
 }

@@ -1,5 +1,5 @@
 import * as Yup from 'yup'
-import { requiredDate, requiredString } from '@/utils/YupValidations'
+import { ifPresent, requiredDate, requiredString } from '@/utils/YupValidations'
 import { matrikkeladresse, vegadresse } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
 import * as _ from 'lodash-es'
@@ -92,7 +92,6 @@ const testForeldreansvarForBarn = (val) => {
 		function erGyldigForeldreansvarForBarn(selected) {
 			let feilmelding = null
 			const values = this.options.context
-			console.log('values: ', values) //TODO - SLETT MEG
 
 			const foreldrerelasjoner = _.get(values, 'personValues.forelderBarnRelasjon')
 				?.map((a) => a?.relatertPersonsRolle)
@@ -100,7 +99,10 @@ const testForeldreansvarForBarn = (val) => {
 					return a && a !== 'BARN'
 				})
 			//TODO: Sjekk at denne funker når man endrer fra forelder til barn
-			console.log('foreldrerelasjoner: ', foreldrerelasjoner) //TODO - SLETT MEG
+
+			if (!foreldrerelasjoner || foreldrerelasjoner?.length < 1) {
+				return true
+			}
 
 			if (
 				(selected === 'MOR' || selected === 'MEDMOR') &&
@@ -186,30 +188,33 @@ export const sivilstand = Yup.object({
 	nyRelatertPerson: nyPerson,
 })
 
-export const deltBosted = Yup.object({
-	adressetype: testDeltBostedAdressetype(requiredString),
-	startdatoForKontrakt: testDatoFom(
-		Yup.mixed().optional().nullable(),
-		'sluttdatoForKontrakt',
-		'Dato må være før sluttdato'
-	),
-	sluttdatoForKontrakt: testDatoTom(
-		Yup.mixed().optional().nullable(),
-		'startdatoForKontrakt',
-		'Dato må være etter startdato'
-	),
-	vegadresse: vegadresse.nullable(),
-	matrikkeladresse: matrikkeladresse.nullable(),
-	ukjentBosted: Yup.mixed()
-		.when('adressetype', {
-			is: 'UKJENT_BOSTED',
-			then: () =>
-				Yup.object({
-					bostedskommune: requiredString,
-				}).nullable(),
-		})
-		.nullable(),
-})
+export const deltBosted = Yup.object().shape(
+	{
+		adressetype: ifPresent('adressetype', testDeltBostedAdressetype(requiredString)),
+		startdatoForKontrakt: testDatoFom(
+			Yup.mixed().optional().nullable(),
+			'sluttdatoForKontrakt',
+			'Dato må være før sluttdato'
+		),
+		sluttdatoForKontrakt: testDatoTom(
+			Yup.mixed().optional().nullable(),
+			'startdatoForKontrakt',
+			'Dato må være etter startdato'
+		),
+		vegadresse: vegadresse.nullable(),
+		matrikkeladresse: matrikkeladresse.nullable(),
+		ukjentBosted: Yup.mixed()
+			.when('adressetype', {
+				is: 'UKJENT_BOSTED',
+				then: () =>
+					Yup.object({
+						bostedskommune: requiredString,
+					}).nullable(),
+			})
+			.nullable(),
+	},
+	[['adressetype', 'adressetype']]
+)
 
 export const forelderBarnRelasjon = Yup.object().shape(
 	{
