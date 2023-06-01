@@ -1,6 +1,7 @@
 package no.nav.testnav.proxies.skjermingsregisterproxy;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.vault.authentication.TokenAuthentication;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -18,7 +19,12 @@ class LocalVaultConfigTest {
         try {
             System.setProperty(LocalVaultConfig.TOKEN_PROPERTY_NAME, "<some-token-here>");
             assertThat(new LocalVaultConfig())
-                    .isNotNull();
+                    .isNotNull()
+                    .satisfies(
+                            config -> assertThat(config.clientAuthentication())
+                                    .isNotNull()
+                                    .isInstanceOf(TokenAuthentication.class)
+                    );
         } finally {
             System.clearProperty(LocalVaultConfig.TOKEN_PROPERTY_NAME);
         }
