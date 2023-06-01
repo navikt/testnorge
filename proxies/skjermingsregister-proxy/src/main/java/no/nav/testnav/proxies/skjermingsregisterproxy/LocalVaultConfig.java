@@ -11,12 +11,12 @@ import org.springframework.vault.authentication.TokenAuthentication;
 import org.springframework.vault.client.VaultEndpoint;
 import org.springframework.vault.config.AbstractVaultConfiguration;
 
-@Profile("dev")
+@Profile("local")
 @Import(DevConfig.class)
 @Configuration
 @VaultPropertySource(value = "kv/preprod/fss/testnav-skjermingsregister-proxy/dev", ignoreSecretNotFound = false)
 @NonNullApi
-public class DevVaultConfig extends AbstractVaultConfiguration {
+public class LocalVaultConfig extends AbstractVaultConfiguration {
 
     static final String TOKEN_PROPERTY_NAME = "spring.cloud.vault.token";
 
