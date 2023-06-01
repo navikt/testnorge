@@ -174,8 +174,8 @@ public class ArtifactUpdateService {
         person.getPerson().setNavn(
                 updateArtifact(person.getPerson().getNavn(), oppdatertNavn, id, "Navn"));
 
-        navnService.validate(oppdatertNavn);
-        navnService.convert(person.getPerson().getNavn());
+        navnService.validate(oppdatertNavn, person.getPerson());
+        navnService.convert(person.getPerson());
 
         person.getPerson().getNavn().stream().findFirst()
                 .ifPresent(navn -> {

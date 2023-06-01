@@ -233,6 +233,7 @@ export const initialNavn = {
 	mellomnavn: undefined as unknown as string,
 	etternavn: undefined as unknown as string,
 	hasMellomnavn: false,
+	gyldigFraOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }
