@@ -8,23 +8,14 @@ import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.HentIdenterRequest;
 import no.nav.pdl.forvalter.dto.IdentDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregistermetadataDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.KjoennDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.*;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static java.lang.System.currentTimeMillis;
@@ -89,13 +80,16 @@ public class CreatePersonService {
         var mergedPerson = mergeService.merge(buildPerson(nonNull(request) ? request : new PersonRequestDTO()),
                 new PersonDTO());
 
-        var delivery = Stream.of(
-                        identPoolConsumer.acquireIdents(
-                                mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
-                        Flux.just(navnService.convert(mergedPerson.getNavn())))
-                .reduce(Flux.empty(), Flux::merge)
-                .collectList()
-                .block();
+        var delivery = Optional
+                .ofNullable(Stream
+                        .of(
+                                identPoolConsumer.acquireIdents(mapperFacade.map(nonNull(request) ? request : new PersonRequestDTO(), HentIdenterRequest.class)),
+                                Flux.just(navnService.convert(mergedPerson.getNavn()))
+                        )
+                        .reduce(Flux.empty(), Flux::merge)
+                        .collectList()
+                        .block())
+                .orElse(List.of());
 
         mergedPerson.setIdent(delivery.stream()
                 .filter(list -> list.stream().anyMatch(IdentDTO.class::isInstance))
