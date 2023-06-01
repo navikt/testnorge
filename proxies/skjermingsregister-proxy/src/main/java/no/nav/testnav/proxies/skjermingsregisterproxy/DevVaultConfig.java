@@ -18,7 +18,7 @@ import org.springframework.vault.config.AbstractVaultConfiguration;
 @NonNullApi
 public class DevVaultConfig extends AbstractVaultConfiguration {
 
-    private static final String PROPERTY_NAME = "spring.cloud.vault.token";
+    static final String TOKEN_PROPERTY_NAME = "spring.cloud.vault.token";
 
     @Override
     public VaultEndpoint vaultEndpoint() {
@@ -28,13 +28,13 @@ public class DevVaultConfig extends AbstractVaultConfiguration {
     @Override
     public ClientAuthentication clientAuthentication() {
         if (System.getenv().containsKey("VAULT_TOKEN")) {
-            System.setProperty(PROPERTY_NAME, System.getenv("VAULT_TOKEN"));
+            System.setProperty(TOKEN_PROPERTY_NAME, System.getenv("VAULT_TOKEN"));
         }
-        var token = System.getProperty(PROPERTY_NAME);
+        var token = System.getProperty(TOKEN_PROPERTY_NAME);
         if (token == null) {
-            throw new IllegalArgumentException("Påkreved property '%s' er ikke satt.".formatted(PROPERTY_NAME));
+            throw new IllegalArgumentException("Påkreved property '%s' er ikke satt.".formatted(TOKEN_PROPERTY_NAME));
         }
-        return new TokenAuthentication(System.getProperty(PROPERTY_NAME));
+        return new TokenAuthentication(System.getProperty(TOKEN_PROPERTY_NAME));
     }
 
 }
