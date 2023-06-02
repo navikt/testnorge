@@ -135,7 +135,7 @@ public class SykemeldingClient implements ClientRegister {
                                                                PdlPersonBolk.Data persondata) {
 
         return Mono.just(sykemelding)
-                .filter(RsSykemelding::isDetaljertSykemelding)
+                .filter(RsSykemelding::hasDetaljertSykemelding)
                 .map(RsSykemelding::getDetaljertSykemelding)
                 .flatMap(detaljert ->
                         Mono.zip(kodeverkConsumer.getKodeverkByName("Postnummer"), getNorgenhet(persondata))
@@ -164,7 +164,7 @@ public class SykemeldingClient implements ClientRegister {
     private Mono<SykemeldingResponse> postSyntSykemelding(RsSykemelding sykemelding, PdlPersonBolk.Data persondata) {
 
         return Mono.just(sykemelding)
-                .filter(RsSykemelding::isSyntSykemelding)
+                .filter(RsSykemelding::hasSyntSykemelding)
                 .map(RsSykemelding::getSyntSykemelding)
                 .flatMap(syntmelding -> {
 

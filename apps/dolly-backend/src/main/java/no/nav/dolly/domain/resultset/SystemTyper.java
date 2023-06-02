@@ -31,7 +31,7 @@ public enum SystemTyper {
     SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),
     ORGANISASJON_FORVALTER("Enhetsregisteret (EREG)"),
-    PDL_FORVALTER("Opprettet person"),
+    PDL_FORVALTER("Oppretter person"),
     PDL_ORDRE("Ordre til PDL"),
     KONTOREGISTER("Bankkontoregister"),
     PDL_PERSONSTATUS("Person finnes i PDL"),

@@ -211,14 +211,14 @@ public class RsSykemelding {
     }
 
     @JsonIgnore
-    public boolean isDetaljertSykemelding() {
+    public boolean hasDetaljertSykemelding() {
 
         return nonNull(detaljertSykemelding);
     }
 
     @JsonIgnore
-    public boolean isSyntSykemelding() {
+    public boolean hasSyntSykemelding() {
 
-        return nonNull(getSyntSykemelding());
+        return nonNull(syntSykemelding);
     }
 }
