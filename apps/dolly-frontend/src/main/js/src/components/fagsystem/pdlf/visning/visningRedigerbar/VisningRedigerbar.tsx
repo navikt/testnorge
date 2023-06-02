@@ -137,9 +137,7 @@ export const VisningRedigerbar = ({
 
 	const pdlfError = (error: any) => {
 		error &&
-			setErrorMessagePdlf(
-				`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
-			)
+			setErrorMessagePdlf(`Feil ved oppdatering av person: ${error.message || error.toString()}`)
 		setVisningModus(Modus.Les)
 	}
 

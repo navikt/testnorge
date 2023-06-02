@@ -170,10 +170,17 @@ export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner, pe
 		return null
 	}
 
+	const tmpForeldreansvar = tmpPersoner?.[ident]?.person?.foreldreansvar
+	const foreldreansvarData = tmpForeldreansvar
+		? data.length >= tmpForeldreansvar.length
+			? data
+			: tmpForeldreansvar
+		: data
+
 	return (
 		<div>
 			<SubOverskrift label="Foreldreansvar" iconKind="foreldreansvar" />
-			<DollyFieldArray data={data} nested>
+			<DollyFieldArray data={foreldreansvarData} nested>
 				{(foreldreansvar, idx) => (
 					<ForeldreansvarEnkeltvisning
 						foreldreansvarData={foreldreansvar}
