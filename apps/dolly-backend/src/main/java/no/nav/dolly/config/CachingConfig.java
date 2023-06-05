@@ -27,7 +27,7 @@ public class CachingConfig {
 
     @Bean
     @Profile({ "prod", "dev" })
-    public CacheManager cacheMŒanager() {
+    public CacheManager cacheManager() {
         return new ConcurrentMapCacheManager(CACHE_BESTILLING,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
