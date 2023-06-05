@@ -21,6 +21,20 @@ class ServerPropertiesTest {
     }
 
     @Test
+    void testMissingURL() {
+        try (var factory = Validation.buildDefaultValidatorFactory()) {
+            var props = new TestServerProperties();
+            props.setCluster("test");
+            props.setName("test");
+            props.setNamespace("test");
+            var violations = factory.getValidator().validate(props);
+            assertThat(violations)
+                    .hasSize(1)
+                    .allMatch(violation -> violation.getMessage().equals("must not be blank"));
+        }
+    }
+
+    @Test
     void testInvalidURL() {
         try (var factory = Validation.buildDefaultValidatorFactory()) {
             var props = new TestServerProperties();
