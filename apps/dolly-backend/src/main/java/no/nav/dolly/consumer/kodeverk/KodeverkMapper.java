@@ -1,16 +1,16 @@
 package no.nav.dolly.consumer.kodeverk;
 
-import static java.util.Objects.nonNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Component;
-
+import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse.Betydning;
 import no.nav.dolly.domain.resultset.kodeverk.KodeAdjusted;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
+import org.springframework.stereotype.Component;
+import reactor.core.publisher.Flux;
+
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Objects.nonNull;
 
 /***
  * Mapper fra Betydninger i Kodeverkapp til Kodeverkobjekter som er lett for frontend å bruke
@@ -22,18 +22,19 @@ public class KodeverkMapper {
 
     private static final String KODE_BOKMAAL = "nb";
 
-    public KodeverkAdjusted mapBetydningToAdjustedKodeverk(String kodeverkNavn, Map<String, List<Betydning>> betydningerSortedByKoder) {
-        KodeverkAdjusted kodeverkAdjusted = KodeverkAdjusted.builder().name(kodeverkNavn).koder(new ArrayList<>()).build();
+    public Flux<KodeverkAdjusted> mapBetydningToAdjustedKodeverk(String kodeverkNavn,
+                                                                 Flux<KodeverkBetydningerResponse> kodeverkBetydningerResponse) {
 
-        if (nonNull(betydningerSortedByKoder) && !betydningerSortedByKoder.isEmpty()) {
-            kodeverkAdjusted.getKoder().addAll(extractKoderFromBetydninger(betydningerSortedByKoder));
-        }
-
-        kodeverkAdjusted.getKoder().sort((kode1, kode2) -> kode1.getLabel().compareToIgnoreCase(kode2.getLabel()));
-        return kodeverkAdjusted;
+        return kodeverkBetydningerResponse
+                .map(KodeverkBetydningerResponse::getBetydninger)
+                .map(betydning -> KodeverkAdjusted.builder()
+                        .name(kodeverkNavn)
+                        .koder(extractKoderFromBetydninger(betydning))
+                        .build());
     }
 
     private List<KodeAdjusted> extractKoderFromBetydninger(Map<String, List<Betydning>> kodeMap) {
+
         return kodeMap.entrySet().stream()
                 .filter(e -> nonNull(e.getValue()) && !e.getValue().isEmpty())
                 .map(e -> KodeAdjusted.builder()
@@ -42,6 +43,7 @@ public class KodeverkMapper {
                         .gyldigFra(e.getValue().get(0).getGyldigFra())
                         .gyldigTil(e.getValue().get(0).getGyldigTil())
                         .build())
-                .collect(Collectors.toList());
+                .sorted((kode1, kode2) -> kode1.getLabel().compareToIgnoreCase(kode2.getLabel()))
+                .toList();
     }
 }

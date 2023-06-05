@@ -67,13 +67,9 @@ public class KodeverkConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hentKodeverk"})
-    public KodeverkBetydningerResponse fetchKodeverkByName(String kodeverk) {
+    public Flux<KodeverkBetydningerResponse> fetchKodeverkByName(String kodeverk) {
 
-        var response = getKodeverk(kodeverk)
-                .collectList()
-                .block();
-
-        return !response.isEmpty() ? response.get(0) : KodeverkBetydningerResponse.builder().build();
+        return getKodeverk(kodeverk);
     }
 
     @Cacheable(CACHE_KODEVERK_2)
@@ -110,6 +106,7 @@ public class KodeverkConsumer {
                         .retrieve()
                         .bodyToFlux(KodeverkBetydningerResponse.class)
                         .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException)));
+                                .filter(WebClientFilter::is5xxException))
+                        .cache(Duration.ofHours(14)));
     }
 }
