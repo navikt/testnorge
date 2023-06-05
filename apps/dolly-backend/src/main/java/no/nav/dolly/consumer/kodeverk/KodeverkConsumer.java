@@ -19,14 +19,14 @@ import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK_2;
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
+import static no.nav.dolly.domain.CommonKeysAndUtils.*;
 import static no.nav.dolly.util.CallIdUtil.generateCallId;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
@@ -68,11 +68,11 @@ public class KodeverkConsumer {
 
     @Timed(name = "providers", tags = {"operation", "hentKodeverk"})
     public KodeverkBetydningerResponse fetchKodeverkByName(String kodeverk) {
-
-        var response = getKodeverk(kodeverk)
-                .collectList()
-                .block();
-
+        var response = Optional
+                .ofNullable(getKodeverk(kodeverk)
+                        .collectList()
+                        .block())
+                .orElse(List.of());
         return !response.isEmpty() ? response.get(0) : KodeverkBetydningerResponse.builder().build();
     }
 
