@@ -327,9 +327,9 @@ public class ArtifactUpdateService {
                     updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
 
             if (id == 0 || foreldrebarnRelasjon.isPresent() &&
-                    isEndretRolle(foreldrebarnRelasjon.get(), oppdatertRelasjon) ||
+                    (isEndretRolle(foreldrebarnRelasjon.get(), oppdatertRelasjon) ||
                     foreldrebarnRelasjon.get().isRelatertMedIdentifikator() &&
-                            !foreldrebarnRelasjon.get().getRelatertPerson().equals(oppdatertRelasjon.getRelatertPerson())) {
+                            !foreldrebarnRelasjon.get().getRelatertPerson().equals(oppdatertRelasjon.getRelatertPerson()))) {
 
                 forelderBarnRelasjonService.convert(person.getPerson());
             }
