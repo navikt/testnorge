@@ -1,62 +1,53 @@
 package no.nav.testnav.libs.securitycore.domain;
 
+import jakarta.validation.Validation;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
-@SuppressWarnings("ConstantConditions")
 class ServerPropertiesTest {
 
     @Test
-    void testOKScopes() {
-        var props = new ServerProperties("url", "cluster", "name", "namespace");
-        assertThatNoException().isThrownBy(props::validate);
-    }
-
-    @Test
-    void testMissingUrl() {
-        var props = new ServerProperties(null, "cluster", "name", "namespace");
-        assertThatThrownBy(props::validate)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("URL is not set; check configuration for ServerProperties");
-    }
-
-    @Test
-    void testMissingCluster() {
-        var props = new ServerProperties("url", null, "name", "namespace");
-        assertThatThrownBy(props::validate)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Cluster is not set; check configuration for ServerProperties");
-    }
-
-    @Test
-    void testMissingName() {
-        var props = new ServerProperties("url", "cluster", null, "namespace");
-        assertThatThrownBy(props::validate)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Name is not set; check configuration for ServerProperties");
-    }
-
-    @Test
-    void testMissingNamespace() {
-        var props = new ServerProperties("url", "cluster", "name", null);
-        assertThatThrownBy(props::validate)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("Namespace is not set; check configuration for ServerProperties");
-    }
-
-    @Test
-    void testMultipleMissingAndSubclass() {
-        var props = new ExtendsServerProperties(null, null, null, null);
-        assertThatThrownBy(props::validate)
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessage("URL,Cluster,Name,Namespace is not set; check configuration for " + ExtendsServerProperties.class.getSimpleName());
-    }
-
-    private static class ExtendsServerProperties extends ServerProperties {
-        private ExtendsServerProperties(String url, String cluster, String name, String namespace) {
-            super(url, cluster, name, namespace);
+    void testAllPropertiesSet() {
+        try (var factory = Validation.buildDefaultValidatorFactory()) {
+            var props = new TestServerProperties();
+            props.setCluster("test");
+            props.setName("test");
+            props.setNamespace("test");
+            props.setUrl("test");
+            var violations = factory.getValidator().validate(props);
+            assertThat(violations).isEmpty();
         }
+    }
+
+    @Test
+    void testAllPropertiesMissing() {
+        try (var factory = Validation.buildDefaultValidatorFactory()) {
+            var props = new TestServerProperties();
+            var violations = factory.getValidator().validate(props);
+            assertThat(violations)
+                    .hasSize(4)
+                    .allMatch(violation -> violation.getMessage().equals("must not be blank"));
+        }
+    }
+
+    @Test
+    void testExpectedScopes() {
+        var props = new TestServerProperties();
+        props.setCluster("cluster");
+        props.setName("name");
+        props.setNamespace("namespace");
+        assertThat(props.getScope(ResourceServerType.AZURE_AD))
+                .isEqualTo("api://cluster.namespace.name/.default");
+        assertThat(props.getScope(ResourceServerType.TOKEN_X))
+                .isEqualTo("cluster:namespace:name");
+    }
+
+    @Configuration
+    @ConfigurationProperties(prefix = "test")
+    private static class TestServerProperties extends ServerProperties {
     }
 
 }

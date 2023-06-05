@@ -1,59 +1,49 @@
 package no.nav.testnav.libs.securitycore.domain;
 
-import jakarta.annotation.PostConstruct;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.ArrayList;
-
-import static java.lang.String.join;
-import static org.apache.logging.log4j.util.Strings.isBlank;
-
-@Data
-@Builder
+@EnableConfigurationProperties
+@ConfigurationProperties(prefix = "server")
+@Validated
 @NoArgsConstructor
-@AllArgsConstructor
-public class ServerProperties {
+@Data
+public abstract class ServerProperties {
 
+    /**
+     * NAIS ingress URL for target service.
+     */
+    @NotBlank
     private String url;
+
+    /**
+     * NAIS cluster for target service, e.g. <pre>dev-gcp</pre.
+     */
+    @NotBlank
     private String cluster;
+
+    /**
+     * NAIS defined name for target service.
+     */
+    @NotBlank
     private String name;
+
+    /**
+     * NAIS namespace for target service, e.g. <pre>dolly</pre>.
+     */
+    @NotBlank
     private String namespace;
 
-    @PostConstruct
-    void postConstruct() {
-        validate();
-    }
-
     public String toTokenXScope() {
-        validate();
-        return cluster + ":" + namespace + ":" + name;
+        return "%s:%s:%s".formatted(cluster, namespace, name);
     }
 
     public String toAzureAdScope() {
-        validate();
-        return "api://" + cluster + "." + namespace + "." + name + "/.default";
-    }
-
-    void validate() {
-        var errors = new ArrayList<String>(4);
-        if (isBlank(url)) {
-            errors.add("URL");
-        }
-        if (isBlank(cluster)) {
-            errors.add("Cluster");
-        }
-        if (isBlank(name)) {
-            errors.add("Name");
-        }
-        if (isBlank(namespace)) {
-            errors.add("Namespace");
-        }
-        if (!errors.isEmpty()) {
-            throw new IllegalStateException(join(",", errors) + " is not set; check configuration for " + this.getClass().getSimpleName());
-        }
+        return "api://%s.%s.%s/.default".formatted(cluster, namespace, name);
     }
 
     public String getScope(ResourceServerType scope) {
