@@ -10,19 +10,6 @@ import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 class ServerPropertiesTest {
 
     @Test
-    void testAllPropertiesSet() {
-        try (var factory = Validation.buildDefaultValidatorFactory()) {
-            var props = new TestServerProperties();
-            props.setCluster("test");
-            props.setName("test");
-            props.setNamespace("test");
-            props.setUrl("test");
-            var violations = factory.getValidator().validate(props);
-            assertThat(violations).isEmpty();
-        }
-    }
-
-    @Test
     void testAllPropertiesMissing() {
         try (var factory = Validation.buildDefaultValidatorFactory()) {
             var props = new TestServerProperties();
@@ -30,6 +17,34 @@ class ServerPropertiesTest {
             assertThat(violations)
                     .hasSize(4)
                     .allMatch(violation -> violation.getMessage().equals("must not be blank"));
+        }
+    }
+
+    @Test
+    void testInvalidURL() {
+        try (var factory = Validation.buildDefaultValidatorFactory()) {
+            var props = new TestServerProperties();
+            props.setCluster("test");
+            props.setName("test");
+            props.setNamespace("test");
+            props.setUrl("invalid");
+            var violations = factory.getValidator().validate(props);
+            assertThat(violations)
+                    .hasSize(1)
+                    .allMatch(violation -> violation.getMessage().equals("must be a valid URL"));
+        }
+    }
+
+    @Test
+    void testAllPropertiesSet() {
+        try (var factory = Validation.buildDefaultValidatorFactory()) {
+            var props = new TestServerProperties();
+            props.setCluster("test");
+            props.setName("test");
+            props.setNamespace("test");
+            props.setUrl("http://this.is.valid/for/sure");
+            var violations = factory.getValidator().validate(props);
+            assertThat(violations).isEmpty();
         }
     }
 
