@@ -81,7 +81,7 @@ export const ForelderBarnRelasjonVisning = ({
 	relasjoner,
 }: FamilieRelasjonerData) => {
 	const initForelderBarn = Object.assign(
-		_.cloneDeep(data[idx].relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
+		_.cloneDeep(data[idx]?.relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
 		data[idx]
 	)
 	let initialValues = { forelderBarnRelasjon: initForelderBarn }
@@ -179,15 +179,22 @@ export const ForelderBarnRelasjon = ({
 		return null
 	}
 
+	const tmpForelderBarnRelasjon = tmpPersoner?.[ident]?.person?.forelderBarnRelasjon
+	const forelderBarnData = tmpForelderBarnRelasjon
+		? data.length >= tmpForelderBarnRelasjon.length
+			? data
+			: tmpForelderBarnRelasjon
+		: data
+
 	return (
 		<div>
 			<SubOverskrift label="Barn/foreldre" iconKind="relasjoner" />
-			<DollyFieldArray data={data} nested>
+			<DollyFieldArray data={forelderBarnData} nested>
 				{(forelderBarnRelasjon: ForeldreBarnRelasjon, idx: number) => (
 					<ForelderBarnRelasjonVisning
 						forelderBarnRelasjonData={forelderBarnRelasjon}
 						idx={idx}
-						data={data}
+						data={forelderBarnData}
 						tmpPersoner={tmpPersoner}
 						ident={ident}
 						relasjoner={relasjoner}

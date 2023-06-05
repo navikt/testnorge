@@ -185,7 +185,7 @@ export const ForeldreansvarVisning = ({ data, tmpPersoner, ident, relasjoner, pe
 					<ForeldreansvarEnkeltvisning
 						foreldreansvarData={foreldreansvar}
 						idx={idx}
-						data={data}
+						data={foreldreansvarData}
 						tmpPersoner={tmpPersoner}
 						ident={ident}
 						relasjoner={relasjoner}
