@@ -14,22 +14,21 @@ public class AaregProperties {
 
     static class AaregServerProperties extends ServerProperties {
 
-        private AaregServerProperties(String url, String cluster, String name, String namespace) {
-            super();
-            super.setUrl(url);
-            super.setCluster(cluster);
-            super.setName(name);
-            super.setNamespace(namespace);
+        private static AaregServerProperties copyOf(AaregServerProperties original) {
+            var copy = new AaregServerProperties();
+            copy.setCluster(original.getCluster());
+            copy.setName(original.getName());
+            copy.setNamespace(original.getNamespace());
+            copy.setUrl(original.getUrl());
+            return copy;
         }
 
         AaregServerProperties forEnvironment(String env) {
-
             var replacement = "q2".equals(env) ? "" : '-' + env;
-            return new AaregServerProperties(
-                    getUrl().replace("-{env}", replacement),
-                    getCluster(),
-                    getName().replace("-{env}", replacement),
-                    getNamespace());
+            var copy = copyOf(this);
+            copy.setUrl(copy.getUrl().replace("-{env}", replacement));
+            copy.setName(copy.getName().replace("-{env}", replacement));
+            return copy;
         }
 
     }
