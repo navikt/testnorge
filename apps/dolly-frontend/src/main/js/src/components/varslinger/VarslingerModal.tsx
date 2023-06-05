@@ -31,12 +31,11 @@ export const VarslingerModal = () => {
 
 	const isLoading = isLoadingVarslinger || isLoadingVarslingerBruker
 
-	const runningLocal = window.location.hostname.includes('localhost')
-	if (runningLocal && !runningCypressE2E()) {
-		return null
-	}
-
 	useEffect(() => {
+		const runningLocal = window.location.hostname.includes('localhost')
+		if (runningLocal && !runningCypressE2E()) {
+			return
+		}
 		VarslingerApi.getVarslinger().then((response: { data: Varsling }) => {
 			setVarslinger(response.data)
 			setIsLoadingVarslinger(false)
