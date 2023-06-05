@@ -3,8 +3,9 @@ name: batch-adeo-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
       - proxies/batch-adeo-proxy/**
-      - libs/**
       - .github/workflows/proxy.batch-adeo-proxy.yml
 
 jobs:

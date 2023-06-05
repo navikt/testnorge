@@ -9,14 +9,14 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized
+	uppercaseAndUnderscoreToCapitalized,
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk
+	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -215,6 +215,7 @@ const mapNavn = (navn, data) => {
 					obj('Mellomnavn', item.mellomnavn),
 					obj('Etternavn', item.etternavn),
 					obj('Har tilfeldig mellomnavn', oversettBoolean(item.hasMellomnavn)),
+					obj('Gyldig f.o.m. dato', formatDate(item.gyldigFraOgMed)),
 				]
 			}),
 		}

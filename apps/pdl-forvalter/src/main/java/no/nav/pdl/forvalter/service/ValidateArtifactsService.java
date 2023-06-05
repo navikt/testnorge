@@ -51,7 +51,7 @@ public class ValidateArtifactsService {
                 validate(statsborgerskapService, person.getStatsborgerskap()),
                 validate(bostedAdresseService, person.getBostedsadresse(), person),
                 validate(foedselService, person.getFoedsel(), person),
-                validate(navnService, person.getNavn()),
+                validate(navnService, person.getNavn(), person),
                 validate(oppholdsadresseService, person.getOppholdsadresse(), person),
                 validate(adressebeskyttelseService, person.getAdressebeskyttelse(), person),
                 validate(telefonnummerService, person.getTelefonnummer()),

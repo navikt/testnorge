@@ -3,11 +3,21 @@ package no.nav.pdl.forvalter.service;
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
+import no.nav.pdl.forvalter.utils.DatoFraIdentUtility;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isFalse;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -15,7 +25,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class NavnService extends PdlArtifactService<NavnDTO> {
+public class NavnService implements BiValidation<NavnDTO, PersonDTO>  {
 
     private static final String NAVN_INVALID_ERROR = "Navn er ikke i liste over gyldige verdier";
     private final GenererNavnServiceConsumer genererNavnServiceConsumer;
@@ -24,8 +34,23 @@ public class NavnService extends PdlArtifactService<NavnDTO> {
         return isNotBlank(value) ? value : defaultValue;
     }
 
+    public List<NavnDTO> convert(PersonDTO person) {
+
+        for (var type : person.getNavn()) {
+
+            if (isTrue(type.getIsNew())) {
+
+                type.setKilde(isNotBlank(type.getKilde()) ? type.getKilde() : "Dolly");
+                type.setMaster(nonNull(type.getMaster()) ? type.getMaster() : DbVersjonDTO.Master.FREG);
+                handle(type);
+            }
+        }
+
+        return fixGyldigFraOgMed(person);
+    }
+
     @Override
-    public void validate(NavnDTO navn) {
+    public void validate(NavnDTO navn, PersonDTO person) {
 
         if ((isNotBlank(navn.getFornavn()) ||
                 isNotBlank(navn.getMellomnavn()) ||
@@ -40,7 +65,6 @@ public class NavnService extends PdlArtifactService<NavnDTO> {
         }
     }
 
-    @Override
     protected void handle(NavnDTO navn) {
 
         if (isBlank(navn.getFornavn()) || isBlank(navn.getEtternavn()) ||
@@ -57,9 +81,46 @@ public class NavnService extends PdlArtifactService<NavnDTO> {
         }
     }
 
-    @Override
-    protected void enforceIntegrity(List<NavnDTO> type) {
+    private List<NavnDTO> fixGyldigFraOgMed(PersonDTO person) {
 
-        // Ingen listeintegritet å ivareta
+        var foedselsdato = person.getFoedsel().stream()
+                .map(foedsel -> getFoedselsdato(person, foedsel))
+                .findFirst()
+                .orElse(LocalDateTime.now());
+
+        var maksDato = person.getNavn().stream()
+                .filter(navn -> nonNull(navn.getGyldigFraOgMed()))
+                .max(Comparator.comparing(NavnDTO::getGyldigFraOgMed))
+                .map(NavnDTO::getGyldigFraOgMed)
+                .orElse(null);
+
+        var version = new AtomicInteger(0);
+        person.getNavn().stream()
+                .filter(navn -> isNull(navn.getGyldigFraOgMed()))
+                .forEach(navn -> {
+                    if (nonNull(maksDato)) {
+                        navn.setGyldigFraOgMed(maksDato.plusDays(version.incrementAndGet()));
+                    } else {
+                        navn.setGyldigFraOgMed(foedselsdato.plusDays(version.getAndIncrement()));
+                    }
+                });
+
+        person.setNavn(person.getNavn().stream()
+                .sorted(Comparator.comparing(NavnDTO::getGyldigFraOgMed).reversed())
+                .toList());
+
+        var version1 = new AtomicInteger(0);
+        person.getNavn()
+                .forEach(navn -> navn.setId(person.getNavn().size() - version1.getAndIncrement()));
+
+        return person.getNavn();
+    }
+
+    private static LocalDateTime getFoedselsdato(PersonDTO personDTO, FoedselDTO foedsel) {
+
+        return nonNull(foedsel.getFoedselsdato()) ? foedsel.getFoedselsdato() :
+                LocalDate.of(foedsel.getFoedselsaar(),
+                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getMonthValue(),
+                        DatoFraIdentUtility.getDato(personDTO.getIdent()).getDayOfMonth()).atStartOfDay();
     }
 }

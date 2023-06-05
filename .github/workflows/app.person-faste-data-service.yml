@@ -3,8 +3,10 @@ name: person-faste-data-service
 on:
   push:
     paths:
+      - libs/data-transfer-objects
+      - libs/reactive-core
+      - libs/reactive-security
       - apps/person-faste-data-service/**
-      - libs/**
       - .github/workflows/app.person-faste-data-service.yml
 
 jobs:

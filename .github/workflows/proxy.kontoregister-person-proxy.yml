@@ -3,8 +3,11 @@ name: kontoregister-person-proxy
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-proxy
+      - libs/reactive-security
+      - libs/security-core
       - proxies/kontoregister-person-proxy/**
-      - libs/**
       - .github/workflows/proxy.kontoregister-person-proxy.yml
 
 jobs:

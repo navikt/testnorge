@@ -3,8 +3,11 @@ name: oversikt-frontend
 on:
   push:
     paths:
+      - libs/reactive-core
+      - libs/reactive-frontend
+      - libs/reactive-security
+      - libs/security-core
       - apps/oversikt-frontend/**
-      - libs/**
       - .github/workflows/app.oversikt-frontend.yml
 
 jobs:

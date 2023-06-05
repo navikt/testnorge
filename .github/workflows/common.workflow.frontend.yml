@@ -46,6 +46,11 @@ on:
         description: "Used to force deployment."
         required: false
         default: false
+      sonar-enabled:
+        type: boolean
+        description: "Whether to run SonarQube analysis or not."
+        required: false
+        default: true
     secrets:
       NAIS_DOLLY_DEPLOY_API_KEY:
         required: true
@@ -67,6 +72,7 @@ env:
 jobs:
 
   sonar:
+    if: inputs.sonar-enabled
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

@@ -174,8 +174,15 @@ public class ArtifactUpdateService {
         person.getPerson().setNavn(
                 updateArtifact(person.getPerson().getNavn(), oppdatertNavn, id, "Navn"));
 
-        navnService.validate(oppdatertNavn);
-        navnService.convert(person.getPerson().getNavn());
+        navnService.validate(oppdatertNavn, person.getPerson());
+        navnService.convert(person.getPerson());
+
+        person.getPerson().getNavn().stream().findFirst()
+                .ifPresent(navn -> {
+                    person.setFornavn(navn.getFornavn());
+                    person.setMellomnavn(navn.getMellomnavn());
+                    person.setEtternavn(navn.getEtternavn());
+                });
     }
 
     public void updateKjoenn(String ident, Integer id, KjoennDTO oppdatertKjoenn) {

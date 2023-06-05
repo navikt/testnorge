@@ -12,6 +12,8 @@ import { DollyApi } from '@/service/Api'
 import { ArrowCirclepathIcon } from '@navikt/aksel-icons'
 import { Button } from '@navikt/ds-react'
 import styled from 'styled-components'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
+import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 
 type NavnTypes = {
 	formikBag: FormikProps<{}>
@@ -105,6 +107,11 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 						size="grow"
 						isClearable={false}
 						fastfield={false}
+						feil={
+							_.get(formikBag.errors, `${path}.fornavn`) && {
+								feilmelding: _.get(formikBag.errors, `${path}.fornavn`),
+							}
+						}
 					/>
 					{getRefreshButton()}
 				</div>
@@ -142,15 +149,30 @@ export const NavnForm = ({ formikBag, path }: NavnTypes) => {
 						size="grow"
 						isClearable={false}
 						fastfield={false}
+						feil={
+							_.get(formikBag.errors, `${path}.etternavn`) && {
+								feilmelding: _.get(formikBag.errors, `${path}.etternavn`),
+							}
+						}
 					/>
 					{getRefreshButton()}
 				</div>
 			</div>
-			<FormikCheckbox
-				name={`${path}.hasMellomnavn`}
-				label="Har tilfeldig mellomnavn"
-				isDisabled={!isEmpty(selectedMellomnavn)}
-			/>
+			<div className="flexbox--flex-wrap">
+				<FormikCheckbox
+					name={`${path}.hasMellomnavn`}
+					label="Har tilfeldig mellomnavn"
+					isDisabled={!isEmpty(selectedMellomnavn)}
+					checkboxMargin
+				/>
+				<DatepickerWrapper>
+					<FormikDatepicker
+						name={`${path}.gyldigFraOgMed`}
+						label="Gyldig f.o.m. dato"
+						fastfield={false}
+					/>
+				</DatepickerWrapper>
+			</div>
 			<AvansertForm path={path} kanVelgeMaster={true} />
 		</>
 	)
