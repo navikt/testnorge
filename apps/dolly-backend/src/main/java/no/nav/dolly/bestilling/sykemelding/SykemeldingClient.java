@@ -57,8 +57,9 @@ public class SykemeldingClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        return Flux.just(bestilling.getSykemelding())
-                .filter(Objects::nonNull)
+        return Flux.just(bestilling)
+                .filter(bestillling -> nonNull(bestillling.getSykemelding()))
+                .map(RsDollyUtvidetBestilling::getSykemelding)
                 .flatMap(sykemelding -> {
 
                     if (transaksjonMappingService.existAlready(SYKEMELDING, dollyPerson.getIdent(), null) && !isOpprettEndre) {
