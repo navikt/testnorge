@@ -13,14 +13,24 @@ public class AaregProperties {
     AaregServerProperties vedlikehold;
 
     static class AaregServerProperties extends ServerProperties {
-        ServerProperties forEnvironment(String env) {
 
-            var replacement = "q2" .equals(env) ? "" : '-' + env;
-            return new ServerProperties(
+        private AaregServerProperties(String url, String cluster, String name, String namespace) {
+            super();
+            super.setUrl(url);
+            super.setCluster(cluster);
+            super.setName(name);
+            super.setNamespace(namespace);
+        }
+
+        AaregServerProperties forEnvironment(String env) {
+
+            var replacement = "q2".equals(env) ? "" : '-' + env;
+            return new AaregServerProperties(
                     getUrl().replace("-{env}", replacement),
                     getCluster(),
                     getName().replace("-{env}", replacement),
                     getNamespace());
         }
+
     }
 }
