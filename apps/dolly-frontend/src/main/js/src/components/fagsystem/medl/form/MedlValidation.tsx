@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 import { ifPresent, requiredBoolean, requiredDate, requiredString } from '@/utils/YupValidations'
-import { MEDL_KILDER } from '@/components/fagsystem/medl/form/MedlForm'
+import { MEDL_KILDER } from '@/components/fagsystem/medl/MedlConstants'
 
 export const MedlValidation = {
 	medl: ifPresent(

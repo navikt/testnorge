@@ -3,11 +3,43 @@ import MedlVisning from './MedlVisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 
 export type Medlemskapsperioder = {
+	unntakId: number
+	ident: string
+	fraOgMed: Date
+	tilOgMed: Date
+	status: string
+	statusaarsak: string
+	dekning: string
+	helsedel: boolean
+	medlem: boolean
+	lovvalgsland: string
+	lovvalg: string
+	grunnlag: string
+	sporingsinformasjon?: Sporingsinformasjon
+	studieinformasjon?: Studieinformasjon
+}
+
+export type Sporingsinformasjon = {
+	versjon: number
+	registrert: Date
+	besluttet: Date
 	kilde: string
+	kildedokument: string
+	opprettet: Date
+	opprettetAv: string
+	sistEndret: Date
+	sistEndretAv: string
+}
+
+export type Studieinformasjon = {
+	statsborgerland: string
+	studieland: string
+	delstudie: boolean
+	soeknadInnvilget: boolean
 }
 
 type MedlTypes = {
-	data?: any
+	data?: Medlemskapsperioder[]
 }
 
 const Medl = ({ data }: MedlTypes) => {
@@ -16,12 +48,14 @@ const Medl = ({ data }: MedlTypes) => {
 	}
 
 	return (
-		<DollyFieldArray data={data} header="Medlemskapsperiode">
-			{(medlemskap, idx) => (
-				<div className="person-visning_content" key={idx}>
-					<MedlVisning medlemskapsperiode={medlemskap} />
-				</div>
-			)}
+		<DollyFieldArray data={data} header="Medlemskapsperiode" nested>
+			{(medlemskap, idx) => {
+				return (
+					<div className="person-visning_content" key={idx}>
+						<MedlVisning medlemskapsperiode={medlemskap} />
+					</div>
+				)
+			}}
 		</DollyFieldArray>
 	)
 }

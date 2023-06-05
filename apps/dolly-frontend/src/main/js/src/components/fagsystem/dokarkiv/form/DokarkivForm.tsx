@@ -9,10 +9,17 @@ import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
-import { Digitalinnsending } from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
-import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import { FileUploader } from '@/utils/FileUploader/FileUploader'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+
+const Digitalinnsending = React.lazy(
+	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending')
+)
+
+const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
+
+const DokumentInfoListe = React.lazy(
+	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe')
+)
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>

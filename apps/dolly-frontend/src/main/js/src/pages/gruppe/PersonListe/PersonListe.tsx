@@ -1,10 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import PersonIBrukButtonConnector from '@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
-import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
 
 import Icon from '@/components/ui/icon/Icon'
@@ -19,6 +17,11 @@ import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
 import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
+
+const PersonIBrukButtonConnector = React.lazy(
+	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector')
+)
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -158,10 +161,12 @@ export default function PersonListe({
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
 			formatter: (_cell, row) => (
-				<PersonIBrukButtonConnector
-					data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
-					ident={row.ident}
-				/>
+				<Suspense fallback={<Loading label={'Laster...'} />}>
+					<PersonIBrukButtonConnector
+						data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
+						ident={row.ident}
+					/>
+				</Suspense>
 			),
 		},
 		{
@@ -292,13 +297,15 @@ export default function PersonListe({
 				visPerson={visPerson}
 				hovedperson={hovedperson}
 				onExpand={(bruker) => (
-					<PersonVisningConnector
-						ident={bruker.ident}
-						personId={bruker.identNr}
-						bestillingIdListe={bruker.ident.bestillingId}
-						iLaastGruppe={iLaastGruppe}
-						brukertype={brukertype}
-					/>
+					<Suspense fallback={<Loading label={'Laster ident...'} />}>
+						<PersonVisningConnector
+							ident={bruker.ident}
+							personId={bruker.identNr}
+							bestillingIdListe={bruker.ident.bestillingId}
+							iLaastGruppe={iLaastGruppe}
+							brukertype={brukertype}
+						/>
+					</Suspense>
 				)}
 				onHeaderClick={onHeaderClick}
 			/>

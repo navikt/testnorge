@@ -28,7 +28,7 @@ const PdfDocument = styled(Document)`
 	max-height: 90px;
 	margin-right: 10px;
 `
-export const DokumentInfoListe = ({ filer, handleChange, isMultiple = true }: Data) => {
+export default ({ filer, handleChange, isMultiple = true }: Data) => {
 	if (!filer || filer.length < 1) {
 		return null
 	}

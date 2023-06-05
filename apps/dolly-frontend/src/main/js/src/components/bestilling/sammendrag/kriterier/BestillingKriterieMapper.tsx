@@ -9,20 +9,20 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized,
+	uppercaseAndUnderscoreToCapitalized
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk,
+	VergemaalKodeverk
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
-import { MedlKodeverk } from '@/components/fagsystem/medl/form/MedlForm'
+import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
@@ -1507,7 +1507,10 @@ const mapMedlemskapsperiode = (bestillingData, data) => {
 				obj('Lovvalg', medlKriterier.lovvalg, MedlKodeverk.LOVVALG_PERIODE),
 				obj('Kildedokument', medlKriterier.kildedokument, MedlKodeverk.KILDE_DOK),
 				obj('Delstudie', oversettBoolean(medlKriterier.studieinformasjon?.delstudie)),
-				obj('Søknad innvilget', oversettBoolean(medlKriterier.studieinformasjon?.soeknadInnvilget)),
+				obj(
+					'Er søknad innvilget',
+					oversettBoolean(medlKriterier.studieinformasjon?.soeknadInnvilget)
+				),
 				obj('Studieland', medlKriterier.studieinformasjon?.studieland, MedlKodeverk.LANDKODER),
 				obj(
 					'Statsborgerland',

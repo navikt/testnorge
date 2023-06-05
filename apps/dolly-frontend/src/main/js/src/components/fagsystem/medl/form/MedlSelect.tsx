@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { MEDL_KILDER } from '@/components/fagsystem/medl/form/MedlForm'
+import { MEDL_KILDER } from '@/components/fagsystem/medl/MedlConstants'
 
 export type MedlSelectProps = {
 	name: string

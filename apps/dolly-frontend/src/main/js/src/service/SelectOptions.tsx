@@ -605,7 +605,7 @@ const selectOptions = {
 	medlKilder: [
 		{ value: 'srvmelosys', label: 'Melosys' },
 		{ value: 'srvgosys', label: 'Gosys' },
-		{ value: 'AVGSYS', label: 'Aviftsystemet' },
+		{ value: 'AVGSYS', label: 'Avgiftsystemet' },
 		{ value: 'LAANEKASSEN', label: 'Lånekassen' },
 	],
 
