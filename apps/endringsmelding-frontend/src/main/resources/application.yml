@@ -30,6 +30,11 @@ consumers:
     namespace: dolly
     name: testnav-endringsmelding-service
     url: http://testnav-endringsmelding-service.dolly.svc.cluster.local
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
   testnorge-profil-api:
     cluster: dev-gcp
     namespace: dolly
