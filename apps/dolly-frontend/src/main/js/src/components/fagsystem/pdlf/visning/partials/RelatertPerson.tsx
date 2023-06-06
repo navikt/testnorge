@@ -57,9 +57,6 @@ export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPerson
 				{data.foreldreansvar?.[0].ansvarlig && (
 					<TitleValue
 						title="Foreldreansvar"
-						// value={`${allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
-						// 	data.foreldreansvar?.[0].ansvarlig
-						// }`}
 						value={getForeldreansvarValues(data.foreldreansvar)}
 					/>
 				)}

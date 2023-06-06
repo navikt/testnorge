@@ -43,7 +43,6 @@ export const OrgnummerToggle = ({ formikBag, opplysningspliktigPath, path }: Pro
 	}
 
 	const handleChange = (value: { juridiskEnhet: string; orgnr: string }) => {
-		console.log('value: ', value) //TODO - SLETT MEG
 		opplysningspliktigPath &&
 			formikBag.setFieldValue(`${opplysningspliktigPath}`, value.juridiskEnhet)
 		formikBag.setFieldValue(`${path}`, value.orgnr)

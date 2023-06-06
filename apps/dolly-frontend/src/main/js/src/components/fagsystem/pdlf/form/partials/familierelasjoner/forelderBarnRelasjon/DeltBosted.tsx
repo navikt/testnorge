@@ -66,7 +66,7 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 			return 'UKJENT_BOSTED'
 		}
 	}
-	// console.log('relasjoner: ', relasjoner) //TODO - SLETT MEG
+
 	const [adressetype, setAdressetype] = useState(getAdressetype())
 
 	useEffect(() => {
@@ -75,12 +75,10 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 		}
 	}, [])
 
-	// const setAdresseFraForelder = ()
 	const handleChangeAdressetype = (target: Target, adressePath: string) => {
 		const adresse = _.get(formikBag.values, adressePath)
 		const adresseClone = _.cloneDeep(adresse)
-		// console.log('target.value: ', target?.value) //TODO - SLETT MEG
-		// console.log('adresseClone: ', adresseClone) //TODO - SLETT MEG
+
 		if (!target || target?.value === 'PARTNER_ADRESSE') {
 			_.set(adresseClone, 'vegadresse', null)
 			_.set(adresseClone, 'matrikkeladresse', null)
@@ -101,9 +99,6 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 			const foreldersAdresse = relasjoner.find(
 				(forelder) => forelder?.relatertPerson?.ident == target?.value
 			)?.relatertPerson?.bostedsadresse?.[0]
-			// console.log('foreldersAdresse: ', foreldersAdresse) //TODO - SLETT MEG
-			// _.set(adresseClone, foreldersAdresse)
-			// adresseClone = foreldersAdresse
 			if (foreldersAdresse?.vegadresse) {
 				_.set(adresseClone, 'vegadresse', foreldersAdresse?.vegadresse)
 				_.set(adresseClone, 'matrikkeladresse', null)
@@ -122,11 +117,7 @@ export const DeltBostedForm = ({ formikBag, path, relasjoner, personValues }: De
 		setAdressetype(target?.value)
 		_.set(adresseClone, 'adressetype', target?.value || null)
 		formikBag.setFieldValue(path, adresseClone)
-		// console.log('adresseClone: ', adresseClone) //TODO - SLETT MEG
 	}
-
-	// console.log('formikBag.values: ', formikBag.values) //TODO - SLETT MEG
-	// console.log('formikBag.errors: ', formikBag.errors) //TODO - SLETT MEG
 
 	return (
 		<>

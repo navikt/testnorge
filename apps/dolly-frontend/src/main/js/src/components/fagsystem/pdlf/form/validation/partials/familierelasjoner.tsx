@@ -98,6 +98,7 @@ const testForeldreansvarForBarn = (val) => {
 				?.filter((a) => {
 					return a && a !== 'BARN'
 				})
+			console.log('foreldrerelasjoner: ', foreldrerelasjoner) //TODO - SLETT MEG
 			//TODO: Sjekk at denne funker når man endrer fra forelder til barn
 
 			if (!foreldrerelasjoner || foreldrerelasjoner?.length < 1) {

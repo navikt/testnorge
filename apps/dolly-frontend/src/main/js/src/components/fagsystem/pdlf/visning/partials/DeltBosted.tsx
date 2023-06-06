@@ -4,10 +4,11 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 import { Vegadresse } from '@/components/fagsystem/pdlf/visning/partials/Vegadresse'
 import { Matrikkeladresse } from '@/components/fagsystem/pdlf/visning/partials/Matrikkeladresse'
 import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/UkjentBosted'
-import { DeltBostedValues, FullmaktValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
+import { DeltBostedValues, PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import {OpplysningSlettet} from "@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet";
 
 type Data = {
 	data: Array<any>
@@ -47,17 +48,16 @@ export const DeltBostedVisning = ({
 	let initialValues = { deltBosted: initBosted }
 
 	_.set(initialValues, 'deltBosted.adresseIdentifikatorFraMatrikkelen', undefined)
-	console.log('adresseData: ', adresseData) //TODO - SLETT MEG
 
 	const redigertBostedPdlf = _.get(tmpPersoner, `${ident}.person.deltBosted`)?.find(
 		(a: DeltBostedValues) => a.id === adresseData.id
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
-	console.log('redigertRelatertePersoner: ', redigertRelatertePersoner) //TODO - SLETT MEG
+	//TODO: Ta i bruk redigerte relasjoner også?
 
 	const slettetBostedtPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBostedPdlf
 	if (slettetBostedtPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const bostedValues = redigertBostedPdlf ? redigertBostedPdlf : adresseData
@@ -67,35 +67,15 @@ export const DeltBostedVisning = ({
 		  }
 		: null
 
-	// const eksisterendeNyPerson = redigertRelatertePersoner
-	// 	? getEksisterendeNyPerson(
-	// 		redigertRelatertePersoner,
-	// 		fullmaktValues?.motpartsPersonident,
-	// 		'FULLMEKTIG'
-	// 	)
-	// 	: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, 'FULLMEKTIG')
-
-	// if (eksisterendeNyPerson && initialValues?.fullmakt?.nyFullmektig) {
-	// 	initialValues.fullmakt.nyFullmektig = initialPdlPerson
-	// }
-	//
-	// if (eksisterendeNyPerson && redigertFullmaktValues?.fullmakt?.nyFullmektig) {
-	// 	redigertFullmaktValues.fullmakt.nyFullmektig = initialPdlPerson
-	// }
-
 	let personValuesMedRedigert = _.cloneDeep(personValues)
 	if (redigertBostedPdlf && personValuesMedRedigert) {
 		personValuesMedRedigert.deltBosted = redigertBostedPdlf
 	}
 
-	// console.log('data: ', data) //TODO - SLETT MEG
-	// console.log('initialValues: ', initialValues) //TODO - SLETT MEG
-	//TODO: lag redigerte relasjoner også.
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={<Adresse adresse={bostedValues} idx={idx} />}
 			initialValues={initialValues}
-			// eksisterendeNyPerson={eksisterendeNyPerson}
 			redigertAttributt={redigertBostedValues}
 			path="deltBosted"
 			ident={ident}
