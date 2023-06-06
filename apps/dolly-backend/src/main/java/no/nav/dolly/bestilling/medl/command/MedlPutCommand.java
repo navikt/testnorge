@@ -20,7 +20,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
+public class MedlPutCommand implements Callable<Mono<MedlPostResponse>> {
 
     private static final String MEDL_URL = "/rest/v1/medlemskapsperiode";
 
@@ -31,7 +31,7 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
     @Override
     public Mono<MedlPostResponse> call() {
 
-        return webClient.post()
+        return webClient.put()
                 .uri(uriBuilder -> uriBuilder
                         .path(MEDL_URL)
                         .build())
@@ -42,7 +42,7 @@ public class MedlPostCommand implements Callable<Mono<MedlPostResponse>> {
                 .retrieve()
                 .toBodilessEntity()
                 .map(response -> {
-                    log.info("Mottok response fra Medl post: \n{}", response);
+                    log.info("Mottok response fra Medl put: \n{}", response);
                     return MedlPostResponse.builder()
                             .status(HttpStatus.valueOf(response.getStatusCode().value()))
                             .build();

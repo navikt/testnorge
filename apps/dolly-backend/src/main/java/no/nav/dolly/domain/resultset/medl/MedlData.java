@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class MedlData {
+    private String id;
     private String ident;
 
     private LocalDate fraOgMed;

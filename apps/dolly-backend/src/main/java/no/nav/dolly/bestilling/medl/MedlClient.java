@@ -25,6 +25,9 @@ import static java.util.Objects.nonNull;
 @RequiredArgsConstructor
 public class MedlClient implements ClientRegister {
 
+    private static final String STATUS_AVVIST = "AVST";
+    private static final String STATUSAARSAK_FEILREGISTRERT = "Feilregistrert";
+
     private final MedlConsumer medlConsumer;
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
@@ -53,7 +56,16 @@ public class MedlClient implements ClientRegister {
     @Override
     public void release(List<String> identer) {
 
-        throw new UnsupportedOperationException("Release ikke implementert");
+        Flux<MedlData> medlemskapAvvisRequests = medlConsumer.getMedlemskapsperioder(identer).map(medlDataResponse -> MedlData.builder()
+                .ident(medlDataResponse.getIdent())
+                .id(medlDataResponse.getId())
+                .status(STATUS_AVVIST)
+                .statusaarsak(STATUSAARSAK_FEILREGISTRERT)
+                .build());
+
+        medlConsumer.deleteMedlemskapsperioder(medlemskapAvvisRequests)
+                .collectList()
+                .subscribe(response -> log.info("Sletting utført mot Medl"));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

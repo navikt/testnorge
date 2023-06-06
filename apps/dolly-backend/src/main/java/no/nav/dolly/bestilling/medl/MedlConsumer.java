@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.medl.command.MedlPostCommand;
+import no.nav.dolly.bestilling.medl.command.MedlPutCommand;
 import no.nav.dolly.bestilling.medl.command.getMedldataCommand;
 import no.nav.dolly.bestilling.medl.dto.MedlPostResponse;
 import no.nav.dolly.config.credentials.MedlProxyProperties;
 import no.nav.dolly.domain.resultset.medl.MedlData;
+import no.nav.dolly.domain.resultset.medl.MedlDataResponse;
 import no.nav.dolly.metrics.Timed;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
@@ -51,8 +53,17 @@ public class MedlConsumer implements ConsumerStatus {
                 .flatMap(token -> new MedlPostCommand(webClient, medlData, token.getTokenValue()).call());
     }
 
+    @Timed(name = "providers", tags = { "operation", "medl_deleteMedlemskapsperioder" })
+    public Flux<MedlPostResponse> deleteMedlemskapsperioder(Flux<MedlData> medlDataRequests) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token ->
+                        medlDataRequests.flatMap(medlData ->
+                                new MedlPutCommand(webClient, medlData, token.getTokenValue()).call()));
+    }
+
     @Timed(name = "providers", tags = { "operation", "medl_getMedlemskapsperiode" })
-    public Flux<MedlData> getMedlemskapsperioder(List<String> identer) {
+    public Flux<MedlDataResponse> getMedlemskapsperioder(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> Flux.range(0, identer.size())
