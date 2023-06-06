@@ -13,16 +13,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(force = true)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class KnytningDTO {
+    @Builder.Default
     @JsonProperty
     private String type = "BEDRNSSY";
+    @Builder.Default
     @JsonProperty
     private String ansvarsandel = "";
+    @Builder.Default
     @JsonProperty
     private String fratreden = "";
     @JsonProperty(required = true)
     private String orgnr;
+    @Builder.Default
     @JsonProperty
     private String valgtAv = "";
+    @Builder.Default
     @JsonProperty
     private String korrektOrgNr = "";
 }
