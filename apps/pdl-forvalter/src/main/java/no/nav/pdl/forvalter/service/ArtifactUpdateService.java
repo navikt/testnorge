@@ -38,10 +38,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
@@ -283,47 +283,34 @@ public class ArtifactUpdateService {
 
             if (endretRelasjon && relasjon.isRelatertMedIdentifikator()) {
 
-                deleteRelasjon(person, relasjon.getRelatertPerson(), getRelasjonstype(relasjon.getMinRolleForPerson()));
-                deleteRelasjon(getPerson(relasjon.getRelatertPerson()), ident, getRelasjonstype(relasjon.getRelatertPersonsRolle()));
+                person.getPerson().getForelderBarnRelasjon().stream()
+                        .filter(relasjon1 -> relasjon1.getRelatertPerson().equals(relasjon.getRelatertPerson()))
+                        .forEach(relasjon1 -> {
+                            var relatertPerson = getPerson(relasjon1.getRelatertPerson());
 
-                var partnerPerson = person.getPerson().getSivilstand().stream()
-                        .filter(SivilstandDTO::isGiftOrSamboer)
-                        .map(sivilstand -> personRepository.findByIdent(sivilstand.getRelatertVedSivilstand()))
-                        .flatMap(Optional::stream)
-                        .findFirst();
+                            deleteRelasjon(person, relasjon1.getRelatertPerson(), getRelasjonstype(relasjon1.getMinRolleForPerson()));
+                            deleteRelasjon(relatertPerson, person.getIdent(), getRelasjonstype(relasjon1.getRelatertPersonsRolle()));
+                            deleteForeldreBarnRelasjon(person, relatertPerson);
+                        });
 
-                var partnerBarn = partnerPerson.flatMap(partner ->
-                        partner.getPerson().getForelderBarnRelasjon().stream()
-                                .filter(familerelasjon -> familerelasjon.getRelatertPerson()
-                                        .equals(relasjon.getRelatertPerson()))
-                                .findFirst());
+                var partnerPerson = getPerson(relasjon.getRelatertPerson());
+                partnerPerson.getPerson().getSivilstand().stream()
+                        .filter(sivilstand -> isNotBlank(sivilstand.getRelatertVedSivilstand()))
+                        .forEach(sivilstand -> {
+                            var relatertPerson = getPerson(sivilstand.getRelatertVedSivilstand());
 
-                partnerPerson.ifPresent(partner ->
-                        partnerBarn.ifPresent(barn -> {
-                            deleteRelasjon(partner, barn.getRelatertPerson(),
-                                    getRelasjonstype(barn.getMinRolleForPerson()));
-                            deleteRelasjon(getPerson(barn.getRelatertPerson()), partner.getIdent(),
-                                    getRelasjonstype(barn.getRelatertPersonsRolle()));
-                            partner.getPerson().getForelderBarnRelasjon().remove(barn);
-                        }));
+                            deleteRelasjon(partnerPerson, sivilstand.getRelatertVedSivilstand(), EKTEFELLE_PARTNER);
+                            deleteRelasjon(relatertPerson, partnerPerson.getIdent(), EKTEFELLE_PARTNER);
+                            deleteSivilstandrelasjon(partnerPerson, relatertPerson);
+                            deleteSivilstandrelasjon(relatertPerson, partnerPerson);
+                        });
 
-                deleteForeldreAnsvar(person, partnerPerson, relasjon.getRelatertPerson());
+                deleteForeldreAnsvar(relasjon.getRelatertPerson(), person, partnerPerson);
 
                 if (!relasjon.getRelatertPerson().equals(oppdatertRelasjon.getRelatertPerson()) &&
                         !relasjon.isEksisterendePerson()) {
                     personService.deletePerson(relasjon.getRelatertPerson());
                 }
-
-                personRepository.findByIdent(relasjon.getRelatertPerson())
-                        .ifPresent(familierelasjon -> {
-                            var it = familierelasjon.getPerson().getForelderBarnRelasjon().iterator();
-                            while (it.hasNext()) {
-                                var relasjon1 = it.next();
-                                if (relasjon1.getRelatertPerson().equals(relasjon.getRelatertPerson())) {
-                                    it.remove();
-                                }
-                            }
-                        });
             }
         });
 
@@ -339,16 +326,43 @@ public class ArtifactUpdateService {
         }
     }
 
-    private void deleteForeldreAnsvar(DbPerson person, Optional<DbPerson> partnerPerson, String barnIdent) {
+    private static void deleteForeldreBarnRelasjon(DbPerson person, DbPerson relatertPerson) {
+        relatertPerson.getPerson().setForelderBarnRelasjon(
+                relatertPerson.getPerson().getForelderBarnRelasjon().stream()
+                        .filter(relasjon2 -> isNotBlank(relasjon2.getRelatertPerson()))
+                        .filter(relasjon2 -> !relasjon2.getRelatertPerson().equals(
+                                person.getIdent()))
+                        .toList());
+    }
 
-        var barn = getPerson(barnIdent);
-        barn.getPerson().getForeldreansvar()
-                .forEach(ansvar -> {
-                    deleteRelasjon(barn, ansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
-                    deleteRelasjon(person, barn.getIdent(), FORELDREANSVAR_BARN);
-                    partnerPerson.ifPresent(partner -> deleteRelasjon(partner, barn.getIdent(), FORELDREANSVAR_BARN));
+    private static void deleteSivilstandrelasjon(DbPerson person, DbPerson relatertPerson) {
+        relatertPerson.getPerson().setSivilstand(
+                relatertPerson.getPerson().getSivilstand().stream()
+                        .filter(sivilstand1 -> isNotBlank(sivilstand1.getRelatertVedSivilstand()))
+                        .filter(sivilstand1 -> !sivilstand1.getRelatertVedSivilstand()
+                                .equals(person.getIdent()))
+                        .toList());
+    }
+
+    private void deleteForeldreAnsvar(String relatertIdent, DbPerson ... relatertPersoner) {
+
+        var relatertPerson = getPerson(relatertIdent);
+        Arrays.stream(relatertPersoner)
+                .forEach(relasjon -> {
+                    deleteForeldreansvarRelasjon(relatertPerson, relasjon);
+                    deleteForeldreansvarRelasjon(relasjon, relatertPerson);
                 });
-}
+    }
+
+    private static void deleteForeldreansvarRelasjon(DbPerson relatertPerson, DbPerson relasjon) {
+
+        deleteRelasjon(relatertPerson, relasjon.getIdent(), FORELDREANSVAR_FORELDER);
+        deleteRelasjon(relatertPerson, relasjon.getIdent(), FORELDREANSVAR_BARN);
+        relatertPerson.getPerson().setForeldreansvar(
+                relatertPerson.getPerson().getForeldreansvar().stream()
+                        .filter(relasjon1 -> !relasjon1.getAnsvarlig().equals(relasjon.getIdent()))
+                        .toList());
+    }
 
     private static boolean isEndretRolle(ForelderBarnRelasjonDTO relasjon, ForelderBarnRelasjonDTO oppdatertRelasjon) {
 
