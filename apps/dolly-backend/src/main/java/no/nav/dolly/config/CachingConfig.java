@@ -16,7 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableCaching
 public class CachingConfig {
 
-    private static final long CLEAR_INTERVAL = 12 * 3600 * 1000;
+    private static final long CLEAR_INTERVAL = 12L * 3600 * 1000;
 
     public static final String CACHE_BESTILLING = "bestilling";
     public static final String CACHE_BRUKER = "bruker";
