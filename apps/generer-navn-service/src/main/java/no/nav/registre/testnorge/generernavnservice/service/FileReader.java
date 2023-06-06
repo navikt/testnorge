@@ -13,19 +13,14 @@ import java.util.List;
 @NoArgsConstructor(access = lombok.AccessLevel.PRIVATE)
 class FileReader {
 
-    private static InputStreamReader readFromResources(String path)
-            throws IOException {
+    @SneakyThrows
+    static List<String> readLinesFromResources(String path) {
+
         try (var in = FileReader.class.getClassLoader().getResourceAsStream(path)) {
             if (in == null) {
                 throw new IOException("Unable to find file " + path);
             }
-            return new InputStreamReader(in, StandardCharsets.UTF_8);
-        }
-    }
-
-    @SneakyThrows
-    static List<String> readLinesFromResources(String path) {
-        try (BufferedReader reader = new BufferedReader(readFromResources(path))) {
+            var reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8));
             var lines = new ArrayList<String>();
             while (reader.ready()) {
                 lines.add(reader.readLine().trim());
