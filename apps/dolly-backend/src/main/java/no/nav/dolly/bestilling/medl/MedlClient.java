@@ -16,6 +16,7 @@ import no.nav.dolly.util.TransactionHelperService;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
@@ -47,10 +48,19 @@ public class MedlClient implements ClientRegister {
 
             return Flux.from(medlConsumer.createMedlemskapsperiode(medlRequest))
                     .map(this::getStatus)
-                    .map(status -> futurePersist(progress, status));
+                    .map(status -> futurePersist(progress,
+                            formaterStatusResponse(status)
+                    ));
         }
 
         return Flux.empty();
+    }
+
+    private static String formaterStatusResponse(String status) {
+        return Arrays.stream(status.split(";"))
+                .filter(errorResponse -> errorResponse.contains("detail"))
+                .findFirst().orElse(status)
+                .replace("detail= ", "");
     }
 
     @Override
