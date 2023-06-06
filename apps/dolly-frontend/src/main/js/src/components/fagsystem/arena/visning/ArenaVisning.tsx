@@ -8,7 +8,7 @@ import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
-import { StyledAlert } from '@/pages/gruppe/PersonVisning/PersonVisning'
+import StyledAlertLarge from '@/components/ui/alert/StyledAlertLarge'
 
 const Visning = ({ data }) => {
 	if (!data || data.length === 0) {
@@ -17,10 +17,10 @@ const Visning = ({ data }) => {
 	const arenaData = data[0]
 	if (arenaData.error) {
 		return (
-			<StyledAlert variant={'info'} size={'small'}>
+			<StyledAlertLarge variant={'info'} size={'small'}>
 				Fant ingen data i dette miljøet. Forsøk å gjenopprette personen for å fikse dette, og ta
 				eventuelt kontakt med Team Dolly dersom problemet vedvarer.
-			</StyledAlert>
+			</StyledAlertLarge>
 		)
 	}
 

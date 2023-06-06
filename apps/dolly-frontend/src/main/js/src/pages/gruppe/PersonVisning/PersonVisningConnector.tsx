@@ -2,7 +2,8 @@ import { connect } from 'react-redux'
 import { createSelector } from 'reselect'
 import { actions, fetchDataFraFagsystemer, selectDataForIdent } from '@/ducks/fagsystem'
 import { createLoadingSelector } from '@/ducks/loading'
-import { PersonVisning } from './PersonVisning'
+import React from 'react'
+import PersonVisning from '@/pages/gruppe/PersonVisning/PersonVisning'
 
 const loadingSelectorKrr = createLoadingSelector(actions.getKrr)
 const loadingSelectorSigrun = createLoadingSelector([actions.getSigrun, actions.getSigrunSekvensnr])
@@ -68,3 +69,5 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonVisning)
+
+//TODO: Fikse denne til å rendre med Fast Refresh

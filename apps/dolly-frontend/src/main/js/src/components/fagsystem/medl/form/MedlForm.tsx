@@ -85,14 +85,14 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 						</div>
 						<div className="form-flex-row">
 							<MedlSelect
-								size={'xlarge'}
+								size={'large-plus'}
 								name="medl.grunnlag"
 								label="Grunnlag"
 								kodeverk={MedlKodeverk.GRUNNLAG}
 								aktivKilde={aktivKilde}
 							/>
 							<MedlSelect
-								size={'xlarge'}
+								size={'xxlarge'}
 								name="medl.dekning"
 								label="Dekning"
 								kodeverk={MedlKodeverk.PERIODE_DEKNING}

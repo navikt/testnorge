@@ -32,8 +32,6 @@ import { getBestillingsListe } from '@/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '@/service/Api'
-import { Alert } from '@navikt/ds-react'
-import styled from 'styled-components'
 import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
 import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
@@ -67,14 +65,7 @@ import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/vis
 import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
-
-export const StyledAlert = styled(Alert)`
-	margin-bottom: 20px;
-
-	.navds-alert__wrapper {
-		max-width: 100rem;
-	}
-`
+import StyledAlertLarge from '@/components/ui/alert/StyledAlertLarge'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -86,7 +77,7 @@ const getIdenttype = (ident) => {
 	}
 }
 
-export const PersonVisning = ({
+export default ({
 	fetchDataFraFagsystemer,
 	data,
 	bestillingIdListe,
@@ -327,11 +318,11 @@ export const PersonVisning = ({
 					)}
 				</div>
 				{manglerFagsystemdata() && (
-					<StyledAlert variant={'info'} size={'small'}>
+					<StyledAlertLarge variant={'info'} size={'small'}>
 						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
 						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med Team Dolly
 						dersom problemet vedvarer.
-					</StyledAlert>
+					</StyledAlertLarge>
 				)}
 				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (

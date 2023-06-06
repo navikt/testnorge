@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { MEDL_KILDER } from '@/components/fagsystem/medl/MedlConstants'
+import { StylesConfig } from 'react-select/dist/declarations/src/styles'
 
 export type MedlSelectProps = {
 	name: string
@@ -8,6 +9,7 @@ export type MedlSelectProps = {
 	options?: any
 	aktivKilde: MEDL_KILDER
 	size?: string
+	style?: StylesConfig<any>
 	isClearable?: boolean
 	afterChange?: () => void
 	kodeverk?: string
@@ -15,6 +17,7 @@ export type MedlSelectProps = {
 
 export const MedlSelect = ({
 	size,
+	style,
 	name,
 	label,
 	afterChange,
@@ -53,6 +56,7 @@ export const MedlSelect = ({
 			options={options}
 			kodeverk={kodeverk}
 			name={name}
+			styles={style}
 			{...props}
 		/>
 	) : null
