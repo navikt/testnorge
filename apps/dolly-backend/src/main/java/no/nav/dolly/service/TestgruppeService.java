@@ -208,8 +208,8 @@ public class TestgruppeService {
 
         var testgruppe = fetchTestgruppeById(gruppeId);
         identService.saveIdentTilGruppe(ident, testgruppe, master, null);
-        pdlDataConsumer.putStandalone(ident, true)
-                .subscribe(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
+        pdlDataConsumer.putStandalone(ident, true);
+        log.info("Lagt til ident {} som standalone i PDL-forvalter", ident);
     }
 
 }
