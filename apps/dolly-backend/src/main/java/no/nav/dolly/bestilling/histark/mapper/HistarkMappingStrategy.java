@@ -6,6 +6,7 @@ import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.histark.domain.HistarkRequest;
 import no.nav.dolly.domain.resultset.histark.RsHistark;
+import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.apache.commons.codec.binary.Base64InputStream;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -40,39 +41,38 @@ public class HistarkMappingStrategy implements MappingStrategy {
 
                             String fysiskDokument = isBlank(dokument.getFysiskDokument()) ? PDF_VEDLEGG : dokument.getFysiskDokument();
 
-                            try {
-                                histarkRequest.getHistarkDokumenter().add(HistarkRequest.HistarkDokument.builder()
-                                        .file(fysiskDokument)
-                                        .metadata(HistarkRequest.HistarkDokument.HistarkMetadata.builder()
-                                                .antallSider(String.valueOf(dokument.getAntallSider()))
-                                                .brukerident(((String) context.getProperty(PERSON_IDENT)))
-                                                .enhetsnavn(dokument.getEnhetsnavn())
-                                                .enhetsnummer(dokument.getEnhetsnummer())
-                                                .filnavn(dokument.getTittel())
-                                                .skanner(dokument.getSkanner())
-                                                .skannested(dokument.getSkannested())
-                                                .klage("")
-                                                .sjekksum(calculateBinaryChecksum(fysiskDokument))
-                                                .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
-                                                .startAar(String.valueOf(dokument.getStartAar().getYear()))
-                                                .sluttAar(String.valueOf(dokument.getSluttAar().getYear()))
-                                                .temakoder(String.join(",", dokument.getTemakoder()))
-                                                .build())
-                                        .build());
-                            } catch (IOException e) {
-                                log.error("Klarte ikke å kalkulere sjekksum fra innsendt histark dokument");
-                                throw new RuntimeException(e);
-                            }
+                            histarkRequest.getHistarkDokumenter().add(HistarkRequest.HistarkDokument.builder()
+                                    .file(fysiskDokument)
+                                    .metadata(HistarkRequest.HistarkDokument.HistarkMetadata.builder()
+                                            .antallSider(String.valueOf(dokument.getAntallSider()))
+                                            .brukerident(((String) context.getProperty(PERSON_IDENT)))
+                                            .enhetsnavn(dokument.getEnhetsnavn())
+                                            .enhetsnummer(dokument.getEnhetsnummer())
+                                            .filnavn(dokument.getTittel())
+                                            .skanner(dokument.getSkanner())
+                                            .skannested(dokument.getSkannested())
+                                            .klage("")
+                                            .sjekksum(calculateBinaryChecksum(fysiskDokument))
+                                            .skanningstidspunkt(dokument.getSkanningsTidspunkt().format(dateTimeFormatter))
+                                            .startAar(String.valueOf(dokument.getStartAar().getYear()))
+                                            .sluttAar(String.valueOf(dokument.getSluttAar().getYear()))
+                                            .temakoder(String.join(",", dokument.getTemakoder()))
+                                            .build())
+                                    .build());
                         });
                     }
                 })
                 .register();
     }
 
-    private static String calculateBinaryChecksum(String fysiskDokument) throws IOException {
+    private static String calculateBinaryChecksum(String fysiskDokument) {
         InputStream byteArrayInput = new ByteArrayInputStream(fysiskDokument.getBytes());
         InputStream base64Input = new Base64InputStream(byteArrayInput);
 
-        return DigestUtils.sha256Hex(base64Input);
+        try {
+            return DigestUtils.sha256Hex(base64Input);
+        } catch (IOException e) {
+            throw new DollyFunctionalException("Klarte ikke å kalkulere sjekksum for innsendt histark dokument", e);
+        }
     }
 }
