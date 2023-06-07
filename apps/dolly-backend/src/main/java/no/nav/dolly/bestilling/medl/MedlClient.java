@@ -56,22 +56,16 @@ public class MedlClient implements ClientRegister {
         return Flux.empty();
     }
 
-    private static String formaterStatusResponse(String status) {
-        return Arrays.stream(status.split(";"))
-                .filter(errorResponse -> errorResponse.contains("detail"))
-                .findFirst().orElse(status)
-                .replace("detail= ", "");
-    }
-
     @Override
     public void release(List<String> identer) {
 
-        Flux<MedlData> medlemskapAvvisRequests = medlConsumer.getMedlemskapsperioder(identer).map(medlDataResponse -> MedlData.builder()
-                .ident(medlDataResponse.getIdent())
-                .id(medlDataResponse.getId())
-                .status(STATUS_AVVIST)
-                .statusaarsak(STATUSAARSAK_FEILREGISTRERT)
-                .build());
+        Flux<MedlData> medlemskapAvvisRequests = medlConsumer.getMedlemskapsperioder(identer).map(medlDataResponse -> {
+            var gjeldendeMedlemskapsperiode = mapperFacade.map(medlDataResponse, MedlData.class);
+            gjeldendeMedlemskapsperiode.setStatus(STATUS_AVVIST);
+            gjeldendeMedlemskapsperiode.setStatusaarsak(STATUSAARSAK_FEILREGISTRERT);
+
+            return gjeldendeMedlemskapsperiode;
+        });
 
         medlConsumer.deleteMedlemskapsperioder(medlemskapAvvisRequests)
                 .collectList()
@@ -90,5 +84,12 @@ public class MedlClient implements ClientRegister {
 
         return response.getStatus().is2xxSuccessful() ? "OK" :
                 errorStatusDecoder.getErrorText(response.getStatus(), response.getMelding());
+    }
+
+    private static String formaterStatusResponse(String status) {
+        return Arrays.stream(status.split(";"))
+                .filter(errorResponse -> errorResponse.contains("detail"))
+                .findFirst().orElse(status)
+                .replace("detail= ", "");
     }
 }

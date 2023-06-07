@@ -4,6 +4,7 @@ import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.domain.resultset.medl.MedlData;
+import no.nav.dolly.domain.resultset.medl.MedlDataResponse;
 import no.nav.dolly.domain.resultset.medl.RsMedl;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -28,6 +29,26 @@ public class MedlMappingStrategy implements MappingStrategy {
                                     .statsborgerland(rsMedl.getStudieinformasjon().getStudieland())
                                     .build());
                         }
+                    }
+                })
+                .exclude("studieinformasjon")
+                .byDefault()
+                .register();
+
+        factory.classMap(MedlDataResponse.class, MedlData.class)
+                .customize(new CustomMapper<>() {
+                    @Override
+                    public void mapAtoB(MedlDataResponse dataResponse, MedlData medlDataRequest, MappingContext context) {
+
+                        if (!isNull(dataResponse.getStudieinformasjon())) {
+                            medlDataRequest.setStudieinformasjon(MedlData.Studieinformasjon.builder()
+                                    .delstudie(dataResponse.getStudieinformasjon().getDelstudie())
+                                    .soeknadInnvilget(dataResponse.getStudieinformasjon().getSoeknadInnvilget())
+                                    .studieland(dataResponse.getStudieinformasjon().getStudieland())
+                                    .statsborgerland(dataResponse.getStudieinformasjon().getStudieland())
+                                    .build());
+                        }
+                        medlDataRequest.setId(dataResponse.getUnntakId());
                     }
                 })
                 .exclude("studieinformasjon")
