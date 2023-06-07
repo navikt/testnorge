@@ -334,14 +334,10 @@ public class ArtifactUpdateService {
             forelderBarnRelasjonService.convert(person.getPerson());
         }
 
-        person.getPerson().getForelderBarnRelasjon().stream()
-                .max(Comparator.comparing(ForelderBarnRelasjonDTO::getId))
-                .ifPresent(max -> {
-                    if (max.getId() > person.getPerson().getForelderBarnRelasjon().size()) {
-                        person.getPerson().getForelderBarnRelasjon()
-                                .forEach(ansvar -> ansvar.setId(ansvar.getId() - 1));
-                    }
-                });
+        for (int i = 0; i < person.getPerson().getForelderBarnRelasjon().size(); i++) {
+            person.getPerson().getForelderBarnRelasjon().get(i)
+                    .setId(person.getPerson().getForelderBarnRelasjon().size() - i);
+        }
     }
 
     private static void deleteForeldreBarnRelasjon(DbPerson person, String ident) {
