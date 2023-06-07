@@ -31,6 +31,8 @@ public class MedlPutCommand implements Callable<Mono<MedlPostResponse>> {
     @Override
     public Mono<MedlPostResponse> call() {
 
+        log.info("Sender put til Medl: \n{}", medlData);
+
         return webClient.put()
                 .uri(uriBuilder -> uriBuilder
                         .path(MEDL_URL)
