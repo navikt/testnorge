@@ -127,11 +127,12 @@ public class PdlDataConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_identer_standalone"})
-    public Mono<Void> putStandalone(String ident, Boolean standalone) {
+    public void putStandalone(String ident, Boolean standalone) {
 
-        return tokenService.exchange(serviceProperties)
+        tokenService.exchange(serviceProperties)
                 .flatMap(token -> new PdlDataStanaloneCommand(webClient, ident, standalone, token.getTokenValue())
-                        .call());
+                        .call())
+                .block();
     }
 
     @Override
