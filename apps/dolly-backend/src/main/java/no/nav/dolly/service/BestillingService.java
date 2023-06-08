@@ -281,11 +281,6 @@ public class BestillingService {
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
 
-        var bestillingerByIdent = identRepository.getBestillingerByIdent(ident);
-        if (bestillingerByIdent.isEmpty()) {
-            throw new DollyFunctionalException(format("Identen: %s har ingen gyldige bestillinger", ident));
-        }
-
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe)
