@@ -26,7 +26,7 @@ public class MedlMappingStrategy implements MappingStrategy {
                                     .delstudie(rsMedl.getStudieinformasjon().getDelstudie())
                                     .soeknadInnvilget(rsMedl.getStudieinformasjon().getSoeknadInnvilget())
                                     .studieland(rsMedl.getStudieinformasjon().getStudieland())
-                                    .statsborgerland(rsMedl.getStudieinformasjon().getStudieland())
+                                    .statsborgerland(rsMedl.getStudieinformasjon().getStatsborgerland())
                                     .build());
                         }
                     }
@@ -46,7 +46,7 @@ public class MedlMappingStrategy implements MappingStrategy {
                                     .delstudie(dataResponse.getStudieinformasjon().getDelstudie())
                                     .soeknadInnvilget(dataResponse.getStudieinformasjon().getSoeknadInnvilget())
                                     .studieland(dataResponse.getStudieinformasjon().getStudieland())
-                                    .statsborgerland(dataResponse.getStudieinformasjon().getStudieland())
+                                    .statsborgerland(dataResponse.getStudieinformasjon().getStatsborgerland())
                                     .build());
                         }
                         if (!isNull(dataResponse.getSporingsinformasjon())) {
