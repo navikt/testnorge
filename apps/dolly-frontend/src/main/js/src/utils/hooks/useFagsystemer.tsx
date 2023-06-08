@@ -47,15 +47,9 @@ const arbeidsforholdcvHjemmelUrl = '/testnav-arbeidsplassencv-proxy/rest/hjemmel
 export const usePoppData = (ident, harPoppBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	if (!harPoppBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
 	const { data, error } = useSWR<any, Error>(
 		[
-			poppUrl(ident, pensjonEnvironments),
+			harPoppBestilling ? poppUrl(ident, pensjonEnvironments) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
 		([url, headers]) => multiFetcherPensjon(url, headers)
@@ -71,15 +65,9 @@ export const usePoppData = (ident, harPoppBestilling) => {
 export const useTpData = (ident, harTpBestilling) => {
 	const { pensjonEnvironments } = usePensjonEnvironments()
 
-	if (!harTpBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
 	const { data, error } = useSWR<any, Error>(
 		[
-			tpUrl(ident, pensjonEnvironments),
+			harTpBestilling ? tpUrl(ident, pensjonEnvironments) : null,
 			{ 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly', Authorization: 'dolly' },
 		],
 		([url, headers]) => multiFetcherPensjon(url, headers)
@@ -95,14 +83,8 @@ export const useTpData = (ident, harTpBestilling) => {
 export const useInstData = (ident, harInstBestilling) => {
 	const { instEnvironments } = useInstEnvironments()
 
-	if (!harInstBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
 	const { data, error } = useSWR<any, Error>(
-		[instUrl(ident, instEnvironments), { norskident: ident }],
+		[harInstBestilling ? instUrl(ident, instEnvironments) : null, { norskident: ident }],
 		([url, headers]) => multiFetcherInst(url, headers)
 	)
 
@@ -117,14 +99,8 @@ export const useDokarkivData = (ident, harDokarkivbestilling) => {
 	const { transaksjonsid } = useTransaksjonsid('DOKARKIV', ident)
 	const { dokarkivEnvironments } = useDokarkivEnvironments()
 
-	if (!harDokarkivbestilling) {
-		return {
-			loading: false,
-		}
-	}
-
 	const { data, error } = useSWR<any, Error>(
-		journalpostUrl(transaksjonsid, dokarkivEnvironments),
+		harDokarkivbestilling ? journalpostUrl(transaksjonsid, dokarkivEnvironments) : null,
 		multiFetcherDokarkiv
 	)
 
@@ -140,13 +116,10 @@ export const useHistarkData = (ident, harHistarkbestilling) => {
 
 	const histarkId = transaksjonsid?.[0]?.transaksjonId?.dokumentInfoId
 
-	const { data, isLoading, error } = useSWR<any, Error>(histarkUrl(histarkId), fetcher)
-
-	if (!harHistarkbestilling) {
-		return {
-			loading: false,
-		}
-	}
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harHistarkbestilling ? histarkUrl(histarkId) : null,
+		fetcher
+	)
 
 	return {
 		histarkData: data,
@@ -156,14 +129,8 @@ export const useHistarkData = (ident, harHistarkbestilling) => {
 }
 
 export const useArbeidsplassencvData = (ident: string, harArbeidsplassenBestilling: boolean) => {
-	if (!harArbeidsplassenBestilling) {
-		return {
-			loading: false,
-		}
-	}
-
 	const { data, error } = useSWR<any, Error>(
-		[arbeidsforholdcvUrl, { fnr: ident }],
+		[harArbeidsplassenBestilling ? arbeidsforholdcvUrl : null, { fnr: ident }],
 		([url, headers]) => fetcher(url, headers)
 	)
 

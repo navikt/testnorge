@@ -8,18 +8,16 @@ type MedlResponse = {
 }
 
 export const useMedlPerson = (ident: string, harMedlBestilling: boolean) => {
-	const { data, error, mutate } = useSWR<MedlResponse, Error>(getMedlUrl(ident), fetcher, {})
+	const { data, error, mutate } = useSWR<MedlResponse, Error>(
+		harMedlBestilling ? getMedlUrl(ident) : null,
+		fetcher,
+		{}
+	)
 
 	if (!ident) {
 		return {
 			loading: false,
 			error: 'Ident mangler!',
-		}
-	}
-
-	if (!harMedlBestilling) {
-		return {
-			loading: false,
 		}
 	}
 

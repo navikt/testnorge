@@ -131,16 +131,26 @@ export const initialMedl = {
 	fraOgMed: new Date(),
 	tilOgMed: new Date(),
 	status: '',
-	kilde: 'srvmelosys',
+	statusaarsak: '',
 }
 
-export const initialMedlGosysMelosys = {
+export const initialMedlMelosys = {
 	...initialMedl,
+	kilde: 'srvmelosys',
 	grunnlag: '',
 	dekning: '',
 	lovvalg: '',
 	lovvalgsland: '',
-	statusaarsak: '',
+	kildedokument: '',
+}
+
+export const initialMedlGosys = {
+	...initialMedl,
+	kilde: 'srvgosys',
+	grunnlag: '',
+	dekning: '',
+	lovvalg: '',
+	lovvalgsland: '',
 	kildedokument: '',
 }
 

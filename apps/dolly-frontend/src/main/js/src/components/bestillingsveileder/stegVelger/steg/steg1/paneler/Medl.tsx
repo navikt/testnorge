@@ -12,7 +12,7 @@ export const MedlPanel = ({ stateModifier, formikBag }: any) => {
 			heading={MedlPanel.heading}
 			checkAttributeArray={sm.batchAdd}
 			uncheckAttributeArray={sm.batchRemove}
-			iconType="calendar"
+			iconType="calendar-days"
 			startOpen={harValgtAttributt(formikBag.values, [MedlAttributt])}
 		>
 			<AttributtKategori title={null} attr={sm.attrs}>

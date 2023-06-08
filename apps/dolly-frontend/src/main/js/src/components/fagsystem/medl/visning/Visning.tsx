@@ -8,14 +8,24 @@ type MedlTypes = {
 	data?: Medlemskapsperioder[]
 }
 
+function harGyldigMedlData(data: Medlemskapsperioder[] | undefined) {
+	return (
+		!_.isEmpty(data) &&
+		data?.some(
+			(medlemskapsperiode) =>
+				medlemskapsperiode.status !== 'AVST' && medlemskapsperiode.statusaarsak !== 'Feilregistrert'
+		)
+	)
+}
+
 export default ({ data }: MedlTypes) => {
-	if (_.isEmpty(data)) {
+	if (!harGyldigMedlData(data)) {
 		return null
 	}
 
 	return (
 		<>
-			<SubOverskrift label="Medlemskapsperioder" iconKind="calendar" />
+			<SubOverskrift label="Medlemskapsperioder" iconKind="calendar-days" />
 			<DollyFieldArray data={data} header="Medlemskapsperiode" nested>
 				{(medlemskap, idx) => {
 					return (

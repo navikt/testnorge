@@ -81,7 +81,10 @@ export const useGruppeById = (
 }
 
 export const useGruppeIdenter = (gruppeId) => {
-	const { data, error } = useSWR<Gruppe, Error>(getHelGruppeUrl(gruppeId), fetcher)
+	const { data, error } = useSWR<Gruppe, Error>(
+		gruppeId ? getHelGruppeUrl(gruppeId) : null,
+		fetcher
+	)
 
 	return {
 		identer: data?.identer?.map((person) => {
