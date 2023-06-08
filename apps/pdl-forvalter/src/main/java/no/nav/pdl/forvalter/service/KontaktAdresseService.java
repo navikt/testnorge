@@ -65,9 +65,10 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
             if (isTrue(adresse.getIsNew())) {
 
+                adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
+                adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
+
                 if (isNotTrue(relaxed)) {
-                    adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
-                    adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
                     handle(adresse, person);
                 }
             }
