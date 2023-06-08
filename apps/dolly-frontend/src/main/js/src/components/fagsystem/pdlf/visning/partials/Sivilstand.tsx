@@ -11,6 +11,7 @@ import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import {useParams} from "react-router-dom";
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -116,6 +117,13 @@ const SivilstandVisning = ({
 				'EKTEFELLE_PARTNER',
 		  ])
 
+	const { gruppeId } = useParams()
+	const relatertPersonInfo = {
+		gruppeId: gruppeId,
+		ident: initialValues?.sivilstand?.relatertVedSivilstand,
+		master: 'PDLF'
+	}
+
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={
@@ -131,6 +139,7 @@ const SivilstandVisning = ({
 			redigertAttributt={redigertSivilstandValues}
 			path="sivilstand"
 			ident={ident}
+			relatertPersonInfo={relatertPersonInfo}
 		/>
 	)
 }
