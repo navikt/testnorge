@@ -129,6 +129,7 @@ export const VisningRedigerbar = ({
 	personFoerLeggTil = null,
 	personValues = null,
 	relasjoner = null,
+	relatertPersonInfo = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -146,30 +147,74 @@ export const VisningRedigerbar = ({
 		setVisningModus(Modus.Les)
 	}
 
+	const sendData = (data) => {
+		const id = _.get(data, `${path}.id`)
+		const itemData = _.get(data, path)
+		return PdlforvalterApi.putAttributt(ident, path?.toLowerCase(), id, itemData)
+			.catch((error: Error) => {
+				pdlfError(error)
+			})
+			.then((putResponse: any) => {
+				if (putResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter().then(() => {
+							setVisningModus(Modus.Les)
+						})
+					})
+				}
+			})
+			.catch((error: Error) => {
+				pdlError(error)
+			})
+	}
+
+	const sendSlett = () => {
+		const id = _.get(initialValues, `${path}.id`)
+		return PdlforvalterApi.deleteAttributt(ident, path?.toLowerCase(), id)
+			.catch((error: Error) => {
+				pdlfError(error)
+			})
+			.then((deleteResponse: any) => {
+				if (deleteResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter().then(() => {
+							setVisningModus(Modus.Les)
+						})
+					})
+				}
+			})
+			.catch((error: Error) => {
+				pdlError(error)
+			})
+	}
+
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
-			const id = _.get(data, `${path}.id`)
-			const itemData = _.get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.putAttributt(ident, path?.toLowerCase(), id, itemData)
-				.catch((error: Error) => {
-					pdlfError(error)
-				})
-				.then((putResponse: any) => {
-					if (putResponse) {
-						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								setVisningModus(Modus.Les)
-							})
-						})
-					}
-				})
-				.catch((error: Error) => {
-					pdlError(error)
-				})
+			await sendData(data)
+		}
+		mountedRef.current = false
+		return submit()
+	}, [])
+
+	const handleSubmitRelatertPerson = useCallback((data: any) => {
+		const submit = async () => {
+			setVisningModus(Modus.LoadingPdlf)
+			await DollyApi.importerRelatertPerson(
+				relatertPersonInfo?.gruppeId,
+				relatertPersonInfo?.ident,
+				relatertPersonInfo?.master
+			).then((importResponse) => {
+				// setTimeout(() => {
+				if (importResponse?.ok) {
+					sendData(data)
+				}
+				// }, 2000)
+			})
 		}
 		mountedRef.current = false
 		return submit()
@@ -177,25 +222,25 @@ export const VisningRedigerbar = ({
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
-			const id = _.get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.deleteAttributt(ident, path?.toLowerCase(), id)
-				.catch((error: Error) => {
-					pdlfError(error)
-				})
-				.then((deleteResponse: any) => {
-					if (deleteResponse) {
-						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								setVisningModus(Modus.Les)
-							})
-						})
-					}
-				})
-				.catch((error: Error) => {
-					pdlError(error)
-				})
+			await sendSlett()
+		}
+		mountedRef.current = false
+		return slett()
+	}, [])
+
+	const handleDeleteRelatertPerson = useCallback(() => {
+		const slett = async () => {
+			setVisningModus(Modus.LoadingPdlf)
+			await DollyApi.importerRelatertPerson(
+				relatertPersonInfo?.gruppeId,
+				relatertPersonInfo?.ident,
+				relatertPersonInfo?.master
+			).then((importResponse) => {
+				if (importResponse?.ok) {
+					sendSlett()
+				}
+			})
 		}
 		mountedRef.current = false
 		return slett()
@@ -373,7 +418,7 @@ export const VisningRedigerbar = ({
 									<NavButton
 										onClick={() => {
 											closeModal()
-											return handleDelete()
+											return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
 										}}
 										variant="primary"
 									>
@@ -392,7 +437,7 @@ export const VisningRedigerbar = ({
 			{visningModus === Modus.Skriv && (
 				<Formik
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
-					onSubmit={handleSubmit}
+					onSubmit={relatertPersonInfo ? handleSubmitRelatertPerson : handleSubmit}
 					enableReinitialize
 					validate={_validate}
 				>
