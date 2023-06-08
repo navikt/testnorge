@@ -1,12 +1,14 @@
 package no.nav.pdl.forvalter.utils;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -18,10 +20,12 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
-@UtilityClass
-public class RelasjonerAlder {
+@Service
+@RequiredArgsConstructor
+public class RelasjonerAlderService {
 
     private static final Random RANDOM = new SecureRandom();
+    private final Clock clock;
 
     public BestillingRequestDTO fixRelasjonerAlder(BestillingRequestDTO request) {
 
@@ -45,7 +49,7 @@ public class RelasjonerAlder {
                 .map(Integer::longValue)
                 .ifPresent(eldsteBarn -> {
                     if (isNull(request.getAlder()) && isNull(request.getFoedtFoer())) {
-                        request.setFoedtFoer(LocalDateTime.now().minusYears(18 + eldsteBarn));
+                        request.setFoedtFoer(LocalDateTime.now(clock).minusYears(18 + eldsteBarn));
                         request.setFoedtEtter(request.getFoedtFoer().minusYears(18));
                     }
                     request.getPerson().getSivilstand().stream()
@@ -67,7 +71,7 @@ public class RelasjonerAlder {
         return request;
     }
 
-    private static void fixForeldre(BestillingRequestDTO request) {
+    private void fixForeldre(BestillingRequestDTO request) {
         request.getPerson()
                 .getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isBarn)
@@ -97,7 +101,7 @@ public class RelasjonerAlder {
                 });
     }
 
-    private static Integer getAlderForelder(ForelderBarnRelasjonDTO relasjon) {
+    private Integer getAlderForelder(ForelderBarnRelasjonDTO relasjon) {
 
         if (isNotBlank(relasjon.getRelatertPerson())) {
             return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
@@ -110,7 +114,7 @@ public class RelasjonerAlder {
         }
     }
 
-    private static Integer getAlderSivilstand(SivilstandDTO relasjon) {
+    private Integer getAlderSivilstand(SivilstandDTO relasjon) {
 
         if (isNotBlank(relasjon.getRelatertVedSivilstand())) {
             return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertVedSivilstand()));
@@ -121,7 +125,7 @@ public class RelasjonerAlder {
         }
     }
 
-    private static Integer getAlderNyPersonBarn(PersonRequestDTO relasjon) {
+    private Integer getAlderNyPersonBarn(PersonRequestDTO relasjon) {
 
         if (nonNull(relasjon.getAlder())) {
             return relasjon.getAlder();
@@ -140,11 +144,11 @@ public class RelasjonerAlder {
         }
     }
 
-    private static Integer getRandomAlder(PersonRequestDTO relasjon) {
+    private Integer getRandomAlder(PersonRequestDTO relasjon) {
         return getAlder(relasjon.getFoedtEtter()) > 0 ? RANDOM.nextInt(getAlder(relasjon.getFoedtEtter())) : 0;
     }
 
-    private static Integer getAlderNyPersonVoksen(PersonRequestDTO relasjon) {
+    private Integer getAlderNyPersonVoksen(PersonRequestDTO relasjon) {
 
         if (nonNull(relasjon.getAlder())) {
             return relasjon.getAlder();
@@ -165,7 +169,7 @@ public class RelasjonerAlder {
 
     private Integer getAlder(LocalDate start) {
 
-        return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now());
+        return (int) ChronoUnit.YEARS.between(start, LocalDateTime.now(clock));
     }
 
     private Integer getAlder(LocalDateTime start) {
