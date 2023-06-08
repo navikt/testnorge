@@ -59,13 +59,11 @@ export const ArenaForm = ({ formikBag }) => {
 					/>
 				)}
 				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} path={arenaPath} />}
-				{!servicebehovAktiv && (
-					<FormikCheckbox
-						name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
-						label="Automatisk innsending av meldekort"
-						size="small"
-					/>
-				)}
+				<FormikCheckbox
+					name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
+					label="Automatisk innsending av meldekort"
+					size="small"
+				/>
 			</Panel>
 		</Vis>
 	)
