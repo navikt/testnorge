@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <import resource="org/springframework/boot/logging/logback/base.xml" class="org.springframework.boot.logging.logback.SpringBootJoranConfigurator"/>
+</configuration>

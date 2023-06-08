@@ -21,7 +21,7 @@ class ApplicationContextTest {
 
     @Configuration
     @ConfigurationProperties(prefix = "failing")
-    public static class FailingProperties extends ServerProperties {
+    public static class FailingProperties extends ValidatingServerProperties {
     }
 
 }
