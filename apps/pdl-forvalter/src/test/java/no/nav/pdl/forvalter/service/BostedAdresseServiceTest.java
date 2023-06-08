@@ -254,7 +254,7 @@ class BostedAdresseServiceTest {
                         .build())))
                 .build();
 
-        when(dummyAdresseService.getUtenlandskAdresse(any())).thenReturn(new UtenlandskAdresseDTO());
+        when(dummyAdresseService.getUtenlandskAdresse(any(), any())).thenReturn(new UtenlandskAdresseDTO());
 
         var target = bostedAdresseService.convert(request, null).get(0);
 
