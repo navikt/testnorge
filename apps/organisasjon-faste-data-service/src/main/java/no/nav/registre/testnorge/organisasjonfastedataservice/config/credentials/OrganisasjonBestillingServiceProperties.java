@@ -6,12 +6,12 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 
 @Setter
 @Getter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.organisasjon-bestilling-service")
-public class OrganisasjonBestillingServiceProperties extends ValidatingServerProperties {
+public class OrganisasjonBestillingServiceProperties extends ValidatedServerProperties {
     private Integer threads;
 }

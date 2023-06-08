@@ -1,10 +1,10 @@
 package no.nav.testnav.proxies.arbeidsplassencvproxy.config;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumer.arbeidsplassencv-proxy")
-public class ArbeidsplassenCVProperties extends ValidatingServerProperties {
+public class ArbeidsplassenCVProperties extends ValidatedServerProperties {
 }

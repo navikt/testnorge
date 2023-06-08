@@ -8,7 +8,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class ValidatingServerPropertiesTest {
+class ValidatedServerPropertiesTest {
 
     @Test
     void testAllPropertiesMissing() {
@@ -105,7 +105,7 @@ class ValidatingServerPropertiesTest {
 
     @Configuration
     @ConfigurationProperties(prefix = "test")
-    private static class TestServerProperties extends ValidatingServerProperties {
+    private static class TestServerProperties extends ValidatedServerProperties {
     }
 
 }

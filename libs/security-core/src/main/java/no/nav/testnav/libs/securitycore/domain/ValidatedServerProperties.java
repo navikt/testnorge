@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @ConfigurationPropertiesScan("no.nav.testnav")
 @NoArgsConstructor
 @Getter
-public abstract class ValidatingServerProperties implements ServerProperties {
+public abstract class ValidatedServerProperties implements ServerProperties {
 
     /**
      * NAIS ingress URL for target service.
@@ -54,19 +54,19 @@ public abstract class ValidatingServerProperties implements ServerProperties {
         handle(validation());
     }
 
-    Set<ConstraintViolation<ValidatingServerProperties>> validation() {
+    Set<ConstraintViolation<ValidatedServerProperties>> validation() {
         return Stream
                 .of(validation("url"), validation("cluster"), validation("name"), validation("namespace"))
                 .flatMap(Set::stream)
                 .collect(Collectors.toSet());
     }
 
-    private Set<ConstraintViolation<ValidatingServerProperties>> validation(String property) {
+    private Set<ConstraintViolation<ValidatedServerProperties>> validation(String property) {
         var validator = factory.getValidator();
         return validator.validateProperty(this, property);
     }
 
-    private static void handle(Set<ConstraintViolation<ValidatingServerProperties>> violations)
+    private static void handle(Set<ConstraintViolation<ValidatedServerProperties>> violations)
             throws IllegalStateException {
         if (!violations.isEmpty()) {
             var messages = new ArrayList<String>(violations.size());

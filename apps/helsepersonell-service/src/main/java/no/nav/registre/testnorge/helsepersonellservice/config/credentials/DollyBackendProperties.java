@@ -1,10 +1,10 @@
 package no.nav.registre.testnorge.helsepersonellservice.config.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.dolly-backend")
-public class DollyBackendProperties extends ValidatingServerProperties {
+public class DollyBackendProperties extends ValidatedServerProperties {
 }

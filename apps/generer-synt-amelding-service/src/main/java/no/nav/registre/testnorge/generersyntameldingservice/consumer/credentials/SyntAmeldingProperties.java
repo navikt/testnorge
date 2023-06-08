@@ -3,9 +3,9 @@ package no.nav.registre.testnorge.generersyntameldingservice.consumer.credential
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.synt-amelding")
-public class SyntAmeldingProperties extends ValidatingServerProperties{
+public class SyntAmeldingProperties extends ValidatedServerProperties {
 }

@@ -6,12 +6,12 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 
 
 @Setter
 @Getter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-organisasjon-faste-data-service")
-public class OrganisasjonFasteDataServiceProperties extends ValidatingServerProperties {
+public class OrganisasjonFasteDataServiceProperties extends ValidatedServerProperties {
 }

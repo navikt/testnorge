@@ -1,12 +1,12 @@
 package no.nav.testnav.proxies.safproxy.config.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.saf")
-public class SafProperties extends ValidatingServerProperties {
+public class SafProperties extends ValidatedServerProperties {
 
     private static SafProperties copyOf(SafProperties original) {
         var copy = new SafProperties();
@@ -17,7 +17,7 @@ public class SafProperties extends ValidatingServerProperties {
         return copy;
     }
 
-    public ValidatingServerProperties forEnvironment(String env) {
+    public ValidatedServerProperties forEnvironment(String env) {
         var replacement = "q2".equals(env) ? "" : '-' + env;
         var copy = SafProperties.copyOf(this);
         copy.setUrl(copy.getUrl().replace("-{env}", replacement));

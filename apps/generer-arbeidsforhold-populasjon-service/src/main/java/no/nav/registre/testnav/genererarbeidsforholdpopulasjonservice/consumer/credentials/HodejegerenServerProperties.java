@@ -5,11 +5,11 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 
 @Getter
 @Setter
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-hodejegeren-proxy")
-public class HodejegerenServerProperties extends ValidatingServerProperties {
+public class HodejegerenServerProperties extends ValidatedServerProperties {
 }

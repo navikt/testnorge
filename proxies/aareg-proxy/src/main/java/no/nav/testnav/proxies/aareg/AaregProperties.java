@@ -1,7 +1,7 @@
 package no.nav.testnav.proxies.aareg;
 
 import lombok.Setter;
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
@@ -12,7 +12,7 @@ public class AaregProperties {
     AaregServerProperties services;
     AaregServerProperties vedlikehold;
 
-    static class AaregServerProperties extends ValidatingServerProperties {
+    static class AaregServerProperties extends ValidatedServerProperties {
 
         private static AaregServerProperties copyOf(AaregServerProperties original) {
             var copy = new AaregServerProperties();

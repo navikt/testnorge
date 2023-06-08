@@ -3,10 +3,10 @@ package no.nav.testnav.apps.importpersonservice.credentias;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-pdl-forvalter")
-public class TestnavPdlForvalterProperties extends ValidatingServerProperties {
+public class TestnavPdlForvalterProperties extends ValidatedServerProperties {
 }

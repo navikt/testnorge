@@ -1,12 +1,12 @@
 package no.nav.testnav.proxies.dokarkivproxy.config.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.dokarkiv")
-public class DokarkivProperties extends ValidatingServerProperties {
+public class DokarkivProperties extends ValidatedServerProperties {
 
     private static DokarkivProperties copyOf(DokarkivProperties original) {
         var copy = new DokarkivProperties();

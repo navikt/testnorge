@@ -1,10 +1,10 @@
 package no.nav.dolly.web.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-kontoregister-person-proxy")
-public class KontoregisterProxyProperties extends ValidatingServerProperties {
+public class KontoregisterProxyProperties extends ValidatedServerProperties {
 }

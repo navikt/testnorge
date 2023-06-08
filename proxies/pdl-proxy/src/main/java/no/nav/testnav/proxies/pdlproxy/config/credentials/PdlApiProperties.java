@@ -1,10 +1,10 @@
 package no.nav.testnav.proxies.pdlproxy.config.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.pdl-api")
-public class PdlApiProperties extends ValidatingServerProperties {
+public class PdlApiProperties extends ValidatedServerProperties {
 }

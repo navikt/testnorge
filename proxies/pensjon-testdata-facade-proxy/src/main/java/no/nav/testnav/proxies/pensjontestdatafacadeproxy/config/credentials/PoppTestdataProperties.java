@@ -1,11 +1,11 @@
 package no.nav.testnav.proxies.pensjontestdatafacadeproxy.config.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.popp-testdata")
-public class PoppTestdataProperties extends ValidatingServerProperties {
+public class PoppTestdataProperties extends ValidatedServerProperties {
 }

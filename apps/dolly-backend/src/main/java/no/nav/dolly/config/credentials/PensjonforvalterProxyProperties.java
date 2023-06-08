@@ -1,10 +1,10 @@
 package no.nav.dolly.config.credentials;
 
-import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatedServerProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-pensjon-testdata-facade-proxy")
-public class PensjonforvalterProxyProperties extends ValidatingServerProperties {
+public class PensjonforvalterProxyProperties extends ValidatedServerProperties {
 }
