@@ -40,6 +40,7 @@ public class MedlMappingStrategy implements MappingStrategy {
                     @Override
                     public void mapAtoB(MedlDataResponse dataResponse, MedlData medlDataRequest, MappingContext context) {
 
+                        medlDataRequest.setId(dataResponse.getUnntakId());
                         if (!isNull(dataResponse.getStudieinformasjon())) {
                             medlDataRequest.setStudieinformasjon(MedlData.Studieinformasjon.builder()
                                     .delstudie(dataResponse.getStudieinformasjon().getDelstudie())
@@ -48,10 +49,18 @@ public class MedlMappingStrategy implements MappingStrategy {
                                     .statsborgerland(dataResponse.getStudieinformasjon().getStudieland())
                                     .build());
                         }
-                        medlDataRequest.setId(dataResponse.getUnntakId());
+                        if (!isNull(dataResponse.getSporingsinformasjon())) {
+                            medlDataRequest.setKilde(dataResponse.getSporingsinformasjon().getKilde());
+                            medlDataRequest.setVersjon(dataResponse.getSporingsinformasjon().getVersjon());
+                            medlDataRequest.setKildedokument(dataResponse.getSporingsinformasjon().getKildedokument());
+                        }
                     }
                 })
                 .exclude("studieinformasjon")
+                .exclude("sporingsinformasjon")
+                .exclude("kilde")
+                .exclude("versjon")
+                .exclude("kildedokument")
                 .byDefault()
                 .register();
     }

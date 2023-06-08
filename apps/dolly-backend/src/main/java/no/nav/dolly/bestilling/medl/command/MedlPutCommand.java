@@ -43,12 +43,9 @@ public class MedlPutCommand implements Callable<Mono<MedlPostResponse>> {
                 .bodyValue(medlData)
                 .retrieve()
                 .toBodilessEntity()
-                .map(response -> {
-                    log.info("Mottok response fra Medl put: \n{}", response);
-                    return MedlPostResponse.builder()
-                            .status(HttpStatus.valueOf(response.getStatusCode().value()))
-                            .build();
-                })
+                .map(response -> MedlPostResponse.builder()
+                        .status(HttpStatus.valueOf(response.getStatusCode().value()))
+                        .build())
                 .doOnError(throwable -> log.error(throwable.getLocalizedMessage()))
                 .onErrorResume(error -> Mono.just(MedlPostResponse.builder()
                         .status(WebClientFilter.getStatus(error))
