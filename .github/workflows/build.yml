@@ -31,5 +31,5 @@ jobs:
           GITHUB_USERNAME: ${{ secrets.GITHUB_USERNAME }}
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build --info --scan
+          arguments: build --scan
           cache-read-only: false

@@ -9,6 +9,7 @@ import no.nav.dolly.exceptions.DollyFunctionalException;
 import no.nav.dolly.mapper.MappingStrategy;
 import no.nav.testnav.libs.dto.arbeidsplassencv.v1.ArbeidsplassenCVDTO;
 import org.springframework.stereotype.Component;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -64,21 +65,21 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
     }
 
     private static void prepCommonFacts(ArbeidsplassenCVDTO arbeidsplassenCV) {
-
-        var artifacter = Arrays.stream(arbeidsplassenCV.getClass().getMethods())
-                .filter(method -> method.getName().contains("get"))
-                .filter(method -> method.getReturnType().getName().contains("List"))
+        var artifacter = Arrays
+                .stream(ReflectionUtils.getUniqueDeclaredMethods(
+                        arbeidsplassenCV.getClass(),
+                        method -> method.getName().contains("get") && method.getReturnType().getName().contains("List"))
+                )
                 .map(method -> {
                     try {
-                        return method.invoke(arbeidsplassenCV, null);
+                        return method.invoke(arbeidsplassenCV);
                     } catch (IllegalAccessException | InvocationTargetException e) {
                         throw new DollyFunctionalException(String.format("Henting av data feilet: %s", e.getMessage()), e);
                     }
                 })
-                .map(List.class::cast)
+                .map(list -> (List<?>) list)
                 .flatMap(Collection::stream)
                 .toList();
-
         artifacter.forEach(artifact -> Arrays.stream(artifact.getClass().getMethods())
                 .filter(method -> method.getName().contains("set"))
                 .forEach(method -> {
@@ -91,8 +92,8 @@ public class ArbeidsplassenCVRequestMappingStrategy implements MappingStrategy {
     }
 
     @SneakyThrows
-    private static Object invoke(Object artifact, Method method, Object value) {
-
-        return method.invoke(artifact, value);
+    private static void invoke(Object artifact, Method method, Object value) {
+        method.invoke(artifact, value);
     }
+
 }

@@ -6,8 +6,10 @@ import com.github.tomakehurst.wiremock.client.WireMock;
 import no.nav.dolly.config.credentials.TpsMessagingServiceProperties;
 import no.nav.testnav.libs.dto.kontoregisterservice.v1.BankkontonrUtlandDTO;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
+import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.standalone.servletsecurity.exchange.TokenExchange;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import reactor.core.publisher.Mono;
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -56,6 +59,11 @@ class TpsMessagingConsumerTest {
     private ObjectMapper objectMapper = new ObjectMapper();
     private Random randomKontonummer = new SecureRandom();
 
+    @BeforeEach
+    void setup() {
+        when(tokenService.exchange(any(ServerProperties.class))).thenReturn(Mono.just(accessToken));
+    }
+
     private void stubPostUtenlandskBankkontoData() {
 
         stubFor(post(urlPathMatching("(.*)/api/v1/personer/12345678901/bankkonto-utenlandsk"))
@@ -72,7 +80,7 @@ class TpsMessagingConsumerTest {
         var response = tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                         IDENT,
                         MILJOER,
-                        new BankkontonrUtlandDTO(), accessToken)
+                        new BankkontonrUtlandDTO())
                 .collectList()
                 .block();
 
@@ -87,11 +95,10 @@ class TpsMessagingConsumerTest {
         BankkontonrUtlandDTO bankkontonrUtlandDTO = new BankkontonrUtlandDTO();
 
         Assertions.assertThrows(SecurityException.class, () ->
-                tpsMessagingConsumer.getToken()
-                        .flatMapMany(token -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
+                tpsMessagingConsumer.sendUtenlandskBankkontoRequest(
                                 IDENT,
                                 MILJOER,
-                                bankkontonrUtlandDTO, token))
+                                bankkontonrUtlandDTO)
                         .collectList()
                         .block());
 
@@ -112,7 +119,7 @@ class TpsMessagingConsumerTest {
                         p -> tpsMessagingConsumer.sendUtenlandskBankkontoRequest(p, MILJOER,
                                         BankkontonrUtlandDTO.builder()
                                                 .kontonummer(Integer.toString(randomKontonummer.nextInt()))
-                                                .build(), accessToken)
+                                                .build())
                                 .collectList()
                                 .block()
                 );
@@ -127,7 +134,7 @@ class TpsMessagingConsumerTest {
                         throw new RuntimeException(e);
                     }
                 })
-                .collect(Collectors.toList());
+                .toList();
 
         var forskjelligeBankkontoer = sendtBankkontoer.stream().distinct().collect(Collectors.toList());
 

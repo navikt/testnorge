@@ -70,7 +70,7 @@ spec:
         - application: testnav-ident-pool
           cluster: dev-gcp
       external:
-        - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
+        - host: testnav-pdl-proxy.dev-fss-pub.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_12

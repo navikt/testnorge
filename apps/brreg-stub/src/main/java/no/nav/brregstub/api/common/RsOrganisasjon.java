@@ -21,7 +21,9 @@ public class RsOrganisasjon {
 
     @NotNull
     private Integer orgnr;
+    @Builder.Default
     private Integer hovedstatus = 0;
+    @Builder.Default
     private List<Integer> understatuser = new LinkedList<>();
     @NotNull
     private LocalDate registreringsdato;

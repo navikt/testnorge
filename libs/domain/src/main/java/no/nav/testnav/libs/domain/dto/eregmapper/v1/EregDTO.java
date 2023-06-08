@@ -23,6 +23,7 @@ public class EregDTO {
     private NavnDTO navn;
     @JsonProperty(required = true)
     private String enhetstype;
+    @Builder.Default
     @JsonProperty
     private String endringsType = "N";
     @JsonProperty
