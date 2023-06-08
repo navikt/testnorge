@@ -26,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import reactor.core.publisher.Mono;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -204,12 +205,10 @@ public class TestgruppeService {
         return testgruppe;
     }
 
-    public void leggTilIdent(Long gruppeId, String ident, Testident.Master master) {
+    public Mono<String> leggTilIdent(Long gruppeId, String ident, Testident.Master master) {
 
         var testgruppe = fetchTestgruppeById(gruppeId);
         identService.saveIdentTilGruppe(ident, testgruppe, master, null);
-        pdlDataConsumer.putStandalone(ident, true);
-        log.info("Lagt til ident {} som standalone i PDL-forvalter", ident);
+        return pdlDataConsumer.putStandalone(ident, true);
     }
-
 }
