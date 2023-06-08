@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @SuperBuilder
@@ -69,5 +70,11 @@ public class SivilstandDTO extends DbVersjonDTO {
     public boolean isUgift() {
 
         return Sivilstand.UGIFT == type;
+    }
+
+    @JsonIgnore
+    public boolean harRelatertVedSivilstand() {
+
+        return isNotBlank(relatertVedSivilstand);
     }
 }

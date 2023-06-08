@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 import java.util.Set;
 
@@ -75,11 +76,11 @@ public class TestgruppeController {
     @Transactional
     @PutMapping(value = "/{gruppeId}/ident/{ident}")
     @Operation(description = "Legg til ident paa gruppe")
-    public void leggTilIdent(@PathVariable("gruppeId") Long gruppeId,
-                             @PathVariable("ident") String ident,
-                             @RequestParam Testident.Master master) {
+    public Mono<String> leggTilIdent(@PathVariable("gruppeId") Long gruppeId,
+                                     @PathVariable("ident") String ident,
+                                     @RequestParam Testident.Master master) {
 
-        testgruppeService.leggTilIdent(gruppeId, ident, master);
+        return testgruppeService.leggTilIdent(gruppeId, ident, master);
     }
 
     @CacheEvict(value = CACHE_GRUPPE, allEntries = true)
