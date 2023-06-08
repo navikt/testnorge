@@ -321,7 +321,9 @@ public class ArtifactUpdateService {
             }
         });
 
-        foreldrebarnRelasjon.ifPresent(relasjon -> person.getPerson().getForelderBarnRelasjon().add(relasjon));
+        foreldrebarnRelasjon.ifPresent(relasjon ->
+                person.getPerson().getForelderBarnRelasjon()
+                        .add(relasjon.getId() - person.getPerson().getForelderBarnRelasjon().size() - 1, relasjon));
 
         person.getPerson().setForelderBarnRelasjon(
                 updateArtifact(person.getPerson().getForelderBarnRelasjon(), oppdatertRelasjon, id, "ForelderBarnRelasjon"));
