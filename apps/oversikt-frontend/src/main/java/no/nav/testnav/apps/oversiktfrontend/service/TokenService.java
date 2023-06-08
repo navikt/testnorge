@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import no.nav.testnav.apps.oversiktfrontend.domain.Application;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -21,7 +21,7 @@ public class TokenService {
         return tokenExchange.exchange(application.toServerProperties());
     }
 
-    public static class MagicServerProperties extends ServerProperties {
+    public static class MagicServerProperties extends ValidatingServerProperties {
         public MagicServerProperties(String cluster, String namespace, String name) {
             super();
             super.setCluster(cluster);

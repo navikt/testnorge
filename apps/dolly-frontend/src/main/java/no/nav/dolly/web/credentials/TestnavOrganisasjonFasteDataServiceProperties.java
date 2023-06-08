@@ -3,9 +3,9 @@ package no.nav.dolly.web.credentials;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-organisasjon-faste-data-service")
-public class TestnavOrganisasjonFasteDataServiceProperties extends ServerProperties {
+public class TestnavOrganisasjonFasteDataServiceProperties extends ValidatingServerProperties {
 }

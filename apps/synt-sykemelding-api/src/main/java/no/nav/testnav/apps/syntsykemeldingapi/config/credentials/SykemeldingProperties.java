@@ -3,9 +3,9 @@ package no.nav.testnav.apps.syntsykemeldingapi.config.credentials;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.sykemelding-api")
-public class SykemeldingProperties extends ServerProperties {
+public class SykemeldingProperties extends ValidatingServerProperties {
 }

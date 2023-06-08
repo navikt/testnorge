@@ -3,10 +3,10 @@ package no.nav.testnav.apps.syntsykemeldingapi.config.credentials;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
 
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.testnav-arbeidsforhold-service")
-public class ArbeidsforholdServiceProperties extends ServerProperties {
+public class ArbeidsforholdServiceProperties extends ValidatingServerProperties {
 }

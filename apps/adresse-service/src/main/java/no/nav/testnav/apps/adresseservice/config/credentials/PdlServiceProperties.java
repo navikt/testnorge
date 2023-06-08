@@ -3,9 +3,9 @@ package no.nav.testnav.apps.adresseservice.config.credentials;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import no.nav.testnav.libs.securitycore.domain.ServerProperties;
+import no.nav.testnav.libs.securitycore.domain.ValidatingServerProperties;
 
 @Configuration
 @ConfigurationProperties(prefix = "consumers.pdl-services")
-public class PdlServiceProperties extends ServerProperties {
+public class PdlServiceProperties extends ValidatingServerProperties {
 }
