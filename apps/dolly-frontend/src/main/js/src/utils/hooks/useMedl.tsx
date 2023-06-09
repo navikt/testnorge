@@ -8,7 +8,7 @@ type MedlResponse = {
 }
 
 export const useMedlPerson = (ident: string, harMedlBestilling: boolean) => {
-	const { data, error, mutate } = useSWR<MedlResponse, Error>(
+	const { data, isLoading, error, mutate } = useSWR<MedlResponse, Error>(
 		harMedlBestilling ? getMedlUrl(ident) : null,
 		fetcher,
 		{}
@@ -23,7 +23,7 @@ export const useMedlPerson = (ident: string, harMedlBestilling: boolean) => {
 
 	return {
 		medl: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 		mutate: mutate,
 	}

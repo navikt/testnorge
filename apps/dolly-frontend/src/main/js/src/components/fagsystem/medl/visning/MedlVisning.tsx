@@ -2,10 +2,10 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import styled from 'styled-components'
 import { formatDate, oversettBoolean, showKodeverkLabel } from '@/utils/DataFormatter'
 import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
-import { Medlemskapsperioder } from '@/components/fagsystem/medl/MedlTypes'
+import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
 
 type Props = {
-	medlemskapsperiode: Medlemskapsperioder
+	medlemskapsperiode: Medlemskapsperiode
 }
 
 const H4 = styled.h4`

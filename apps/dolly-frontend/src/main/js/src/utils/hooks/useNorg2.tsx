@@ -10,7 +10,7 @@ type EnhetType = {
 }
 
 export const useNavEnheter = () => {
-	const { data, error } = useSWR<string[], Error>(norg2Url, fetcher)
+	const { data, isLoading, error } = useSWR<string[], Error>(norg2Url, fetcher)
 	const navEnheterOptions: Option[] = []
 	data?.forEach((enhet: EnhetType | any) => {
 		navEnheterOptions.push({
@@ -21,7 +21,7 @@ export const useNavEnheter = () => {
 
 	return {
 		navEnheter: navEnheterOptions,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }

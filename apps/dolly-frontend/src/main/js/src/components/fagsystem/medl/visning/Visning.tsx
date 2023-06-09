@@ -2,21 +2,20 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import MedlVisning from './MedlVisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as _ from 'lodash'
-import { Medlemskapsperioder } from '@/components/fagsystem/medl/MedlTypes'
+import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
 
 type MedlTypes = {
-	data?: Medlemskapsperioder[]
+	data?: Medlemskapsperiode[]
 }
 
-function harGyldigMedlData(data: Medlemskapsperioder[] | undefined) {
-	return (
-		!_.isEmpty(data) &&
-		data?.some(
-			(medlemskapsperiode) =>
-				medlemskapsperiode.status !== 'AVST' && medlemskapsperiode.statusaarsak !== 'Feilregistrert'
-		)
-	)
-}
+const STATUS_AVVIST = 'AVST'
+const STATUSAARSAK_FEILREGISTRERT = 'Feilregistrert'
+const predicateGyldigeMedlemskapsperioder = () => (medlemskapsperiode: Medlemskapsperiode) =>
+	medlemskapsperiode.status !== STATUS_AVVIST &&
+	medlemskapsperiode.statusaarsak !== STATUSAARSAK_FEILREGISTRERT
+
+const harGyldigMedlData = (data: Medlemskapsperiode[] | undefined) =>
+	!_.isEmpty(data) && data?.some(predicateGyldigeMedlemskapsperioder())
 
 export default ({ data }: MedlTypes) => {
 	if (!harGyldigMedlData(data)) {
@@ -26,11 +25,15 @@ export default ({ data }: MedlTypes) => {
 	return (
 		<>
 			<SubOverskrift label="Medlemskapsperioder" iconKind="calendar-days" />
-			<DollyFieldArray data={data} header="Medlemskapsperiode" nested>
-				{(medlemskap, idx) => {
+			<DollyFieldArray
+				data={data?.filter(predicateGyldigeMedlemskapsperioder())}
+				header="Medlemskapsperiode"
+				nested
+			>
+				{(medlemskapsperiode, idx) => {
 					return (
 						<div className="person-visning_content" key={idx}>
-							<MedlVisning medlemskapsperiode={medlemskap} />
+							<MedlVisning medlemskapsperiode={medlemskapsperiode} />
 						</div>
 					)
 				}}

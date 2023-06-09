@@ -1,4 +1,4 @@
-export type Medlemskapsperioder = {
+export type Medlemskapsperiode = {
 	unntakId: number
 	ident: string
 	fraOgMed: Date
