@@ -22,6 +22,13 @@ spring:
             token-uri: ${AAD_ISSUER_URI}/oauth2/v2.0/token
             jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
 
+consumers:
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
+
 management:
   endpoints:
     enabled-by-default: true
