@@ -1,17 +1,6 @@
 package no.nav.registre.testnorge.organisasjonfastedataservice.repository.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,7 +40,8 @@ public class OrganisasjonModel {
     @Column(name = "GRUPPE", nullable = false)
     private Gruppe gruppe;
 
-    @OneToMany(mappedBy = "overenhet", fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "OVERENHET")
     @Builder.Default
     private List<OrganisasjonModel> underenheter = new ArrayList<>();
 
