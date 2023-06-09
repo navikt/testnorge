@@ -222,8 +222,8 @@ class BestillingMalServiceTest {
 
     void deleteAllDatabaseContent() {
         bestillingMalRepository.deleteAll();
-        bestillingRepository.deleteAll();
         identRepository.deleteAll();
+        bestillingRepository.deleteAll();
         brukerFavoritterRepository.deleteAll();
         testgruppeRepository.findAll(Sort.unsorted()).forEach(gruppe -> testgruppeRepository.deleteTestgruppeById(gruppe.getId()));
         brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());

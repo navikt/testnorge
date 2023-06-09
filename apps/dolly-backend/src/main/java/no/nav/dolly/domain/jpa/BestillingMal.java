@@ -45,7 +45,7 @@ public class BestillingMal implements Serializable {
     private String malNavn;
 
     @ManyToOne
-    @JoinColumn(name = "bruker_id")
+    @JoinColumn(name = "BRUKER_ID")
     private Bruker bruker;
 
     @Column(name = "SIST_OPPDATERT", nullable = false)
