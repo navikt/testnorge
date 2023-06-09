@@ -24,8 +24,18 @@ spec:
               'Events: `kubectl describe pod -l app={{ $labels.deployment }}`\n
                Logger: `kubectl logs -l app={{ $labels.deployment }}`'
 
+        - alert: 'Høy feilrate i logger over de siste 15min (uten action)'
+          expr: 'sum by (app) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m]) > 1)'
+          interval: 5m
+          limit: 1
+          annotations:
+            summary: 'Applikasjonen {{ $labels.app }} har hatt mer enn 1 ERRORs i loggen i løpet av de siste 15 minuttene.'
+            action: 'For testing'
+
         - alert: 'Høy feilrate i logger over de siste 15min'
           expr: 'sum by (app) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m]) > 1)'
+          interval: 5m
+          limit: 1
           annotations:
             summary: 'Applikasjonen {{ $labels.app }} har hatt mer enn 1 ERRORs i loggen i løpet av de siste 15 minuttene.'
             action: |
@@ -35,6 +45,8 @@ spec:
 
         - alert: 'Høy andel HTTP 5xx fra våre servere over de siste 15min'
           expr: 'sum by (app) (increase(http_server_requests_seconds_count{namespace="dolly",status=~"^5.."}[15m]) > 5)'
+          interval: 5m
+          limit: 1
           annotations:
             summary: 'Applikasjonen {{ $labels.app }} har gitt mer enn 5 HTTP 5xx-responser i løpet av de siste 15 minuttene.'
             action: |
@@ -44,6 +56,8 @@ spec:
 
         - alert: 'Høy andel HTTP 4xx fra våre klienter over de siste 15min'
           expr: 'sum by (app) (increase(http_client_requests_seconds_count{namespace="dolly",status=~"^4.."}[15m]) > 5)'
+          interval: 5m
+          limit: 1
           annotations:
             summary: 'Applikasjonen {{ $labels.app }} har fått mer enn 5 HTTP 4xx-responser i løpet av de siste 15 minuttene.'
             action: |
