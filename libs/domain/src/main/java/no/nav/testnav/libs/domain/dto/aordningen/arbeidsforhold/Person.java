@@ -23,7 +23,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode
-public class Person extends OpplysningspliktigArbeidsgiver {
+public class Person implements OpplysningspliktigArbeidsgiver {
 
     @ApiModelProperty(
             notes = "Gjeldende offentlig ident",
