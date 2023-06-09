@@ -216,13 +216,13 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .map(barnRelasjon ->
-                        personRepository.findByIdent(barnRelasjon.getIdentForRelasjon())
+                        personRepository.findByIdent(barnRelasjon.getRelatertPerson())
                                 .map(barn -> barn.getPerson().getForelderBarnRelasjon().stream()
                                         .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MOR ||
                                                 foreldreRelasjon.getRelatertPersonsRolle() == Rolle.MEDMOR)
                                         .map(foreldreRelasjon -> BarnRelasjon.builder()
                                                 .barn(barn)
-                                                .ansvarlig(foreldreRelasjon.getIdentForRelasjon())
+                                                .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                                 .build())
                                         .toList()))
                 .flatMap(Optional::stream)
@@ -248,12 +248,12 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
 
         return hovedperson.getForelderBarnRelasjon().stream()
                 .map(barnRelasjon ->
-                        personRepository.findByIdent(barnRelasjon.getIdentForRelasjon())
+                        personRepository.findByIdent(barnRelasjon.getRelatertPerson())
                                 .map(barn -> barn.getPerson().getForelderBarnRelasjon().stream()
                                         .filter(foreldreRelasjon -> foreldreRelasjon.getRelatertPersonsRolle() == Rolle.FAR)
                                         .map(foreldreRelasjon -> BarnRelasjon.builder()
                                                 .barn(barn)
-                                                .ansvarlig(foreldreRelasjon.getIdentForRelasjon())
+                                                .ansvarlig(foreldreRelasjon.getRelatertPerson())
                                                 .build())
                                         .toList()))
                 .flatMap(Optional::stream)
@@ -303,7 +303,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private List<BarnRelasjon> getBarnRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
         return hovedperson.getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::hasBarn)
-                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
+                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                 .map(personRepository::findByIdent)
                 .flatMap(Optional::stream)
                 .map(dbperson -> BarnRelasjon.builder()
@@ -355,7 +355,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
     private void setAnsvarUtenIdentifikator(ForeldreansvarDTO foreldreansvar, PersonDTO barn) {
         barn.getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isBarn)
-                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
+                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
                 .findFirst()
                 .flatMap(personRepository::findByIdent)
                 .ifPresent(person -> makeAnsvarligUtenIdentifikator(foreldreansvar, person.getPerson()));
@@ -390,7 +390,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
                 .filter(relasjon -> List.of(roller).contains(relasjon.getRelatertPersonsRolle()))
                 .findFirst()
                 .ifPresent(relasjon -> {
-                    foreldreansvar.setAnsvarlig(relasjon.getIdentForRelasjon());
+                    foreldreansvar.setAnsvarlig(relasjon.getRelatertPerson());
 
                     if (isNotBlank(foreldreansvar.getAnsvarlig())) {
                         relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
@@ -404,12 +404,12 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         var foreldre = barn.getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isBarn)
                 .toList();
-        foreldreansvar.setAnsvarlig(foreldre.get(0).getIdentForRelasjon());
+        foreldreansvar.setAnsvarlig(foreldre.get(0).getRelatertPerson());
         relasjonService.setRelasjon(barn.getIdent(), foreldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
         relasjonService.setRelasjon(foreldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
 
         var nyttForeldreansvar = mapperFacade.map(foreldreansvar, ForeldreansvarDTO.class);
-        nyttForeldreansvar.setAnsvarlig(foreldre.get(1).getIdentForRelasjon());
+        nyttForeldreansvar.setAnsvarlig(foreldre.get(1).getRelatertPerson());
         relasjonService.setRelasjon(barn.getIdent(), nyttForeldreansvar.getAnsvarlig(), FORELDREANSVAR_FORELDER);
         relasjonService.setRelasjon(nyttForeldreansvar.getAnsvarlig(), barn.getIdent(), FORELDREANSVAR_BARN);
         nyttForeldreansvar.setId(barn.getForeldreansvar().size() + 1);

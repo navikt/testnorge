@@ -276,14 +276,14 @@ public class ArtifactUpdateService {
 
             var endretRelasjon = isEndretRolle(relasjon, oppdatertRelasjon) ||
                     relasjon.isRelatertMedIdentifikator() &&
-                            !relasjon.getIdentForRelasjon().equals(oppdatertRelasjon.getIdentForRelasjon());
+                            !relasjon.getRelatertPerson().equals(oppdatertRelasjon.getRelatertPerson());
 
             if (endretRelasjon && relasjon.isRelatertMedIdentifikator()) {
 
                 var slettePerson = getPerson(relasjon.getIdentForRelasjon());
                 DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, relasjon.isEksisterendePerson(), FAMILIERELASJON_BARN);
 
-                deletePerson(relasjon.getIdentForRelasjon(), relasjon.isEksisterendePerson());
+                deletePerson(relasjon.getRelatertPerson(), relasjon.isEksisterendePerson());
 
                 person.getPerson().getForelderBarnRelasjon().add(relasjon);
                 person.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());

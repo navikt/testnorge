@@ -30,8 +30,8 @@ public class RelasjonerAlder {
         request.getPerson().getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isForeldre)
                 .map(relasjon -> {
-                    if (isNotBlank(relasjon.getIdentForRelasjon())) {
-                        return getAlder(DatoFraIdentUtility.getDato(relasjon.getIdentForRelasjon()));
+                    if (isNotBlank(relasjon.getRelatertPerson())) {
+                        return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
                     } else if (nonNull(relasjon.getNyRelatertPerson())) {
                         return getAlderNyPersonBarn(relasjon.getNyRelatertPerson());
                     } else if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
@@ -99,8 +99,8 @@ public class RelasjonerAlder {
 
     private static Integer getAlderForelder(ForelderBarnRelasjonDTO relasjon) {
 
-        if (isNotBlank(relasjon.getIdentForRelasjon())) {
-            return getAlder(DatoFraIdentUtility.getDato(relasjon.getIdentForRelasjon()));
+        if (isNotBlank(relasjon.getRelatertPerson())) {
+            return getAlder(DatoFraIdentUtility.getDato(relasjon.getRelatertPerson()));
         } else if (nonNull(relasjon.getNyRelatertPerson())) {
             return getAlderNyPersonVoksen(relasjon.getNyRelatertPerson());
         } else if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {

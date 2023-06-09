@@ -85,7 +85,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
     public void validate(ForelderBarnRelasjonDTO relasjon) {
 
         if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) &&
-                (nonNull(relasjon.getIdentForRelasjon()) || nonNull(relasjon.getNyRelatertPerson()))) {
+                (nonNull(relasjon.getRelatertPerson()) || nonNull(relasjon.getNyRelatertPerson()))) {
             throw new InvalidRequestException(INVALID_PERSON_ID_EXCEPTION);
         }
 
@@ -102,11 +102,11 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
             throw new InvalidRequestException(AMBIGUOUS_PERSON_ROLLE_EXCEPTION);
         }
 
-        if (isNotBlank(relasjon.getIdentForRelasjon()) &&
+        if (isNotBlank(relasjon.getRelatertPerson()) &&
                 !personRepository.existsByIdent(relasjon.getIdentForRelasjon())) {
 
             throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
-                    relasjon.getIdentForRelasjon()));
+                    relasjon.getRelatertPerson()));
         }
 
         if (nonNull(relasjon.getDeltBosted()) && relasjon.getDeltBosted().countAdresser() > 1) {
@@ -125,7 +125,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 isNotTrue(request.getPartnerErIkkeForelder()) && hovedperson.getSivilstand().stream()
                 .anyMatch(sivilstand -> nonNull(sivilstand.getRelatertVedSivilstand()))) {
 
-            request.setRelatertPerson(relasjon.getIdentForRelasjon());
+            request.setRelatertPerson(relasjon.getRelatertPerson());
             request.setRelatertPersonUtenFolkeregisteridentifikator(relasjon.getRelatertPersonUtenFolkeregisteridentifikator());
             request.setNyRelatertPerson(null);
             request.setBorIkkeSammen(null);
@@ -148,7 +148,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         }
 
         if (request.getRelatertPersonsRolle() == Rolle.BARN && nonNull(relasjon.getDeltBosted())) {
-            deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getIdentForRelasjon());
+            deltBostedService.handle(relasjon.getDeltBosted(), hovedperson, relasjon.getRelatertPerson());
         }
 
         relasjon.setPartnerErIkkeForelder(null);
@@ -156,7 +156,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) { // -> Begge foreldre opprettes
             var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
-                    .kjoenn(getKjoenn(relasjon.getIdentForRelasjon(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == MANN ? KVINNE : MANN)
+                    .kjoenn(getKjoenn(relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == MANN ? KVINNE : MANN)
                     .build());
             forelderRelasjon.setRelatertPerson(null);
 
@@ -181,14 +181,14 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
     private ForelderBarnRelasjonDTO addForelderBarnRelasjon(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
         setRolle(relasjon, hovedperson);
-        if (isNull(relasjon.getIdentForRelasjon())) {
+        if (isNull(relasjon.getRelatertPerson())) {
             return relasjon;
         }
         createMotsattRelasjon(relasjon, hovedperson.getIdent());
 
         relasjonService.setRelasjoner(hovedperson.getIdent(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
-                relasjon.getIdentForRelasjon(),
+                relasjon.getRelatertPerson(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
 
         return relasjon;
@@ -196,7 +196,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private String setRelatertPerson(ForelderBarnRelasjonDTO relasjon, PersonDTO hovedperson) {
 
-        relasjon.setEksisterendePerson(isNotBlank(relasjon.getIdentForRelasjon()));
+        relasjon.setEksisterendePerson(isNotBlank(relasjon.getRelatertPerson()));
 
         if (nonNull(relasjon.getRelatertPersonUtenFolkeregisteridentifikator())) {
 
@@ -211,7 +211,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
             relasjon.setRelatertPersonUtenFolkeregisteridentifikator(
                     createPersonUtenIdentifikatorService.execute(request));
 
-        } else if (isBlank(relasjon.getIdentForRelasjon())) {
+        } else if (isBlank(relasjon.getRelatertPerson())) {
 
             if (isNull(relasjon.getNyRelatertPerson())) {
                 relasjon.setNyRelatertPerson(new PersonRequestDTO());
@@ -251,7 +251,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
         relasjon.setBorIkkeSammen(null);
         relasjon.setNyRelatertPerson(null);
-        return relasjon.getIdentForRelasjon();
+        return relasjon.getRelatertPerson();
     }
 
     private void setRolle(ForelderBarnRelasjonDTO relasjon, PersonDTO person) {
@@ -261,7 +261,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
         } else if (Rolle.FORELDER == relasjon.getRelatertPersonsRolle()) {
             relasjon.setRelatertPersonsRolle(getKjoenn(
-                    relasjon.getIdentForRelasjon(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == KVINNE ? Rolle.MOR : Rolle.FAR);
+                    relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == KVINNE ? Rolle.MOR : Rolle.FAR);
         }
     }
 
@@ -280,7 +280,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
     private void createMotsattRelasjon(ForelderBarnRelasjonDTO relasjon, String hovedperson) {
 
-        DbPerson relatertPerson = personRepository.findByIdent(relasjon.getIdentForRelasjon()).get();
+        DbPerson relatertPerson = personRepository.findByIdent(relasjon.getRelatertPerson()).get();
         ForelderBarnRelasjonDTO relatertFamilierelasjon = mapperFacade.map(relasjon, ForelderBarnRelasjonDTO.class);
         relatertFamilierelasjon.setRelatertPerson(hovedperson);
         swapRoller(relatertFamilierelasjon);
