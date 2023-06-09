@@ -80,7 +80,7 @@ public class IdentitetService {
 
         personer.forEach(person -> person.getPerson().getForelderBarnRelasjon()
                 .forEach(relasjon -> {
-                    if (ident.equals(relasjon.getRelatertPerson())) {
+                    if (ident.equals(relasjon.getIdentForRelasjon())) {
                         relasjon.setEksisterendePerson(standalone);
                     }
                 }));

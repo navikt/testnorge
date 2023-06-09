@@ -99,7 +99,7 @@ public class PdlOrdreService {
                                 .map(SivilstandDTO::getRelatertVedSivilstand),
                         dbPerson.getPerson().getForelderBarnRelasjon().stream()
                                 .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
-                                .map(ForelderBarnRelasjonDTO::getRelatertPerson),
+                                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon),
                         dbPerson.getPerson().getForeldreansvar().stream()
                                 .filter(ForeldreansvarDTO::isEksisterendePerson)
                                 .map(ForeldreansvarDTO::getAnsvarlig),
@@ -116,7 +116,7 @@ public class PdlOrdreService {
                                 .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer),
                         dbPerson.getPerson().getForelderBarnRelasjon().stream()
                                 .filter(ForelderBarnRelasjonDTO::hasBarn)
-                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                                 .map(personRepository::findByIdent)
                                 .flatMap(Optional::stream)
                                 .map(DbPerson::getPerson)
@@ -165,7 +165,7 @@ public class PdlOrdreService {
                                 .toList(),
                         dbPerson.getPerson().getForelderBarnRelasjon().stream()
                                 .filter(ForelderBarnRelasjonDTO::hasBarn)
-                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                                 .map(personRepository::findByIdent)
                                 .flatMap(Optional::stream)
                                 .map(DbPerson::getPerson)

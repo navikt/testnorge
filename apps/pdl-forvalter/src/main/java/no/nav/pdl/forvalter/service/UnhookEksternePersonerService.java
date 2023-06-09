@@ -142,14 +142,14 @@ public class UnhookEksternePersonerService {
 
         var relasjoner = personRepository.findByIdentIn(hovedperson.getPerson().getForelderBarnRelasjon().stream()
                 .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
-                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                .map(ForelderBarnRelasjonDTO::getIdentForRelasjon)
                 .toList(), Pageable.unpaged());
 
         relasjoner.stream()
                 .map(DbPerson::getPerson)
                 .forEach(person -> person.setForelderBarnRelasjon(person.getForelderBarnRelasjon().stream()
-                        .filter(relasjon -> nonNull(relasjon.getRelatertPerson()))
-                        .filter(relasjon -> !relasjon.getRelatertPerson().equals(hovedperson.getIdent()))
+                        .filter(relasjon -> nonNull(relasjon.getIdentForRelasjon()))
+                        .filter(relasjon -> !relasjon.getIdentForRelasjon().equals(hovedperson.getIdent()))
                         .toList()));
 
         deleteRelasjoner(hovedperson, relasjoner);

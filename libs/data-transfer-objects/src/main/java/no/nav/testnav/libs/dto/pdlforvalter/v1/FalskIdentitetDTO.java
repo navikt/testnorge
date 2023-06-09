@@ -74,4 +74,10 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     public boolean isFalskIdentitet() {
         return isTrue(getErFalsk());
     }
+
+    @JsonIgnore
+    @Override
+    public String getIdentForRelasjon() {
+        return rettIdentitetVedIdentifikasjonsnummer;
+    }
 }

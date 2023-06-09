@@ -77,4 +77,9 @@ public class SivilstandDTO extends DbVersjonDTO {
 
         return isNotBlank(relatertVedSivilstand);
     }
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return relatertVedSivilstand;
+    }
 }

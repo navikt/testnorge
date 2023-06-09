@@ -18,7 +18,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -49,7 +49,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     @Override
     public void validate(UtflyttingDTO utflytting) {
 
-        if (isNotBlank(utflytting.getTilflyttingsland()) && !isLandkode(utflytting.getTilflyttingsland())) {
+        if (isNotBlank(utflytting.getTilflyttingsland()) && !hasLandkode(utflytting.getTilflyttingsland())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
     }

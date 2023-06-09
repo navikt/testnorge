@@ -151,13 +151,13 @@ public class ArtifactDeleteService {
 
         dbPerson.getPerson().getForelderBarnRelasjon().stream()
                 .filter(type -> id.equals(type.getId()) &&
-                        isNotBlank(type.getRelatertPerson()))
+                        isNotBlank(type.getIdentForRelasjon()))
                 .forEach(type -> {
-                    deleteRelasjon(dbPerson, type.getRelatertPerson(), getRelasjonstype(type.getMinRolleForPerson()));
-                    deleteRelasjon(fetchPerson(type.getRelatertPerson()), dbPerson.getIdent(), getRelasjonstype(type.getRelatertPersonsRolle()));
+                    deleteRelasjon(dbPerson, type.getIdentForRelasjon(), getRelasjonstype(type.getMinRolleForPerson()));
+                    deleteRelasjon(fetchPerson(type.getIdentForRelasjon()), dbPerson.getIdent(), getRelasjonstype(type.getRelatertPersonsRolle()));
 
                     if (isNotTrue(type.getEksisterendePerson())) {
-                        personService.deletePerson(type.getRelatertPerson());
+                        personService.deletePerson(type.getIdentForRelasjon());
                     }
                 });
 
