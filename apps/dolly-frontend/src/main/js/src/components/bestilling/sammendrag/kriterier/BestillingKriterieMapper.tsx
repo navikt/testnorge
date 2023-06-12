@@ -9,14 +9,14 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized,
+	uppercaseAndUnderscoreToCapitalized
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk,
+	VergemaalKodeverk
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -1496,7 +1496,7 @@ const mapMedlemskapsperiode = (bestillingData, data) => {
 
 	if (medlKriterier) {
 		const medl = {
-			header: 'Medlemskapsperioder',
+			header: 'Medlemskap',
 			items: [
 				obj('Kilde', medlKriterier.kilde, MedlKodeverk.KILDE),
 				obj('Fra dato', formatDate(medlKriterier.fraOgMed)),

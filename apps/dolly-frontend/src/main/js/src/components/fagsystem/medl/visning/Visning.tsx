@@ -24,7 +24,7 @@ export default ({ data }: MedlTypes) => {
 
 	return (
 		<>
-			<SubOverskrift label="Medlemskapsperioder" iconKind="calendar-days" />
+			<SubOverskrift label="Medlemskap" iconKind="calendar-days" />
 			<DollyFieldArray
 				data={data?.filter(predicateGyldigeMedlemskapsperioder())}
 				header="Medlemskapsperiode"

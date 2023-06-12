@@ -49,7 +49,7 @@ export const MedlForm = ({ formikBag }: MedlFormProps) => {
 		// @ts-ignore
 		<Vis attributt={MedlAttributt}>
 			<Panel
-				heading="Medlemskapsperioder (MEDL)"
+				heading="Medlemskap (MEDL)"
 				hasErrors={panelError(formikBag, MedlAttributt)}
 				iconType="calendar-days"
 				// @ts-ignore
