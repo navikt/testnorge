@@ -9,13 +9,12 @@ spec:
   receivers:
     slack:
       channel: "#dolly-alerts"
-      #prependText: "<!here> | "
       icon_emoji: ':dolly-panic:'
   groups:
     - name: dolly-alerts
       rules:
 
-        - alert: 'Applikasjon har vært nede i >5min'
+        - alert: 'dolly-replicas-unavailable'
           expr: 'kube_deployment_status_replicas_available{namespace = "dolly"} == 0'
           for: 5m
           annotations:
@@ -24,8 +23,21 @@ spec:
               'Events: `kubectl describe pod -l app={{ $labels.deployment }}`\n
                Logger: `kubectl logs -l app={{ $labels.deployment }}`'
 
-        - alert: 'Høy feilrate i logger over de siste 15min'
+        - action: 'action'
+          alert: 'dolly-log-errors-test'
+          description: 'description'
+          documentation: 'https://www.nav.no'
+          expr: sum by (app) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m] offset 30m) > 1)
+          for: 1m
+          severity: 'danger'
+          sla: 'sla''
+          annotations:
+            summary: 'En applikasjon har hatt mer enn 1 ERRORs i loggen i løpet av de siste 15 minuttene.'
+
+
+        - alert: 'dolly-log-errors'
           expr: 'sum by (app) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m]) > 1)'
+          for: 1m
           annotations:
             summary: 'Applikasjonen {{ $labels.app }} har hatt mer enn 1 ERRORs i loggen i løpet av de siste 15 minuttene.'
             action: |
@@ -33,8 +45,9 @@ spec:
                Logger: `kubectl logs -l app={{ $labels.app }}`\n
                Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22d{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`'
 
-        - alert: 'Høy andel HTTP 5xx fra våre servere over de siste 15min'
+        - alert: 'dolly-server-http-5xx'
           expr: 'sum by (app) (increase(http_server_requests_seconds_count{namespace="dolly",status=~"^5.."}[15m]) > 5)'
+          for: 1m
           annotations:
             summary: 'Applikasjonen {{ $labels.app }} har gitt mer enn 5 HTTP 5xx-responser i løpet av de siste 15 minuttene.'
             action: |
@@ -42,8 +55,9 @@ spec:
                Logger: `kubectl logs -l app={{ $labels.app }}`\n
                Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22d{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`'            
 
-        - alert: 'Høy andel HTTP 4xx fra våre klienter over de siste 15min'
-          expr: 'sum by (app) (increase(http_client_requests_seconds_count{namespace="dolly",status=~"^4.."}[15m]) > 5)'
+        - alert: 'dolly-client-http-4xx'
+          expr: 'sum by (app) (increase(http_client_requests_seconds_count{namespace="dolly",http_status_code=~"^4.."}[15m]) > 5)'
+          for: 1m
           annotations:
             summary: 'Applikasjonen {{ $labels.app }} har fått mer enn 5 HTTP 4xx-responser i løpet av de siste 15 minuttene.'
             action: |
