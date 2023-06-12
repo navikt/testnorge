@@ -54,8 +54,8 @@ on:
         required: true
 
 env:
-  do-deploy-test: ${{ inputs.force-deploy-test || ( !contains(github.event_head_commit.message, '#nodeploy') && inputs.deploy-tag-test != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ) }}
-  do-deploy: ${{ inputs.force-deploy || ( !contains(github.event_head_commit.message, 'nodeploy') && inputs.deploy-tag != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) ) ) }}
+  do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-test != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
+  do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
 
 jobs:
 
@@ -63,9 +63,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "branch: ${{ github.ref_name }}"
+          echo "branch: ${{ github.ref }}"
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
+          echo "commit: ${{ github.event.head.commit_message }}"
 
   sonar:
     needs: start
