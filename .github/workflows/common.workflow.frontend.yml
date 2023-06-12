@@ -87,7 +87,16 @@ env:
 
 jobs:
 
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "branch: ${{ github.ref_name }}"
+          echo "inputs: ${{ toJSON(inputs) }}"
+          echo "env: ${{ toJSON(env) }}"
+
   sonar:
+    needs: start
     if: inputs.sonar-enabled
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -97,6 +106,7 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
 
   build:
+    needs: start
     if: github.actor != 'dependabot[bot]'
     permissions:
       contents: "read"
