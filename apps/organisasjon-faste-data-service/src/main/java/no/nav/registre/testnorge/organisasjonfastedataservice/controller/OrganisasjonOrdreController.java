@@ -72,6 +72,11 @@ public class OrganisasjonOrdreController {
             return ResponseEntity.badRequest().build();
         }
 
+        if (gruppe.equals(Gruppe.OTP)) {
+            log.error("Gruppe kan kun sendes ved bruk av subsets. Den er på over en million linjer og skaper tidvis problemer med tusenvis av duplikate Jenkins jobber");
+            return ResponseEntity.badRequest().build();
+        }
+
         var ordreId = update != null && update
                 ? ordreService.change(gruppe, miljo)
                 : ordreService.create(gruppe, miljo);
