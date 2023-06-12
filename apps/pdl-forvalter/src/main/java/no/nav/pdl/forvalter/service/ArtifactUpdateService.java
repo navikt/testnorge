@@ -270,9 +270,9 @@ public class ArtifactUpdateService {
             if (endretRelasjon && relasjon.isRelatertMedIdentifikator()) {
 
                 var slettePerson = getPerson(relasjon.getIdentForRelasjon());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, relasjon.isEksisterendePerson(), FAMILIERELASJON_BARN);
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FAMILIERELASJON_BARN);
 
-                deletePerson(relasjon.getRelatertPerson(), relasjon.isEksisterendePerson());
+                deletePerson(slettePerson, relasjon.isEksisterendePerson());
 
                 person.getPerson().getForelderBarnRelasjon().add(relasjon);
                 person.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
@@ -312,9 +312,9 @@ public class ArtifactUpdateService {
                     !ansvar.getAnsvarlig().equals(oppdatertAnsvar.getAnsvarlig())) {
 
                 var slettePerson = getPerson(ansvar.getAnsvarlig());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, ansvar.isEksisterendePerson(), FORELDREANSVAR_FORELDER);
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
 
-                deletePerson(ansvar.getAnsvarlig(), ansvar.isEksisterendePerson());
+                deletePerson(slettePerson, ansvar.isEksisterendePerson());
 
                 person.getPerson().getForeldreansvar().stream()
                         .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
@@ -322,7 +322,7 @@ public class ArtifactUpdateService {
                         .filter(ansvar1 -> ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
                         .findFirst()
                         .ifPresent(ansvar1 ->
-                                DeleteRelasjonerUtility.deleteRelasjoner(getPerson(ansvar1.getAnsvarlig()), true, FORELDREANSVAR_FORELDER));
+                                DeleteRelasjonerUtility.deleteRelasjoner(getPerson(ansvar1.getAnsvarlig()), FORELDREANSVAR_FORELDER));
             }
 
             person.getPerson().getForeldreansvar().add(ansvar);
@@ -367,9 +367,9 @@ public class ArtifactUpdateService {
             if (endretRelasjon) {
 
                 var slettePerson = getPerson(kontakt.getPersonSomKontakt().getIdentifikasjonsnummer());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson(), KONTAKT_FOR_DOEDSBO);
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, KONTAKT_FOR_DOEDSBO);
 
-                deletePerson(kontakt.getPersonSomKontakt().getIdentifikasjonsnummer(), kontakt.getPersonSomKontakt().isEksisterendePerson());
+                deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson());
 
                 person.getPerson().getKontaktinformasjonForDoedsbo().add(kontakt);
                 person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
@@ -496,9 +496,9 @@ public class ArtifactUpdateService {
             if (endretRelasjon) {
 
                 var slettePerson = getPerson(eksisterendeSivilstand.getRelatertVedSivilstand());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, eksisterendeSivilstand.isEksisterendePerson(), EKTEFELLE_PARTNER);
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, EKTEFELLE_PARTNER);
 
-                deletePerson(eksisterendeSivilstand.getRelatertVedSivilstand(), eksisterendeSivilstand.isEksisterendePerson());
+                deletePerson(slettePerson, eksisterendeSivilstand.isEksisterendePerson());
 
                 person.getPerson().getSivilstand().add(eksisterendeSivilstand);
                 person.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
@@ -547,8 +547,8 @@ public class ArtifactUpdateService {
 
                 var slettePerson = getPerson(fullmakt.getMotpartsPersonident());
 
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, fullmakt.isEksisterendePerson(), FULLMEKTIG);
-                deletePerson(fullmakt.getMotpartsPersonident(), fullmakt.isEksisterendePerson());
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FULLMEKTIG);
+                deletePerson(slettePerson, fullmakt.isEksisterendePerson());
 
                 person.getPerson().getFullmakt().add(fullmakt);
                 person.getPerson().getFullmakt().sort(Comparator.comparing(FullmaktDTO::getId).reversed());
@@ -582,9 +582,9 @@ public class ArtifactUpdateService {
             if (endretRelasjon) {
 
                 var slettePerson = getPerson(vergemaal.getVergeIdent());
-                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, vergemaal.isEksisterendePerson(), VERGE);
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, VERGE);
 
-                deletePerson(vergemaal.getVergeIdent(), vergemaal.isEksisterendePerson());
+                deletePerson(slettePerson, vergemaal.isEksisterendePerson());
 
                 person.getPerson().getVergemaal().add(vergemaal);
                 person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
@@ -628,10 +628,11 @@ public class ArtifactUpdateService {
                 .orElseThrow(() -> new NotFoundException(String.format(IDENT_NOT_FOUND, ident)));
     }
 
-    private void deletePerson(String tidligereRelatert, boolean isEksisterendePerson) {
+    private void deletePerson(DbPerson person, boolean isEksisterendePerson) {
 
-        if (!isEksisterendePerson) {
-            personService.deletePerson(tidligereRelatert);
+        if (person.getRelasjoner().isEmpty() || !isEksisterendePerson) {
+
+            personService.deletePerson(person.getIdent());
         }
     }
 }

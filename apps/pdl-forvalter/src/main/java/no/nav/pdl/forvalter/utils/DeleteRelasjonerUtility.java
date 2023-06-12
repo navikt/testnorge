@@ -33,13 +33,13 @@ import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.VERGE_MOTTAKE
 @UtilityClass
 public class DeleteRelasjonerUtility {
 
-    public static void deleteRelasjoner(DbPerson person, Boolean eksisterende, RelasjonType type) {
+    public static void deleteRelasjoner(DbPerson person, RelasjonType type) {
 
         var it = person.getRelasjoner().iterator();
         while (it.hasNext()) {
             var relasjon = it.next();
 
-            if (isType(relasjon.getRelasjonType(), getRelasjonTyper(type)) || !eksisterende) {
+            if (isType(relasjon.getRelasjonType(), getRelasjonTyper(type)) ) {
 
                 var relatertPerson = relasjon.getRelatertPerson();
                 deleteRelasjon(relatertPerson, person.getIdent(), getRelasjonTyper(relasjon.getRelasjonType()));
