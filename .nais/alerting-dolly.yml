@@ -25,14 +25,15 @@ spec:
 
         - alert: 'dolly-log-errors-test'
           action: 'action'
-          expr: sum by (app) (increase(log_messages_errors{namespace="dolly",level="Error"}[12h]) > 1)
+          expr: sum by (app,namespace) (increase(log_messages_errors{namespace="dolly",level="Error"}[12h]) > 1)
           for: 1m
           annotations:
             consequence: 'consequence'
             action: 'action'
             summary: 'TESTING AV ALERTS: En applikasjon har hatt mer enn 1 ERRORs i loggen i løpet av de siste 12 timene.'
             labels:
-              team: 'dolly'
+              namespace: 'dolly'
+              severity: critical
 
 #        - alert: 'dolly-log-errors'
 #          expr: 'sum by (app) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m]) > 1)'
