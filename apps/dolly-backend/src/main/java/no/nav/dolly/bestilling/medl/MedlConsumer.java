@@ -66,9 +66,9 @@ public class MedlConsumer implements ConsumerStatus {
     public Flux<MedlDataResponse> getMedlemskapsperioder(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> Flux.range(0, identer.size())
+                .flatMapMany(token -> Flux.fromIterable(identer)
                         .delayElements(Duration.ofMillis(100))
-                        .flatMap(idx -> new getMedldataCommand(webClient, identer.get(idx),
+                        .flatMap(ident -> new getMedldataCommand(webClient, ident,
                                 token.getTokenValue()).call()));
     }
 

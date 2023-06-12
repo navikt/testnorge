@@ -9,7 +9,7 @@ import no.nav.dolly.domain.resultset.medl.RsMedl;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
 
-import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Component
 public class MedlMappingStrategy implements MappingStrategy {
@@ -21,13 +21,8 @@ public class MedlMappingStrategy implements MappingStrategy {
                     public void mapAtoB(RsMedl rsMedl, MedlData medlDataRequest, MappingContext context) {
 
                         medlDataRequest.setIdent((String) context.getProperty("ident"));
-                        if (!isNull(rsMedl.getStudieinformasjon())) {
-                            medlDataRequest.setStudieinformasjon(MedlData.Studieinformasjon.builder()
-                                    .delstudie(rsMedl.getStudieinformasjon().getDelstudie())
-                                    .soeknadInnvilget(rsMedl.getStudieinformasjon().getSoeknadInnvilget())
-                                    .studieland(rsMedl.getStudieinformasjon().getStudieland())
-                                    .statsborgerland(rsMedl.getStudieinformasjon().getStatsborgerland())
-                                    .build());
+                        if (nonNull(rsMedl.getStudieinformasjon())) {
+                            medlDataRequest.setStudieinformasjon(mapperFacade.map(rsMedl.getStudieinformasjon(), MedlData.Studieinformasjon.class));
                         }
                     }
                 })
@@ -41,15 +36,10 @@ public class MedlMappingStrategy implements MappingStrategy {
                     public void mapAtoB(MedlDataResponse dataResponse, MedlData medlDataRequest, MappingContext context) {
 
                         medlDataRequest.setId(dataResponse.getUnntakId());
-                        if (!isNull(dataResponse.getStudieinformasjon())) {
-                            medlDataRequest.setStudieinformasjon(MedlData.Studieinformasjon.builder()
-                                    .delstudie(dataResponse.getStudieinformasjon().getDelstudie())
-                                    .soeknadInnvilget(dataResponse.getStudieinformasjon().getSoeknadInnvilget())
-                                    .studieland(dataResponse.getStudieinformasjon().getStudieland())
-                                    .statsborgerland(dataResponse.getStudieinformasjon().getStatsborgerland())
-                                    .build());
+                        if (nonNull(dataResponse.getStudieinformasjon())) {
+                            medlDataRequest.setStudieinformasjon(mapperFacade.map(dataResponse.getStudieinformasjon(), MedlData.Studieinformasjon.class));
                         }
-                        if (!isNull(dataResponse.getSporingsinformasjon())) {
+                        if (nonNull(dataResponse.getSporingsinformasjon())) {
                             medlDataRequest.setKilde(dataResponse.getSporingsinformasjon().getKilde());
                             medlDataRequest.setVersjon(dataResponse.getSporingsinformasjon().getVersjon());
                             medlDataRequest.setKildedokument(dataResponse.getSporingsinformasjon().getKildedokument());

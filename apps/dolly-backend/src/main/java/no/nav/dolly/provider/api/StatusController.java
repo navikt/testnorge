@@ -28,7 +28,7 @@ public class StatusController {
 
     static {
         consumerNavnMapping.put("DokarkivConsumer", "Dokumentarkiv (JOARK)");
-        consumerNavnMapping.put("MedlConsumer", "Medlemskapsperioder (MEDL)");
+        consumerNavnMapping.put("MedlConsumer", "Medlemskap (MEDL)");
         consumerNavnMapping.put("KrrstubConsumer", "Digital kontaktinformasjon (DKIF)");
         consumerNavnMapping.put("InstdataConsumer", "Instdata");
         consumerNavnMapping.put("InntektsmeldingConsumer", "Inntektsmelding (ALTINN/JOARK)");

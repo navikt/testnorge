@@ -24,7 +24,7 @@ public enum SystemTyper {
     INNTKMELD("Inntektsmelding (ALTINN/JOARK)"),
     BRREGSTUB("Brønnøysundregistrene (BRREGSTUB)"),
     DOKARKIV("Dokumentarkiv (JOARK)"),
-    MEDL("Medlemskapsperioder (MEDL)"),
+    MEDL("Medlemskap (MEDL)"),
     HISTARK("Saksmappearkiv (HISTARK)"),
     TPS_MESSAGING("Meldinger til TPS"),
     SYKEMELDING("NAV Sykemelding"),
