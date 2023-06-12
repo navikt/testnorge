@@ -1,6 +1,5 @@
 package no.nav.pdl.forvalter.database.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -51,18 +50,4 @@ public class DbRelasjon {
     @ManyToOne
     @JoinColumn(name = "relatert_person_id", nullable = false, updatable = false)
     private DbPerson relatertPerson;
-
-    @JsonIgnore
-    public boolean isForeldreansvar() {
-
-        return relasjonType == RelasjonType.FORELDREANSVAR_FORELDER ||
-                relasjonType == RelasjonType.FORELDREANSVAR_BARN;
-    }
-
-    @JsonIgnore
-    public boolean isVergemaal() {
-
-        return relasjonType == RelasjonType.VERGE ||
-                relasjonType == RelasjonType.VERGE_MOTTAKER;
-    }
 }

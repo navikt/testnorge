@@ -103,7 +103,7 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         }
 
         if (isNotBlank(relasjon.getRelatertPerson()) &&
-                !personRepository.existsByIdent(relasjon.getIdentForRelasjon())) {
+                !personRepository.existsByIdent(relasjon.getRelatertPerson())) {
 
             throw new InvalidRequestException(String.format(INVALID_RELATERT_PERSON_EXCEPTION,
                     relasjon.getRelatertPerson()));

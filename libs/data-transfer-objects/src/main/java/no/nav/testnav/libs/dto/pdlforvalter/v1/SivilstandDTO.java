@@ -73,7 +73,7 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
-    public boolean harRelatertVedSivilstand() {
+    public boolean hasRelatertVedSivilstand() {
 
         return isNotBlank(relatertVedSivilstand);
     }

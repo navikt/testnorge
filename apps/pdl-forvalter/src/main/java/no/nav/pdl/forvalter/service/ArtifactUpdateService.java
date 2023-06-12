@@ -490,7 +490,7 @@ public class ArtifactUpdateService {
 
         sivilstandRelasjon.ifPresent(eksisterendeSivilstand -> {
 
-            var endretRelasjon = eksisterendeSivilstand.harRelatertVedSivilstand() &&
+            var endretRelasjon = eksisterendeSivilstand.hasRelatertVedSivilstand() &&
                     !eksisterendeSivilstand.getRelatertVedSivilstand().equals(oppdatertSivilstand.getRelatertVedSivilstand());
 
             if (endretRelasjon) {
@@ -576,7 +576,7 @@ public class ArtifactUpdateService {
         vergemaalRelasjon.ifPresent(vergemaal -> {
 
             var endretRelasjon = nonNull(vergemaal.getVergeIdent()) &&
-                    (isNull(oppdatertVergemaal.getVergeIdent()) ||
+                    (isNotBlank(oppdatertVergemaal.getVergeIdent()) ||
                             !vergemaal.getVergeIdent().equals(oppdatertVergemaal.getVergeIdent()));
 
             if (endretRelasjon) {
