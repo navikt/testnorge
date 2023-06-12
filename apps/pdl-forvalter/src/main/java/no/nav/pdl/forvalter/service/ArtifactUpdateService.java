@@ -43,6 +43,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FULLMEKTIG;
@@ -381,15 +382,38 @@ public class ArtifactUpdateService {
 
     public void updateFalskIdentitet(String ident, Integer id, FalskIdentitetDTO oppdatertIdentitet) {
 
+        falskIdentitetService.validate(oppdatertIdentitet);
+
         var person = getPerson(ident);
+        var relatertFalskIdentitet = person.getPerson().getFalskIdentitet().stream()
+                .filter(falskIdentitet -> falskIdentitet.getId().equals(id))
+                .findFirst();
+
+        relatertFalskIdentitet.ifPresent(falskId -> {
+
+            var relasjonEndret = isNotBlank(falskId.getRettIdentitetVedIdentifikasjonsnummer()) &&
+                    falskId.getRettIdentitetVedIdentifikasjonsnummer().equals(
+                            oppdatertIdentitet.getRettIdentitetVedIdentifikasjonsnummer());
+
+            if (relasjonEndret) {
+                var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
+                DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FALSK_IDENTITET);
+
+                deletePerson(slettePerson, falskId.isEksisterendePerson());
+
+                person.getPerson().getFalskIdentitet().add(falskId);
+                person.getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
+            }
+        });
 
         person.getPerson().setFalskIdentitet(
                 updateArtifact(person.getPerson().getFalskIdentitet(), oppdatertIdentitet, id, "FalskIdentitet"));
 
-        falskIdentitetService.validate(oppdatertIdentitet);
-        falskIdentitetService.convert(person.getPerson());
+        if (id == 0 || relatertFalskIdentitet.isPresent()) {
 
-        folkeregisterPersonstatusService.update(person.getPerson());
+            falskIdentitetService.convert(person.getPerson());
+            folkeregisterPersonstatusService.update(person.getPerson());
+        }
     }
 
     public void updateAdressebeskyttelse(String ident, Integer id, AdressebeskyttelseDTO oppdatertBeskyttelse) {
