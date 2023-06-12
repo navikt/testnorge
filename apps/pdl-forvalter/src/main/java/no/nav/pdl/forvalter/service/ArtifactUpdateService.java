@@ -637,7 +637,7 @@ public class ArtifactUpdateService {
 
     private void deletePerson(DbPerson person, boolean isEksisterendePerson) {
 
-        if (person.getRelasjoner().isEmpty() || !isEksisterendePerson) {
+        if (person.getRelasjoner().isEmpty() && !isEksisterendePerson) {
 
             personService.deletePerson(person.getIdent());
         }
