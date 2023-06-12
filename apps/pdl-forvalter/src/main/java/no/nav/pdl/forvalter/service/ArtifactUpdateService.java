@@ -2,7 +2,6 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
 import no.nav.pdl.forvalter.utils.DeleteRelasjonerUtility;
@@ -26,7 +25,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SikkerhetstiltakDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
@@ -40,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
 import static java.util.Objects.isNull;
@@ -103,20 +100,6 @@ public class ArtifactUpdateService {
                 .mapToInt(DbVersjonDTO::getId)
                 .max().orElse(0) + 1);
         return oppretting;
-    }
-
-    private static void deleteRelasjon(DbPerson person, String tidligereRelatert, RelasjonType type) {
-
-        Iterator<DbRelasjon> it = person.getRelasjoner().iterator();
-        while (it.hasNext()) {
-            var relasjon = it.next();
-            if (type == relasjon.getRelasjonType() &&
-                    relasjon.getPerson().getIdent().equals(person.getIdent()) &&
-                    relasjon.getRelatertPerson().getIdent().equals(tidligereRelatert)) {
-
-                it.remove();
-            }
-        }
     }
 
     private <T extends DbVersjonDTO> List<T> updateArtifact(List<T> artifacter, T artifact,

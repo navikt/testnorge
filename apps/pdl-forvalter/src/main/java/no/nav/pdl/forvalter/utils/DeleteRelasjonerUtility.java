@@ -39,7 +39,7 @@ public class DeleteRelasjonerUtility {
         while (it.hasNext()) {
             var relasjon = it.next();
 
-            if (isType(relasjon.getRelasjonType(), getRelasjonTyper(type)) ) {
+            if (isType(relasjon.getRelasjonType(), getRelasjonTyper(type))) {
 
                 var relatertPerson = relasjon.getRelatertPerson();
                 deleteRelasjon(relatertPerson, person.getIdent(), getRelasjonTyper(relasjon.getRelasjonType()));
@@ -65,7 +65,7 @@ public class DeleteRelasjonerUtility {
         }
     }
 
-   private static void deleteOpplysningstype(DbPerson person, String relatertIdent, RelasjonType type) {
+    private static void deleteOpplysningstype(DbPerson person, String relatertIdent, RelasjonType type) {
 
         getSetter(type).accept(person.getPerson(), new ArrayList<>(
                 getGetter(type).apply(person.getPerson()).stream()
@@ -96,6 +96,7 @@ public class DeleteRelasjonerUtility {
         };
     }
 
+    @SuppressWarnings("java:S3740")
     private static BiConsumer<PersonDTO, List> getSetter(RelasjonType relasjonType) {
 
         return switch (relasjonType) {
