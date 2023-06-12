@@ -51,7 +51,7 @@ public class DeleteRelasjonerUtility {
         }
     }
 
-    public static void deleteRelasjon(DbPerson person, String tidligereRelatert, RelasjonType... typer) {
+    private static void deleteRelasjon(DbPerson person, String tidligereRelatert, RelasjonType... typer) {
 
         Iterator<DbRelasjon> it = person.getRelasjoner().iterator();
         while (it.hasNext()) {
@@ -65,7 +65,7 @@ public class DeleteRelasjonerUtility {
         }
     }
 
-    public static void deleteOpplysningstype(DbPerson person, String relatertIdent, RelasjonType type) {
+   private static void deleteOpplysningstype(DbPerson person, String relatertIdent, RelasjonType type) {
 
         getSetter(type).accept(person.getPerson(), new ArrayList<>(
                 getGetter(type).apply(person.getPerson()).stream()
