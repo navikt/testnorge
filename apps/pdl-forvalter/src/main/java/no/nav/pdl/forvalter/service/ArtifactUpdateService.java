@@ -298,20 +298,19 @@ public class ArtifactUpdateService {
                 var slettePerson = getPerson(ansvar.getAnsvarlig());
                 DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
 
-                deletePerson(slettePerson, ansvar.isEksisterendePerson());
-
                 person.getPerson().getForeldreansvar().stream()
                         .filter(ansvar1 -> ansvar1.getAnsvar() == Ansvar.FELLES)
                         .filter(ForeldreansvarDTO::isAnsvarligMedIdentifikator)
-                        .filter(ansvar1 -> ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
+                        .filter(ansvar1 -> !ansvar1.getAnsvarlig().equals(ansvar.getAnsvarlig()))
                         .findFirst()
                         .ifPresent(ansvar1 ->
                                 DeleteRelasjonerUtility.deleteRelasjoner(getPerson(ansvar1.getAnsvarlig()), FORELDREANSVAR_FORELDER));
+
+                deletePerson(slettePerson, ansvar.isEksisterendePerson());
+
+                person.getPerson().getForeldreansvar().add(ansvar);
+                person.getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
             }
-
-            person.getPerson().getForeldreansvar().add(ansvar);
-            person.getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
-
         });
 
         person.getPerson().setForeldreansvar(
