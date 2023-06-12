@@ -34,7 +34,7 @@ spec:
             action: |
               Events: `kubectl describe pod -l app={{ $labels.app }}`
               Logger: `kubectl logs -l app={{ $labels.app }}`
-              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22d{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|:link:>`
+              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
             labels:
               namespace: 'dolly'
               severity: 'warning'
@@ -47,7 +47,7 @@ spec:
             action: |
               Events: `kubectl describe pod -l app={{ $labels.app }}`
               Logger: `kubectl logs -l app={{ $labels.app }}`
-              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22d{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|:link:>`
+              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
             labels:
               namespace: 'dolly'
               severity: 'warning'
@@ -60,7 +60,7 @@ spec:
             action: |
               Events: `kubectl describe pod -l app={{ $labels.app }}`
               Logger: `kubectl logs -l app={{ $labels.app }}`
-              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22d{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|:link:>`
+              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
             labels:
               namespace: 'dolly'
               severity: 'warning'
