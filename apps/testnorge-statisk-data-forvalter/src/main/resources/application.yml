@@ -85,12 +85,20 @@ consumers:
   synthdata-aareg:
     url: http://nais-synthdata-aareg.dolly.svc.nais.local
   kodeverk:
+    cluster: dev-fss
+    name: testnav-kodeverk-proxy
+    namespace: dolly
     url: https://kodeverk.dev.intern.nav.no
   testnav-aareg-proxy:
     name: testnav-aareg-proxy
     namespace: dolly
     url: https://testnav-aareg-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-bruker-service:
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-bruker-service
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
 
 aareg:
   pageSize: 50

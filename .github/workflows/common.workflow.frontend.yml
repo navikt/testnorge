@@ -64,14 +64,24 @@ on:
         required: true
 
 env:
-  do-deploy-unstable: ${{ inputs.deploy-tag-unstable != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable) ) }}
-  do-deploy-idporten: ${{ inputs.deploy-tag-idporten != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten) ) }}
-  do-deploy-test: ${{ inputs.force-deploy-test || ( inputs.deploy-tag-test != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ) }}
-  do-deploy: ${{ inputs.force-deploy || ( inputs.deploy-tag != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) ) ) }}
+  do-deploy-unstable: ${{ !contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-unstable != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-unstable)) }}
+  do-deploy-idporten: ${{ !contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-idporten != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-idporten)) }}
+  do-deploy-test: ${{ inputs.force-deploy-test || ( !contains(github.event.head_commit.message, '#nodeploy') && inputs.deploy-tag-test != '' && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
+  do-deploy: ${{ inputs.force-deploy || ( !contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
 
 jobs:
 
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "branch: ${{ github.ref }}"
+          echo "inputs: ${{ toJSON(inputs) }}"
+          echo "env: ${{ toJSON(env) }}"
+          echo "commit: ${{ github.event.head.commit_message }}"
+
   sonar:
+    needs: start
     if: inputs.sonar-enabled
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -81,6 +91,7 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
 
   build:
+    needs: start
     if: github.actor != 'dependabot[bot]'
     permissions:
       contents: "read"

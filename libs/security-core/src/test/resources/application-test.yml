@@ -1,0 +1,6 @@
+# Sample configuration.
+server:
+  name: security-core-test
+  url: http://localhost:8080
+  cluster: dev-gcp
+  namespace: dolly
