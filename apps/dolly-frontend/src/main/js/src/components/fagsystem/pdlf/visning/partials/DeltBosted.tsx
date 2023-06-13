@@ -8,7 +8,7 @@ import { DeltBostedValues, PersonData } from '@/components/fagsystem/pdlf/PdlTyp
 import { initialDeltBosted } from '@/components/fagsystem/pdlf/form/initialValues'
 import * as _ from 'lodash-es'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
-import {OpplysningSlettet} from "@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet";
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type Data = {
 	data: Array<any>
@@ -53,7 +53,6 @@ export const DeltBostedVisning = ({
 		(a: DeltBostedValues) => a.id === adresseData.id
 	)
 	const redigertRelatertePersoner = _.get(tmpPersoner, `${ident}.relasjoner`)
-	//TODO: Ta i bruk redigerte relasjoner også?
 
 	const slettetBostedtPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBostedPdlf
 	if (slettetBostedtPdlf) {
@@ -67,9 +66,18 @@ export const DeltBostedVisning = ({
 		  }
 		: null
 
+	if (redigertBostedValues) {
+		_.set(redigertBostedValues, 'deltBosted.adresseIdentifikatorFraMatrikkelen', undefined)
+	}
+
 	let personValuesMedRedigert = _.cloneDeep(personValues)
 	if (redigertBostedPdlf && personValuesMedRedigert) {
 		personValuesMedRedigert.deltBosted = redigertBostedPdlf
+	}
+
+	const redigertForelderBarnRelasjon = _.get(tmpPersoner, `${ident}.person.forelderBarnRelasjon`)
+	if (redigertForelderBarnRelasjon && personValuesMedRedigert) {
+		personValuesMedRedigert.forelderBarnRelasjon = redigertForelderBarnRelasjon
 	}
 
 	return (
@@ -80,7 +88,7 @@ export const DeltBostedVisning = ({
 			path="deltBosted"
 			ident={ident}
 			personValues={personValuesMedRedigert}
-			relasjoner={relasjoner}
+			relasjoner={redigertRelatertePersoner || relasjoner}
 		/>
 	)
 }

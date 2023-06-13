@@ -10,6 +10,8 @@ import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
+import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 const ForeldreansvarLes = ({ foreldreansvarData, redigertRelatertePersoner, relasjoner, idx }) => {
 	if (!foreldreansvarData) {
@@ -145,6 +147,17 @@ export const ForeldreansvarEnkeltvisning = ({
 		personValuesMedRedigert.forelderBarnRelasjon = redigertForelderBarnRelasjonPdlf
 	}
 
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+	const erIGruppe = gruppeIdenter?.some(
+		(person) => person.ident === initialValues?.foreldreansvar?.ansvarlig
+	)
+	const relatertPersonInfo = erIGruppe
+		? {
+				ident: initialValues?.foreldreansvar?.ansvarlig,
+		  }
+		: null
+
 	return (
 		<VisningRedigerbarConnector
 			dataVisning={
@@ -161,6 +174,7 @@ export const ForeldreansvarEnkeltvisning = ({
 			path="foreldreansvar"
 			ident={ident}
 			personValues={personValuesMedRedigert}
+			relatertPersonInfo={relatertPersonInfo}
 		/>
 	)
 }

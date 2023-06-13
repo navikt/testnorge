@@ -201,19 +201,13 @@ export const VisningRedigerbar = ({
 		return submit()
 	}, [])
 
-	const handleSubmitRelatertPerson = useCallback((data: any) => {
+	const handleSubmitRelatertPerson = useCallback((data: any, ident: string) => {
 		const submit = async () => {
 			setVisningModus(Modus.LoadingPdlf)
-			await DollyApi.importerRelatertPerson(
-				relatertPersonInfo?.gruppeId,
-				relatertPersonInfo?.ident,
-				relatertPersonInfo?.master
-			).then((importResponse) => {
-				// setTimeout(() => {
+			await PdlforvalterApi.setStandalone(ident).then((importResponse) => {
 				if (importResponse?.ok) {
 					sendData(data)
 				}
-				// }, 2000)
 			})
 		}
 		mountedRef.current = false
@@ -232,11 +226,7 @@ export const VisningRedigerbar = ({
 	const handleDeleteRelatertPerson = useCallback(() => {
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
-			await DollyApi.importerRelatertPerson(
-				relatertPersonInfo?.gruppeId,
-				relatertPersonInfo?.ident,
-				relatertPersonInfo?.master
-			).then((importResponse) => {
+			await PdlforvalterApi.setStandalone(relatertPersonInfo?.ident).then((importResponse) => {
 				if (importResponse?.ok) {
 					sendSlett()
 				}
@@ -437,7 +427,11 @@ export const VisningRedigerbar = ({
 			{visningModus === Modus.Skriv && (
 				<Formik
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
-					onSubmit={relatertPersonInfo ? handleSubmitRelatertPerson : handleSubmit}
+					onSubmit={(data) =>
+						relatertPersonInfo?.ident
+							? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
+							: handleSubmit(data)
+					}
 					enableReinitialize
 					validate={_validate}
 				>

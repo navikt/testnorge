@@ -16,7 +16,8 @@ import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 import React from 'react'
-import {useParams} from "react-router-dom";
+import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type FamilieRelasjonerData = {
 	data: Array<ForeldreBarnRelasjon>
@@ -152,12 +153,15 @@ export const ForelderBarnRelasjonVisning = ({
 	}
 
 	const { gruppeId } = useParams()
-	const relatertPersonInfo = {
-		gruppeId: gruppeId,
-		ident: initialValues?.forelderBarnRelasjon?.relatertPerson,
-		master: 'PDLF'
-	}
-
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+	const erIGruppe = gruppeIdenter?.some(
+		(person) => person.ident === initialValues?.forelderBarnRelasjon?.relatertPerson
+	)
+	const relatertPersonInfo = erIGruppe
+		? {
+				ident: initialValues?.forelderBarnRelasjon?.relatertPerson,
+		  }
+		: null
 
 	return (
 		<VisningRedigerbarConnector

@@ -11,7 +11,8 @@ import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
-import {useParams} from "react-router-dom";
+import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -118,11 +119,15 @@ const SivilstandVisning = ({
 		  ])
 
 	const { gruppeId } = useParams()
-	const relatertPersonInfo = {
-		gruppeId: gruppeId,
-		ident: initialValues?.sivilstand?.relatertVedSivilstand,
-		master: 'PDLF'
-	}
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+	const erIGruppe = gruppeIdenter?.some(
+		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand
+	)
+	const relatertPersonInfo = erIGruppe
+		? {
+				ident: initialValues?.sivilstand?.relatertVedSivilstand,
+		  }
+		: null
 
 	return (
 		<VisningRedigerbarConnector
