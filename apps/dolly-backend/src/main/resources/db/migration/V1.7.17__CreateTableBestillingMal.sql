@@ -5,18 +5,21 @@
 create table bestilling_mal
 (
     id                  integer primary key,
-    bestilling_id       integer references bestilling (id),
+    best_kriterier      text,
+    miljoer             varchar(200),
     mal_bestilling_navn varchar(100),
-    opprettet_av_id     integer references bruker (id)
-
+    opprettet_av_id     integer references bruker (id),
+    sist_oppdatert      timestamp
 );
 
 create table organisasjon_bestilling_mal
 (
     id                  integer primary key,
-    bestilling_id       integer references organisasjon_bestilling (id),
+    best_kriterier      text,
+    miljoer             varchar(200),
     mal_bestilling_navn varchar(100),
-    opprettet_av_id     integer references bruker (id)
+    opprettet_av_id     integer references bruker (id),
+    sist_oppdatert      timestamp
 );
 
 -------------------------------------
