@@ -5,6 +5,7 @@ import no.nav.registre.varslingerservice.adapter.PersonVarslingAdapter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
@@ -18,10 +19,11 @@ public class VarslingerPersonController {
     private final PersonVarslingAdapter personVarslingAdapter;
 
     @GetMapping
-    public ResponseEntity<List<String>> getVarslingerIds() {
-        return ResponseEntity.ok(personVarslingAdapter.getAll());
+    public List<String> getVarslingerIds() {
+        return personVarslingAdapter.getAll();
     }
 
+    // TODO: Vi sjekker ikke om varslingId eksisterer; kan fort ryke på en NPE i PersonVarslingAdapter#save hvis så er tilfelle.
     @PutMapping("/{varslingId}")
     public ResponseEntity<HttpStatus> updatePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
         String saved = personVarslingAdapter.save(varslingId);
@@ -33,17 +35,15 @@ public class VarslingerPersonController {
     }
 
     @GetMapping("/{varslingId}")
-    public ResponseEntity<String> getPersonVarslingerId(@PathVariable("varslingId") String varslingId) {
+    public String getPersonVarslingerId(@PathVariable("varslingId") String varslingId) {
         return Optional
                 .ofNullable(personVarslingAdapter.get(varslingId))
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
     @DeleteMapping("/{varslingId}")
-    public ResponseEntity<Object> deletePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
+    public void deletePersonVarslingerId(@PathVariable("varslingId") String varslingId) {
         personVarslingAdapter.delete(varslingId);
-        return ResponseEntity.ok().build();
     }
 
 }
