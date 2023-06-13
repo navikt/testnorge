@@ -7,7 +7,6 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -43,7 +42,6 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
-    @Disabled
     void personAlderBarn23Forelder41() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
@@ -55,8 +53,8 @@ class RelasjonerAlderServiceTest {
                                 ForelderBarnRelasjonDTO.builder()
                                         .minRolleForPerson(ForelderBarnRelasjonDTO.Rolle.FORELDER)
                                         .nyRelatertPerson(PersonRequestDTO.builder()
-                                                .foedtFoer(LocalDateTime.of(LocalDate.now().getYear() - 23,
-                                                        LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth(), 1, 1))
+                                                .foedtFoer(LocalDateTime.of(LocalDate.now(clock).getYear() - 23,
+                                                        LocalDate.now(clock).getMonthValue(), LocalDate.now(clock).getDayOfMonth(), 1, 1))
                                                 .build())
                                         .build()
                         ))
@@ -69,13 +67,12 @@ class RelasjonerAlderServiceTest {
                 .build();
         var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
         assertThat(oppdatertBestilling.getPerson().getSivilstand().get(0).getNyRelatertPerson().getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
     }
 
     @Test
-    @Disabled
     void personAlderBarn23Besteforeldre() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
@@ -87,8 +84,8 @@ class RelasjonerAlderServiceTest {
                                 ForelderBarnRelasjonDTO.builder()
                                         .minRolleForPerson(ForelderBarnRelasjonDTO.Rolle.FORELDER)
                                         .nyRelatertPerson(PersonRequestDTO.builder()
-                                                .foedtFoer(LocalDateTime.of(LocalDate.now().getYear() - 23,
-                                                        LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth(), 1, 1))
+                                                .foedtFoer(LocalDateTime.of(LocalDate.now(clock).getYear() - 23,
+                                                        LocalDate.now(clock).getMonthValue(), LocalDate.now(clock).getDayOfMonth(), 1, 1))
                                                 .build())
                                         .build(),
                                 ForelderBarnRelasjonDTO.builder()
@@ -99,9 +96,9 @@ class RelasjonerAlderServiceTest {
                 .build();
         var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
         assertThat(oppdatertBestilling.getPerson().getForelderBarnRelasjon().get(1).getNyRelatertPerson().getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23 + 36))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23 + 36))));
     }
 
     @Test
