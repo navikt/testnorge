@@ -6,6 +6,7 @@ import no.nav.pdl.forvalter.consumer.GenererNavnServiceConsumer;
 import no.nav.pdl.forvalter.exception.InvalidRequestException;
 import no.nav.pdl.forvalter.utils.IdenttypeFraIdentUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OppholdsadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
@@ -13,6 +14,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.StatsborgerskapDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtflyttingDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VegadresseDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -52,11 +54,12 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
             if (isTrue(adresse.getIsNew())) {
 
-                populateMiscFields(adresse, person);
+                adresse.setKilde(StringUtils.isNotBlank(adresse.getKilde()) ? adresse.getKilde() : "Dolly");
+                adresse.setMaster(nonNull(adresse.getMaster()) ? adresse.getMaster() : DbVersjonDTO.Master.FREG);
                 handle(adresse, person);
             }
         }
-        enforceIntegrity(person.getOppholdsadresse());
+
         return person.getOppholdsadresse();
     }
 
@@ -109,7 +112,8 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
         if (nonNull(oppholdsadresse.getVegadresse())) {
             var vegadresse =
                     adresseServiceConsumer.getVegadresse(oppholdsadresse.getVegadresse(), oppholdsadresse.getAdresseIdentifikatorFraMatrikkelen());
-            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(vegadresse.getMatrikkelId());
+            oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(oppholdsadresse.getMaster() == Master.FREG ?
+                    vegadresse.getMatrikkelId() : null);
             mapperFacade.map(vegadresse, oppholdsadresse.getVegadresse());
 
         } else if (nonNull(oppholdsadresse.getMatrikkeladresse())) {
@@ -120,8 +124,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse()) &&
                 oppholdsadresse.getUtenlandskAdresse().isEmpty()) {
-            oppholdsadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person)));
-            oppholdsadresse.setMaster(Master.PDL);
+            oppholdsadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person), oppholdsadresse.getMaster()));
         }
 
         oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));
