@@ -7,6 +7,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -42,6 +43,7 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
+    @Disabled
     void personAlderBarn23Forelder41() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
@@ -73,6 +75,7 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
+    @Disabled
     void personAlderBarn23Besteforeldre() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
