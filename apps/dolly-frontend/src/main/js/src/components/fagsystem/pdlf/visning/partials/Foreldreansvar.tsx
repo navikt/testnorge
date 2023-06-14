@@ -100,6 +100,9 @@ export const ForeldreansvarEnkeltvisning = ({
 	relasjoner,
 	personValues,
 }) => {
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+
 	const initForeldreansvar = Object.assign(_.cloneDeep(initialForeldreansvar), data[idx])
 	let initialValues = { foreldreansvar: initForeldreansvar }
 
@@ -147,8 +150,6 @@ export const ForeldreansvarEnkeltvisning = ({
 		personValuesMedRedigert.forelderBarnRelasjon = redigertForelderBarnRelasjonPdlf
 	}
 
-	const { gruppeId } = useParams()
-	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
 	const erIGruppe = gruppeIdenter?.some(
 		(person) => person.ident === initialValues?.foreldreansvar?.ansvarlig
 	)

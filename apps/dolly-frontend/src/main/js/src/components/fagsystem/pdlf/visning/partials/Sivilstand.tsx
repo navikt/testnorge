@@ -86,6 +86,9 @@ const SivilstandVisning = ({
 	tmpPersoner,
 	ident,
 }: VisningData) => {
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+
 	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
 	let initialValues = { sivilstand: initSivilstand }
 	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
@@ -118,8 +121,6 @@ const SivilstandVisning = ({
 				'EKTEFELLE_PARTNER',
 		  ])
 
-	const { gruppeId } = useParams()
-	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
 	const erIGruppe = gruppeIdenter?.some(
 		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand
 	)

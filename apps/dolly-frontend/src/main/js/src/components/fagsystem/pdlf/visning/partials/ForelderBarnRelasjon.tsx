@@ -82,6 +82,9 @@ export const ForelderBarnRelasjonVisning = ({
 	ident,
 	relasjoner,
 }: FamilieRelasjonerData) => {
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+
 	const initForelderBarn = Object.assign(
 		_.cloneDeep(data[idx]?.relatertPersonsRolle === 'BARN' ? initialBarn : initialForelder),
 		data[idx]
@@ -152,8 +155,6 @@ export const ForelderBarnRelasjonVisning = ({
 		redigertForelderBarnValues.harDeltBosted = true
 	}
 
-	const { gruppeId } = useParams()
-	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
 	const erIGruppe = gruppeIdenter?.some(
 		(person) => person.ident === initialValues?.forelderBarnRelasjon?.relatertPerson
 	)
