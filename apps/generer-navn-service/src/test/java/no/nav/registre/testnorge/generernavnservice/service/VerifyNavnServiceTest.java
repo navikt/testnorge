@@ -1,62 +1,46 @@
 package no.nav.registre.testnorge.generernavnservice.service;
 
 import no.nav.testnav.libs.dto.generernavnservice.v1.NavnDTO;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@ExtendWith(MockitoExtension.class)
 class VerifyNavnServiceTest {
 
-    private final String GYLDIG_ADJEKTIV = "Lojal Avansert";
-    private final String GYLDIG_ADVERB = "Reflekterende";
-    private final String GYLDIG_SUBSTANTIV = "Reise Løveflokk Tragedie";
+    private final static String GYLDIG_ADJEKTIV = "Lojal Avansert";
+    private final static String GYLDIG_ADVERB = "Reflekterende";
+    private final static String GYLDIG_SUBSTANTIV = "Reise Løveflokk Tragedie";
 
-    private final String IKKE_ADJEKTIV = "Aaaaaa Bbbbbbb Cccccccc";
-    private final String IKKE_ADVERB = "Ddddddddd";
-    private final String IKKE_SUBSTANTIV = "Eeeeeeee Fffffffff Ggggggggg Hhhhhhhhh";
-
-    @InjectMocks
-    private VerifyNavnService verifyNavnService;
-    private NavnDTO gyldigNavnDTO;
-
-    private NavnDTO gyldigNavnDTOMedTomtMellomnavn;
-    private NavnDTO ikkeGyldigNavnDTO;
-
-    @BeforeEach
-    void setUp() {
-        gyldigNavnDTO = NavnDTO.builder()
-                .adjektiv(GYLDIG_ADJEKTIV)
-                .adverb(GYLDIG_ADVERB)
-                .substantiv(GYLDIG_SUBSTANTIV)
-                .build();
-
-        gyldigNavnDTOMedTomtMellomnavn = NavnDTO.builder()
-                .adjektiv(GYLDIG_ADJEKTIV)
-                .adverb(null)
-                .substantiv(GYLDIG_SUBSTANTIV)
-                .build();
-
-        ikkeGyldigNavnDTO = NavnDTO.builder()
-                .adjektiv(IKKE_ADJEKTIV)
-                .adverb(IKKE_ADVERB)
-                .substantiv(IKKE_SUBSTANTIV)
-                .build();
-    }
+    private final static String IKKE_ADJEKTIV = "Aaaaaa Bbbbbbb Cccccccc";
+    private final static String IKKE_ADVERB = "Ddddddddd";
+    private final static String IKKE_SUBSTANTIV = "Eeeeeeee Fffffffff Ggggggggg Hhhhhhhhh";
 
     @Test
     void testVerifyNavn() {
-        var gyldigNavnResult = verifyNavnService.verifyNavn(gyldigNavnDTO);
-        var gyldigNavnMedTomtMellomnavnResult = verifyNavnService.verifyNavn(gyldigNavnDTOMedTomtMellomnavn);
-        var ikkeGyldigNavnResult = verifyNavnService.verifyNavn(ikkeGyldigNavnDTO);
-
-        assertThat(gyldigNavnResult, is(Boolean.TRUE));
-        assertThat(gyldigNavnMedTomtMellomnavnResult, is(Boolean.TRUE));
-        assertThat(ikkeGyldigNavnResult, is(Boolean.FALSE));
+        var service = new VerifyNavnService();
+        var gyldigNavnResult = service.verifyNavn(
+                NavnDTO.builder()
+                        .adjektiv(GYLDIG_ADJEKTIV)
+                        .adverb(GYLDIG_ADVERB)
+                        .substantiv(GYLDIG_SUBSTANTIV)
+                        .build()
+        );
+        var gyldigNavnMedTomtMellomnavnResult = service.verifyNavn(
+                NavnDTO.builder()
+                        .adjektiv(GYLDIG_ADJEKTIV)
+                        .adverb(null)
+                        .substantiv(GYLDIG_SUBSTANTIV)
+                        .build()
+        );
+        var ikkeGyldigNavnResult = service.verifyNavn(
+                NavnDTO.builder()
+                        .adjektiv(IKKE_ADJEKTIV)
+                        .adverb(IKKE_ADVERB)
+                        .substantiv(IKKE_SUBSTANTIV)
+                        .build()
+        );
+        assertThat(gyldigNavnResult).isTrue();
+        assertThat(gyldigNavnMedTomtMellomnavnResult).isTrue();
+        assertThat(ikkeGyldigNavnResult).isFalse();
     }
 }

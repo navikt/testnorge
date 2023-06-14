@@ -6,7 +6,6 @@ import { DollySelect, FormikSelect } from '@/components/ui/form/inputs/select/Se
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
 import { genererTilfeldigeNavPersonidenter } from '@/utils/GenererTilfeldigeNavPersonidenter'
 import { Option } from '@/service/SelectOptionsOppslag'
 import { isToday } from 'date-fns'
@@ -18,6 +17,7 @@ import {
 	initialTpsSikkerhetstiltak,
 } from '@/components/fagsystem/pdlf/form/initialValues'
 import { useNavEnheter } from '@/utils/hooks/useNorg2'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface SikkerhetstiltakValues {
 	tiltakstype: string

@@ -64,7 +64,7 @@ export const App = () => {
 							route.element ? (
 								<Route key={idx} path={route.path} element={<route.element />} />
 							) : (
-								<React.Fragment />
+								<React.Fragment key={idx} />
 							)
 						)}
 					</Routes>

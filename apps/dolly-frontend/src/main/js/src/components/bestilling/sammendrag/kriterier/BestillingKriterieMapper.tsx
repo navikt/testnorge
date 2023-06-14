@@ -9,38 +9,49 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized,
+	uppercaseAndUnderscoreToCapitalized
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk,
+	VergemaalKodeverk
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
 import _has from 'lodash/has'
+import { MedlKodeverk } from '@/components/fagsystem/medl/MedlConstants'
 
 // TODO: Flytte til selector?
 // - Denne kan forminskes ved bruk av hjelpefunksjoner
 // - Når vi får på plass en bedre struktur for bestillingsprosessen, kan
 //   mest sannsynlig visse props fjernes herfra (width?)
 
-const obj = (label, value, apiKodeverkId = null) => ({
+const obj = (label: string, value: any, apiKodeverkId?: any) => ({
 	label,
 	value,
-	...(apiKodeverkId && { apiKodeverkId }),
+	apiKodeverkId,
 })
 
-const expandable = (expandableHeader, vis, objects) => ({
+const expandable = (
+	expandableHeader: null | string,
+	vis: boolean,
+	objects:
+		| null
+		| {
+				apiKodeverkId: any
+				label: string
+				value: any
+		  }[]
+) => ({
 	expandableHeader,
 	vis,
 	objects,
 })
 
-const mapBestillingsinformasjon = (bestillingsinformasjon, data, identtype) => {
+const mapBestillingsinformasjon = (bestillingsinformasjon: any, data: any[], identtype: any) => {
 	if (bestillingsinformasjon) {
 		const bestillingsInfo = {
 			header: 'Bestillingsinformasjon',
@@ -1364,7 +1375,6 @@ const mapArbeidsplassenCV = (bestillingData, data) => {
 		data.push(arbeidsplassenCV)
 	}
 }
-
 const mapSykemelding = (bestillingData, data) => {
 	const sykemeldingKriterier = _.get(bestillingData, 'sykemelding')
 
@@ -1478,6 +1488,39 @@ const mapBrregstub = (bestillingData, data) => {
 		})
 
 		data.push(brregstub)
+	}
+}
+
+const mapMedlemskapsperiode = (bestillingData, data) => {
+	const medlKriterier = bestillingData.medl
+
+	if (medlKriterier) {
+		const medl = {
+			header: 'Medlemskap',
+			items: [
+				obj('Kilde', medlKriterier.kilde, MedlKodeverk.KILDE),
+				obj('Fra dato', formatDate(medlKriterier.fraOgMed)),
+				obj('Til dato', formatDate(medlKriterier.tilOgMed)),
+				obj('Status', medlKriterier.status, MedlKodeverk.PERIODE_STATUS),
+				obj('Grunnlag', medlKriterier.grunnlag, MedlKodeverk.GRUNNLAG),
+				obj('Dekning', medlKriterier.dekning, MedlKodeverk.PERIODE_DEKNING),
+				obj('Lovvalgsland', medlKriterier.lovvalgsland, MedlKodeverk.LANDKODER),
+				obj('Lovvalg', medlKriterier.lovvalg, MedlKodeverk.LOVVALG_PERIODE),
+				obj('Kildedokument', medlKriterier.kildedokument, MedlKodeverk.KILDE_DOK),
+				obj('Delstudie', oversettBoolean(medlKriterier.studieinformasjon?.delstudie)),
+				obj(
+					'Er søknad innvilget',
+					oversettBoolean(medlKriterier.studieinformasjon?.soeknadInnvilget)
+				),
+				obj('Studieland', medlKriterier.studieinformasjon?.studieland, MedlKodeverk.LANDKODER),
+				obj(
+					'Statsborgerland',
+					medlKriterier.studieinformasjon?.statsborgerland,
+					MedlKodeverk.LANDKODER
+				),
+			],
+		}
+		data.push(medl)
 	}
 }
 
@@ -2079,6 +2122,7 @@ export function mapBestillingData(bestillingData, bestillingsinformasjon) {
 	mapSykemelding(bestillingData, data)
 	mapBrregstub(bestillingData, data)
 	mapKrr(bestillingData, data)
+	mapMedlemskapsperiode(bestillingData, data)
 	mapArena(bestillingData, data)
 	mapInst(bestillingData, data)
 	mapUdiStub(bestillingData, data)

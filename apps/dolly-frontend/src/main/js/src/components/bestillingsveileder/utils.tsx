@@ -70,6 +70,7 @@ export const rootPaths = [
 	'brregstub',
 	'histark',
 	'dokarkiv',
+	'medl',
 	'sykemelding',
 	'organisasjon',
 ]

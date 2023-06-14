@@ -8,7 +8,7 @@ import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
-import { StyledAlert } from '@/pages/gruppe/PersonVisning/PersonVisning'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const Visning = ({ data }) => {
 	if (!data || data.length === 0) {

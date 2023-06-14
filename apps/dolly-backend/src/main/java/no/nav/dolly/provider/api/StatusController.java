@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -26,6 +28,7 @@ public class StatusController {
 
     static {
         consumerNavnMapping.put("DokarkivConsumer", "Dokumentarkiv (JOARK)");
+        consumerNavnMapping.put("MedlConsumer", "Medlemskap (MEDL)");
         consumerNavnMapping.put("KrrstubConsumer", "Digital kontaktinformasjon (DKIF)");
         consumerNavnMapping.put("InstdataConsumer", "Instdata");
         consumerNavnMapping.put("InntektsmeldingConsumer", "Inntektsmelding (ALTINN/JOARK)");

@@ -34,7 +34,7 @@ const Container = styled.div`
 	outline: none;
 	transition: border 0.24s ease-in-out;
 `
-export const FileUploader = ({
+export default ({
 	files,
 	setFiles,
 	feil,

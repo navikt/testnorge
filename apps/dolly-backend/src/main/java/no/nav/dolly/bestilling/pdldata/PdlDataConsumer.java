@@ -127,11 +127,12 @@ public class PdlDataConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "pdl_identer_standalone"})
-    public Mono<Void> putStandalone(String ident, Boolean standalone) {
+    public Mono<String> putStandalone(String ident, Boolean standalone) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new PdlDataStanaloneCommand(webClient, ident, standalone, token.getTokenValue())
-                        .call());
+                        .call())
+                .doOnNext(response -> log.info("Lagt til ident {} som standalone i PDL-forvalter", ident));
     }
 
     @Override

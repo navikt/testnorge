@@ -17,7 +17,7 @@ import { PdlNyPerson } from '@/components/fagsystem/pdlf/form/partials/pdlPerson
 import { PdlPersonUtenIdentifikator } from '@/components/fagsystem/pdlf/form/partials/pdlPerson/PdlPersonUtenIdentifikator'
 import { Alert } from '@navikt/ds-react'
 import { useContext, useEffect } from 'react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import styled from 'styled-components'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
@@ -32,6 +32,7 @@ type Target = {
 
 const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
+
 	&&& {
 		.navds-alert__wrapper {
 			max-width: 60rem;

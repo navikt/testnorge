@@ -18,7 +18,7 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.UTFLYTTET;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -49,7 +49,7 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
     @Override
     public void validate(UtflyttingDTO utflytting) {
 
-        if (isNotBlank(utflytting.getTilflyttingsland()) && !isLandkode(utflytting.getTilflyttingsland())) {
+        if (isNotBlank(utflytting.getTilflyttingsland()) && !hasLandkode(utflytting.getTilflyttingsland())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
     }
@@ -64,6 +64,13 @@ public class UtflyttingService implements Validation<UtflyttingDTO> {
             utflytting.setUtflyttingsdato(LocalDateTime.now());
         }
 
+        var it = person.getBostedsadresse().iterator();
+        while (it.hasNext()) {
+            var bostedsadresse = it.next();
+            if (bostedsadresse.isAdresseNorge() && bostedsadresse.getGyldigFraOgMed().isAfter(utflytting.getUtflyttingsdato())) {
+                it.remove();
+            }
+        }
         if (!person.getBostedsadresse().isEmpty() && person.getBostedsadresse().get(0).isAdresseNorge()) {
             person.getBostedsadresse().get(0).setGyldigTilOgMed(utflytting.getUtflyttingsdato().minusDays(1));
         }

@@ -32,8 +32,6 @@ import { getBestillingsListe } from '@/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '@/service/Api'
-import { Alert } from '@navikt/ds-react'
-import styled from 'styled-components'
 import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
 import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
@@ -57,6 +55,7 @@ import {
 	harDokarkivBestilling,
 	harHistarkBestilling,
 	harInstBestilling,
+	harMedlBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
@@ -64,14 +63,9 @@ import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visni
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
-
-export const StyledAlert = styled(Alert)`
-	margin-bottom: 20px;
-
-	.navds-alert__wrapper {
-		max-width: 100rem;
-	}
-`
+import { MedlVisning } from '@/components/fagsystem/medl/visning'
+import { useMedlPerson } from '@/utils/hooks/useMedl'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -83,7 +77,7 @@ const getIdenttype = (ident) => {
 	}
 }
 
-export const PersonVisning = ({
+export default ({
 	fetchDataFraFagsystemer,
 	data,
 	bestillingIdListe,
@@ -125,6 +119,11 @@ export const PersonVisning = ({
 	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
 		ident.ident,
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+	)
+
+	const { loading: loadingMedl, medl } = useMedlPerson(
+		ident.ident,
+		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
 
 	const visArbeidsforhold =
@@ -393,6 +392,7 @@ export const PersonVisning = ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
+				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}

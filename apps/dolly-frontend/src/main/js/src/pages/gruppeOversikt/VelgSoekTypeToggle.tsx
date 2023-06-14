@@ -21,7 +21,6 @@ export const VelgSoekTypeToggle = ({ soekValg, setValgtSoekType }: Props) => {
 	return (
 		<div className="toggle--wrapper">
 			<ToggleGroup
-				size={'small'}
 				onChange={handleToggleChange}
 				defaultValue={SoekTypeValg.PERSON}
 				style={{ backgroundColor: '#ffffff' }}

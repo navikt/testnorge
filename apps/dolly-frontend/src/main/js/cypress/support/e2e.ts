@@ -18,6 +18,7 @@ import {
 	kontoregisterMock,
 	krrstubMock,
 	malerMock,
+	medlMock,
 	miljoeMock,
 	nyGruppeMock,
 	oppsummeringsdokumentServiceMock,
@@ -64,6 +65,7 @@ const pensjonTp = new RegExp(/testnav-pensjon-testdata-facade-proxy\/api\/v1\/tp
 const krrstub = new RegExp(/testnav-krrstub-proxy\/api\/v2/)
 const udistub = new RegExp(/dolly-backend\/api\/v1\/udistub/)
 const brregstub = new RegExp(/testnav-brregstub/)
+const medl = new RegExp(/testnav-medl-proxy/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
 const alleMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling$/)
 const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\/bruker/)
@@ -109,6 +111,7 @@ beforeEach(() => {
 	cy.intercept({ method: 'GET', url: alleMaler }, malerMock)
 	cy.intercept({ method: 'GET', url: brukerOrganisasjonMaler }, brukerOrganisasjonMalerMock)
 	cy.intercept({ method: 'GET', url: brregstub }, brregstubMock)
+	cy.intercept({ method: 'GET', url: medl }, medlMock)
 	cy.intercept({ method: 'GET', url: joarkDokJournalpost }, joarkJournalpostMock)
 	cy.intercept({ method: 'GET', url: joarkDokDokument }, joarkDokumentMock)
 	cy.intercept({ method: 'GET', url: krrstub }, krrstubMock)

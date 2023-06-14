@@ -3,7 +3,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 
-export const Digitalinnsending = () => {
+export default () => {
 	return (
 		// @ts-ignore
 		<div className="flexbox--space">
