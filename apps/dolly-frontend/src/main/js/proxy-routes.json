@@ -114,6 +114,11 @@
     "changeOrigin": true,
     "secure": false
   },
+  "/testnav-medl-proxy/rest": {
+    "target": "http://localhost:8020",
+    "changeOrigin": true,
+    "secure": false
+  },
   "/testnav-pensjon-testdata-facade-proxy/api": {
     "target": "http://localhost:8020",
     "changeOrigin": true,

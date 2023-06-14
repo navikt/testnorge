@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
 import { initialNyIdent } from '@/components/fagsystem/pdlf/form/initialValues'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { identifikasjonAttributter } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/Identifikasjon'
 

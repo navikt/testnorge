@@ -570,6 +570,33 @@ export const skjermingMock = {
 	skjermetFra: '2022-01-01 11:48:14',
 }
 
+export const medlMock = [
+	{
+		unntakId: 123456789,
+		ident: '12345678912',
+		fraOgMed: '2023-03-28',
+		tilOgMed: '2023-06-07',
+		status: 'GYLD',
+		dekning: 'DEKNING',
+		helsedel: true,
+		medlem: true,
+		lovvalgsland: 'NOR',
+		lovvalg: 'LOVVALG',
+		grunnlag: 'GRUNNLAG',
+		sporingsinformasjon: {
+			versjon: 0,
+			registrert: '2023-01-01',
+			besluttet: '2023-01-01',
+			kilde: 'srvmelosys',
+			kildedokument: 'Dokument',
+			opprettet: '2023-01-01T10:10:10.111111',
+			opprettetAv: 'srvmelosys',
+			sistEndret: '2023-01-01T10:10:10.111111',
+			sistEndretAv: 'srvmelosys',
+		},
+	},
+]
+
 export const brregstubMock = {
 	fnr: '12345678912',
 	fodselsdato: '1992-01-11',
@@ -1232,6 +1259,7 @@ export const backendBestillingerMock = [
 				],
 			},
 			histark: {},
+			medl: {},
 			sykemelding: {
 				syntSykemelding: {
 					orgnummer: '987654321',

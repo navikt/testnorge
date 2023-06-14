@@ -42,6 +42,7 @@ import Logout from '@/assets/icons/nav-ikoner/line/SVG/19-interface/logout.svg?r
 import CheckCircle2 from '@/assets/icons/nav-ikoner/line/SVG/20-status/check-circle-2.svg?raw'
 import Wrench from '@/assets/icons/nav-ikoner/line/SVG/21-settings/wrench.svg?raw'
 import Calendar from '@/assets/icons/nav-ikoner/line/SVG/22-time/calendar-3.svg?raw'
+import CalendarDays from '@/assets/icons/nav-ikoner/line/SVG/22-time/calendar-2.svg?raw'
 import Hourglass from '@/assets/icons/nav-ikoner/line/SVG/22-time/hourglass-1.svg?raw'
 import InformationCircle from '@/assets/icons/nav-ikoner/line/SVG/23-alerts-informations/information-circle.svg?raw'
 import BankNote from '@/assets/icons/nav-ikoner/line/SVG/24-business-finance/bank-notes-3.svg?raw'
@@ -103,6 +104,7 @@ export const icons = {
 	user: AccountCircle,
 	search: Search,
 	calendar: Calendar,
+	'calendar-days': CalendarDays,
 	'file-new-table': NewFileTable,
 	'arrow-left': ArrowLeft,
 	'arrow-right': ArrowRight,

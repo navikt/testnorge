@@ -5,7 +5,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
 import * as _ from 'lodash-es'
 import { Alert } from '@navikt/ds-react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 const errorPaths = [
 	`arenaforvalter.aap115[0].fraDato`,

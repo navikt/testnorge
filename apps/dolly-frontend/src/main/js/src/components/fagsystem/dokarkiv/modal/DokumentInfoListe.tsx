@@ -3,8 +3,7 @@ import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import { Vedlegg } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { Document, Page } from 'react-pdf/dist/esm/entry.vite'
-import { pdfjs } from 'react-pdf'
+import { Document, Page, pdfjs } from 'react-pdf'
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 import styled from 'styled-components'
@@ -29,7 +28,7 @@ const PdfDocument = styled(Document)`
 	max-height: 90px;
 	margin-right: 10px;
 `
-export const DokumentInfoListe = ({ filer, handleChange, isMultiple = true }: Data) => {
+export default ({ filer, handleChange, isMultiple = true }: Data) => {
 	if (!filer || filer.length < 1) {
 		return null
 	}

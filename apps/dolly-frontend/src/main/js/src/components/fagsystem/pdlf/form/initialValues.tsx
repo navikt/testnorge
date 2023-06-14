@@ -127,6 +127,52 @@ export const initialSikkerhetstiltak = {
 	master: 'PDL',
 }
 
+export const initialMedl = {
+	fraOgMed: new Date(),
+	tilOgMed: new Date(),
+	status: '',
+	statusaarsak: '',
+}
+
+export const initialMedlMelosys = {
+	...initialMedl,
+	kilde: 'srvmelosys',
+	grunnlag: '',
+	dekning: '',
+	lovvalg: '',
+	lovvalgsland: '',
+	kildedokument: '',
+}
+
+export const initialMedlGosys = {
+	...initialMedl,
+	kilde: 'srvgosys',
+	grunnlag: '',
+	dekning: '',
+	lovvalg: '',
+	lovvalgsland: '',
+	kildedokument: '',
+}
+
+export const initialMedlLaanekassen = {
+	...initialMedl,
+	kilde: 'LAANEKASSEN',
+	kildedokument: '',
+	studieinformasjon: {
+		statsborgerland: '',
+		studieland: '',
+		delstudie: false,
+		soeknadInnvilget: false,
+	},
+}
+
+export const initialMedlAvgangssystem = {
+	...initialMedl,
+	kilde: 'AVGSYS',
+	grunnlag: '',
+	dekning: '',
+}
+
 export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',

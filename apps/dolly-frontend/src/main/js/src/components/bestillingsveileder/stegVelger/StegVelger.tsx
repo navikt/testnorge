@@ -8,7 +8,7 @@ import { BestillingsveilederHeader } from '../BestillingsveilederHeader'
 import { Steg1 } from './steg/steg1/Steg1'
 import { Steg2 } from './steg/steg2/Steg2'
 import { Steg3 } from './steg/steg3/Steg3'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import DisplayFormikState from '@/utils/DisplayFormikState'
 import {
 	REGEX_BACKEND_BESTILLINGER,

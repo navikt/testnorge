@@ -1,16 +1,20 @@
-import React, { useContext, useEffect } from 'react'
+import React, { Suspense, useContext, useEffect } from 'react'
 import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-import Bestillingskriterier from '@/components/bestilling/sammendrag/kriterier/Bestillingskriterier'
 import { MiljoVelger } from '@/components/miljoVelger/MiljoVelger'
 import { MalForm } from './MalForm'
 import { VelgGruppe } from '@/components/bestillingsveileder/stegVelger/steg/steg3/VelgGruppe'
 import { OppsummeringKommentarForm } from '@/components/bestillingsveileder/stegVelger/steg/steg3/OppsummeringKommentarForm'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 import { MalFormOrganisasjon } from '@/pages/organisasjoner/MalFormOrganisasjon'
 import { useFormikContext } from 'formik'
-import { useBrukerProfil, useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import { useCurrentBruker, useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
+import Loading from '@/components/ui/loading/Loading'
+
+const Bestillingskriterier = React.lazy(
+	() => import('@/components/bestilling/sammendrag/kriterier/Bestillingskriterier')
+)
 
 export const Steg3 = () => {
 	const opts = useContext(BestillingsveilederContext)
@@ -73,7 +77,9 @@ export const Steg3 = () => {
 		<div>
 			{harAvhukedeAttributter(formikBag.values) && (
 				<div className="oppsummering">
-					<Bestillingskriterier bestilling={formikBag.values} />
+					<Suspense fallback={<Loading label={'Laster bestillingskriterier...'} />}>
+						<Bestillingskriterier bestilling={formikBag.values} />
+					</Suspense>
 				</div>
 			)}
 			{visMiljoeVelger && (

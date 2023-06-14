@@ -20,7 +20,7 @@ type InstResponse = {
 }
 
 export const useDollyEnvironments = () => {
-	const { data, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
+	const { data, isLoading, error } = useSWRImmutable<string[], Error>(getMiljoerUrl, fetcher, {
 		fallbackData: prefetchedMiljoer,
 	})
 
@@ -28,25 +28,25 @@ export const useDollyEnvironments = () => {
 	return {
 		dollyEnvironments: environmentsSortedByType,
 		dollyEnvironmentList: environmentsSortedByType.Q?.concat(environmentsSortedByType?.T),
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const usePensjonEnvironments = () => {
-	const { data, error } = useSWR<string[], Error>(getPensjonMiljoerUrl, fetcher, {
+	const { data, isLoading, error } = useSWR<string[], Error>(getPensjonMiljoerUrl, fetcher, {
 		fallbackData: prefetchedPensjonMiljoer,
 	})
 
 	return {
 		pensjonEnvironments: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useArenaEnvironments = () => {
-	const { data, error } = useSWR<string[], Error>(
+	const { data, isLoading, error } = useSWR<string[], Error>(
 		[getArenaMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
 		([url, headers]) => fetcher(url, headers),
 		{
@@ -56,25 +56,25 @@ export const useArenaEnvironments = () => {
 
 	return {
 		arenaEnvironments: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useInstEnvironments = () => {
-	const { data, error } = useSWR<InstResponse, Error>(getInstMiljoerUrl, fetcher, {
+	const { data, isLoading, error } = useSWR<InstResponse, Error>(getInstMiljoerUrl, fetcher, {
 		fallbackData: prefetchedInstMiljoer,
 	})
 
 	return {
 		instEnvironments: data?.institusjonsoppholdEnvironments,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useDokarkivEnvironments = () => {
-	const { data, error } = useSWR<string[], Error>(
+	const { data, isLoading, error } = useSWR<string[], Error>(
 		[getDokarkivMiljoerUrl, { 'Nav-Call-Id': 'dolly', 'Nav-Consumer-Id': 'dolly' }],
 		([url, headers]) => fetcher(url, headers),
 		{
@@ -84,7 +84,7 @@ export const useDokarkivEnvironments = () => {
 
 	return {
 		dokarkivEnvironments: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
