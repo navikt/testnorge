@@ -3,10 +3,16 @@ import MedlVisning from './MedlVisning'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import * as _ from 'lodash'
 import { Medlemskapsperiode } from '@/components/fagsystem/medl/MedlTypes'
+import styled from 'styled-components'
 
 type MedlTypes = {
 	data?: Medlemskapsperiode[]
 }
+
+const StyledSuboverskrift = styled(SubOverskrift)`
+	margin-bottom: -10px;
+	padding-bottom: -10px;
+`
 
 const STATUS_AVVIST = 'AVST'
 const STATUSAARSAK_FEILREGISTRERT = 'Feilregistrert'
@@ -24,19 +30,17 @@ export default ({ data }: MedlTypes) => {
 
 	return (
 		<>
-			<SubOverskrift label="Medlemskap" iconKind="calendar-days" />
+			<StyledSuboverskrift
+				label="Medlemskap"
+				iconKind="calendar-days"
+				style={{ marginBottom: '-2px' }}
+			/>
 			<DollyFieldArray
 				data={data?.filter(predicateGyldigeMedlemskapsperioder())}
 				header="Medlemskapsperiode"
 				nested
 			>
-				{(medlemskapsperiode, idx) => {
-					return (
-						<div className="person-visning_content" key={idx}>
-							<MedlVisning medlemskapsperiode={medlemskapsperiode} />
-						</div>
-					)
-				}}
+				{(medlemskapsperiode, idx) => <MedlVisning medlemskapsperiode={medlemskapsperiode} />}
 			</DollyFieldArray>
 		</>
 	)

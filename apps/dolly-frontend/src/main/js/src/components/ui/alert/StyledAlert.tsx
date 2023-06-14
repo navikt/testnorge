@@ -1,7 +1,7 @@
 import { Alert } from '@navikt/ds-react'
 import styled from 'styled-components'
 
-const StyledAlertLarge = styled(Alert)`
+const StyledAlert = styled(Alert)`
 	margin-bottom: 20px;
 
 	.navds-alert__wrapper {
@@ -9,4 +9,4 @@ const StyledAlertLarge = styled(Alert)`
 	}
 `
 
-export default (props: any) => <StyledAlertLarge {...props} />
+export default (props: any) => <StyledAlert {...props} />

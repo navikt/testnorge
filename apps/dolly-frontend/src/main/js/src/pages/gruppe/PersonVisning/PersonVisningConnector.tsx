@@ -69,5 +69,3 @@ const mapDispatchToProps = (dispatch, ownProps) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(PersonVisning)
-
-//TODO: Fikse denne til å rendre med Fast Refresh

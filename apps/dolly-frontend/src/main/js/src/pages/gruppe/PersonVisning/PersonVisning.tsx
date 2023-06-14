@@ -65,7 +65,7 @@ import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/vis
 import _has from 'lodash/has'
 import { MedlVisning } from '@/components/fagsystem/medl/visning'
 import { useMedlPerson } from '@/utils/hooks/useMedl'
-import StyledAlertLarge from '@/components/ui/alert/StyledAlertLarge'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -318,11 +318,11 @@ export default ({
 					)}
 				</div>
 				{manglerFagsystemdata() && (
-					<StyledAlertLarge variant={'info'} size={'small'}>
+					<StyledAlert variant={'info'} size={'small'}>
 						Det ser ut til at denne personen har ufullstendige data fra ett eller flere fagsystemer.
 						Forsøk å gjenopprette personen for å fikse dette, og ta eventuelt kontakt med Team Dolly
 						dersom problemet vedvarer.
-					</StyledAlertLarge>
+					</StyledAlert>
 				)}
 				{ident.master === 'PDLF' && <PdlfVisningConnector fagsystemData={data} loading={loading} />}
 				{ident.master === 'PDL' && (

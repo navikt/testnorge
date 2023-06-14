@@ -24,13 +24,13 @@ interface MedlFormProps {
 }
 
 export const MedlForm = ({ formikBag }: MedlFormProps) => {
-	if (!_.has(formikBag.values, MedlAttributt)) {
-		return null
-	}
-
 	const [aktivKilde, setAktivKilde] = useState(
 		_.get(formikBag.values, 'medl.kilde') || MEDL_KILDER.SRVMELOSYS
 	)
+
+	if (!_.has(formikBag.values, MedlAttributt)) {
+		return null
+	}
 
 	function getInitialValue(aktivKilde: string) {
 		switch (aktivKilde) {
