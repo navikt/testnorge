@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +14,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 import static no.nav.dolly.domain.jpa.HibernateConstants.SEQUENCE_STYLE_GENERATOR;
 
@@ -35,12 +39,20 @@ public class OrganisasjonBestillingMal implements Serializable {
     })
     private Long id;
 
-    @Column(name = "BESTILLING_ID", nullable = false)
-    private Integer BestillingId;
+    @Column(name = "BEST_KRITERIER", nullable = false)
+    private String bestKriterier;
+
+    @Column(name = "MILJOER")
+    private String miljoer;
 
     @Column(name = "MAL_BESTILLING_NAVN", nullable = false)
-    private Integer malBestillingNavn;
+    private String malBestillingNavn;
 
-    @Column(name = "OPPRETTET_AV_ID", nullable = false)
-    private Integer opprettetAvId;
+    @ManyToOne
+    @JoinColumn(name = "BRUKER_ID")
+    private Bruker bruker;
+
+    @Column(name = "SIST_OPPDATERT", nullable = false)
+    @UpdateTimestamp
+    private LocalDateTime sistOppdatert;
 }

@@ -11,8 +11,8 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
+import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.MalBestillingService;
 import no.nav.dolly.service.NavigasjonService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -49,7 +49,7 @@ public class BestillingController {
     private final BestillingService bestillingService;
     private final OrganisasjonBestillingService organisasjonBestillingService;
     private final NavigasjonService navigasjonService;
-    private final MalBestillingService malBestillingService;
+    private final BestillingMalService bestillingMalService;
     private final GjenopprettBestillingService gjenopprettBestillingService;
 
     @Cacheable(value = CACHE_BESTILLING)
@@ -123,14 +123,14 @@ public class BestillingController {
     @Operation(description = "Hent mal-bestilling")
     public RsMalBestillingWrapper getMalBestillinger() {
 
-        return malBestillingService.getMalBestillinger();
+        return bestillingMalService.getMalBestillinger();
     }
 
     @GetMapping("/malbestilling/bruker")
     @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
     public List<RsMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
 
-        return malBestillingService.getMalbestillingByNavnAndUser(brukerId, malNavn);
+        return bestillingMalService.getMalbestillingByNavnAndUser(brukerId, malNavn);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
@@ -138,7 +138,7 @@ public class BestillingController {
     @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {
 
-        bestillingService.redigerBestilling(id, null);
+        bestillingMalService.deleteMalBestillingByID(id);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
@@ -146,6 +146,6 @@ public class BestillingController {
     @Operation(description = "Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        bestillingService.redigerBestilling(id, malbestillingNavn.getMalNavn());
+        bestillingMalService.updateMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
     }
 }

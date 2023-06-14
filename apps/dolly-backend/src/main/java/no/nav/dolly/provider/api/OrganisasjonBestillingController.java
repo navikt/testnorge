@@ -13,7 +13,7 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper.RsOrganisasjonMalBestilling;
-import no.nav.dolly.service.MalBestillingService;
+import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
 import org.springframework.http.HttpStatus;
@@ -39,7 +39,7 @@ public class OrganisasjonBestillingController {
 
     private final OrganisasjonClient organisasjonClient;
     private final OrganisasjonBestillingService bestillingService;
-    private final MalBestillingService malBestillingService;
+    private final BestillingMalService bestillingMalService;
     private final OrganisasjonProgressService progressService;
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -88,28 +88,28 @@ public class OrganisasjonBestillingController {
     @Operation(description = "Hent mal-bestilling")
     public RsOrganisasjonMalBestillingWrapper getMalBestillinger() {
 
-        return malBestillingService.getOrganisasjonMalBestillinger();
+        return bestillingMalService.getOrganisasjonMalBestillinger();
     }
 
     @GetMapping("/malbestilling/bruker")
     @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
     public List<RsOrganisasjonMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
 
-        return malBestillingService.getOrganisasjonMalbestillingByNavnAndUser(brukerId, malNavn);
+        return bestillingMalService.getOrganisasjonMalbestillingByNavnAndUser(brukerId, malNavn);
     }
 
     @DeleteMapping("/malbestilling/{id}")
     @Operation(description = "Slett mal-bestilling")
     public void deleteMalBestilling(@PathVariable Long id) {
 
-        bestillingService.redigerMalBestillingNavn(id, null);
+        bestillingMalService.updateOrganisasjonMalBestillingNavnById(id, null);
     }
 
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        bestillingService.redigerMalBestillingNavn(id, malbestillingNavn.getMalNavn());
+        bestillingMalService.updateOrganisasjonMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
     }
 
     private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

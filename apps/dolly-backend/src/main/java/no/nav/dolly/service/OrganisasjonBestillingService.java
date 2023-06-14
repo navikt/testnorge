@@ -19,6 +19,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.mapper.BestillingOrganisasjonStatusMapper;
 import no.nav.dolly.mapper.strategy.JsonBestillingMapper;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,7 +28,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -56,7 +61,9 @@ public class OrganisasjonBestillingService {
 
     private final BrukerRepository brukerRepository;
     private final OrganisasjonBestillingRepository bestillingRepository;
+    private final OrganisasjonBestillingMalRepository organisasjonBestillingMalRepository;
     private final OrganisasjonProgressService progressService;
+    private final BestillingMalService bestillingMalService;
     private final OrganisasjonConsumer organisasjonConsumer;
     private final BrukerService brukerService;
     private final ObjectMapper objectMapper;
@@ -128,9 +135,18 @@ public class OrganisasjonBestillingService {
 
     public List<OrganisasjonBestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
         Bruker bruker = brukerService.fetchBruker(brukerId);
-        return nonNull(malNavn)
-                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
-                : bestillingRepository.findMalBestillingByUser(bruker);
+        var bestillinger = nonNull(malNavn)
+                ? organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn)
+                : organisasjonBestillingMalRepository.findByBruker(bruker);
+
+        return bestillinger.stream().map(bestilling -> OrganisasjonBestilling.builder()
+                .malBestillingNavn(bestilling.getMalBestillingNavn())
+                .bestKriterier(bestilling.getBestKriterier())
+                .bruker(bestilling.getBruker())
+                .id(bestilling.getId())
+                .miljoer(bestilling.getMiljoer())
+                .sistOppdatert(bestilling.getSistOppdatert())
+                .build()).toList();
     }
 
     @Transactional
@@ -159,31 +175,38 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
 
-        return saveBestillingToDB(
-                OrganisasjonBestilling.builder()
-                        .antall(1)
-                        .ferdig(false)
-                        .sistOppdatert(now())
-                        .miljoer(join(",", request.getEnvironments()))
-                        .bestKriterier(toJson(request.getOrganisasjon()))
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
-                        .malBestillingNavn(request.getMalBestillingNavn())
-                        .build());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
+                .antall(1)
+                .ferdig(false)
+                .sistOppdatert(now())
+                .miljoer(join(",", request.getEnvironments()))
+                .bestKriterier(toJson(request.getOrganisasjon()))
+                .bruker(bruker)
+                .malBestillingNavn(request.getMalBestillingNavn())
+                .build();
+
+        bestillingMalService.saveOrganisasjonBestillingMal(bestilling, bruker);
+
+        return saveBestillingToDB(bestilling);
     }
 
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestillingStatus status) {
 
-        return saveBestillingToDB(
-                OrganisasjonBestilling.builder()
-                        .antall(1)
-                        .sistOppdatert(now())
-                        .ferdig(isTrue(status.getFerdig()))
-                        .miljoer(join(",", status.getEnvironments()))
-                        .bestKriterier(toJson(status.getBestilling()))
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
-                        .malBestillingNavn(status.getMalBestillingNavn())
-                        .build());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
+                .antall(1)
+                .sistOppdatert(now())
+                .ferdig(isTrue(status.getFerdig()))
+                .miljoer(join(",", status.getEnvironments()))
+                .bestKriterier(toJson(status.getBestilling()))
+                .bruker(bruker)
+                .malBestillingNavn(status.getMalBestillingNavn())
+                .build();
+
+        bestillingMalService.saveOrganisasjonBestillingMal(bestilling, bruker);
+        return saveBestillingToDB(bestilling);
     }
 
     @Transactional
@@ -220,14 +243,6 @@ public class OrganisasjonBestillingService {
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
         return bestillingRepository.findByBruker(bruker);
-    }
-
-    @Transactional
-    public void redigerMalBestillingNavn(Long id, String malbestillingNavn) {
-
-        Optional<OrganisasjonBestilling> token = bestillingRepository.findById(id);
-        OrganisasjonBestilling bestilling = token.orElseThrow(() -> new NotFoundException(format("Id {%d} ikke funnet ", id)));
-        bestilling.setMalBestillingNavn(malbestillingNavn);
     }
 
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {

@@ -8,7 +8,7 @@ create table bestilling_mal
     best_kriterier      text,
     miljoer             varchar(200),
     mal_bestilling_navn varchar(100),
-    opprettet_av_id     integer references bruker (id),
+    bruker_id           integer REFERENCES bruker (id),
     sist_oppdatert      timestamp
 );
 
@@ -18,7 +18,7 @@ create table organisasjon_bestilling_mal
     best_kriterier      text,
     miljoer             varchar(200),
     mal_bestilling_navn varchar(100),
-    opprettet_av_id     integer references bruker (id),
+    bruker_id           integer REFERENCES bruker (id),
     sist_oppdatert      timestamp
 );
 

@@ -1,7 +1,6 @@
 package no.nav.dolly.repository;
 
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,23 +55,14 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
             "and bp.ident in (:identer) order by b.id asc")
     List<Bestilling> findBestillingerByIdentIn(@Param("identer") Collection<String> identer);
 
-    @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.malBestillingNavn = :malNavn and b.bruker = :bruker order by b.malBestillingNavn")
-    Optional<List<Bestilling>> findMalBestillingByMalnavnAndUser(@Param("bruker") Bruker bruker, @Param("malNavn") String malNavn);
-
-    @Query(value = "from Bestilling b where b.malBestillingNavn is not null and b.bruker = :bruker order by b.malBestillingNavn")
-    Optional<List<Bestilling>> findMalBestillingByUser(@Param("bruker") Bruker bruker);
-
     @Query(value = "select distinct(b) from Bestilling b " +
             "where b.gruppe.id = :gruppeId " +
             "order by b.id desc")
     Page<Bestilling> getBestillingerFromGruppeId(@Param(value = "gruppeId") Long gruppeId, Pageable pageable);
 
-    @Query(value = "from Bestilling b where b.malBestillingNavn is not null order by b.malBestillingNavn")
-    Optional<List<Bestilling>> findMalBestilling();
-
     @Modifying
-    @Query(value = "delete from Bestilling b where b.gruppe.id = :gruppeId and b.malBestillingNavn is null")
-    int deleteByGruppeIdExcludeMaler(@Param("gruppeId") Long gruppeId);
+    @Query(value = "delete from Bestilling b where b.gruppe.id = :gruppeId")
+    int deleteByGruppeId(@Param("gruppeId") Long gruppeId);
 
     @Modifying
     @Query(value = "update Bestilling b " +

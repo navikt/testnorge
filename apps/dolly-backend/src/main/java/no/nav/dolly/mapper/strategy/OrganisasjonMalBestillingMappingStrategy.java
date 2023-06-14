@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.CustomMapper;
 import ma.glasnost.orika.MapperFactory;
 import ma.glasnost.orika.MappingContext;
-import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.mapper.MappingStrategy;
 import org.springframework.stereotype.Component;
@@ -21,10 +21,10 @@ public class OrganisasjonMalBestillingMappingStrategy implements MappingStrategy
 
     @Override
     public void register(MapperFactory factory) {
-        factory.classMap(OrganisasjonBestilling.class, RsOrganisasjonBestilling.class)
+        factory.classMap(OrganisasjonBestillingMal.class, RsOrganisasjonBestilling.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(OrganisasjonBestilling bestilling, RsOrganisasjonBestilling malBestilling, MappingContext context) {
+                    public void mapAtoB(OrganisasjonBestillingMal bestilling, RsOrganisasjonBestilling malBestilling, MappingContext context) {
 
                         malBestilling.setEnvironments(getEnvironments(bestilling.getMiljoer()));
                         malBestilling.setOrganisasjon(jsonBestillingMapper.mapOrganisasjonBestillingRequest(bestilling.getBestKriterier()));
