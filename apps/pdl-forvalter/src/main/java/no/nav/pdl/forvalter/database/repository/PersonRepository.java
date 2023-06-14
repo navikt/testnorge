@@ -42,7 +42,9 @@ public interface PersonRepository extends JpaRepository<DbPerson, Long> {
 
     @Query(value = "select * from person p "
             + "where p.person -> 'sivilstand' -> 0 ->> 'relatertVedSivilstand' = :ident "
+            + "OR P.person -> 'sivilstand' -> 1 ->> 'relatertVedSivilstand' = :ident "
             + "or p.person -> 'forelderBarnRelasjon' -> 0 ->> 'relatertPerson' = :ident "
+            + "or p.person -> 'forelderBarnRelasjon' -> 1 ->> 'relatertPerson' = :ident "
             + "or p.person -> 'foreldreansvar' -> 0 ->> 'ansvarlig' = :ident "
             + "or p.person -> 'kontaktinformasjonForDoedsbo' -> 0 -> 'personSomKontakt' ->> 'identifikasjonsnummer' = :ident "
             + "or p.person -> 'vergemaal' -> 0 ->> 'vergeIdent' = :ident "
