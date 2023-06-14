@@ -16,7 +16,7 @@ import java.util.List;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.ArtifactUtils.NORGE;
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.isLandkode;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasLandkode;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.Identtype.FNR;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.commons.lang3.StringUtils.isBlank;
@@ -48,7 +48,7 @@ public class StatsborgerskapService implements Validation<StatsborgerskapDTO> {
     @Override
     public void validate(StatsborgerskapDTO statsborgerskap) {
 
-        if (nonNull(statsborgerskap.getLandkode()) && !isLandkode(statsborgerskap.getLandkode())) {
+        if (nonNull(statsborgerskap.getLandkode()) && !hasLandkode(statsborgerskap.getLandkode())) {
             throw new InvalidRequestException(VALIDATION_LANDKODE_ERROR);
         }
 

@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static no.nav.pdl.forvalter.utils.ArtifactUtils.isSpraak;
+import static no.nav.pdl.forvalter.utils.ArtifactUtils.hasSpraak;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
@@ -26,12 +26,12 @@ public class TilrettelagtKommunikasjonService extends PdlArtifactService<Tilrett
         }
 
         if (isNotBlank(tilrettelagtKommunikasjon.getSpraakForTaletolk()) &&
-                (!isSpraak(tilrettelagtKommunikasjon.getSpraakForTaletolk()))) {
+                (!hasSpraak(tilrettelagtKommunikasjon.getSpraakForTaletolk()))) {
             throw new InvalidRequestException(VALIDATION_TOLKESPRAAK_ERROR);
         }
 
         if (isNotBlank(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk()) &&
-                !isSpraak(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk())) {
+                !hasSpraak(tilrettelagtKommunikasjon.getSpraakForTegnspraakTolk())) {
             throw new InvalidRequestException(VALIDATION_TEGNSPRAAK_ERROR);
         }
     }

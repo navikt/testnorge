@@ -46,7 +46,8 @@ public interface PersonRepository extends JpaRepository<DbPerson, Long> {
             + "or p.person -> 'foreldreansvar' -> 0 ->> 'ansvarlig' = :ident "
             + "or p.person -> 'kontaktinformasjonForDoedsbo' -> 0 -> 'personSomKontakt' ->> 'identifikasjonsnummer' = :ident "
             + "or p.person -> 'vergemaal' -> 0 ->> 'vergeIdent' = :ident "
-            + "or p.person -> 'fullmakt' -> 0 ->> 'motpartsPersonident' = :ident",
+            + "or p.person -> 'fullmakt' -> 0 ->> 'motpartsPersonident' = :ident "
+            + "or p.person -> 'falskIdentitet' -> 0 ->> 'rettIdentitetVedIdentifikasjonsnummer' = :ident",
             nativeQuery = true)
     List<DbPerson> findByRelatertPerson(@Param("ident") String ident);
 }

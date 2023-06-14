@@ -113,5 +113,12 @@ public class IdentitetService {
                         fullmakt.setEksisterendePerson(standalone);
                     }
                 }));
+
+        personer.forEach(person -> person.getPerson().getFalskIdentitet()
+                .forEach(falskId -> {
+                    if (ident.equals(falskId.getRettIdentitetVedIdentifikasjonsnummer())) {
+                        falskId.setEksisterendePerson(standalone);
+                    }
+                }));
     }
 }

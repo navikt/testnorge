@@ -70,4 +70,9 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     }
 
     public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return relatertPerson;
+    }
 }

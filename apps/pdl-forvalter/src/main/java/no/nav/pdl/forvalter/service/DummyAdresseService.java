@@ -2,12 +2,14 @@ package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO.PostboksadresseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.UtenlandskAdresseDTO;
 import org.springframework.stereotype.Service;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -39,11 +41,11 @@ public class DummyAdresseService {
                 .build();
     }
 
-    public UtenlandskAdresseDTO getUtenlandskAdresse(String landkode) {
+    public UtenlandskAdresseDTO getUtenlandskAdresse(String landkode, DbVersjonDTO.Master master) {
 
         return UtenlandskAdresseDTO.builder()
                 .adressenavnNummer(ADRESSE_NAVN_NUMMER)
-                .regionDistriktOmraade(ADRESSE_BY_STED)
+                .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
                 .bySted(ADRESSE_3_UTLAND)
                 .postkode(ADRESSE_POSTKODE)
                 .landkode(isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
