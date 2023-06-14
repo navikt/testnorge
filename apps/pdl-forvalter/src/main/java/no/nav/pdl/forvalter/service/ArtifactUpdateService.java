@@ -258,7 +258,8 @@ public class ArtifactUpdateService {
 
                 deletePerson(slettePerson, relasjon.isEksisterendePerson());
 
-                person.getPerson().getForelderBarnRelasjon().add(relasjon);
+                oppdatertRelasjon.setId(id);
+                person.getPerson().getForelderBarnRelasjon().add(oppdatertRelasjon);
                 person.getPerson().getForelderBarnRelasjon().sort(Comparator.comparing(ForelderBarnRelasjonDTO::getId).reversed());
             }
         });
@@ -308,7 +309,8 @@ public class ArtifactUpdateService {
 
                 deletePerson(slettePerson, ansvar.isEksisterendePerson());
 
-                person.getPerson().getForeldreansvar().add(ansvar);
+                oppdatertAnsvar.setId(id);
+                person.getPerson().getForeldreansvar().add(oppdatertAnsvar);
                 person.getPerson().getForeldreansvar().sort(Comparator.comparing(ForeldreansvarDTO::getId).reversed());
             }
         });
@@ -354,7 +356,8 @@ public class ArtifactUpdateService {
 
                 deletePerson(slettePerson, kontakt.getPersonSomKontakt().isEksisterendePerson());
 
-                person.getPerson().getKontaktinformasjonForDoedsbo().add(kontakt);
+                oppdatertInformasjon.setId(id);
+                person.getPerson().getKontaktinformasjonForDoedsbo().add(oppdatertInformasjon);
                 person.getPerson().getKontaktinformasjonForDoedsbo().sort(Comparator.comparing(KontaktinformasjonForDoedsboDTO::getId).reversed());
             }
         });
@@ -400,7 +403,8 @@ public class ArtifactUpdateService {
 
                 deletePerson(slettePerson, falskId.isEksisterendePerson());
 
-                person.getPerson().getFalskIdentitet().add(falskId);
+                oppdatertIdentitet.setId(id);
+                person.getPerson().getFalskIdentitet().add(oppdatertIdentitet);
                 person.getPerson().getFalskIdentitet().sort(Comparator.comparing(FalskIdentitetDTO::getId).reversed());
             }
         });
@@ -506,7 +510,8 @@ public class ArtifactUpdateService {
 
                 deletePerson(slettePerson, eksisterendeSivilstand.isEksisterendePerson());
 
-                person.getPerson().getSivilstand().add(eksisterendeSivilstand);
+                oppdatertSivilstand.setId(id);
+                person.getPerson().getSivilstand().add(oppdatertSivilstand);
                 person.getPerson().getSivilstand().sort(Comparator.comparing(SivilstandDTO::getId).reversed());
             }
         });
@@ -556,7 +561,8 @@ public class ArtifactUpdateService {
                 DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FULLMEKTIG);
                 deletePerson(slettePerson, fullmakt.isEksisterendePerson());
 
-                person.getPerson().getFullmakt().add(fullmakt);
+                oppdatertFullmakt.setId(id);
+                person.getPerson().getFullmakt().add(oppdatertFullmakt);
                 person.getPerson().getFullmakt().sort(Comparator.comparing(FullmaktDTO::getId).reversed());
             }
         });
@@ -592,7 +598,8 @@ public class ArtifactUpdateService {
 
                 deletePerson(slettePerson, vergemaal.isEksisterendePerson());
 
-                person.getPerson().getVergemaal().add(vergemaal);
+                oppdatertVergemaal.setId(id);
+                person.getPerson().getVergemaal().add(oppdatertVergemaal);
                 person.getPerson().getVergemaal().sort(Comparator.comparing(VergemaalDTO::getId).reversed());
             }
         });
