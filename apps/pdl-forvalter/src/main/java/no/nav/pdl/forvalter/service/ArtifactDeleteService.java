@@ -233,8 +233,8 @@ public class ArtifactDeleteService {
                 .forEach(falskId -> {
                     var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
 
-                    deleteRelasjon(person, falskId.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
-                    deleteRelasjon(slettePerson, person.getIdent(), RelasjonType.AVDOEDD_FOR_KONTAKT);
+                    deleteRelasjon(person, falskId.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
+                    deleteRelasjon(slettePerson, person.getIdent(), RelasjonType.FALSK_IDENTITET);
 
                     deletePerson(slettePerson, falskId.isEksisterendePerson());
                 });
