@@ -149,6 +149,11 @@ consumers:
     namespace: dolly
     url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-medl-proxy:
+    name: testnav-medl-proxy
+    namespace: dolly
+    url: https://testnav-medl-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
   testnav-inntektstub-proxy:
     name: testnav-inntektstub-proxy
     namespace: dolly

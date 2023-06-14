@@ -15,20 +15,20 @@ type MalResponse = {
 }
 
 export const useDollyMaler = () => {
-	const { data, error, mutate } = useSWR<MalResponse, Error>(getMalerUrl, fetcher, {
+	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(getMalerUrl, fetcher, {
 		fallbackData: { malbestillinger: ['TEMP', []] },
 	})
 
 	return {
 		maler: data?.malbestillinger,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 		mutate: mutate,
 	}
 }
 
 export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
-	const { data, error, mutate } = useSWR<Mal[], Error>(
+	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
 		brukerId && `${getMalerUrl}/bruker?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
 		fetcher,
 		{ fallbackData: [] }
@@ -36,27 +36,31 @@ export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string)
 
 	return {
 		maler: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 		mutate: mutate,
 	}
 }
 
 export const useDollyOrganisasjonMaler = () => {
-	const { data, error, mutate } = useSWR<MalResponse, Error>(getOrganisasjonMalerUrl, fetcher, {
-		fallbackData: { malbestillinger: ['TEMP', []] },
-	})
+	const { data, isLoading, error, mutate } = useSWR<MalResponse, Error>(
+		getOrganisasjonMalerUrl,
+		fetcher,
+		{
+			fallbackData: { malbestillinger: ['TEMP', []] },
+		}
+	)
 
 	return {
 		maler: data?.malbestillinger,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 		mutate: mutate,
 	}
 }
 
 export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
-	const { data, error, mutate } = useSWR<Mal[], Error>(
+	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
 		brukerId &&
 			`${getOrganisasjonMalerUrl}/bruker?brukerId=${brukerId}${
 				malNavn ? `&malNavn=${malNavn}` : ''
@@ -67,7 +71,7 @@ export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNa
 
 	return {
 		maler: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 		mutate: mutate,
 	}

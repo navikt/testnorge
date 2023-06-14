@@ -64,6 +64,7 @@ const FinnPersonBestilling = ({
 		control: (provided: any, state: { isFocused: boolean }) => ({
 			...provided,
 			borderRadius: 0,
+			paddingTop: '3px',
 			borderWidth: 0,
 			borderStyle: 'none',
 			boxShadow: state.isFocused ? 'inset 0px 0px 2px 1px #5684ff' : null,

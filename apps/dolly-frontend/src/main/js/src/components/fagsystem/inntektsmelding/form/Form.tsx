@@ -31,7 +31,7 @@ import { AlertAaregRequired } from '@/components/ui/brukerAlert/AlertAaregRequir
 import { InputWarning } from '@/components/ui/form/inputWarning/inputWarning'
 import { OrgnrToggle } from '@/components/fagsystem/inntektsmelding/form/partials/orgnrToogle'
 import { testDatoFom, testDatoTom } from '@/components/fagsystem/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 interface InntektsmeldingFormProps {
 	formikBag: FormikProps<{}>

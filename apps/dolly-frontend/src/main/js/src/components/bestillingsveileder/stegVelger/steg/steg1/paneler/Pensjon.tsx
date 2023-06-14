@@ -9,7 +9,7 @@ import {
 import { harValgtAttributt } from '@/components/ui/form/formUtils'
 import { pensjonPath } from '@/components/fagsystem/pensjon/form/Form'
 import { initialAlderspensjon } from '@/components/fagsystem/alderspensjon/form/initialValues'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const PensjonPanel = ({ stateModifier, formikBag }: any) => {
 	const sm = stateModifier(PensjonPanel.initialValues)

@@ -7,7 +7,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { FormikDollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { validation } from '@/components/fagsystem/inst/form/validation'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { getExcludedDatesAndMaxDate } from './utils'
 import { addYears } from 'date-fns'
 

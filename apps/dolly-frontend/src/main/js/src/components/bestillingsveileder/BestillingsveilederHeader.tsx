@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
 import { Header } from '@/components/ui/header/Header'
 import { arrayToString } from '@/utils/DataFormatter'
-import { BestillingsveilederContext } from './Bestillingsveileder'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
 import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)

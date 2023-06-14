@@ -44,6 +44,7 @@ public class CounterCustomRegistry {
         addTag(tags, nonNull(bestilling.getUdistub()), "UDISTUB");
         addTag(tags, nonNull(bestilling.getInntektsmelding()), "INNTEKTSMELDING");
         addTag(tags, nonNull(bestilling.getDokarkiv()), "DOKARKIV");
+        addTag(tags, nonNull(bestilling.getMedl()), "MEDL");
         addTag(tags, nonNull(bestilling.getHistark()), "HISTARK");
         addTag(tags, nonNull(bestilling.getSykemelding()), "SYKEMELDING");
         addTag(tags, nonNull(bestilling.getBrregstub()), "BRREGSTUB");

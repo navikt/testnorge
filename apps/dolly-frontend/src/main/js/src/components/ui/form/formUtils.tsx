@@ -69,6 +69,7 @@ const getValgteAttributter = (values) => {
 		'udistub',
 		'dokarkiv',
 		'histark',
+		'medl',
 		'organisasjon.enhetstype',
 		'organisasjon.naeringskode',
 		'organisasjon.sektorkode',

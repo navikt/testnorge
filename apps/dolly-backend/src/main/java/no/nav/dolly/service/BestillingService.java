@@ -393,6 +393,7 @@ public class BestillingService {
                 .inntektsmelding(request.getInntektsmelding())
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
+                .medl(request.getMedl())
                 .histark(request.getHistark())
                 .tpsMessaging(request.getTpsMessaging())
                 .bankkonto(request.getBankkonto())

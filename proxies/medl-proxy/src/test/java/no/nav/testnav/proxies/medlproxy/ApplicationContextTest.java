@@ -1,4 +1,4 @@
-package no.nav.testnav.proxies.krrstubproxy;
+package no.nav.testnav.proxies.medlproxy;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
