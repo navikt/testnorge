@@ -30,12 +30,12 @@ on:
         required: false
       force-deploy-test:
         type: boolean
-        description: "Used to force deployment to test. Make sure the working-directory contains a config.test.yml!"
+        description: "Used to force deployment to test. Will override any #nodeploy tag. Make sure the working-directory contains a config.test.yml!"
         required: false
         default: false
       force-deploy:
         type: boolean
-        description: "Used to force deployment."
+        description: "Used to force deployment. Will override any #nodeploy tag."
         required: false
         default: false
       sonar-enabled:
@@ -54,12 +54,22 @@ on:
         required: true
 
 env:
-  do-deploy-test: ${{ inputs.force-deploy-test || ( inputs.deploy-tag-test != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test) ) ) }}
-  do-deploy: ${{ inputs.force-deploy || ( inputs.deploy-tag != '' && ( github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag) ) ) }}
+  do-deploy-test: ${{ inputs.force-deploy-test || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag-test != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag-test))) }}
+  do-deploy: ${{ inputs.force-deploy || (!contains(github.event.head_commit.message, '#nodeploy') && (inputs.deploy-tag != '') && (github.ref == 'refs/heads/master' || contains(github.event.head_commit.message, inputs.deploy-tag))) }}
 
 jobs:
 
+  start:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo "branch: ${{ github.ref }}"
+          echo "inputs: ${{ toJSON(inputs) }}"
+          echo "env: ${{ toJSON(env) }}"
+          echo "commit: ${{ github.event.head.commit_message }}"
+
   sonar:
+    needs: start
     if: inputs.sonar-enabled
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
@@ -69,6 +79,7 @@ jobs:
       working-directory: ${{ inputs.working-directory }}
 
   build:
+    needs: start
     if: github.actor != 'dependabot[bot]'
     permissions:
       contents: "read"

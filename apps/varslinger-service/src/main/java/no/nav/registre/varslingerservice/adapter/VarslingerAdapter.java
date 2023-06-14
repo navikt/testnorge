@@ -1,16 +1,12 @@
 package no.nav.registre.varslingerservice.adapter;
 
 import lombok.RequiredArgsConstructor;
-
+import no.nav.registre.varslingerservice.domain.Varsling;
+import no.nav.registre.varslingerservice.repository.VarslingRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import no.nav.registre.varslingerservice.domain.Varsling;
-import no.nav.registre.varslingerservice.repository.VarslingRepository;
-import no.nav.registre.varslingerservice.repository.model.VarslingModel;
 
 @Component
 @RequiredArgsConstructor
@@ -21,7 +17,7 @@ public class VarslingerAdapter {
         return StreamSupport
                 .stream(varslingRepository.findAll().spliterator(), false)
                 .map(Varsling::new)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public String save(Varsling varsling) {

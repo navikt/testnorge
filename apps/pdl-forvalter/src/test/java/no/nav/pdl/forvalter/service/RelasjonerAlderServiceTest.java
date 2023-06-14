@@ -1,4 +1,4 @@
-package no.nav.pdl.forvalter.utils;
+package no.nav.pdl.forvalter.service;
 
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BestillingRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FoedselDTO;
@@ -6,20 +6,46 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonRequestDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.Mockito.doReturn;
 
-class RelasjonerAlderTest {
+@ExtendWith(MockitoExtension.class)
+class RelasjonerAlderServiceTest {
+
+    private final static LocalDate LOCAL_DATE = LocalDate.of(2023, 6, 8);
+    @Mock
+    private Clock clock;
+
+    private Clock fixedClock;
+
+    @InjectMocks
+    private RelasjonerAlderService relasjonerAlderService;
+
+    @BeforeEach
+    void setup() {
+        fixedClock = Clock.fixed(LOCAL_DATE.atStartOfDay(ZoneId.systemDefault()).toInstant(), ZoneId.systemDefault());
+    }
 
     @Test
     void personAlderBarn23Forelder41() {
+
+        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(fixedClock.getZone()).when(clock).getZone();
 
         var bestilling = BestillingRequestDTO.builder()
                 .person(PersonDTO.builder()
@@ -27,8 +53,8 @@ class RelasjonerAlderTest {
                                 ForelderBarnRelasjonDTO.builder()
                                         .minRolleForPerson(ForelderBarnRelasjonDTO.Rolle.FORELDER)
                                         .nyRelatertPerson(PersonRequestDTO.builder()
-                                                .foedtFoer(LocalDateTime.of(LocalDate.now().getYear() - 23,
-                                                        LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth(), 1, 1))
+                                                .foedtFoer(LocalDateTime.of(LocalDate.now(clock).getYear() - 23,
+                                                        LocalDate.now(clock).getMonthValue(), LocalDate.now(clock).getDayOfMonth(), 1, 1))
                                                 .build())
                                         .build()
                         ))
@@ -39,15 +65,18 @@ class RelasjonerAlderTest {
                         ))
                         .build())
                 .build();
-        var oppdatertBestilling = RelasjonerAlder.fixRelasjonerAlder(bestilling);
+        var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
         assertThat(oppdatertBestilling.getPerson().getSivilstand().get(0).getNyRelatertPerson().getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
     }
 
     @Test
     void personAlderBarn23Besteforeldre() {
+
+        doReturn(fixedClock.instant()).when(clock).instant();
+        doReturn(fixedClock.getZone()).when(clock).getZone();
 
         var bestilling = BestillingRequestDTO.builder()
                 .person(PersonDTO.builder()
@@ -55,8 +84,8 @@ class RelasjonerAlderTest {
                                 ForelderBarnRelasjonDTO.builder()
                                         .minRolleForPerson(ForelderBarnRelasjonDTO.Rolle.FORELDER)
                                         .nyRelatertPerson(PersonRequestDTO.builder()
-                                                .foedtFoer(LocalDateTime.of(LocalDate.now().getYear() - 23,
-                                                        LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth(), 1, 1))
+                                                .foedtFoer(LocalDateTime.of(LocalDate.now(clock).getYear() - 23,
+                                                        LocalDate.now(clock).getMonthValue(), LocalDate.now(clock).getDayOfMonth(), 1, 1))
                                                 .build())
                                         .build(),
                                 ForelderBarnRelasjonDTO.builder()
@@ -65,11 +94,11 @@ class RelasjonerAlderTest {
                         ))
                         .build())
                 .build();
-        var oppdatertBestilling = RelasjonerAlder.fixRelasjonerAlder(bestilling);
+        var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
         assertThat(oppdatertBestilling.getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23))));
         assertThat(oppdatertBestilling.getPerson().getForelderBarnRelasjon().get(1).getNyRelatertPerson().getFoedtFoer().toLocalDate(),
-                is(equalTo(LocalDate.now().minusYears(18 + 23 + 36))));
+                is(equalTo(LocalDate.now(clock).minusYears(18 + 23 + 36))));
     }
 
     @Test
@@ -78,13 +107,13 @@ class RelasjonerAlderTest {
         var bestilling = BestillingRequestDTO.builder()
                 .person(PersonDTO.builder()
                         .foedsel(List.of(FoedselDTO.builder()
-                                .foedselsdato(LocalDateTime.of(1985,1,1,1,1))
+                                .foedselsdato(LocalDateTime.of(1985, 1, 1, 1, 1))
                                 .build()))
                         .build())
                 .build();
-        var oppdatertBestilling = RelasjonerAlder.fixRelasjonerAlder(bestilling);
-        assertThat(oppdatertBestilling.getFoedtEtter(), is(equalTo(LocalDateTime.of(1984,12,31,1,1))));
-        assertThat(oppdatertBestilling.getFoedtFoer(), is(equalTo(LocalDateTime.of(1985,1,2,1,1))));
+        var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
+        assertThat(oppdatertBestilling.getFoedtEtter(), is(equalTo(LocalDateTime.of(1984, 12, 31, 1, 1))));
+        assertThat(oppdatertBestilling.getFoedtFoer(), is(equalTo(LocalDateTime.of(1985, 1, 2, 1, 1))));
     }
 
     @Test
@@ -97,8 +126,8 @@ class RelasjonerAlderTest {
                                 .build()))
                         .build())
                 .build();
-        var oppdatertBestilling = RelasjonerAlder.fixRelasjonerAlder(bestilling);
-        assertThat(oppdatertBestilling.getFoedtEtter(), is(equalTo(LocalDateTime.of(1984,12,31,23,59))));
-        assertThat(oppdatertBestilling.getFoedtFoer(), is(equalTo(LocalDateTime.of(1986,1,1,0,0))));
+        var oppdatertBestilling = relasjonerAlderService.fixRelasjonerAlder(bestilling);
+        assertThat(oppdatertBestilling.getFoedtEtter(), is(equalTo(LocalDateTime.of(1984, 12, 31, 23, 59))));
+        assertThat(oppdatertBestilling.getFoedtFoer(), is(equalTo(LocalDateTime.of(1986, 1, 1, 0, 0))));
     }
 }
