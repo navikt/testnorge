@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import no.nav.pdl.forvalter.database.model.DbPerson;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.exception.NotFoundException;
+import no.nav.pdl.forvalter.utils.DeleteRelasjonerUtility;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
-import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO.Ansvar;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +14,11 @@ import java.util.List;
 
 import static java.lang.String.format;
 import static java.util.Objects.nonNull;
-import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_BARN;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.EKTEFELLE_PARTNER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FALSK_IDENTITET;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FAMILIERELASJON_FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.FORELDREANSVAR_FORELDER;
+import static no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType.KONTAKT_FOR_DOEDSBO;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
@@ -36,14 +38,6 @@ public class ArtifactDeleteService {
         if (artifacter.stream().noneMatch(type -> id.equals(type.getId()))) {
             throw new NotFoundException(format(INFO_NOT_FOUND, navn, id));
         }
-    }
-
-    private static RelasjonType getRelasjonstype(ForelderBarnRelasjonDTO.Rolle rolle) {
-
-        return switch (rolle) {
-            case BARN -> FAMILIERELASJON_FORELDER;
-            case MOR, MEDMOR, FAR, FORELDER -> FAMILIERELASJON_BARN;
-        };
     }
 
     public void deleteFoedsel(String ident, Integer id) {
@@ -154,8 +148,7 @@ public class ArtifactDeleteService {
                 .forEach(type -> {
                     var slettePerson = getPerson(type.getRelatertPerson());
 
-                    deleteRelasjon(dbPerson, type.getRelatertPerson(), getRelasjonstype(type.getMinRolleForPerson()));
-                    deleteRelasjon(slettePerson, dbPerson.getIdent(), getRelasjonstype(type.getRelatertPersonsRolle()));
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FAMILIERELASJON_FORELDER);
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -172,13 +165,11 @@ public class ArtifactDeleteService {
         checkExists(dbPerson.getPerson().getForeldreansvar(), id, "Foreldreansvar");
         dbPerson.getPerson().getForeldreansvar().stream()
                 .filter(type -> id.equals(type.getId()) &&
-                        isNotBlank(type.getAnsvarlig()) &&
-                        Ansvar.ANDRE == type.getAnsvar())
+                        isNotBlank(type.getAnsvarlig()))
                 .forEach(type -> {
                     var slettePerson = getPerson(type.getAnsvarlig());
 
-                    deleteRelasjon(dbPerson, type.getAnsvarlig(), RelasjonType.FORELDREANSVAR_FORELDER);
-                    deleteRelasjon(slettePerson, dbPerson.getIdent(), RelasjonType.FORELDREANSVAR_BARN);
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FORELDREANSVAR_FORELDER);
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -200,8 +191,7 @@ public class ArtifactDeleteService {
                 .forEach(doedsbo -> {
                     var slettePerson = getPerson(doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer());
 
-                    deleteRelasjon(hovedPerson, doedsbo.getPersonSomKontakt().getIdentifikasjonsnummer(), RelasjonType.KONTAKT_FOR_DOEDSBO);
-                    deleteRelasjon(slettePerson, hovedPerson.getIdent(), RelasjonType.AVDOEDD_FOR_KONTAKT);
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, KONTAKT_FOR_DOEDSBO);
 
                     deletePerson(slettePerson, doedsbo.getPersonSomKontakt().isEksisterendePerson());
                 });
@@ -233,8 +223,7 @@ public class ArtifactDeleteService {
                 .forEach(falskId -> {
                     var slettePerson = getPerson(falskId.getRettIdentitetVedIdentifikasjonsnummer());
 
-                    deleteRelasjon(person, falskId.getRettIdentitetVedIdentifikasjonsnummer(), RelasjonType.RIKTIG_IDENTITET);
-                    deleteRelasjon(slettePerson, person.getIdent(), RelasjonType.FALSK_IDENTITET);
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, FALSK_IDENTITET);
 
                     deletePerson(slettePerson, falskId.isEksisterendePerson());
                 });
@@ -329,8 +318,7 @@ public class ArtifactDeleteService {
                 .forEach(type -> {
                     var slettePerson = getPerson(type.getRelatertVedSivilstand());
 
-                    deleteRelasjon(dbPerson, type.getRelatertVedSivilstand(), RelasjonType.EKTEFELLE_PARTNER);
-                    deleteRelasjon(slettePerson, dbPerson.getIdent(), RelasjonType.EKTEFELLE_PARTNER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, EKTEFELLE_PARTNER);
 
                     deletePerson(slettePerson, type.isEksisterendePerson());
                 });
@@ -360,8 +348,7 @@ public class ArtifactDeleteService {
                 .forEach(fullmakt -> {
                     var slettePerson = getPerson(fullmakt.getMotpartsPersonident());
 
-                    deleteRelasjon(hovedPerson, fullmakt.getMotpartsPersonident(), RelasjonType.FULLMEKTIG);
-                    deleteRelasjon(slettePerson, hovedPerson.getIdent(), RelasjonType.FULLMAKTSGIVER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, RelasjonType.FULLMEKTIG);
 
                     deletePerson(slettePerson, fullmakt.isEksisterendePerson());
                 });
@@ -381,8 +368,7 @@ public class ArtifactDeleteService {
                 .forEach(vergemaal -> {
                     var slettePerson = getPerson(vergemaal.getVergeIdent());
 
-                    deleteRelasjon(hovedPerson, vergemaal.getVergeIdent(), RelasjonType.VERGE);
-                    deleteRelasjon(slettePerson, hovedPerson.getIdent(), RelasjonType.VERGE_MOTTAKER);
+                    DeleteRelasjonerUtility.deleteRelasjoner(slettePerson, RelasjonType.VERGE_MOTTAKER);
 
                     deletePerson(slettePerson, vergemaal.isEksisterendePerson());
                 });
@@ -413,18 +399,6 @@ public class ArtifactDeleteService {
         if (person.getRelasjoner().isEmpty() && !isEksisterendePerson) {
 
             personService.deletePerson(person.getIdent());
-        }
-    }
-
-    private void deleteRelasjon(DbPerson person, String relasjonIdent, RelasjonType type) {
-
-        var relasjonIterator = person.getRelasjoner().iterator();
-        while (relasjonIterator.hasNext()) {
-
-            var thisRelasjon = relasjonIterator.next();
-            if (thisRelasjon.getRelasjonType() == type && thisRelasjon.getRelatertPerson().getIdent().equals(relasjonIdent)) {
-                relasjonIterator.remove();
-            }
         }
     }
 }
