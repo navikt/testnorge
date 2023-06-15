@@ -226,7 +226,7 @@ export const VisningRedigerbar = ({
 	const handleDeleteRelatertPerson = useCallback(() => {
 		const slett = async () => {
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.setStandalone(relatertPersonInfo?.ident).then((importResponse) => {
+			await PdlforvalterApi.setStandalone(relatertPersonInfo?.ident)?.then((importResponse) => {
 				if (importResponse?.ok) {
 					sendSlett()
 				}
