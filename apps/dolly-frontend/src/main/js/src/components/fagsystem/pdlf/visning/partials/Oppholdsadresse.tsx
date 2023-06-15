@@ -11,6 +11,7 @@ import * as _ from 'lodash-es'
 import { initialOppholdsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import { OppholdsadresseData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type OppholdsadresseTypes = {
 	data: Array<any>
@@ -76,7 +77,7 @@ const OppholdsadresseVisning = ({
 	const slettetOppholdsadressePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertOppholdsadressePdlf
 	if (slettetOppholdsadressePdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const oppholdsadresseValues = redigertOppholdsadressePdlf

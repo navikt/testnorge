@@ -18,17 +18,27 @@ const StyledPdlData = styled.div`
 type RelatertPersonData = {
 	data: PersonData
 	tittel: string
+	marginTop: string
 }
 
-export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
+export const RelatertPerson = ({ data, tittel, marginTop = '0' }: RelatertPersonData) => {
 	if (!data) {
 		return null
+	}
+
+	const getForeldreansvarValues = (foreldreansvar) => {
+		return foreldreansvar.map(
+			(item, idx) =>
+				`${allCapsToCapitalized(item?.ansvar)}: ${item?.ansvarlig}${
+					idx + 1 < foreldreansvar.length ? ', ' : ''
+				}`
+		)
 	}
 
 	return (
 		<>
 			<div className="person-visning_content">
-				<h4 style={{ width: '100%', marginTop: '0' }}>{tittel}</h4>
+				<h4 style={{ width: '100%', marginTop: marginTop }}>{tittel}</h4>
 				<TitleValue title="Ident" value={data.ident} visKopier />
 				<TitleValue title="Fornavn" value={data.navn?.[0].fornavn} />
 				<TitleValue title="Mellomnavn" value={data.navn?.[0].mellomnavn} />
@@ -47,9 +57,7 @@ export const RelatertPerson = ({ data, tittel }: RelatertPersonData) => {
 				{data.foreldreansvar?.[0].ansvarlig && (
 					<TitleValue
 						title="Foreldreansvar"
-						value={`${allCapsToCapitalized(data.foreldreansvar?.[0].ansvar)}: ${
-							data.foreldreansvar?.[0].ansvarlig
-						}`}
+						value={getForeldreansvarValues(data.foreldreansvar)}
 					/>
 				)}
 				{data.foreldreansvar?.[0].ansvarligUtenIdentifikator && (

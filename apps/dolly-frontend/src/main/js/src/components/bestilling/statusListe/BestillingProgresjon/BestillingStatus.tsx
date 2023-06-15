@@ -27,11 +27,11 @@ const FagsystemText = styled.div`
 
 	p {
 		margin: 0 0 0 10px;
-		font-size: 0.9em;
+		font-size: 1em;
 	}
 `
 
-export const BestillingStatus = ({ bestilling, erOrganisasjon = false}: Miljostatus) => {
+export const BestillingStatus = ({ bestilling, erOrganisasjon = false }: Miljostatus) => {
 	const IconTypes = {
 		oppretter: 'loading-spinner',
 		suksess: 'feedback-check-circle',

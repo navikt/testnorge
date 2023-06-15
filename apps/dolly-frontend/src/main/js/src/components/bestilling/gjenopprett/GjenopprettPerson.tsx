@@ -13,6 +13,8 @@ export const GjenopprettPerson = ({ ident }: { ident: number }) => {
 		await DollyService.gjenopprettPerson(ident).then(() => {
 			mutate(REGEX_BACKEND_BESTILLINGER)
 			setLoading(false)
+		}).catch(() => {
+			setLoading(false)
 		})
 	}
 

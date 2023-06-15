@@ -241,11 +241,21 @@ export default ({
 				})
 			})
 
+		data.pdl?.hentPerson?.foreldreansvar
+			?.filter((foreldreansvar) => foreldreansvar.ansvarlig)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'ANSVARLIG',
+					id: person.ansvarlig,
+				})
+			})
+
 		return relatertePersoner
 	}
 
-	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
-	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
+	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
+	const harPdlRelatertPerson = relatertePersoner?.length > 0
+	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
 		gruppeIdenter?.includes(ident.id)
 	)
 
@@ -295,7 +305,7 @@ export default ({
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
-							relatertPersonIdenter={pdlRelatertPerson()}
+							relatertPersonIdenter={relatertePersoner}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>

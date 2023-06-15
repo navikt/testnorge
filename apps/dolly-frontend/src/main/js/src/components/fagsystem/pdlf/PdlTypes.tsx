@@ -164,6 +164,10 @@ export type FullmaktValues = {
 	id: number
 }
 
+export type DeltBostedValues = {
+	id: number
+}
+
 export type NyIdent = {
 	identtype?: string
 	kjoenn?: string

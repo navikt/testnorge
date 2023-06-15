@@ -10,6 +10,9 @@ import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf
 import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -83,6 +86,9 @@ const SivilstandVisning = ({
 	tmpPersoner,
 	ident,
 }: VisningData) => {
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+
 	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
 	let initialValues = { sivilstand: initSivilstand }
 	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
@@ -94,7 +100,7 @@ const SivilstandVisning = ({
 
 	const slettetSivilstandPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertSivilstandPdlf
 	if (slettetSivilstandPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData
@@ -108,16 +114,21 @@ const SivilstandVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
-		: getEksisterendeNyPerson(
-				relasjoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
+		? getEksisterendeNyPerson(redigertRelatertePersoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+
+	const erIGruppe = gruppeIdenter?.some(
+		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand
+	)
+	const relatertPersonInfo = erIGruppe
+		? {
+				ident: initialValues?.sivilstand?.relatertVedSivilstand,
+		  }
+		: null
 
 	return (
 		<VisningRedigerbarConnector
@@ -134,6 +145,7 @@ const SivilstandVisning = ({
 			redigertAttributt={redigertSivilstandValues}
 			path="sivilstand"
 			ident={ident}
+			relatertPersonInfo={relatertPersonInfo}
 		/>
 	)
 }
