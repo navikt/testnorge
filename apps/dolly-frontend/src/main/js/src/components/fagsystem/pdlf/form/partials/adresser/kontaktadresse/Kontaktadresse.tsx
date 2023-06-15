@@ -74,13 +74,11 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 			_.set(adresseClone, 'vegadresse', initialVegadresse)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
 			_.set(adresseClone, 'postboksadresse', undefined)
-			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'UTENLANDSK_ADRESSE') {
 			_.set(adresseClone, 'utenlandskAdresse', initialUtenlandskAdresse)
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'postboksadresse', undefined)
-			_.set(adresseClone, 'master', 'PDL')
 		}
 		if (target?.value === 'POSTBOKSADRESSE') {
 			_.set(adresseClone, 'postboksadresse', initialPostboksadresse)
@@ -134,9 +132,6 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 			</div>
 			<AvansertForm
 				path={path}
-				kanVelgeMaster={
-					valgtAdressetype !== 'VEGADRESSE' && valgtAdressetype !== 'UTENLANDSK_ADRESSE'
-				}
 			/>
 		</React.Fragment>
 	)
