@@ -11,6 +11,7 @@ import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonStatusDTO.Status;
 import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
@@ -63,7 +64,6 @@ public class OrganisasjonBestillingService {
     private final OrganisasjonBestillingRepository bestillingRepository;
     private final OrganisasjonBestillingMalRepository organisasjonBestillingMalRepository;
     private final OrganisasjonProgressService progressService;
-    private final BestillingMalService bestillingMalService;
     private final OrganisasjonConsumer organisasjonConsumer;
     private final BrukerService brukerService;
     private final ObjectMapper objectMapper;
@@ -186,7 +186,12 @@ public class OrganisasjonBestillingService {
                 .malBestillingNavn(request.getMalBestillingNavn())
                 .build();
 
-        bestillingMalService.saveOrganisasjonBestillingMal(bestilling, bruker);
+        organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
+                .bestKriterier(bestilling.getBestKriterier())
+                .bruker(bruker)
+                .malBestillingNavn(bestilling.getMalBestillingNavn())
+                .miljoer(bestilling.getMiljoer())
+                .build());
 
         return saveBestillingToDB(bestilling);
     }
@@ -205,7 +210,12 @@ public class OrganisasjonBestillingService {
                 .malBestillingNavn(status.getMalBestillingNavn())
                 .build();
 
-        bestillingMalService.saveOrganisasjonBestillingMal(bestilling, bruker);
+        organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
+                .bestKriterier(bestilling.getBestKriterier())
+                .bruker(bruker)
+                .malBestillingNavn(bestilling.getMalBestillingNavn())
+                .miljoer(bestilling.getMiljoer())
+                .build());
         return saveBestillingToDB(bestilling);
     }
 

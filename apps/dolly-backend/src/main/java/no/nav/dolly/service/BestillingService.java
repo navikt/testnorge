@@ -55,6 +55,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -100,7 +101,6 @@ public class BestillingService {
     @Transactional
     public Bestilling saveBestillingToDB(Bestilling bestilling) {
         try {
-            bestillingMalService.overskrivDuplikateMalbestillinger(bestilling);
             return bestillingRepository.save(bestilling);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
@@ -424,7 +424,7 @@ public class BestillingService {
 
     private void saveBestillingMalWithCurrentUser(Bestilling bestilling) {
 
-        if (isNull(bestilling.getMalBestillingNavn())) {
+        if (isBlank(bestilling.getMalBestillingNavn())) {
             return;
         }
         bestillingMalService.saveBestillingMal(bestilling, bestilling.getBruker());

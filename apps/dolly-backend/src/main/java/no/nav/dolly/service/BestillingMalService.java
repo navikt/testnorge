@@ -119,18 +119,8 @@ public class BestillingMalService {
     @Transactional
     public void saveBestillingMal(Bestilling bestilling, Bruker bruker) {
 
+        overskrivDuplikateMalbestillinger(bestilling);
         bestillingMalRepository.save(BestillingMal.builder()
-                .bestKriterier(bestilling.getBestKriterier())
-                .bruker(bruker)
-                .malBestillingNavn(bestilling.getMalBestillingNavn())
-                .miljoer(bestilling.getMiljoer())
-                .build());
-    }
-
-    @Transactional
-    public void saveOrganisasjonBestillingMal(OrganisasjonBestilling bestilling, Bruker bruker) {
-
-        organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(bestilling.getBestKriterier())
                 .bruker(bruker)
                 .malBestillingNavn(bestilling.getMalBestillingNavn())
