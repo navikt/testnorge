@@ -24,7 +24,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "ORGANISAJON_BESTILLING_MAL")
+@Table(name = "ORGANISASJON_BESTILLING_MAL")
 public class OrganisasjonBestillingMal implements Serializable {
 
     @Id
