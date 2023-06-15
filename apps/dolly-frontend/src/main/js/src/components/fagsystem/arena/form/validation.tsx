@@ -321,6 +321,9 @@ export const validation = Yup.object({
 			fraDato: validFradato('dagpenger'),
 			tilDato: Yup.string()
 				.test('etter-fradato', 'Til-dato må være etter fra-dato', function validDate(tildato) {
+					if (!tildato) {
+						return true
+					}
 					const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 					return validTildato(fradato, tildato)
 				})
@@ -328,6 +331,9 @@ export const validation = Yup.object({
 					'skaper-ikke-overlapp',
 					'Manglende til-dato skaper overlapp med annet vedtak',
 					function validDate(tildato) {
+						if (!tildato) {
+							return true
+						}
 						return ingenOverlappFraTildato(tildato, this.options.context)
 					}
 				)
@@ -335,6 +341,9 @@ export const validation = Yup.object({
 					'overlapper-ikke-25',
 					'Vedtak kan ikke overlappe dato person fyller 25',
 					function validDate(tildato) {
+						if (!tildato) {
+							return true
+						}
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
@@ -344,6 +353,9 @@ export const validation = Yup.object({
 					'avslutter-ved-67',
 					'Person kan ikke ha vedtak etter fylte 67 år',
 					function validDate(tildato) {
+						if (!tildato) {
+							return true
+						}
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.dagpenger[0].fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
