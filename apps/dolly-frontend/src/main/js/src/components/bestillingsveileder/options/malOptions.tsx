@@ -64,16 +64,16 @@ export const initialValuesBasedOnMal = (mal: any) => {
 
 const getUpdatedArenaforvalterData = (arenaforvalterData) => {
 	let filtrertArenaforvalterData = Object.assign({}, arenaforvalterData)
-	if (isNullfelt(filtrertArenaforvalterData.aap)) {
+	if (_.isEmpty(filtrertArenaforvalterData.aap)) {
 		delete filtrertArenaforvalterData.aap
 	}
-	if (isNullfelt(filtrertArenaforvalterData.aap115)) {
+	if (_.isEmpty(filtrertArenaforvalterData.aap115)) {
 		delete filtrertArenaforvalterData.aap115
 	}
-	if (isNullfelt(filtrertArenaforvalterData.dagpenger)) {
+	if (_.isEmpty(filtrertArenaforvalterData.dagpenger)) {
 		delete filtrertArenaforvalterData.dagpenger
 	}
-	if (isNullfelt(filtrertArenaforvalterData.inaktiveringDato)) {
+	if (_.isEmpty(filtrertArenaforvalterData.inaktiveringDato)) {
 		delete filtrertArenaforvalterData.inaktiveringDato
 	}
 	return filtrertArenaforvalterData
@@ -365,8 +365,4 @@ const updateData = (data: any, initalValues: any) => {
 		}
 	}
 	return newData
-}
-
-const isNullfelt = (data: any) => {
-	return !data || data?.length < 1
 }
