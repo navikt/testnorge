@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,6 +44,7 @@ public class AmeldingService {
 
         return Flux.fromIterable(miljoer)
                 .map(miljoe -> organisasjonServiceConsumer.getOrganisasjoner(orgnumre, miljoe)
+                        .filter(Objects::nonNull)
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
                                 prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getIdent(),
