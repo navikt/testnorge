@@ -24,7 +24,11 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
 		coAdressenavn,
+		metadata
 	} = adresse
+
+	const master = metadata?.master
+
 	return (
 		<>
 			<h4 style={{ marginTop: '0px' }}>Ukjent bosted</h4>
@@ -39,6 +43,7 @@ export const UkjentBosted = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
+				<TitleValue title="Master" value={master} />
 			</div>
 		</>
 	)

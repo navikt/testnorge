@@ -35,7 +35,9 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 		bygningEtasjeLeilighet,
 		regionDistriktOmraade,
 	} = adresse.utenlandskAdresse
-	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed, coAdressenavn } = adresse
+	const { angittFlyttedato, gyldigFraOgMed, gyldigTilOgMed, coAdressenavn, metadata } = adresse
+
+	const master = metadata?.master
 
 	return (
 		<>
@@ -60,6 +62,7 @@ export const UtenlandskAdresse = ({ adresse, idx }: AdresseData) => {
 				<TitleValue title="Gyldig fra og med" value={formatDate(gyldigFraOgMed)} />
 				<TitleValue title="Gyldig til og med" value={formatDate(gyldigTilOgMed)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
+				<TitleValue title="Master" value={master} />
 			</div>
 		</>
 	)
