@@ -11,6 +11,7 @@ import { useBoolean } from 'react-use'
 import { Stepper } from '@navikt/ds-react'
 import { useDispatch } from 'react-redux'
 import { CypressSelector } from '../../../cypress/mocks/Selectors'
+import { runningCypressE2E } from '@/service/services/Request'
 
 type Varsling = {
 	fom: string
@@ -31,6 +32,10 @@ export const VarslingerModal = () => {
 	const isLoading = isLoadingVarslinger || isLoadingVarslingerBruker
 
 	useEffect(() => {
+		const runningLocal = window.location.hostname.includes('localhost')
+		if (runningLocal && !runningCypressE2E()) {
+			return
+		}
 		VarslingerApi.getVarslinger().then((response: { data: Varsling }) => {
 			setVarslinger(response.data)
 			setIsLoadingVarslinger(false)

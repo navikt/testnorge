@@ -12,6 +12,8 @@ import * as _ from 'lodash-es'
 import { initialFullmakt, initialPdlPerson } from '@/components/fagsystem/pdlf/form/initialValues'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 type Data = {
 	fullmaktData: FullmaktData
@@ -98,7 +100,7 @@ export const FullmaktVisning = ({
 
 	const slettetFullmaktPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFullmaktPdlf
 	if (slettetFullmaktPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const fullmaktValues = redigertFullmaktPdlf ? redigertFullmaktPdlf : fullmaktData
@@ -109,12 +111,10 @@ export const FullmaktVisning = ({
 		: null
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				fullmaktValues?.motpartsPersonident,
-				'FULLMEKTIG'
-		  )
-		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, 'FULLMEKTIG')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, fullmaktValues?.motpartsPersonident, [
+				'FULLMEKTIG',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, fullmaktValues?.motpartsPersonident, ['FULLMEKTIG'])
 
 	if (eksisterendeNyPerson && initialValues?.fullmakt?.nyFullmektig) {
 		initialValues.fullmakt.nyFullmektig = initialPdlPerson

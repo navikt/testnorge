@@ -8,6 +8,7 @@ import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visn
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { formatDate } from '@/utils/DataFormatter'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type StatsborgerskapTypes = {
 	data: Array<StatsborgerskapData>
@@ -70,7 +71,7 @@ const StatsborgerskapVisning = ({
 	const slettetStatsborgerskapPdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertStatsborgerskapPdlf
 	if (slettetStatsborgerskapPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const statsborgerskapValues = redigertStatsborgerskapPdlf

@@ -104,7 +104,7 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 			_.set(adresseClone, 'vegadresse', undefined)
 			_.set(adresseClone, 'matrikkeladresse', undefined)
 			_.set(adresseClone, 'utenlandskAdresse', undefined)
-			_.set(adresseClone, 'master', 'FREG')
+			_.set(adresseClone, 'master', 'PDL')
 		}
 
 		formikBag.setFieldValue(path, adresseClone)

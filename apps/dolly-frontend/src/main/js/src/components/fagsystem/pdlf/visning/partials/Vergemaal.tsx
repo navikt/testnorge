@@ -10,6 +10,8 @@ import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 type Vergemaal = {
 	vergemaalEmbete?: string
@@ -129,7 +131,7 @@ const VergemaalVisning = ({
 
 	const slettetVergemaalPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertVergemaalPdlf
 	if (slettetVergemaalPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const vergemaalValues = redigertVergemaalPdlf ? redigertVergemaalPdlf : vergemaalData
@@ -143,8 +145,8 @@ const VergemaalVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, 'VERGE')
-		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, 'VERGE')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, ['VERGE'])
+		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, ['VERGE'])
 
 	return erPdlVisning ? (
 		<VergemaalLes vergemaalData={vergemaalData} relasjoner={relasjoner} idx={idx} />
