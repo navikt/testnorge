@@ -83,6 +83,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
+						<TitleValue title="Master" value={kontaktadresseData.metadata?.master} />
 					</div>
 				</>
 			)}

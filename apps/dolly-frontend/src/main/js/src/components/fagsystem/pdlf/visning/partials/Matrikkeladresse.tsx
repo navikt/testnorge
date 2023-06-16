@@ -30,7 +30,10 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 		startdatoForKontrakt,
 		sluttdatoForKontrakt,
 		coAdressenavn,
+		metadata,
 	} = adresse
+
+	const master = metadata?.master
 
 	return (
 		<>
@@ -64,6 +67,7 @@ export const Matrikkeladresse = ({ adresse, idx }: MatrikkeladresseValues) => {
 				<TitleValue title="Startdato for kontrakt" value={formatDate(startdatoForKontrakt)} />
 				<TitleValue title="Sluttdato for kontrakt" value={formatDate(sluttdatoForKontrakt)} />
 				<TitleValue title="C/O adressenavn" value={coAdressenavn} />
+				<TitleValue title="Master" value={master} />
 			</div>
 		</>
 	)
