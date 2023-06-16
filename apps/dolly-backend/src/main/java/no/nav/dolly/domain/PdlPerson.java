@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import no.nav.dolly.domain.deserialization.PersonStatusEnumDeserializer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.AdressebeskyttelseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.BostedadresseDTO;
@@ -312,6 +313,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Folkeregisteridentifikator extends DbVersjonDTO {
@@ -326,6 +328,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -337,6 +340,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class PdlKjoenn extends DbVersjonDTO {
@@ -345,6 +349,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Foedsel extends DbVersjonDTO {
@@ -357,7 +362,8 @@ public class PdlPerson {
     }
 
     @lombok.Data
-    @Builder
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class ForelderBarnRelasjon extends DbVersjonDTO {
@@ -379,7 +385,8 @@ public class PdlPerson {
     }
 
     @lombok.Data
-    @Builder
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Sivilstand extends DbVersjonDTO {
@@ -396,6 +403,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Doedsfall extends DbVersjonDTO {
@@ -413,6 +421,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Statsborgerskap extends DbVersjonDTO {
@@ -423,6 +432,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class Vergemaal extends DbVersjonDTO {
@@ -433,6 +443,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class VergeEllerFullmektig extends DbVersjonDTO{
@@ -467,6 +478,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class FolkeregisterPersonstatus extends DbVersjonDTO {
