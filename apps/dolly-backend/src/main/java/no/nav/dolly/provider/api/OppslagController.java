@@ -95,10 +95,11 @@ public class OppslagController {
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
-    public Flux<KodeverkAdjusted> fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
+    public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
 
         var response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
-        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response);
+        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response)
+                .blockFirst();
     }
 
     @GetMapping("/kodeverk")
