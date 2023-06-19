@@ -1,6 +1,4 @@
 spring:
-  cache:
-    type: none
   cloud:
     vault:
       host: vault.adeo.no

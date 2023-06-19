@@ -67,9 +67,13 @@ public class KodeverkConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "hentKodeverk"})
-    public Flux<KodeverkBetydningerResponse> fetchKodeverkByName(String kodeverk) {
+    public KodeverkBetydningerResponse fetchKodeverkByName(String kodeverk) {
 
-        return getKodeverk(kodeverk);
+        var response = getKodeverk(kodeverk)
+                .collectList()
+                .block();
+
+        return !response.isEmpty() ? response.get(0) : KodeverkBetydningerResponse.builder().build();
     }
 
     @Cacheable(CACHE_KODEVERK_2)
@@ -81,10 +85,9 @@ public class KodeverkConsumer {
                 .map(Map::entrySet)
                 .flatMap(Flux::fromIterable)
                 .filter(entry -> !entry.getValue().isEmpty())
-                .filter(entry -> LocalDate.now().isAfter(entry.getValue().get(0).getGyldigFra()) &&
-                        LocalDate.now().isBefore(entry.getValue().get(0).getGyldigTil()))
-                .collect(Collectors.toMap(Entry::getKey, KodeverkConsumer::getNorskBokmaal))
-                .cache(Duration.ofHours(9));
+                .filter(entry -> LocalDate.now().isAfter(entry.getValue().get(0).getGyldigFra()))
+                .filter(entry -> LocalDate.now().isBefore(entry.getValue().get(0).getGyldigTil()))
+                .collect(Collectors.toMap(Entry::getKey, KodeverkConsumer::getNorskBokmaal));
     }
 
     private Flux<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {
