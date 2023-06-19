@@ -37,8 +37,6 @@ spec:
     outbound:
       rules:
         - application: testnav-organisasjon-tilgang-service
-    external:
-      - host: testnav-organisasjon-tilgang-service.intern.dev.nav.no
   resources:
     limits:
       memory: 1024Mi
