@@ -49,7 +49,8 @@ public class OppslagControllerTest {
         when(kodeverkMapper.mapBetydningToAdjustedKodeverk(eq(STANDARD_KODEVERK_NAME), any(Flux.class)))
                 .thenReturn(Flux.just(kodeverkAdjusted));
 
-        var kodeverkResponse = oppslagController.fetchKodeverkByName(STANDARD_KODEVERK_NAME);
+        var kodeverkResponse = oppslagController.fetchKodeverkByName(STANDARD_KODEVERK_NAME)
+                .blockFirst();
 
         assertThat(kodeverkResponse, is(kodeverkAdjusted));
     }

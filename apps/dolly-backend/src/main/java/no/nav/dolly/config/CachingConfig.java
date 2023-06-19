@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
-import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +23,6 @@ public class CachingConfig {
     public static final String CACHE_KODEVERK_2 = "kodeverk2";
 
     @Bean
-    @Profile({ "prod", "dev" })
     public CacheManager cacheManager(Caffeine caffeine) {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
                 CACHE_BRUKER,
@@ -41,11 +38,5 @@ public class CachingConfig {
     @Bean
     public Caffeine caffeineConfig() {
         return Caffeine.newBuilder().expireAfterWrite(8, TimeUnit.HOURS);
-    }
-
-    @Bean
-    @Profile("local")
-    public CacheManager getNoOpCacheManager() {
-        return new NoOpCacheManager();
     }
 }
