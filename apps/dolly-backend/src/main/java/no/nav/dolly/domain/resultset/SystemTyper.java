@@ -26,7 +26,7 @@ public enum SystemTyper {
     DOKARKIV("Dokumentarkiv (JOARK)"),
     HISTARK("Saksmappearkiv (HISTARK)"),
     TPS_MESSAGING("Meldinger til TPS"),
-    SYKEMELDING("NAV Sykemelding"),
+    SYKEMELDING("NAV sykemelding"),
     PDLIMPORT("Import av identer (TESTNORGE)"),
     SKJERMINGSREGISTER("Skjermingsregisteret"),
     SAKOGARKIV("Sak og arkivfasade (SAF)"),

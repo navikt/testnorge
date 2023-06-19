@@ -81,9 +81,10 @@ public class KodeverkConsumer {
                 .map(Map::entrySet)
                 .flatMap(Flux::fromIterable)
                 .filter(entry -> !entry.getValue().isEmpty())
-                .filter(entry -> LocalDate.now().isAfter(entry.getValue().get(0).getGyldigFra()))
-                .filter(entry -> LocalDate.now().isBefore(entry.getValue().get(0).getGyldigTil()))
-                .collect(Collectors.toMap(Entry::getKey, KodeverkConsumer::getNorskBokmaal));
+                .filter(entry -> LocalDate.now().isAfter(entry.getValue().get(0).getGyldigFra()) &&
+                        LocalDate.now().isBefore(entry.getValue().get(0).getGyldigTil()))
+                .collect(Collectors.toMap(Entry::getKey, KodeverkConsumer::getNorskBokmaal))
+                .cache(Duration.ofHours(9));
     }
 
     private Flux<KodeverkBetydningerResponse> getKodeverk(String kodeverk) {
@@ -106,7 +107,6 @@ public class KodeverkConsumer {
                         .retrieve()
                         .bodyToFlux(KodeverkBetydningerResponse.class)
                         .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
-                                .filter(WebClientFilter::is5xxException))
-                        .cache(Duration.ofHours(14)));
+                                .filter(WebClientFilter::is5xxException)));
     }
 }

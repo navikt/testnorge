@@ -7,6 +7,7 @@ import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,8 @@ public class KodeverkMapper {
                 .map(betydning -> KodeverkAdjusted.builder()
                         .name(kodeverkNavn)
                         .koder(extractKoderFromBetydninger(betydning))
-                        .build());
+                        .build())
+                .cache(Duration.ofHours(9));
     }
 
     private List<KodeAdjusted> extractKoderFromBetydninger(Map<String, List<Betydning>> kodeMap) {

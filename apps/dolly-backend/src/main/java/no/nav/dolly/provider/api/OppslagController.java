@@ -95,11 +95,10 @@ public class OppslagController {
     @Cacheable(CACHE_KODEVERK)
     @GetMapping("/kodeverk/{kodeverkNavn}")
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
-    public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
+    public Flux<KodeverkAdjusted> fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
 
-        var  response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
-        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response)
-                .blockFirst();
+        var response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
+        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response);
     }
 
     @GetMapping("/kodeverk")
@@ -170,7 +169,7 @@ public class OppslagController {
     @Cacheable(CACHE_HELSEPERSONELL)
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
-    public HelsepersonellListeDTO getHelsepersonell() {
+    public Mono<HelsepersonellListeDTO> getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
 
