@@ -10,6 +10,7 @@ spec:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   port: 8080
+  webproxy: true
   azure:
     application:
       enabled: true
