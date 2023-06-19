@@ -6,4 +6,4 @@ consumers:
     cluster: dev-gcp
     namespace: dolly
     name: testnav-organisasjon-tilgang-service
-    url: https://testnav-organisasjon-tilgang-service.intern.dev.nav.no
+    url: http://testnav-bruker-service.dolly.svc.cluster.local
