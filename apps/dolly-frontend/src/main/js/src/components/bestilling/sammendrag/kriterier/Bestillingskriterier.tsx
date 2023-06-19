@@ -114,7 +114,7 @@ const RenderExpandablePanel = ({ attributt }) => {
 	)
 }
 
-export default function Bestillingskriterier({ bestilling, bestillingsinformasjon, header }) {
+export default ({ bestilling, bestillingsinformasjon, header }) => {
 	if (bestilling.organisasjon || bestilling.enhetstype) {
 		return (
 			<div className="bestilling-detaljer">

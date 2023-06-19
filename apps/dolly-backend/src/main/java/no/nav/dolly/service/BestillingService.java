@@ -46,7 +46,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.micrometer.core.instrument.util.StringUtils.isNotBlank;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -58,6 +57,7 @@ import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -281,11 +281,6 @@ public class BestillingService {
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
 
-        var bestillingerByIdent = identRepository.getBestillingerByIdent(ident);
-        if (bestillingerByIdent.isEmpty()) {
-            throw new DollyFunctionalException(format("Identen: %s har ingen gyldige bestillinger", ident));
-        }
-
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe)
@@ -417,6 +412,7 @@ public class BestillingService {
                 .inntektsmelding(request.getInntektsmelding())
                 .brregstub(request.getBrregstub())
                 .dokarkiv(request.getDokarkiv())
+                .medl(request.getMedl())
                 .histark(request.getHistark())
                 .tpsMessaging(request.getTpsMessaging())
                 .bankkonto(request.getBankkonto())

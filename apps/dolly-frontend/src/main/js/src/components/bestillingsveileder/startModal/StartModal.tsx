@@ -20,7 +20,7 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyB
 		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
 			<div className="start-bestilling-modal">
 				<h1>Opprett personer</h1>
-				<StyledToggleGroup size={'small'} value={type} onChange={(value) => setType(value)}>
+				<StyledToggleGroup value={type} onChange={(value) => setType(value)}>
 					<ToggleGroup.Item data-cy={CypressSelector.TOGGLE_NY_PERSON} value={'ny'} key={'ny'}>
 						Ny person
 					</ToggleGroup.Item>

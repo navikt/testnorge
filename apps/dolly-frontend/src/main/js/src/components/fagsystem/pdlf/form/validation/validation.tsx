@@ -132,12 +132,15 @@ export const validation = {
 				'$pdldata.person.kontaktinformasjonForDoedsbo',
 				Yup.array().of(kontaktDoedsbo)
 			),
-			forelderBarnRelasjon: ifPresent('$pdldata.person.forelderBarnRelasjon', forelderBarnRelasjon),
+			forelderBarnRelasjon: ifPresent(
+				'$pdldata.person.forelderBarnRelasjon',
+				Yup.array().of(forelderBarnRelasjon)
+			),
 			sivilstand: ifPresent('$pdldata.person.sivilstand', Yup.array().of(sivilstand)),
 			kjoenn: ifPresent('$pdldata.person.kjoenn', Yup.array().of(kjoenn)),
 			navn: ifPresent('$pdldata.person.navn', Yup.array().of(navn)),
 			vergemaal: ifPresent('$pdldata.person.vergemaal', Yup.array().of(vergemaal)),
-			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', foreldreansvar),
+			foreldreansvar: ifPresent('$pdldata.person.foreldreansvar', Yup.array().of(foreldreansvar)),
 		}).nullable(),
 	}),
 	...tpsMessagingValidation,

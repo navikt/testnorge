@@ -6,7 +6,7 @@ import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikProps } from 'formik'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import * as _ from 'lodash-es'
 
 interface AdressebeskyttelseValues {

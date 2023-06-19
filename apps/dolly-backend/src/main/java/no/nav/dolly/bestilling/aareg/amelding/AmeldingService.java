@@ -43,6 +43,7 @@ public class AmeldingService {
 
         return Flux.fromIterable(miljoer)
                 .map(miljoe -> organisasjonServiceConsumer.getOrganisasjoner(orgnumre, miljoe)
+                        .filter(OrganisasjonDTO::isFunnet)
                         .collect(Collectors.toMap(OrganisasjonDTO::getOrgnummer, OrganisasjonDTO::getJuridiskEnhet))
                         .flatMapMany(organisasjon ->
                                 prepareAmeldinger(bestilling.getAareg().get(0), dollyPerson.getIdent(),

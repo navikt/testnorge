@@ -38,7 +38,12 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     private Boolean rettIdentitetErUkjent;
     private String rettIdentitetVedIdentifikasjonsnummer;
     private IdentifiserendeInformasjonDTO rettIdentitetVedOpplysninger;
+    private Boolean eksisterendePerson;
 
+    public boolean isEksisterendePerson() {
+
+        return isTrue(eksisterendePerson);
+    }
     @Data
     @Builder
     @NoArgsConstructor
@@ -73,5 +78,11 @@ public class FalskIdentitetDTO extends DbVersjonDTO {
     @JsonIgnore
     public boolean isFalskIdentitet() {
         return isTrue(getErFalsk());
+    }
+
+    @JsonIgnore
+    @Override
+    public String getIdentForRelasjon() {
+        return rettIdentitetVedIdentifikasjonsnummer;
     }
 }

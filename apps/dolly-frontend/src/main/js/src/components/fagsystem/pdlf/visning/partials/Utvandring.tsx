@@ -13,6 +13,7 @@ import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getSisteDatoInnUtvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type UtvandringTypes = {
 	data: Array<UtvandringValues>
@@ -73,7 +74,7 @@ const UtvandringVisning = ({
 	)
 	const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
 	if (slettetUtvandringPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const utvandringValues = redigertUtvandringPdlf ? redigertUtvandringPdlf : utvandringData

@@ -1,0 +1,13 @@
+spring.cloud.vault.token: dummy
+
+CLIENT_SECRET: dummy
+CLIENT_ID: dummy
+
+azure.app.client.id: dummy
+
+consumers:
+  testnav-person-organisasjon-tilgang-service:
+    cluster: cluster
+    namespace: namespace
+    name: name
+    url: http://valid.but.not.used

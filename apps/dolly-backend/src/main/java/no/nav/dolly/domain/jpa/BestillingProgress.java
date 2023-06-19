@@ -54,6 +54,9 @@ public class BestillingProgress implements Serializable {
     @Column(name = "KRRSTUB_STATUS")
     private String krrstubStatus;
 
+    @Column(name = "MEDL_STATUS")
+    private String medlStatus;
+
     @Column(name = "UDISTUB_STATUS")
     private String udistubStatus;
 

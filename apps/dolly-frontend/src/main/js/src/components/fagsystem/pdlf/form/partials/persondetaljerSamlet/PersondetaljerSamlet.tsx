@@ -30,8 +30,8 @@ export const PersondetaljerSamlet = ({ formikBag, tpsMessaging }: Persondetaljer
 		<>
 			<div className="flexbox--full-width">
 				<Alert
-					size={'small'}
 					variant={'info'}
+					size={'small'}
 				>{`Identnummer${getTekst()} kan ikke endres her.`}</Alert>
 
 				{_.get(formikBag.values, 'navn') && (

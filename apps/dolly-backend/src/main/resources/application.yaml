@@ -83,6 +83,7 @@ consumers:
     name: testnav-helsepersonell-service
     namespace: dolly
     url: http://testnav-helsepersonell-service.dolly.svc.cluster.local
+    cluster: dev-gcp
   testnav-organisasjon-forvalter:
     name: testnav-organisasjon-forvalter
     namespace: dolly
@@ -147,6 +148,11 @@ consumers:
     name: testnav-krrstub-proxy
     namespace: dolly
     url: https://testnav-krrstub-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+  testnav-medl-proxy:
+    name: testnav-medl-proxy
+    namespace: dolly
+    url: https://testnav-medl-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
   testnav-inntektstub-proxy:
     name: testnav-inntektstub-proxy

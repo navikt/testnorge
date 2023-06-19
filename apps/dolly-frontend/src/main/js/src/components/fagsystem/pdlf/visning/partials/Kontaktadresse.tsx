@@ -16,6 +16,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { initialKontaktadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { formatDate } from '@/utils/DataFormatter'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type KontaktadresseTypes = {
 	data: Array<any>
@@ -82,6 +83,7 @@ export const Adresse = ({ kontaktadresseData, idx }: AdresseTypes) => {
 						</TitleValue>
 						<Adressedatoer kontaktadresseData={kontaktadresseData} />
 						<TitleValue title="C/O adressenavn" value={kontaktadresseData.coAdressenavn} />
+						<TitleValue title="Master" value={kontaktadresseData.metadata?.master} />
 					</div>
 				</>
 			)}
@@ -179,7 +181,7 @@ const KontaktadresseVisning = ({
 	const slettetKontaktadressePdlf =
 		tmpPersoner?.hasOwnProperty(ident) && !redigertKontaktadressePdlf
 	if (slettetKontaktadressePdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const kontaktadresseValues = redigertKontaktadressePdlf

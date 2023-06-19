@@ -36,7 +36,7 @@ public class DokarkivPostCommand implements Callable<Flux<DokarkivResponse>> {
         return webClient.post()
                 .uri(builder ->
                         builder.path("/api/{miljo}/v1/journalpost")
-                                .queryParam("ferdigstill", isTrue(dokarkivRequest.getFerdigstill()))
+                                .queryParam("forsoekFerdigstill", isTrue(dokarkivRequest.getFerdigstill()))
                                 .build(environment))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())

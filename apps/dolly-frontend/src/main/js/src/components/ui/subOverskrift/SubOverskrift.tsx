@@ -5,14 +5,15 @@ type Props = {
 	iconKind?: string
 	label?: string
 	isWarning?: boolean
+	style?: any
 }
 
-export default function SubOverskrift({ iconKind, label, isWarning = false }: Props) {
+export default function SubOverskrift({ iconKind, label, isWarning = false, style }: Props) {
 	if (!label) {
 		return null
 	}
 	return (
-		<div className={`sub-overskrift${isWarning ? ' warning' : ''}`}>
+		<div className={`sub-overskrift${isWarning ? ' warning' : ''}`} style={style}>
 			{iconKind && <Icon size={18} kind={iconKind} />}
 			<h3>{label}</h3>
 		</div>

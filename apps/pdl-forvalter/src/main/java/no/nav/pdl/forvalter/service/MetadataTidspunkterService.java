@@ -82,15 +82,11 @@ public class MetadataTidspunkterService {
                 .forEach(this::fixInnflytting);
         person.getKjoenn()
                 .forEach(kjoenn -> fixKjoenn(kjoenn, person));
-        person.getKontaktadresse()
-                .forEach(this::fixAdresser);
         person.getKontaktinformasjonForDoedsbo()
                 .forEach(this::fixVersioning);
         fixNavn(person);
         person.getOpphold()
                 .forEach(this::fixOpphold);
-        person.getOppholdsadresse()
-                .forEach(this::fixAdresser);
         person.getSikkerhetstiltak()
                 .forEach(this::fixSikkerhetstiltak);
         person.getSivilstand()

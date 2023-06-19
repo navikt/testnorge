@@ -1,6 +1,5 @@
 package no.nav.dolly.bestilling.aareg.amelding;
 
-import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.aareg.command.OrganisasjonGetCommand;
 import no.nav.dolly.config.credentials.OrganisasjonServiceProperties;
 import no.nav.testnav.libs.dto.organisasjon.v1.OrganisasjonDTO;
@@ -12,7 +11,6 @@ import reactor.core.publisher.Flux;
 
 import java.util.Set;
 
-@Slf4j
 @Service
 public class OrganisasjonServiceConsumer {
 

@@ -9,52 +9,58 @@ spec:
   receivers:
     slack:
       channel: "#dolly-alerts"
-      #prependText: "<!here> | "
       icon_emoji: ':dolly-panic:'
   groups:
     - name: dolly-alerts
       rules:
-        - alert: Applikasjon er nede
-          expr: kube_deployment_status_replicas_available{namespace = "dolly"} == 0
-          for: 4m
+
+        - alert: 'dolly-replicas-unavailable'
+          expr: 'kube_deployment_status_replicas_available{namespace = "dolly"} == 0'
+          for: 5m
           annotations:
-            summary: "Applikasjonen {{ $labels.deployment }} er nede"
-            action: "`kubectl describe pod -l app={{ $labels.deployment }}` for events, og `kubectl logs -l app={{ $labels.deployment }}` for logger"
+            summary: 'Applikasjonen *{{ $labels.deployment }}* har hatt 0 replicas i >5min og er ikke tilgjengelig.'
+            action: |
+              Events: `kubectl describe pod -l app={{ $labels.deployment }}`
+              Logger: `kubectl logs -l app={{ $labels.deployment }}`
             labels:
-              namespace: dolly
-              severity: critical
-        - alert: høy feilrate i logger
-          expr: (100 * sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"dolly-backend|dolly-frontend",log_level=~"Error"}[3m])) / sum by (log_app, log_namespace) (rate(logd_messages_total{log_app=~"dolly-backend|dolly-frontend"}[3m]))) > 10
-          for: 3m
+              namespace: 'dolly'
+              severity: 'critical'
+
+        - alert: 'dolly-log-errors'
+          expr: 'sum by (app,namespace) (increase(log_messages_errors{namespace="dolly",level="Error"}[15m]) > 1)'
+          for: 1m
           annotations:
-            consequence: Application is unavailable
-            action: "Sjekk loggene <https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30m,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:lucene,query:'application:%20{{ $labels.log_app }}%20AND%20level:Error'),sort:!(!('@timestamp',desc)))|Kibana logger> for å se hvorfor {{ $labels.log_app }} returnerer HTTP feilresponser"
-            summary: |-
-              "App {{ $labels.app }} er nede i namespace {{ $labels.kubernetes_namespace }}"
+            summary: 'Applikasjonen *{{ $labels.app }}* har hatt mer enn 1 ERRORs i loggen i løpet av de siste 15 minuttene.'
+            action: |
+              Events: `kubectl describe pod -l app={{ $labels.app }}`
+              Logger: `kubectl logs -l app={{ $labels.app }}`
+              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
             labels:
-              namespace: dolly
-              severity: critical
-        - alert: Høy andel HTTP serverfeil (5xx responser)
-          severity: danger
-          expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^5\\d\\d", namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])) / sum by (backend) (rate(response_total{namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])))) > 1
-          for: 3m
+              namespace: 'dolly'
+              severity: 'warning'
+
+        - alert: 'dolly-server-http-5xx'
+          expr: 'sum by (app,namespace) (increase(http_server_requests_seconds_count{namespace="dolly",status=~"^5.."}[15m]) > 5)'
+          for: 1m
           annotations:
-            consequence: Application is unavailable
-            action: "Sjekk loggene <https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30m,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:lucene,query:'namespace:%20dolly%20AND%20level:Error'),sort:!(!('@timestamp',desc)))|Kibana logger> for å se hvorfor det returneres flere 500 HTTP feilresponser"
-            summary: |-
-              "App {{ $labels.app }} er nede i namespace {{ $labels.kubernetes_namespace }}"
+            summary: 'Applikasjonen *{{ $labels.app }}* har gitt mer enn 5 HTTP 5xx-responser i løpet av de siste 15 minuttene.'
+            action: |
+              Events: `kubectl describe pod -l app={{ $labels.app }}`
+              Logger: `kubectl logs -l app={{ $labels.app }}`
+              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
             labels:
-              namespace: dolly
-              severity: critical
-        - alert: Høy andel HTTP klientfeil (4xx responser)
-          severity: warning
-          expr: (100 * (sum by (backend) (rate(response_total{status_code=~"^4\\d\\d", namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])) / sum by (backend) (rate(response_total{namespace="dolly", app=~"dolly-backend|dolly-frontend"}[3m])))) > 10
-          for: 3m
+              namespace: 'dolly'
+              severity: 'warning'
+
+        - alert: 'dolly-client-http-4xx'
+          expr: 'sum by (app,namespace) (increase(http_client_requests_seconds_count{namespace="dolly",status=~"^4.."}[15m]) > 5)'
+          for: 1m
           annotations:
-            consequence: Application is unavailable
-            action: "Sjekk loggene <https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:0),time:(from:now-30m,to:now))&_a=(columns:!(message,envclass,level,application,host),filters:!(),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:lucene,query:'namespace:%20dolly%20AND%20level:Error'),sort:!(!('@timestamp',desc)))|Kibana logger> for å se hvorfor det returneres flere 400 HTTP feilresponser"
-            summary: |-
-              "App {{ $labels.app }} er nede i namespace {{ $labels.kubernetes_namespace }}"
+            summary: 'Applikasjonen *{{ $labels.app }}* har fått mer enn 5 HTTP 4xx-responser i løpet av de siste 15 minuttene.'
+            action: |
+              Events: `kubectl describe pod -l app={{ $labels.app }}`
+              Logger: `kubectl logs -l app={{ $labels.app }}`
+              Kibana: `<https://logs.adeo.no/app/discover#/?_g=(filters:!(),refreshInterval:(pause:!t,value:60000),time:(from:now-30m,to:now))&_a=(columns:!(level,message,envclass,application,pod),filters:!(),grid:(columns:(x_WorkerID:(width:325))),index:'96e648c0-980a-11e9-830a-e17bbd64b4db',interval:auto,query:(language:kuery,query:'namespace:%20%22dolly%22%20AND%20level:%20%22Error%22%20AND%20application:%20%22{{ $labels.app }}%22'),sort:!(!('@timestamp',desc)))|Link>`
             labels:
-              namespace: dolly
-              severity: critical
+              namespace: 'dolly'
+              severity: 'warning'

@@ -13,11 +13,14 @@ type KodeverkType = {
 const getKodeverkUrl = (kodeverkNavn) => `/dolly-backend/api/v1/kodeverk/${kodeverkNavn}`
 
 export const useKodeverk = (kodeverkNavn) => {
-	const { data, error } = useSWR<KodeverkListe, Error>(getKodeverkUrl(kodeverkNavn), fetcher)
+	const { data, isLoading, error } = useSWR<KodeverkListe, Error>(
+		getKodeverkUrl(kodeverkNavn),
+		fetcher
+	)
 
 	return {
 		kodeverk: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }

@@ -142,7 +142,6 @@ export default ({
 				</div>
 				<div className="gruppe--flex-column-center margin-top-20 margin-bottom-10">
 					<ToggleGroup
-						size={'small'}
 						value={visning}
 						onChange={byttVisning}
 						style={{ backgroundColor: '#ffffff' }}
