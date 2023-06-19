@@ -10,6 +10,7 @@ spec:
     enabled: true
   image: {{ image }}
   port: 8080
+  webproxy: true
   azure:
     application:
       allowAllUsers: true
@@ -32,7 +33,7 @@ spec:
         - application: dolly-idporten
           cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
-          cluster: prod-gcp
+          cluster: dev-gcp
         - application: app-1
           namespace: plattformsikkerhet
           cluster: dev-gcp
