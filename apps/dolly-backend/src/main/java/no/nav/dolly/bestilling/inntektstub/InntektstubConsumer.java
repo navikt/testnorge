@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
@@ -54,14 +55,14 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .build();
     }
 
-    @Timed(name = "providers", tags = {"operation", "inntk_getInntekter"})
+    @Timed(name = "providers", tags = { "operation", "inntk_getInntekter" })
     public Flux<Inntektsinformasjon> getInntekter(String ident) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new InntektstubGetCommand(webClient, ident, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "inntk_deleteInntekter"})
+    @Timed(name = "providers", tags = { "operation", "inntk_deleteInntekter" })
     public Mono<List<String>> deleteInntekter(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
@@ -74,16 +75,16 @@ public class InntektstubConsumer implements ConsumerStatus {
                 .collectList();
     }
 
-    @Timed(name = "providers", tags = {"operation", "inntk_postInntekter"})
+    @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
     public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
-        log.info("Sender inntektstub: {}", inntektsinformasjon);
+        log.info("Sender inntektstub: {}", Json.pretty(inntektsinformasjon));
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());
     }
 
-    @Timed(name = "providers", tags = {"operation", "inntk_validerInntekt"})
+    @Timed(name = "providers", tags = { "operation", "inntk_validerInntekt" })
     public ResponseEntity<Object> validerInntekter(ValiderInntekt validerInntekt) {
 
         return tokenService.exchange(serviceProperties)
