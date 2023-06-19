@@ -12,6 +12,8 @@ const tilleggsinformasjonAttributter = {
 	LottOgPartInnenFiske: 'lottOgPart',
 	Nettoloennsordning: 'nettoloenn',
 	UtenlandskArtist: 'utenlandskArtist',
+	BonusFraForsvaret: 'bonusFraForsvaret',
+	ReiseKostOgLosji: 'reiseKostOgLosji',
 }
 
 const InntektStub = ({ formikBag, inntektPath }) => {

@@ -11,6 +11,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
 import java.time.Duration;
@@ -40,9 +41,7 @@ public class HelsepersonellConsumer {
     }
 
     @Timed(name = "providers", tags = {"operation", "leger-hent"})
-    public HelsepersonellListeDTO getHelsepersonell() {
-
-        log.info("Henter helsepersonell...");
+    public Mono<HelsepersonellListeDTO> getHelsepersonell() {
 
         return accessTokenService.exchange(serviceProperties)
                 .flatMap(token -> webClient
@@ -55,6 +54,7 @@ public class HelsepersonellConsumer {
                         .bodyToMono(HelsepersonellListeDTO.class)
                         .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                                 .filter(WebClientFilter::is5xxException)))
-                .block();
+                .doOnNext(response -> log.info("Hentet helsepersonell ..."))
+                .cache(Duration.ofHours(9));
     }
 }

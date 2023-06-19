@@ -58,6 +58,7 @@ public class InntektsinformasjonMappingStrategy implements MappingStrategy {
                                         inntektsinformasjon.getHistorikk().forEach(historikk ->
 
                                                 inntektsinformasjonWrapper.getInntektsinformasjon().add(Inntektsinformasjon.builder()
+                                                        .norskIdent((String) context.getProperty("ident"))
                                                         .aarMaaned(yearMonth.get().format(YEAR_MONTH_FORMAT))
                                                         .opplysningspliktig(inntektsinformasjon.getOpplysningspliktig())
                                                         .virksomhet(inntektsinformasjon.getVirksomhet())
