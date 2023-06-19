@@ -5,12 +5,13 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { DollyApi } from '@/service/Api'
+import { useCurrentBruker } from '@/utils/hooks/useBruker'
 
 export const MalModal = ({ id, closeModal }) => {
 	const lagreEndring = () => {
 		DollyApi.endreMalNavn(id, nyttMalnavn).then(closeModal())
 	}
-
+	const { currentBruker } = useCurrentBruker()
 	const [nyttMalnavn, setMalnavn] = useState('')
 	return (
 		<ErrorBoundary>
