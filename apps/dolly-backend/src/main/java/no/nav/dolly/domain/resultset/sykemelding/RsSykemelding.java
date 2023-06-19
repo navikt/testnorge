@@ -1,5 +1,6 @@
 package no.nav.dolly.domain.resultset.sykemelding;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Getter
 @Setter
@@ -206,5 +208,17 @@ public class RsSykemelding {
             private String land;
             private String postnummer;
         }
+    }
+
+    @JsonIgnore
+    public boolean hasDetaljertSykemelding() {
+
+        return nonNull(detaljertSykemelding);
+    }
+
+    @JsonIgnore
+    public boolean hasSyntSykemelding() {
+
+        return nonNull(syntSykemelding);
     }
 }
