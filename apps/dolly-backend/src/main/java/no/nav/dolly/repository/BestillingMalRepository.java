@@ -13,7 +13,7 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
     @Transactional
     @Modifying
     @Query("update BestillingMal b set b.malBestillingNavn = ?2 where b.id = ?1")
-    void updateMalBestillingNavnById(Long id, String malBestillingNavn);
+    BestillingMal updateMalBestillingNavnById(Long id, String malBestillingNavn);
 
     List<BestillingMal> findByIdContaining(String id);
 

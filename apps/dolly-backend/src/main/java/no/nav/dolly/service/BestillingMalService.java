@@ -113,15 +113,15 @@ public class BestillingMalService {
     }
 
     @Transactional
-    public void saveBestillingMalFromBestillingId(Long id, String malnavn) {
+    public BestillingMal saveBestillingMalFromBestillingId(Long bestillingId, String malnavn) {
 
         Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
 
-        var bestilling = bestillingRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id + " finnes ikke"));
+        var bestilling = bestillingRepository.findById(bestillingId)
+                .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
 
         overskrivDuplikateMalbestillinger(bestilling, bruker);
-        bestillingMalRepository.save(BestillingMal.builder()
+        return bestillingMalRepository.save(BestillingMal.builder()
                 .bestKriterier(bestilling.getBestKriterier())
                 .bruker(bruker)
                 .malBestillingNavn(malnavn)
@@ -136,9 +136,9 @@ public class BestillingMalService {
     }
 
     @Transactional
-    public void updateMalBestillingNavnById(Long id, String nyttMalNavn) {
+    public BestillingMal updateMalBestillingNavnById(Long id, String nyttMalNavn) {
 
-        bestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
+        return bestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
     }
 
     public static String getBruker(Bruker bruker) {

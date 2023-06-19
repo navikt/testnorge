@@ -6,12 +6,12 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
+import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.NavigasjonService;
@@ -127,6 +127,14 @@ public class BestillingController {
         return bestillingMalService.getMalBestillinger();
     }
 
+    @Cacheable(value = CACHE_BESTILLING)
+    @PostMapping("/malbestilling")
+    @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
+    public BestillingMal opprettMalbestilling(Long bestillingId, String malnavn) {
+
+        return bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malnavn);
+    }
+
     @GetMapping("/malbestilling/bruker")
     @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
     public List<RsMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
@@ -145,13 +153,9 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
-    public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "brukerId") String brukerId, @RequestBody MalbestillingNavn malbestillingNavn) {
+    public BestillingMal redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        try {
-            var malBestilling = bestillingMalService.getMalBestillingById(id);
-            bestillingMalService.updateMalBestillingNavnById(malBestilling.getId(), malbestillingNavn.getMalNavn());
-        } catch (NotFoundException exception) {
-            bestillingMalService.saveBestillingMalFromBestillingId(id, malbestillingNavn.getMalNavn());
-        }
+        var malBestilling = bestillingMalService.getMalBestillingById(id);
+        return bestillingMalService.updateMalBestillingNavnById(malBestilling.getId(), malbestillingNavn.getMalNavn());
     }
 }
