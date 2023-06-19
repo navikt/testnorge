@@ -7,8 +7,6 @@ import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.DeployRequest;
 import no.nav.dolly.bestilling.organisasjonforvalter.domain.OrganisasjonDetaljer;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
-import no.nav.dolly.domain.resultset.RsOrganisasjonStatusRapport;
-import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,9 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import static no.nav.dolly.provider.api.OrganisasjonBestillingController.getStatus;
 
 @RestController
 @RequiredArgsConstructor
@@ -58,32 +57,9 @@ public class OrganisasjonController {
     @Operation(description = "Hent opprettede organisasjoner basert på brukerId")
     public List<OrganisasjonDetaljer> hentOrganisasjoner(
             @Parameter(description = "BrukerID som er unik til en Azure bruker (Dolly autentisering)")
-            @RequestParam (required = false) String brukerId) {
+            @RequestParam(required = false) String brukerId) {
 
         return bestillingService.getOrganisasjoner(brukerId);
     }
 
-    private static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {
-
-        return RsOrganisasjonBestillingStatus.builder()
-                .id(bestilling.getId())
-                .sistOppdatert(bestilling.getSistOppdatert())
-                .antallLevert(0)
-                .ferdig(false)
-                .organisasjonNummer(orgnummer)
-                .status(List.of(RsOrganisasjonStatusRapport.builder()
-                        .id(SystemTyper.ORGANISASJON_FORVALTER)
-                        .navn(SystemTyper.ORGANISASJON_FORVALTER.getBeskrivelse())
-                        .statuser(List.of(RsOrganisasjonStatusRapport.Status.builder()
-                                .melding("Bestilling startet ...")
-                                .detaljert(Arrays.stream(bestilling.getMiljoer().split(","))
-                                        .map(miljoe -> RsOrganisasjonStatusRapport.Detaljert.builder()
-                                                .orgnummer(orgnummer)
-                                                .miljo(miljoe)
-                                                .build())
-                                        .toList())
-                                .build()))
-                        .build()))
-                .build();
-    }
 }

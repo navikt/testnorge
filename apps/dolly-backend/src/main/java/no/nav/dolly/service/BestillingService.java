@@ -289,7 +289,7 @@ public class BestillingService {
 
         Optional<Testgruppe> testgruppe = testgruppeRepository.findById(gruppeId);
 
-        if (!testgruppe.isPresent() || testgruppe.get().getTestidenter().isEmpty()) {
+        if (testgruppe.isEmpty() || testgruppe.get().getTestidenter().isEmpty()) {
             throw new NotFoundException(format("Ingen testpersoner funnet i gruppe: %d", gruppeId));
         }
 

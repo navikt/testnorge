@@ -11,6 +11,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper.RsMalBestilling;
 import no.nav.dolly.domain.resultset.entity.testident.RsWhereAmI;
+import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.BestillingService;
 import no.nav.dolly.service.NavigasjonService;
@@ -144,8 +145,13 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
-    public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
+    public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "brukerId") String brukerId, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        bestillingMalService.updateMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
+        try {
+            var malBestilling = bestillingMalService.getMalBestillingById(id);
+            bestillingMalService.updateMalBestillingNavnById(malBestilling.getId(), malbestillingNavn.getMalNavn());
+        } catch (NotFoundException exception) {
+            bestillingMalService.saveBestillingMalFromBestillingId(id, malbestillingNavn.getMalNavn());
+        }
     }
 }
