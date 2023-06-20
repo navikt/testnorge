@@ -23,7 +23,7 @@ type DokarkivTypes = {
 
 const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
 	if (!data) return null
-
+	console.log("data: ", data) //TODO - SLETT MEG
 	return <DokarkivVisning journalpost={data} miljoe={miljo} />
 }
 

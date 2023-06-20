@@ -450,6 +450,33 @@ const selectOptions = {
 		{ value: 'ORGNR', label: 'ORGNR' },
 	],
 
+	sakstype: [
+		{ value: 'GENERELL_SAK', label: 'Generell sak' },
+		{ value: 'FAGSAK', label: 'Fagsak' },
+	],
+
+	fagsaksystem: [
+		{ value: 'AO01', label: 'AO01 (Arena)' },
+		{ value: 'AO11', label: 'AO11 (Grisen)' },
+		{ value: 'BISYS', label: 'BISYS' },
+		{ value: 'FS36', label: 'FS36 (Foreldrepengeløsningen)' },
+		{ value: 'FS38', label: 'FS38 (Melosys)' },
+		{ value: 'IT01', label: 'IT01 (Infotrygd)' },
+		{ value: 'K9', label: 'K9 (Sykdom i familien)' },
+		{ value: 'OB36', label: 'OB36 (UR)' },
+		{ value: 'OEBS', label: 'OEBS' },
+		{ value: 'PP01', label: 'PP01 (Pesys)' },
+		{ value: 'UFM', label: 'UFM (Unntak fra medlemskap)' },
+		{ value: 'BA', label: 'BA (Barnetrygd)' },
+		{ value: 'EF', label: 'EF (Enslig forsørger)' },
+		{ value: 'KONT', label: 'KONT (Kontantstøtte)' },
+		{ value: 'SUPSTONAD', label: 'SUPSTONAD (Supplerende Stønad)' },
+		{ value: 'OMSORGSPENGER', label: 'OMSORGSPENGER (Omsorgspenger)' },
+		{ value: 'HJELPEMIDLER', label: 'HJELPEMIDLER' },
+		{ value: 'BARNEBRILLER', label: 'BARNEBRILLER' },
+		{ value: 'EY', label: 'EY (Etterlatteytelser)' },
+	],
+
 	tjenestepensjonYtelseType: [
 		{ value: 'ALDER', label: 'Alderspensjon' },
 		{ value: 'UFORE', label: 'Uførepensjon' },
