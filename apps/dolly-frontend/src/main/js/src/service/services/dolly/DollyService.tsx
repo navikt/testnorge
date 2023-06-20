@@ -201,7 +201,7 @@ export default {
 	},
 
 	slettMal(malId) {
-		return Request.delete(Endpoints.malBestilling(malId))
+		return Request.delete(Endpoints.malBestillingMedId(malId))
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
@@ -215,7 +215,21 @@ export default {
 	},
 
 	endreMalNavn(malID, malNavn) {
-		return Request.putWithoutResponse(Endpoints.malBestilling(malID), malNavn)
+		return Request.putWithoutResponse(Endpoints.malBestillingMedId(malID), malNavn)
+			.then((response) => {
+				if (!response.ok) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
+	lagreMalFraBestillingId(bestillingId, malNavn) {
+		return Request.post(Endpoints.malBestillingMedBestillingId(bestillingId, malNavn))
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)

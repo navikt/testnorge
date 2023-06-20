@@ -196,8 +196,12 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/identer/${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
-	static malBestilling(malId) {
+	static malBestillingMedId(malId) {
 		return `${bestillingBase}/malbestilling/${malId}`
+	}
+
+	static malBestillingMedBestillingId(bestillingId, malNavn) {
+		return `${bestillingBase}/malbestilling?bestillingId=${bestillingId}&malnavn=${malNavn}`
 	}
 
 	static malBestillingOrganisasjon(malId) {
