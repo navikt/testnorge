@@ -72,7 +72,7 @@ spec:
     - name: ACCEPTED_AUDIENCE
       value: prod-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
-      value: https://tokendings.dev-gcp.nais.io
+      value: https://tokendings.prod-gcp.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_14
