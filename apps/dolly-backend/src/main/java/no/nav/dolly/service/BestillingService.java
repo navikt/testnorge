@@ -55,7 +55,7 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
-import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -204,6 +204,7 @@ public class BestillingService {
 
         Testident testident = identRepository.findByIdent(ident)
                 .orElseThrow(() -> new NotFoundException(format("Testident %s ble ikke funnet", ident)));
+        var bruker = fetchOrCreateBruker();
 
         fixAaregAbstractClassProblem(request.getAareg());
         Bestilling bestilling = Bestilling.builder()
@@ -214,10 +215,12 @@ public class BestillingService {
                 .sistOppdatert(now())
                 .miljoer(join(",", request.getEnvironments()))
                 .bestKriterier(getBestKriterier(request))
-                .malBestillingNavn(request.getMalBestillingNavn())
-                .bruker(fetchOrCreateBruker())
+                .bruker(bruker)
                 .build();
-        saveBestillingMalWithCurrentUser(bestilling);
+
+        if (isNoneBlank(request.getMalBestillingNavn())) {
+            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+        }
         return saveBestillingToDB(bestilling);
     }
 
@@ -225,6 +228,7 @@ public class BestillingService {
     public Bestilling saveBestilling(Long gruppeId, RsDollyBestilling request, Integer antall,
                                      List<String> opprettFraIdenter, Boolean navSyntetiskIdent, String beskrivelse) {
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var bruker = fetchOrCreateBruker();
         Bestilling bestilling = Bestilling.builder()
                 .gruppe(gruppe)
                 .antallIdenter(antall)
@@ -233,12 +237,13 @@ public class BestillingService {
                 .miljoer(join(",", request.getEnvironments()))
                 .bestKriterier(getBestKriterier(request))
                 .opprettFraIdenter(nonNull(opprettFraIdenter) ? join(",", opprettFraIdenter) : null)
-                .malBestillingNavn(request.getMalBestillingNavn())
-                .bruker(fetchOrCreateBruker())
+                .bruker(bruker)
                 .beskrivelse(beskrivelse)
                 .build();
         fixAaregAbstractClassProblem(request.getAareg());
-        saveBestillingMalWithCurrentUser(bestilling);
+        if (isNoneBlank(request.getMalBestillingNavn())) {
+            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+        }
         return saveBestillingToDB(bestilling);
     }
 
@@ -309,18 +314,23 @@ public class BestillingService {
     public Bestilling saveBestilling(Long gruppeId, RsDollyImportFraPdlRequest request) {
 
         Testgruppe gruppe = testgruppeRepository.findById(gruppeId).orElseThrow(() -> new NotFoundException(NOT_FOUND + gruppeId));
+        var bruker = fetchOrCreateBruker();
+        Bestilling bestilling = Bestilling.builder()
+                .gruppe(gruppe)
+                .kildeMiljoe("PDL")
+                .miljoer(join(",", request.getEnvironments()))
+                .sistOppdatert(now())
+                .bruker(bruker)
+                .antallIdenter(request.getIdenter().size())
+                .bestKriterier(getBestKriterier(request))
+                .pdlImport(join(",", request.getIdenter()))
+                .build();
+
         fixAaregAbstractClassProblem(request.getAareg());
-        return saveBestillingToDB(
-                Bestilling.builder()
-                        .gruppe(gruppe)
-                        .kildeMiljoe("PDL")
-                        .miljoer(join(",", request.getEnvironments()))
-                        .sistOppdatert(now())
-                        .bruker(fetchOrCreateBruker())
-                        .antallIdenter(request.getIdenter().size())
-                        .bestKriterier(getBestKriterier(request))
-                        .pdlImport(join(",", request.getIdenter()))
-                        .build());
+        if (isNoneBlank(request.getMalBestillingNavn())) {
+            bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+        }
+        return saveBestillingToDB(bestilling);
     }
 
     @Transactional
@@ -420,14 +430,6 @@ public class BestillingService {
             log.info("Konvertering til Json feilet", e);
         }
         return null;
-    }
-
-    private void saveBestillingMalWithCurrentUser(Bestilling bestilling) {
-
-        if (isBlank(bestilling.getMalBestillingNavn())) {
-            return;
-        }
-        bestillingMalService.saveBestillingMal(bestilling, bestilling.getBruker());
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {

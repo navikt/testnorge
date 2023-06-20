@@ -6,7 +6,6 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
 import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsMalBestillingWrapper;
@@ -35,6 +34,7 @@ import java.util.List;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 import static no.nav.dolly.config.CachingConfig.CACHE_GRUPPE;
@@ -127,19 +127,21 @@ public class BestillingController {
         return bestillingMalService.getMalBestillinger();
     }
 
-    @Cacheable(value = CACHE_BESTILLING)
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PostMapping("/malbestilling")
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
-    public BestillingMal opprettMalbestilling(Long bestillingId, String malnavn) {
+    public void opprettMalbestilling(Long bestillingId, String malnavn) {
 
-        return bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malnavn);
+        bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malnavn);
     }
 
     @GetMapping("/malbestilling/bruker")
     @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
     public List<RsMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
 
-        return bestillingMalService.getMalbestillingByNavnAndUser(brukerId, malNavn);
+        return isNull(malNavn)
+                ? bestillingMalService.getMalbestillingByUser(brukerId)
+                : bestillingMalService.getMalbestillingByUserAndNavn(brukerId, malNavn);
     }
 
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)

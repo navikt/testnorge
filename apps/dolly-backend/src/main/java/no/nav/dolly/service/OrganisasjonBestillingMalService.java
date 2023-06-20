@@ -41,13 +41,13 @@ public class OrganisasjonBestillingMalService {
     private final GetUserInfo getUserInfo;
 
     @Transactional
-    public void saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, Bruker bruker) {
+    public void saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, String malnavn, Bruker bruker) {
 
-        overskrivDuplikateMalbestillinger(organisasjonBestilling, bruker);
+        overskrivDuplikateMalbestillinger(malnavn, bruker);
         organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(organisasjonBestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(organisasjonBestilling.getMalBestillingNavn())
+                .malBestillingNavn(malnavn)
                 .miljoer(organisasjonBestilling.getMiljoer())
                 .build());
     }
@@ -60,7 +60,7 @@ public class OrganisasjonBestillingMalService {
         var organisasjonBestilling = organisasjonBestillingRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException(id + " finnes ikke"));
 
-        overskrivDuplikateMalbestillinger(organisasjonBestilling, bruker);
+        overskrivDuplikateMalbestillinger(malnavn, bruker);
         organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(organisasjonBestilling.getBestKriterier())
                 .bruker(bruker)
@@ -119,15 +119,12 @@ public class OrganisasjonBestillingMalService {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
 
-        var bestillinger = nonNull(malNavn)
-                ? organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn)
-                : organisasjonBestillingMalRepository.findByBruker(bruker);
-
-        return bestillinger.stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
-                .malNavn(bestilling.getMalBestillingNavn())
-                .id(bestilling.getId())
-                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
-                .build()).toList();
+        return organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn)
+                .stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
+                        .malNavn(bestilling.getMalBestillingNavn())
+                        .id(bestilling.getId())
+                        .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
+                        .build()).toList();
     }
 
     @Transactional
@@ -142,12 +139,12 @@ public class OrganisasjonBestillingMalService {
         organisasjonBestillingMalRepository.deleteById(id);
     }
 
-    void overskrivDuplikateMalbestillinger(OrganisasjonBestilling bestilling, Bruker bruker) {
+    void overskrivDuplikateMalbestillinger(String malnavn, Bruker bruker) {
 
-        if (StringUtils.isBlank(bestilling.getMalBestillingNavn())) {
+        if (StringUtils.isBlank(malnavn)) {
             return;
         }
-        var gamleMalBestillinger = organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, bestilling.getMalBestillingNavn());
+        var gamleMalBestillinger = organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malnavn);
         gamleMalBestillinger.forEach(malBestilling ->
                 organisasjonBestillingMalRepository.deleteById(malBestilling.getId()));
     }

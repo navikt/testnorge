@@ -73,7 +73,6 @@ public interface BestillingRepository extends CrudRepository<Bestilling, Long> {
     @Modifying
     @Query(value = "delete from Bestilling b " +
             "where b.id = :bestillingId " +
-            "and b.malBestillingNavn is null " +
             "and not exists (select bp from BestillingProgress bp where bp.bestilling.id = :bestillingId)")
     int deleteBestillingWithNoChildren(@Param("bestillingId") Long bestillingId);
 

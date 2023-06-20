@@ -100,7 +100,6 @@ public class OrganisasjonBestillingService {
                 .feil(bestilling.getFeil())
                 .environments(Set.of(bestilling.getMiljoer().split(",")))
                 .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
-                .malBestillingNavn(bestilling.getMalBestillingNavn())
                 .build();
     }
 
@@ -121,7 +120,6 @@ public class OrganisasjonBestillingService {
                         .feil(progress.getBestilling().getFeil())
                         .environments(Set.of(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
-                        .malBestillingNavn(progress.getBestilling().getMalBestillingNavn())
                         .build())
                 .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
@@ -161,10 +159,9 @@ public class OrganisasjonBestillingService {
                 .miljoer(join(",", request.getEnvironments()))
                 .bestKriterier(toJson(request.getOrganisasjon()))
                 .bruker(bruker)
-                .malBestillingNavn(request.getMalBestillingNavn())
                 .build();
 
-        organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, bruker);
+        organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
 
         return saveBestillingToDB(bestilling);
     }
@@ -180,10 +177,8 @@ public class OrganisasjonBestillingService {
                 .miljoer(join(",", status.getEnvironments()))
                 .bestKriterier(toJson(status.getBestilling()))
                 .bruker(bruker)
-                .malBestillingNavn(status.getMalBestillingNavn())
                 .build();
 
-        organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, bruker);
         return saveBestillingToDB(bestilling);
     }
 
