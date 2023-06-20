@@ -69,3 +69,8 @@ consumers:
     url: https://testnav-synt-sykemelding-api.intern.dev.nav.no
   testnav-miljoer-service:
     url: https://testnav-miljoer-service.intern.dev.nav.no
+  testnav-organisasjon-tilgang-service:
+    cluster: prod-gcp
+    namespace: dolly
+    name: testnav-organisasjon-tilgang-service
+    url: https://testnav-organisasjon-tilgang-service.intern.nav.no
