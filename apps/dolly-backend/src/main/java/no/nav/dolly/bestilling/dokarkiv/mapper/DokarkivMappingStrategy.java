@@ -57,7 +57,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                                     .navn(getNavn((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)))
                                     .build());
                         }
-                        dokarkivRequest.setSak(mapperFacade.map(dokarkivRequest.getSak(), DokarkivRequest.Sak.class));
+                        dokarkivRequest.setSak(mapperFacade.map(rsDokarkiv.getSak(), DokarkivRequest.Sak.class));
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())

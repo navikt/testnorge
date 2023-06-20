@@ -54,7 +54,7 @@ public class DokarkivClient implements ClientRegister {
                 .filter(bestilling1 -> nonNull(bestilling1.getDokarkiv()))
                 .map(RsDollyUtvidetBestilling::getDokarkiv)
                 .flatMap(dokarkiv -> Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
-                                .map(person -> buildRequest(bestilling.getDokarkiv(), person))
+                                .map(person -> buildRequest(dokarkiv, person))
                                 .flatMap(request -> dokarkivConsumer.getEnvironments()
                                         .flatMapIterable(env -> env)
                                         .filter(env -> bestilling.getEnvironments().contains(env))
