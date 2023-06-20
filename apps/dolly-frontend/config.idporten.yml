@@ -59,9 +59,6 @@ spec:
         - host: testnav-brregstub-proxy.dev-fss-pub.nais.io
         - host: testnav-dokarkiv-proxy.dev-fss-pub.nais.io
         - host: testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
-        - host: testnav-organisasjon-tilgang-service.intern.nav.no
-          cluster: prod-gcp
-        - host: testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   
   liveness:
     path: /internal/isAlive
