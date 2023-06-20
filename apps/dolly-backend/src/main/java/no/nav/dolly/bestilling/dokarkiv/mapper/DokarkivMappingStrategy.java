@@ -28,9 +28,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
     private static final String BEHANDLINGSTEMA = "ab0001";
-    private static final String FAGSAK_ID = "10695768";
-    private static final String FAGSAK_SYSTEM = "AO01";
-    private static final String FAGSAK_TYPE = "FAGSAK";
 
     @Override
     public void register(MapperFactory factory) {
@@ -60,11 +57,7 @@ public class DokarkivMappingStrategy implements MappingStrategy {
                                     .navn(getNavn((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)))
                                     .build());
                         }
-                        dokarkivRequest.setSak(DokarkivRequest.Sak.builder()
-                                .fagsakId(FAGSAK_ID)
-                                .fagsaksystem(FAGSAK_SYSTEM)
-                                .sakstype(FAGSAK_TYPE)
-                                .build());
+                        dokarkivRequest.setSak(mapperFacade.map(dokarkivRequest.getSak(), DokarkivRequest.Sak.class));
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
