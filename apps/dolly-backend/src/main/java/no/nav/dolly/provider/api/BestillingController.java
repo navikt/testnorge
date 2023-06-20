@@ -153,9 +153,8 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
-    public BestillingMal redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
+    public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        var malBestilling = bestillingMalService.getMalBestillingById(id);
-        return bestillingMalService.updateMalBestillingNavnById(malBestilling.getId(), malbestillingNavn.getMalNavn());
+        bestillingMalService.updateMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
     }
 }

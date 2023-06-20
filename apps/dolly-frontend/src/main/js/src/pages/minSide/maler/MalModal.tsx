@@ -11,10 +11,10 @@ export const MalModal = ({ id, closeModal }) => {
 	const [nyttMalnavn, setMalnavn] = useState('')
 	const matchMutate = useMatchMutate()
 	const lagreMal = () => {
-		DollyApi.lagreMalFraBestillingId(id, nyttMalnavn).then(() => {
+		DollyApi.lagreMalFraBestillingId(id, nyttMalnavn).then(() =>
 			matchMutate(REGEX_BACKEND_BESTILLINGER)
-			closeModal()
-		})
+		)
+		closeModal()
 	}
 
 	return (

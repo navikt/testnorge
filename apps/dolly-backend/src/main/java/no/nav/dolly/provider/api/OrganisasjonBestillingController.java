@@ -13,7 +13,6 @@ import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonBestillingStatus;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestillingWrapper.RsOrganisasjonMalBestilling;
-import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.service.OrganisasjonBestillingMalService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
@@ -110,12 +109,7 @@ public class OrganisasjonBestillingController {
     @Operation(description = "Rediger mal-bestilling")
     public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
 
-        try {
-            var malBestilling = organisasjonBestillingMalService.getOrganisasjonMalBestillingById(id);
-            organisasjonBestillingMalService.updateOrganisasjonMalBestillingNavnById(malBestilling.getId(), malbestillingNavn.getMalNavn());
-        } catch (NotFoundException exception) {
-            organisasjonBestillingMalService.saveOrganisasjonBestillingMalFromBestillingId(id, malbestillingNavn.getMalNavn());
-        }
+        organisasjonBestillingMalService.updateOrganisasjonMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
     }
 
     static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

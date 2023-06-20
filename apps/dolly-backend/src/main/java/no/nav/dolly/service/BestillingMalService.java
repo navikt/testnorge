@@ -136,9 +136,9 @@ public class BestillingMalService {
     }
 
     @Transactional
-    public BestillingMal updateMalBestillingNavnById(Long id, String nyttMalNavn) {
+    public void updateMalBestillingNavnById(Long id, String nyttMalNavn) {
 
-        return bestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
+        bestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
     }
 
     public static String getBruker(Bruker bruker) {
