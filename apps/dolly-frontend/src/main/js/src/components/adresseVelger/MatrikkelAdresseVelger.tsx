@@ -5,6 +5,8 @@ import AdresseService, { MatrikkelAdresse } from '@/service/services/AdresseServ
 import { DollySelect } from '@/components/ui/form/inputs/select/Select'
 import { NotFoundError } from '@/error'
 import { Alert } from '@navikt/ds-react'
+import { instanceOf } from 'prop-types'
+import { useMatrikkelAdresser } from '@/utils/hooks/useAdresseSoek'
 
 const StyledAdresseVelger = styled.div`
 	background-color: #edf2ff;
@@ -28,12 +30,22 @@ type Props = {
 	onSelect: (adresse: MatrikkelAdresse) => void
 }
 
+// const hentMatrikkelAdresser = (search) => {
+// 	const { adresserTest, loadingTest, errorTest } = useMatrikkelAdresser(search)
+// 	console.log('adresser: ', adresserTest) //TODO - SLETT MEG
+// }
+
 export default ({ onSelect }: Props) => {
-	const [adresser, setAdresser] = useState<MatrikkelAdresse[]>()
+	// const [adresser, setAdresser] = useState<MatrikkelAdresse[]>()
 	const [adresse, setAdresse] = useState<MatrikkelAdresse>()
-	const [loading, setLoading] = useState<boolean>(false)
-	const [notFound, setNotFound] = useState<boolean>(false)
-	const [error, setError] = useState<boolean>(false)
+	// const [loading, setLoading] = useState<boolean>(false)
+	// const [notFound, setNotFound] = useState<boolean>(false)
+	// const [error, setError] = useState<boolean>(false)
+	const [search, setSearch] = useState<Search>(null)
+	// const [search, setSearch] = useState<Search>({})
+
+	const { adresser, loading, notFound, error } = useMatrikkelAdresser(search)
+	console.log('adresser: ', adresser) //TODO - SLETT MEG
 
 	const findAdresse = (matrikkelId: string) =>
 		adresser.find((value) => value.matrikkelId === matrikkelId)
@@ -50,24 +62,41 @@ export default ({ onSelect }: Props) => {
 			tilleggsnavn ? tilleggsnavn + ',' : ''
 		} ${postnummer} ${poststed}`
 
+	// const { adresserTest, loadingTest, errorTest } = useMatrikkelAdresser({
+	// 	kommunenummer: '4601',
+	// 	gaardsnummer: '',
+	// 	bruksnummer: '',
+	// })
+	// console.log('adresser: ', adresserTest) //TODO - SLETT MEG
+	// console.log('errorTest: ', errorTest) //TODO - SLETT MEG
 	const onSubmit = (search: Search) => {
-		setLoading(true)
-		setNotFound(false)
-		setError(false)
-		setAdresser(null)
-		return AdresseService.hentMatrikkelAdresser(search, 10)
-			.then((response) => {
-				setAdresser(response)
-				setLoading(false)
-			})
-			.catch((e: Error) => {
-				setLoading(false)
-				if (e && (e instanceof NotFoundError || e.name === 'NotFoundError')) {
-					setNotFound(true)
-				} else {
-					setError(true)
-				}
-			})
+		// setLoading(true)
+		// setNotFound(false)
+		// setError(false)
+		// setAdresser(null)
+		setSearch(search)
+		// hentMatrikkelAdresser(search)
+		// const { adresserTest, loadingTest, errorTest } = useMatrikkelAdresser(search)
+		// console.log('adresser: ', adresserTest) //TODO - SLETT MEG
+
+		// return AdresseService.hentMatrikkelAdresser(search, 10)
+		// 	.then((response) => {
+		// 		console.log('response: ', response) //TODO - SLETT MEG
+		// 		setAdresser(response)
+		// 		setLoading(false)
+		// 	})
+		// 	.catch((e: Error) => {
+		// 		console.log('e: ', e) //TODO - SLETT MEG
+		// 		console.log('e.name: ', e.name) //TODO - SLETT MEG
+		// 		console.log('e.cause: ', e.cause) //TODO - SLETT MEG
+		// 		console.log('e.message: ', e.message) //TODO - SLETT MEG
+		// 		setLoading(false)
+		// 		if (e && (e instanceof NotFoundError || e.name === 'NotFoundError')) {
+		// 			setNotFound(true)
+		// 		} else {
+		// 			setError(true)
+		// 		}
+		// 	})
 	}
 
 	return (

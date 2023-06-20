@@ -107,11 +107,15 @@ export const fetcher = (url, headers) =>
 			return res.data
 		})
 		.catch((reason) => {
+			console.log('reason: ', reason) //TODO - SLETT MEG
 			if (reason?.response?.status === 401 || reason?.response?.status === 403) {
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
-			if (reason.status === 404) {
+			if (reason.status === 404 || reason.response?.status === 404) {
+				if (reason.response?.data?.error) {
+					throw new Error(reason.response?.data?.error)
+				}
 				throw new NotFoundError()
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
@@ -133,6 +137,7 @@ type Config = {
 const _fetch = (url: string, config: Config, body?: object): Promise<Response> =>
 	fetchRetry(url, {
 		retryOn: (attempt, _error, response) => {
+			// console.log('response: ', response) //TODO - SLETT MEG
 			if (!response.ok && !runningCypressE2E()) {
 				if (response.status === 401) {
 					console.error('Auth feilet, navigerer til login')
@@ -184,6 +189,7 @@ const fetchJson = (url: string, config: Config, body?: object): Promise =>
 		.then((data) => {
 			return data ? JSON.parse(data) : {}
 		})
+// .catch((e) => console.log('e: ', e)) //TODO - SLETT MEG)
 
 export default {
 	fetch: _fetch,
