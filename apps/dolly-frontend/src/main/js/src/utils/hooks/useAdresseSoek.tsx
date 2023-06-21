@@ -52,7 +52,7 @@ export const useMatrikkelAdresser = (request, antall = 10) => {
 	return {
 		adresser: data,
 		loading: isLoading,
-		notFound: null,
+		notFound: ingenAdresseFunnet,
 		error: error,
 	}
 }

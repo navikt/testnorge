@@ -102,7 +102,7 @@ export default ({ onSelect }: Props) => {
 	return (
 		<StyledAdresseVelger>
 			<MatrikkelAdresseSok onSubmit={onSubmit} loading={loading} />
-			{error && (
+			{error && !notFound && (
 				<Feil variant={'error'}>Noe gikk galt! Prøv på nytt eller kontakt Team Dolly.</Feil>
 			)}
 			{notFound && (
