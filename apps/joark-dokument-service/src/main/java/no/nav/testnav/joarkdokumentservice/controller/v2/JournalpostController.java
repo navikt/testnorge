@@ -1,7 +1,7 @@
 package no.nav.testnav.joarkdokumentservice.controller.v2;
 
 import lombok.RequiredArgsConstructor;
-import no.nav.testnav.joarkdokumentservice.controller.v2.dto.JournalpostDTO;
+import no.nav.testnav.joarkdokumentservice.consumer.dto.JournalpostDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
 import no.nav.testnav.joarkdokumentservice.service.DokumentService;
 import org.springframework.http.ResponseEntity;
@@ -16,15 +16,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v2/journalpost/{journalpostId}")
 public class JournalpostController {
+
     private final DokumentService service;
 
     @GetMapping
-    public ResponseEntity<JournalpostDTO> hentJournalpost(
+    public JournalpostDTO hentJournalpost(
             @RequestHeader("miljo") String miljo,
-            @PathVariable("journalpostId") String journalpostId
-    ) {
-        var journalpost = service.getJournalpost(journalpostId, miljo);
-        return ResponseEntity.ok(journalpost.toDTO());
+            @PathVariable("journalpostId") String journalpostId) {
+
+        return service.getJournalpost(journalpostId, miljo);
     }
 
     @GetMapping("/dokumenter/{dokumentInfoId}")

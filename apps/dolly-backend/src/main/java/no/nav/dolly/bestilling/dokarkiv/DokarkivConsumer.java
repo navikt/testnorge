@@ -47,11 +47,11 @@ public class DokarkivConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "dokarkiv-opprett" })
     public Flux<DokarkivResponse> postDokarkiv(String environment, DokarkivRequest dokarkivRequest) {
 
-        var callId = getNavCallId();
-        log.info("Sender dokarkiv melding: callId: {}, consumerId: {}, miljø: {}", callId, CONSUMER, environment);
+        log.info("Sender dokarkiv melding for ident {} miljoe {} request {}",
+                dokarkivRequest.getBruker().getId(), environment, dokarkivRequest);
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new DokarkivPostCommand(webClient, environment, callId, dokarkivRequest,
+                .flatMapMany(token -> new DokarkivPostCommand(webClient, environment, dokarkivRequest,
                         token.getTokenValue()).call());
     }
 

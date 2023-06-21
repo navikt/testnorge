@@ -61,6 +61,9 @@ public class RsDokarkiv {
     @Schema(description = "Forsøker å ferdigstille dokument etter innsending")
     private Boolean ferdigstill;
 
+    @Schema(description = "Saken i PSAK eller GSAK som dokumentene skal journalføres mot.")
+    private Sak sak;
+
     public List<Dokument> getDokumenter() {
         if (isNull(dokumenter)) {
             dokumenter = new ArrayList<>();
@@ -88,7 +91,6 @@ public class RsDokarkiv {
                 "Navn på personbrukere skal lagres på formatet etternavn, fornavn mellomnavn")
         private String navn;
     }
-
     @Getter
     @Setter
     @Builder
@@ -124,8 +126,7 @@ public class RsDokarkiv {
                     dokumentvarianter.stream().map(DokumentVariant::toString).collect(Collectors.toList()));
         }
 
-        @Getter
-        @Setter
+        @Data
         @Builder
         @NoArgsConstructor
         @AllArgsConstructor
@@ -156,4 +157,18 @@ public class RsDokarkiv {
         }
     }
 
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Sak {
+
+        @Schema(example = "10695768", description = "Iden til fagsaken i fagsystemet. Skal kun settes dersom sakstype = FAGSAK.")
+        private String fagsakId;
+
+        @Schema(description = "Fagsystemet som saken behandles i.")
+        private Fagsaksystem fagsaksystem;
+
+        @Schema(description = "FAGSAK vil si at dokumentene tilhører en sak i et fagsystem. Dersom FAGSAK velges, må fagsakid og fagsaksystem oppgis.")
+        private Sakstype sakstype;
+    }
 }
