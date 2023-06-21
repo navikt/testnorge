@@ -7,7 +7,9 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import no.nav.dolly.domain.resultset.dokarkiv.Fagsaksystem;
 import no.nav.dolly.domain.resultset.dokarkiv.RsDokarkiv;
+import no.nav.dolly.domain.resultset.dokarkiv.Sakstype;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -126,8 +128,7 @@ public class DokarkivRequest {
     public static class Sak {
 
         private String fagsakId;
-        private String fagsaksystem;
-        private String sakstype;
+        private Fagsaksystem fagsaksystem;
+        private Sakstype sakstype;
     }
-
 }
