@@ -9,14 +9,14 @@ import {
 	omraaderArrayToString,
 	oversettBoolean,
 	showLabel,
-	uppercaseAndUnderscoreToCapitalized
+	uppercaseAndUnderscoreToCapitalized,
 } from '@/utils/DataFormatter'
 import {
 	AdresseKodeverk,
 	ArbeidKodeverk,
 	PersoninformasjonKodeverk,
 	SigrunKodeverk,
-	VergemaalKodeverk
+	VergemaalKodeverk,
 } from '@/config/kodeverk'
 import { isEmpty } from '@/components/fagsystem/pdlf/form/partials/utils'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
@@ -1945,6 +1945,10 @@ const mapDokarkiv = (bestillingData, data) => {
 				obj('Avsender navn', dokarkivKriterier.avsenderMottaker?.navn),
 				obj('Tema', dokarkivKriterier.tema),
 				obj('Journalførende enhet', dokarkivKriterier.journalfoerendeEnhet),
+				obj('Ferdigstill journalpost', oversettBoolean(dokarkivKriterier.ferdigstill)),
+				obj('Sakstype', showLabel('sakstype', dokarkivKriterier.sak?.sakstype)),
+				obj('Fagsaksystem', showLabel('fagsaksystem', dokarkivKriterier.sak?.fagsaksystem)),
+				obj('Fagsak-ID', dokarkivKriterier.sak?.fagsakId),
 				obj('Antall vedlegg', dokarkivKriterier.dokumenter.length),
 			],
 		}

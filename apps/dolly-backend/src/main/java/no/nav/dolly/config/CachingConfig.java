@@ -1,15 +1,19 @@
 package no.nav.dolly.config;
 
+import com.github.benmanes.caffeine.cache.Caffeine;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
-import org.springframework.cache.support.NoOpCacheManager;
+import org.springframework.cache.caffeine.CaffeineCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 
+import java.util.concurrent.TimeUnit;
+
+@Slf4j
 @Configuration
 @EnableCaching
+@SuppressWarnings("java:S3740")
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";
@@ -20,21 +24,20 @@ public class CachingConfig {
     public static final String CACHE_KODEVERK_2 = "kodeverk2";
 
     @Bean
-    @Profile({ "prod", "dev" })
-    public CacheManager cacheManager() {
-        return new ConcurrentMapCacheManager(CACHE_BESTILLING,
+    public CacheManager cacheManager(Caffeine caffeine) {
+        var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
                 CACHE_BRUKER,
                 CACHE_GRUPPE,
                 CACHE_HELSEPERSONELL,
                 CACHE_KODEVERK,
                 CACHE_KODEVERK_2
         );
-
+        caffeineCacheManager.setCaffeine(caffeine);
+        return caffeineCacheManager;
     }
 
     @Bean
-    @Profile("local")
-    public CacheManager getNoOpCacheManager() {
-        return new NoOpCacheManager();
+    public Caffeine caffeineConfig() {
+        return Caffeine.newBuilder().expireAfterWrite(8, TimeUnit.HOURS);
     }
 }

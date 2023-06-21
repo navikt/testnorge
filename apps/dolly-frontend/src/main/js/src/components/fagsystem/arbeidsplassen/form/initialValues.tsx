@@ -232,6 +232,11 @@ export const initialDigitalInnsending = {
 	tittel: '',
 	tema: '',
 	kanal: 'NAV_NO',
+	sak: {
+		sakstype: 'GENERELL_SAK',
+		fagsaksystem: '',
+		fagsakId: '',
+	},
 	ferdigstill: true,
 	avsenderMottaker: {
 		id: '',
@@ -250,6 +255,11 @@ export const initialDigitalInnsending = {
 export const initialDokarkiv = {
 	tittel: '',
 	tema: '',
+	sak: {
+		sakstype: 'GENERELL_SAK',
+		fagsaksystem: '',
+		fagsakId: '',
+	},
 	kanal: 'SKAN_IM',
 	ferdigstill: true,
 	journalfoerendeEnhet: undefined,

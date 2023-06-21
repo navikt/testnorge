@@ -52,9 +52,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
 
             if (isTrue(adresse.getIsNew())) {
 
-                populateMiscFields(adresse, person);
                 if (isNotTrue(relaxed)) {
                     handle(adresse, person);
+                    populateMiscFields(adresse, person);
                 }
             }
         }
@@ -121,7 +121,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         } else if (bostedadresse.countAdresser() == 0) {
 
             if (person.getOppholdsadresse().isEmpty() &&
-                person.getKontaktadresse().isEmpty()) {
+                    person.getKontaktadresse().isEmpty()) {
 
                 bostedadresse.setUtenlandskAdresse(new UtenlandskAdresseDTO());
             } else {
@@ -141,7 +141,7 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     }
 
     private void buildBoadresse(BostedadresseDTO bostedadresse, PersonDTO person) {
-        
+
         if (nonNull(bostedadresse.getVegadresse())) {
 
             var vegadresse =
@@ -156,11 +156,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
             bostedadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, bostedadresse.getMatrikkeladresse());
 
-        } else if (nonNull(bostedadresse.getUtenlandskAdresse()) && bostedadresse.getUtenlandskAdresse().isEmpty()) {
+        } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
 
             bostedadresse.setMaster(Master.PDL);
-            bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person),
-                    bostedadresse.getMaster()));
+            if (bostedadresse.getUtenlandskAdresse().isEmpty()) {
+
+                bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person),
+                        bostedadresse.getMaster()));
+            }
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));

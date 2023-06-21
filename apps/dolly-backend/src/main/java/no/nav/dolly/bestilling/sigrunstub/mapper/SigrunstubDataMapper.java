@@ -30,8 +30,8 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
                         if (destinasjon.getTjeneste() == BEREGNET_SKATT) {
-                            addOppgjoersdato(destinasjon.getGrunnlag(), destinasjon.getInntektsaar());
-                            addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), destinasjon.getInntektsaar());
+                            addOppgjoersdato(destinasjon.getGrunnlag(), destinasjon.getInntektsaar() + 1);
+                            addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), destinasjon.getInntektsaar() + 1);
                         }
                     }
 

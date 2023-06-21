@@ -20,7 +20,6 @@ import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
-import no.nav.dolly.consumer.kodeverk.domain.KodeverkBetydningerResponse;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
@@ -47,6 +46,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.Arrays;
 import java.util.List;
@@ -96,16 +96,17 @@ public class OppslagController {
     @GetMapping("/kodeverk/{kodeverkNavn}")
     @Operation(description = "Hent kodeverk etter kodeverkNavn")
     public KodeverkAdjusted fetchKodeverkByName(@PathVariable("kodeverkNavn") String kodeverkNavn) {
-        KodeverkBetydningerResponse response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
-        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response.getBetydninger());
+
+        var response = kodeverkConsumer.fetchKodeverkByName(kodeverkNavn);
+        return kodeverkMapper.mapBetydningToAdjustedKodeverk(kodeverkNavn, response)
+                .blockFirst();
     }
 
     @GetMapping("/kodeverk")
     @Operation(description = "Hent kodeverk, returnerer map")
-    public Map<String, String> fetchKodeverk(@RequestParam String kodeverk) {
+    public Mono<Map<String, String>> fetchKodeverk(@RequestParam String kodeverk) {
 
-        return kodeverkConsumer.getKodeverkByName(kodeverk)
-                .block();
+        return kodeverkConsumer.getKodeverkByName(kodeverk);
     }
 
     @GetMapping("/pdlperson/ident/{ident}")
@@ -169,7 +170,7 @@ public class OppslagController {
     @Cacheable(CACHE_HELSEPERSONELL)
     @GetMapping("/helsepersonell")
     @Operation(description = "Hent liste med helsepersonell")
-    public HelsepersonellListeDTO getHelsepersonell() {
+    public Mono<HelsepersonellListeDTO> getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
     }
 
