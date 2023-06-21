@@ -20,6 +20,8 @@ import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
+import no.nav.dolly.consumer.organisasjon.tilgang.OrganisasjonTilgangConsumer;
+import no.nav.dolly.consumer.organisasjon.tilgang.dto.OrganisasjonTilgang;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
@@ -78,6 +80,13 @@ public class OppslagController {
     private final UdiStubConsumer udiStubConsumer;
 
     private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
+    private final OrganisasjonTilgangConsumer organisasjonTilgangConsumer;
+
+    @GetMapping("/organisasjoner/tilgang")
+    public Flux<OrganisasjonTilgang> getOrganisasjonerTilgang() {
+
+        return organisasjonTilgangConsumer.getOrgansisjonTilganger();
+    }
 
     @GetMapping("/arbeidsforholdcv/ident/{ident}")
     public Flux<JsonNode> getArbeidsforhold(@PathVariable("ident") String ident) {

@@ -14,7 +14,7 @@ spring:
         tokenx:
           issuer-uri: https://tokendings.dev-gcp.nais.io
           jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
-          accepted-audience: dev-gcp:dolly:testnav-arbeidsplassencv-proxy
+          accepted-audience: dev-fss:dolly:testnav-arbeidsplassencv-proxy
   cloud:
     gateway:
       httpclient:
