@@ -474,7 +474,7 @@ const selectOptions = {
 		{ value: 'SUPSTONAD', label: 'Supplerende stønad (SUPSTONAD)' },
 		{ value: 'K9', label: 'Sykdom i familien (K9)' },
 		{ value: 'UFM', label: 'Unntak fra medlemskap (UFM)' },
-		{ value: 'OB36', label: 'UR (OB36)' },
+		{ value: 'OB36', label: 'Utbetalingsreskontro (OB36)' },
 	],
 
 	tjenestepensjonYtelseType: [
