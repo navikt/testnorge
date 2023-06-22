@@ -10,6 +10,7 @@ spec:
     enabled: true
   image: {{ image }}
   port: 8080
+  webproxy: true
   azure:
     application:
       allowAllUsers: true
@@ -29,26 +30,31 @@ spec:
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: testnav-organisasjon-tilgang-frontend
           cluster: prod-gcp
+        - application: app-1
+          namespace: plattformsikkerhet
+          cluster: dev-gcp
     outbound:
       external:
         - host: altinn.no
   liveness:
     path: /internal/isAlive
-    initialDelay: 4
+    initialDelay: 10
     periodSeconds: 5
     failureThreshold: 500
   readiness:
     path: /internal/isReady
-    initialDelay: 4
+    initialDelay: 10
     periodSeconds: 5
     failureThreshold: 500
   prometheus:
     enabled: true
     path: /internal/metrics
   envFrom:
-    - secret: altinn
+    - secret: altinn-prod
     - secret: google-sql-testnav-organisasjon-tilgang-service
   replicas:
     min: 1
@@ -58,7 +64,6 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   ingresses:
     - "https://testnav-organisasjon-tilgang-service.intern.nav.no"
@@ -68,7 +73,7 @@ spec:
     - name: ACCEPTED_AUDIENCE
       value: prod-gcp:dolly:testnav-organisasjon-tilgang-service
     - name: TOKENDINGS_URL
-      value: https://tokendings.dev-gcp.nais.io
+      value: https://tokendings.prod-gcp.nais.io
   gcp:
     sqlInstances:
       - type: POSTGRES_14

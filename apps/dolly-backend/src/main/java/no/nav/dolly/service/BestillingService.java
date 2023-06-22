@@ -46,7 +46,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static io.micrometer.core.instrument.util.StringUtils.isNotBlank;
 import static java.lang.String.format;
 import static java.lang.String.join;
 import static java.time.LocalDateTime.now;
@@ -58,6 +57,7 @@ import static java.util.stream.Collectors.toSet;
 import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
 @Service
@@ -281,11 +281,6 @@ public class BestillingService {
     // Egen transaksjon på denne da bestillingId hentes opp igjen fra database i samme kallet
     public Bestilling createBestillingForGjenopprettFraIdent(String ident, Testgruppe testgruppe, List<String> miljoer) {
 
-        var bestillingerByIdent = identRepository.getBestillingerByIdent(ident);
-        if (bestillingerByIdent.isEmpty()) {
-            throw new DollyFunctionalException(format("Identen: %s har ingen gyldige bestillinger", ident));
-        }
-
         return saveBestillingToDB(
                 Bestilling.builder()
                         .gruppe(testgruppe)
@@ -403,6 +398,30 @@ public class BestillingService {
         bestillingRepository.swapIdent(oldIdent, newIdent);
     }
 
+    public String getBestKriterier(RsDollyBestilling request) {
+        return toJson(BestilteKriterier.builder()
+                .aareg(request.getAareg())
+                .krrstub(request.getKrrstub())
+                .udistub(request.getUdistub())
+                .sigrunstub(request.getSigrunstub())
+                .arenaforvalter(request.getArenaforvalter())
+                .pdldata(request.getPdldata())
+                .instdata(request.getInstdata())
+                .inntektstub(request.getInntektstub())
+                .pensjonforvalter(request.getPensjonforvalter())
+                .inntektsmelding(request.getInntektsmelding())
+                .brregstub(request.getBrregstub())
+                .dokarkiv(request.getDokarkiv())
+                .medl(request.getMedl())
+                .histark(request.getHistark())
+                .tpsMessaging(request.getTpsMessaging())
+                .bankkonto(request.getBankkonto())
+                .skjerming(request.getSkjerming())
+                .sykemelding(request.getSykemelding())
+                .arbeidsplassenCV(request.getArbeidsplassenCV())
+                .build());
+    }
+
     private String wrapSearchString(String searchString) {
         return isNotBlank(searchString) ? "%%%s%%".formatted(searchString) : "";
     }
@@ -430,28 +449,6 @@ public class BestillingService {
             log.info("Konvertering til Json feilet", e);
         }
         return null;
-    }
-
-    public String getBestKriterier(RsDollyBestilling request) {
-        return toJson(BestilteKriterier.builder()
-                .aareg(request.getAareg())
-                .krrstub(request.getKrrstub())
-                .udistub(request.getUdistub())
-                .sigrunstub(request.getSigrunstub())
-                .arenaforvalter(request.getArenaforvalter())
-                .pdldata(request.getPdldata())
-                .instdata(request.getInstdata())
-                .inntektstub(request.getInntektstub())
-                .pensjonforvalter(request.getPensjonforvalter())
-                .inntektsmelding(request.getInntektsmelding())
-                .brregstub(request.getBrregstub())
-                .dokarkiv(request.getDokarkiv())
-                .tpsMessaging(request.getTpsMessaging())
-                .bankkonto(request.getBankkonto())
-                .skjerming(request.getSkjerming())
-                .sykemelding(request.getSykemelding())
-                .arbeidsplassenCV(request.getArbeidsplassenCV())
-                .build());
     }
 
     private static void fixAaregAbstractClassProblem(List<RsAareg> aaregdata) {

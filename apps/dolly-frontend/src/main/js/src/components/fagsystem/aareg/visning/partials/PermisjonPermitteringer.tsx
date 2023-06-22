@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates } from '@/utils/DataFormatter'
 import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
@@ -31,22 +31,25 @@ export const PermisjonPermitteringer = ({ data }) => {
 								<div className="person-visning_content" key={idx}>
 									<TitleValue
 										title="Permisjonstype"
-										value={id.type}
+										value={id.type || id.beskrivelse}
 										kodeverk={ArbeidKodeverk.PermisjonsOgPermitteringsBeskrivelse}
 									/>
 									{id.periode && (
-										<TitleValue
-											title="Startdato"
-											value={Formatters.formatStringDates(id.periode.fom)}
-										/>
+										<TitleValue title="Startdato" value={formatStringDates(id.periode.fom)} />
+									)}
+									{id.startdato && (
+										<TitleValue title="Startdato" value={formatStringDates(id.startdato)} />
 									)}
 									{id.periode && (
-										<TitleValue
-											title="Sluttdato"
-											value={Formatters.formatStringDates(id.periode.tom)}
-										/>
+										<TitleValue title="Sluttdato" value={formatStringDates(id.periode.tom)} />
 									)}
-									<TitleValue title="Permisjonsprosent" value={id.prosent} />
+									{id.sluttdato && (
+										<TitleValue title="Startdato" value={formatStringDates(id.sluttdato)} />
+									)}
+									<TitleValue
+										title="Permisjonsprosent"
+										value={id.prosent || id.permisjonsprosent}
+									/>
 								</div>
 							)}
 						</DollyFieldArray>
@@ -61,16 +64,10 @@ export const PermisjonPermitteringer = ({ data }) => {
 							{(id, idx) => (
 								<div className="person-visning_content" key={idx}>
 									{id.periode && (
-										<TitleValue
-											title="Startdato"
-											value={Formatters.formatStringDates(id.periode.fom)}
-										/>
+										<TitleValue title="Startdato" value={formatStringDates(id.periode.fom)} />
 									)}
 									{id.periode && (
-										<TitleValue
-											title="Sluttdato"
-											value={Formatters.formatStringDates(id.periode.tom)}
-										/>
+										<TitleValue title="Sluttdato" value={formatStringDates(id.periode.tom)} />
 									)}
 									<TitleValue title="Permitteringsprosent" value={id.prosent} />
 								</div>

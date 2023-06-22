@@ -94,7 +94,6 @@ const validFradato = () => {
 			}
 		)
 		.nullable()
-		.required(messages.required)
 }
 
 export const vegadresse = Yup.object({

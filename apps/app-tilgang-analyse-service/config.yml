@@ -54,10 +54,9 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   envFrom:
     - secret: google-sql-testnav-app-tilgang-analyse-service
     - secret: dolly-reader-token
   ingresses:
-    - "https://testnav-app-tilgang-analyse-service.dev.intern.nav.no"
+    - "https://testnav-app-tilgang-analyse-service.intern.dev.nav.no"

@@ -18,12 +18,13 @@ import { BostedsadresseForm } from '@/components/fagsystem/pdlf/form/partials/ad
 import { OppholdsadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/oppholdsadresse/Oppholdsadresse'
 import { KontaktadresseForm } from '@/components/fagsystem/pdlf/form/partials/adresser/kontaktadresse/Kontaktadresse'
 import { VergemaalForm } from '@/components/fagsystem/pdlf/form/partials/vergemaal/Vergemaal'
+import { FullmaktForm } from '@/components/fagsystem/pdlf/form/partials/fullmakt/Fullmakt'
 import { SivilstandForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/sivilstand/Sivilstand'
 import {
 	AdressebeskyttelseForm,
 	getIdenttype,
 } from '@/components/fagsystem/pdlf/form/partials/adresser/adressebeskyttelse/Adressebeskyttelse'
-import { doedsfall } from '@/components/fagsystem/pdlf/form/validation/validation'
+import { doedsfall, navn } from '@/components/fagsystem/pdlf/form/validation/validation'
 import {
 	innflytting,
 	statsborgerskap,
@@ -33,7 +34,10 @@ import {
 	kontaktadresse,
 	oppholdsadresse,
 	vergemaal,
+	fullmakt,
 	sivilstand,
+	kontaktDoedsbo,
+	forelderBarnRelasjon,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -41,6 +45,15 @@ import {
 	Modus,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
 import { Option } from '@/service/SelectOptionsOppslag'
+import { KontaktinformasjonForDoedsboForm } from '@/components/fagsystem/pdlf/form/partials/kontaktinformasjonForDoedsbo/KontaktinformasjonForDoedsbo'
+import { NavnForm } from '@/components/fagsystem/pdlf/form/partials/navn/Navn'
+import { ForelderBarnRelasjonForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/ForelderBarnRelasjon'
+import { ForeldreansvarForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/foreldreansvar/Foreldreansvar'
+import {
+	deltBosted,
+	foreldreansvarForBarn,
+} from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
+import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -56,17 +69,23 @@ type VisningTypes = {
 }
 
 enum Attributt {
+	Navn = 'navn',
 	Foedsel = 'foedsel',
 	Doedsfall = 'doedsfall',
 	Statsborgerskap = 'statsborgerskap',
 	Innvandring = 'innflytting',
 	Utvandring = 'utflytting',
 	Vergemaal = 'vergemaal',
+	Fullmakt = 'fullmakt',
 	Boadresse = 'bostedsadresse',
 	Oppholdsadresse = 'oppholdsadresse',
 	Kontaktadresse = 'kontaktadresse',
 	Adressebeskyttelse = 'adressebeskyttelse',
+	DeltBosted = 'deltBosted',
 	Sivilstand = 'sivilstand',
+	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
+	ForelderBarnRelasjon = 'forelderBarnRelasjon',
+	Foreldreansvar = 'foreldreansvar',
 }
 
 const FieldArrayEdit = styled.div`
@@ -108,6 +127,9 @@ export const VisningRedigerbar = ({
 	identtype,
 	disableSlett = false,
 	personFoerLeggTil = null,
+	personValues = null,
+	relasjoner = null,
+	relatertPersonInfo = null,
 }: VisningTypes) => {
 	const [visningModus, setVisningModus] = useState(Modus.Les)
 	const [errorMessagePdlf, setErrorMessagePdlf] = useState(null)
@@ -116,9 +138,7 @@ export const VisningRedigerbar = ({
 
 	const pdlfError = (error: any) => {
 		error &&
-			setErrorMessagePdlf(
-				`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
-			)
+			setErrorMessagePdlf(`Feil ved oppdatering av person: ${error.message || error.toString()}`)
 		setVisningModus(Modus.Les)
 	}
 
@@ -127,30 +147,68 @@ export const VisningRedigerbar = ({
 		setVisningModus(Modus.Les)
 	}
 
+	const sendData = (data) => {
+		const id = _.get(data, `${path}.id`)
+		const itemData = _.get(data, path)
+		return PdlforvalterApi.putAttributt(ident, path?.toLowerCase(), id, itemData)
+			.catch((error: Error) => {
+				pdlfError(error)
+			})
+			.then((putResponse: any) => {
+				if (putResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter().then(() => {
+							setVisningModus(Modus.Les)
+						})
+					})
+				}
+			})
+			.catch((error: Error) => {
+				pdlError(error)
+			})
+	}
+
+	const sendSlett = () => {
+		const id = _.get(initialValues, `${path}.id`)
+		return PdlforvalterApi.deleteAttributt(ident, path?.toLowerCase(), id)
+			.catch((error: Error) => {
+				pdlfError(error)
+			})
+			.then((deleteResponse: any) => {
+				if (deleteResponse) {
+					setVisningModus(Modus.LoadingPdl)
+					DollyApi.sendOrdre(ident).then(() => {
+						getPdlForvalter().then(() => {
+							setVisningModus(Modus.Les)
+						})
+					})
+				}
+			})
+			.catch((error: Error) => {
+				pdlError(error)
+			})
+	}
+
 	const mountedRef = useRef(true)
 
 	const handleSubmit = useCallback((data: any) => {
 		const submit = async () => {
-			const id = _.get(data, `${path}.id`)
-			const itemData = _.get(data, path)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.putAttributt(ident, path, id, itemData)
-				.catch((error: Error) => {
-					pdlfError(error)
-				})
-				.then((putResponse: any) => {
-					if (putResponse) {
-						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								setVisningModus(Modus.Les)
-							})
-						})
-					}
-				})
-				.catch((error: Error) => {
-					pdlError(error)
-				})
+			await sendData(data)
+		}
+		mountedRef.current = false
+		return submit()
+	}, [])
+
+	const handleSubmitRelatertPerson = useCallback((data: any, ident: string) => {
+		const submit = async () => {
+			setVisningModus(Modus.LoadingPdlf)
+			await PdlforvalterApi.setStandalone(ident).then((importResponse) => {
+				if (importResponse?.ok) {
+					sendData(data)
+				}
+			})
 		}
 		mountedRef.current = false
 		return submit()
@@ -158,25 +216,21 @@ export const VisningRedigerbar = ({
 
 	const handleDelete = useCallback(() => {
 		const slett = async () => {
-			const id = _.get(initialValues, `${path}.id`)
 			setVisningModus(Modus.LoadingPdlf)
-			await PdlforvalterApi.deleteAttributt(ident, path, id)
-				.catch((error: Error) => {
-					pdlfError(error)
-				})
-				.then((deleteResponse: any) => {
-					if (deleteResponse) {
-						setVisningModus(Modus.LoadingPdl)
-						DollyApi.sendOrdre(ident).then(() => {
-							getPdlForvalter().then(() => {
-								setVisningModus(Modus.Les)
-							})
-						})
-					}
-				})
-				.catch((error: Error) => {
-					pdlError(error)
-				})
+			await sendSlett()
+		}
+		mountedRef.current = false
+		return slett()
+	}, [])
+
+	const handleDeleteRelatertPerson = useCallback(() => {
+		const slett = async () => {
+			setVisningModus(Modus.LoadingPdlf)
+			await PdlforvalterApi.setStandalone(relatertPersonInfo?.ident)?.then((importResponse) => {
+				if (importResponse?.ok) {
+					sendSlett()
+				}
+			})
 		}
 		mountedRef.current = false
 		return slett()
@@ -184,6 +238,8 @@ export const VisningRedigerbar = ({
 
 	const getForm = (formikBag: FormikProps<{}>) => {
 		switch (path) {
+			case Attributt.Navn:
+				return <NavnForm formikBag={formikBag} path={path} />
 			case Attributt.Foedsel:
 				return <FoedselForm formikBag={formikBag} path={path} />
 			case Attributt.Doedsfall:
@@ -197,6 +253,14 @@ export const VisningRedigerbar = ({
 			case Attributt.Vergemaal:
 				return (
 					<VergemaalForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
+			case Attributt.Fullmakt:
+				return (
+					<FullmaktForm
 						formikBag={formikBag}
 						path={path}
 						eksisterendeNyPerson={eksisterendeNyPerson}
@@ -216,6 +280,15 @@ export const VisningRedigerbar = ({
 						identtype={getIdenttype(formikBag, identtype)}
 					/>
 				)
+			case Attributt.DeltBosted:
+				return (
+					<DeltBostedForm
+						formikBag={formikBag}
+						path={path}
+						relasjoner={relasjoner}
+						personValues={personValues}
+					/>
+				)
 			case Attributt.Sivilstand:
 				return (
 					<SivilstandForm
@@ -224,33 +297,76 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.KontaktinformasjonForDoedsbo:
+				return (
+					<KontaktinformasjonForDoedsboForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
+			case Attributt.ForelderBarnRelasjon:
+				return (
+					<ForelderBarnRelasjonForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
+			case Attributt.Foreldreansvar:
+				return (
+					<ForeldreansvarForm
+						formikBag={formikBag}
+						path={path}
+						eksisterendeNyPerson={eksisterendeNyPerson}
+					/>
+				)
 		}
 	}
 
 	const validationSchema = Yup.object().shape(
 		{
+			navn: ifPresent('navn', navn),
 			doedsfall: ifPresent('doedsfall', doedsfall),
 			statsborgerskap: ifPresent('statsborgerskap', statsborgerskap),
 			innflytting: ifPresent('innflytting', innflytting),
 			utflytting: ifPresent('utflytting', utflytting),
 			vergemaal: ifPresent('vergemaal', vergemaal),
+			fullmakt: ifPresent('fullmakt', fullmakt),
 			bostedsadresse: ifPresent('bostedsadresse', bostedsadresse),
 			oppholdsadresse: ifPresent('oppholdsadresse', oppholdsadresse),
 			kontaktadresse: ifPresent('kontaktadresse', kontaktadresse),
 			adressebeskyttelse: ifPresent('adressebeskyttelse', adressebeskyttelse),
+			deltBosted: ifPresent('deltBosted', deltBosted),
 			sivilstand: ifPresent('sivilstand', sivilstand),
+			kontaktinformasjonForDoedsbo: ifPresent('kontaktinformasjonForDoedsbo', kontaktDoedsbo),
+			forelderBarnRelasjon: ifPresent('forelderBarnRelasjon', forelderBarnRelasjon),
+			foreldreansvar: ifPresent(
+				'foreldreansvar',
+				Yup.mixed().when('foreldreansvar', {
+					is: (foreldreansvar) => Array.isArray(foreldreansvar),
+					then: () => Yup.array().of(foreldreansvarForBarn),
+					otherwise: () => foreldreansvarForBarn,
+				})
+			),
 		},
 		[
+			['navn', 'navn'],
 			['doedsfall', 'doedsfall'],
 			['statsborgerskap', 'statsborgerskap'],
 			['innflytting', 'innflytting'],
 			['utflytting', 'utflytting'],
 			['vergemaal', 'vergemaal'],
+			['fullmakt', 'fullmakt'],
 			['bostedsadresse', 'bostedsadresse'],
 			['oppholdsadresse', 'oppholdsadresse'],
 			['kontaktadresse', 'kontaktadresse'],
 			['adressebeskyttelse', 'adressebeskyttelse'],
+			['deltBosted', 'deltBosted'],
 			['sivilstand', 'sivilstand'],
+			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
+			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
+			['foreldreansvar', 'foreldreansvar'],
 		]
 	)
 
@@ -259,6 +375,7 @@ export const VisningRedigerbar = ({
 			{
 				...values,
 				personFoerLeggTil: personFoerLeggTil,
+				personValues: personValues,
 			},
 			validationSchema
 		)
@@ -291,7 +408,7 @@ export const VisningRedigerbar = ({
 									<NavButton
 										onClick={() => {
 											closeModal()
-											return handleDelete()
+											return relatertPersonInfo ? handleDeleteRelatertPerson() : handleDelete()
 										}}
 										variant="primary"
 									>
@@ -310,7 +427,11 @@ export const VisningRedigerbar = ({
 			{visningModus === Modus.Skriv && (
 				<Formik
 					initialValues={redigertAttributt ? redigertAttributt : initialValues}
-					onSubmit={handleSubmit}
+					onSubmit={(data) =>
+						relatertPersonInfo?.ident
+							? handleSubmitRelatertPerson(data, relatertPersonInfo.ident)
+							: handleSubmit(data)
+					}
 					enableReinitialize
 					validate={_validate}
 				>

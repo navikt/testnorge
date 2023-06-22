@@ -4,7 +4,7 @@ Service som genererer arbeidsforhold i et valgt miljø for en spesifisert tidspe
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-generer-arbeidsforhold-populasjon-service.dev.intern.nav.no/swagger)
+Swagger finnes under [/swagger](https://testnav-generer-arbeidsforhold-populasjon-service.intern.dev.nav.no/swagger)
 -endepunktet til applikasjonen
 
 ## Lokal kjøring

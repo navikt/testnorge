@@ -5,6 +5,10 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-body-size: "512m"
 spec:
   port: 8080
   webproxy: true
@@ -28,7 +32,6 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   image: {{ image }}
   accessPolicy:
@@ -54,4 +57,4 @@ spec:
       enabled: true
       tenant: nav.no
   ingresses:
-    - "https://testnav-synt-vedtakshistorikk-service.dev.intern.nav.no"
+    - "https://testnav-synt-vedtakshistorikk-service.intern.dev.nav.no"

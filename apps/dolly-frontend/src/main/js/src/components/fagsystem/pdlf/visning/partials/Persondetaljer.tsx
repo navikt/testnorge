@@ -2,7 +2,7 @@ import React from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import {
 	initialKjoenn,
@@ -14,6 +14,9 @@ import { TpsMPersonInfo } from '@/components/fagsystem/pdl/visning/partials/tpsM
 import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { SkjermingVisning } from '@/components/fagsystem/skjermingsregister/visning/Visning'
 import { Skjerming } from '@/components/fagsystem/skjermingsregister/SkjermingTypes'
+import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import {OpplysningSlettet} from "@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet";
 
 type PersondetaljerTypes = {
 	data: any
@@ -46,6 +49,21 @@ const getCurrentPersonstatus = (data: any) => {
 	return null
 }
 
+const NavnVisning = ({ navn }) => {
+	if (!navn) {
+		return null
+	}
+
+	return (
+		<>
+			<TitleValue title="Fornavn" value={navn.fornavn} />
+			<TitleValue title="Mellomnavn" value={navn.mellomnavn} />
+			<TitleValue title="Etternavn" value={navn.etternavn} />
+			<TitleValue title="Navn gyldig f.o.m." value={formatDate(navn.gyldigFraOgMed)} />
+		</>
+	)
+}
+
 const PersondetaljerLes = ({
 	person,
 	skjerming,
@@ -53,21 +71,16 @@ const PersondetaljerLes = ({
 	tpsMessaging,
 	tpsMessagingLoading,
 }: PersonTypes) => {
-	const personNavn = person?.navn?.[0]
+	const navnListe = person?.navn
 	const personKjoenn = person?.kjoenn?.[0]
 	const personstatus = getCurrentPersonstatus(redigertPerson || person)
 
 	return (
 		<div className="person-visning_redigerbar">
 			<TitleValue title="Ident" value={person?.ident} />
-			<TitleValue title="Fornavn" value={personNavn?.fornavn} />
-			<TitleValue title="Mellomnavn" value={personNavn?.mellomnavn} />
-			<TitleValue title="Etternavn" value={personNavn?.etternavn} />
+			{navnListe?.length === 1 && <NavnVisning navn={navnListe[0]} />}
 			<TitleValue title="Kjønn" value={personKjoenn?.kjoenn} />
-			<TitleValue
-				title="Personstatus"
-				value={Formatters.showLabel('personstatus', personstatus?.status)}
-			/>
+			<TitleValue title="Personstatus" value={showLabel('personstatus', personstatus?.status)} />
 			<SkjermingVisning data={skjerming} />
 			<TpsMPersonInfo data={tpsMessaging} loading={tpsMessagingLoading} />
 		</div>
@@ -88,8 +101,16 @@ export const Persondetaljer = ({
 	}
 	const redigertPerson = _.get(tmpPersoner?.pdlforvalter, `${data?.ident}.person`)
 
+	const getNavn = () => {
+		if (data?.navn?.length > 1) {
+			return undefined
+		} else if (data?.navn?.length === 1) {
+			return [data.navn[0]]
+		} else return [initialNavn]
+	}
+
 	const initPerson = {
-		navn: [data?.navn?.[0] || initialNavn],
+		navn: getNavn(),
 		kjoenn: [data?.kjoenn?.[0] || initialKjoenn],
 		folkeregisterpersonstatus: [data?.folkeregisterPersonstatus?.[0] || initialPersonstatus],
 		skjermingsregister: skjermingData,
@@ -116,11 +137,13 @@ export const Persondetaljer = ({
 		skjermingsregister: redigertSkjerming ? redigertSkjerming : null,
 	}
 
+	const tmpNavn = _.get(tmpPersoner?.pdlforvalter, `${ident}.person.navn`)
+
 	return (
 		<ErrorBoundary>
 			<div>
 				<SubOverskrift label="Persondetaljer" iconKind="personinformasjon" />
-				<div className="person-visning_content">
+				<div className="person-visning_content" style={{ flexDirection: 'column' }}>
 					{erPdlVisning ? (
 						<PersondetaljerLes
 							person={data}
@@ -130,22 +153,64 @@ export const Persondetaljer = ({
 							tpsMessagingLoading={tpsMessagingLoading}
 						/>
 					) : (
-						<VisningRedigerbarPersondetaljerConnector
-							dataVisning={
-								<PersondetaljerLes
-									person={personValues}
-									skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
-									redigertPerson={redigertPerson}
-									tpsMessaging={tpsMessaging}
-									tpsMessagingLoading={tpsMessagingLoading}
-								/>
-							}
-							initialValues={initPerson}
-							redigertAttributt={redigertPersonValues}
-							path="person"
-							ident={ident}
-							tpsMessagingData={tpsMessaging}
-						/>
+						<>
+							<VisningRedigerbarPersondetaljerConnector
+								dataVisning={
+									<PersondetaljerLes
+										person={personValues}
+										skjerming={redigertSkjerming ? redigertSkjerming : skjermingData}
+										redigertPerson={redigertPerson}
+										tpsMessaging={tpsMessaging}
+										tpsMessagingLoading={tpsMessagingLoading}
+									/>
+								}
+								initialValues={initPerson}
+								redigertAttributt={redigertPersonValues}
+								path="person"
+								ident={ident}
+								tpsMessagingData={tpsMessaging}
+							/>
+							{(tmpNavn ? tmpNavn.length > 1 : data?.navn?.length > 1) && (
+								<DollyFieldArray data={data?.navn} header="Navn" nested>
+									{(navn) => {
+										const redigertNavn = _.get(
+											tmpPersoner?.pdlforvalter,
+											`${ident}.person.navn`
+										)?.find((a) => a.id === navn.id)
+
+										const slettetNavn =
+											tmpPersoner?.pdlforvalter?.hasOwnProperty(ident) && !redigertNavn
+										if (slettetNavn) {
+											return <OpplysningSlettet />
+										}
+
+										const filtrertNavn = tmpNavn
+											? tmpNavn?.filter((navnData) => navnData?.id !== navn?.id)
+											: data?.navn?.filter((navnData) => navnData?.id !== navn?.id)
+
+										const navnFoerLeggTil = {
+											pdlforvalter: {
+												person: {
+													navn: filtrertNavn,
+												},
+											},
+										}
+
+										return (
+											<VisningRedigerbarConnector
+												dataVisning={<NavnVisning navn={redigertNavn ? redigertNavn : navn} />}
+												initialValues={{ navn: navn }}
+												redigertAttributt={redigertNavn && { navn: redigertNavn }}
+												path="navn"
+												ident={ident}
+												tpsMessagingData={tpsMessaging}
+												personFoerLeggTil={navnFoerLeggTil}
+											/>
+										)
+									}}
+								</DollyFieldArray>
+							)}
+						</>
 					)}
 				</div>
 			</div>

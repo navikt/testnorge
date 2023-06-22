@@ -7,7 +7,7 @@ spring:
         reactive:
           username: ${OPEN_SEARCH_USERNAME}
           password: ${OPEN_SEARCH_PASSWORD}
-          endpoints: ${OPENSEARCH_HOST}:${OPENSEARCH_PORT}
+          endpoints: ${OPEN_SEARCH_URI}
           use-ssl: true
   security:
     oauth2:
@@ -16,6 +16,10 @@ spring:
           issuer-uri: ${AAD_ISSUER_URI}/v2.0
           jwk-set-uri: ${AAD_ISSUER_URI}/discovery/v2.0/keys
           accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}
+        tokenx:
+          issuer-uri: https://tokendings.dev-gcp.nais.io
+          jwk-set-uri: https://tokendings.dev-gcp.nais.io/jwks
+          accepted-audience: dev-gcp:dolly:oppsummeringsdokument-service
   application:
     name: oppsummeringsdokument-service
     version: application.version.todo #TODO Finn ut hvordan denne kan settes fra gradle
@@ -25,17 +29,21 @@ spring:
       username: ${OPEN_SEARCH_USERNAME}
       password: ${OPEN_SEARCH_PASSWORD}
       uris: ${OPEN_SEARCH_URI}
+  cloud:
+    vault:
+      enabled: false
 
 springdoc:
   swagger-ui:
     disable-swagger-default-url: true
     url: /v3/api-docs
 
-consumers.aareg-synt-services:
-  url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
-  cluster: dev-fss
-  namespace: dolly
-  name: aareg-synt-services-proxy
+consumers:
+  aareg-synt-services:
+    url: https://aareg-synt-services-proxy.dev-fss-pub.nais.io
+    cluster: dev-fss
+    namespace: dolly
+    name: aareg-synt-services-proxy
 
 management:
   endpoints:
@@ -48,8 +56,10 @@ management:
   endpoint:
     prometheus.enabled: true
     heapdump.enabled: true
-  metrics.export:
-    prometheus.enabled: true
+  prometheus:
+    metrics:
+      export:
+        enabled: true
 server:
   servlet:
     encoding:

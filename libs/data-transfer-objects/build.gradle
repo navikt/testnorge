@@ -3,17 +3,28 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'io.spring.dependency-management' version "1.1.0"
+    id "jacoco"
+}
+
+jacocoTestReport {
+    reports {
+        xml.required = true
+    }
 }
 
 sonarqube {
     properties {
-        property "sonar.sourceEncoding", "UTF-8"
+        property "sonar.coverage.jacoco.xmlReportPaths", "${project.buildDir}/reports/jacoco/test/jacocoTestReport.xml"
+        property "sonar.dynamicAnalysis", "reuseReports"
+        property "sonar.host.url", "https://sonarcloud.io"
+        property "sonar.java.coveragePlugin", "jacoco"
+        property "sonar.language", "java"
+        property "sonar.login", System.getenv("SONAR_TOKEN")
+        property "sonar.organization", "navikt"
+        property "sonar.project.monorepo.enabled", true
         property "sonar.projectKey", "testnav-data-transfer-objects"
         property "sonar.projectName", "testnav-data-transfer-objects"
-        property "sonar.organization", "navikt"
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.project.monorepo.enabled", true
-        property "sonar.login", System.getenv("SONAR_TOKEN")
+        property "sonar.sourceEncoding", "UTF-8"
     }
 }
 
@@ -42,11 +53,12 @@ repositories {
 dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations'
     implementation 'com.fasterxml.jackson.core:jackson-databind'
-    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
-    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.14.2'
-    implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.0'
-    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.8'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    implementation 'io.swagger.core.v3:swagger-annotations-jakarta:2.2.10'
+    implementation 'jakarta.validation:jakarta.validation-api'
+    implementation 'jakarta.xml.bind:jakarta.xml.bind-api'
+    implementation 'javax.xml.bind:jaxb-api:2.3.1'
+    implementation 'org.apache.commons:commons-lang3'
     implementation 'org.springframework:spring-web'
 
 

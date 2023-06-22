@@ -6,6 +6,8 @@ export type Journalpost = {
 	avsenderMottaker: AvsenderMottaker
 	tema: string
 	kanal: string
+	journalfoerendeEnhet: string
+	sak: Sak
 	dokumenter: Dokument[]
 	miljoe: string
 	bestillingId?: number
@@ -20,6 +22,12 @@ type AvsenderMottaker = {
 	id: string
 	navn: string
 	type: string
+}
+
+type Sak = {
+	sakstype: string
+	fagsaksystem: string
+	fagsakId: string
 }
 
 type DokumentType = 'ORIGINAL' | 'ARKIV'

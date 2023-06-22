@@ -56,11 +56,10 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   envFrom:
     - secret: google-sql-testnav-generer-organisasjon-populasjon-service
   ingresses:
-    - "https://testnav-generer-organisasjon-populasjon-service.dev.intern.nav.no"
+    - "https://testnav-generer-organisasjon-populasjon-service.intern.dev.nav.no"
   kafka:
     pool: nav-dev

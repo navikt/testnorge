@@ -68,7 +68,9 @@ export const rootPaths = [
 	'udistub',
 	'inntektsmelding',
 	'brregstub',
+	'histark',
 	'dokarkiv',
+	'medl',
 	'sykemelding',
 	'organisasjon',
 ]

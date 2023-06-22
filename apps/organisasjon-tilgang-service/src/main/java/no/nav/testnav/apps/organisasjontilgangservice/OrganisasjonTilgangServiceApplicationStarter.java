@@ -18,5 +18,4 @@ public class OrganisasjonTilgangServiceApplicationStarter {
     public static void main(String[] args) {
         SpringApplication.run(OrganisasjonTilgangServiceApplicationStarter.class, args);
     }
-
 }

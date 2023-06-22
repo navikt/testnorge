@@ -161,6 +161,11 @@ export type VergemaalValues = {
 
 export type FullmaktValues = {
 	nyFullmektig?: NyIdent
+	id: number
+}
+
+export type DeltBostedValues = {
+	id: number
 }
 
 export type NyIdent = {

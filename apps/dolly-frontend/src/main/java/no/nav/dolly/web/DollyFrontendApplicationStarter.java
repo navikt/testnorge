@@ -50,6 +50,7 @@ public class DollyFrontendApplicationStarter {
     private final TestnavAaregProxyProperties testnavAaregProxyProperties;
     private final TestnavArenaForvalterenProxyProperties testnavArenaForvalterenProxyProperties;
     private final TestnavKrrstubProxyProperties testnavKrrstubProxyProperties;
+    private final TestnavMedlProxyProperties testnavMedlProxyProperties;
     private final TestnavSigrunstubProxyProperties testnavSigrunstubProxyProperties;
     private final TestnavPensjonTestdataFacadeProxyProperties testnavPensjonTestdataFacadeProxyProperties;
     private final TestnavPersonOrganisasjonTilgangServiceProperties testnavPersonOrganisasjonTilgangServiceProperties;
@@ -61,12 +62,14 @@ public class DollyFrontendApplicationStarter {
     private final TestnavMiljoerServiceProperties testnavMiljoerServiceProperties;
     private final PersonSearchServiceProperties personSearchServiceProperties;
     private final TestnavAdresseServiceProperties testnavAdresseServiceProperties;
+    private final OppsummeringsdokumentServiceProperties oppsummeringsdokumentServiceProperties;
     private final TestnavPdlForvalterProperties testnavPdlForvalterProperties;
     private final TestnavOrganisasjonTilgangServiceProperties testnavOrganisasjonTilgangServiceProperties;
     private final TestnavNorg2ProxyProperties testnavNorg2ProxyProperties;
     private final KontoregisterProxyProperties kontoregisterProxyProperties;
     private final SkjermingsregisterProxyProperties skjermingsregisterProxyProperties;
     private final TestnavDokarkivProxyProperties testnavDokarkivProxyProperties;
+    private final TestnavHistarkProxyProperties testnavHistarkProxyProperties;
     private final TestnavArbeidsplassenCvProxyProperties testnavArbeidsplassenCvProxyProperties;
 
     @Bean
@@ -76,6 +79,7 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(kontoregisterProxyProperties))
                 .route(createRoute(testnavOrganisasjonFasteDataServiceProperties))
                 .route(createRoute(testnavAdresseServiceProperties))
+                .route(createRoute(oppsummeringsdokumentServiceProperties, "oppsummeringsdokument-service"))
                 .route(createRoute(testnavOrganisasjonForvalterProperties))
                 .route(createRoute(testnavVarslingerServiceProperties, "testnav-varslinger-service"))
                 .route(createRoute(testnorgeProfilApiProperties))
@@ -92,8 +96,10 @@ public class DollyFrontendApplicationStarter {
                 .route(createRoute(testnavAaregProxyProperties))
                 .route(createRoute(testnavArenaForvalterenProxyProperties))
                 .route(createRoute(testnavKrrstubProxyProperties, "testnav-krrstub-proxy"))
+                .route(createRoute(testnavMedlProxyProperties, "testnav-medl-proxy"))
                 .route(createRoute(testnavNorg2ProxyProperties, "testnav-norg2-proxy"))
                 .route(createRoute(testnavInstProxyProperties, "testnav-inst-proxy"))
+                .route(createRoute(testnavHistarkProxyProperties, "testnav-histark-proxy"))
                 .route(createRoute(testnavOrganisasjonServiceProperties))
                 .route(createRoute(testnavSigrunstubProxyProperties))
                 .route(createRoute(testnavPdlForvalterProperties, "testnav-pdl-forvalter"))

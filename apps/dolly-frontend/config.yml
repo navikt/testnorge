@@ -23,14 +23,14 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad
+        - "https://dolly.ekstern.dev.nav.no/login/oauth2/code/aad"
   replicas:
     min: 1
     max: 2
   port: 8080
   ingresses:
-    - https://dolly.dev.intern.nav.no
-    - https://dolly.ekstern.dev.nav.no
+    - "https://dolly.intern.dev.nav.no"
+    - "https://dolly.ekstern.dev.nav.no"
   accessPolicy:
     outbound:
       rules:
@@ -38,9 +38,11 @@ spec:
         - application: testnav-adresse-service
         - application: testnav-miljoer-service
         - application: testnav-organisasjon-service
+        - application: oppsummeringsdokument-service
         - application: testnav-organisasjon-forvalter
         - application: testnorge-profil-api
         - application: testnav-organisasjon-tilgang-service
+          cluster: prod-gcp
         - application: testnav-joark-dokument-service
         - application: testnav-organisasjon-faste-data-service
         - application: testnav-tps-messaging-service
@@ -52,28 +54,13 @@ spec:
         - application: testnav-person-search-service
         - application: dolly-backend
       external:
-        - host: testnorge-tilbakemelding-api.dev.intern.nav.no
-        - host: testnav-adresse-service.dev.intern.nav.no
-        - host: testnav-miljoer-service.dev.intern.nav.no
-        - host: testnav-organisasjon-service.dev.intern.nav.no
-        - host: testnav-organisasjon-forvalter.dev.intern.nav.no
-        - host: testnorge-profil-api.dev.intern.nav.no
-        - host: testnav-organisasjon-tilgang-service.dev.intern.nav.no
-        - host: testnav-joark-dokument-service.dev.intern.nav.no
-        - host: testnav-organisasjon-faste-data-service.dev.intern.nav.no
-        - host: testnav-tps-messaging-service.dev.intern.nav.no
-        - host: testnav-varslinger-service.dev.intern.nav.no
-        - host: dolly-dev-redis-session.dev.intern.nav.no
-        - host: testnav-person-organisasjon-tilgang-service.dev.intern.nav.no
-        - host: testnav-pdl-forvalter.dev.intern.nav.no
-        - host: testnav-bruker-service.dev.intern.nav.no
-        - host: testnav-person-search-service.dev.intern.nav.no
-        - host: dolly-backend.dev.intern.nav.no
         - host: testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io
         - host: testnav-sigrunstub-proxy.dev-fss-pub.nais.io
         - host: testnav-krrstub-proxy.dev-fss-pub.nais.io
         - host: testnav-inst-proxy.dev-fss-pub.nais.io
         - host: testnav-aareg-proxy.dev-fss-pub.nais.io
+        - host: testnav-medl-proxy.dev-fss-pub.nais.io
+        - host: testnav-histark-proxy.dev-fss-pub.nais.io
         - host: testnav-kodeverk-proxy.dev-fss-pub.nais.io
         - host: testnav-arena-forvalteren-proxy.dev-fss-pub.nais.io
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
@@ -100,7 +87,6 @@ spec:
       cpu: 1000m
       memory: 1024Mi
     limits:
-      cpu: 1500m
       memory: 2048Mi
   image: {{image}}
   envFrom:

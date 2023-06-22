@@ -2,7 +2,7 @@
 App for å generere syntetiske ameldinger.
 
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-generer-synt-amelding-service.dev.intern.nav.no/swagger) -endepunktet til applikasjonen.
+Swagger finnes under [/swagger](https://testnav-generer-synt-amelding-service.intern.dev.nav.no/swagger) -endepunktet til applikasjonen.
 
 ## Lokal kjøring
 Ha naisdevice kjørende og kjør GenererSyntAMeldingApplicationStarter med følgende argumenter:

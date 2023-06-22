@@ -56,10 +56,8 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   envFrom:
     - secret: azure-trygdeetaten-testnav-samhandlerregisteret-proxy-trygdeetaten
   ingresses:
     - "https://testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io"
-    - "https://testnav-samhandlerregisteret-proxy.dev.intern.nav.no"

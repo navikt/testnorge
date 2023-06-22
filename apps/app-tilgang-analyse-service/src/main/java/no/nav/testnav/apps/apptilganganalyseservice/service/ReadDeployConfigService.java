@@ -1,13 +1,12 @@
 package no.nav.testnav.apps.apptilganganalyseservice.service;
 
-import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
-
 import no.nav.testnav.apps.apptilganganalyseservice.consumer.GithubConsumer;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DeployConfig;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.DocumentType;
 import no.nav.testnav.apps.apptilganganalyseservice.domain.SearchArgs;
 import no.nav.testnav.apps.apptilganganalyseservice.repository.DocumentRepository;
+import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
 
 @Service
 public class ReadDeployConfigService extends ReadConfigService {
@@ -24,7 +23,7 @@ public class ReadDeployConfigService extends ReadConfigService {
                 .builder()
                 .addLanguage("yml")
                 .addLanguage("yaml")
-                .addSearchString("uses: navikt/testnorge/.github/workflows/common.deploy.yml")
+                .addSearchString("uses: ./.github/workflows/common.workflow")
                 .repo(repo)
                 .owner(owner)
                 .build();

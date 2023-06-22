@@ -4,3 +4,7 @@ azure:
       client:
         id: ${client_id}
         secret: ${client_secret}
+
+consumers:
+  synt-meldekort:
+    url: https://synthdata-arena-meldekort.intern.dev.nav.no

@@ -24,7 +24,7 @@ spring:
 
 consumers:
   dokarkiv:
-    url: https://dokarkiv-{env}.dev.adeo.no
+    url: http://dokarkiv-{env}.teamdokumenthandtering.svc.nais.local
     cluster: dev-fss
     name: dokarkiv-{env}
     namespace: teamdokumenthandtering

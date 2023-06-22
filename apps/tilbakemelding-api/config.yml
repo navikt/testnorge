@@ -60,9 +60,8 @@ spec:
       cpu: 200m
       memory: 4000Mi
     limits:
-      cpu: 500m
       memory: 5000Mi
   envFrom:
     - secret: teamdolly-slack-secret
   ingresses:
-    - "https://testnorge-tilbakemelding-api.dev.intern.nav.no"
+    - "https://testnorge-tilbakemelding-api.intern.dev.nav.no"

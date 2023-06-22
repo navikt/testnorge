@@ -13,10 +13,8 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.concurrent.Callable;
 
-import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CALL_ID;
-import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static no.nav.dolly.util.TokenXUtil.getUserJwt;
+import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
@@ -24,7 +22,6 @@ public class DokarkivPostCommand implements Callable<Flux<DokarkivResponse>> {
 
     private final WebClient webClient;
     private final String environment;
-    private final String callId;
     private final DokarkivRequest dokarkivRequest;
     private final String token;
 
@@ -34,11 +31,11 @@ public class DokarkivPostCommand implements Callable<Flux<DokarkivResponse>> {
 
         return webClient.post()
                 .uri(builder ->
-                        builder.path("/api/{miljo}/v1/journalpost").build(environment))
+                        builder.path("/api/{miljo}/v1/journalpost")
+                                .queryParam("forsoekFerdigstill", isTrue(dokarkivRequest.getFerdigstill()))
+                                .build(environment))
                 .header(AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(HEADER_NAV_CALL_ID, callId)
-                .header(HEADER_NAV_CONSUMER_ID, CONSUMER)
                 .bodyValue(dokarkivRequest)
                 .retrieve()
                 .bodyToFlux(DokarkivResponse.class)

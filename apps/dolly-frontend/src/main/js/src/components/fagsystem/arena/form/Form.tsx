@@ -10,7 +10,7 @@ import { AlertInntektskomponentenRequired } from '@/components/ui/brukerAlert/Al
 import { validation } from '@/components/fagsystem/arena/form/validation'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import { Alert } from '@navikt/ds-react'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const arenaPath = 'arenaforvalter'
 
@@ -59,13 +59,11 @@ export const ArenaForm = ({ formikBag }) => {
 					/>
 				)}
 				{servicebehovAktiv && <MedServicebehov formikBag={formikBag} path={arenaPath} />}
-				{!servicebehovAktiv && (
-					<FormikCheckbox
-						name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
-						label="Automatisk innsending av meldekort"
-						size="small"
-					/>
-				)}
+				<FormikCheckbox
+					name={`${arenaPath}.automatiskInnsendingAvMeldekort`}
+					label="Automatisk innsending av meldekort"
+					size="small"
+				/>
 			</Panel>
 		</Vis>
 	)

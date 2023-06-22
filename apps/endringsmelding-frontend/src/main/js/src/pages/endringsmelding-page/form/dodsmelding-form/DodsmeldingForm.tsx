@@ -2,7 +2,7 @@ import React, { useReducer } from 'react';
 
 import { DatePickerFormItem, Line, SelectFormItem } from '@navikt/dolly-komponenter';
 import reducer, { Action, State } from './DodsmeldingReducer';
-import EndringsmeldingService from '@/service/EndringsmeldingService';
+import { sendDodsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
 
 export const initState: State = {
@@ -29,7 +29,7 @@ export default () => {
   };
 
   const onSend = () =>
-    EndringsmeldingService.sendDodsmelding(
+    sendDodsmelding(
       {
         doedsdato: state.doedsdato,
         ident: state.ident.trim(),

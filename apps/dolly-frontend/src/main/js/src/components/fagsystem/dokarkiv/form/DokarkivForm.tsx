@@ -1,18 +1,26 @@
-import React, { BaseSyntheticEvent, useCallback, useEffect, useState } from 'react'
+import React, { BaseSyntheticEvent, useEffect, useState } from 'react'
 import * as Yup from 'yup'
 import { ifPresent, requiredString } from '@/utils/YupValidations'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { Kategori } from '@/components/ui/form/kategori/Kategori'
 import { FormikSelect } from '@/components/ui/form/inputs/select/Select'
-import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
+import { DollyTextInput, FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import Panel from '@/components/ui/panel/Panel'
 import { erForsteEllerTest, panelError } from '@/components/ui/form/formUtils'
 import { FormikProps } from 'formik'
-import styled from 'styled-components'
 import * as _ from 'lodash-es'
-import { Digitalinnsending } from '@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending'
-import { DokumentInfoListe } from '@/components/fagsystem/dokarkiv/modal/DokumentInfoListe'
-import { useDropzone } from 'react-dropzone'
+import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
+import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+
+const Digitalinnsending = React.lazy(
+	() => import('@/components/fagsystem/dokarkiv/form/partials/Digitalinnsending')
+)
+
+const FileUploader = React.lazy(() => import('@/utils/FileUploader/FileUploader'))
+
+const DokumentInfoListe = React.lazy(
+	() => import('@/components/fagsystem/dokarkiv/modal/DokumentInfoListe')
+)
 
 interface DokarkivFormProps {
 	formikBag: FormikProps<{}>
@@ -36,36 +44,6 @@ export type Vedlegg = {
 	}
 }
 
-const getColor = (props: any) => {
-	if (props.isDragAccept) {
-		return '#06893a'
-	}
-	if (props.isDragReject) {
-		return '#ba3a26'
-	}
-	if (props.isFocused) {
-		return '#0067C5FF'
-	}
-	return '#eeeeee'
-}
-
-const Container = styled.div`
-	flex: 1;
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	margin-bottom: 10px;
-	padding: 20px;
-	border-width: 2px;
-	border-radius: 2px;
-	border-color: ${(props) => getColor(props)};
-	border-style: dashed;
-	background-color: #fafafa;
-	color: #bdbdbd;
-	outline: none;
-	transition: border 0.24s ease-in-out;
-`
-
 enum Kodeverk {
 	TEMA = 'Tema',
 	NAVSKJEMA = 'NAVSkjema',
@@ -87,43 +65,6 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		handleSkjemaChange(skjemaValues)
 		handleVedleggChange(files)
 	}, [files, skjemaValues])
-
-	const MyDropzone = () => {
-		const handleDrop = useCallback((acceptedFiles: File[]) => {
-			const reader = new FileReader()
-
-			acceptedFiles.forEach((file: File) => {
-				reader.onabort = () => console.warn('file reading was aborted')
-				reader.onerror = () => console.error('file reading has failed')
-				reader.onload = () => {
-					const binaryStr = reader.result?.slice(28)
-					setFiles([
-						// @ts-ignore
-						{
-							id: new Date().getTime(),
-							name: file.path,
-							content: { base64: binaryStr },
-						},
-						...files,
-					])
-				}
-				reader.readAsDataURL(file)
-			})
-		}, [])
-		const { getRootProps, getInputProps, isFocused, isDragAccept, isDragReject } = useDropzone({
-			multiple: true,
-			onDrop: handleDrop,
-		})
-
-		return (
-			<div className="container">
-				<Container {...getRootProps({ isFocused, isDragAccept, isDragReject })}>
-					<input {...getInputProps()} />
-					<p>Dra og slipp filer innenfor rammen eller klikk her for å åpne filvelger</p>
-				</Container>
-			</div>
-		)
-	}
 
 	const handleSkjemaChange = (skjema: Skjema) => {
 		if (!skjema) {
@@ -156,11 +97,21 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 		formikBag.setFieldValue('dokarkiv.vedlegg', filer)
 	}
 
+	const handleSakstypeChange = (target) => {
+		formikBag.setFieldValue('dokarkiv.sak.sakstype', target.value)
+		if (target.value !== 'FAGSAK') {
+			formikBag.setFieldValue('dokarkiv.sak.fagsaksystem', '')
+			formikBag.setFieldValue('dokarkiv.sak.fagsakId', '')
+		}
+	}
+
+	const harFagsak = _.get(formikBag.values, 'dokarkiv.sak.sakstype') === 'FAGSAK'
+
 	return (
 		// @ts-ignore
 		<Vis attributt={dokarkivAttributt}>
 			<Panel
-				heading="Dokumenter"
+				heading="Dokumenter (Joark)"
 				hasErrors={panelError(formikBag, dokarkivAttributt)}
 				iconType="dokarkiv"
 				// @ts-ignore
@@ -181,31 +132,53 @@ export const DokarkivForm = ({ formikBag }: DokarkivFormProps) => {
 							isClearable={false}
 						/>
 					</div>
-					<FormikSelect
-						name="dokarkiv.tema"
-						label="Tema"
-						kodeverk={Kodeverk.TEMA}
-						size="xlarge"
-						isClearable={false}
-					/>
-					<DollyTextInput
-						onChange={(event: BaseSyntheticEvent) => {
-							formikBag.setFieldValue(
-								'dokarkiv.journalfoerendeEnhet',
-								event.target.value === '' ? undefined : event.target.value
-							)
-						}}
-						feil={
-							_.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
-								? { feilmelding: _.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
-								: null
-						}
-						name="dokarkiv.journalfoerendeEnhet"
-						label="Journalførende enhet"
-					/>
+					<div className="flexbox--flex-wrap">
+						<FormikSelect
+							name="dokarkiv.tema"
+							label="Tema"
+							kodeverk={Kodeverk.TEMA}
+							size="xlarge"
+							isClearable={false}
+						/>
+						<DollyTextInput
+							onChange={(event: BaseSyntheticEvent) => {
+								formikBag.setFieldValue(
+									'dokarkiv.journalfoerendeEnhet',
+									event.target.value === '' ? undefined : event.target.value
+								)
+							}}
+							feil={
+								_.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`)
+									? { feilmelding: _.get(formikBag.errors, `dokarkiv.journalfoerendeEnhet`) }
+									: null
+							}
+							name="dokarkiv.journalfoerendeEnhet"
+							label="Journalførende enhet"
+							size="large"
+						/>
+						<FormikSelect
+							name="dokarkiv.sak.sakstype"
+							label="Sakstype"
+							options={Options('sakstype')}
+							onChange={handleSakstypeChange}
+							isClearable={false}
+						/>
+						{harFagsak && (
+							<>
+								<FormikSelect
+									name="dokarkiv.sak.fagsaksystem"
+									label="Fagsaksystem"
+									options={Options('fagsaksystem')}
+									size="large"
+								/>
+								<FormikTextInput name="dokarkiv.sak.fagsakId" label="Fagsak-ID" />
+							</>
+						)}
+					</div>
+					<FormikCheckbox name={`dokarkiv.ferdigstill`} label="Ferdigstill journalpost" />
 					{digitalInnsending ? <Digitalinnsending /> : null}
 					<Kategori title={'Vedlegg'}>
-						<MyDropzone />
+						<FileUploader files={files} setFiles={setFiles} />
 						{files.length > 0 && (
 							<DokumentInfoListe handleChange={handleVedleggChange} filer={files} />
 						)}
@@ -231,6 +204,21 @@ DokarkivForm.validation = {
 					'Journalfoerende enhet må enten være blank eller et tall med 4 sifre',
 					(val) => !val || (val && val.length === 4)
 				),
+			sak: Yup.object({
+				sakstype: requiredString,
+				fagsaksystem: Yup.string()
+					.when('sakstype', {
+						is: 'FAGSAK',
+						then: () => requiredString,
+						otherwise: () => Yup.mixed().notRequired()
+					}),
+				fagsakId: Yup.string()
+					.when('sakstype', {
+						is: 'FAGSAK',
+						then: () => requiredString,
+						otherwise: () => Yup.mixed().notRequired()
+					})
+			}),
 			avsenderMottaker: Yup.object({
 				idType: Yup.string().optional().nullable(),
 				id: Yup.string()

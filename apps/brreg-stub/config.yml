@@ -1,0 +1,34 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: brreg-stub
+  namespace: dolly
+  labels:
+    team: dolly
+spec:
+  image: {{ image }}
+  port: 8080
+  liveness:
+    path: /isAlive
+    periodSeconds: 30
+    initialDelay: 30
+  readiness:
+    path: /isReady
+    initialDelay: 30
+  prometheus:
+    enabled: true
+    path: /internal/metrics
+  replicas:
+    min: 1
+    max: 1
+  vault:
+    enabled: true
+  resources:
+    limits:
+      memory: 2048Mi
+    requests:
+      cpu: 200m
+      memory: 1024Mi
+  ingresses:
+    - "https://brreg-stub.dev-fss.nais.io"
+    - "https://brreg-stub.dev.intern.nav.no" # dev-fss

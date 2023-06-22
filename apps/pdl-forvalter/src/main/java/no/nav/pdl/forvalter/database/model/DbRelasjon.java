@@ -14,18 +14,14 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.RelasjonType;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "relasjon")
 @Builder
@@ -60,13 +56,36 @@ public class DbRelasjon {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         DbRelasjon that = (DbRelasjon) o;
-        return getId() != null && Objects.equals(getId(), that.getId());
+
+        if (getId() != null ? !getId().equals(that.getId()) : that.getId() != null) return false;
+        if (getSistOppdatert() != null ? !getSistOppdatert().equals(that.getSistOppdatert()) : that.getSistOppdatert() != null)
+            return false;
+        if (getRelasjonType() != that.getRelasjonType()) return false;
+        if (getPerson() != null ? !getPerson().equals(that.getPerson()) : that.getPerson() != null) return false;
+        return getRelatertPerson() != null ? getRelatertPerson().equals(that.getRelatertPerson()) : that.getRelatertPerson() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getSistOppdatert() != null ? getSistOppdatert().hashCode() : 0);
+        result = 31 * result + (getRelasjonType() != null ? getRelasjonType().hashCode() : 0);
+        result = 31 * result + (getPerson() != null ? getPerson().hashCode() : 0);
+        result = 31 * result + (getRelatertPerson() != null ? getRelatertPerson().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DbRelasjon{" +
+                "id=" + id +
+                ", sistOppdatert=" + sistOppdatert +
+                ", relasjonType=" + relasjonType +
+                ", person=" + person +
+                ", relatertPerson=" + relatertPerson +
+                '}';
     }
 }

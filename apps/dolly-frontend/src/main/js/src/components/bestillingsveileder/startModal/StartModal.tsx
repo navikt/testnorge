@@ -7,6 +7,7 @@ import styled from 'styled-components'
 import './startModal.less'
 
 import { ToggleGroup } from '@navikt/ds-react'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const StyledToggleGroup = styled(ToggleGroup)`
 	margin-top: 25px;
@@ -19,11 +20,15 @@ export const BestillingsveilederModal = ({ onAvbryt, onSubmit, brukernavn }: NyB
 		<DollyModal isOpen closeModal={onAvbryt} width="60%" overflow="auto">
 			<div className="start-bestilling-modal">
 				<h1>Opprett personer</h1>
-				<StyledToggleGroup size={'small'} value={type} onChange={(value) => setType(value)}>
-					<ToggleGroup.Item value={'ny'} key={'ny'}>
+				<StyledToggleGroup value={type} onChange={(value) => setType(value)}>
+					<ToggleGroup.Item data-cy={CypressSelector.TOGGLE_NY_PERSON} value={'ny'} key={'ny'}>
 						Ny person
 					</ToggleGroup.Item>
-					<ToggleGroup.Item value={'eksisterende'} key={'eksisterende'}>
+					<ToggleGroup.Item
+						data-cy={CypressSelector.TOGGLE_EKSISTERENDE_PERSON}
+						value={'eksisterende'}
+						key={'eksisterende'}
+					>
 						Eksisterende person
 					</ToggleGroup.Item>
 				</StyledToggleGroup>

@@ -1,9 +1,9 @@
 import { startOfToday } from 'date-fns'
 
 const navn = {
-	fornavn: null as unknown as string,
-	mellomnavn: null as unknown as string,
-	etternavn: null as unknown as string,
+	fornavn: undefined as unknown as string,
+	mellomnavn: undefined as unknown as string,
+	etternavn: undefined as unknown as string,
 }
 
 export const initialPdlPerson = {
@@ -127,6 +127,52 @@ export const initialSikkerhetstiltak = {
 	master: 'PDL',
 }
 
+export const initialMedl = {
+	fraOgMed: new Date(),
+	tilOgMed: new Date(),
+	status: '',
+	statusaarsak: '',
+}
+
+export const initialMedlMelosys = {
+	...initialMedl,
+	kilde: 'srvmelosys',
+	grunnlag: '',
+	dekning: '',
+	lovvalg: '',
+	lovvalgsland: '',
+	kildedokument: '',
+}
+
+export const initialMedlGosys = {
+	...initialMedl,
+	kilde: 'srvgosys',
+	grunnlag: '',
+	dekning: '',
+	lovvalg: '',
+	lovvalgsland: '',
+	kildedokument: '',
+}
+
+export const initialMedlLaanekassen = {
+	...initialMedl,
+	kilde: 'LAANEKASSEN',
+	kildedokument: '',
+	studieinformasjon: {
+		statsborgerland: '',
+		studieland: '',
+		delstudie: false,
+		soeknadInnvilget: false,
+	},
+}
+
+export const initialMedlAvgangssystem = {
+	...initialMedl,
+	kilde: 'AVGSYS',
+	grunnlag: '',
+	dekning: '',
+}
+
 export const initialTpsSikkerhetstiltak = {
 	tiltakstype: '',
 	beskrivelse: '',
@@ -229,10 +275,11 @@ export const initialKjoenn = {
 }
 
 export const initialNavn = {
-	fornavn: null as unknown as string,
-	mellomnavn: null as unknown as string,
-	etternavn: null as unknown as string,
+	fornavn: undefined as unknown as string,
+	mellomnavn: undefined as unknown as string,
+	etternavn: undefined as unknown as string,
 	hasMellomnavn: false,
+	gyldigFraOgMed: null as unknown as string,
 	kilde: 'Dolly',
 	master: 'FREG',
 }

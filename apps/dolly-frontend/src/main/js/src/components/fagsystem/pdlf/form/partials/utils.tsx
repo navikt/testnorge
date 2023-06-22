@@ -6,7 +6,7 @@ export const getPlaceholder = (values, selectedValuePath) => {
 	const etternavn = _.get(values, `${selectedValuePath}.etternavn`)
 
 	mellomnavn = mellomnavn !== '' ? ' ' + mellomnavn : mellomnavn
-	return !_.isNil(fornavn) && fornavn !== '' ? fornavn + mellomnavn + ' ' + etternavn : 'Velg..'
+	return !_.isNil(fornavn) && fornavn !== '' ? fornavn + mellomnavn + ' ' + etternavn : 'Velg...'
 }
 
 export const setNavn = (navn, path, setFieldValue) => {

@@ -5,7 +5,7 @@ Stub av tjenester NAV bruker mot BRREG. Stubben har også endepunkt for å se, s
 
 Applikasjonen eksponerer utvalgte deler av SOAP-tjenestene til Brønnøysundregisterene mot Enhetsregisteret.
 
-[Dokumentasjon fra Brønnøysundregisterene på tjenesten](https://www.brreg.no/produkter-og-tjenester/bestille-produkter/maskinlesbare-data-enhetsregisteret/full-tilgang-enhetsregisteret/teknisk-dokumentasjon-for-maskinell-tilgang-til-enhetsregisteret/)
+[Dokumentasjon fra Brønnøysundregisterene på tjenesten](https://data.brreg.no/enhetsregisteret/api/docs/index.html)
 
 Det er tjenesten **hentRoller** og **hentRolleutskrift**/Rolleoversikt som eksponeres med egen data.
 
@@ -17,8 +17,7 @@ For dokumentasjon av applikasjonen sine endepunkter:
 
 ## Deployment
 
-Applikasjonen deployes til dev-fss ved bruk av [Github Actions.](https://www.brreg.no/produkter-og-tjenester/bestille-produkter/maskinlesbare-data-enhetsregisteret/full-tilgang-enhetsregisteret/teknisk-dokumentasjon-for-maskinell-tilgang-til-enhetsregisteret/
-) Nytt bygg trigges ved PR eller merge til master. 
+Applikasjonen deployes til dev-fss ved bruk av [Github Actions.](https://github.com/navikt/testnorge/actions) Nytt bygg trigges ved PR eller merge til master. 
 
 Applikasjonen kan også startes opp lokalt ved å bruke LocalApplicationStarter
 

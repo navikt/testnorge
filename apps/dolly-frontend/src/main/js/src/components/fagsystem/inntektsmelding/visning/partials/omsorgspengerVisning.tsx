@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
 import {
 	DelvisFravaer,
 	Fravaer,
@@ -23,7 +23,7 @@ export default ({ data }: OmsorgspengerVisning) => {
 			<div className="person-visning_content">
 				<TitleValue
 					title="Har utbetalt pliktige dager"
-					value={Formatters.oversettBoolean(data.harUtbetaltPliktigeDager)}
+					value={oversettBoolean(data.harUtbetaltPliktigeDager)}
 				/>
 				{data.delvisFravaersListe && (
 					<ErrorBoundary>
@@ -31,7 +31,7 @@ export default ({ data }: OmsorgspengerVisning) => {
 							{(id: DelvisFravaer) => (
 								<>
 									<div className="person-visning_content">
-										<TitleValue title="Dato" value={Formatters.formatDate(id.dato)} />
+										<TitleValue title="Dato" value={formatDate(id.dato)} />
 										<TitleValue title="Timer" value={id.timer} />
 									</div>
 								</>
@@ -46,8 +46,8 @@ export default ({ data }: OmsorgspengerVisning) => {
 							{(id: Fravaer) => (
 								<>
 									<div className="person-visning_content">
-										<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
-										<TitleValue title="Til og med dato" value={Formatters.formatDate(id.tom)} />
+										<TitleValue title="Fra og med dato" value={formatDate(id.fom)} />
+										<TitleValue title="Til og med dato" value={formatDate(id.tom)} />
 									</div>
 								</>
 							)}

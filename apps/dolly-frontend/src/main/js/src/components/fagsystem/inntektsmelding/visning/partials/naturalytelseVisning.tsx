@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { codeToNorskLabel, formatDate } from '@/utils/DataFormatter'
 import { Naturalytelse } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
@@ -22,9 +22,9 @@ export default ({ data, header }: NaturalytelseVisning) => {
 							<TitleValue title="Beløp per måned" value={id.beloepPrMnd} />
 							<TitleValue
 								title="Naturalytelse type"
-								value={Formatters.codeToNorskLabel(id.naturalytelseType)}
+								value={codeToNorskLabel(id.naturalytelseType)}
 							/>
-							<TitleValue title="Fra og med dato" value={Formatters.formatDate(id.fom)} />
+							<TitleValue title="Fra og med dato" value={formatDate(id.fom)} />
 						</div>
 					</>
 				)}

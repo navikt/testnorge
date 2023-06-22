@@ -4,7 +4,7 @@ import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray
 
 import { ForeldreBarnRelasjon } from '@/components/fagsystem/pdlf/PdlTypes'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 import { RelatertPersonUtenId } from '@/components/fagsystem/pdlf/visning/partials/RelatertPersonUtenId'
 
 type VisningProps = {
@@ -24,13 +24,13 @@ const Visning = ({ relasjon, idx }: VisningProps) => {
 			{relatertPersonUtenId ? (
 				<RelatertPersonUtenId
 					data={relatertPersonUtenId}
-					tittel={Formatters.showLabel('pdlRelasjonTyper', relasjon.relatertPersonsRolle)}
+					tittel={showLabel('pdlRelasjonTyper', relasjon.relatertPersonsRolle)}
 					rolle={relasjon.relatertPersonsRolle === 'BARN' && relasjon.minRolleForPerson}
 				/>
 			) : (
 				<>
 					<h4 style={{ width: '100%', marginTop: '0' }}>
-						{Formatters.showLabel('pdlRelasjonTyper', relasjon.relatertPersonsRolle)}
+						{showLabel('pdlRelasjonTyper', relasjon.relatertPersonsRolle)}
 					</h4>
 					<div key={idx} className="person-visning_content">
 						<TitleValue title="Ident" value={relasjon.relatertPersonsIdent} visKopier />

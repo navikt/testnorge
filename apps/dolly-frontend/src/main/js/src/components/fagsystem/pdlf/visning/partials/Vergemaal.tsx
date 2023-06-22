@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { PersonData, Relasjon, VergemaalValues } from '@/components/fagsystem/pdlf/PdlTypes'
 import { VergemaalKodeverk } from '@/config/kodeverk'
@@ -10,6 +10,8 @@ import * as _ from 'lodash-es'
 import { initialPdlPerson, initialVergemaal } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import React from 'react'
 
 type Vergemaal = {
 	vergemaalEmbete?: string
@@ -88,14 +90,8 @@ const VergemaalLes = ({
 					kodeverk={VergemaalKodeverk.Mandattype}
 					value={vergemaalData.mandatType || vergemaalData.vergeEllerFullmektig?.omfang}
 				/>
-				<TitleValue
-					title="Gyldig f.o.m."
-					value={Formatters.formatDate(vergemaalData.gyldigFraOgMed)}
-				/>
-				<TitleValue
-					title="Gyldig t.o.m."
-					value={Formatters.formatDate(vergemaalData.gyldigTilOgMed)}
-				/>
+				<TitleValue title="Gyldig f.o.m." value={formatDate(vergemaalData.gyldigFraOgMed)} />
+				<TitleValue title="Gyldig t.o.m." value={formatDate(vergemaalData.gyldigTilOgMed)} />
 				{!relasjon && !relasjonRedigert && (
 					<TitleValue
 						title={harFullmektig ? 'Fullmektig' : 'Verge'}
@@ -135,7 +131,7 @@ const VergemaalVisning = ({
 
 	const slettetVergemaalPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertVergemaalPdlf
 	if (slettetVergemaalPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const vergemaalValues = redigertVergemaalPdlf ? redigertVergemaalPdlf : vergemaalData
@@ -149,8 +145,8 @@ const VergemaalVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, 'VERGE')
-		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, 'VERGE')
+		? getEksisterendeNyPerson(redigertRelatertePersoner, vergemaalValues?.vergeIdent, ['VERGE'])
+		: getEksisterendeNyPerson(relasjoner, vergemaalValues?.vergeIdent, ['VERGE'])
 
 	return erPdlVisning ? (
 		<VergemaalLes vergemaalData={vergemaalData} relasjoner={relasjoner} idx={idx} />

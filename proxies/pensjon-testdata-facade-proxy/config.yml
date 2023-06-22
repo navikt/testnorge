@@ -36,6 +36,8 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend
           cluster: dev-gcp
+        - application: dolly-idporten
+          cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
         - application: testnav-oversikt-frontend
@@ -49,6 +51,9 @@ spec:
           cluster: dev-gcp
         - application: testnav-synt-vedtakshistorikk-service
           cluster: dev-gcp
+    outbound:
+      external:
+        - host: popp-testdata.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
@@ -67,10 +72,8 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   envFrom:
     - secret: azure-testnav-pensjon-testdata-facade-proxy-trygdeetaten
   ingresses:
-    - "https://testnav-pensjon-testdata-facade-proxy.dev.intern.nav.no"
     - "https://testnav-pensjon-testdata-facade-proxy.dev-fss-pub.nais.io"

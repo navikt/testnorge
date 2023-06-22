@@ -1,9 +1,9 @@
 import { MatrikkelAdresseVelger } from '@/components/adresseVelger'
 import { FormikProps } from 'formik'
-import { MatrikkelAdresse } from '@/service/services/AdresseService'
 import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import * as _ from 'lodash-es'
 import styled from 'styled-components'
+import { MatrikkelAdresse } from '@/components/adresseVelger/MatrikkelAdresseVelger'
 
 const StyledMatrikkeladresse = styled.div`
 	width: 100%;

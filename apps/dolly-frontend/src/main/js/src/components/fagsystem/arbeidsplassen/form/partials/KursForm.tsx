@@ -9,7 +9,7 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import * as React from 'react'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 import _get from 'lodash/get'
-import Formatters from '@/utils/DataFormatter'
+import { showLabel } from '@/utils/DataFormatter'
 import { Vis } from '@/components/bestillingsveileder/VisAttributt'
 import { EraseFillButtons } from '@/components/fagsystem/arbeidsplassen/form/partials/EraseFillButtons'
 
@@ -52,7 +52,7 @@ export const KursForm = ({ formikBag }) => {
 									name={`${kursPath}.duration`}
 									label={`Antall ${
 										durationUnit && durationUnit !== 'UKJENT'
-											? Formatters.showLabel('kursLengde', durationUnit)
+											? showLabel('kursLengde', durationUnit)
 											: ''
 									}`}
 									size="small"

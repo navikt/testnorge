@@ -19,6 +19,7 @@ import {
 	Modus,
 	RedigerLoading,
 } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/RedigerLoading'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -84,9 +85,7 @@ export const VisningRedigerbarSamlet = ({
 
 	const pdlfError = (error: any) => {
 		error &&
-			setErrorMessagePdlf(
-				`Feil ved oppdatering i PDL-forvalter: ${error.message || error.toString()}`
-			)
+			setErrorMessagePdlf(`Feil ved oppdatering av person: ${error.message || error.toString()}`)
 		setVisningModus(Modus.Les)
 	}
 
@@ -205,7 +204,7 @@ export const VisningRedigerbarSamlet = ({
 						return (
 							<React.Fragment key={idx}>
 								{visningModus === Modus.LoadingPdlfSlett && slettId === idx && (
-									<Loading label={'Oppdaterer PDL-forvalter...'} />
+									<Loading label={'Oppdaterer personinfo...'} />
 								)}
 								{visningModus === Modus.LoadingPdlSlett && slettId === idx && (
 									<Loading label={'Oppdaterer PDL...'} />
@@ -213,7 +212,7 @@ export const VisningRedigerbarSamlet = ({
 								{(visningModus === Modus.Les || slettId !== idx) && (
 									<>
 										{slettetItem || alleSlettet ? (
-											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
+											<OpplysningSlettet />
 										) : (
 											getVisning(redigertItem || item, idx)
 										)}
@@ -295,11 +294,7 @@ export const VisningRedigerbarSamlet = ({
 									nested
 								>
 									{(item: any, idx: number) =>
-										item ? (
-											getForm(`${path}[${idx}]`)
-										) : (
-											<pre style={{ margin: '0' }}>Opplysning slettet</pre>
-										)
+										item ? getForm(`${path}[${idx}]`) : <OpplysningSlettet />
 									}
 								</DollyFieldArray>
 								<FieldArrayEdit>

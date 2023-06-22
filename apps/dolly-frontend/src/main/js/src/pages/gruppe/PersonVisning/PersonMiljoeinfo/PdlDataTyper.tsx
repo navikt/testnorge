@@ -8,6 +8,7 @@ import {
 } from '@/components/fagsystem/pdlf/PdlTypes'
 
 export type PdlDataWrapper = {
+	errors: any
 	data: {
 		data: PdlData
 		errors: Array<PdlError>

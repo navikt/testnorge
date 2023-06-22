@@ -2,7 +2,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { oversettBoolean } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const UtenlandsId = ({ data }) => {
@@ -23,10 +23,7 @@ export const UtenlandsId = ({ data }) => {
 								value={id.utstederland}
 								kodeverk={AdresseKodeverk.Utstederland}
 							/>
-							<TitleValue
-								title="Opphørt"
-								value={Formatters.oversettBoolean(Boolean(id.opphoert))}
-							/>
+							<TitleValue title="Opphørt" value={oversettBoolean(Boolean(id.opphoert))} />
 						</div>
 					)}
 				</DollyFieldArray>

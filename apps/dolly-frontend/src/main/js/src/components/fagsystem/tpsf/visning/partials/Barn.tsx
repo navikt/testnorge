@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatAlderBarn, formatDate, formatKjonn, oversettBoolean } from '@/utils/DataFormatter'
 import { TpsMessagingApi } from '@/service/Api'
 import { PersoninformasjonKodeverk } from '@/config/kodeverk'
 import { Adressevalg } from '@/components/fagsystem/tpsf/visning/partials/Adressevalg'
@@ -34,12 +34,12 @@ export const Barn = ({ data, type }) => {
 				<TitleValue title="Fornavn" value={data.fornavn} />
 				<TitleValue title="Mellomnavn" value={data.mellomnavn} />
 				<TitleValue title="Etternavn" value={data.etternavn} />
-				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
+				<TitleValue title="Kjønn" value={formatKjonn(data.kjonn, data.alder)} />
 				<TitleValue
 					title="Alder"
-					value={Formatters.formatAlderBarn(data.alder, data.doedsdato, erDoedfoedt)}
+					value={formatAlderBarn(data.alder, data.doedsdato, erDoedfoedt)}
 				/>
-				<TitleValue title="Dødsdato" value={Formatters.formatDate(data.doedsdato)} />
+				<TitleValue title="Dødsdato" value={formatDate(data.doedsdato)} />
 				<TitleValue
 					title="Diskresjonskode"
 					kodeverk={PersoninformasjonKodeverk.Diskresjonskoder}
@@ -52,7 +52,7 @@ export const Barn = ({ data, type }) => {
 				{!erDoedfoedt && (
 					<TitleValue
 						title="Er adoptert"
-						value={data.adoptert ? data.adoptert : Formatters.oversettBoolean(type === 'BARN')}
+						value={data.adoptert ? data.adoptert : oversettBoolean(type === 'BARN')}
 					/>
 				)}
 			</div>

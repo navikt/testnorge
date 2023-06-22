@@ -1,3 +1,0 @@
-consumers:
-  profil-api:
-    url: http://testnorge-profil-api.dolly.svc.cluster.local

@@ -42,7 +42,6 @@ spec:
       cpu: 200m
       memory: 4000Mi
     limits:
-      cpu: 500m
       memory: 5000Mi
   accessPolicy:
     inbound:
@@ -61,19 +60,11 @@ spec:
     outbound:
       rules:
         - application: synthdata-elsam-gcp
-          cluster: dev-gcp
         - application: testnav-organisasjon-service
-          cluster: dev-gcp
         - application: testnav-arbeidsforhold-service
-          cluster: dev-gcp
         - application: testnav-helsepersonell-service
-          cluster: dev-gcp
       external:
         - host: https://testnav-sykemelding-api-proxy.dev-fss-pub.nais.io
-        - host: https://testnav-organisasjon-service.dev.intern.nav.no
-        - host: https://synthdata-elsam-gcp.dev.intern.nav.no
-        - host: https://testnav-arbeidsforhold-service.dev.intern.nav.no
-        - host: https://testnav-helsepersonell-service.dev.intern.nav.no
         - host: https://testnav-pdl-proxy.dev-fss-pub.nais.io
   ingresses:
-    - "https://testnav-synt-sykemelding-api.dev.intern.nav.no"
+    - "https://testnav-synt-sykemelding-api.intern.dev.nav.no"

@@ -43,7 +43,7 @@ public class PersonArtifactService {
         person.setInnflytting(innflyttingService.convert(person));
         person.setBostedsadresse(bostedAdresseService.convert(person, relaxed));
         person.setStatsborgerskap(statsborgerskapService.convert(person));
-        person.setNavn(navnService.convert(person.getNavn()));
+        person.setNavn(navnService.convert(person));
         person.setOppholdsadresse(oppholdsadresseService.convert(person));
         person.setAdressebeskyttelse(adressebeskyttelseService.convert(person));
         person.setTelefonnummer(telefonnummerService.convert(person.getTelefonnummer()));

@@ -113,6 +113,6 @@ class FalskIdentitetServiceTest {
         var exception = assertThrows(HttpClientErrorException.class, () ->
                 falskIdentitetService.validate(request));
 
-        assertThat(exception.getMessage(), containsString("Falsik identitet: Navn er ikke i liste over gyldige verdier"));
+        assertThat(exception.getMessage(), containsString("Falsk identitet: Navn er ikke i liste over gyldige verdier"));
     }
 }

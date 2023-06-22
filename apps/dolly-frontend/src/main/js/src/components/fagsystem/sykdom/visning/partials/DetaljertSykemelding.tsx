@@ -1,5 +1,5 @@
 import * as React from 'react'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, oversettBoolean } from '@/utils/DataFormatter'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { Bidiagnoser } from './Bidiagnoser'
 import { Perioder } from './Perioder'
@@ -10,14 +10,14 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 	<div key={idx} className="person-visning_content">
 		<React.Fragment key={idx}>
 			<div className="person-visning_content">
-				<TitleValue title="Startdato" value={Formatters.formatStringDates(sykemelding.startDato)} />
+				<TitleValue title="Startdato" value={formatStringDates(sykemelding.startDato)} />
 				<TitleValue
 					title="Trenger umiddelbar bistand"
-					value={Formatters.oversettBoolean(sykemelding.umiddelbarBistand)}
+					value={oversettBoolean(sykemelding.umiddelbarBistand)}
 				/>
 				<TitleValue
 					title=" Manglende tilrettelegging på arbeidsplassen"
-					value={Formatters.oversettBoolean(sykemelding.manglendeTilretteleggingPaaArbeidsplassen)}
+					value={oversettBoolean(sykemelding.manglendeTilretteleggingPaaArbeidsplassen)}
 				/>
 			</div>
 			<>
@@ -69,7 +69,7 @@ export const DetaljertSykemelding = ({ sykemelding, idx }: SykemeldingDetaljert)
 					/>
 					<TitleValue
 						title="Arbeidsfør etter endt periode"
-						value={Formatters.oversettBoolean(sykemelding.detaljer.arbeidsforEtterEndtPeriode)}
+						value={oversettBoolean(sykemelding.detaljer.arbeidsforEtterEndtPeriode)}
 					/>
 				</div>
 			</>

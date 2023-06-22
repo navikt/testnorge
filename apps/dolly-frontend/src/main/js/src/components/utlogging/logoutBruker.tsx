@@ -1,17 +1,20 @@
 const logoutBruker = (feilmelding?: string) => {
-	const runningLocal = window.location.hostname.includes('localhost')
+	const runningLocalOrIdporten =
+		window.location.hostname.includes('localhost') || window.location.hostname.includes('idporten')
 
 	const extractFeilmelding = (stackTrace: string) => {
 		if (stackTrace?.includes('miljoer')) {
 			return 'miljoe_error'
 		} else if (stackTrace?.includes('current')) {
 			return 'azure_error'
+		} else if (stackTrace?.includes('person_org')) {
+			return 'person_org_error'
 		} else {
 			return 'unknown_error'
 		}
 	}
 
-	window.location.href = runningLocal
+	window.location.href = runningLocalOrIdporten
 		? '/logout' + (feilmelding ? '?state=' + extractFeilmelding(feilmelding) : '')
 		: '/oauth2/logout'
 	console.error(feilmelding)

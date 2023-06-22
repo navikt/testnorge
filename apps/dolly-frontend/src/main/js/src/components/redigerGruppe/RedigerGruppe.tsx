@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { Form, Formik, getIn } from 'formik'
 import NavButton from '@/components/ui/button/NavButton/NavButton'
 import * as yup from 'yup'
@@ -8,6 +8,7 @@ import { FormikTextInput } from '@/components/ui/form/inputs/textInput/TextInput
 import './RedigerGruppe.less'
 import { useNavigate } from 'react-router-dom'
 import { REGEX_BACKEND_GRUPPER, useMatchMutate } from '@/utils/hooks/useMutate'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type Props = {
 	gruppe: {
@@ -78,7 +79,7 @@ const RedigerGruppe = ({
 
 	const buttons = (
 		<>
-			<NavButton variant={'primary'} type={'submit'}>
+			<NavButton data-cy={CypressSelector.BUTTON_OPPRETT} variant={'primary'} type={'submit'}>
 				{erRedigering ? 'Lagre' : 'Opprett og gå til gruppe'}
 			</NavButton>
 			<NavButton type={'reset'} variant={'danger'} onClick={() => onCancel()}>
@@ -92,8 +93,21 @@ const RedigerGruppe = ({
 			{() => (
 				<Form className="opprett-tabellrad" autoComplete="off">
 					<div className="fields">
-						<FormikTextInput name="navn" label="NAVN" size="grow" useOnChange={true} autoFocus />
-						<FormikTextInput name="hensikt" label="HENSIKT" size="grow" useOnChange={true} />
+						<FormikTextInput
+							data-cy={CypressSelector.INPUT_NAVN}
+							name="navn"
+							label="NAVN"
+							size="grow"
+							useOnChange={true}
+							autoFocus
+						/>
+						<FormikTextInput
+							data-cy={CypressSelector.INPUT_HENSIKT}
+							name="hensikt"
+							label="HENSIKT"
+							size="grow"
+							useOnChange={true}
+						/>
 						{buttons}
 					</div>
 					{error && (
