@@ -215,7 +215,7 @@ export default {
 	},
 
 	endreMalNavn(malID, malNavn) {
-		return Request.putWithoutResponse(Endpoints.malBestillingMedId(malID), malNavn)
+		return Request.putWithoutResponse(Endpoints.malBestillingMedId(malID, malNavn))
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)
@@ -257,7 +257,7 @@ export default {
 	},
 
 	endreMalNavnOrganisasjon(malID, malNavn) {
-		return Request.putWithoutResponse(Endpoints.malBestillingOrganisasjon(malID), malNavn)
+		return Request.putWithoutResponse(Endpoints.malBestillingOrganisasjon(malID, malNavn))
 			.then((response) => {
 				if (!response.ok) {
 					throw new Error(response.statusText)

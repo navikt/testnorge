@@ -196,16 +196,16 @@ export default class DollyEndpoints {
 		return `${groupBase}/${gruppeId}/identer/${arrayToString(identer).replaceAll(' ', '')}`
 	}
 
-	static malBestillingMedId(malId) {
-		return `${bestillingBase}/malbestilling/${malId}`
+	static malBestillingMedId(malId, malNavn) {
+		return `${bestillingBase}/malbestilling/${malId}?malNavn=${malNavn}`
 	}
 
 	static malBestillingMedBestillingId(bestillingId, malNavn) {
 		return `${bestillingBase}/malbestilling?bestillingId=${bestillingId}&malnavn=${malNavn}`
 	}
 
-	static malBestillingOrganisasjon(malId) {
-		return `${organisasjonBase}/bestilling/malbestilling/${malId}`
+	static malBestillingOrganisasjon(malId, malNavn) {
+		return `${organisasjonBase}/bestilling/malbestilling/${malId}?malNavn=${malNavn}`
 	}
 
 	static getPoppMiljoer() {
