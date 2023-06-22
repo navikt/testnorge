@@ -108,6 +108,25 @@ public class OrganisasjonBestillingMalServiceTest {
     }
 
     @Test
+    @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
+    void shouldCreateMalerFromExistingOrder()
+            throws Exception {
+
+        var bruker_en = saveDummyBruker(DUMMY_EN);
+        var bestilling = saveDummyBestilling(bruker_en);
+
+        mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
+                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
+                        .queryParam("malNavn", MALNAVN))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
+                        .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
+                        .queryParam("malNavn", MALNAVN))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
@@ -132,24 +151,6 @@ public class OrganisasjonBestillingMalServiceTest {
                 .andExpect(jsonPath("$.malbestillinger.ALLE", empty()));
     }
 
-    @Test
-    @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
-    void shouldCreateMalerFromExistingOrder()
-            throws Exception {
-
-        var bruker_en = saveDummyBruker(DUMMY_EN);
-        var bestilling = saveDummyBestilling(bruker_en);
-
-        mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
-                        .queryParam("bestillingId", String.valueOf(bestilling.getId()))
-                        .queryParam("malNavn", MALNAVN))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
-                        .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
-                        .queryParam("malNavn", MALNAVN))
-                .andExpect(status().is4xxClientError());
-    }
 
     OrganisasjonBestillingMal saveDummyBestillingMal(Bruker bruker) {
         return organisasjonBestillingMalRepository.save(
