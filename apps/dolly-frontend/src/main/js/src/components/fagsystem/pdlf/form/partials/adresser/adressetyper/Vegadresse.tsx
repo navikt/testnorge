@@ -7,7 +7,7 @@ import { DollyTextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import * as _ from 'lodash-es'
 import styled from 'styled-components'
 import { FormikProps } from 'formik'
-import { Adresse } from '@/service/services/AdresseService'
+import { Adresse } from '@/components/adresseVelger/AdresseVelger'
 
 interface VegadresseValues {
 	formikBag: FormikProps<{}>

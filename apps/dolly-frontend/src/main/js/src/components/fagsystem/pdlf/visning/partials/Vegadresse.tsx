@@ -1,11 +1,11 @@
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
-import { Adresse } from '@/service/services/AdresseService'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import {
 	Kodeverk,
 	KodeverkValues,
 } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { Adresse } from '@/components/adresseVelger/AdresseVelger'
 
 interface VegadresseValues {
 	adresse: {

@@ -111,7 +111,10 @@ export const fetcher = (url, headers) =>
 				console.error('Auth feilet, navigerer til login')
 				navigateToLogin()
 			}
-			if (reason.status === 404) {
+			if (reason.status === 404 || reason.response?.status === 404) {
+				if (reason.response?.data?.error) {
+					throw new Error(reason.response?.data?.error)
+				}
 				throw new NotFoundError()
 			}
 			throw new Error(`Henting av data fra ${url} feilet.`)
