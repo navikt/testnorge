@@ -27,6 +27,7 @@ const paths = {
 	identtype: 'identifikasjon.identtype',
 	falsk: 'identifikasjon.falskIdentitet',
 	utenlandsk: 'identifikasjon.utenlandskIdentitet',
+	historikk: 'identifikasjon.identHistorikk',
 	kjoenn: 'kjoenn',
 }
 
@@ -45,6 +46,7 @@ export const Identifikasjon: React.FC<IdentifikasjonProps> = ({
 			<div className="options-title">Identitet</div>
 			<FormikCheckbox name={paths.falsk} label="Har falsk identitet" />
 			<FormikCheckbox name={paths.utenlandsk} label="Har utenlandsk identitet" />
+			<FormikCheckbox name={paths.historikk} label="Har identhistorikk" />
 			<RadioGroupOptions
 				formikBag={formikBag}
 				name={paths.kjoenn}
