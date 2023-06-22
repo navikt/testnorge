@@ -13,6 +13,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -42,7 +43,7 @@ public class BestillingMalService {
 
         var malBestillingWrapper = new RsMalBestillingWrapper();
 
-        var malBestillinger = bestillingMalRepository.findMalBestilling()
+        var malBestillinger = IterableUtils.toList(bestillingMalRepository.findAll())
                 .stream()
                 .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
                 .entrySet().stream()
@@ -72,7 +73,7 @@ public class BestillingMalService {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
 
-        return bestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn)
+        return bestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn)
                 .stream()
                 .map(bestilling -> RsMalBestilling.builder()
                         .malNavn(bestilling.getMalNavn())
@@ -139,9 +140,9 @@ public class BestillingMalService {
         bestillingMalRepository.deleteById(id);
     }
 
-    public void updateMalBestillingNavnById(Long id, String nyttMalNavn) {
+    public void updateMalNavnById(Long id, String nyttMalNavn) {
 
-        bestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
+        bestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
     }
 
     public static String getBruker(Bruker bruker) {

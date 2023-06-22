@@ -151,6 +151,6 @@ public class BestillingController {
     @Transactional
     public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
-        bestillingMalService.updateMalBestillingNavnById(id, malNavn);
+        bestillingMalService.updateMalNavnById(id, malNavn);
     }
 }

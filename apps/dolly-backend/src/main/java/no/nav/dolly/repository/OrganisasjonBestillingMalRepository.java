@@ -13,15 +13,12 @@ public interface OrganisasjonBestillingMalRepository extends CrudRepository<Orga
 
     List<OrganisasjonBestillingMal> findByIdContaining(String id);
 
-    List<OrganisasjonBestillingMal> findByBrukerAndMalBestillingNavn(Bruker bruker, String navn);
+    List<OrganisasjonBestillingMal> findByBrukerAndMalNavn(Bruker bruker, String navn);
 
     List<OrganisasjonBestillingMal> findByBruker(Bruker bruker);
 
-    @Query(value = "from OrganisasjonBestillingMal b where b.malBestillingNavn is not null order by b.malBestillingNavn")
-    List<OrganisasjonBestillingMal> findMalBestilling();
-
     @Modifying
-    @Query("update BestillingMal b set b.malNavn = :malNavn where b.id = :id")
-    void updateMalBestillingNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
+    @Query("update OrganisasjonBestillingMal b set b.malNavn = :malNavn where b.id = :id")
+    void updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
 }

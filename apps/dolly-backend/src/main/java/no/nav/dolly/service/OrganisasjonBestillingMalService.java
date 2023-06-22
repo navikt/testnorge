@@ -14,6 +14,7 @@ import no.nav.dolly.exceptions.NotFoundException;
 import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -69,7 +70,7 @@ public class OrganisasjonBestillingMalService {
 
         var malBestillingWrapper = new RsOrganisasjonMalBestillingWrapper();
 
-        var bestillinger = organisasjonBestillingMalRepository.findMalBestilling();
+        var bestillinger = IterableUtils.toList(organisasjonBestillingMalRepository.findAll());
 
         var malBestillinger = bestillinger.parallelStream()
                 .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
@@ -118,9 +119,9 @@ public class OrganisasjonBestillingMalService {
                 .build();
     }
 
-    public void updateOrganisasjonMalBestillingNavnById(Long id, String nyttMalNavn) {
+    public void updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {
 
-        organisasjonBestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
+        organisasjonBestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
     }
 
     public void deleteOrganisasjonMalbestillingById(Long id) {
@@ -133,7 +134,7 @@ public class OrganisasjonBestillingMalService {
         if (StringUtils.isBlank(malNavn)) {
             return;
         }
-        var gamleMalBestillinger = organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn);
+        var gamleMalBestillinger = organisasjonBestillingMalRepository.findByBrukerAndMalNavn(bruker, malNavn);
         gamleMalBestillinger.forEach(malBestilling ->
                 organisasjonBestillingMalRepository.deleteById(malBestilling.getId()));
     }

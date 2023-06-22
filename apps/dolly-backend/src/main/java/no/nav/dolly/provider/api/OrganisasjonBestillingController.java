@@ -120,7 +120,7 @@ public class OrganisasjonBestillingController {
     @Transactional
     public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
-        organisasjonBestillingMalService.updateOrganisasjonMalBestillingNavnById(id, malNavn);
+        organisasjonBestillingMalService.updateOrganisasjonMalNavnById(id, malNavn);
     }
 
     static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

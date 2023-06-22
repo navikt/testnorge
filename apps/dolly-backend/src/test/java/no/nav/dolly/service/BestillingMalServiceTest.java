@@ -2,7 +2,6 @@ package no.nav.dolly.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
-import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
@@ -21,7 +20,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -126,8 +124,7 @@ public class BestillingMalServiceTest {
         var bestillingMal = saveDummyBestillingMal(bruker_en);
 
         mockMvc.perform(put("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId())
-                        .content(objectMapper.writeValueAsString(new MalbestillingNavn(NYTT_MALNAVN)))
-                        .contentType(MediaType.APPLICATION_JSON))
+                        .queryParam("malNavn", NYTT_MALNAVN))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
