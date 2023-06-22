@@ -1,4 +1,4 @@
-import produce from 'immer'
+import { produce } from 'immer'
 import { handleActions as raHandleActions } from 'redux-actions'
 
 export const handleActions = (actions, state) =>

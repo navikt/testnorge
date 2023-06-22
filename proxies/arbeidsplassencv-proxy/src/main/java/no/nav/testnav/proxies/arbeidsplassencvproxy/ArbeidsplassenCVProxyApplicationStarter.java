@@ -54,5 +54,4 @@ public class ArbeidsplassenCVProxyApplicationStarter {
                         .filter(filter)
                 ).uri(url);
     }
-
 }

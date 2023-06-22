@@ -6,7 +6,7 @@ import Icon from '@/components/ui/icon/Icon'
 import BestillingDetaljer from '@/components/bestilling/detaljer/BestillingDetaljer'
 import { OrgStatus } from '@/components/fagsystem/organisasjoner/types'
 import Spinner from '@/components/ui/loading/Spinner'
-import Formatters from '@/utils/DataFormatter'
+import { formatDateTime } from '@/utils/DataFormatter'
 import bestillingStatusMapper from '@/ducks/bestillingStatus/bestillingStatusMapper'
 
 type OrganisasjonBestillingProps = {
@@ -54,7 +54,7 @@ export default function OrganisasjonBestilling({
 			width: '20',
 			dataField: 'sistOppdatert',
 			formatter(cell: string): string {
-				return Formatters.formatDateTime(cell)
+				return formatDateTime(cell)
 			},
 		},
 		{

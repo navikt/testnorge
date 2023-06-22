@@ -61,8 +61,8 @@ export const DokumentasjonDropdown = () => {
 								onClick={() =>
 									window.open(
 										window.location.hostname.includes('frontend')
-											? 'https://dolly-backend-dev.dev.intern.nav.no/swagger'
-											: 'https://dolly-backend.dev.intern.nav.no/swagger',
+											? 'https://dolly-backend-dev.intern.dev.nav.no/swagger'
+											: 'https://dolly-backend.intern.dev.nav.no/swagger',
 										'_blank',
 										'noopener'
 									)

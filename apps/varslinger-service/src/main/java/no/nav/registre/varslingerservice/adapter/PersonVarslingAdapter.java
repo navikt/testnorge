@@ -1,19 +1,17 @@
 package no.nav.registre.varslingerservice.adapter;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
 import no.nav.registre.varslingerservice.repository.BrukerRepository;
 import no.nav.registre.varslingerservice.repository.MottattVarslingRepository;
 import no.nav.registre.varslingerservice.repository.model.BrukerModel;
 import no.nav.registre.varslingerservice.repository.model.MottattVarslingModel;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedId;
 import no.nav.testnav.libs.servletsecurity.action.GetAuthenticatedToken;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -55,7 +53,7 @@ public class PersonVarslingAdapter {
         return mottattVarslinger
                 .stream()
                 .map(value -> value.getVarsling().getVarslingId())
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public String save(String varslingId) {

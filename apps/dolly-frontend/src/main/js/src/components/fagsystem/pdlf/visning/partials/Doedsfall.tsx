@@ -3,11 +3,12 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 import { DoedsfallData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialDoedsfall, initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type DoedsfallTypes = {
 	data: Array<DoedsfallData>
@@ -33,7 +34,7 @@ type DoedsfallLesTypes = {
 const DoedsfallLes = ({ doedsfall, idx }: DoedsfallLesTypes) => {
 	return (
 		<div className="person-visning_content" key={idx}>
-			<TitleValue title="Dødsdato" value={Formatters.formatDate(doedsfall.doedsdato)} />
+			<TitleValue title="Dødsdato" value={formatDate(doedsfall.doedsdato)} />
 		</div>
 	)
 }
@@ -54,7 +55,7 @@ const DoedsfallVisning = ({
 	)
 	const slettetDoedsfallPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertDoedsfallPdlf
 	if (slettetDoedsfallPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const doedsfallValues = redigertDoedsfallPdlf ? redigertDoedsfallPdlf : doedsfall

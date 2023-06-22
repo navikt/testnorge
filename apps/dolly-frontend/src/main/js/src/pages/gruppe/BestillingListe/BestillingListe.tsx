@@ -8,6 +8,7 @@ import Icon from '@/components/ui/icon/Icon'
 import Spinner from '@/components/ui/loading/Spinner'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import bestillingStatusMapper from '@/ducks/bestillingStatus/bestillingStatusMapper'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -78,7 +79,11 @@ export default function BestillingListe({
 				return cell === 'Pågår' ? (
 					<Spinner size={24} />
 				) : (
-					<Icon kind={ikonTypeMap[cell]} title={cell} />
+					<Icon
+						data-cy={CypressSelector.BUTTON_OPEN_BESTILLING}
+						kind={ikonTypeMap[cell]}
+						title={cell}
+					/>
 				)
 			},
 		},

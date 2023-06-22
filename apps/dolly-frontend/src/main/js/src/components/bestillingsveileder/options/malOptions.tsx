@@ -54,9 +54,29 @@ export const initialValuesBasedOnMal = (mal: any) => {
 			initialValuesMal.arbeidsplassenCV
 		)
 	}
+	if (initialValuesMal.arenaforvalter) {
+		initialValuesMal.arenaforvalter = getUpdatedArenaforvalterData(initialValuesMal.arenaforvalter)
+	}
 
 	initialValuesMal.environments = filterMiljoe(dollyEnvironments, mal.bestilling.environments)
 	return initialValuesMal
+}
+
+const getUpdatedArenaforvalterData = (arenaforvalterData) => {
+	let filtrertArenaforvalterData = Object.assign({}, arenaforvalterData)
+	if (_.isEmpty(filtrertArenaforvalterData.aap)) {
+		delete filtrertArenaforvalterData.aap
+	}
+	if (_.isEmpty(filtrertArenaforvalterData.aap115)) {
+		delete filtrertArenaforvalterData.aap115
+	}
+	if (_.isEmpty(filtrertArenaforvalterData.dagpenger)) {
+		delete filtrertArenaforvalterData.dagpenger
+	}
+	if (_.isEmpty(filtrertArenaforvalterData.inaktiveringDato)) {
+		delete filtrertArenaforvalterData.inaktiveringDato
+	}
+	return filtrertArenaforvalterData
 }
 
 const getUpdatedArbeidsplassenData = (arbeidsplassenData) => {

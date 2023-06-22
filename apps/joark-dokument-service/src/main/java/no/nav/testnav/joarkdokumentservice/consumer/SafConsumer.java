@@ -5,8 +5,8 @@ import no.nav.testnav.joarkdokumentservice.config.credentias.TestnavSafProxyServ
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetDokumentInfoCommand;
 import no.nav.testnav.joarkdokumentservice.consumer.command.GetPDFCommand;
+import no.nav.testnav.joarkdokumentservice.consumer.dto.JournalpostDTO;
 import no.nav.testnav.joarkdokumentservice.domain.DokumentType;
-import no.nav.testnav.joarkdokumentservice.domain.Journalpost;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Component;
@@ -37,7 +37,7 @@ public class SafConsumer {
                 .build();
     }
 
-    public Journalpost getJournalpost(String journalpostId, String miljo) {
+    public JournalpostDTO getJournalpost(String journalpostId, String miljo) {
         return tokenExchange
                 .exchange(properties)
                 .flatMap(accessToken -> new GetDokumentInfoCommand(
@@ -51,7 +51,7 @@ public class SafConsumer {
                     if (nonNull(response.getErrors()) && !response.getErrors().isEmpty()) {
                         response.getErrors().forEach(error -> log.error("Feilet under henting av Journalpost: {}", error.getMessage()));
                     }
-                    return new Journalpost(response.getData().getJournalpost());
+                    return response.getData().getJournalpost();
                 })
                 .block();
     }

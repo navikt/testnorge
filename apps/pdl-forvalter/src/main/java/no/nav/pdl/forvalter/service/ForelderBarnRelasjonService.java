@@ -76,7 +76,8 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
                 nyeRelasjoner.addAll(handle(type, person));
             }
         }
-        person.getForelderBarnRelasjon().addAll(nyeRelasjoner);
+        nyeRelasjoner
+                .forEach(relasjon -> person.getForelderBarnRelasjon().add(0, relasjon));
         return person.getForelderBarnRelasjon();
     }
 
@@ -152,8 +153,8 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
 
         relasjon.setPartnerErIkkeForelder(null);
 
-        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) {
-            ForelderBarnRelasjonDTO forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
+        if (request.getMinRolleForPerson() == Rolle.BARN && request.getRelatertPersonsRolle() == Rolle.FORELDER) { // -> Begge foreldre opprettes
+            var forelderRelasjon = mapperFacade.map(request, ForelderBarnRelasjonDTO.class);
             forelderRelasjon.setNyRelatertPerson(PersonRequestDTO.builder()
                     .kjoenn(getKjoenn(relasjon.getRelatertPerson(), relasjon.getRelatertPersonUtenFolkeregisteridentifikator()) == MANN ? KVINNE : MANN)
                     .build());
@@ -183,12 +184,13 @@ public class ForelderBarnRelasjonService implements Validation<ForelderBarnRelas
         if (isNull(relasjon.getRelatertPerson())) {
             return relasjon;
         }
+        createMotsattRelasjon(relasjon, hovedperson.getIdent());
+
         relasjonService.setRelasjoner(hovedperson.getIdent(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_FORELDER : FAMILIERELASJON_BARN,
                 relasjon.getRelatertPerson(),
                 relasjon.getRelatertPersonsRolle() == Rolle.BARN ? FAMILIERELASJON_BARN : FAMILIERELASJON_FORELDER);
 
-        createMotsattRelasjon(relasjon, hovedperson.getIdent());
         return relasjon;
     }
 

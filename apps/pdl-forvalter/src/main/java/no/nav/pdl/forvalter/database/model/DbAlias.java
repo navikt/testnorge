@@ -12,17 +12,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "alias")
 @Builder
@@ -52,13 +48,33 @@ public class DbAlias {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         DbAlias dbAlias = (DbAlias) o;
-        return getId() != null && Objects.equals(getId(), dbAlias.getId());
+
+        if (getId() != null ? !getId().equals(dbAlias.getId()) : dbAlias.getId() != null) return false;
+        if (getSistOppdatert() != null ? !getSistOppdatert().equals(dbAlias.getSistOppdatert()) : dbAlias.getSistOppdatert() != null)
+            return false;
+        if (getPerson() != null ? !getPerson().equals(dbAlias.getPerson()) : dbAlias.getPerson() != null) return false;
+        return getTidligereIdent() != null ? getTidligereIdent().equals(dbAlias.getTidligereIdent()) : dbAlias.getTidligereIdent() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getSistOppdatert() != null ? getSistOppdatert().hashCode() : 0);
+        result = 31 * result + (getPerson() != null ? getPerson().hashCode() : 0);
+        result = 31 * result + (getTidligereIdent() != null ? getTidligereIdent().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DbAlias{" +
+                "id=" + id +
+                ", sistOppdatert=" + sistOppdatert +
+                ", person=" + person +
+                ", tidligereIdent='" + tidligereIdent + '\'' +
+                '}';
     }
 }

@@ -1,5 +1,5 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherAareg } from '@/api'
+import { fetcher, multiFetcherAareg, multiFetcherAmelding } from '@/api'
 import { Organisasjon, OrganisasjonFasteData } from '@/service/services/organisasjonforvalter/types'
 import { Bestillingsinformasjon } from '@/components/bestilling/sammendrag/miljoeStatus/MiljoeStatus'
 import { Arbeidsforhold } from '@/components/fagsystem/inntektsmelding/InntektsmeldingTypes'
@@ -30,6 +30,13 @@ const getFasteDataOrganisasjon = (orgnummer: string) =>
 const getArbeidsforholdUrl = (miljoer: string[]) => {
 	return miljoer.map((miljoe) => ({
 		url: `/testnav-aareg-proxy/${miljoe}/api/v1/arbeidstaker/arbeidsforhold?arbeidsforholdtype=forenkletOppgjoersordning,frilanserOppdragstakerHonorarPersonerMm,maritimtArbeidsforhold,ordinaertArbeidsforhold`,
+		miljo: miljoe,
+	}))
+}
+
+const getAmeldingerUrl = (ident: string, miljoer: string[]) => {
+	return miljoer.map((miljoe) => ({
+		url: `/oppsummeringsdokument-service/api/v1/oppsummeringsdokumenter/identer/${ident}`,
 		miljo: miljoe,
 	}))
 }
@@ -96,17 +103,20 @@ export const useOrganisasjoner = (brukerId: string) => {
 		}
 	}
 
-	const { data, error } = useSWR<Organisasjon[], Error>(getOrganisasjonerUrl(brukerId), fetcher)
+	const { data, isLoading, error } = useSWR<Organisasjon[], Error>(
+		getOrganisasjonerUrl(brukerId),
+		fetcher
+	)
 
 	return {
 		organisasjoner: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) => {
-	const { data, error } = useSWR<OrganisasjonFasteData[], Error>(
+	const { data, isLoading, error } = useSWR<OrganisasjonFasteData[], Error>(
 		getDollyFasteDataOrganisasjoner(kanHaArbeidsforhold),
 		fetcher,
 		{ fallbackData: fasteDataFallback }
@@ -114,13 +124,13 @@ export const useDollyFasteDataOrganisasjoner = (kanHaArbeidsforhold?: boolean) =
 
 	return {
 		organisasjoner: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
 
 export const useFasteDataOrganisasjon = (orgnummer: string) => {
-	const { data, error } = useSWR<OrganisasjonFasteData, Error>(
+	const { data, isLoading, error } = useSWR<OrganisasjonFasteData, Error>(
 		getFasteDataOrganisasjon(orgnummer),
 		fetcher
 	)
@@ -134,7 +144,7 @@ export const useFasteDataOrganisasjon = (orgnummer: string) => {
 
 	return {
 		organisasjon: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -146,7 +156,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 			error: 'BrukerId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Bestillingsstatus[], Error>(
+	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingerUrl(brukerId),
 		fetcher,
 		{
@@ -162,7 +172,7 @@ export const useOrganisasjonBestilling = (brukerId: string, autoRefresh = false)
 	return {
 		bestillinger: data,
 		bestillingerById: bestillingerSorted,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -184,7 +194,7 @@ export const useOrganisasjonBestillingStatus = (
 			error: 'BestillingId mangler!',
 		}
 	}
-	const { data, error } = useSWR<Bestillingsstatus[], Error>(
+	const { data, isLoading, error } = useSWR<Bestillingsstatus[], Error>(
 		getOrganisasjonBestillingStatusUrl(bestillingId),
 		fetcher,
 		{
@@ -195,7 +205,7 @@ export const useOrganisasjonBestillingStatus = (
 
 	return {
 		bestillingStatus: data,
-		loading: !error && !data,
+		loading: isLoading,
 		error: error,
 	}
 }
@@ -222,7 +232,7 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	const miljoer = miljoe ? [miljoe] : filteredEnvironments
 
-	const { data, error } = useSWR<Array<MiljoDataListe>, Error>(
+	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
 		[getArbeidsforholdUrl(miljoer), { 'Nav-Personident': ident }],
 		([url, headers]) => multiFetcherAareg(url, headers),
 		{ dedupingInterval: 30000 }
@@ -230,7 +240,42 @@ export const useArbeidsforhold = (ident: string, harAaregBestilling: boolean, mi
 
 	return {
 		arbeidsforhold: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
-		loading: !error && !data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useAmeldinger = (ident: string, harAaregBestilling: boolean, miljoe?: string) => {
+	const { dollyEnvironmentList } = useDollyEnvironments()
+	const unsupportedEnvironments = ['t13', 'qx']
+	const filteredEnvironments = dollyEnvironmentList
+		?.map((miljoe) => miljoe.id)
+		?.filter((miljoe) => !unsupportedEnvironments.includes(miljoe))
+
+	if (!ident) {
+		return {
+			loading: false,
+			error: 'Ident mangler!',
+		}
+	}
+
+	if (!harAaregBestilling) {
+		return {
+			loading: false,
+		}
+	}
+
+	const miljoer = miljoe ? [miljoe] : filteredEnvironments
+
+	const { data, isLoading, error } = useSWR<Array<MiljoDataListe>, Error>(
+		[getAmeldingerUrl(ident, miljoer)],
+		([url, headers]) => multiFetcherAmelding(url, headers),
+		{ dedupingInterval: 30000 }
+	)
+
+	return {
+		ameldinger: data?.sort((a, b) => a.miljo.localeCompare(b.miljo)),
+		loading: isLoading,
 		error: error,
 	}
 }

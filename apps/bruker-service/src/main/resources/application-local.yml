@@ -16,5 +16,5 @@ spring:
 
 consumers:
   testnav-person-organisasjon-tilgang-service:
-    url: https://testnav-person-organisasjon-tilgang-service-dev.dev.intern.nav.no
+    url: https://testnav-person-organisasjon-tilgang-service-dev.intern.dev.nav.no
     name: testnav-person-organisasjon-tilgang-service-dev

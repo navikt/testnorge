@@ -1,7 +1,7 @@
 import { addDays, isBefore } from 'date-fns'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatAlder, formatDate, formatKjonn, gtTypeLabel } from '@/utils/DataFormatter'
 import { GtKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import * as _ from 'lodash-es'
 
@@ -22,15 +22,9 @@ function hentSkjermingData(skjermingPath) {
 								: 'JA'
 						}
 					/>
-					<TitleValue
-						title="Skjerming fra"
-						value={Formatters.formatDate(skjermingPath.egenAnsattDatoFom)}
-					/>
+					<TitleValue title="Skjerming fra" value={formatDate(skjermingPath.egenAnsattDatoFom)} />
 					{skjermingPath.egenAnsattDatoTom && (
-						<TitleValue
-							title="Skjerming til"
-							value={Formatters.formatDate(skjermingPath.egenAnsattDatoTom)}
-						/>
+						<TitleValue title="Skjerming til" value={formatDate(skjermingPath.egenAnsattDatoTom)} />
 					)}
 				</>
 			)}
@@ -53,11 +47,11 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 					/>
 					<TitleValue
 						title="Sikkerhetstiltak starter"
-						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoFom)}
+						value={formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoFom)}
 					/>
 					<TitleValue
 						title="Sikkerhetstiltak opphører"
-						value={Formatters.formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoTom)}
+						value={formatDate(sikkerhetstiltakPath.sikkerhetTiltakDatoTom)}
 					/>
 				</div>
 			)}
@@ -69,11 +63,11 @@ function hentSikkerhetstiltakData(sikkerhetstiltakPath) {
 					/>
 					<TitleValue
 						title="Sikkerhetstiltak starter"
-						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigFraOgMed)}
+						value={formatDate(sikkerhetstiltakPath.gyldigFraOgMed)}
 					/>
 					<TitleValue
 						title="Sikkerhetstiltak opphører"
-						value={Formatters.formatDate(sikkerhetstiltakPath.gyldigTilOgMed)}
+						value={formatDate(sikkerhetstiltakPath.gyldigTilOgMed)}
 					/>
 				</div>
 			)}
@@ -98,9 +92,9 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 
 				<TitleValue title="Etternavn" value={data.etternavn} />
 
-				<TitleValue title="Kjønn" value={Formatters.kjonn(data.kjonn, data.alder)} />
-				<TitleValue title="Alder" value={Formatters.formatAlder(data.alder, data.doedsdato)} />
-				<TitleValue title="Dødsdato" value={Formatters.formatDate(data.doedsdato)} />
+				<TitleValue title="Kjønn" value={formatKjonn(data.kjonn, data.alder)} />
+				<TitleValue title="Alder" value={formatAlder(data.alder, data.doedsdato)} />
+				<TitleValue title="Dødsdato" value={formatDate(data.doedsdato)} />
 
 				<TitleValue
 					title="Personstatus"
@@ -108,7 +102,7 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 					value={data.personStatus}
 				/>
 
-				<TitleValue title="Savnet siden" value={Formatters.formatDate(data.forsvunnetDato)} />
+				<TitleValue title="Savnet siden" value={formatDate(data.forsvunnetDato)} />
 
 				<TitleValue
 					title="Sivilstand"
@@ -118,10 +112,7 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 
 				<TitleValue title="Bankkontonummer" value={data.bankkontonr} />
 
-				<TitleValue
-					title="Bankkonto opprettet"
-					value={Formatters.formatDate(data.bankkontonrRegdato)}
-				/>
+				<TitleValue title="Bankkonto opprettet" value={formatDate(data.bankkontonrRegdato)} />
 
 				<TitleValue
 					title={data.telefonnummer_2 ? 'Telefonnummer 1' : 'Telefonnummer'}
@@ -152,7 +143,7 @@ export const TpsfPersoninfo = ({ data, fagsystemData = {}, visTittel = true, pdl
 						value={data.gtVerdi}
 						size="medium"
 					>
-						{(value) => `${Formatters.gtTypeLabel(data.gtType)} - ${value.label}`}
+						{(value) => `${gtTypeLabel(data.gtType)} - ${value.label}`}
 					</TitleValue>
 				)}
 

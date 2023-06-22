@@ -62,9 +62,8 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   envFrom:
     - secret: google-sql-organisasjon-bestilling-service
   ingresses:
-    - "https://organisasjon-bestilling-service.dev.intern.nav.no"
+    - "https://organisasjon-bestilling-service.intern.dev.nav.no"

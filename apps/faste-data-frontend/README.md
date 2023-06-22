@@ -5,7 +5,7 @@ dataene som er lagret i de forskjellige mijøene stemmer overens.
 
 ## Ingress
 
-Appen har ikke noen swagger, men søkene kan utføres på [Faste data](https://faste-data-frontend.dev.intern.nav.no)
+Appen har ikke noen swagger, men søkene kan utføres på [Faste data](https://faste-data-frontend.intern.dev.nav.no)
 
 ## Lokal kjøring
 

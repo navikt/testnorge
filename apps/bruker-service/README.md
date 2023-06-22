@@ -5,7 +5,7 @@ applikasjoner som har bankId innlogging.
 
 ## Swagger
 
-Swagger finnes under [/swagger](https://testnav-bruker-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-bruker-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

@@ -19,7 +19,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 
 @Slf4j
 @RequiredArgsConstructor
-public class PdlDataStanaloneCommand implements Callable<Mono<Void>> {
+public class PdlDataStanaloneCommand implements Callable<Mono<String>> {
 
     private static final String PDL_FORVALTER_IDENTER_STANDALONE_URL = "/api/v1/identiteter/{ident}/standalone/{standalone}";
 
@@ -28,7 +28,7 @@ public class PdlDataStanaloneCommand implements Callable<Mono<Void>> {
     private final Boolean standalone;
     private final String token;
 
-    public Mono<Void> call() {
+    public Mono<String> call() {
 
         return webClient
                 .put()
@@ -38,8 +38,9 @@ public class PdlDataStanaloneCommand implements Callable<Mono<Void>> {
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
                 .header(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .retrieve()
-                .bodyToMono(Void.class)
-                .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT of ident %s".formatted(ident)))
+                .toBodilessEntity()
+                .map(response -> "OK")
+                .onErrorMap(TimeoutException.class, e -> new HttpTimeoutException("Timeout on PUT for ident %s".formatted(ident)))
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException));

@@ -28,9 +28,6 @@ public class DokarkivMappingStrategy implements MappingStrategy {
     private static final String PDFA = "PDFA";
     private static final String ARKIV = "ARKIV";
     private static final String BEHANDLINGSTEMA = "ab0001";
-    private static final String FAGSAK_ID = "10695768";
-    private static final String FAGSAK_SYSTEM = "AO01";
-    private static final String FAGSAK_TYPE = "FAGSAK";
 
     @Override
     public void register(MapperFactory factory) {
@@ -38,41 +35,38 @@ public class DokarkivMappingStrategy implements MappingStrategy {
         factory.classMap(RsDokarkiv.class, DokarkivRequest.class)
                 .customize(new CustomMapper<>() {
                     @Override
-                    public void mapAtoB(RsDokarkiv dokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
+                    public void mapAtoB(RsDokarkiv rsDokarkiv, DokarkivRequest dokarkivRequest, MappingContext context) {
 
-                        dokarkivRequest.setTittel(dokarkiv.getTittel());
-                        dokarkivRequest.setJournalfoerendeEnhet(dokarkiv.getJournalfoerendeEnhet());
-                        dokarkivRequest.setTema(dokarkiv.getTema());
+                        dokarkivRequest.setTittel(rsDokarkiv.getTittel());
+                        dokarkivRequest.setJournalfoerendeEnhet(rsDokarkiv.getJournalfoerendeEnhet());
+                        dokarkivRequest.setTema(rsDokarkiv.getTema());
 
-                        dokarkivRequest.setKanal(isBlank(dokarkiv.getKanal()) ? KANAL : dokarkiv.getKanal());
-                        dokarkivRequest.setJournalpostType(isNull(dokarkiv.getJournalpostType()) ? INNGAAENDE : dokarkiv.getJournalpostType());
-                        dokarkivRequest.setBehandlingstema(isNull(dokarkiv.getBehandlingstema()) ? BEHANDLINGSTEMA : dokarkiv.getBehandlingstema());
+                        dokarkivRequest.setKanal(isBlank(rsDokarkiv.getKanal()) ? KANAL : rsDokarkiv.getKanal());
+                        dokarkivRequest.setJournalpostType(isNull(rsDokarkiv.getJournalpostType()) ? INNGAAENDE : rsDokarkiv.getJournalpostType());
+                        dokarkivRequest.setBehandlingstema(isNull(rsDokarkiv.getBehandlingstema()) ? BEHANDLINGSTEMA : rsDokarkiv.getBehandlingstema());
 
-                        dokarkivRequest.setAvsenderMottaker(mapperFacade.map(dokarkiv.getAvsenderMottaker(),
+                        dokarkivRequest.setAvsenderMottaker(mapperFacade.map(rsDokarkiv.getAvsenderMottaker(),
                                 DokarkivRequest.AvsenderMottaker.class));
-                        if (isNull(dokarkiv.getAvsenderMottaker())
-                                || isBlank(dokarkiv.getAvsenderMottaker().getId())
+                        if (isNull(rsDokarkiv.getAvsenderMottaker())
+                                || isBlank(rsDokarkiv.getAvsenderMottaker().getId())
                                 || Arrays.stream(RsDokarkiv.IdType.values())
-                                .noneMatch(type -> type.equals(dokarkiv.getAvsenderMottaker().getIdType()))) {
+                                .noneMatch(type -> type.equals(rsDokarkiv.getAvsenderMottaker().getIdType()))) {
                             dokarkivRequest.setAvsenderMottaker(DokarkivRequest.AvsenderMottaker.builder()
                                     .idType(FNR)
                                     .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
-                                            .navn(getNavn((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)))
+                                    .navn(getNavn((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)))
                                     .build());
                         }
-                        dokarkivRequest.setSak(DokarkivRequest.Sak.builder()
-                                .fagsakId(FAGSAK_ID)
-                                .fagsaksystem(FAGSAK_SYSTEM)
-                                .sakstype(FAGSAK_TYPE)
-                                .build());
+                        dokarkivRequest.setSak(mapperFacade.map(rsDokarkiv.getSak(), DokarkivRequest.Sak.class));
                         dokarkivRequest.setBruker(DokarkivRequest.Bruker.builder()
                                 .idType(FNR)
                                 .id(((PdlPersonBolk.PersonBolk) context.getProperty(PERSON_BOLK)).getIdent())
                                 .build());
 
                         dokarkivRequest.getDokumenter()
-                                .addAll(mapperFacade.mapAsList(dokarkiv.getDokumenter(), DokarkivRequest.Dokument.class));
+                                .addAll(mapperFacade.mapAsList(rsDokarkiv.getDokumenter(), DokarkivRequest.Dokument.class));
                         fyllDokarkivDokument(dokarkivRequest);
+                        dokarkivRequest.setFerdigstill(rsDokarkiv.getFerdigstill());
                     }
 
                     private String getNavn(PdlPersonBolk.PersonBolk personBolk) {

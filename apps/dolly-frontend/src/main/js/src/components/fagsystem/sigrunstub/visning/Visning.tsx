@@ -5,7 +5,7 @@ import Loading from '@/components/ui/loading/Loading'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import Panel from '@/components/ui/panel/Panel'
 import { Alert } from '@navikt/ds-react'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import React from 'react'
 
 const Visning = ({ data, header, expandable }) => {
@@ -22,9 +22,7 @@ const Visning = ({ data, header, expandable }) => {
 					<TitleValue
 						title={inntekt.grunnlag === 'skatteoppgjoersdato' ? 'Oppgjørsdato' : 'Verdi'}
 						value={
-							inntekt.grunnlag === 'skatteoppgjoersdato'
-								? Formatters.formatDate(inntekt.verdi)
-								: inntekt.verdi
+							inntekt.grunnlag === 'skatteoppgjoersdato' ? formatDate(inntekt.verdi) : inntekt.verdi
 						}
 					/>
 				</React.Fragment>

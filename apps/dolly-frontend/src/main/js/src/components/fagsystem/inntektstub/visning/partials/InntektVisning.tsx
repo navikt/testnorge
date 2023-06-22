@@ -1,7 +1,7 @@
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates } from '@/utils/DataFormatter'
 import texts from '@/components/inntektStub/texts'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import React from 'react'
@@ -22,11 +22,11 @@ export const InntektVisning = ({ data }) => {
 							<TitleValue title="Beløp" value={id.beloep} />
 							<TitleValue
 								title="Start opptjeningsperiode"
-								value={Formatters.formatStringDates(id.startOpptjeningsperiode)}
+								value={formatStringDates(id.startOpptjeningsperiode)}
 							/>
 							<TitleValue
 								title="Slutt opptjeningsperiode"
-								value={Formatters.formatStringDates(id.sluttOpptjeningsperiode)}
+								value={formatStringDates(id.sluttOpptjeningsperiode)}
 							/>
 							<TitleValue
 								title="Inngår i grunnlag for trekk"
@@ -65,13 +65,13 @@ export const InntektVisning = ({ data }) => {
 										<React.Fragment>
 											<TitleValue
 												title="Etterbetaling start"
-												value={Formatters.formatStringDates(
+												value={formatStringDates(
 													id.tilleggsinformasjon.etterbetalingsperiode.startdato
 												)}
 											/>
 											<TitleValue
 												title="Etterbetaling slutt"
-												value={Formatters.formatStringDates(
+												value={formatStringDates(
 													id.tilleggsinformasjon.etterbetalingsperiode.sluttdato
 												)}
 											/>
@@ -94,15 +94,11 @@ export const InntektVisning = ({ data }) => {
 											/>
 											<TitleValue
 												title="Startdato"
-												value={Formatters.formatStringDates(
-													id.tilleggsinformasjon.pensjon.tidsrom.startdato
-												)}
+												value={formatStringDates(id.tilleggsinformasjon.pensjon.tidsrom.startdato)}
 											/>
 											<TitleValue
 												title="Sluttdato"
-												value={Formatters.formatStringDates(
-													id.tilleggsinformasjon.pensjon.tidsrom.sluttdato
-												)}
+												value={formatStringDates(id.tilleggsinformasjon.pensjon.tidsrom.sluttdato)}
 											/>
 											<TitleValue
 												title="Tilleggspensjonsbeløp"

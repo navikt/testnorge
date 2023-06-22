@@ -10,6 +10,7 @@ import { UkjentBosted } from '@/components/fagsystem/pdlf/visning/partials/Ukjen
 import { initialBostedsadresse } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { BostedData } from '@/pages/gruppe/PersonVisning/PersonMiljoeinfo/PdlDataTyper'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type BoadresseTypes = {
 	data: Array<any>
@@ -65,7 +66,7 @@ const BoadresseVisning = ({
 	)
 	const slettetBoadressePdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertBoadressePdlf
 	if (slettetBoadressePdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const boadresseValues = redigertBoadressePdlf ? redigertBoadressePdlf : boadresseData

@@ -15,10 +15,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import no.nav.pdl.forvalter.database.JSONUserType;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
-import org.hibernate.Hibernate;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
@@ -26,11 +24,9 @@ import org.hibernate.annotations.Type;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @Entity
 @Table(name = "person")
 @Builder
@@ -56,7 +52,6 @@ public class DbPerson {
     private String mellomnavn;
     private String etternavn;
 
-
     @Type(JSONUserType.class)
     private PersonDTO person;
 
@@ -64,22 +59,58 @@ public class DbPerson {
     @Builder.Default
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<DbRelasjon> relasjoner = new ArrayList<>();
+
     @JsonIgnore
     @Builder.Default
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "person", cascade = CascadeType.ALL, orphanRemoval = true)
-    @ToString.Exclude
     private List<DbAlias> alias = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        if (o == null || getClass() != o.getClass()) return false;
+
         DbPerson dbPerson = (DbPerson) o;
-        return getId() != null && Objects.equals(getId(), dbPerson.getId());
+
+        if (getId() != null ? !getId().equals(dbPerson.getId()) : dbPerson.getId() != null) return false;
+        if (getSistOppdatert() != null ? !getSistOppdatert().equals(dbPerson.getSistOppdatert()) : dbPerson.getSistOppdatert() != null)
+            return false;
+        if (getIdent() != null ? !getIdent().equals(dbPerson.getIdent()) : dbPerson.getIdent() != null) return false;
+        if (getFornavn() != null ? !getFornavn().equals(dbPerson.getFornavn()) : dbPerson.getFornavn() != null)
+            return false;
+        if (getMellomnavn() != null ? !getMellomnavn().equals(dbPerson.getMellomnavn()) : dbPerson.getMellomnavn() != null)
+            return false;
+        if (getEtternavn() != null ? !getEtternavn().equals(dbPerson.getEtternavn()) : dbPerson.getEtternavn() != null)
+            return false;
+        if (getPerson() != null ? !getPerson().equals(dbPerson.getPerson()) : dbPerson.getPerson() != null)
+            return false;
+        return getRelasjoner() != null ? getRelasjoner().equals(dbPerson.getRelasjoner()) : dbPerson.getRelasjoner() == null;
     }
 
     @Override
     public int hashCode() {
-        return getClass().hashCode();
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + (getSistOppdatert() != null ? getSistOppdatert().hashCode() : 0);
+        result = 31 * result + (getIdent() != null ? getIdent().hashCode() : 0);
+        result = 31 * result + (getFornavn() != null ? getFornavn().hashCode() : 0);
+        result = 31 * result + (getMellomnavn() != null ? getMellomnavn().hashCode() : 0);
+        result = 31 * result + (getEtternavn() != null ? getEtternavn().hashCode() : 0);
+        result = 31 * result + (getPerson() != null ? getPerson().hashCode() : 0);
+        result = 31 * result + (getRelasjoner() != null ? getRelasjoner().hashCode() : 0);
+        return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DbPerson{" +
+                "id=" + id +
+                ", sistOppdatert=" + sistOppdatert +
+                ", ident='" + ident + '\'' +
+                ", fornavn='" + fornavn + '\'' +
+                ", mellomnavn='" + mellomnavn + '\'' +
+                ", etternavn='" + etternavn + '\'' +
+                ", person=" + person +
+                ", relasjoner=" + relasjoner +
+                '}';
     }
 }

@@ -23,7 +23,6 @@ type DokarkivTypes = {
 
 const Dokarkiv = ({ data, miljo }: DokarkivTypes) => {
 	if (!data) return null
-
 	return <DokarkivVisning journalpost={data} miljoe={miljo} />
 }
 

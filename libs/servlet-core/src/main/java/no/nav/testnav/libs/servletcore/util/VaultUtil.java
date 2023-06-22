@@ -1,44 +1,56 @@
 package no.nav.testnav.libs.servletcore.util;
 
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
 
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Optional;
 
+import static lombok.AccessLevel.PRIVATE;
+
+@NoArgsConstructor(access = PRIVATE)
+@Slf4j
 public final class VaultUtil {
 
-    private VaultUtil() {
-    }
-
-    private static final String VAULT_TOKEN_PROPERTY = "VAULT_TOKEN";
+    private static final String NAIS_CLUSTER_SYSTEM_PROPERTY = "NAIS_CLUSTER_NAME";
+    private static final String VAULT_TOKEN_SYSTEM_PROPERTY = "spring.cloud.vault.token";
+    private static final String VAULT_TOKEN_ENVIRONMENT_PROPERTY = "VAULT_TOKEN";
 
     private static String getVaultToken() {
 
-        if (System.getProperty("spring.cloud.vault.token") != null) {
-            return System.getProperty("spring.cloud.vault.token");
+        Optional
+                .ofNullable(System.getProperty(NAIS_CLUSTER_SYSTEM_PROPERTY))
+                .filter(cluster -> !"dev-fss".equals(cluster))
+                .ifPresent(cluster -> {
+                    throw new VaultException("Attempting to get Vault token in cluster %s which is not onprem".formatted(cluster));
+                });
+
+        if (System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY) != null) {
+            return System.getProperty(VAULT_TOKEN_SYSTEM_PROPERTY);
         }
 
-        AnnotationConfigApplicationContext context =
-                new AnnotationConfigApplicationContext();
-        ConfigurableEnvironment environment = context.getEnvironment();
+        var environment = new AnnotationConfigApplicationContext().getEnvironment();
+        if (environment.containsProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY) && !"".equals(environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY))) {
+            return environment.getProperty(VAULT_TOKEN_ENVIRONMENT_PROPERTY);
+        }
 
+        var path = Paths.get("/var/run/secrets/nais.io/vault/vault_token");
+        if (!Files.exists(path)) {
+            throw new VaultException("Could not get vault token from nonexisting file %s".formatted(path.toString()));
+        }
         try {
-            if (environment.containsProperty(VAULT_TOKEN_PROPERTY) && !"".equals(environment.getProperty(VAULT_TOKEN_PROPERTY))) {
-                return environment.getProperty(VAULT_TOKEN_PROPERTY);
-            } else if (Files.exists(Paths.get("/var/run/secrets/nais.io/vault/vault_token"))) {
-                byte[] encoded = Files.readAllBytes(Paths.get("/var/run/secrets/nais.io/vault/vault_token"));
-                return new String(encoded, StandardCharsets.UTF_8).trim();
-            } else {
-                throw new RuntimeException("Klarer ikke å hente vault token");
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Could not get a vault token for authentication", e);
+            return Files.readString(path).trim();
+        } catch (IOException e) {
+            throw new VaultException("Unable to read vault token from existing file %s".formatted(path.toString()), e);
         }
+
     }
 
     public static void initCloudVaultToken() {
-        System.setProperty("spring.cloud.vault.token", getVaultToken());
+        System.setProperty(VAULT_TOKEN_SYSTEM_PROPERTY, getVaultToken());
     }
+
 }

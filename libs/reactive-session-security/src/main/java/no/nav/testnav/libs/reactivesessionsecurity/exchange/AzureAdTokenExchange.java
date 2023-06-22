@@ -1,10 +1,9 @@
 package no.nav.testnav.libs.reactivesessionsecurity.exchange;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.testnav.libs.reactivesessionsecurity.resolver.TokenResolver;
-import no.nav.testnav.libs.securitycore.command.azuread.ClientCredentialExchangeCommand;
 import no.nav.testnav.libs.securitycore.command.azuread.OnBehalfOfExchangeCommand;
-import no.nav.testnav.libs.securitycore.command.azuread.RefreshAccessTokenCommand;
 import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.securitycore.domain.azuread.AzureNavClientCredential;
@@ -13,15 +12,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
-
-import java.time.ZonedDateTime;
-
-import static java.util.Objects.isNull;
 
 @Slf4j
 @Service
@@ -36,8 +30,8 @@ public class AzureAdTokenExchange implements ExchangeToken {
     public AzureAdTokenExchange(
             @Value("${AAD_ISSUER_URI}") String issuerUrl,
             TokenResolver tokenResolver,
-            AzureNavClientCredential clientCredential
-    ) {
+            AzureNavClientCredential clientCredential) {
+
         this.webClient = WebClient
                 .builder()
                 .baseUrl(issuerUrl + "/oauth2/v2.0/token")
@@ -51,25 +45,11 @@ public class AzureAdTokenExchange implements ExchangeToken {
     public Mono<AccessToken> exchange(ServerProperties serverProperties, ServerWebExchange exchange) {
         return tokenResolver
                 .getToken(exchange)
-                .flatMap(token -> {
-                    if (isNull(token) || token.getExpiresAt().isBefore(ZonedDateTime.now().toInstant().plusSeconds(120))) {
-                        return Mono.error(new AccessDeniedException("Access token har utløpt eller utløper innen kort tid"));
-                    }
-                    return new OnBehalfOfExchangeCommand(
-                            webClient,
-                            clientCredential,
-                            serverProperties.toAzureAdScope(),
-                            token
-                    ).call();
-                });
+                .flatMap(token -> new OnBehalfOfExchangeCommand(
+                        webClient,
+                        clientCredential,
+                        serverProperties.toAzureAdScope(),
+                        token
+                ).call());
     }
-
-    public Mono<AccessToken> generateClientCredentialAccessToken(ServerProperties serverProperties) {
-        return new ClientCredentialExchangeCommand(webClient, clientCredential, serverProperties.toAzureAdScope()).call();
-    }
-
-    public Mono<AccessToken> refreshAccessToken(ServerProperties serverProperties, String refreshToken) {
-        return new RefreshAccessTokenCommand(webClient, clientCredential, serverProperties.toAzureAdScope(), refreshToken).call();
-    }
-
 }

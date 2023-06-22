@@ -3,6 +3,7 @@ package no.nav.testnav.apps.oversiktfrontend.domain;
 import lombok.Value;
 
 import no.nav.testnav.apps.oversiktfrontend.dto.ApplicationDTO;
+import no.nav.testnav.apps.oversiktfrontend.service.TokenService;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 
 @Value
@@ -33,11 +34,7 @@ public class Application {
     }
 
     public ServerProperties toServerProperties() {
-        return ServerProperties
-                .builder()
-                .cluster(cluster)
-                .namespace(namespace)
-                .name(name)
-                .build();
+        return new TokenService.MagicServerProperties(cluster, namespace, name);
     }
+
 }

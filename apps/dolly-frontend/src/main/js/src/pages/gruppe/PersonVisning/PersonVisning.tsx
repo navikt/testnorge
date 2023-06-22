@@ -7,6 +7,7 @@ import {
 	ArenaVisning,
 	BrregVisning,
 	DokarkivVisning,
+	HistarkVisning,
 	InntektsmeldingVisning,
 	InntektstubVisning,
 	InstVisning,
@@ -31,17 +32,16 @@ import { getBestillingsListe } from '@/ducks/bestillingStatus'
 import { RelatertPersonImportButton } from '@/components/ui/button/RelatertPersonImportButton/RelatertPersonImportButton'
 import { useAsync } from 'react-use'
 import { DollyApi } from '@/service/Api'
-import { Alert } from '@navikt/ds-react'
-import styled from 'styled-components'
 import { GjenopprettPerson } from '@/components/bestilling/gjenopprett/GjenopprettPerson'
 import { sjekkManglerUdiData } from '@/components/fagsystem/udistub/visning/UdiVisning'
 import { sjekkManglerBrregData } from '@/components/fagsystem/brregstub/visning/BrregVisning'
 import { sjekkManglerPensjonData } from '@/components/fagsystem/pensjon/visning/PensjonVisning'
 import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visning'
-import { useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
+import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
 	useDokarkivData,
+	useHistarkData,
 	useInstData,
 	usePoppData,
 	useTpData,
@@ -53,7 +53,9 @@ import {
 	harApBestilling,
 	harArbeidsplassenBestilling,
 	harDokarkivBestilling,
+	harHistarkBestilling,
 	harInstBestilling,
+	harMedlBestilling,
 	harPoppBestilling,
 	harTpBestilling,
 } from '@/utils/SjekkBestillingFagsystem'
@@ -61,14 +63,9 @@ import { AlderspensjonVisning } from '@/components/fagsystem/alderspensjon/visni
 import { useOrganisasjonTilgang } from '@/utils/hooks/useBruker'
 import { ArbeidsplassenVisning } from '@/components/fagsystem/arbeidsplassen/visning/Visning'
 import _has from 'lodash/has'
-
-export const StyledAlert = styled(Alert)`
-	margin-bottom: 20px;
-
-	.navds-alert__wrapper {
-		max-width: 100rem;
-	}
-`
+import { MedlVisning } from '@/components/fagsystem/medl/visning'
+import { useMedlPerson } from '@/utils/hooks/useMedl'
+import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const getIdenttype = (ident) => {
 	if (parseInt(ident.charAt(0)) > 3) {
@@ -80,7 +77,7 @@ const getIdenttype = (ident) => {
 	}
 }
 
-export const PersonVisning = ({
+export default ({
 	fetchDataFraFagsystemer,
 	data,
 	bestillingIdListe,
@@ -119,6 +116,16 @@ export const PersonVisning = ({
 		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
 	)
 
+	const { loading: loadingAmelding, ameldinger } = useAmeldinger(
+		ident.ident,
+		harAaregBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+	)
+
+	const { loading: loadingMedl, medl } = useMedlPerson(
+		ident.ident,
+		harMedlBestilling(bestillingerFagsystemer) || ident?.master === 'PDL'
+	)
+
 	const visArbeidsforhold =
 		ident?.master !== 'PDL' || arbeidsforhold?.some((miljodata) => miljodata?.data?.length > 0)
 
@@ -135,6 +142,11 @@ export const PersonVisning = ({
 	const { loading: loadingDokarkivData, dokarkivData } = useDokarkivData(
 		ident.ident,
 		harDokarkivBestilling(bestillingerFagsystemer)
+	)
+
+	const { loading: loadingHistarkData, histarkData } = useHistarkData(
+		ident.ident,
+		harHistarkBestilling(bestillingerFagsystemer)
 	)
 
 	const { loading: loadingInstData, instData } = useInstData(
@@ -229,11 +241,21 @@ export const PersonVisning = ({
 				})
 			})
 
+		data.pdl?.hentPerson?.foreldreansvar
+			?.filter((foreldreansvar) => foreldreansvar.ansvarlig)
+			?.forEach((person) => {
+				relatertePersoner.push({
+					type: 'ANSVARLIG',
+					id: person.ansvarlig,
+				})
+			})
+
 		return relatertePersoner
 	}
 
-	const harPdlRelatertPerson = pdlRelatertPerson().length > 0
-	const importerteRelatertePersoner = pdlRelatertPerson().filter((ident) =>
+	const relatertePersoner = pdlRelatertPerson()?.filter((ident) => ident.id)
+	const harPdlRelatertPerson = relatertePersoner?.length > 0
+	const importerteRelatertePersoner = relatertePersoner?.filter((ident) =>
 		gruppeIdenter?.includes(ident.id)
 	)
 
@@ -283,7 +305,7 @@ export const PersonVisning = ({
 					{!iLaastGruppe && harPdlRelatertPerson && (
 						<RelatertPersonImportButton
 							gruppeId={gruppeId}
-							relatertPersonIdenter={pdlRelatertPerson()}
+							relatertPersonIdenter={relatertePersoner}
 							gruppeIdenter={gruppeIdenter}
 							master={ident?.master}
 						/>
@@ -318,9 +340,10 @@ export const PersonVisning = ({
 				)}
 				{visArbeidsforhold && (
 					<AaregVisning
+						ident={ident.ident}
 						liste={arbeidsforhold}
-						loading={loadingAareg}
-						bestillingListe={bestillingListe}
+						ameldinger={ameldinger}
+						loading={loadingAareg || loadingAmelding}
 						bestillingIdListe={bestillingIdListe}
 						tilgjengeligMiljoe={tilgjengeligMiljoe}
 					/>
@@ -369,6 +392,7 @@ export const PersonVisning = ({
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
 				<KrrVisning data={krrstub} loading={loading.krrstub} />
+				<MedlVisning data={medl} loading={loadingMedl} />
 				<UdiVisning
 					data={UdiVisning.filterValues(udistub, bestilling?.bestilling.udistub)}
 					loading={loading.udistub}
@@ -379,6 +403,7 @@ export const PersonVisning = ({
 					loading={loadingDokarkivData}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>
+				<HistarkVisning data={histarkData} loading={loadingHistarkData} />
 				<PersonMiljoeinfo
 					bankIdBruker={brukertype === 'BANKID'}
 					ident={ident.ident}

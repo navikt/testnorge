@@ -44,7 +44,7 @@ public class SkjermingsregisterProxyApplicationStarter {
                         .path("/**")
                         .filters(filterSpec -> filterSpec
                                 .filter(addAuthenticationHeaderFilter))
-                        .uri("https://skjermede-personer.dev.adeo.no/"))
+                        .uri("http://skjermede-personer.nom.svc.nais.local/"))
                 .build();
     }
 

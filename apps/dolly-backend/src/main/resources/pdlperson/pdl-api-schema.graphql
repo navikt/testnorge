@@ -1,4 +1,4 @@
-# This file was generated based on ".graphqlconfig". Do not edit manually.
+# This file was generated. Do not edit manually.
 
 schema {
     query: Query
@@ -72,6 +72,7 @@ type Doedsfall {
 
 " Endring som har blitt utført på opplysningen. F.eks: Opprett -> Korriger -> Korriger"
 type Endring {
+    hendelseId: String!
     """
 
     Opphavet til informasjonen. I NAV blir dette satt i forbindelse med registrering (f.eks: Sykehuskassan).

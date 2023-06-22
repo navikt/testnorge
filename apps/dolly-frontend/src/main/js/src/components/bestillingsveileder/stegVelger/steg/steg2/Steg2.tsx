@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import * as Yup from 'yup'
 import { harAvhukedeAttributter } from '@/components/bestillingsveileder/utils'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { KrrstubForm } from '@/components/fagsystem/krrstub/form/Form'
 import { SigrunstubForm } from '@/components/fagsystem/sigrunstub/form/Form'
 import { InntektstubForm } from '@/components/fagsystem/inntektstub/form/Form'
@@ -14,6 +14,7 @@ import { InstForm } from '@/components/fagsystem/inst/form/Form'
 import { UdistubForm } from '@/components/fagsystem/udistub/form/Form'
 import { PensjonForm } from '@/components/fagsystem/pensjon/form/Form'
 import { DokarkivForm } from '@/components/fagsystem/dokarkiv/form/DokarkivForm'
+import { MedlForm } from '@/components/fagsystem/medl/form/MedlForm'
 import { SykdomForm } from '@/components/fagsystem/sykdom/form/Form'
 import { OrganisasjonForm } from '@/components/fagsystem/organisasjoner/form/Form'
 import { TjenestepensjonForm } from '@/components/fagsystem/tjenestepensjon/form/Form'
@@ -23,6 +24,7 @@ import { useFormikContext } from 'formik'
 import { AlderspensjonForm } from '@/components/fagsystem/alderspensjon/form/Form'
 import { SkjermingForm } from '@/components/fagsystem/skjermingsregister/form/SkjermingForm'
 import { ArbeidsplassenForm } from '@/components/fagsystem/arbeidsplassen/form/Form'
+import { HistarkForm } from '@/components/fagsystem/histark/form/HistarkForm'
 
 const gruppeNavn = (gruppe) => <span style={{ fontWeight: 'bold' }}>{gruppe.navn}</span>
 
@@ -69,8 +71,10 @@ export const Steg2 = () => {
 			<BrregstubForm formikBag={formikBag} />
 			<InstForm formikBag={formikBag} />
 			<KrrstubForm formikBag={formikBag} />
+			<MedlForm formikBag={formikBag} />
 			<UdistubForm formikBag={formikBag} />
 			<DokarkivForm formikBag={formikBag} />
+			<HistarkForm formikBag={formikBag} />
 			<OrganisasjonForm formikBag={formikBag} />
 		</div>
 	)
@@ -89,10 +93,12 @@ Steg2.validation = Yup.object({
 	...BrregstubForm.validation,
 	...InstForm.validation,
 	...KrrstubForm.validation,
+	...MedlForm.validation,
 	...ArenaForm.validation,
 	...UdistubForm.validation,
 	...SkjermingForm.validation,
 	...DokarkivForm.validation,
+	...HistarkForm.validation,
 	...OrganisasjonForm.validation,
 	pensjonforvalter: ifPresent(
 		'$pensjonforvalter',

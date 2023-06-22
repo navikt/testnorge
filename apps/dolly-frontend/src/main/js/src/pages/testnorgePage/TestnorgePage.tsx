@@ -17,6 +17,7 @@ import DisplayFormikState from '@/utils/DisplayFormikState'
 import { Gruppe } from '@/utils/hooks/useGruppe'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { bottom } from '@popperjs/core'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 type TestnorgePageProps = {
 	gruppe?: Gruppe
@@ -62,7 +63,7 @@ export default ({ gruppe }: TestnorgePageProps) => {
 	return (
 		<div>
 			<div className="testnorge-page-header flexbox--align-center--justify-start">
-				<Title title="Søk og import fra Test-Norge" />
+				<Title data-cy={CypressSelector.TITLE_TESTNORGE} title="Søk og import fra Test-Norge" />
 				<Hjelpetekst placement={bottom}>
 					Test-Norge er en felles offentlig testdatapopulasjon, som ble laget av Skatteetaten i
 					forbindelse med nytt folkeregister. Populasjonen er levende, og endrer seg fortløpende ved

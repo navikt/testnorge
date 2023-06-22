@@ -48,21 +48,11 @@ spec:
     outbound:
       rules:
         - application: organisasjon-bestilling-service
-          cluster: dev-gcp
         - application: generer-navn-service
-          cluster: dev-gcp
         - application: testnav-adresse-service
-          cluster: dev-gcp
         - application: testnav-organisasjon-service
-          cluster: dev-gcp
         - application: testnav-miljoer-service
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter
-          cluster: dev-gcp
-        - application: testnav-pdl-forvalter-dev
-          cluster: dev-gcp
         - application: testnav-orgnummer-service
-          cluster: dev-gcp
   gcp:
     sqlInstances:
       - type: POSTGRES_12
@@ -89,10 +79,9 @@ spec:
       cpu: 200m
       memory: 500Mi
     limits:
-      cpu: 500m
       memory: 2000Mi
   ingresses:
-    - "https://testnav-organisasjon-forvalter.dev.intern.nav.no"
+    - "https://testnav-organisasjon-forvalter.intern.dev.nav.no"
   kafka:
     pool: nav-dev
   envFrom:

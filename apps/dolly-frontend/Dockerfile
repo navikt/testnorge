@@ -1,4 +1,4 @@
 FROM navikt/java:17
 LABEL maintainer="Team Dolly"
 
-ADD /build/libs/app.jar /app/app.jar
+COPY build/libs/*.jar /app/

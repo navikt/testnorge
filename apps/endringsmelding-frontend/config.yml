@@ -1,7 +1,7 @@
 apiVersion: "nais.io/v1alpha1"
 kind: "Application"
 metadata:
-  name: endringsmelding-frontend
+  name: testnav-endringsmelding-frontend
   namespace: dolly
   labels:
     team: dolly
@@ -12,8 +12,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
-        - "https://endringsmelding.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-endringsmelding.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
       claims:
         groups:
@@ -34,16 +33,14 @@ spec:
   accessPolicy:
     outbound:
       rules:
-        - application: endringsmelding-service
+        - application: testnav-endringsmelding-service
         - application: testnorge-profil-api
   resources:
     limits:
-      cpu: 1000m
       memory: 2048Mi
     requests:
       cpu: 300m
       memory: 1024Mi
   image: {{ image }}
   ingresses:
-    - "https://endringsmelding.dev.intern.nav.no"
-    - "https://testnav-endringsmelding.dev.intern.nav.no"
+    - "https://testnav-endringsmelding.intern.dev.nav.no"

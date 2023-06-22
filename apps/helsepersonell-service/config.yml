@@ -59,7 +59,6 @@ spec:
       cpu: 200m
       memory: 4000Mi
     limits:
-      cpu: 500m
       memory: 5000Mi
   ingresses:
-    - "https://testnav-helsepersonell-service.dev.intern.nav.no"
+    - "https://testnav-helsepersonell-service.intern.dev.nav.no"

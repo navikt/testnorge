@@ -5,7 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.database.model.DbAlias;
 import no.nav.pdl.forvalter.database.model.DbPerson;
-import no.nav.pdl.forvalter.database.model.DbRelasjon;
 import no.nav.pdl.forvalter.database.repository.AliasRepository;
 import no.nav.pdl.forvalter.database.repository.PersonRepository;
 import no.nav.pdl.forvalter.dto.FolkeregisterPersonstatus;
@@ -29,6 +28,7 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
 import org.springframework.stereotype.Service;
@@ -38,7 +38,9 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -89,36 +91,40 @@ public class PdlOrdreService {
     private final MapperFacade mapperFacade;
     private final OpprettRequestComparator opprettRequestComparator;
 
-    private static Set<String> getEksternePersoner(DbPerson dbPerson) {
+    private Set<String> getEksternePersoner(DbPerson dbPerson) {
 
         return Stream.of(
                         dbPerson.getPerson().getSivilstand().stream()
                                 .filter(SivilstandDTO::isEksisterendePerson)
-                                .map(SivilstandDTO::getRelatertVedSivilstand)
-                                .toList(),
+                                .map(SivilstandDTO::getRelatertVedSivilstand),
                         dbPerson.getPerson().getForelderBarnRelasjon().stream()
                                 .filter(ForelderBarnRelasjonDTO::isEksisterendePerson)
-                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
-                                .toList(),
+                                .map(ForelderBarnRelasjonDTO::getRelatertPerson),
                         dbPerson.getPerson().getForeldreansvar().stream()
                                 .filter(ForeldreansvarDTO::isEksisterendePerson)
-                                .map(ForeldreansvarDTO::getAnsvarlig)
-                                .toList(),
+                                .map(ForeldreansvarDTO::getAnsvarlig),
                         dbPerson.getPerson().getVergemaal().stream()
                                 .filter(VergemaalDTO::isEksisterendePerson)
-                                .map(VergemaalDTO::getVergeIdent)
-                                .toList(),
+                                .map(VergemaalDTO::getVergeIdent),
                         dbPerson.getPerson().getFullmakt().stream()
                                 .filter(FullmaktDTO::isEksisterendePerson)
-                                .map(FullmaktDTO::getMotpartsPersonident)
-                                .toList(),
+                                .map(FullmaktDTO::getMotpartsPersonident),
                         dbPerson.getPerson().getKontaktinformasjonForDoedsbo().stream()
                                 .map(KontaktinformasjonForDoedsboDTO::getPersonSomKontakt)
                                 .filter(Objects::nonNull)
                                 .filter(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::isEksisterendePerson)
-                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer)
-                                .toList())
-                .flatMap(Collection::stream)
+                                .map(KontaktinformasjonForDoedsboDTO.KontaktpersonDTO::getIdentifikasjonsnummer),
+                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                                .filter(ForelderBarnRelasjonDTO::hasBarn)
+                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                .map(personRepository::findByIdent)
+                                .flatMap(Optional::stream)
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getForeldreansvar)
+                                .flatMap(Collection::stream)
+                                .filter(ForeldreansvarDTO::isEksisterendePerson)
+                                .map(ForeldreansvarDTO::getAnsvarlig))
+                .flatMap(Function.identity())
                 .collect(Collectors.toSet());
     }
 
@@ -135,7 +141,7 @@ public class PdlOrdreService {
                 emptyList();
     }
 
-    public OrdreResponseDTO send(String ident, Boolean isTpsMaster, Boolean ekskluderEksterenePersoner) {
+    public OrdreResponseDTO send(String ident, Boolean ekskluderEksterenePersoner) {
 
         var timestamp = System.currentTimeMillis();
 
@@ -146,9 +152,8 @@ public class PdlOrdreService {
 
         var eksternePersoner = getEksternePersoner(dbPerson);
 
-        var resultat = sendAlleInformasjonselementer(Stream.of(List.of(OpprettRequest.builder()
+        var requesterTilOppretting = Stream.of(List.of(OpprettRequest.builder()
                                 .person(dbPerson)
-                                .skalSlettes(isNotTrue(isTpsMaster))
                                 .build()),
                         dbPerson.getRelasjoner().stream()
                                 .filter(relasjon -> isNotTrue(ekskluderEksterenePersoner) ||
@@ -156,11 +161,32 @@ public class PdlOrdreService {
                                                 .noneMatch(ekstern -> ekstern.equals(relasjon.getRelatertPerson().getIdent())))
                                 .map(relasjon -> OpprettRequest.builder()
                                         .person(relasjon.getRelatertPerson())
-                                        .skalSlettes(true)
+                                        .build())
+                                .toList(),
+                        dbPerson.getPerson().getForelderBarnRelasjon().stream()
+                                .filter(ForelderBarnRelasjonDTO::hasBarn)
+                                .map(ForelderBarnRelasjonDTO::getRelatertPerson)
+                                .map(personRepository::findByIdent)
+                                .flatMap(Optional::stream)
+                                .map(DbPerson::getPerson)
+                                .map(PersonDTO::getForeldreansvar)
+                                .flatMap(Collection::stream)
+                                .filter(foreldreansvar -> foreldreansvar.getAnsvar() == ForeldreansvarDTO.Ansvar.ANDRE)
+                                .map(ForeldreansvarDTO::getAnsvarlig)
+                                .filter(andre -> isNotTrue(ekskluderEksterenePersoner) ||
+                                        eksternePersoner.stream()
+                                                .noneMatch(ekstern -> ekstern.equals(andre)))
+                                .map(personRepository::findByIdent)
+                                .flatMap(Optional::stream)
+                                .map(person -> OpprettRequest.builder()
+                                        .person(person)
                                         .build())
                                 .toList())
                 .flatMap(Collection::stream)
-                .toList())
+                .distinct()
+                .toList();
+
+        var resultat = sendAlleInformasjonselementer(requesterTilOppretting)
                 .collectList()
                 .block();
 
@@ -170,9 +196,10 @@ public class PdlOrdreService {
                                 .ident(ident)
                                 .ordrer(getPersonHendelser(ident, resultat))
                                 .build())
-                .relasjoner(dbPerson.getRelasjoner().stream()
-                        .map(DbRelasjon::getRelatertPerson)
+                .relasjoner(requesterTilOppretting.stream()
+                        .map(OpprettRequest::getPerson)
                         .map(DbPerson::getIdent)
+                        .filter(relasjon -> !relasjon.equals(ident))
                         .map(personIdent -> PersonHendelserDTO.builder()
                                 .ident(personIdent)
                                 .ordrer(getPersonHendelser(personIdent, resultat))
@@ -199,11 +226,10 @@ public class PdlOrdreService {
         return deployService.sendOrders(
                 OrdreRequest.builder()
                         .sletting(opprettinger.stream()
-                                .filter(OpprettRequest::isSkalSlettes)
                                 .map(oppretting -> deployService.createOrdre(PDL_SLETTING, oppretting.getPerson().getIdent(), List.of(new PdlDelete())))
                                 .toList())
                         .oppretting(opprettinger.stream()
-                                .sorted(opprettRequestComparator::compare)
+                                .sorted(opprettRequestComparator)
                                 .map(oppretting ->
                                         deployService.createOrdre(PDL_OPPRETT_PERSON, oppretting.getPerson().getIdent(),
                                                 List.of(OpprettIdent.builder()

@@ -3,7 +3,7 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import KodeverkConnector from '@/components/kodeverk/KodeverkConnector'
 import * as _ from 'lodash-es'
 import {
@@ -14,6 +14,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { FoedselData, Person } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialFoedsel } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type FoedselTypes = {
 	data: Array<FoedselData>
@@ -39,7 +40,7 @@ type FoedselVisningTypes = {
 const FoedselLes = ({ foedsel, idx }: FoedselLesTypes) => {
 	return (
 		<div className="person-visning_redigerbar" key={idx}>
-			<TitleValue title="Fødselsdato" value={Formatters.formatDate(foedsel.foedselsdato)} />
+			<TitleValue title="Fødselsdato" value={formatDate(foedsel.foedselsdato)} />
 			<TitleValue title="Fødselsår" value={foedsel.foedselsaar} />
 			<TitleValue title="Fødested" value={foedsel.foedested} />
 			<TitleValue title="Fødekommune">
@@ -76,7 +77,7 @@ const FoedselVisning = ({
 	)
 	const slettetFoedselPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertFoedselPdlf
 	if (slettetFoedselPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const foedselValues = redigertFoedselPdlf ? redigertFoedselPdlf : foedsel

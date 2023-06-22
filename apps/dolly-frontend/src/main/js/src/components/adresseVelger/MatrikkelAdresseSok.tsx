@@ -6,6 +6,7 @@ import { AdresseKodeverk } from '@/config/kodeverk'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import styled from 'styled-components'
 import { Search } from '@navikt/ds-react'
+import { Button } from '@navikt/ds-react'
 
 type Props = {
 	onSubmit: (search: {
@@ -59,13 +60,13 @@ export default ({ onSubmit, loading = false }: Props) => {
 					onChange={(e: any) => setBruksnummer(e.target.value)}
 				/>
 			</InputGroup>
-			<Search
+			<Button
 				onClick={() => onSubmit({ kommunenummer, gaardsnummer, bruksnummer })}
 				disabled={loading}
-				label={''}
+				loading={loading}
 			>
-				<span>Hent tilfeldige adresser</span>
-			</Search>
+				Hent tilfeldige adresser
+			</Button>
 		</div>
 	)
 }

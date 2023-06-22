@@ -2,10 +2,9 @@ package no.nav.testnav.libs.servletsecurity.properties;
 
 import lombok.Getter;
 import lombok.Setter;
+import no.nav.testnav.libs.securitycore.domain.ResourceServerType;
 
 import java.util.List;
-
-import no.nav.testnav.libs.servletsecurity.domain.ResourceServerType;
 
 @Getter
 @Setter

@@ -23,12 +23,17 @@ export const testDatoTom = (val, fomPath, feilmelding = 'Dato må være etter fr
 export const getEksisterendeNyPerson = (
 	relasjoner: Array<Relasjon>,
 	ident: String,
-	relasjonType: String
+	relasjonTyper: Array<String>
 ) => {
 	const relasjon = relasjoner?.find(
 		(relasjon) =>
-			relasjon?.relatertPerson?.ident === ident && relasjon?.relasjonType === relasjonType
+			relasjon?.relatertPerson?.ident === ident && relasjonTyper.includes(relasjon.relasjonType)
 	)
+
+	if (!relasjon) {
+		return null
+	}
+
 	return {
 		value: relasjon?.relatertPerson?.ident,
 		label: `${relasjon?.relatertPerson?.ident} - ${relasjon?.relatertPerson?.navn?.[0]?.fornavn} ${relasjon?.relatertPerson?.navn?.[0]?.etternavn}`,

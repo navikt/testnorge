@@ -2,6 +2,7 @@ import React, { BaseSyntheticEvent } from 'react'
 import { Field, FieldArray, FormikProps } from 'formik'
 import Button from '@/components/ui/button/Button'
 import { ErrorMessageWithFocus } from '@/utils/ErrorMessageWithFocus'
+import { CypressSelector } from '../../../../../cypress/mocks/Selectors'
 
 interface IdentSearchProps {
 	formikBag: FormikProps<{}>
@@ -22,6 +23,7 @@ export const Identer: React.FC<IdentSearchProps> = ({ formikBag }: IdentSearchPr
 								<div className="flexbox--align-start" key={index}>
 									<div className="skjemaelement">
 										<Field
+											data-cy={CypressSelector.INPUT_TESTNORGE_FNR}
 											name={`${identerPath}.${index}`}
 											className="skjemaelement__input"
 											placeholder={'Ikke spesifisert'}

@@ -23,8 +23,8 @@ public class StatusController {
                 .parallel()
                 .map(miljo -> {
                     var miljoStatus = checkConsumerStatus(
-                            "https://saf-" + miljo + ".dev.intern.nav.no/isAlive",
-                            "https://saf-" + miljo + ".dev.intern.nav.no/isReady",
+                            "https://saf-" + miljo + ".teamdokumenthandtering.svc.nais.local/isAlive",
+                            "https://saf-" + miljo + "teamdokumenthandtering.svc.nais.local/isReady",
                             statusWebClient);
                     miljoStatus.put("team", TEAM);
                     return Map.of(

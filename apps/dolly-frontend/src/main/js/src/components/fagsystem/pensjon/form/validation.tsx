@@ -73,17 +73,17 @@ const invalidAlderTom = (inntektTom, values) => {
 	const foedtFoer = _.get(values, 'pdldata.opprettNyPerson.foedtFoer')
 	const foedtEtter = _.get(values, 'pdldata.opprettNyPerson.foedtEtter')
 	if (!_.isNil(alder)) {
-		if (inntektTom >= new Date().getFullYear() - alder + 69) {
+		if (inntektTom >= new Date().getFullYear() - alder + 75) {
 			return true
 		}
 	} else if (!_.isNil(foedtEtter)) {
 		const foedtEtterDate = new Date(foedtEtter)
-		if (inntektTom >= foedtEtterDate.getFullYear() + 69) {
+		if (inntektTom >= foedtEtterDate.getFullYear() + 75) {
 			return true
 		}
 	} else if (!_.isNil(foedtFoer)) {
 		const foedtFoerDate = new Date(foedtFoer)
-		if (foedtFoerDate.getFullYear() + 69 <= inntektTom) {
+		if (foedtFoerDate.getFullYear() + 75 <= inntektTom) {
 			return true
 		}
 	}
@@ -150,7 +150,7 @@ const validTomDateTest = (val) => {
 
 		if (invalidAlderTom(inntektTom, values)) {
 			return this.createError({
-				message: 'T.o.m kan ikke være etter året personen fyller 69',
+				message: 'T.o.m kan ikke være etter året personen fyller 75',
 			})
 		}
 

@@ -1,6 +1,6 @@
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, formatKjonnToString } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
 export const TpsfIdenthistorikk = ({ identhistorikk, visTittel = true }) => {
@@ -15,8 +15,8 @@ export const TpsfIdenthistorikk = ({ identhistorikk, visTittel = true }) => {
 						<TitleValue title="" value={`#${idx + 1}`} size="x-small" />
 						<TitleValue title="Identtype" value={aliasPerson.identtype} />
 						<TitleValue title="Ident" value={aliasPerson.ident} />
-						<TitleValue title="Kjønn" value={Formatters.kjonnToString(aliasPerson.kjonn)} />
-						<TitleValue title="Utgått dato" value={Formatters.formatDate(regdato)} />
+						<TitleValue title="Kjønn" value={formatKjonnToString(aliasPerson.kjonn)} />
+						<TitleValue title="Utgått dato" value={formatDate(regdato)} />
 					</div>
 				))}
 			</div>

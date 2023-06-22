@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import * as _ from 'lodash-es'
 import Panel from '@/components/ui/panel/Panel'
 import { Attributt, AttributtKategori } from '../Attributt'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import {
 	initialDoedsfall,
 	initialFoedsel,

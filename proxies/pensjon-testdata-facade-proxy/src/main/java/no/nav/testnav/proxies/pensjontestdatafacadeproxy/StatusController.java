@@ -18,12 +18,13 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://pensjon-testdata-facade.dev.intern.nav.no/isAlive",
-                "https://pensjon-testdata-facade.dev.intern.nav.no/isReady",
+                "https://pensjon-testdata-facade.pensjontestdata.svc.nais.local/isAlive",
+                "https://pensjon-testdata-facade.pensjontestdata.svc.nais.local/isReady",
                 statusWebClient);
         pensjonStatus.put("team", TEAM_PENSJON_TESTDATA);
 
-        var additionalStatus = additionalConsumerStatus("https://pensjon-testdata-facade.dev.intern.nav.no/api/v1/status", statusWebClient);
+        var additionalStatus = additionalConsumerStatus(
+                "https://pensjon-testdata-facade.pensjontestdata.svc.nais.local/api/v1/status", statusWebClient);
 
         var statusMap = new ConcurrentHashMap<String, Map<String, String>>();
         statusMap.put("pensjon-testdata", pensjonStatus);

@@ -4,14 +4,14 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.EqualsAndHashCode;
 
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = true)
 public class Gyldighetsperiode extends Periode {
 
     protected Gyldighetsperiode(GyldighetsperiodeBuilder<?, ?> b) {
         super(b);
     }
 
-    public static GyldighetsperiodeBuilder<?, ?> builder() {
+    public static GyldighetsperiodeBuilder<Gyldighetsperiode, GyldighetsperiodeBuilderImpl> builder() {
         return new GyldighetsperiodeBuilderImpl();
     }
 
@@ -31,13 +31,14 @@ public class Gyldighetsperiode extends Periode {
 
     public abstract static class GyldighetsperiodeBuilder<C extends Gyldighetsperiode, B extends GyldighetsperiodeBuilder<C, B>> extends PeriodeBuilder<C, B> {
 
-        public GyldighetsperiodeBuilder() {
+        protected GyldighetsperiodeBuilder() {
         }
 
         protected abstract B self();
 
         public abstract C build();
 
+        @Override
         public String toString() {
             return "Gyldighetsperiode.GyldighetsperiodeBuilder(super=" + super.toString() + ")";
         }

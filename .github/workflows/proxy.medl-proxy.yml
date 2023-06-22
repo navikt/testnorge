@@ -1,0 +1,26 @@
+name: medl-proxy
+
+on:
+  push:
+    paths:
+      - proxies/medl-proxy/**
+      - libs/servlet-core
+      - libs/servlet-security
+      - libs/servlet-insecure-security
+      - libs/security-core
+      - libs/database
+      - libs/data-transfer-objects
+      - .github/workflows/proxy.medl-proxy.yml
+
+jobs:
+  workflow:
+    uses: ./.github/workflows/common.workflow.backend.yml
+    with:
+      cluster: "dev-fss"
+      working-directory: "proxies/medl-proxy"
+      deploy-tag: "#deploy-medl-proxy"
+    secrets:
+      NAIS_DOLLY_DEPLOY_API_KEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+      NAIS_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+      NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

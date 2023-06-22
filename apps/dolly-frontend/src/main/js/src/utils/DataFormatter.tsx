@@ -1,19 +1,19 @@
 import { format, isDate } from 'date-fns'
 import * as _ from 'lodash-es'
 import { SelectOptionsManager as Options } from '@/service/SelectOptions'
+import { useKodeverk } from '@/utils/hooks/useKodeverk'
 
+export const yearFormat = 'yyyy'
 export const defaultDateFormat = 'dd.MM.yyyy'
 export const defaultDateTimeFormat = 'dd.MM.yyyy HH:mm'
 export const defaultDateTimeWithSecondsFormat = 'dd.MM.yyyy HH:mm:ss'
 
-const Formatters = {}
-
-Formatters.formatAlder = (alder, dodsdato) => {
+export const formatAlder = (alder, dodsdato) => {
 	if (_.isNil(alder)) return ''
 	return `${alder.toString()}${dodsdato ? ' (død)' : ''}`
 }
 
-Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
+export const formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 	if (_.isNil(alder)) {
 		return ''
 	} else if (doedfoedt) {
@@ -25,23 +25,30 @@ Formatters.formatAlderBarn = (alder, doedsdato, doedfoedt) => {
 
 // Format date to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA?)
 // Date ---> String
-Formatters.formatDate = (date) => {
+export const formatDate = (date) => {
 	if (!date) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
 	return format(date, defaultDateFormat)
 }
 
+export const formatDateToYear = (date) => {
+	if (!date) return date
+	// Parse date if not date
+	if (!isDate(date)) date = new Date(date)
+	return format(date, yearFormat)
+}
+
 // Format dateTime to readable string format (AAAA-MM-DDTxx:xx:xx to DD.MM.AAAA hh:mm)
 // Date ---> String
-Formatters.formatDateTime = (date) => {
+export const formatDateTime = (date) => {
 	if (!date) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
 	return format(date, defaultDateTimeFormat)
 }
 
-Formatters.formatDateTimeWithSeconds = (date) => {
+export const formatDateTimeWithSeconds = (date) => {
 	if (!date) return date
 	// Parse date if not date
 	if (!isDate(date)) date = new Date(date)
@@ -50,7 +57,7 @@ Formatters.formatDateTimeWithSeconds = (date) => {
 
 // Format string to Date format
 // String ---> Date
-Formatters.parseDate = (date) => {
+export const parseDate = (date) => {
 	if (!date) return date
 
 	const parts = date.split('.')
@@ -58,17 +65,17 @@ Formatters.parseDate = (date) => {
 }
 
 // Format date AAAA-MM-DD to DD.MM.AAAA
-Formatters.formatStringDates = (date) => {
+export const formatStringDates = (date) => {
 	if (!date) return date
 	const dateArray = date.split('-')
 	return `${dateArray[2]}.${dateArray[1]}.${dateArray[0]}`
 }
 
-Formatters.kjonn = (kjonn, alder) => {
-	return Formatters.kjonnToString(kjonn, alder < 18)
+export const formatKjonn = (kjonn, alder) => {
+	return formatKjonnToString(kjonn, alder < 18)
 }
 
-Formatters.kjonnToString = (kjonn = '', barn = false) => {
+export const formatKjonnToString = (kjonn = '', barn = false) => {
 	if (!kjonn) return kjonn
 	const _kjonn = kjonn.toLowerCase()
 	if (!['m', 'k'].includes(_kjonn)) return 'UDEFINERT'
@@ -77,7 +84,7 @@ Formatters.kjonnToString = (kjonn = '', barn = false) => {
 	return _kjonn === 'm' ? 'MANN' : 'KVINNE'
 }
 
-Formatters.adressetypeToString = (adressetype) => {
+export const adressetypeToString = (adressetype) => {
 	if (!adressetype) {
 		return null
 	}
@@ -97,7 +104,7 @@ Formatters.adressetypeToString = (adressetype) => {
 	}
 }
 
-Formatters.arrayToString = (array, separator = ',') => {
+export const arrayToString = (array, separator = ',') => {
 	if (!array) {
 		return null
 	}
@@ -107,15 +114,15 @@ Formatters.arrayToString = (array, separator = ',') => {
 	}, '')
 }
 
-Formatters.omraaderArrayToString = (array) => {
+export const omraaderArrayToString = (array) => {
 	if (!array) {
 		return null
 	}
 
-	return Formatters.arrayToString(array).replace('*', '* (Alle)')
+	return arrayToString(array).replace('*', '* (Alle)')
 }
 
-Formatters.uppercaseAndUnderscoreToCapitalized = (value) => {
+export const uppercaseAndUnderscoreToCapitalized = (value) => {
 	if (!value) {
 		return null
 	}
@@ -123,19 +130,19 @@ Formatters.uppercaseAndUnderscoreToCapitalized = (value) => {
 	return _.capitalize(clean)
 }
 
-Formatters.CapitalizedToUppercaseAndUnderscore = (value) => {
+export const CapitalizedToUppercaseAndUnderscore = (value) => {
 	return value.replace(' ', '_').toUpperCase()
 }
 
-Formatters.allCapsToCapitalized = (value) => {
+export const allCapsToCapitalized = (value) => {
 	return _.capitalize(value)
 }
 
-Formatters.codeToNorskLabel = (value) => {
+export const codeToNorskLabel = (value) => {
 	if (!value) {
 		return null
 	}
-	return Formatters.uppercaseAndUnderscoreToCapitalized(value)
+	return uppercaseAndUnderscoreToCapitalized(value)
 		.replace('oe', 'ø')
 		.replace('Oe', 'Ø')
 		.replace('ae', 'æ')
@@ -144,7 +151,7 @@ Formatters.codeToNorskLabel = (value) => {
 		.replace('Aa', 'Å')
 }
 
-Formatters.oversettBoolean = (value) => {
+export const oversettBoolean = (value) => {
 	if (_.isNil(value)) {
 		return value
 	} else if (value === true || value === 'true') {
@@ -156,7 +163,7 @@ Formatters.oversettBoolean = (value) => {
 	}
 }
 
-Formatters.gtTypeLabel = (gtType) => {
+export const gtTypeLabel = (gtType) => {
 	if (!gtType) {
 		return null
 	}
@@ -173,7 +180,7 @@ Formatters.gtTypeLabel = (gtType) => {
 	}
 }
 
-Formatters.showLabel = (optionsGruppe, value) => {
+export const showLabel = (optionsGruppe, value) => {
 	if (!value || !optionsGruppe) return value
 	let copyOptionsGruppe = optionsGruppe
 
@@ -191,11 +198,24 @@ Formatters.showLabel = (optionsGruppe, value) => {
 	return value
 }
 
-Formatters.getYearRangeOptions = (start, stop) => {
+export const showKodeverkLabel = (kodeverkNavn, value) => {
+	if (!kodeverkNavn || !value) {
+		return value
+	}
+	if (value.includes('*')) {
+		return 'Alle (*)'
+	}
+	const { kodeverk, loading, error } = useKodeverk(kodeverkNavn)
+	if (loading || error) {
+		return value
+	}
+	return kodeverk?.koder?.find((kode) => kode?.value === value)?.label
+}
+
+export const getYearRangeOptions = (start, stop) => {
 	const years = []
 	for (let i = start; i <= stop; i++) {
 		years.push({ value: i, label: i.toString() })
 	}
 	return years.reverse()
 }
-export default Formatters

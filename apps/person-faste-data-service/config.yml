@@ -61,11 +61,10 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   kafka:
     pool: nav-dev
   envFrom:
     - secret: google-sql-testnav-person-faste-data-service
   ingresses:
-    - "https://testnav-person-faste-data-service.dev.intern.nav.no"
+    - "https://testnav-person-faste-data-service.intern.dev.nav.no"

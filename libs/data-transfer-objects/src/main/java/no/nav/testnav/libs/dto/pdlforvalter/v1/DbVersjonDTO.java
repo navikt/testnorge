@@ -50,4 +50,9 @@ public abstract class DbVersjonDTO implements Serializable {
     }
 
     public enum Master {FREG, PDL}
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return null;
+    }
 }

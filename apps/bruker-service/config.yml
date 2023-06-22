@@ -50,10 +50,9 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   env:
     - name: SPRING_PROFILES_ACTIVE
       value: prod
   ingresses:
-    - "https://testnav-bruker-service.dev.intern.nav.no"
+    - "https://testnav-bruker-service.intern.dev.nav.no"

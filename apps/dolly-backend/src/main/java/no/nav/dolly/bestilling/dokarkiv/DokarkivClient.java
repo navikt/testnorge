@@ -50,23 +50,21 @@ public class DokarkivClient implements ClientRegister {
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
 
-        if (nonNull(bestilling.getDokarkiv())) {
-
-            var bestillingId = progress.getBestilling().getId();
-            return Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
-                            .map(person -> buildRequest(bestilling.getDokarkiv(), person))
-                            .flatMap(request -> dokarkivConsumer.getEnvironments()
-                                    .flatMapIterable(env -> env)
-                                    .filter(env -> bestilling.getEnvironments().contains(env))
-                                    .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
-                                            dollyPerson.getIdent(), env) || isOpprettEndre)
-                                    .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
-                                            .map(status -> getStatus(dollyPerson.getIdent(), bestillingId, status))))
-                            .collect(Collectors.joining(",")))
-                    .map(status -> futurePersist(progress, status));
-        }
-
-        return Flux.empty();
+        return Flux.just(bestilling)
+                .filter(bestilling1 -> nonNull(bestilling1.getDokarkiv()))
+                .map(RsDollyUtvidetBestilling::getDokarkiv)
+                .flatMap(dokarkiv -> Flux.from(getPersonData(List.of(dollyPerson.getIdent()))
+                                .map(person -> buildRequest(dokarkiv, person))
+                                .flatMap(request -> dokarkivConsumer.getEnvironments()
+                                        .flatMapIterable(env -> env)
+                                        .filter(env -> bestilling.getEnvironments().contains(env))
+                                        .filter(env -> !transaksjonMappingService.existAlready(DOKARKIV,
+                                                dollyPerson.getIdent(), env) || isOpprettEndre)
+                                        .flatMap(env -> dokarkivConsumer.postDokarkiv(env, request)
+                                                .map(status ->
+                                                        getStatus(dollyPerson.getIdent(), progress.getBestilling().getId(), status))))
+                                .collect(Collectors.joining(",")))
+                        .map(status -> futurePersist(progress, status)));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {

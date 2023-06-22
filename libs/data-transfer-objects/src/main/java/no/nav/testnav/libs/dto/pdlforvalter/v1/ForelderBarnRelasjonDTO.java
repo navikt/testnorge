@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @SuperBuilder
@@ -42,6 +43,12 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    public boolean hasBarnWithIdent() {
+
+        return Rolle.BARN == relatertPersonsRolle && isNotBlank(relatertPerson);
+    }
+
+    @JsonIgnore
     public boolean isForeldre() {
 
         return Rolle.FORELDER == minRolleForPerson ||
@@ -50,5 +57,22 @@ public class ForelderBarnRelasjonDTO extends DbVersjonDTO {
                 Rolle.MEDMOR == minRolleForPerson;
     }
 
+    @JsonIgnore
+    public boolean isBarn() {
+
+        return Rolle.BARN == minRolleForPerson;
+    }
+
+    @JsonIgnore
+    public boolean isRelatertMedIdentifikator() {
+
+        return isNotBlank(relatertPerson);
+    }
+
     public enum Rolle {BARN, FORELDER, MOR, FAR, MEDMOR}
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return relatertPerson;
+    }
 }

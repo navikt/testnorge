@@ -5,8 +5,12 @@ metadata:
   namespace: dolly
   labels:
     team: dolly
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   tokenx:
     enabled: true
@@ -67,11 +71,10 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   kafka:
     pool: nav-dev
   envFrom:
     - secret: google-sql-testnav-organisasjon-faste-data-service
   ingresses:
-    - "https://testnav-organisasjon-faste-data-service.dev.intern.nav.no"
+    - "https://testnav-organisasjon-faste-data-service.intern.dev.nav.no"

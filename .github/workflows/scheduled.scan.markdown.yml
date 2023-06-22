@@ -1,0 +1,23 @@
+on:
+  schedule:
+    - cron: "0 9 * * MON"
+  workflow_dispatch:
+    inputs:
+      working-directory:
+        type: string
+        description: "Directory to scan, e.g. apps/dolly-backend. Defaults to whole repo."
+        default: "."
+        required: true
+
+jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Markdown"
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          folder-path: ${{ inputs.working-directory }}
+          config-file: .github/workflows/scheduled.scan.markdown.json
+          use-quiet-mode: yes

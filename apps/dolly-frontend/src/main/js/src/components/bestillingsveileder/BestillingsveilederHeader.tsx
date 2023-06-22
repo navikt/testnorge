@@ -1,13 +1,15 @@
 import React, { useContext } from 'react'
 import { Header } from '@/components/ui/header/Header'
-import Formatter from '@/utils/DataFormatter'
-import { BestillingsveilederContext } from './Bestillingsveileder'
+import { arrayToString } from '@/utils/DataFormatter'
 import { getLeggTilIdent } from '@/components/bestillingsveileder/utils'
+import { useGruppeById } from '@/utils/hooks/useGruppe'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 
 export const BestillingsveilederHeader = () => {
 	const opts = useContext(BestillingsveilederContext)
 	const ident = getLeggTilIdent(opts.personFoerLeggTil, opts.identMaster)
 	const importFra = opts.is.leggTil && opts.identMaster === 'PDL' ? 'Test-Norge' : undefined
+	const { gruppe } = useGruppeById(opts?.gruppeId)
 
 	if (opts.is.nyOrganisasjon || opts.is.nyStandardOrganisasjon || opts.is.nyOrganisasjonFraMal) {
 		const titleValue = opts.is.nyStandardOrganisasjon ? 'Standard organisasjon' : 'Organisasjon'
@@ -36,7 +38,7 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.opprettFraIdenter && (
 					<Header.TitleValue
 						title="Opprett fra eksisterende personer"
-						value={Formatter.arrayToString(opts.opprettFraIdenter)}
+						value={arrayToString(opts.opprettFraIdenter)}
 					/>
 				)}
 				{opts.is.nyBestillingFraMal && (
@@ -47,10 +49,11 @@ export const BestillingsveilederHeader = () => {
 				{opts.is.leggTilPaaGruppe && (
 					<Header.TitleValue
 						title="Legg til på / endre alle personer"
-						value={`Gruppe #${opts?.gruppeId}`}
+						value={`Gruppe #${opts?.gruppeId} - ${gruppe?.navn}`}
 					/>
 				)}
 				{importFra !== undefined && <Header.TitleValue title="Importert fra" value={importFra} />}
+				{!opts.is.leggTilPaaGruppe && <Header.TitleValue title="Gruppe" value={gruppe?.navn} />}
 			</div>
 		</Header>
 	)

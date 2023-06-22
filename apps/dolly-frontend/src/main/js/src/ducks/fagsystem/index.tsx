@@ -13,7 +13,7 @@ import {
 import { onSuccess } from '@/ducks/utils/requestActions'
 import { successMiljoSelector } from '@/ducks/bestillingStatus'
 import { handleActions } from '@/ducks/utils/immerHandleActions'
-import Formatters from '@/utils/DataFormatter'
+import { formatAlder, formatKjonn } from '@/utils/DataFormatter'
 import * as _ from 'lodash-es'
 
 export const actions = createActions(
@@ -347,9 +347,19 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		return getDefaultInfo(ident, bestillingStatuser, 'PDL')
 	}
 	const pdlFornavn = pdlIdent?.navn?.[0]?.fornavn || ''
-	const pdlMellomnavn = pdlIdent?.navn?.[0]?.mellomnavn
-		? `${pdlIdent?.navn?.[0]?.mellomnavn.charAt(0)}.`
-		: ''
+
+	const formaterPdlMellomnavn = (mellomnavn: string) => {
+		if (!mellomnavn) {
+			return ''
+		}
+		const harFlereMellomnavn = mellomnavn?.includes(' ')
+		if (harFlereMellomnavn) {
+			return mellomnavn
+		}
+		return `${mellomnavn.charAt(0)}.`
+	}
+
+	const pdlMellomnavn = formaterPdlMellomnavn(pdlIdent?.navn?.[0]?.mellomnavn)
 	const pdlEtternavn = pdlIdent?.navn?.[0]?.etternavn || ''
 
 	const pdlAlder = (foedselsdato) => {
@@ -367,10 +377,7 @@ const getPdlfIdentInfo = (ident, bestillingStatuser, pdlIdent) => {
 		kilde: 'PDL',
 		navn: `${pdlFornavn} ${pdlMellomnavn} ${pdlEtternavn}`,
 		kjonn: pdlIdent.kjoenn?.[0]?.kjoenn,
-		alder: Formatters.formatAlder(
-			pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato),
-			getPdlDoedsdato(pdlIdent)
-		),
+		alder: formatAlder(pdlAlder(pdlIdent?.foedsel?.[0]?.foedselsdato), getPdlDoedsdato(pdlIdent)),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }
@@ -398,8 +405,8 @@ const getPdlIdentInfo = (ident, bestillingStatuser, pdlData) => {
 		importFra: 'Test-Norge',
 		identtype: person?.folkeregisteridentifikator[0]?.type,
 		navn: `${navn.fornavn} ${mellomnavn} ${navn.etternavn}`,
-		kjonn: Formatters.kjonn(kjonn, alder),
-		alder: Formatters.formatAlder(alder, person.doedsfall[0]?.doedsdato),
+		kjonn: formatKjonn(kjonn, alder),
+		alder: formatAlder(alder, person.doedsfall[0]?.doedsdato),
 		status: hentPersonStatus(ident?.ident, bestillingStatuser?.[ident?.bestillingId?.[0]]),
 	}
 }

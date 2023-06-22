@@ -3,6 +3,7 @@ import { Alert } from '@navikt/ds-react'
 import { Hjelpetekst } from '@/components/hjelpetekst/Hjelpetekst'
 import { top } from '@popperjs/core'
 import React from 'react'
+import { CypressSelector } from '../../../cypress/mocks/Selectors'
 
 const brukerveiledning = (
 	<a
@@ -19,6 +20,8 @@ const Advarsler = {
 		'Ta kontakt med en administrator i din organisasjon dersom tilgang mangler eller velg en annen innloggingsmetode. ',
 	unknown_error: 'Ukjent feil oppsto og du ble logget ut. ',
 	miljoe_error: 'Du er blitt logget ut. Det oppsto et problem med å hente gyldige miljøer. ',
+	person_org_error:
+		'Du er blitt logget ut. Det oppsto et problem med å hente organisasjonstilganger. ',
 	azure_error:
 		'Du er blitt logget ut. Det oppsto et problem med å hente Azure id for innlogget bruker. ',
 }
@@ -81,6 +84,7 @@ export default () => {
 					</Alert>
 				)}
 				<NavButton
+					data-cy={CypressSelector.BUTTON_LOGIN_NAV}
 					className="login-modal_button-nav"
 					variant={'primary'}
 					onClick={redirectOnClick(

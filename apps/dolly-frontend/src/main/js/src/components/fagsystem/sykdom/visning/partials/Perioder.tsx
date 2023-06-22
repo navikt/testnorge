@@ -1,6 +1,6 @@
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatStringDates, oversettBoolean } from '@/utils/DataFormatter'
 import { Periode } from '@/components/fagsystem/sykdom/SykemeldingTypes'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
@@ -19,8 +19,8 @@ export const Perioder = ({ data }: PerioderProps) => {
 				<DollyFieldArray data={data} nested>
 					{(periode: Periode, idx: string) => (
 						<div key={idx} className="person-visning_content">
-							<TitleValue title="F.o.m. dato" value={Formatters.formatStringDates(periode.fom)} />
-							<TitleValue title="T.o.m. dato" value={Formatters.formatStringDates(periode.tom)} />
+							<TitleValue title="F.o.m. dato" value={formatStringDates(periode.fom)} />
+							<TitleValue title="T.o.m. dato" value={formatStringDates(periode.tom)} />
 							<TitleValue title="Aktivitet" value={periode.aktivitet.aktivitet} />
 							<TitleValue
 								title="Antall behandlingsdager"
@@ -29,7 +29,7 @@ export const Perioder = ({ data }: PerioderProps) => {
 							<TitleValue title="Grad" value={periode.aktivitet.grad} />
 							<TitleValue
 								title="Har reisetilskudd"
-								value={Formatters.oversettBoolean(periode.aktivitet.reisetilskudd)}
+								value={oversettBoolean(periode.aktivitet.reisetilskudd)}
 							/>
 						</div>
 					)}

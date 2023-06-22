@@ -1,10 +1,8 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { Suspense, useEffect, useMemo, useState } from 'react'
 import 'rc-tooltip/assets/bootstrap.css'
 import { DollyTable } from '@/components/ui/dollyTable/DollyTable'
 import Loading from '@/components/ui/loading/Loading'
 import ContentContainer from '@/components/ui/contentContainer/ContentContainer'
-import PersonIBrukButtonConnector from '@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector'
-import PersonVisningConnector from '../PersonVisning/PersonVisningConnector'
 import { ManIconItem, UnknownIconItem, WomanIconItem } from '@/components/ui/icon/IconItem'
 
 import Icon from '@/components/ui/icon/Icon'
@@ -18,6 +16,12 @@ import DollyTooltip from '@/components/ui/button/DollyTooltip'
 import { setSorting } from '@/ducks/finnPerson'
 import { useDispatch } from 'react-redux'
 import { useBestillingerGruppe } from '@/utils/hooks/useBestilling'
+import { CypressSelector } from '../../../../cypress/mocks/Selectors'
+import PersonVisningConnector from '@/pages/gruppe/PersonVisning/PersonVisningConnector'
+
+const PersonIBrukButtonConnector = React.lazy(
+	() => import('@/components/ui/button/PersonIBrukButton/PersonIBrukButtonConnector')
+)
 
 const ikonTypeMap = {
 	Ferdig: 'feedback-check-circle',
@@ -77,8 +81,17 @@ export default function PersonListe({
 	const getKommentarTekst = (tekst) => {
 		const beskrivelse = tekst.length > 170 ? tekst.substring(0, 170) + '...' : tekst
 		return (
-			<div style={{ maxWidth: 200 }}>
+			<div style={{ maxWidth: 170 }}>
 				<p>{beskrivelse}</p>
+			</div>
+		)
+	}
+
+	const getNavnLimited = (tekst) => {
+		const navn = tekst.length > 18 ? tekst.substring(0, 18) + '...' : tekst
+		return (
+			<div style={{ maxWidth: '170px' }}>
+				<p>{navn}</p>
 			</div>
 		)
 	}
@@ -96,6 +109,17 @@ export default function PersonListe({
 			text: 'Navn',
 			width: '30',
 			dataField: 'navn',
+			formatter: (_cell, row) => {
+				return (
+					<DollyTooltip
+						overlay={row.navn?.length > 18 ? row.navn : null}
+						destroyTooltipOnHide={true}
+						mouseEnterDelay={0}
+					>
+						{getNavnLimited(row.navn)}
+					</DollyTooltip>
+				)
+			},
 		},
 		{
 			text: 'Alder',
@@ -118,7 +142,9 @@ export default function PersonListe({
 			width: '10',
 			dataField: 'status',
 
-			formatter: (cell) => <Icon kind={ikonTypeMap[cell]} title={cell} />,
+			formatter: (cell) => (
+				<Icon data-cy={CypressSelector.BUTTON_OPEN_IDENT} kind={ikonTypeMap[cell]} title={cell} />
+			),
 		},
 		{
 			text: 'Kilde',
@@ -134,7 +160,14 @@ export default function PersonListe({
 			dataField: 'ibruk',
 			sortField: 'iBruk',
 			headerCssClass: 'header-sort-sortable',
-			formatter: (_cell, row) => <PersonIBrukButtonConnector ident={row.ident} />,
+			formatter: (_cell, row) => (
+				<Suspense fallback={<Loading label={'Laster...'} />}>
+					<PersonIBrukButtonConnector
+						data-cy={CypressSelector.TOGGLE_PERSON_IBRUK}
+						ident={row.ident}
+					/>
+				</Suspense>
+			),
 		},
 		{
 			text: '',
@@ -264,13 +297,15 @@ export default function PersonListe({
 				visPerson={visPerson}
 				hovedperson={hovedperson}
 				onExpand={(bruker) => (
-					<PersonVisningConnector
-						ident={bruker.ident}
-						personId={bruker.identNr}
-						bestillingIdListe={bruker.ident.bestillingId}
-						iLaastGruppe={iLaastGruppe}
-						brukertype={brukertype}
-					/>
+					<Suspense fallback={<Loading label={'Laster ident...'} />}>
+						<PersonVisningConnector
+							ident={bruker.ident}
+							personId={bruker.identNr}
+							bestillingIdListe={bruker.ident.bestillingId}
+							iLaastGruppe={iLaastGruppe}
+							brukertype={brukertype}
+						/>
+					</Suspense>
 				)}
 				onHeaderClick={onHeaderClick}
 			/>

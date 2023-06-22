@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
 import java.time.LocalDateTime;
 
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Data
 @SuperBuilder
@@ -54,6 +55,12 @@ public class SivilstandDTO extends DbVersjonDTO {
     }
 
     @JsonIgnore
+    public boolean isGiftOrSamboer() {
+
+        return isGift() || Sivilstand.SAMBOER == type;
+    }
+
+    @JsonIgnore
     public boolean isSeparert() {
 
         return Sivilstand.SEPARERT == type || Sivilstand.SEPARERT_PARTNER == type;
@@ -63,5 +70,16 @@ public class SivilstandDTO extends DbVersjonDTO {
     public boolean isUgift() {
 
         return Sivilstand.UGIFT == type;
+    }
+
+    @JsonIgnore
+    public boolean hasRelatertVedSivilstand() {
+
+        return isNotBlank(relatertVedSivilstand);
+    }
+
+    @JsonIgnore
+    public String getIdentForRelasjon() {
+        return relatertVedSivilstand;
     }
 }

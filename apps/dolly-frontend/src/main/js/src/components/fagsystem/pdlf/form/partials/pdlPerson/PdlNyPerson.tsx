@@ -6,7 +6,7 @@ import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepic
 import { AdresseKodeverk } from '@/config/kodeverk'
 import { FormikCheckbox } from '@/components/ui/form/inputs/checbox/Checkbox'
 import * as _ from 'lodash-es'
-import { BestillingsveilederContext } from '@/components/bestillingsveileder/Bestillingsveileder'
+import { BestillingsveilederContext } from '@/components/bestillingsveileder/BestillingsveilederContext'
 import { FormikProps } from 'formik'
 import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 import { Option } from '@/service/SelectOptionsOppslag'
@@ -46,6 +46,7 @@ export const PdlNyPerson = ({
 	const hasEksisterendePerson =
 		eksisterendePerson &&
 		(gruppeIdenter?.includes(eksisterendePerson) ||
+			eksisterendePerson === eksisterendeNyPerson?.value ||
 			_.get(formikBag.values, 'vergemaal.vergeIdent') === eksisterendeNyPerson?.value ||
 			_.get(formikBag.values, 'sivilstand.relatertVedSivilstand') === eksisterendeNyPerson?.value)
 

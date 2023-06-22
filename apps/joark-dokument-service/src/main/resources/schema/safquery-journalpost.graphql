@@ -12,5 +12,11 @@ query journalpost($journalpostId: String!) {
             dokumentInfoId
             tittel
         }
+        sak {
+            sakstype
+            fagsakId
+            fagsaksystem
+        }
+        journalfoerendeEnhet
     }
 }

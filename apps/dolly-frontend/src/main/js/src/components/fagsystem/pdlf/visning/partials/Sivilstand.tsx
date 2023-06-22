@@ -2,7 +2,7 @@ import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate, showLabel } from '@/utils/DataFormatter'
 import { RelatertPerson } from '@/components/fagsystem/pdlf/visning/partials/RelatertPerson'
 import { Relasjon, SivilstandData } from '@/components/fagsystem/pdlf/PdlTypes'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
@@ -10,6 +10,9 @@ import { initialPdlPerson, initialSivilstand } from '@/components/fagsystem/pdlf
 import * as _ from 'lodash-es'
 import React from 'react'
 import { getEksisterendeNyPerson } from '@/components/fagsystem/utils'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
+import { useParams } from 'react-router-dom'
+import { useGruppeIdenter } from '@/utils/hooks/useGruppe'
 
 type SivilstandTypes = {
 	data: Array<SivilstandData>
@@ -48,20 +51,17 @@ const SivilstandLes = ({
 		<div className="person-visning_redigerbar" key={idx}>
 			<ErrorBoundary>
 				<div className="person-visning_content">
-					<TitleValue
-						title="Type"
-						value={Formatters.showLabel('sivilstandType', sivilstandData.type)}
-					/>
+					<TitleValue title="Type" value={showLabel('sivilstandType', sivilstandData.type)} />
 					<TitleValue
 						title="Gyldig fra og med"
 						value={
-							Formatters.formatDate(sivilstandData.sivilstandsdato) ||
-							Formatters.formatDate(sivilstandData.gyldigFraOgMed)
+							formatDate(sivilstandData.sivilstandsdato) ||
+							formatDate(sivilstandData.gyldigFraOgMed)
 						}
 					/>
 					<TitleValue
 						title="Bekreftelsesdato"
-						value={Formatters.formatDate(sivilstandData.bekreftelsesdato)}
+						value={formatDate(sivilstandData.bekreftelsesdato)}
 					/>
 					{!relasjoner && !relasjonRedigert && (
 						<TitleValue title="Relatert person" value={sivilstandData.relatertVedSivilstand} />
@@ -86,6 +86,9 @@ const SivilstandVisning = ({
 	tmpPersoner,
 	ident,
 }: VisningData) => {
+	const { gruppeId } = useParams()
+	const { identer: gruppeIdenter } = useGruppeIdenter(gruppeId)
+
 	const initSivilstand = Object.assign(_.cloneDeep(initialSivilstand), data[idx])
 	let initialValues = { sivilstand: initSivilstand }
 	initialValues.sivilstand.nyRelatertPerson = initialPdlPerson
@@ -97,7 +100,7 @@ const SivilstandVisning = ({
 
 	const slettetSivilstandPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertSivilstandPdlf
 	if (slettetSivilstandPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const sivilstandValues = redigertSivilstandPdlf ? redigertSivilstandPdlf : sivilstandData
@@ -111,16 +114,21 @@ const SivilstandVisning = ({
 	}
 
 	const eksisterendeNyPerson = redigertRelatertePersoner
-		? getEksisterendeNyPerson(
-				redigertRelatertePersoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
-		: getEksisterendeNyPerson(
-				relasjoner,
-				sivilstandValues?.relatertVedSivilstand,
-				'EKTEFELLE_PARTNER'
-		  )
+		? getEksisterendeNyPerson(redigertRelatertePersoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+		: getEksisterendeNyPerson(relasjoner, sivilstandValues?.relatertVedSivilstand, [
+				'EKTEFELLE_PARTNER',
+		  ])
+
+	const erIGruppe = gruppeIdenter?.some(
+		(person) => person.ident === initialValues?.sivilstand?.relatertVedSivilstand
+	)
+	const relatertPersonInfo = erIGruppe
+		? {
+				ident: initialValues?.sivilstand?.relatertVedSivilstand,
+		  }
+		: null
 
 	return (
 		<VisningRedigerbarConnector
@@ -137,6 +145,7 @@ const SivilstandVisning = ({
 			redigertAttributt={redigertSivilstandValues}
 			path="sivilstand"
 			ident={ident}
+			relatertPersonInfo={relatertPersonInfo}
 		/>
 	)
 }

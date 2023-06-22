@@ -1,7 +1,7 @@
 import { AdresseKodeverk, PersoninformasjonKodeverk } from '@/config/kodeverk'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 
@@ -18,11 +18,11 @@ const Statsborgerskap = ({ statsborgerskap, sprak }) => {
 			/>
 			<TitleValue
 				title="Statsborgerskap registrert"
-				value={Formatters.formatDate(statsborgerskap.statsborgerskapRegdato)}
+				value={formatDate(statsborgerskap.statsborgerskapRegdato)}
 			/>
 			<TitleValue
 				title="Statsborgerskap til"
-				value={Formatters.formatDate(statsborgerskap.statsborgerskapTildato)}
+				value={formatDate(statsborgerskap.statsborgerskapTildato)}
 			/>
 			<TitleValue title="Språk" kodeverk={PersoninformasjonKodeverk.Spraak} value={sprak} />
 		</div>
@@ -44,10 +44,7 @@ const InnvandretUtvandret = ({ data }) => {
 							value={innvandringUtvandring.landkode}
 							kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 						/>
-						<TitleValue
-							title="Flyttedato"
-							value={Formatters.formatDate(innvandringUtvandring.flyttedato)}
-						/>
+						<TitleValue title="Flyttedato" value={formatDate(innvandringUtvandring.flyttedato)} />
 					</>
 				)}
 			</DollyFieldArray>

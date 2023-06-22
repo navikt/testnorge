@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://kodeverk.dev.adeo.no/internal/isAlive",
-                "https://kodeverk.dev.adeo.no/internal/isReady",
+                "http://kodeverk.org.svc.nais.local/internal/isAlive",
+                "http://kodeverk.org.svc.nais.local/internal/isReady",
                 statusWebClient);
         pensjonStatus.put("team", TEAM);
 

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { AdresseKodeverk } from '@/config/kodeverk'
-import Formatters from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import {
 	InnvandringValues,
@@ -13,6 +13,7 @@ import { PersonData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { initialUtvandring } from '@/components/fagsystem/pdlf/form/initialValues'
 import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
 import { getSisteDatoInnUtvandring } from '@/components/fagsystem/pdlf/visning/partials/Innvandring'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
 type UtvandringTypes = {
 	data: Array<UtvandringValues>
@@ -50,10 +51,7 @@ const UtvandringLes = ({ utvandringData, idx }: UtvandringLesTypes) => {
 				kodeverk={AdresseKodeverk.InnvandretUtvandretLand}
 			/>
 			<TitleValue title="Tilflyttingssted" value={utvandringData.tilflyttingsstedIUtlandet} />
-			<TitleValue
-				title="Utflyttingsdato"
-				value={Formatters.formatDate(utvandringData.utflyttingsdato)}
-			/>
+			<TitleValue title="Utflyttingsdato" value={formatDate(utvandringData.utflyttingsdato)} />
 		</div>
 	)
 }
@@ -76,7 +74,7 @@ const UtvandringVisning = ({
 	)
 	const slettetUtvandringPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtvandringPdlf
 	if (slettetUtvandringPdlf) {
-		return <pre style={{ margin: '0' }}>Opplysning slettet</pre>
+		return <OpplysningSlettet />
 	}
 
 	const utvandringValues = redigertUtvandringPdlf ? redigertUtvandringPdlf : utvandringData

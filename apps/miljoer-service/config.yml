@@ -28,10 +28,6 @@ spec:
           cluster: dev-gcp
         - application: dolly-frontend-dev
           cluster: dev-gcp
-        - application: dolly-backend
-          cluster: dev-gcp
-        - application: dolly-backend-dev
-          cluster: dev-gcp
         - application: testnav-orgnummer-service
           cluster: dev-gcp
         - application: testnav-organisasjon-forvalter
@@ -54,8 +50,7 @@ spec:
       enabled: true
       tenant: nav.no
       replyURLs:
-        - "https://testnav-miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
-        - "https://miljoer-service.dev.intern.nav.no/login/oauth2/code/aad"
+        - "https://testnav-miljoer-service.intern.dev.nav.no/login/oauth2/code/aad"
         - "http://localhost:8080/login/oauth2/code/aad"
   liveness:
     path: /internal/isAlive
@@ -79,8 +74,6 @@ spec:
       cpu: 200m
       memory: 1024Mi
     limits:
-      cpu: 500m
       memory: 2048Mi
   ingresses:
-    - "https://miljoer-service.dev.intern.nav.no"
-    - "https://testnav-miljoer-service.dev.intern.nav.no"
+    - "https://testnav-miljoer-service.intern.dev.nav.no"

@@ -1,5 +1,6 @@
 package no.nav.testnav.libs.dto.pdlforvalter.v1;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
+import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 
 @Data
@@ -109,5 +111,12 @@ public class KontaktinformasjonForDoedsboDTO extends DbVersjonDTO {
         private String fornavn;
         private String mellomnavn;
         private Boolean hasMellomnavn;
+    }
+
+    @JsonIgnore
+    @Override
+    public String getIdentForRelasjon() {
+        return nonNull(getPersonSomKontakt()) ?
+                personSomKontakt.getIdentifikasjonsnummer() : null;
     }
 }

@@ -2,7 +2,7 @@
 TPS-messaging-service gir mulighet å sende og motta XML-meldinger mot TPS MQ-køer, samt lese XML-innhold fra TPS servicerutiner over CICS.
  
 ## Swagger
-Swagger finnes under [/swagger](https://testnav-tps-messaging-service.dev.intern.nav.no/swagger) -endepunktet til
+Swagger finnes under [/swagger](https://testnav-tps-messaging-service.intern.dev.nav.no/swagger) -endepunktet til
 applikasjonen.
 
 ## Lokal kjøring

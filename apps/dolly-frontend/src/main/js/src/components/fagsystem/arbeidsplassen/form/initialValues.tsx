@@ -209,3 +209,64 @@ export const initialKursVerdier = {
 
 export const initialSammendragVerdi =
 	'Trivelig person med kjærlighet for sau, som har tonnevis med allsidig kompetanse og fantastiske personlige egenskaper.'
+
+export const initialHistark = {
+	dokumenter: [
+		{
+			tittel: '',
+			antallSider: -1,
+			skanner: '',
+			skannested: '',
+			skanningsTidspunkt: new Date(),
+			temakoder: [],
+			enhetsnavn: '',
+			enhetsnummer: '',
+			startAar: new Date(),
+			sluttAar: new Date(),
+			fysiskDokument: '',
+		},
+	],
+}
+
+export const initialDigitalInnsending = {
+	tittel: '',
+	tema: '',
+	kanal: 'NAV_NO',
+	sak: {
+		sakstype: 'GENERELL_SAK',
+		fagsaksystem: '',
+		fagsakId: '',
+	},
+	ferdigstill: true,
+	avsenderMottaker: {
+		id: '',
+		navn: '',
+		idType: '',
+	},
+	journalfoerendeEnhet: undefined,
+	dokumenter: [
+		{
+			tittel: '',
+			brevkode: '',
+		},
+	],
+}
+
+export const initialDokarkiv = {
+	tittel: '',
+	tema: '',
+	sak: {
+		sakstype: 'GENERELL_SAK',
+		fagsaksystem: '',
+		fagsakId: '',
+	},
+	kanal: 'SKAN_IM',
+	ferdigstill: true,
+	journalfoerendeEnhet: undefined,
+	dokumenter: [
+		{
+			tittel: '',
+			brevkode: '',
+		},
+	],
+}

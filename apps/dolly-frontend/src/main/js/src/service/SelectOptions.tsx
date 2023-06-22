@@ -450,6 +450,33 @@ const selectOptions = {
 		{ value: 'ORGNR', label: 'ORGNR' },
 	],
 
+	sakstype: [
+		{ value: 'GENERELL_SAK', label: 'Generell sak' },
+		{ value: 'FAGSAK', label: 'Fagsak' },
+	],
+
+	fagsaksystem: [
+		{ value: 'AO01', label: 'Arena (AO01)' },
+		{ value: 'BARNEBRILLER', label: 'Barnebriller' },
+		{ value: 'BA', label: 'Barnetrygd (BA)' },
+		{ value: 'BISYS', label: 'Bisys' },
+		{ value: 'EF', label: 'Enslig forsørger (EF)' },
+		{ value: 'EY', label: 'Etterlatteytelser (EY)' },
+		{ value: 'FS36', label: 'Foreldrepengeløsningen (FS36)' },
+		{ value: 'AO11', label: 'Grisen (AO11)' },
+		{ value: 'HJELPEMIDLER', label: 'Hjelpemidler' },
+		{ value: 'IT01', label: 'Infotrygd (IT01)' },
+		{ value: 'KONT', label: 'Kontantstøtte (KONT)' },
+		{ value: 'FS38', label: 'Melosys (FS38)' },
+		{ value: 'OMSORGSPENGER', label: 'Omsorgspenger' },
+		{ value: 'OEBS', label: 'Oracle E-Business Suite (OEBS)' },
+		{ value: 'PP01', label: 'Pesys (PP01)' },
+		{ value: 'SUPSTONAD', label: 'Supplerende stønad (SUPSTONAD)' },
+		{ value: 'K9', label: 'Sykdom i familien (K9)' },
+		{ value: 'UFM', label: 'Unntak fra medlemskap (UFM)' },
+		{ value: 'OB36', label: 'Utbetalingsreskontro (OB36)' },
+	],
+
 	tjenestepensjonYtelseType: [
 		{ value: 'ALDER', label: 'Alderspensjon' },
 		{ value: 'UFORE', label: 'Uførepensjon' },
@@ -600,6 +627,13 @@ const selectOptions = {
 		{ value: '7321', label: 'Typograf' },
 		{ value: '7543', label: 'Ullklassifisør' },
 		{ value: '9999', label: 'Utvikler' },
+	],
+
+	medlKilder: [
+		{ value: 'srvmelosys', label: 'Melosys' },
+		{ value: 'srvgosys', label: 'Gosys' },
+		{ value: 'AVGSYS', label: 'Avgiftsystemet' },
+		{ value: 'LAANEKASSEN', label: 'Lånekassen' },
 	],
 
 	omraade: [
