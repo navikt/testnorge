@@ -2,15 +2,12 @@ package no.nav.dolly.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.dolly.MockedJwtAuthenticationTokenUtils;
-import no.nav.dolly.domain.MalbestillingNavn;
-import no.nav.dolly.domain.jpa.Bestilling;
-import no.nav.dolly.domain.jpa.BestillingMal;
 import no.nav.dolly.domain.jpa.Bruker;
-import no.nav.dolly.domain.jpa.Testgruppe;
-import no.nav.dolly.repository.BestillingMalRepository;
-import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
+import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
 import no.nav.dolly.repository.BrukerRepository;
-import no.nav.dolly.repository.TestgruppeRepository;
+import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
+import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,16 +18,14 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
-import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -45,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
-public class BestillingMalServiceTest {
+public class OrganisasjonBestillingMalServiceTest {
 
     private final static String MALNAVN = "test";
     private final static String NYTT_MALNAVN = "nyttMalnavn";
@@ -62,20 +57,15 @@ public class BestillingMalServiceTest {
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
             .build();
-    private static final String IDENT = "12345678912";
-    private static final String BESKRIVELSE = "Teste";
-    private static final String TESTGRUPPE = "Testgruppe";
     private static final String UGYLDIG_BESTILLINGID = "999";
 
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
-    private BestillingMalRepository bestillingMalRepository;
+    private OrganisasjonBestillingMalRepository organisasjonBestillingMalRepository;
     @Autowired
-    private BestillingRepository bestillingRepository;
-    @Autowired
-    private TestgruppeRepository testgruppeRepository;
+    private OrganisasjonBestillingRepository organisasjonBestillingRepository;
     @Autowired
     private BrukerRepository brukerRepository;
     @Autowired
@@ -86,8 +76,8 @@ public class BestillingMalServiceTest {
     @BeforeEach
     public void beforeEach() {
         flyway.migrate();
-        bestillingRepository.deleteAll();
-        bestillingMalRepository.deleteAll();
+        organisasjonBestillingRepository.deleteAll();
+        organisasjonBestillingMalRepository.deleteAll();
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
@@ -97,7 +87,7 @@ public class BestillingMalServiceTest {
     }
 
     @Test
-    @DisplayName("Oppretter og returnerer alle maler tilknyttet to forskjellige brukere")
+    @DisplayName("Oppretter og returnerer alle organisasjonmaler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler()
             throws Exception {
 
@@ -106,14 +96,14 @@ public class BestillingMalServiceTest {
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
-        mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
+        mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.ALLE", hasSize(2)))
                 .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_to", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(MALNAVN))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].bruker.brukerId").value(bruker_en.getBrukerId()))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].bestilling.navSyntetiskIdent", is(true)))
+                .andExpect(jsonPath("$.malbestillinger.test_en[0].bestilling.environments", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_to[0].bruker.brukerId").value(bruker_to.getBrukerId()));
     }
 
@@ -125,20 +115,19 @@ public class BestillingMalServiceTest {
         var bruker_en = saveDummyBruker(DUMMY_EN);
         var bestillingMal = saveDummyBestillingMal(bruker_en);
 
-        mockMvc.perform(put("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId())
-                        .content(objectMapper.writeValueAsString(new MalbestillingNavn(NYTT_MALNAVN)))
-                        .contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(put("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId())
+                        .queryParam("malNavn", NYTT_MALNAVN))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
+        mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
                 .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(NYTT_MALNAVN));
 
-        mockMvc.perform(delete("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId()))
+        mockMvc.perform(delete("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId()))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
+        mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.malbestillinger.ALLE", empty()));
     }
@@ -149,55 +138,42 @@ public class BestillingMalServiceTest {
             throws Exception {
 
         var bruker_en = saveDummyBruker(DUMMY_EN);
-        var testgruppe = saveDummyGruppe();
-        var bestilling = saveDummyBestilling(bruker_en, testgruppe);
+        var bestilling = saveDummyBestilling(bruker_en);
 
-        mockMvc.perform(post("/api/v1/bestilling/malbestilling")
+        mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
                         .queryParam("bestillingId", String.valueOf(bestilling.getId()))
                         .queryParam("malNavn", MALNAVN))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(post("/api/v1/bestilling/malbestilling")
+        mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
                         .queryParam("bestillingId", UGYLDIG_BESTILLINGID)
                         .queryParam("malNavn", MALNAVN))
                 .andExpect(status().is4xxClientError());
     }
 
-    BestillingMal saveDummyBestillingMal(Bruker bruker) {
-        return bestillingMalRepository.save(
-                BestillingMal
+    OrganisasjonBestillingMal saveDummyBestillingMal(Bruker bruker) {
+        return organisasjonBestillingMalRepository.save(
+                OrganisasjonBestillingMal
                         .builder()
                         .bestKriterier(BEST_KRITERIER)
                         .bruker(bruker)
+                        .miljoer("q2")
                         .malBestillingNavn(MALNAVN)
                         .build()
         );
     }
 
-    Bestilling saveDummyBestilling(Bruker bruker, Testgruppe testgruppe) {
-        return bestillingRepository.save(
-                Bestilling
+    OrganisasjonBestilling saveDummyBestilling(Bruker bruker) {
+        return organisasjonBestillingRepository.save(
+                OrganisasjonBestilling
                         .builder()
                         .id(1L)
-                        .gruppe(testgruppe)
                         .ferdig(false)
-                        .antallIdenter(1)
+                        .antall(1)
+                        .miljoer("q2")
                         .bestKriterier(BEST_KRITERIER)
                         .bruker(bruker)
-                        .beskrivelse(BESKRIVELSE)
-                        .ident(IDENT)
-                        .build()
-        );
-    }
-
-    Testgruppe saveDummyGruppe() {
-        return testgruppeRepository.save(
-                Testgruppe.builder()
-                        .opprettetAv(DUMMY_EN)
-                        .sistEndretAv(DUMMY_EN)
-                        .navn(TESTGRUPPE)
-                        .hensikt(TESTGRUPPE)
-                        .datoEndret(LocalDate.now())
+                        .sistOppdatert(LocalDateTime.now())
                         .build()
         );
     }

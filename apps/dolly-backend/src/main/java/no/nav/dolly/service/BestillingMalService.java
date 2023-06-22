@@ -110,29 +110,29 @@ public class BestillingMalService {
 
 
     @Transactional
-    public void saveBestillingMal(Bestilling bestilling, String malnavn, Bruker bruker) {
+    public void saveBestillingMal(Bestilling bestilling, String malNavn, Bruker bruker) {
 
         bestillingMalRepository.save(BestillingMal.builder()
                 .bestKriterier(bestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(malnavn)
+                .malBestillingNavn(malNavn)
                 .miljoer(bestilling.getMiljoer())
                 .build());
     }
 
     @Transactional
-    public void saveBestillingMalFromBestillingId(Long bestillingId, String malnavn) {
+    public void saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
 
         var bestilling = bestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException(bestillingId + " finnes ikke"));
 
-        overskrivDuplikateMalbestillinger(malnavn, bruker);
+        overskrivDuplikateMalbestillinger(malNavn, bruker);
         bestillingMalRepository.save(BestillingMal.builder()
                 .bestKriterier(bestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(malnavn)
+                .malBestillingNavn(malNavn)
                 .miljoer(bestilling.getMiljoer())
                 .build());
     }
@@ -160,12 +160,12 @@ public class BestillingMalService {
         };
     }
 
-    void overskrivDuplikateMalbestillinger(String malnavn, Bruker bruker) {
+    void overskrivDuplikateMalbestillinger(String malNavn, Bruker bruker) {
 
-        if (isBlank(malnavn)) {
+        if (isBlank(malNavn)) {
             return;
         }
-        var gamleMalBestillinger = getMalbestillingByUserAndNavn(bruker.getBrukerId(), malnavn);
+        var gamleMalBestillinger = getMalbestillingByUserAndNavn(bruker.getBrukerId(), malNavn);
         gamleMalBestillinger.forEach(malBestilling ->
                 bestillingMalRepository.deleteById(malBestilling.getId()));
     }

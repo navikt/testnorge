@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.organisasjonforvalter.OrganisasjonClient;
-import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.OrganisasjonBestilling;
 import no.nav.dolly.domain.jpa.OrganisasjonBestillingProgress;
 import no.nav.dolly.domain.resultset.RsOrganisasjonBestilling;
@@ -16,6 +15,7 @@ import no.nav.dolly.domain.resultset.entity.bestilling.RsOrganisasjonMalBestilli
 import no.nav.dolly.service.OrganisasjonBestillingMalService;
 import no.nav.dolly.service.OrganisasjonBestillingService;
 import no.nav.dolly.service.OrganisasjonProgressService;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +31,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static no.nav.dolly.config.CachingConfig.CACHE_BESTILLING;
 
 @RestController
 @RequiredArgsConstructor
@@ -91,8 +93,16 @@ public class OrganisasjonBestillingController {
         return organisasjonBestillingMalService.getOrganisasjonMalBestillinger();
     }
 
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
+    @PostMapping("/malbestilling")
+    @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
+    public void opprettMalbestilling(Long bestillingId, String malNavn) {
+
+        organisasjonBestillingMalService.saveOrganisasjonBestillingMalFromBestillingId(bestillingId, malNavn);
+    }
+
     @GetMapping("/malbestilling/bruker")
-    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
+    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malNavn")
     public List<RsOrganisasjonMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
 
         return organisasjonBestillingMalService.getMalbestillingerByNavnAndUser(brukerId, malNavn);
@@ -105,11 +115,12 @@ public class OrganisasjonBestillingController {
         organisasjonBestillingMalService.deleteOrganisasjonMalbestillingById(id);
     }
 
+    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
-    public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
+    public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
-        organisasjonBestillingMalService.updateOrganisasjonMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
+        organisasjonBestillingMalService.updateOrganisasjonMalBestillingNavnById(id, malNavn);
     }
 
     static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

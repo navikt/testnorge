@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.GjenopprettBestillingService;
-import no.nav.dolly.domain.MalbestillingNavn;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingFragment;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
@@ -24,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -130,13 +128,13 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PostMapping("/malbestilling")
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
-    public void opprettMalbestilling(Long bestillingId, String malnavn) {
+    public void opprettMalbestilling(Long bestillingId, String malNavn) {
 
-        bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malnavn);
+        bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
     }
 
     @GetMapping("/malbestilling/bruker")
-    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malnavn")
+    @Operation(description = "Hent mal-bestillinger for en spesifikk bruker, kan filtreres på malNavn")
     public List<RsMalBestilling> getMalbestillingByNavn(@RequestParam(value = "brukerId") String brukerId, @RequestParam(name = "malNavn", required = false) String malNavn) {
 
         return isNull(malNavn)
@@ -155,8 +153,8 @@ public class BestillingController {
     @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
-    public void redigerMalBestilling(@PathVariable Long id, @RequestBody MalbestillingNavn malbestillingNavn) {
+    public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
-        bestillingMalService.updateMalBestillingNavnById(id, malbestillingNavn.getMalNavn());
+        bestillingMalService.updateMalBestillingNavnById(id, malNavn);
     }
 }
