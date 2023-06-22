@@ -158,7 +158,7 @@ public class OrganisasjonBestillingMalServiceTest {
                         .bestKriterier(BEST_KRITERIER)
                         .bruker(bruker)
                         .miljoer("q2")
-                        .malBestillingNavn(MALNAVN)
+                        .malNavn(MALNAVN)
                         .build()
         );
     }

@@ -55,7 +55,6 @@ import static java.util.Objects.nonNull;
 import static java.util.stream.Collectors.toSet;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static no.nav.dolly.util.DistinctByKeyUtil.distinctByKey;
-import static org.apache.commons.lang3.StringUtils.isNoneBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Slf4j
@@ -218,7 +217,7 @@ public class BestillingService {
                 .bruker(bruker)
                 .build();
 
-        if (isNoneBlank(request.getMalBestillingNavn())) {
+        if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
@@ -241,7 +240,7 @@ public class BestillingService {
                 .beskrivelse(beskrivelse)
                 .build();
         fixAaregAbstractClassProblem(request.getAareg());
-        if (isNoneBlank(request.getMalBestillingNavn())) {
+        if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);
@@ -327,7 +326,7 @@ public class BestillingService {
                 .build();
 
         fixAaregAbstractClassProblem(request.getAareg());
-        if (isNoneBlank(request.getMalBestillingNavn())) {
+        if (isNotBlank(request.getMalBestillingNavn())) {
             bestillingMalService.saveBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
         }
         return saveBestillingToDB(bestilling);

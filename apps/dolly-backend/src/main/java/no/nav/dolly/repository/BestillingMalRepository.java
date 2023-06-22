@@ -5,15 +5,14 @@ import no.nav.dolly.domain.jpa.Bruker;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
 public interface BestillingMalRepository extends CrudRepository<BestillingMal, Long> {
-    @Transactional
     @Modifying
-    @Query("update BestillingMal b set b.malBestillingNavn = ?2 where b.id = ?1")
-    void updateMalBestillingNavnById(Long id, String malBestillingNavn);
+    @Query("update BestillingMal b set b.malNavn = :malNavn where b.id = :id")
+    void updateMalBestillingNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
     List<BestillingMal> findByIdContaining(String id);
 
@@ -21,7 +20,6 @@ public interface BestillingMalRepository extends CrudRepository<BestillingMal, L
 
     List<BestillingMal> findByBruker(Bruker bruker);
 
-    @Query(value = "from BestillingMal b where b.malBestillingNavn is not null order by b.malBestillingNavn")
     List<BestillingMal> findMalBestilling();
 
 }

@@ -169,7 +169,7 @@ public class BestillingMalServiceTest {
                         .builder()
                         .bestKriterier(BEST_KRITERIER)
                         .bruker(bruker)
-                        .malBestillingNavn(MALNAVN)
+                        .malNavn(MALNAVN)
                         .build()
         );
     }

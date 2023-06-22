@@ -5,6 +5,7 @@ import no.nav.dolly.domain.jpa.OrganisasjonBestillingMal;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface OrganisasjonBestillingMalRepository extends CrudRepository<Orga
     List<OrganisasjonBestillingMal> findMalBestilling();
 
     @Modifying
-    @Query("update OrganisasjonBestillingMal b set b.malBestillingNavn = ?2 where b.id = ?1")
-    void updateMalBestillingNavnById(Long id, String malBestillingNavn);
+    @Query("update BestillingMal b set b.malNavn = :malNavn where b.id = :id")
+    void updateMalBestillingNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
 }

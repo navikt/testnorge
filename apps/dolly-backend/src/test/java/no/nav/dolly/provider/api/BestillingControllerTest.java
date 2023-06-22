@@ -80,7 +80,7 @@ public class BestillingControllerTest {
     @Test
     public void malBestillingNavnOk() {
 
-        bestillingController.getMalBestillinger();
+        bestillingController.getMalBestillinger(null);
 
         verify(bestillingMalService).getMalBestillinger();
     }

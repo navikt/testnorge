@@ -15,11 +15,9 @@ import no.nav.dolly.repository.OrganisasjonBestillingMalRepository;
 import no.nav.dolly.repository.OrganisasjonBestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -40,19 +38,17 @@ public class OrganisasjonBestillingMalService {
     private final MapperFacade mapperFacade;
     private final GetUserInfo getUserInfo;
 
-    @Transactional
     public void saveOrganisasjonBestillingMal(OrganisasjonBestilling organisasjonBestilling, String malNavn, Bruker bruker) {
 
         overskrivDuplikateMalbestillinger(malNavn, bruker);
         organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(organisasjonBestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(malNavn)
+                .malNavn(malNavn)
                 .miljoer(organisasjonBestilling.getMiljoer())
                 .build());
     }
 
-    @Transactional
     public void saveOrganisasjonBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
@@ -64,7 +60,7 @@ public class OrganisasjonBestillingMalService {
         organisasjonBestillingMalRepository.save(OrganisasjonBestillingMal.builder()
                 .bestKriterier(organisasjonBestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(malNavn)
+                .malNavn(malNavn)
                 .miljoer(organisasjonBestilling.getMiljoer())
                 .build());
     }
@@ -81,7 +77,7 @@ public class OrganisasjonBestillingMalService {
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
                         .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
                                 .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
-                                .malNavn(bestilling1.getMalBestillingNavn())
+                                .malNavn(bestilling1.getMalNavn())
                                 .id(bestilling1.getId())
                                 .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
                                         bestilling1.getBruker() :
@@ -93,47 +89,40 @@ public class OrganisasjonBestillingMalService {
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
                 .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn)
-                        .thenComparing(RsOrganisasjonMalBestilling::getId))
+                        .thenComparing(RsOrganisasjonMalBestilling::getId).reversed())
                 .toList());
 
         return malBestillingWrapper;
     }
 
-    public RsOrganisasjonMalBestilling getOrganisasjonMalBestillingById(Long id) {
-
-        var bestilling = organisasjonBestillingMalRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id + " finnes ikke"));
-
-        return RsOrganisasjonMalBestilling.builder()
-                .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
-                .malNavn(bestilling.getMalBestillingNavn())
-                .id(bestilling.getId())
-                .bruker(mapperFacade.map(nonNull(bestilling.getBruker()) ?
-                        bestilling.getBruker() :
-                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                .build();
-    }
-
-
-    public List<RsOrganisasjonMalBestilling> getMalbestillingerByNavnAndUser(String brukerId, String malNavn) {
+    public RsOrganisasjonMalBestillingWrapper getMalbestillingerByUser(String brukerId) {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
 
-        return organisasjonBestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn)
-                .stream().map(bestilling -> RsOrganisasjonMalBestilling.builder()
-                        .malNavn(bestilling.getMalBestillingNavn())
-                        .id(bestilling.getId())
-                        .bestilling(mapperFacade.map(bestilling, RsOrganisasjonBestilling.class))
-                        .build()).toList();
+        var malBestillinger = organisasjonBestillingMalRepository.findByBruker(bruker).parallelStream()
+                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                        .map(bestilling1 -> RsOrganisasjonMalBestilling.builder()
+                                .bestilling(mapperFacade.map(bestilling1, RsOrganisasjonBestilling.class))
+                                .malNavn(bestilling1.getMalNavn())
+                                .id(bestilling1.getId())
+                                .bruker(mapperFacade.map(nonNull(bestilling1.getBruker()) ?
+                                        bestilling1.getBruker() :
+                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                .build())
+                        .toList()));
+
+        return RsOrganisasjonMalBestillingWrapper.builder()
+                .malbestillinger(malBestillinger)
+                .build();
     }
 
-    @Transactional
     public void updateOrganisasjonMalBestillingNavnById(Long id, String nyttMalNavn) {
 
         organisasjonBestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
     }
 
-    @Transactional
     public void deleteOrganisasjonMalbestillingById(Long id) {
 
         organisasjonBestillingMalRepository.deleteById(id);

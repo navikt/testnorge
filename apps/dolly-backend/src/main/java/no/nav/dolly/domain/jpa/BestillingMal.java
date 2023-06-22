@@ -7,16 +7,20 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.proxy.HibernateProxy;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -24,6 +28,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "BESTILLING_MAL")
 public class BestillingMal implements Serializable {
 
@@ -37,8 +42,9 @@ public class BestillingMal implements Serializable {
     @Column(name = "MILJOER")
     private String miljoer;
 
-    @Column(name = "MAL_BESTILLING_NAVN", nullable = false)
-    private String malBestillingNavn;
+    @Column(name = "MAL_NAVN", nullable = false)
+    @OrderColumn
+    private String malNavn;
 
     @ManyToOne
     @JoinColumn(name = "BRUKER_ID")
@@ -47,4 +53,20 @@ public class BestillingMal implements Serializable {
     @Column(name = "SIST_OPPDATERT", nullable = false)
     @UpdateTimestamp
     private LocalDateTime sistOppdatert;
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null) return false;
+        Class<?> oEffectiveClass = o instanceof HibernateProxy ? ((HibernateProxy) o).getHibernateLazyInitializer().getPersistentClass() : o.getClass();
+        Class<?> thisEffectiveClass = this instanceof HibernateProxy ? ((HibernateProxy) this).getHibernateLazyInitializer().getPersistentClass() : this.getClass();
+        if (thisEffectiveClass != oEffectiveClass) return false;
+        BestillingMal that = (BestillingMal) o;
+        return getId() != null && Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public final int hashCode() {
+        return getClass().hashCode();
+    }
 }

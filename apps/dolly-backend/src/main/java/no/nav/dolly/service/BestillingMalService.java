@@ -14,7 +14,6 @@ import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
 import no.nav.testnav.libs.servletsecurity.action.GetUserInfo;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
-import static net.logstash.logback.util.StringUtils.isBlank;
 import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 
 @Service
@@ -48,10 +46,11 @@ public class BestillingMalService {
                 .stream()
                 .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
                 .entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
+                        .stream()
                         .map(bestillingMal -> RsMalBestilling.builder()
                                 .bestilling(mapperFacade.map(bestillingMal, RsBestilling.class))
-                                .malNavn(bestillingMal.getMalBestillingNavn())
+                                .malNavn(bestillingMal.getMalNavn())
                                 .id(bestillingMal.getId())
                                 .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
                                         bestillingMal.getBruker() :
@@ -63,25 +62,10 @@ public class BestillingMalService {
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
                 .sorted(Comparator.comparing(RsMalBestilling::getMalNavn)
-                        .thenComparing(RsMalBestilling::getId))
+                        .thenComparing(RsMalBestilling::getId).reversed())
                 .toList());
 
         return malBestillingWrapper;
-    }
-
-    public RsMalBestilling getMalBestillingById(Long id) {
-
-        var malBestilling = bestillingMalRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException(id + " finnes ikke"));
-
-        return RsMalBestilling.builder()
-                .bestilling(mapperFacade.map(malBestilling, RsBestilling.class))
-                .malNavn(malBestilling.getMalBestillingNavn())
-                .id(malBestilling.getId())
-                .bruker(mapperFacade.map(nonNull(malBestilling.getBruker()) ?
-                        malBestilling.getBruker() :
-                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
-                .build();
     }
 
     public List<RsMalBestilling> getMalbestillingByUserAndNavn(String brukerId, String malNavn) {
@@ -89,38 +73,51 @@ public class BestillingMalService {
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
 
         return bestillingMalRepository.findByBrukerAndMalBestillingNavn(bruker, malNavn)
-                .stream().map(bestilling -> RsMalBestilling.builder()
-                        .malNavn(bestilling.getMalBestillingNavn())
+                .stream()
+                .map(bestilling -> RsMalBestilling.builder()
+                        .malNavn(bestilling.getMalNavn())
                         .id(bestilling.getId())
                         .bestilling(mapperFacade.map(bestilling, RsBestilling.class))
-                        .build()).toList();
+                        .build())
+                .toList();
     }
 
-    public List<RsMalBestilling> getMalbestillingByUser(String brukerId) {
+    public RsMalBestillingWrapper getMalbestillingByUser(String brukerId) {
 
         var bruker = brukerService.fetchOrCreateBruker(brukerId);
 
-        return bestillingMalRepository.findByBruker(bruker)
-                .stream().map(bestilling -> RsMalBestilling.builder()
-                        .malNavn(bestilling.getMalBestillingNavn())
-                        .id(bestilling.getId())
-                        .bestilling(mapperFacade.map(bestilling, RsBestilling.class))
-                        .build()).toList();
+        var malBestillinger = bestillingMalRepository.findByBruker(bruker)
+                .stream()
+                .collect(Collectors.groupingBy(bestilling -> getBruker(bestilling.getBruker())))
+                .entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue()
+                        .stream()
+                        .map(bestillingMal -> RsMalBestilling.builder()
+                                .bestilling(mapperFacade.map(bestillingMal, RsBestilling.class))
+                                .malNavn(bestillingMal.getMalNavn())
+                                .id(bestillingMal.getId())
+                                .bruker(mapperFacade.map(nonNull(bestillingMal.getBruker()) ?
+                                        bestillingMal.getBruker() :
+                                        Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
+                                .build())
+                        .toList()));
+
+        return RsMalBestillingWrapper.builder()
+                .malbestillinger(malBestillinger)
+                .build();
     }
 
 
-    @Transactional
     public void saveBestillingMal(Bestilling bestilling, String malNavn, Bruker bruker) {
 
         bestillingMalRepository.save(BestillingMal.builder()
                 .bestKriterier(bestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(malNavn)
+                .malNavn(malNavn)
                 .miljoer(bestilling.getMiljoer())
                 .build());
     }
 
-    @Transactional
     public void saveBestillingMalFromBestillingId(Long bestillingId, String malNavn) {
 
         Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
@@ -132,18 +129,16 @@ public class BestillingMalService {
         bestillingMalRepository.save(BestillingMal.builder()
                 .bestKriterier(bestilling.getBestKriterier())
                 .bruker(bruker)
-                .malBestillingNavn(malNavn)
+                .malNavn(malNavn)
                 .miljoer(bestilling.getMiljoer())
                 .build());
     }
 
-    @Transactional
     public void deleteMalBestillingByID(Long id) {
 
         bestillingMalRepository.deleteById(id);
     }
 
-    @Transactional
     public void updateMalBestillingNavnById(Long id, String nyttMalNavn) {
 
         bestillingMalRepository.updateMalBestillingNavnById(id, nyttMalNavn);
@@ -162,9 +157,6 @@ public class BestillingMalService {
 
     void overskrivDuplikateMalbestillinger(String malNavn, Bruker bruker) {
 
-        if (isBlank(malNavn)) {
-            return;
-        }
         var gamleMalBestillinger = getMalbestillingByUserAndNavn(bruker.getBrukerId(), malNavn);
         gamleMalBestillinger.forEach(malBestilling ->
                 bestillingMalRepository.deleteById(malBestilling.getId()));
