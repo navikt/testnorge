@@ -9,8 +9,7 @@ const getCurrentBrukerUrl = `/dolly-backend/api/v1/bruker/current`
 const getProfilUrl = '/testnorge-profil-api/api/v1/profil'
 const getProfilBildeUrl = `${getProfilUrl}/bilde`
 
-const getOrganisasjonTilgangUrl = (orgnummer: string) =>
-	`/testnav-organisasjon-tilgang-service/api/v1/miljoer/organisasjon/orgnummer?orgnummer=${orgnummer}`
+const getOrganisasjonTilgangUrl = () => `/dolly-backend/api/v1/organisasjoner/tilgang`
 
 type BrukerProfil = {
 	visningsNavn: string
@@ -91,12 +90,14 @@ export const useOrganisasjonTilgang = () => {
 	}
 
 	const { data, isLoading, error } = useSWR<OrganisasjonMiljoe, Error>(
-		getOrganisasjonTilgangUrl(orgnummer),
+		getOrganisasjonTilgangUrl(),
 		fetcher
 	)
 
+	const orgData = data?.find((org) => org.organisasjonsnummer.toString() === orgnummer.toString())
+
 	return {
-		organisasjonTilgang: data,
+		organisasjonTilgang: orgData,
 		loading: isLoading,
 		error: error,
 	}
