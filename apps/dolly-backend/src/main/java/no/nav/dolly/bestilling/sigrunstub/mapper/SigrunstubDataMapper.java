@@ -17,7 +17,7 @@ import static no.nav.dolly.domain.resultset.sigrunstub.OpprettSkattegrunnlag.Tje
 public class SigrunstubDataMapper implements MappingStrategy {
 
     private static final String OPPGJOER_DATO_NAVN = "skatteoppgjoersdato";
-    private static final String OPPGJOER_DATO_VERDI = "%s-05-01";
+    private static final String OPPGJOER_DATO_VERDI = "%4d-05-01";
 
     @Override
     public void register(MapperFactory factory) {
@@ -30,12 +30,12 @@ public class SigrunstubDataMapper implements MappingStrategy {
                         destinasjon.setPersonidentifikator((String) context.getProperty("ident"));
 
                         if (destinasjon.getTjeneste() == BEREGNET_SKATT) {
-                            addOppgjoersdato(destinasjon.getGrunnlag(), destinasjon.getInntektsaar() + 1);
-                            addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), destinasjon.getInntektsaar() + 1);
+                            addOppgjoersdato(destinasjon.getGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
+                            addOppgjoersdato(destinasjon.getSvalbardGrunnlag(), Integer.parseInt(destinasjon.getInntektsaar()) + 1);
                         }
                     }
 
-                    private void addOppgjoersdato(List<KodeverknavnGrunnlag> spesifiktGrunnlag, String aar) {
+                    private void addOppgjoersdato(List<KodeverknavnGrunnlag> spesifiktGrunnlag, Integer aar) {
 
                         if (!spesifiktGrunnlag.isEmpty() && spesifiktGrunnlag.stream()
                                 .noneMatch(grunnlag -> OPPGJOER_DATO_NAVN.equals(grunnlag.getTekniskNavn()))) {
