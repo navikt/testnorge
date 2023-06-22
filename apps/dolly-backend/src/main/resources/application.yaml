@@ -245,4 +245,9 @@ consumers:
     namespace: dolly
     url: https://testnav-arbeidsplassencv-proxy.dev-fss-pub.nais.io
     cluster: dev-fss
+  testnav-organisasjon-tilgang-service:
+    cluster: prod-gcp
+    namespace: dolly
+    name: testnav-organisasjon-tilgang-service
+    url: https://testnav-organisasjon-tilgang-service.intern.nav.no
     
