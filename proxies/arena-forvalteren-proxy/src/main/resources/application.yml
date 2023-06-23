@@ -21,3 +21,11 @@ spring:
         response-timeout: 120s
     vault:
       enabled: false
+
+app:
+  arena:
+    services:
+      name: arena-services-{env}
+      namespace: teamarenanais
+      url: http://arena-ords-{env}.teamarenanais.svc.nais.local
+      cluster: dev-fss
