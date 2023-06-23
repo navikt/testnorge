@@ -8,7 +8,6 @@ import { runningCypressE2E } from '@/service/services/Request'
 import { Alert } from '@navikt/ds-react'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useBestilteMiljoer } from '@/utils/hooks/useBestilling'
-import useBoolean from '@/utils/hooks/useBoolean'
 
 export const sjekkManglerPensjonData = (pensjonData) => {
 	return pensjonData?.length < 1 || pensjonData?.every((miljoData) => miljoData?.data?.length < 1)
@@ -28,7 +27,6 @@ const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 		<Panel
 			startOpen={isPanelOpen || runningCypressE2E()}
 			heading={getTittel(data)}
-			// isPanelOpen={isPanelOpen}
 			setPanelOpen={setPanelOpen}
 		>
 			<DollyFieldArray data={data} nested>
@@ -45,8 +43,6 @@ const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 
 export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligMiljoe }) => {
 	const { bestilteMiljoer } = useBestilteMiljoer(bestillingIdListe, 'pensjonforvalter.inntekt')
-	const [isPanelOpen, setPanelOpen] = useBoolean(false)
-	console.log('isPanelOpen: ', isPanelOpen) //TODO - SLETT MEG
 
 	if (loading) {
 		return <Loading label="Laster pensjonforvalter-data" />
@@ -65,10 +61,6 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 	const filteredData =
 		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	// const isExpanded = false
-
-	// console.log('isExpanded: ', isExpanded) //TODO - SLETT MEG
-	// console.log('this: ', this) //TODO - SLETT MEG
 	return (
 		<ErrorBoundary>
 			<SubOverskrift
@@ -87,7 +79,7 @@ export const PensjonVisning = ({ data, loading, bestillingIdListe, tilgjengeligM
 					forsteMiljo={forsteMiljo}
 					data={filteredData || data}
 				>
-					<PensjonInntekt isPanelOpen={isPanelOpen} setPanelOpen={setPanelOpen} />
+					<PensjonInntekt />
 				</MiljoTabs>
 			)}
 		</ErrorBoundary>

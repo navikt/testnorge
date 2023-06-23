@@ -18,14 +18,9 @@ export default function Panel({
 	informasjonstekst = null,
 	iconType,
 	forceOpen = false,
-	isPanelOpen,
-	setPanelOpen,
+	setPanelOpen = null,
 }) {
-	// const [isOpen, toggleOpen] = useToggle(startOpen)
 	const [isOpen, toggleOpen] = useToggle(startOpen)
-
-	// console.log('isOpen: ', isOpen) //TODO - SLETT MEG
-	console.log('startOpen: ', startOpen) //TODO - SLETT MEG
 	const shouldOpen = isOpen || forceOpen
 
 	const renderContent = children ? children : content
@@ -45,8 +40,7 @@ export default function Panel({
 			<div
 				className="dolly-panel-heading"
 				onClick={() => {
-					setPanelOpen(!startOpen)
-					// startOpen = !startOpen
+					setPanelOpen && setPanelOpen(!startOpen)
 					toggleOpen()
 				}}
 			>
