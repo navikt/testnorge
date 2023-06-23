@@ -29,7 +29,7 @@ export const useDollyMaler = () => {
 
 export const useDollyMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
-		brukerId && `${getMalerUrl}/bruker?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
+		brukerId && `${getMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
 		fetcher,
 		{ fallbackData: [] }
 	)
@@ -62,7 +62,7 @@ export const useDollyOrganisasjonMaler = () => {
 export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
 		brukerId &&
-			`${getOrganisasjonMalerUrl}/bruker?brukerId=${brukerId}${
+			`${getOrganisasjonMalerUrl}?brukerId=${brukerId}${
 				malNavn ? `&malNavn=${malNavn}` : ''
 			}`,
 		fetcher,
