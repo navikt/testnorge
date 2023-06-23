@@ -62,9 +62,7 @@ export const useDollyOrganisasjonMaler = () => {
 export const useDollyOrganisasjonMalerBrukerOgMalnavn = (brukerId: string, malNavn?: string) => {
 	const { data, isLoading, error, mutate } = useSWR<Mal[], Error>(
 		brukerId &&
-			`${getOrganisasjonMalerUrl}?brukerId=${brukerId}${
-				malNavn ? `&malNavn=${malNavn}` : ''
-			}`,
+			`${getOrganisasjonMalerUrl}?brukerId=${brukerId}${malNavn ? `&malNavn=${malNavn}` : ''}`,
 		fetcher,
 		{ fallbackData: [] }
 	)
