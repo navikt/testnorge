@@ -29,8 +29,8 @@ export default ({ brukerId }: { brukerId: string }) => {
 		return <Loading label="Loading" />
 	}
 
-	const antallEgneMaler = egneMaler.length
-	const antallEgneOrgMaler = egneOrgMaler.length
+	const antallEgneMaler = egneMaler?.length
+	const antallEgneOrgMaler = egneOrgMaler?.length
 
 	return (
 		<div className="maloversikt">

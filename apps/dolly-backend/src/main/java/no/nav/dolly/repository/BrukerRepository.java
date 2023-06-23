@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BrukerRepository extends Repository<Bruker, Long> {
+    void deleteByBrukerId(String brukerId);
 
     Bruker save(Bruker bruker);
 

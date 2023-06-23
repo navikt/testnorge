@@ -73,9 +73,6 @@ public class Bestilling implements Serializable {
     @Column(name = "OPPRETT_FRA_IDENTER")
     private String opprettFraIdenter;
 
-    @Column(name = "MAL_BESTILLING_NAVN")
-    private String malBestillingNavn;
-
     @Column(name = "IDENT")
     private String ident;
 
