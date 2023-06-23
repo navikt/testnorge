@@ -64,7 +64,7 @@ public class ArenaResponse {
     public static class Sak extends Egenskap {
 
         private String status;
-        private Integer sakNr;
+        private String sakNr;
     }
 
     @Data
