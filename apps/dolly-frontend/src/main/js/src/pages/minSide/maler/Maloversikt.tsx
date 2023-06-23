@@ -28,10 +28,9 @@ export default ({ brukerId }: { brukerId: string }) => {
 	if (loading || orgLoading) {
 		return <Loading label="Loading" />
 	}
-	console.log('egneMaler: ', egneMaler) //TODO - SLETT MEG
 
-	const antallEgneMaler = egneMaler.length
-	const antallEgneOrgMaler = egneOrgMaler.length
+	const antallEgneMaler = egneMaler?.length
+	const antallEgneOrgMaler = egneOrgMaler?.length
 
 	return (
 		<div className="maloversikt">
