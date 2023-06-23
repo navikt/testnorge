@@ -228,8 +228,8 @@ public class BestillingMalServiceTest {
         bestillingMalRepository.deleteAll();
         bestillingRepository.deleteAll();
         identRepository.deleteAll();
-        testgruppeRepository.findAll(Sort.unsorted()).forEach(gruppe -> testgruppeRepository.deleteTestgruppeById(gruppe.getId()));
         brukerFavoritterRepository.deleteAll();
+        testgruppeRepository.findAll(Sort.unsorted()).forEach(gruppe -> testgruppeRepository.deleteTestgruppeById(gruppe.getId()));
         brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
         brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
     }
