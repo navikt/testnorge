@@ -131,7 +131,7 @@ public class BestillingController {
     @PostMapping("/malbestilling")
     @Operation(description = "Opprett ny mal-bestilling fra bestillingId")
     @Transactional
-    public void opprettMalbestilling(Long bestillingId, String malNavn) {
+    public void opprettMalbestilling(@RequestParam(value = "bestillingId") Long bestillingId, @RequestParam(value = "malNavn") String malNavn) {
 
         bestillingMalService.saveBestillingMalFromBestillingId(bestillingId, malNavn);
     }
