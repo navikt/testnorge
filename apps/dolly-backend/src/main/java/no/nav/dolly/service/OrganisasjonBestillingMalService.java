@@ -119,9 +119,9 @@ public class OrganisasjonBestillingMalService {
                 .build();
     }
 
-    public void updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {
+    public int updateOrganisasjonMalNavnById(Long id, String nyttMalNavn) {
 
-        organisasjonBestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
+        return organisasjonBestillingMalRepository.updateMalNavnById(id, nyttMalNavn);
     }
 
     public void deleteOrganisasjonMalbestillingById(Long id) {

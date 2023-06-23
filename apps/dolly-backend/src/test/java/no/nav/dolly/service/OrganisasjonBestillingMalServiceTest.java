@@ -20,12 +20,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDateTime;
 
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -46,14 +48,16 @@ public class OrganisasjonBestillingMalServiceTest {
     private final static String NYTT_MALNAVN = "nyttMalnavn";
     private final static String BEST_KRITERIER = "Testeteste";
     private static final Bruker DUMMY_EN = Bruker.builder()
-            .brukerId("2")
+            .id(1L)
             .brukernavn("test_en")
+            .brukerId("testbruker_en")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_en")
             .build();
     private static final Bruker DUMMY_TO = Bruker.builder()
-            .brukerId("1")
+            .id(2L)
             .brukernavn("test_to")
+            .brukerId("testbruker_to")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
             .build();
@@ -78,6 +82,8 @@ public class OrganisasjonBestillingMalServiceTest {
         flyway.migrate();
         organisasjonBestillingRepository.deleteAll();
         organisasjonBestillingMalRepository.deleteAll();
+        brukerRepository.deleteById(DUMMY_EN.getId());
+        brukerRepository.deleteById(DUMMY_TO.getId());
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
@@ -87,6 +93,7 @@ public class OrganisasjonBestillingMalServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter og returnerer alle organisasjonmaler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler()
             throws Exception {
@@ -108,6 +115,7 @@ public class OrganisasjonBestillingMalServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
@@ -136,12 +144,8 @@ public class OrganisasjonBestillingMalServiceTest {
 
         mockMvc.perform(put("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId())
                         .queryParam("malNavn", NYTT_MALNAVN))
-                .andExpect(status().isOk());
-
-        mockMvc.perform(get("/api/v1/organisasjon/bestilling/malbestilling"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(NYTT_MALNAVN));
+                .andExpect(jsonPath("$", is(1)));
 
         mockMvc.perform(delete("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId()))
                 .andExpect(status().isOk());

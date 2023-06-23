@@ -114,13 +114,12 @@ public class OrganisasjonBestillingController {
         organisasjonBestillingMalService.deleteOrganisasjonMalbestillingById(id);
     }
 
-    @CacheEvict(value = { CACHE_BESTILLING }, allEntries = true)
     @PutMapping("/malbestilling/{id}")
     @Operation(description = "Rediger mal-bestilling")
     @Transactional
-    public void redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
+    public int redigerMalBestilling(@PathVariable Long id, @RequestParam(value = "malNavn") String malNavn) {
 
-        organisasjonBestillingMalService.updateOrganisasjonMalNavnById(id, malNavn);
+        return organisasjonBestillingMalService.updateOrganisasjonMalNavnById(id, malNavn);
     }
 
     static RsOrganisasjonBestillingStatus getStatus(OrganisasjonBestilling bestilling, String orgnummer) {

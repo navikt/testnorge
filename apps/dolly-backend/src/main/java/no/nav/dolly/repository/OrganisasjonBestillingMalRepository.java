@@ -19,6 +19,6 @@ public interface OrganisasjonBestillingMalRepository extends CrudRepository<Orga
 
     @Modifying
     @Query("update OrganisasjonBestillingMal b set b.malNavn = :malNavn where b.id = :id")
-    void updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
+    int updateMalNavnById(@Param("id") Long id, @Param("malNavn") String malNavn);
 
 }
