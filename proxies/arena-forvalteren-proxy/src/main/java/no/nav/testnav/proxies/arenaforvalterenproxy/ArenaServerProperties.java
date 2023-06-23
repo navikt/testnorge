@@ -5,7 +5,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "app.arena")
+@ConfigurationProperties(prefix = "app.arena.services")
 public class ArenaServerProperties extends ServerProperties {
 
     private static ArenaServerProperties copyOf(ArenaServerProperties original) {
