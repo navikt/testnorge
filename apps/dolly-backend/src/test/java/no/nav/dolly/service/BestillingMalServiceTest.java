@@ -8,7 +8,9 @@ import no.nav.dolly.domain.jpa.Bruker;
 import no.nav.dolly.domain.jpa.Testgruppe;
 import no.nav.dolly.repository.BestillingMalRepository;
 import no.nav.dolly.repository.BestillingRepository;
+import no.nav.dolly.repository.BrukerFavoritterRepository;
 import no.nav.dolly.repository.BrukerRepository;
+import no.nav.dolly.repository.IdentRepository;
 import no.nav.dolly.repository.TestgruppeRepository;
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +22,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,7 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
 @ActiveProfiles("test")
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 @EnableAutoConfiguration
 @ComponentScan("no.nav.dolly")
 @AutoConfigureMockMvc(addFilters = false)
@@ -79,7 +82,11 @@ public class BestillingMalServiceTest {
     @Autowired
     private TestgruppeRepository testgruppeRepository;
     @Autowired
+    private BrukerFavoritterRepository brukerFavoritterRepository;
+    @Autowired
     private BrukerRepository brukerRepository;
+    @Autowired
+    private IdentRepository identRepository;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -220,7 +227,9 @@ public class BestillingMalServiceTest {
     void deleteAllDatabaseContent() {
         bestillingMalRepository.deleteAll();
         bestillingRepository.deleteAll();
-        testgruppeRepository.deleteTestgruppeById(1L);
+        identRepository.deleteAll();
+        testgruppeRepository.findAll(Sort.unsorted()).forEach(gruppe -> testgruppeRepository.deleteTestgruppeById(gruppe.getId()));
+        brukerFavoritterRepository.deleteAll();
         brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
         brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
     }
