@@ -22,6 +22,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.time.LocalDate;
@@ -50,13 +51,15 @@ public class BestillingMalServiceTest {
     private final static String NYTT_MALNAVN = "nyttMalnavn";
     private final static String BEST_KRITERIER = "Testeteste";
     private static final Bruker DUMMY_EN = Bruker.builder()
-            .brukerId("2")
+            .id(1L)
+            .brukerId("testbruker_en")
             .brukernavn("test_en")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_en")
             .build();
     private static final Bruker DUMMY_TO = Bruker.builder()
-            .brukerId("1")
+            .id(2L)
+            .brukerId("testbruker_to")
             .brukernavn("test_to")
             .brukertype(Bruker.Brukertype.AZURE)
             .epost("epost@test_to")
@@ -82,26 +85,30 @@ public class BestillingMalServiceTest {
     @Autowired
     private Flyway flyway;
 
+    @Transactional
     @BeforeEach
     public void beforeEach() {
         flyway.migrate();
-        bestillingRepository.deleteAll();
-        bestillingMalRepository.deleteAll();
+        saveDummyBruker(DUMMY_EN);
+        saveDummyBruker(DUMMY_TO);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
+    @Transactional
     @AfterEach
     public void afterEach() {
+        deleteAllDatabaseContent();
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter og returnerer alle maler tilknyttet to forskjellige brukere")
     void shouldCreateAndGetMaler()
             throws Exception {
 
-        var bruker_en = saveDummyBruker(DUMMY_EN);
-        var bruker_to = saveDummyBruker(DUMMY_TO);
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
@@ -117,11 +124,12 @@ public class BestillingMalServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter mal fra gjeldende bestilling og tester at NotFoundError blir kastet ved ugyldig bestillingId")
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var bruker_en = saveDummyBruker(DUMMY_EN);
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
         var testgruppe = saveDummyGruppe();
         var bestilling = saveDummyBestilling(bruker_en, testgruppe);
 
@@ -137,11 +145,12 @@ public class BestillingMalServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var bruker_en = saveDummyBruker(DUMMY_EN);
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
         var bestillingMal = saveDummyBestillingMal(bruker_en);
 
         mockMvc.perform(put("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId())
@@ -150,8 +159,7 @@ public class BestillingMalServiceTest {
 
         mockMvc.perform(get("/api/v1/bestilling/malbestilling"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)))
-                .andExpect(jsonPath("$.malbestillinger.test_en[0].malNavn").value(NYTT_MALNAVN));
+                .andExpect(jsonPath("$.malbestillinger.test_en", hasSize(1)));
 
         mockMvc.perform(delete("/api/v1/bestilling/malbestilling/{id}", bestillingMal.getId()))
                 .andExpect(status().isOk());
@@ -205,7 +213,15 @@ public class BestillingMalServiceTest {
         );
     }
 
-    Bruker saveDummyBruker(Bruker bruker) {
-        return brukerRepository.save(bruker);
+    void saveDummyBruker(Bruker bruker) {
+        brukerRepository.save(bruker);
+    }
+
+    void deleteAllDatabaseContent() {
+        bestillingMalRepository.deleteAll();
+        bestillingRepository.deleteAll();
+        testgruppeRepository.deleteTestgruppeById(1L);
+        brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
+        brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
     }
 }

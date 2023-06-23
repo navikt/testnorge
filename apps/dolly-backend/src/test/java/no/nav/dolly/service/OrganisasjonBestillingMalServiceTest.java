@@ -78,17 +78,18 @@ public class OrganisasjonBestillingMalServiceTest {
     private Flyway flyway;
 
     @BeforeEach
+    @Transactional
     public void beforeEach() {
         flyway.migrate();
-        organisasjonBestillingRepository.deleteAll();
-        organisasjonBestillingMalRepository.deleteAll();
-        brukerRepository.deleteById(DUMMY_EN.getId());
-        brukerRepository.deleteById(DUMMY_TO.getId());
+        saveDummyBruker(DUMMY_EN);
+        saveDummyBruker(DUMMY_TO);
         MockedJwtAuthenticationTokenUtils.setJwtAuthenticationToken();
     }
 
     @AfterEach
+    @Transactional
     public void afterEach() {
+        deleteAllDatabaseContent();
         MockedJwtAuthenticationTokenUtils.clearJwtAuthenticationToken();
     }
 
@@ -98,8 +99,8 @@ public class OrganisasjonBestillingMalServiceTest {
     void shouldCreateAndGetMaler()
             throws Exception {
 
-        var bruker_en = saveDummyBruker(DUMMY_EN);
-        var bruker_to = saveDummyBruker(DUMMY_TO);
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
         saveDummyBestillingMal(bruker_en);
         saveDummyBestillingMal(bruker_to);
 
@@ -120,7 +121,7 @@ public class OrganisasjonBestillingMalServiceTest {
     void shouldCreateMalerFromExistingOrder()
             throws Exception {
 
-        var bruker_en = saveDummyBruker(DUMMY_EN);
+        var bruker_en = brukerRepository.findBrukerByBrukerId(DUMMY_EN.getBrukerId()).get();
         var bestilling = saveDummyBestilling(bruker_en);
 
         mockMvc.perform(post("/api/v1/organisasjon/bestilling/malbestilling")
@@ -135,12 +136,13 @@ public class OrganisasjonBestillingMalServiceTest {
     }
 
     @Test
+    @Transactional
     @DisplayName("Oppretter, endrer navn på og sletter til slutt bestillingMal")
     void shouldCreateUpdateAndDeleteMal()
             throws Exception {
 
-        var bruker_en = saveDummyBruker(DUMMY_EN);
-        var bestillingMal = saveDummyBestillingMal(bruker_en);
+        var bruker_to = brukerRepository.findBrukerByBrukerId(DUMMY_TO.getBrukerId()).get();
+        var bestillingMal = saveDummyBestillingMal(bruker_to);
 
         mockMvc.perform(put("/api/v1/organisasjon/bestilling/malbestilling/{id}", bestillingMal.getId())
                         .queryParam("malNavn", NYTT_MALNAVN))
@@ -183,7 +185,14 @@ public class OrganisasjonBestillingMalServiceTest {
         );
     }
 
-    Bruker saveDummyBruker(Bruker bruker) {
-        return brukerRepository.save(bruker);
+    void saveDummyBruker(Bruker bruker) {
+        brukerRepository.save(bruker);
+    }
+
+    void deleteAllDatabaseContent() {
+        organisasjonBestillingMalRepository.deleteAll();
+        organisasjonBestillingRepository.deleteAll();
+        brukerRepository.deleteByBrukerId(DUMMY_EN.getBrukerId());
+        brukerRepository.deleteByBrukerId(DUMMY_TO.getBrukerId());
     }
 }
