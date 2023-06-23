@@ -82,8 +82,8 @@ public class OppslagController {
     private final OrganisasjonTilgangConsumer organisasjonTilgangConsumer;
     private final ArenaForvalterConsumer arenaForvalterConsumer;
 
-    @GetMapping("arena/ident{ident}/miljoe/{miljoe}")
-    private Mono<ArenaResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
+    @GetMapping("/arena/ident/{ident}/miljoe/{miljoe}")
+    public Mono<ArenaResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
 
         return arenaForvalterConsumer.getArenaBruker(ident, miljoe);
     }
