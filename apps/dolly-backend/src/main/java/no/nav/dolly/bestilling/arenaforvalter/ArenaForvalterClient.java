@@ -19,7 +19,6 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import no.nav.dolly.util.TransactionHelperService;
-import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -59,8 +58,7 @@ public class ArenaForvalterClient implements ClientRegister {
         return Flux.just(bestilling)
                 .filter(best -> nonNull(best.getArenaforvalter()))
                 .map(RsDollyUtvidetBestilling::getArenaforvalter)
-                .flatMap(ordre -> arenaForvalterConsumer.getToken()
-                        .flatMapMany(token -> arenaForvalterConsumer.getEnvironments(token)
+                .flatMap(ordre -> arenaForvalterConsumer.getEnvironments()
                                 .filter(env -> bestilling.getEnvironments().contains(env))
                                 .collectList()
                                 .doOnNext(miljoer -> {
@@ -69,26 +67,26 @@ public class ArenaForvalterClient implements ClientRegister {
                                             .collect(Collectors.joining(","));
                                     transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
                                 })
-                                .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer, token)
+                                .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
                                         .map(this::parseStatus)
-                                        .map(status -> futurePersist(progress, status)))));
+                                        .map(status -> futurePersist(progress, status))));
     }
 
-    private Mono<List<String>> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer, AccessToken token) {
+    private Mono<List<String>> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer) {
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe, token)
+                .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe)
                         .flatMap(arenaArbeidsokerStatus -> Flux.concat(
-                                sendArenaBruker(arenadata, arenaArbeidsokerStatus, ident, miljoe, token)
+                                sendArenaBruker(arenadata, arenaArbeidsokerStatus, ident, miljoe)
                                         .map(brukerStatus -> BRUKER + brukerStatus),
 
-                                sendAap115(arenadata, ident, miljoe, token)
+                                sendAap115(arenadata, ident, miljoe)
                                         .map(aap115tstaus -> AAP115 + aap115tstaus),
 
-                                sendAap(arenadata, ident, miljoe, token)
+                                sendAap(arenadata, ident, miljoe)
                                         .map(aapStataus -> AAP + aapStataus),
 
-                                sendArenadagpenger(arenadata, ident, miljoe, token)
+                                sendArenadagpenger(arenadata, ident, miljoe)
                                         .map(dagpengerStatus -> DAGPENGER + dagpengerStatus)
                         )))
                 .collectList();
@@ -119,8 +117,8 @@ public class ArenaForvalterClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Arena-forvalteren"));
     }
 
-    private Flux<String> sendArenaBruker(Arenadata arenadata, ArenaArbeidssokerBruker arbeidssoker, String
-            ident, String miljoe, AccessToken token) {
+    private Flux<String> sendArenaBruker(Arenadata arenadata, ArenaArbeidssokerBruker arbeidssoker,
+                                         String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .map(arenadata1 -> {
@@ -133,11 +131,11 @@ public class ArenaForvalterClient implements ClientRegister {
                     return arenaNyeBrukere;
                 })
                 .flatMap(arenaNyeBrukere -> (!arbeidssoker.getArbeidsokerList().isEmpty() ?
-                        arenaForvalterConsumer.inaktiverBruker(ident, miljoe, token) :
+                        arenaForvalterConsumer.inaktiverBruker(ident, miljoe) :
                         Mono.just("Ingen sletting"))
                         .map(response -> arenaNyeBrukere))
                 .flatMap(arenaNyeBrukere ->
-                        arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere, token)
+                        arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
                                 .map(respons -> {
                                     if (!respons.getStatus().is2xxSuccessful()) {
                                         return String.format(STATUS_FMT, miljoe,
@@ -171,7 +169,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 });
     }
 
-    private Flux<String> sendAap115(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+    private Flux<String> sendAap115(Arenadata arenadata, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getAap115().isEmpty())
@@ -181,12 +179,12 @@ public class ArenaForvalterClient implements ClientRegister {
                     context.setProperty(MILJOE, miljoe);
                     return mapperFacade.map(arenadata1, Aap115Request.class, context);
                 })
-                .flatMap(request -> arenaForvalterConsumer.postAap115(request, token))
+                .flatMap(arenaForvalterConsumer::postAap115)
                 .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
                         errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
     }
 
-    private Flux<String> sendAap(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+    private Flux<String> sendAap(Arenadata arenadata, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getAap().isEmpty())
@@ -196,12 +194,12 @@ public class ArenaForvalterClient implements ClientRegister {
                     context.setProperty(MILJOE, miljoe);
                     return mapperFacade.map(arenadata1, AapRequest.class, context);
                 })
-                .flatMap(request -> arenaForvalterConsumer.postAap(request, token))
+                .flatMap(arenaForvalterConsumer::postAap)
                 .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
                         errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
     }
 
-    private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe, AccessToken token) {
+    private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getDagpenger().isEmpty())
@@ -211,7 +209,7 @@ public class ArenaForvalterClient implements ClientRegister {
                     context.setProperty(MILJOE, miljoe);
                     return mapperFacade.map(arenadata1, ArenaDagpenger.class, context);
                 })
-                .flatMap(dagpenger -> arenaForvalterConsumer.postArenaDagpenger(dagpenger, token))
+                .flatMap(arenaForvalterConsumer::postArenaDagpenger)
                 .map(response -> {
                     if (!response.getStatus().is2xxSuccessful()) {
                         return String.format(STATUS_FMT, miljoe,

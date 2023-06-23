@@ -1,74 +1,86 @@
 package no.nav.dolly.bestilling.arenaforvalter.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.Value;
+import lombok.experimental.SuperBuilder;
+import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.List;
 
-@Value
+@Data
+@SuperBuilder
 @AllArgsConstructor
-@NoArgsConstructor(force = true)
+@NoArgsConstructor
 public class ArenaResponse {
 
-    String fodselsnr;
-    LocalDate registrertDato;
-    LocalDate sistInaktivDato;
-    String maalform;
-    String statsborgerLand;
-    String bosattStatus;
-    NavKontor lokalkontor;
-    String hovedmaal;
-    Egenskap formidlingsgruppe;
-    Egenskap servicegruppe;
-    Egenskap rettighetsgruppe;
-    Boolean meldeplikt;
-    String meldeform;
-    String meldegruppe;
-    List<Vedtak> vedtakListe;
+    private String miljoe;
+    private HttpStatus status;
+    private String feilmelding;
 
-    @Value
+    private String fodselsnr;
+    private LocalDate registrertDato;
+    private LocalDate sistInaktivDato;
+    private String maalform;
+    private String statsborgerLand;
+    private String bosattStatus;
+    private NavKontor lokalkontor;
+    private String hovedmaal;
+    private Egenskap formidlingsgruppe;
+    private Egenskap servicegruppe;
+    private Egenskap rettighetsgruppe;
+    private Boolean meldeplikt;
+    private String meldeform;
+    private String meldegruppe;
+    private List<Vedtak> vedtakListe;
+
+    @Data
+    @SuperBuilder
     @AllArgsConstructor
-    @NoArgsConstructor(force = true)
+    @NoArgsConstructor
     public static class NavKontor {
 
         String enhetNr;
         String enhetNavn;
     }
 
-    @Value
+    @Data
+    @SuperBuilder
     @AllArgsConstructor
-    @NoArgsConstructor(force = true)
+    @NoArgsConstructor
     public static class Egenskap {
 
-        String kode;
-        String navn;
+        private String kode;
+        private String navn;
     }
 
-    @Value
+    @Data
+    @SuperBuilder
+    @EqualsAndHashCode(callSuper=true)
     @AllArgsConstructor
-    @NoArgsConstructor(force = true)
+    @NoArgsConstructor
     public static class Sak extends Egenskap {
 
-        String status;
-        Integer sakNr;
+        private String status;
+        private Integer sakNr;
     }
 
-
-    @Value
+    @Data
+    @SuperBuilder
     @AllArgsConstructor
-    @NoArgsConstructor(force = true)
+    @NoArgsConstructor
     public static class Vedtak {
 
-        Sak sak;
-        Integer vedtakNr;
-        Egenskap rettighet;
-        Egenskap aktivitetfase;
-        Egenskap type;
-        Egenskap status;
-        String utfall;
-        LocalDate fraDato;
-        LocalDate tilDato;
+        private Sak sak;
+        private Integer vedtakNr;
+        private Egenskap rettighet;
+        private Egenskap aktivitetfase;
+        private Egenskap type;
+        private Egenskap status;
+        private String utfall;
+        private LocalDate fraDato;
+        private LocalDate tilDato;
     }
 }

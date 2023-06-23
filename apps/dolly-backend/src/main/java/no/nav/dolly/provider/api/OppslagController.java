@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer;
+import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
@@ -15,8 +17,6 @@ import no.nav.dolly.bestilling.sykemelding.HelsepersonellConsumer;
 import no.nav.dolly.bestilling.sykemelding.domain.dto.HelsepersonellListeDTO;
 import no.nav.dolly.bestilling.udistub.UdiStubConsumer;
 import no.nav.dolly.bestilling.udistub.domain.UdiPersonResponse;
-import no.nav.dolly.consumer.fastedatasett.DatasettType;
-import no.nav.dolly.consumer.fastedatasett.FasteDatasettConsumer;
 import no.nav.dolly.consumer.generernavn.GenererNavnConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkConsumer;
 import no.nav.dolly.consumer.kodeverk.KodeverkMapper;
@@ -69,7 +69,6 @@ public class OppslagController {
     private final KodeverkConsumer kodeverkConsumer;
     private final PdlPersonConsumer pdlPersonConsumer;
     private final InntektstubConsumer inntektstubConsumer;
-    private final FasteDatasettConsumer fasteDatasettConsumer;
     private final PensjonforvalterConsumer pensjonforvalterConsumer;
     private final GenererNavnConsumer genererNavnConsumer;
     private final InntektsmeldingEnumService inntektsmeldingEnumService;
@@ -81,6 +80,13 @@ public class OppslagController {
 
     private final ArbeidsplassenCVConsumer arbeidsplassenCVConsumer;
     private final OrganisasjonTilgangConsumer organisasjonTilgangConsumer;
+    private final ArenaForvalterConsumer arenaForvalterConsumer;
+
+    @GetMapping("arena/ident{ident}/miljoe/{miljoe}")
+    private Mono<ArenaResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
+
+        return arenaForvalterConsumer.getArenaBruker(ident, miljoe);
+    }
 
     @GetMapping("/organisasjoner/tilgang")
     public Flux<OrganisasjonTilgang> getOrganisasjonerTilgang() {
@@ -181,24 +187,6 @@ public class OppslagController {
     @Operation(description = "Hent liste med helsepersonell")
     public Mono<HelsepersonellListeDTO> getHelsepersonell() {
         return helsepersonellConsumer.getHelsepersonell();
-    }
-
-    @GetMapping("/fastedatasett/{datasettype}")
-    @Operation(description = "Hent faste datasett med beskrivelser")
-    public ResponseEntity<JsonNode> getFasteDatasett(@PathVariable DatasettType datasettype) {
-        return fasteDatasettConsumer.hentDatasett(datasettype);
-    }
-
-    @GetMapping("/fastedatasett/tps/{gruppe}")
-    @Operation(description = "Hent faste datasett gruppe med beskrivelser")
-    public ResponseEntity<JsonNode> getFasteDatasettGruppe(@PathVariable String gruppe) {
-        return fasteDatasettConsumer.hentDatasettGruppe(gruppe);
-    }
-
-    @GetMapping("/orgnummer")
-    @Operation(description = "Hent faste orgnummer")
-    public ResponseEntity<JsonNode> getOrgnummer() {
-        return fasteDatasettConsumer.hentOrgnummer();
     }
 
     @GetMapping("/popp/inntekt/{ident}/{miljoe}")

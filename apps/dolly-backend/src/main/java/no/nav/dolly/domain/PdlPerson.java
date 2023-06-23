@@ -412,6 +412,7 @@ public class PdlPerson {
     }
 
     @lombok.Data
+    @EqualsAndHashCode(callSuper = true)
     @NoArgsConstructor
     @AllArgsConstructor
     public static class UtflyttingFraNorge extends DbVersjonDTO {
