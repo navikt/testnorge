@@ -3,6 +3,7 @@ package no.nav.testnav.endringsmeldingservice.consumer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.endringsmeldingservice.config.credentias.TpsMessagingServiceProperties;
 import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
+import no.nav.testnav.libs.dto.tpsmessagingservice.v1.PersonMiljoeDTO;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;
@@ -11,9 +12,7 @@ import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
-
-import java.util.Set;
+import reactor.core.publisher.Flux;
 
 @Component
 public class TpsMessagingConsumer {
@@ -45,9 +44,9 @@ public class TpsMessagingConsumer {
                 .build();
     }
 
-    public Mono<Set<String>> hentMiljoer(String ident) {
+    public Flux<PersonMiljoeDTO> hentMiljoer(String ident) {
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMap(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
+                .flatMapMany(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
     }
 }
