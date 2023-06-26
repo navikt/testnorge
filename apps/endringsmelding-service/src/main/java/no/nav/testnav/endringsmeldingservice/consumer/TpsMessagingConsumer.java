@@ -1,13 +1,8 @@
 package no.nav.testnav.endringsmeldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import no.nav.testnav.endringsmeldingservice.config.credentias.TpsForvalterenProxyServiceProperties;
-import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
-import no.nav.testnav.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
-import no.nav.testnav.endringsmeldingservice.consumer.dto.DoedsmeldingDTO;
-import no.nav.testnav.endringsmeldingservice.consumer.request.FoedselsmeldingRequest;
-import no.nav.testnav.endringsmeldingservice.domain.Status;
-import no.nav.testnav.libs.dto.endringsmelding.v1.FoedselsmeldingDTO;
+import no.nav.testnav.endringsmeldingservice.config.credentias.TpsMessagingServiceProperties;
+import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.testnav.libs.reactivesecurity.exchange.TokenExchange;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import org.springframework.http.MediaType;
@@ -21,13 +16,13 @@ import reactor.core.publisher.Mono;
 import java.util.Set;
 
 @Component
-public class TpsForvalterConsumer {
+public class TpsMessagingConsumer {
     private final WebClient webClient;
     private final ServerProperties serverProperties;
     private final TokenExchange accessTokenService;
 
-    public TpsForvalterConsumer(
-            TpsForvalterenProxyServiceProperties serverProperties,
+    public TpsMessagingConsumer(
+            TpsMessagingServiceProperties serverProperties,
             TokenExchange tokenExchange,
             ObjectMapper objectMapper) {
 
@@ -50,17 +45,9 @@ public class TpsForvalterConsumer {
                 .build();
     }
 
-    public Mono<Status> sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {
+    public Mono<Set<String>> hentMiljoer(String ident) {
         return accessTokenService
                 .exchange(serverProperties)
-                .flatMap(accessToken -> new SendFoedselsmeldingCommand(webClient, new FoedselsmeldingRequest(dto, miljoer), accessToken.getTokenValue()).call())
-                .map(Status::new);
-    }
-
-    public Mono<Status> sendDoedsmelding(no.nav.testnav.libs.dto.endringsmelding.v1.DoedsmeldingDTO dto, Set<String> miljoer) {
-        return accessTokenService
-                .exchange(serverProperties)
-                .flatMap(accessToken -> new SendDoedsmeldingCommand(webClient, new DoedsmeldingDTO(dto, miljoer), accessToken.getTokenValue()).call())
-                .map(Status::new);
+                .flatMap(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
     }
 }

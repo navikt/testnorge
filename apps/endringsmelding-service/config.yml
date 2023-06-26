@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   webproxy: true
   tokenx:
@@ -28,6 +28,7 @@ spec:
     outbound:
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
+        - host: testnav-tps-messaging-service.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4

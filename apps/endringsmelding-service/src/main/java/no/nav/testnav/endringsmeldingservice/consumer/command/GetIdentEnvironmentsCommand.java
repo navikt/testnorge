@@ -25,10 +25,8 @@ public class GetIdentEnvironmentsCommand implements Callable<Mono<Set<String>>> 
     public Mono<Set<String>> call() {
         return webClient
                 .get()
-                .uri(builder -> builder.path("/api/v1/testdata/tpsStatus")
-                        .queryParam("identer", ident)
-                        .queryParam("includeProd", false).build()
-                )
+                .uri(builder -> builder.path("/api/v1/personer/{ident}")
+                        .build(ident))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .retrieve()
                 .bodyToMono(StatusPaaIdenterDTO.class)

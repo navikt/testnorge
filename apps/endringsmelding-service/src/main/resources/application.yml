@@ -28,6 +28,11 @@ consumers:
     cluster: dev-fss
     namespace: dolly
     name: tps-forvalteren-proxy
+  tps-messaging-service:
+    url: https://testnav-tps-messaging-service.intern.dev.nav.no/
+    cluster: dev-gcp
+    namespace: dolly
+    name: testnav-tps-messaging-service
 
 management:
   endpoints:
