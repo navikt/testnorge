@@ -7,15 +7,18 @@ import { FormikProps } from 'formik'
 interface UtenlandskAdresseForm {
 	formikBag: FormikProps<{}>
 	path: string
+	master?: string | unknown
 }
 
-export const UtenlandskAdresse = ({ formikBag, path }: UtenlandskAdresseForm) => {
+export const UtenlandskAdresse = ({ formikBag, path, master }: UtenlandskAdresseForm) => {
 	const harAdressenavn =
 		_.get(formikBag.values, `${path}.adressenavnNummer`) !== '' &&
 		_.get(formikBag.values, `${path}.adressenavnNummer`) !== null
+
 	const harPostboksnummer =
 		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== '' &&
 		_.get(formikBag.values, `${path}.postboksNummerNavn`) !== null
+
 	return (
 		<div className="flexbox--flex-wrap">
 			<FormikTextInput
@@ -39,8 +42,18 @@ export const UtenlandskAdresse = ({ formikBag, path }: UtenlandskAdresseForm) =>
 				isClearable={false}
 				size="large"
 			/>
-			<FormikTextInput name={`${path}.bygningEtasjeLeilighet`} label="Bygg-/leilighetsinfo" />
-			<FormikTextInput name={`${path}.regionDistriktOmraade`} label="Region/distrikt/område" />
+			<FormikTextInput
+				name={`${path}.bygningEtasjeLeilighet`}
+				label="Bygg-/leilighetsinfo"
+				isDisabled={master !== 'PDL'}
+				title={master !== 'PDL' ? 'Kan bare settes hvis master er PDL' : null}
+			/>
+			<FormikTextInput
+				name={`${path}.regionDistriktOmraade`}
+				label="Region/distrikt/område"
+				isDisabled={master !== 'PDL'}
+				title={master !== 'PDL' ? 'Kan bare settes hvis master er PDL' : null}
+			/>
 		</div>
 	)
 }

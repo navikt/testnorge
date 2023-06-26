@@ -7,9 +7,10 @@ import { SelectOptionsManager as Options } from '@/service/SelectOptions'
 interface AvansertFormValues {
 	path: string
 	kanVelgeMaster?: boolean
+	handleChange?: Function
 }
 
-export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues) => {
+export const AvansertForm = ({ path, kanVelgeMaster = true, handleChange = null }: AvansertFormValues) => {
 	const [visAvansert, setVisAvansert, setSkjulAvansert] = useBoolean(false)
 
 	return (
@@ -31,6 +32,7 @@ export const AvansertForm = ({ path, kanVelgeMaster = true }: AvansertFormValues
 						label="Master"
 						options={Options('master')}
 						isDisabled={!kanVelgeMaster}
+						onChange={(target) => handleChange(target, path) || undefined}
 					/>
 					{/*Gjeldende skjules frem til vi finner en måte å håndtere den på*/}
 					{/*<FormikCheckbox name={`${path}.gjeldende`} label="Er gjeldende" checkboxMargin />*/}

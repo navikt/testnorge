@@ -89,6 +89,15 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
+	const handleChangeMaster = (target: Target, path: string) => {
+		formikBag.setFieldValue(`${path}.master`, target.value)
+		const utenlandskAdresse = _.get(formikBag.values, `${path}.utenlandskAdresse`)
+		if (utenlandskAdresse && target.value !== 'PDL') {
+			formikBag.setFieldValue(`${path}.utenlandskAdresse.bygningEtasjeLeilighet`, null)
+			formikBag.setFieldValue(`${path}.utenlandskAdresse.regionDistriktOmraade`, null)
+		}
+	}
+
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
@@ -107,7 +116,11 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
 				<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
@@ -130,9 +143,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm
-				path={path}
-			/>
+			<AvansertForm path={path} handleChange={handleChangeMaster}/>
 		</React.Fragment>
 	)
 }
