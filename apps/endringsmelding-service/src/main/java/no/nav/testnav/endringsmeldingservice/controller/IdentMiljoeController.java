@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
+import reactor.core.publisher.Flux;
 
 @RestController
 @RequestMapping("/api/v1/identer/{ident}/miljoer")
@@ -16,7 +16,7 @@ public class IdentMiljoeController {
     private final TpsMessagingConsumer tpsMessagingConsumer;
 
     @GetMapping
-    public Mono<ResponseEntity<?>> getMiljoer(@PathVariable String ident) {
+    public Flux<ResponseEntity<?>> getMiljoer(@PathVariable String ident) {
         return tpsMessagingConsumer.hentMiljoer(ident)
                 .map(miljoer -> {
                     if (miljoer == null) {
