@@ -242,6 +242,20 @@ export default {
 			})
 	},
 
+	lagreOrganisasjonMalFraBestillingId(bestillingId, malNavn) {
+		return Request.post(Endpoints.organisasjonMalBestillingMedBestillingId(bestillingId, malNavn))
+			.then((response) => {
+				if (!response.data) {
+					throw new Error(response.statusText)
+				}
+				return response
+			})
+			.catch((error) => {
+				console.error(error)
+				throw error
+			})
+	},
+
 	slettMalOrganisasjon(malId) {
 		return Request.delete(Endpoints.malBestillingOrganisasjon(malId))
 			.then((response) => {
