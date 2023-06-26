@@ -27,7 +27,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -55,7 +59,8 @@ public class OrganisasjonBestillingService {
     private static final List<Status> DEPLOY_ENDED_STATUS_LIST = List.of(COMPLETED, ERROR, FAILED);
 
     private final BrukerRepository brukerRepository;
-    private final OrganisasjonBestillingRepository bestillingRepository;
+    private final OrganisasjonBestillingRepository organisasjonBestillingRepository;
+    private final OrganisasjonBestillingMalService organisasjonBestillingMalService;
     private final OrganisasjonProgressService progressService;
     private final OrganisasjonConsumer organisasjonConsumer;
     private final BrukerService brukerService;
@@ -66,7 +71,7 @@ public class OrganisasjonBestillingService {
     @Transactional
     public RsOrganisasjonBestillingStatus fetchBestillingStatusById(Long bestillingId) {
 
-        OrganisasjonBestilling bestilling = bestillingRepository.findById(bestillingId)
+        OrganisasjonBestilling bestilling = organisasjonBestillingRepository.findById(bestillingId)
                 .orElseThrow(() -> new NotFoundException("Fant ikke bestilling med id " + bestillingId));
 
         OrganisasjonBestillingProgress bestillingProgress;
@@ -95,7 +100,6 @@ public class OrganisasjonBestillingService {
                 .feil(bestilling.getFeil())
                 .environments(Set.of(bestilling.getMiljoer().split(",")))
                 .antallLevert(isTrue(bestilling.getFerdig()) && isBlank(bestilling.getFeil()) ? 1 : 0)
-                .malBestillingNavn(bestilling.getMalBestillingNavn())
                 .build();
     }
 
@@ -116,27 +120,15 @@ public class OrganisasjonBestillingService {
                         .feil(progress.getBestilling().getFeil())
                         .environments(Set.of(progress.getBestilling().getMiljoer().split(",")))
                         .antallLevert(isTrue(progress.getBestilling().getFerdig()) && isBlank(progress.getBestilling().getFeil()) ? 1 : 0)
-                        .malBestillingNavn(progress.getBestilling().getMalBestillingNavn())
                         .build())
                 .sorted((a, b) -> a.getSistOppdatert().isAfter(b.getSistOppdatert()) ? -1 : 1)
                 .toList();
     }
 
-    public List<OrganisasjonBestilling> fetchMalBestillinger() {
-        return bestillingRepository.findMalBestilling();
-    }
-
-    public List<OrganisasjonBestilling> fetchMalbestillingByNavnAndUser(String brukerId, String malNavn) {
-        Bruker bruker = brukerService.fetchBruker(brukerId);
-        return nonNull(malNavn)
-                ? bestillingRepository.findMalBestillingByMalnavnAndUser(bruker, malNavn)
-                : bestillingRepository.findMalBestillingByUser(bruker);
-    }
-
     @Transactional
     public OrganisasjonBestilling cancelBestilling(Long bestillingId) {
 
-        Optional<OrganisasjonBestilling> bestillingById = bestillingRepository.findById(bestillingId);
+        Optional<OrganisasjonBestilling> bestillingById = organisasjonBestillingRepository.findById(bestillingId);
         OrganisasjonBestilling organisasjonBestilling = bestillingById.orElseThrow(() -> new NotFoundException(format("Fant ikke organisasjon bestillingId %d", bestillingId)));
 
         organisasjonBestilling.setFeil("Bestilling stoppet");
@@ -150,7 +142,7 @@ public class OrganisasjonBestillingService {
     public OrganisasjonBestilling saveBestillingToDB(OrganisasjonBestilling bestilling) {
 
         try {
-            return bestillingRepository.save(bestilling);
+            return organisasjonBestillingRepository.save(bestilling);
         } catch (DataIntegrityViolationException e) {
             throw new ConstraintViolationException("Kunne ikke lagre bestilling: " + e.getMessage(), e);
         }
@@ -159,43 +151,47 @@ public class OrganisasjonBestillingService {
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestilling request) {
 
-        return saveBestillingToDB(
-                OrganisasjonBestilling.builder()
-                        .antall(1)
-                        .ferdig(false)
-                        .sistOppdatert(now())
-                        .miljoer(join(",", request.getEnvironments()))
-                        .bestKriterier(toJson(request.getOrganisasjon()))
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
-                        .malBestillingNavn(request.getMalBestillingNavn())
-                        .build());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
+                .antall(1)
+                .ferdig(false)
+                .sistOppdatert(now())
+                .miljoer(join(",", request.getEnvironments()))
+                .bestKriterier(toJson(request.getOrganisasjon()))
+                .bruker(bruker)
+                .build();
+
+        organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+
+        return saveBestillingToDB(bestilling);
     }
 
     @Transactional
     public OrganisasjonBestilling saveBestilling(RsOrganisasjonBestillingStatus status) {
 
-        return saveBestillingToDB(
-                OrganisasjonBestilling.builder()
-                        .antall(1)
-                        .sistOppdatert(now())
-                        .ferdig(isTrue(status.getFerdig()))
-                        .miljoer(join(",", status.getEnvironments()))
-                        .bestKriterier(toJson(status.getBestilling()))
-                        .bruker(brukerService.fetchOrCreateBruker(getUserId(getUserInfo)))
-                        .malBestillingNavn(status.getMalBestillingNavn())
-                        .build());
+        Bruker bruker = brukerService.fetchOrCreateBruker(getUserId(getUserInfo));
+        OrganisasjonBestilling bestilling = OrganisasjonBestilling.builder()
+                .antall(1)
+                .sistOppdatert(now())
+                .ferdig(isTrue(status.getFerdig()))
+                .miljoer(join(",", status.getEnvironments()))
+                .bestKriterier(toJson(status.getBestilling()))
+                .bruker(bruker)
+                .build();
+
+        return saveBestillingToDB(bestilling);
     }
 
     @Transactional
     public void setBestillingFeil(Long bestillingId, String feil) {
 
-        Optional<OrganisasjonBestilling> byId = bestillingRepository.findById(bestillingId);
+        Optional<OrganisasjonBestilling> byId = organisasjonBestillingRepository.findById(bestillingId);
 
         byId.ifPresent(bestilling -> {
             bestilling.setFeil(feil);
             bestilling.setFerdig(Boolean.TRUE);
             bestilling.setSistOppdatert(now());
-            bestillingRepository.save(bestilling);
+            organisasjonBestillingRepository.save(bestilling);
         });
     }
 
@@ -210,7 +206,7 @@ public class OrganisasjonBestillingService {
 
         progressService.deleteByOrgnummer(orgnummer);
 
-        bestillinger.forEach(bestillingRepository::deleteBestillingWithNoChildren);
+        bestillinger.forEach(organisasjonBestillingRepository::deleteBestillingWithNoChildren);
     }
 
     public List<OrganisasjonBestilling> fetchOrganisasjonBestillingByBrukerId(String brukerId) {
@@ -219,15 +215,7 @@ public class OrganisasjonBestillingService {
                 brukerRepository.findBrukerByBrukerId(brukerId)
                         .orElseThrow(() -> new NotFoundException("Bruker ikke funnet med id " + brukerId));
 
-        return bestillingRepository.findByBruker(bruker);
-    }
-
-    @Transactional
-    public void redigerMalBestillingNavn(Long id, String malbestillingNavn) {
-
-        Optional<OrganisasjonBestilling> token = bestillingRepository.findById(id);
-        OrganisasjonBestilling bestilling = token.orElseThrow(() -> new NotFoundException(format("Id {%d} ikke funnet ", id)));
-        bestilling.setMalBestillingNavn(malbestillingNavn);
+        return organisasjonBestillingRepository.findByBruker(bruker);
     }
 
     public List<OrganisasjonDetaljer> getOrganisasjoner(String brukerId) {
@@ -307,4 +295,5 @@ public class OrganisasjonBestillingService {
         }
         return null;
     }
+
 }

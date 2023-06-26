@@ -1,6 +1,6 @@
 import { Alert, Tabs } from '@navikt/ds-react'
 import styled from 'styled-components'
-import React from 'react'
+import React, { useState } from 'react'
 
 const StyledTabs = styled(Tabs)`
 	margin-top: -10px;
@@ -30,6 +30,8 @@ const ErrorMiljoTab = styled(Tabs.Tab)`
 `
 
 export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, data, children }) => {
+	const [isPanelOpen, setPanelOpen] = useState()
+
 	return (
 		<StyledTabs size="small" defaultValue={forsteMiljo}>
 			<Tabs.List>
@@ -69,7 +71,12 @@ export const MiljoTabs = ({ bestilteMiljoer, errorMiljoer = [], forsteMiljo, dat
 								{miljoData?.info ? miljoData.info : 'Fant ingen data i dette miljøet'}
 							</Alert>
 						) : (
-							React.cloneElement(children, { data: miljoData?.data, miljo: miljoData?.miljo })
+							React.cloneElement(children, {
+								data: miljoData?.data,
+								miljo: miljoData?.miljo,
+								isPanelOpen: isPanelOpen,
+								setPanelOpen: setPanelOpen,
+							})
 						)}
 					</StyledPanel>
 				)

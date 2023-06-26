@@ -5,13 +5,18 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { DollyApi } from '@/service/Api'
+import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '@/utils/hooks/useMutate'
 
 export const MalModal = ({ id, closeModal }) => {
-	const lagreEndring = () => {
-		DollyApi.endreMalNavn(id, nyttMalnavn).then(closeModal())
+	const [nyttMalnavn, setMalnavn] = useState('')
+	const matchMutate = useMatchMutate()
+	const lagreMal = () => {
+		DollyApi.lagreMalFraBestillingId(id, nyttMalnavn).then(() =>
+			matchMutate(REGEX_BACKEND_BESTILLINGER)
+		)
+		closeModal()
 	}
 
-	const [nyttMalnavn, setMalnavn] = useState('')
 	return (
 		<ErrorBoundary>
 			<DollyModal isOpen closeModal={closeModal} width="40%" overflow="auto">
@@ -28,7 +33,7 @@ export const MalModal = ({ id, closeModal }) => {
 					<ModalActionKnapper
 						submitknapp="Lagre mal"
 						disabled={nyttMalnavn === ''}
-						onSubmit={lagreEndring}
+						onSubmit={lagreMal}
 						onAvbryt={closeModal}
 						center
 					/>

@@ -20,11 +20,15 @@ const getTittel = (data) => {
 	return `Pensjonsgivende inntekter (${foerste} - ${siste})`
 }
 
-const PensjonInntekt = ({ data }) => {
+const PensjonInntekt = ({ data, isPanelOpen, setPanelOpen }) => {
 	if (!data) return null
 
 	return (
-		<Panel startOpen={runningCypressE2E()} heading={getTittel(data)}>
+		<Panel
+			startOpen={isPanelOpen || runningCypressE2E()}
+			heading={getTittel(data)}
+			setPanelOpen={setPanelOpen}
+		>
 			<DollyFieldArray data={data} nested>
 				{(inntekt, idx) => (
 					<div className="person-visning_content" key={idx}>

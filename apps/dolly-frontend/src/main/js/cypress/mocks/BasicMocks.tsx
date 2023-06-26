@@ -45,14 +45,18 @@ const malBestilling = {
 		egenAnsattDatoFom: '2022-09-06T10:24:03',
 	},
 }
-export const brukerMalerMock = [
-	{
-		id: 1,
-		malNavn: 'Teste Cypress',
-		bestilling: malBestilling,
-		bruker: gjeldendeBrukerMock,
+export const brukerMalerMock = {
+	malbestillinger: {
+		testbruker: [
+			{
+				id: 1,
+				malNavn: 'Teste Cypress',
+				bestilling: malBestilling,
+				bruker: gjeldendeBrukerMock,
+			},
+		],
 	},
-]
+}
 
 export const brukerMalerEndretMock = [
 	{
@@ -90,20 +94,24 @@ export const avbruttBestillingMock = {
 
 export const uferdigeBestillingerMock = [uferdigBestillingMock]
 
-export const brukerOrganisasjonMalerMock = [
-	{
-		id: 1,
-		malNavn: 'Organisasjon issues',
+export const brukerOrganisasjonMalerMock = {
+	malbestillinger: {
+		testbruker: [
+			{
+				id: 1,
+				malNavn: 'Organisasjon issues',
+			},
+			{
+				id: 2,
+				malNavn: 'Organisasjon issues #2',
+			},
+			{
+				id: 3,
+				malNavn: 'Organisasjon issues #3',
+			},
+		],
 	},
-	{
-		id: 2,
-		malNavn: 'Organisasjon issues #2',
-	},
-	{
-		id: 3,
-		malNavn: 'Organisasjon issues #3',
-	},
-]
+}
 
 export const organisasjonerForBrukerMock = [
 	{
