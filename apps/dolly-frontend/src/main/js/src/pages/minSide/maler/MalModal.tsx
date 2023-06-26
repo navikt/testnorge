@@ -5,15 +5,23 @@ import { TextInput } from '@/components/ui/form/inputs/textInput/TextInput'
 import ModalActionKnapper from '@/components/ui/modal/ModalActionKnapper'
 import { Label } from '@/components/ui/form/inputs/label/Label'
 import { DollyApi } from '@/service/Api'
-import { REGEX_BACKEND_BESTILLINGER, useMatchMutate } from '@/utils/hooks/useMutate'
+import {
+	REGEX_BACKEND_BESTILLINGER,
+	REGEX_BACKEND_ORGANISASJONER,
+	useMatchMutate,
+} from '@/utils/hooks/useMutate'
 
-export const MalModal = ({ id, closeModal }) => {
+export const MalModal = ({ id, erOrganisasjon, closeModal }) => {
 	const [nyttMalnavn, setMalnavn] = useState('')
 	const matchMutate = useMatchMutate()
 	const lagreMal = () => {
-		DollyApi.lagreMalFraBestillingId(id, nyttMalnavn).then(() =>
-			matchMutate(REGEX_BACKEND_BESTILLINGER)
-		)
+		erOrganisasjon
+			? DollyApi.lagreOrganisasjonMalFraBestillingId(id, nyttMalnavn).then(() =>
+					matchMutate(REGEX_BACKEND_ORGANISASJONER)
+			  )
+			: DollyApi.lagreMalFraBestillingId(id, nyttMalnavn).then(() =>
+					matchMutate(REGEX_BACKEND_BESTILLINGER)
+			  )
 		closeModal()
 	}
 
