@@ -53,6 +53,7 @@ Ha naisdevice kjørende og kjør StatiskDataForvalterApplicationStarter med føl
 -Dspring.cloud.vault.token=[kopier token fra vault]
 -Dspring.profiles.active=local
 ```
+NB! Applikasjonen starter på port 4390. Swagger på [http://localhost:4390/swagger](http://localhost:4390/swagger).
 
 ### Utviklerimage
 I utviklerimage brukes ikke naisdevice og du må legge til følgende ekstra argumenter:
