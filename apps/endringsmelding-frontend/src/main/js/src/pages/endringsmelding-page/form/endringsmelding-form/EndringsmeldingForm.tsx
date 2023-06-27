@@ -33,14 +33,6 @@ export const initState: State = {
   show: true,
 };
 
-type PersonMiljoeDTO = {
-  miljoe: string;
-  person: any;
-  melding: string;
-  status: string;
-  utfyllendeMelding: string;
-};
-
 export default <T extends {}>({
   children,
   onSend,
@@ -92,7 +84,6 @@ export default <T extends {}>({
     <Form>
       <Search
         onChange={(value) => {
-          setSearch(value);
           setIdent(value);
           dispatch({ type: Action.SET_IDENT_ACTION, value: value });
         }}
