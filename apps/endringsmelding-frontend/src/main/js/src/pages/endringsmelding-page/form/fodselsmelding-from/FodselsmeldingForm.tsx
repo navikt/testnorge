@@ -126,10 +126,14 @@ export default () => {
           htmlId="miljo-select"
           label="Send til miljo*"
           error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
-          options={state.miljoOptions?.map((value: string) => ({
-            value: value,
-            label: value.toUpperCase(),
-          }))}
+          options={
+            !state.miljoOptions || state.miljoOptions?.length === 0
+              ? []
+              : state.miljoOptions?.map((value: string) => ({
+                  value: value,
+                  label: value.toUpperCase(),
+                }))
+          }
         />
         <SelectFormItem
           label="Adresse"
