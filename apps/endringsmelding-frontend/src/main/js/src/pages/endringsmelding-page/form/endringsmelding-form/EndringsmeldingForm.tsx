@@ -33,6 +33,14 @@ export const initState: State = {
   show: false,
 };
 
+type PersonMiljoeDTO = {
+  miljoe: string;
+  person: any;
+  melding: string;
+  status: string;
+  utfyllendeMelding: string;
+};
+
 export default <T extends {}>({
   children,
   onSend,
@@ -51,8 +59,8 @@ export default <T extends {}>({
 
   const onSearch = (value: string) =>
     fetchMiljoer(value)
-      .then((response) => {
-        setMiljoer(response);
+      .then((response: [PersonMiljoeDTO]) => {
+        setMiljoer(response.map((resp) => resp.miljoe));
         dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
       })
       .catch((e) => {
