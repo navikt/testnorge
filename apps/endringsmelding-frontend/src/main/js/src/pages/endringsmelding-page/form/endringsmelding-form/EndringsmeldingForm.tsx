@@ -65,7 +65,7 @@ export default <T extends {}>({
     error
       ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
       : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [ident, error]);
+  }, [identer, error]);
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
