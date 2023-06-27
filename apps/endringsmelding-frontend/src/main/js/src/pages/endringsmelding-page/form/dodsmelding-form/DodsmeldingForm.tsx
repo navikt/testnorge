@@ -58,9 +58,10 @@ export default () => {
       valid={onValidate}
       setIdent={(ident) => dispatch({ type: Action.SET_IDENT_ACTION, value: ident })}
       getSuccessMessage={getSuccessMessage}
-      setMiljoer={(miljoer) =>
-        dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer })
-      }
+      setMiljoer={(miljoer) => {
+        console.log('fant ident i følgende miljøer: ' + miljoer); //TODO - SLETT MEG
+        dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
+      }}
     >
       <Line>
         <SelectFormItem

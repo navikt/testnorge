@@ -53,7 +53,7 @@ export default <T extends {}>({
   const { error, identer, loading } = useIdentSearch(search);
 
   useEffect(() => {
-    setMiljoer(identer?.map((response) => response.miljoe));
+    setMiljoer(identer?.map((ident) => ident.miljoe));
     error
       ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
       : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
