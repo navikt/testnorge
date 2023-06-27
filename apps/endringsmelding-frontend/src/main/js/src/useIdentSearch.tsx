@@ -22,9 +22,6 @@ const fetcher = (url, headers) =>
 const getIdentSearchUrl = (ident) => `/endringsmelding-service/api/v1/identer/${ident}/miljoer`;
 
 export const useIdentSearch = (ident) => {
-  if (!ident) {
-    return null;
-  }
   const { data, isLoading, error } = useSWR<any, Error>(getIdentSearchUrl(ident), fetcher);
 
   return {
