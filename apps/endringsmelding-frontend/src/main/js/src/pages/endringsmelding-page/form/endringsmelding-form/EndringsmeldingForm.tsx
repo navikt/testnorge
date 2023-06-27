@@ -30,7 +30,7 @@ type Props<T> = {
 export const initState: State = {
   ident: '',
   loading: false,
-  show: false,
+  show: true,
 };
 
 type PersonMiljoeDTO = {

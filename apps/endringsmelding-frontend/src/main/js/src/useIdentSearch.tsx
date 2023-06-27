@@ -19,7 +19,9 @@ const fetcher = (url, headers) =>
       throw new Error(`Henting av data fra ${url} feilet.`);
     });
 
-const getIdentSearchUrl = (ident) => `/endringsmelding-service/api/v1/identer/${ident}/miljoer`;
+const getIdentSearchUrl = (ident) => {
+  return ident ? `/endringsmelding-service/api/v1/identer/${ident}/miljoer` : null;
+};
 
 export const useIdentSearch = (ident) => {
   const { data, isLoading, error } = useSWR<any, Error>(getIdentSearchUrl(ident), fetcher);
