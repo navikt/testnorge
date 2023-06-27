@@ -108,10 +108,10 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (
-            <WarningAlert label={labels.onNotFound} />
+            <SuccessAlert label={labels.onFound} />
           )
         ) : (
-          <SuccessAlert label={labels.onFound} />
+          <WarningAlert label={labels.onNotFound} />
         )}
       </Alert>
     </Search>
