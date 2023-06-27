@@ -9,7 +9,7 @@ import {
   WarningAlert,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { NotFoundError } from '@navikt/dolly-lib';
+import { useIdentSearch } from '@/useIdentSearch';
 
 const Search = styled.div`
   display: flex;
@@ -55,29 +55,11 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => {
-  const [loading, setLoading] = useState(false);
+export default <T extends unknown>({ labels, onChange }: Props<T>) => {
   const [value, setValue] = useState('');
-  const [success, setSuccess] = useState(undefined);
-  const [error, setError] = useState(false);
+  const [search, setSearch] = useState(null);
 
-  const _onSearch = (value: string) => {
-    setLoading(true);
-    setSuccess(undefined);
-    setError(false);
-    return onSearch(value)
-      .then((response) => {
-        setSuccess(true);
-        return response;
-      })
-      .catch((e) => {
-        setSuccess(false);
-        if (!(e instanceof NotFoundError)) {
-          setError(true);
-        }
-      })
-      .finally(() => setLoading(false));
-  };
+  const { error, identer, loading } = useIdentSearch(search);
 
   return (
     <Search>
@@ -92,7 +74,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
         }}
       />
       <StyledKnapp
-        onClick={() => _onSearch(value)}
+        onClick={() => setSearch(value)}
         disabled={loading || isSyntheticIdent(value)}
         loading={loading}
       >
@@ -100,7 +82,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
-        {!value ? null : value.length === 0 ? (
+        {!identer ? null : identer.length === 0 ? (
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (
