@@ -39,7 +39,7 @@ export default () => {
     );
 
   const getSuccessMessage = () => {
-    const miljoer = state.miljoer.join(', ');
+    const miljoer = state.miljoer?.join(', ');
     if (state.handling === 'SETTE_DOEDSDATO') {
       return `Send dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
     }
@@ -102,10 +102,14 @@ export default () => {
           multi={true}
           label="Send til miljo*"
           error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
-          options={state.miljoOptions.map((value: string) => ({
-            value: value,
-            label: value.toUpperCase(),
-          }))}
+          options={
+            !state.miljoOptions || state.miljoOptions?.length === 0
+              ? []
+              : state.miljoOptions?.map((value: string) => ({
+                  value: value,
+                  label: value.toUpperCase(),
+                }))
+          }
         />
       </Line>
     </EndringsmeldingForm>
