@@ -100,7 +100,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
-        {value == undefined ? null : !value ? (
+        {!value ? null : value.length === 0 ? (
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (
