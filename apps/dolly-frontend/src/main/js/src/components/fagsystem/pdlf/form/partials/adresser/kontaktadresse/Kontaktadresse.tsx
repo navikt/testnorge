@@ -90,7 +90,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 	}
 
 	const handleChangeMaster = (target: Target, path: string) => {
-		formikBag.setFieldValue(`${path}.master`, target.value)
+		formikBag.setFieldValue(`${path}.master`, target?.value)
 		const utenlandskAdresse = _.get(formikBag.values, `${path}.utenlandskAdresse`)
 		if (utenlandskAdresse && target.value !== 'PDL') {
 			formikBag.setFieldValue(`${path}.utenlandskAdresse.bygningEtasjeLeilighet`, null)
@@ -143,7 +143,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} handleChange={handleChangeMaster}/>
+			<AvansertForm path={path} handleChange={handleChangeMaster} />
 		</React.Fragment>
 	)
 }
