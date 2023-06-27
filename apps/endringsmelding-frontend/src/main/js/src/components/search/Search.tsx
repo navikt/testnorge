@@ -67,6 +67,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
     setError(false);
     return onSearch(value)
       .then((response) => {
+        console.log('response: ', response);
         if (!response || response.length === 0) {
           setSuccess(false);
           throw new NotFoundError();
@@ -108,10 +109,10 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (
-            <SuccessAlert label={labels.onFound} />
+            <WarningAlert label={labels.onNotFound} />
           )
         ) : (
-          <WarningAlert label={labels.onNotFound} />
+          <SuccessAlert label={labels.onFound} />
         )}
       </Alert>
     </Search>
