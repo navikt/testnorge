@@ -13,9 +13,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ArenaBruker {
 
+    public enum BrukerStatus {OK, ERROR, BRUKER_EKSISTERER_ALLEREDE}
+
     private String personident;
     private String miljoe;
-    private String status;
+    private BrukerStatus status;
     private String eier;
     private String servicebehov;
     private String automatiskInnsendingAvMeldekort;

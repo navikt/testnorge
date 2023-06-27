@@ -6,15 +6,21 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.ClientRegister;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
+import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
+import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.dolly.DollyPerson;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
@@ -23,10 +29,14 @@ import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
@@ -36,16 +46,20 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 @RequiredArgsConstructor
 public class ArenaForvalterClient implements ClientRegister {
 
-    private static final String STATUS_FMT = "%s$%s";
+    private static final String MILJOE_FMT = "%s$%s";
+    private static final String MILJOE2_FMT = "%s$%s %s";
+    private static final String STATUS_FMT = "%s:%s";
     private static final String SYSTEM = "Arena";
     private static final String IDENT = "ident";
     private static final String MILJOE = "miljoe";
-
-    private static final String FEIL = "Feil: ";
-    private static final String BRUKER = "bruker:";
-    private static final String AAP115 = "aap115:";
-    private static final String AAP = "aap:";
-    private static final String DAGPENGER = "dagpenger:";
+    private static final String BRUKER = "BRUKER";
+    private static final String AAP115 = "AAP115";
+    private static final String AAP = "AAP";
+    private static final String DAGPENGER = "DAGP";
+    private static final String STANSET = "Stanset forrige vedtak: ";
+    private static final String OPPRETTET = "Oppretting ";
+    private static final String AVSLAG = "Avslag ";
+    private static final String INAKTIVERT = "Inaktivert ";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;
@@ -59,46 +73,42 @@ public class ArenaForvalterClient implements ClientRegister {
                 .filter(best -> nonNull(best.getArenaforvalter()))
                 .map(RsDollyUtvidetBestilling::getArenaforvalter)
                 .flatMap(ordre -> arenaForvalterConsumer.getEnvironments()
-                                .filter(env -> bestilling.getEnvironments().contains(env))
-                                .collectList()
-                                .doOnNext(miljoer -> {
-                                    var initStatus = miljoer.stream()
-                                            .map(miljo -> String.format(STATUS_FMT, miljo, getInfoVenter(SYSTEM)))
-                                            .collect(Collectors.joining(","));
-                                    transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
-                                })
-                                .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
-                                        .map(this::parseStatus)
-                                        .map(status -> futurePersist(progress, status))));
+                        .filter(env -> bestilling.getEnvironments().contains(env))
+                        .collectList()
+                        .doOnNext(miljoer -> {
+                            var initStatus = miljoer.stream()
+                                    .map(miljo -> String.format(MILJOE_FMT, miljo, getInfoVenter(SYSTEM)))
+                                    .collect(Collectors.joining(","));
+                            transactionHelperService.persister(progress, BestillingProgress::setArenaforvalterStatus, initStatus);
+                        })
+                        .flatMap(miljoer -> doArenaOpprett(ordre, dollyPerson.getIdent(), miljoer)
+                                .map(status -> futurePersist(progress, status))));
     }
 
-    private Mono<List<String>> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer) {
+    private Mono<String> doArenaOpprett(Arenadata arenadata, String ident, List<String> miljoer) {
 
         return Flux.fromIterable(miljoer)
-                .flatMap(miljoe -> arenaForvalterConsumer.getBruker(ident, miljoe)
-                        .flatMap(arenaArbeidsokerStatus -> Flux.concat(
+                .flatMap(miljoe -> arenaForvalterConsumer.getArenaBruker(ident, miljoe)
+                        .flatMapMany(arenaArbeidsokerStatus -> Flux.concat(
+
                                 sendArenaBruker(arenadata, arenaArbeidsokerStatus, ident, miljoe)
-                                        .map(brukerStatus -> BRUKER + brukerStatus),
+                                        .map(brukerStatus -> fmtResponse(miljoe, BRUKER, brukerStatus)),
 
-                                sendAap115(arenadata, ident, miljoe)
-                                        .map(aap115tstaus -> AAP115 + aap115tstaus),
+                                sendAap115(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                        .map(aap115tstaus -> fmtResponse(miljoe, AAP115, aap115tstaus)),
 
-                                sendAap(arenadata, ident, miljoe)
-                                        .map(aapStataus -> AAP + aapStataus),
+                                sendAap(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                        .map(aapStataus -> fmtResponse(miljoe, AAP, aapStataus)),
 
-                                sendArenadagpenger(arenadata, ident, miljoe)
-                                        .map(dagpengerStatus -> DAGPENGER + dagpengerStatus)
+                                sendArenadagpenger(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                        .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
                         )))
-                .collectList();
+                .collect(Collectors.joining(","));
     }
 
-    private String parseStatus(List<String> status) {
+    private static String fmtResponse(String miljoe, String system, String status) {
 
-        return status.stream()
-                .filter(entry -> !entry.contains("OK"))
-                .map(entry -> FEIL + entry)
-                .findFirst()
-                .orElse("OK");
+        return encodeStatus(String.format(MILJOE2_FMT, miljoe, system, status));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
@@ -117,7 +127,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 .subscribe(response -> log.info("Sletting utført mot Arena-forvalteren"));
     }
 
-    private Flux<String> sendArenaBruker(Arenadata arenadata, ArenaArbeidssokerBruker arbeidssoker,
+    private Flux<String> sendArenaBruker(Arenadata arenadata, ArenaStatusResponse arbeidssoker,
                                          String ident, String miljoe) {
 
         return Flux.just(arenadata)
@@ -125,108 +135,205 @@ public class ArenaForvalterClient implements ClientRegister {
                     var arenaNyeBrukere = ArenaNyeBrukere.builder()
                             .nyeBrukere(List.of(mapperFacade.map(arenadata, ArenaNyBruker.class)))
                             .build();
-                    arenaNyeBrukere.getNyeBrukere().get(0).setPersonident(ident);
-                    arenaNyeBrukere.getNyeBrukere().get(0).setMiljoe(miljoe);
-                    oppdaterAktiveringsdato(arenaNyeBrukere, arbeidssoker);
+                    arenaNyeBrukere.getNyeBrukere()
+                            .forEach(bruker -> {
+                                bruker.setPersonident(ident);
+                                bruker.setMiljoe(miljoe);
+                                bruker.setAktiveringsDato(oppdaterAktiveringsdato(bruker, arbeidssoker));
+                            });
                     return arenaNyeBrukere;
                 })
-                .flatMap(arenaNyeBrukere -> (!arbeidssoker.getArbeidsokerList().isEmpty() ?
-                        arenaForvalterConsumer.inaktiverBruker(ident, miljoe) :
-                        Mono.just("Ingen sletting"))
-                        .map(response -> arenaNyeBrukere))
-                .flatMap(arenaNyeBrukere ->
-                        arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
-                                .map(respons -> {
-                                    if (!respons.getStatus().is2xxSuccessful()) {
-                                        return String.format(STATUS_FMT, miljoe,
-                                                errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding()));
-                                    } else if (!respons.getNyBrukerFeilList().isEmpty()) {
-                                        return respons.getNyBrukerFeilList().stream()
-                                                .map(brukerfeil -> String.format(STATUS_FMT, brukerfeil.getMiljoe(),
-                                                        brukerfeil.getNyBrukerFeilstatus() + ": " + encodeStatus(brukerfeil.getMelding())))
-                                                .collect(Collectors.joining(","));
-                                    } else {
-                                        return respons.getArbeidsokerList().stream()
-                                                .map(bruker -> String.format(STATUS_FMT, bruker.getMiljoe(), encodeStatus(bruker.getStatus())))
-                                                .collect(Collectors.joining(","));
-                                    }
-                                }));
-    }
+                .flatMap(arenaNyeBrukere -> {
+                    if (isNull(arenadata.getInaktiveringDato())) {
 
-    private static void oppdaterAktiveringsdato(ArenaNyeBrukere arenaNyeBrukere, ArenaArbeidssokerBruker arbeidssoker) {
-
-        arenaNyeBrukere.getNyeBrukere()
-                .forEach(bruker -> {
-
-                    if (nonNull(bruker.getAktiveringsDato()) && !arbeidssoker.getArbeidsokerList().isEmpty()) {
-                        bruker.setAktiveringsDato(
-                                arbeidssoker.getArbeidsokerList().stream()
-                                        .map(ArenaBruker::getAktiveringsDato)
-                                        .filter(Objects::nonNull)
-                                        .findFirst()
-                                        .orElse(bruker.getAktiveringsDato()));
+                        return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
+                                .flatMap(this::getBrukerStatus)
+                                .map(response -> OPPRETTET + response);
+                    } else {
+                        return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, miljoe)
+                                .map(respons -> respons.getStatus().is2xxSuccessful() ?
+                                        "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
+                                .map(response -> INAKTIVERT + response);
                     }
                 });
     }
 
-    private Flux<String> sendAap115(Arenadata arenadata, String ident, String miljoe) {
+    private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaStatusResponse arbeidssoker) {
+
+        return Stream.of(bruker.getAktiveringsDato(), arbeidssoker.getRegistrertDato())
+                .filter(Objects::nonNull)
+                .max(LocalDate::compareTo)
+                .orElse(LocalDate.now());
+    }
+
+    private Flux<String> sendAap115(Arenadata arenadata, ArenaStatusResponse status, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getAap115().isEmpty())
+                .filter(arenadata1 -> isNull(arenadata1.getInaktiveringDato()))
                 .map(arenadata1 -> {
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(IDENT, ident);
                     context.setProperty(MILJOE, miljoe);
                     return mapperFacade.map(arenadata1, Aap115Request.class, context);
                 })
-                .flatMap(arenaForvalterConsumer::postAap115)
-                .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
-                        errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+                .flatMap(request -> Flux.fromIterable(arenadata.getAap115())
+                        .flatMap(aap115 -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
+                                        .filter(vedtak -> "AA115".equals(vedtak.getRettighet().getNavn()))
+                                        .flatMap(vedtak -> {
+                                            var opphoerRequest = mapperFacade.map(request, Aap115Request.class);
+                                            opphoerRequest.getNyeAap115()
+                                                    .forEach(opphoer -> {
+                                                        opphoer.setVedtaktype(Aap115.VedtaksType.S);
+                                                        opphoer.setTilDato(toDate(aap115.getFraDato()));
+                                                    });
+                                            return arenaForvalterConsumer.postAap115(opphoerRequest)
+                                                    .flatMap(this::getAap115Status)
+                                                    .map(response -> STANSET + response);
+                                        }),
+                                arenaForvalterConsumer.postAap115(request)
+                                        .flatMap(this::getAap115Status)
+                                        .map(response -> OPPRETTET + response)
+                        )));
     }
 
-    private Flux<String> sendAap(Arenadata arenadata, String ident, String miljoe) {
+    private Flux<String> sendAap(Arenadata arenadata, ArenaStatusResponse status, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getAap().isEmpty())
+                .filter(arenadata1 -> isNull(arenadata1.getInaktiveringDato()))
                 .map(arenadata1 -> {
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(IDENT, ident);
                     context.setProperty(MILJOE, miljoe);
                     return mapperFacade.map(arenadata1, AapRequest.class, context);
                 })
-                .flatMap(arenaForvalterConsumer::postAap)
-                .map(response -> response.getStatus().is2xxSuccessful() ? "OK" :
-                        errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+                .flatMap(request -> Flux.fromIterable(arenadata.getAap())
+                        .flatMap(aap -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
+                                        .filter(vedtak -> "AAP".equals(vedtak.getRettighet().getNavn()))
+                                        .flatMap(vedtak -> {
+                                            var opphoerRequest = mapperFacade.map(request, AapRequest.class);
+                                            opphoerRequest.getNyeAap()
+                                                    .forEach(opphoer -> {
+                                                        opphoer.setVedtaktype(Aap.VedtakType.S);
+                                                        opphoer.setTilDato(toDate(aap.getFraDato()));
+                                                    });
+                                            return arenaForvalterConsumer.postAap(opphoerRequest)
+                                                    .flatMap(this::getAapStatus)
+                                                    .map(response -> STANSET + response);
+                                        }),
+                                arenaForvalterConsumer.postAap(request)
+                                        .flatMap(this::getAapStatus)
+                                        .map(response -> OPPRETTET + response)
+                        )));
     }
 
-    private Flux<String> sendArenadagpenger(Arenadata arenadata, String ident, String miljoe) {
+    private Flux<String> sendArenadagpenger(Arenadata arenadata, ArenaStatusResponse status, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getDagpenger().isEmpty())
+                .filter(arenadata1 -> isNull(arenadata1.getInaktiveringDato()))
                 .map(arenadata1 -> {
                     var context = new MappingContext.Factory().getContext();
                     context.setProperty(IDENT, ident);
                     context.setProperty(MILJOE, miljoe);
                     return mapperFacade.map(arenadata1, ArenaDagpenger.class, context);
                 })
-                .flatMap(arenaForvalterConsumer::postArenaDagpenger)
-                .map(response -> {
-                    if (!response.getStatus().is2xxSuccessful()) {
-                        return String.format(STATUS_FMT, miljoe,
-                                errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
-                    } else if (!response.getNyeDagpFeilList().isEmpty()) {
-                        return response.getNyeDagpFeilList().stream()
-                                .map(dagpFeil -> String.format(STATUS_FMT, miljoe,
-                                        dagpFeil.getNyDagpFeilstatus() + ": " + encodeStatus(dagpFeil.getMelding())))
-                                .collect(Collectors.joining(","));
-                    } else {
-                        return response.getNyeDagp().stream()
-                                .map(dagpResponse -> String.format(STATUS_FMT, miljoe, "JA".equals(dagpResponse.getNyeDagpResponse().getUtfall()) ?
-                                        "OK" :
-                                        ("Feil: " + dagpResponse.getNyeDagpResponse().getUtfall() + ": " +
-                                                encodeStatus(dagpResponse.getNyeDagpResponse().getBegrunnelse()))))
-                                .collect(Collectors.joining(","));
-                    }
-                });
+                .flatMap(request -> Flux.fromIterable(arenadata.getDagpenger())
+                        .flatMap(dagp -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
+                                        .filter(vedtak -> "DAGP".equals(vedtak.getRettighet().getNavn()))
+                                        .flatMap(vedtak -> {
+                                            var opphoerRequest = mapperFacade.map(request, ArenaDagpenger.class);
+                                            opphoerRequest.getNyeDagp()
+                                                    .forEach(opphoer -> {
+                                                        opphoer.setVedtaktype(ArenaDagpenger.VedtaksType.S);
+                                                        opphoer.setStansFomDato(toDate(dagp.getFraDato()));
+                                                    });
+                                            return arenaForvalterConsumer.postArenaDagpenger(opphoerRequest)
+                                                    .flatMap(this::getDagpengerStatus)
+                                                    .map(response -> STANSET + response);
+
+                                        }),
+                                arenaForvalterConsumer.postArenaDagpenger(request)
+                                        .flatMap(this::getDagpengerStatus)
+                                        .map(response -> OPPRETTET + response)
+                        )));
+    }
+
+    private Mono<String> getBrukerStatus(ArenaNyeBrukereResponse response) {
+
+        return Flux.concat(Flux.just(response.getStatus())
+                        .filter(status -> !status.is2xxSuccessful())
+                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                Flux.fromIterable(response.getArbeidsokerList())
+                        .map(nyBruker -> nyBruker.getStatus() == ArenaBruker.BrukerStatus.OK ?
+                                "OK" :
+                                encodeStatus(AVSLAG + nyBruker.getStatus()))
+                        .collect(Collectors.joining()),
+                Flux.fromIterable(response.getNyBrukerFeilList())
+                        .map(brukerFeil ->
+                                encodeStatus(String.format(STATUS_FMT, brukerFeil.getNyBrukerFeilstatus(), brukerFeil.getMelding())))
+                        .collect(Collectors.joining()))
+
+                .collect(Collectors.joining());
+    }
+
+    private Mono<String> getAapStatus(AapResponse response) {
+
+        return Flux.concat(Flux.just(response.getStatus())
+                        .filter(status -> !status.is2xxSuccessful())
+                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                Flux.fromIterable(response.getNyeAap())
+                        .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
+                                "OK" :
+                                encodeStatus(AVSLAG + nyAap.getBegrunnelse()))
+                        .collect(Collectors.joining()),
+                Flux.fromIterable(response.getNyeAapFeilList())
+                        .map(aapFeil ->
+                                encodeStatus(String.format(STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding())))
+                        .collect(Collectors.joining()))
+
+                .collect(Collectors.joining());
+    }
+
+    private Mono<String> getAap115Status(Aap115Response response) {
+
+        return Flux.concat(Flux.just(response.getStatus())
+                        .filter(status -> !status.is2xxSuccessful())
+                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                Flux.fromIterable(response.getNyeAap115())
+                        .map(nyAap115 -> "JA".equals(nyAap115.getUtfall()) ?
+                                "OK" :
+                                encodeStatus(AVSLAG + nyAap115.getBegrunnelse()))
+                        .collect(Collectors.joining()),
+                Flux.fromIterable(response.getNyeAapFeilList())
+                        .map(aap115Feil ->
+                                encodeStatus(String.format(STATUS_FMT, aap115Feil.getNyAapFeilstatus(), aap115Feil.getMelding())))
+                        .collect(Collectors.joining()))
+
+                .collect(Collectors.joining());
+    }
+
+    private Mono<String> getDagpengerStatus(ArenaNyeDagpengerResponse response) {
+
+        return Flux.concat(Flux.just(response.getStatus())
+                        .filter(status -> !status.is2xxSuccessful())
+                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                Flux.fromIterable(response.getNyeDagpResponse())
+                        .map(nyDagP -> "JA".equals(nyDagP.getUtfall()) ?
+                                "OK" :
+                                encodeStatus(AVSLAG + nyDagP.getBegrunnelse()))
+                        .collect(Collectors.joining()),
+                Flux.fromIterable(response.getNyeDagpFeilList())
+                        .map(dagpFeil ->
+                                encodeStatus(String.format(STATUS_FMT, dagpFeil.getNyDagpFeilstatus(), dagpFeil.getMelding())))
+                        .collect(Collectors.joining()))
+
+                .collect(Collectors.joining());
+    }
+
+    private static LocalDate toDate(LocalDateTime localDateTime) {
+
+        return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
 }

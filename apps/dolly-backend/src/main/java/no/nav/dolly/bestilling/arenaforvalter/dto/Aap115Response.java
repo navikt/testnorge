@@ -7,7 +7,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @Builder
@@ -24,6 +27,22 @@ public class Aap115Response {
 
     @Schema(description = "Liste over AAP-115 hvor oppretting feilet")
     private List<Aap115Feil> nyeAapFeilList;
+
+    public List<Aap115> getNyeAap115() {
+
+        if (isNull(nyeAap115)) {
+            nyeAap115 = new ArrayList<>();
+        }
+        return nyeAap115;
+    }
+
+    public List<Aap115Feil> getNyeAapFeilList() {
+
+        if (isNull(nyeAapFeilList)) {
+            nyeAapFeilList = new ArrayList<>();
+        }
+        return nyeAapFeilList;
+    }
 
     @Data
     @Builder

@@ -95,7 +95,7 @@ public class ArenaMappingStrategy implements MappingStrategy {
 
                         dagpenger.setUtfall("JA");
 
-                        dagpenger.setVedtaktype("O");
+                        dagpenger.setVedtaktype(ArenaDagpenger.VedtaksType.O);
 
                         dagpenger.setVilkaar(DAGPENGER_VILKAAR);
 

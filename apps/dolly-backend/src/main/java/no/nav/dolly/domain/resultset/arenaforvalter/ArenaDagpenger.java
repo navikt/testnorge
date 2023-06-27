@@ -19,6 +19,8 @@ import static java.util.Objects.isNull;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ArenaDagpenger {
 
+    public enum VedtaksType {O, S, E, G}
+
     public static final List<Vilkaar> DAGPENGER_VILKAAR =
             List.of(
                     new ArenaDagpenger.Vilkaar("GEOMOB", "J"),
@@ -60,8 +62,9 @@ public class ArenaDagpenger {
         private GodkjenningerReellArbeidssoker godkjenningerReellArbeidssoker;
         private TaptArbeidstid taptArbeidstid;
         private Vedtaksperiode vedtaksperiode;
-        private String vedtaktype;
+        private VedtaksType vedtaktype;
         private String utfall;
+        private LocalDate stansFomDato;
 
         public List<Vilkaar> getVilkaar() {
             if (isNull(vilkaar)) {

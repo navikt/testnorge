@@ -2,9 +2,9 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.ClientFuture;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
@@ -26,6 +26,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 import static java.util.Collections.singleton;
@@ -86,12 +87,12 @@ class ArenaForvalterClientTest {
                                 .status(HttpStatus.OK)
                                 .arbeidsokerList(singletonList(ArenaBruker.builder()
                                         .miljoe(ENV)
-                                        .status("OK")
+                                        .status(ArenaBruker.BrukerStatus.OK)
                                         .build()))
                                 .build()));
         when(arenaForvalterConsumer.getEnvironments()).thenReturn(Flux.just(ENV));
-        when(arenaForvalterConsumer.getBruker(anyString(), anyString()))
-                .thenReturn(Flux.just(ArenaArbeidssokerBruker.builder()
+        when(arenaForvalterConsumer.getArenaBruker(anyString(), anyString()))
+                .thenReturn(Mono.just(ArenaStatusResponse.builder()
                         .status(HttpStatus.OK)
                         .build()));
 
@@ -105,7 +106,7 @@ class ArenaForvalterClientTest {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$OK")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$BRUKER Oppretting OK")));
                 })
                 .verifyComplete();
 
@@ -135,8 +136,8 @@ class ArenaForvalterClientTest {
         var request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
         request.setEnvironments(singleton(ENV));
-        when(arenaForvalterConsumer.getBruker(anyString(), anyString()))
-                .thenReturn(Flux.just(ArenaArbeidssokerBruker.builder()
+        when(arenaForvalterConsumer.getArenaBruker(anyString(), anyString()))
+                .thenReturn(Mono.just(ArenaStatusResponse.builder()
                         .status(HttpStatus.OK)
                         .build()));
 
@@ -147,7 +148,7 @@ class ArenaForvalterClientTest {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
                     assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
-                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$DUPLIKAT: message= 555 User Defined Resource Error")));
+                    assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$BRUKER Oppretting DUPLIKAT=message= 555 User Defined Resource Error")));
                 })
                 .verifyComplete();
 

@@ -49,6 +49,7 @@ public class AbstractRsStatusMiljoeIdentForhold {
                 .trim()
                 .replace(';', ',')
                 .replace('=', ':')
-                .replace('&', ',');
+                .replace('&', ',')
+                .replaceAll(".*OK", "OK");
     }
 }

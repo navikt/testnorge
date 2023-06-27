@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arbeidsplassencv.ArbeidsplassenCVConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.inntektstub.InntektstubConsumer;
 import no.nav.dolly.bestilling.inntektstub.domain.Inntektsinformasjon;
 import no.nav.dolly.bestilling.inntektstub.domain.ValiderInntekt;
@@ -83,7 +83,7 @@ public class OppslagController {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
 
     @GetMapping("/arena/ident/{ident}/miljoe/{miljoe}")
-    public Mono<ArenaResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
+    public Mono<ArenaStatusResponse> getArenaBruker(@PathVariable("ident") String ident, @PathVariable("miljoe") String miljoe) {
 
         return arenaForvalterConsumer.getArenaBruker(ident, miljoe);
     }

@@ -8,13 +8,16 @@ import lombok.experimental.SuperBuilder;
 import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+
+import static java.util.Objects.isNull;
 
 @Data
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArenaResponse {
+public class ArenaStatusResponse {
 
     private String miljoe;
     private HttpStatus status;
@@ -35,6 +38,14 @@ public class ArenaResponse {
     private String meldeform;
     private String meldegruppe;
     private List<Vedtak> vedtakListe;
+
+    public List<Vedtak> getVedtakListe() {
+
+        if (isNull(vedtakListe)) {
+            vedtakListe = new ArrayList<>();
+        }
+        return vedtakListe;
+    }
 
     @Data
     @SuperBuilder

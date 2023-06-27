@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterDeleteCommand;
-import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetBrukerCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaForvalterGetMiljoeCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaGetCommand;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap;
@@ -15,10 +14,9 @@ import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.InaktiverResponse;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
-import no.nav.dolly.domain.resultset.arenaforvalter.ArenaArbeidssokerBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukereResponse;
@@ -56,14 +54,6 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
                 .baseUrl(serverProperties.getUrl())
                 .exchangeStrategies(getJacksonStrategy(objectMapper))
                 .build();
-    }
-
-    @Timed(name = "providers", tags = {"operation", "arena_getIdent"})
-    public Flux<ArenaArbeidssokerBruker> getBruker(String ident, String miljoe) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArenaForvalterGetBrukerCommand(webClient, ident, miljoe, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Hentet ident {} fra Arenaforvalter {}", ident, response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
@@ -133,7 +123,7 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_getEnvironments"})
-    public Mono<ArenaResponse> getArenaBruker(String ident, String miljoe) {
+    public Mono<ArenaStatusResponse> getArenaBruker(String ident, String miljoe) {
 
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new ArenaGetCommand(webClient, ident, miljoe, token.getTokenValue()).call())
