@@ -59,7 +59,7 @@ export default () => {
       setIdent={(ident) => dispatch({ type: Action.SET_IDENT_ACTION, value: ident })}
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
-        console.log('fant ident i følgende miljøer: ' + miljoer); //TODO - SLETT MEG
+        console.log('fant ident i følgende miljøer: ' + miljoer);
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
       }}
     >
