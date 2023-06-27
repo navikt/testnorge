@@ -89,15 +89,6 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 		formikBag.setFieldValue(path, adresseClone)
 	}
 
-	const handleChangeMaster = (target: Target, path: string) => {
-		formikBag.setFieldValue(`${path}.master`, target?.value)
-		const utenlandskAdresse = _.get(formikBag.values, `${path}.utenlandskAdresse`)
-		if (utenlandskAdresse && target.value !== 'PDL') {
-			formikBag.setFieldValue(`${path}.utenlandskAdresse.bygningEtasjeLeilighet`, null)
-			formikBag.setFieldValue(`${path}.utenlandskAdresse.regionDistriktOmraade`, null)
-		}
-	}
-
 	const navnInfo = SelectOptionsOppslag.hentPersonnavn()
 	const navnOptions = SelectOptionsOppslag.formatOptions('personnavn', navnInfo)
 
@@ -143,7 +134,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm path={path} handleChange={handleChangeMaster} />
+			<AvansertForm path={path} />
 		</React.Fragment>
 	)
 }
