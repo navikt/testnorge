@@ -67,11 +67,6 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
     setError(false);
     return onSearch(value)
       .then((response) => {
-        console.log('response: ', response);
-        if (!response || response.length === 0) {
-          setSuccess(false);
-          throw new NotFoundError();
-        }
         setSuccess(true);
         return response;
       })
@@ -105,7 +100,7 @@ export default <T extends unknown>({ labels, onSearch, onChange }: Props<T>) => 
       </StyledKnapp>
       {isSyntheticIdent(value) && <StyledWarning label={labels.syntIdent} />}
       <Alert>
-        {success == undefined ? null : !success ? (
+        {value == undefined ? null : !value ? (
           error ? (
             <ErrorAlert label={labels.onError} />
           ) : (
