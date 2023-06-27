@@ -47,6 +47,9 @@ export default () => {
   const getSuccessMessage = (value: string | null) =>
     `Gratulerer, person med ident ${value} ble født i miljø ${state.miljoer.join(', ')}.`;
 
+  console.log('state.miljoOptions: ', state.miljoOptions); //TODO - SLETT MEG
+  console.log('state.miljoer: ', state.miljoer); //TODO - SLETT MEG
+
   return (
     <EndringsmeldingForm
       labels={{

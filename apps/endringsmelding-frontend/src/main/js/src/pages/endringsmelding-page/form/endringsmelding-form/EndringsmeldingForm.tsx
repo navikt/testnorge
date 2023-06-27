@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { Search } from '@/components/search';
 
 import {
@@ -9,9 +9,9 @@ import {
   SuccessAlertstripe,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { fetchMiljoer } from '@/service/EndringsmeldingService';
 import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
+import { useIdentSearch } from '@/useIdentSearch';
 
 type Props<T> = {
   children: React.ReactNode;
@@ -57,16 +57,15 @@ export default <T extends {}>({
     console.log(state.warningMessages);
   }
 
-  const onSearch = (value: string) =>
-    fetchMiljoer(value)
-      .then((response: [PersonMiljoeDTO]) => {
-        setMiljoer(response.map((resp) => resp.miljoe));
-        dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-      })
-      .catch((e) => {
-        dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION });
-        throw e;
-      });
+  const [search, setSearch] = useState(null);
+  const { error, identer, loading } = useIdentSearch(search);
+
+  useEffect(() => {
+    setMiljoer(identer?.map((response) => response.miljoe));
+    error
+      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
+      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
+  }, [ident, error]);
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -92,8 +91,8 @@ export default <T extends {}>({
   return (
     <Form>
       <Search
-        onSearch={onSearch}
         onChange={(value) => {
+          setSearch(value);
           setIdent(value);
           dispatch({ type: Action.SET_IDENT_ACTION, value: value });
         }}
