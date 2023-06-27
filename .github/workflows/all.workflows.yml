@@ -50,7 +50,7 @@ jobs:
   backend:
     needs: start
     if: inputs.workflow == 'backend'
-    uses: ./.github/workflows/common.workflow.backend.yml
+    uses: navikt/testnorge/.github/workflows/common.workflow.backend.yml@master
     with:
       cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"
@@ -67,7 +67,7 @@ jobs:
   frontend:
     needs: start
     if: inputs.workflow == 'frontend'
-    uses: ./.github/workflows/common.workflow.frontend.yml
+    uses: navikt/testnorge/.github/workflows/common.workflow.frontend.yml@master
     with:
       cluster: ${{ inputs.cluster }}
       working-directory: "${{ inputs.type }}/${{ inputs.name }}"

@@ -74,7 +74,8 @@ jobs:
   start:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: "Logging"
+        run: |
           echo "branch: ${{ github.ref }}"
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
@@ -86,7 +87,7 @@ jobs:
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: ./.github/workflows/common.scan.sonar.yml
+    uses: navikt/testnorge/.github/workflows/common.scan.sonar.yml@master
     with:
       working-directory: ${{ inputs.working-directory }}
 
@@ -157,60 +158,64 @@ jobs:
   deploy-unstable:
     needs: build
     if: needs.build.outputs.do-deploy-unstable == 'true'
+    concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (unstable)"
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
-        uses: nais/deploy/actions/deploy@v1
 
   # Only used by dolly-frontend.
   deploy-idporten:
     needs: build
     if: needs.build.outputs.do-deploy-idporten == 'true'
+    concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (idporten)"
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
           VAR: image=${{ needs.build.outputs.image }}
-        uses: nais/deploy/actions/deploy@v1
 
   deploy-test:
     needs: build
     if: needs.build.outputs.do-deploy-test == 'true'
+    concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy (test)"
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/config.test.yml
           VAR: image=${{ needs.build.outputs.image }}
-        uses: nais/deploy/actions/deploy@v1
 
   deploy:
     needs: build
     if: needs.build.outputs.do-deploy == 'true'
+    concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy"
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
           VAR: image=${{ needs.build.outputs.image }}
-        uses: nais/deploy/actions/deploy@v1
