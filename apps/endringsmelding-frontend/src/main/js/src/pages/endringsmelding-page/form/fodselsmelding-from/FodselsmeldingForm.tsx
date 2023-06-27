@@ -4,7 +4,6 @@ import { DatePickerFormItem, InputFormItem, Line, SelectFormItem } from '@navikt
 import reducer, { Action, State } from './FodselsmeldingReducer';
 import { sendFodselsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
-import { useIdentSearch } from '@/useIdentSearch';
 
 export const initState: State = {
   miljoOptions: [],
@@ -23,7 +22,6 @@ const notEmptyList = (value: unknown[]) => !!value && value.length > 0;
 
 export default () => {
   const [state, dispatch] = useReducer(reducer, initState);
-  const { error, identer, loading } = useIdentSearch(search);
 
   const onValidate = () => {
     dispatch({ type: Action.SET_VALIDATE_ACTION, value: true });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import { TextField as NavInput } from '@navikt/ds-react';
@@ -10,6 +10,7 @@ import {
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
 import { useIdentSearch } from '@/useIdentSearch';
+import { Action } from '@/pages/endringsmelding-page/form/endringsmelding-form/EndringsmeldingReducer';
 
 const Search = styled.div`
   display: flex;
@@ -25,7 +26,8 @@ const StyledKnapp = styled(Knapp)`
 `;
 
 type Props<T> = {
-  onSearch: (value: string) => Promise<T>;
+  dispatch: any;
+  setMiljoer: any;
   labels: {
     label: string;
     button: string;
@@ -55,11 +57,19 @@ const StyledWarning = styled(WarningAlertstripe)`
   width: -webkit-fill-available;
 `;
 
-export default <T extends unknown>({ labels, onChange }: Props<T>) => {
+export default <T extends unknown>({ labels, onChange, setMiljoer, dispatch }: Props<T>) => {
   const [value, setValue] = useState('');
   const [search, setSearch] = useState(null);
 
   const { error, identer, loading } = useIdentSearch(search);
+
+  useEffect(() => {
+    console.log('Identinfo fra miljøer: ', identer);
+    setMiljoer(identer?.map((ident) => ident.miljoe));
+    error
+      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
+      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
+  }, [identer, error]);
 
   return (
     <Search>

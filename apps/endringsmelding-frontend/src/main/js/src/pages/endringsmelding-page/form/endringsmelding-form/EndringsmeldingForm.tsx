@@ -88,6 +88,8 @@ export default <T extends {}>({
           setIdent(value);
           dispatch({ type: Action.SET_IDENT_ACTION, value: value });
         }}
+        setMiljoer={setMiljoer}
+        dispatch={dispatch}
         labels={{
           label: labels.search,
           button: 'Søk etter person',
