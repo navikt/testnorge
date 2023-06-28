@@ -4,8 +4,8 @@ import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.service.DollyBestillingService;
 import no.nav.dolly.domain.jpa.Bestilling;
 import no.nav.dolly.domain.resultset.entity.bestilling.RsBestillingStatus;
+import no.nav.dolly.service.BestillingMalService;
 import no.nav.dolly.service.BestillingService;
-import no.nav.dolly.service.MalBestillingService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +38,7 @@ public class BestillingControllerTest {
     private DollyBestillingService dollyBestillingService;
 
     @Mock
-    private MalBestillingService malBestillingService;
+    private BestillingMalService bestillingMalService;
 
     @InjectMocks
     private BestillingController bestillingController;
@@ -80,8 +80,8 @@ public class BestillingControllerTest {
     @Test
     public void malBestillingNavnOk() {
 
-        bestillingController.getMalBestillinger();
+        bestillingController.getMalBestillinger(null);
 
-        verify(malBestillingService).getMalBestillinger();
+        verify(bestillingMalService).getMalBestillinger();
     }
 }

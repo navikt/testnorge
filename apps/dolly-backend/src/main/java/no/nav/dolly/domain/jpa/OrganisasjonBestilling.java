@@ -61,9 +61,6 @@ public class OrganisasjonBestilling {
     @Column(name = "opprettet_fra_id")
     private Long opprettetFraId;
 
-    @Column(name = "mal_bestilling_navn")
-    private String malBestillingNavn;
-
     @Column(name = "best_kriterier")
     private String bestKriterier;
 

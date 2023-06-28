@@ -60,8 +60,6 @@ public class RsBestillingStatus {
     private RsBestilling bestilling;
     private String opprettFraIdenter;
 
-    private String malBestillingNavn;
-
     public Set<String> getEnvironments() {
         if (isNull(environments)) {
             environments = new HashSet<>();

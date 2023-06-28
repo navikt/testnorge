@@ -87,8 +87,8 @@ export default function Table({
 				const expandPerson =
 					expandComponent &&
 					visPerson &&
-					(_.get(expandComponent, 'props.personId') === visPerson.toString() ||
-						_.get(expandComponent, 'props.personId') === hovedperson.toString())
+					(_.get(expandComponent, 'props.children.props.personId') === visPerson.toString() ||
+						_.get(expandComponent, 'props.children.props.personId') === hovedperson.toString())
 				const expandBestilling =
 					expandComponent &&
 					visBestilling &&

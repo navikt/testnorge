@@ -68,12 +68,12 @@ const brregstub = new RegExp(/testnav-brregstub/)
 const medl = new RegExp(/testnav-medl-proxy/)
 const sigrunstub = new RegExp(/testnav-sigrunstub-proxy\/api\/v1\/lignetinntekt/)
 const alleMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling$/)
-const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\/bruker/)
+const brukerMaler = new RegExp(/dolly-backend\/api\/v1\/bestilling\/malbestilling\?brukerId/)
 const oppsummeringsdokService = new RegExp(
 	/oppsummeringsdokument-service\/api\/v1\/oppsummeringsdokumenter/
 )
 const brukerOrganisasjonMaler = new RegExp(
-	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\/bruker\?/
+	/dolly-backend\/api\/v1\/organisasjon\/bestilling\/malbestilling\?/
 )
 const joarkDokJournalpost = new RegExp(/testnav-joark-dokument-service\/api\/v2\/journalpost/)
 const joarkDokDokument = new RegExp(/dokumentType=ORIGINAL/)
