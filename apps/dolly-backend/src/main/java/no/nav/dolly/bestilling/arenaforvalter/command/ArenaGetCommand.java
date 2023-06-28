@@ -19,7 +19,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 @RequiredArgsConstructor
 public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
 
-    private static final String ARENA_URL = "{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
+    private static final String ARENA_URL = "/{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
     private static final String IDENT = "fodselsnr";
 
     private final WebClient webClient;

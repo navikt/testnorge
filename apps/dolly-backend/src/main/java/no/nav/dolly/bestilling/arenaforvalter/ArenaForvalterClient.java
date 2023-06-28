@@ -57,9 +57,9 @@ public class ArenaForvalterClient implements ClientRegister {
     private static final String AAP = "AAP";
     private static final String DAGPENGER = "DAGP";
     private static final String STANSET = "Stanset forrige vedtak: ";
-    private static final String OPPRETTET = "Oppretting ";
-    private static final String AVSLAG = "Avslag ";
-    private static final String INAKTIVERT = "Inaktivert ";
+    private static final String OPPRETTET = "Oppretting: ";
+    private static final String AVSLAG = "Avslag: ";
+    private static final String INAKTIVERT = "Inaktivert: ";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final MapperFacade mapperFacade;

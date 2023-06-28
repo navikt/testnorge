@@ -122,9 +122,7 @@ class ArenaForvalterConsumerTest {
 
     private void stubGetArenaForvalterBruker() {
 
-        stubFor(get(urlPathMatching("(.*)/arenaforvalter/q2/arena/syntetiser/brukeroppfolging/personstatusytelse"))
-                .withQueryParam("filter-personident", equalTo(IDENT))
-                .withQueryParam("filter-miljoe", equalTo(ENV))
+        stubFor(get(urlPathMatching("(.*)/arenaforvalter/" + ENV + "/arena/syntetiser/brukeroppfolging/personstatusytelse"))
                 .willReturn(ok()
                         .withHeader("Content-Type", "application/json")
                         .withBody("{\"status\":\"OK\"}")));

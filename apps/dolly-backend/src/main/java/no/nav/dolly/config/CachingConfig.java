@@ -1,19 +1,18 @@
 package no.nav.dolly.config;
 
 import com.github.benmanes.caffeine.cache.Caffeine;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.caffeine.CaffeineCacheManager;
+import org.springframework.cache.support.NoOpCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.util.concurrent.TimeUnit;
 
-@Slf4j
-@Configuration
+@Configuration(enforceUniqueMethods = false)
 @EnableCaching
-@SuppressWarnings("java:S3740")
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";
@@ -24,6 +23,7 @@ public class CachingConfig {
     public static final String CACHE_KODEVERK_2 = "kodeverk2";
 
     @Bean
+    @Profile({"dev", "prod"})
     public CacheManager cacheManager(Caffeine caffeine) {
         var caffeineCacheManager = new CaffeineCacheManager(CACHE_BESTILLING,
                 CACHE_BRUKER,
@@ -34,6 +34,12 @@ public class CachingConfig {
         );
         caffeineCacheManager.setCaffeine(caffeine);
         return caffeineCacheManager;
+    }
+
+    @Bean
+    @Profile("local")
+    public CacheManager cacheManager() {
+        return new NoOpCacheManager();
     }
 
     @Bean
