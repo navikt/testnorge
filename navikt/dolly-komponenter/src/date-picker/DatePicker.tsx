@@ -9,6 +9,7 @@ import { ChildrenBlur } from './ChildrenBlur';
 
 type Props = {
   id: string;
+  required?: boolean;
   label: string;
   onBlur: (value: string) => void;
   error?: string;
@@ -38,7 +39,7 @@ const StyledDaypicker = styled(DayPicker)`
   }
 `;
 
-export default ({ label, onBlur }: Props) => {
+export default ({ label, onBlur, required = false }: Props) => {
   const [selected, setSelected] = useState<Date>(new Date());
   const [inputValue, setInputValue] = useState<string>('');
   const [isPopperOpen, setIsPopperOpen] = useState(false);
@@ -104,7 +105,7 @@ export default ({ label, onBlur }: Props) => {
               mode="single"
               selected={selected}
               defaultMonth={selected}
-              onSelect={handleDaySelect}
+              onDayClick={handleDaySelect}
             />
           </div>
         )}
