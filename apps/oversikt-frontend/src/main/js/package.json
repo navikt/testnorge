@@ -15,7 +15,7 @@
     "react-inlinesvg": "^3.0.0",
     "react-router-dom": "^6.9.0",
     "stream-browserify": "^3.0.0",
-    "styled-components": "^5.3.9"
+    "styled-components": "^6.0.0"
   },
   "devDependencies": {
     "@types/lodash-es": "^4.17.7",
