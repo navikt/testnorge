@@ -53,7 +53,6 @@ export default <T extends {}>({
   const { error, identer, loading } = useIdentSearch(search);
 
   useEffect(() => {
-    console.log('Identinfo fra miljøer: ', identer);
     setMiljoer(identer?.map((ident) => ident.miljoe));
     error
       ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })

@@ -58,7 +58,6 @@ export default () => {
       setIdent={(ident) => dispatch({ type: Action.SET_MORS_IDENT_ACTION, value: ident.trim() })}
       getSuccessMessage={getSuccessMessage}
       setMiljoer={(miljoer) => {
-        console.log('fant ident i følgende miljøer: ' + miljoer);
         dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
       }}
     >
