@@ -47,6 +47,7 @@ import static no.nav.dolly.util.CurrentAuthentication.getUserId;
 import static org.apache.commons.lang3.BooleanUtils.isNotTrue;
 import static org.apache.commons.lang3.BooleanUtils.isTrue;
 import static org.apache.logging.log4j.util.Strings.isBlank;
+import static org.apache.logging.log4j.util.Strings.isNotBlank;
 
 @Slf4j
 @Service
@@ -161,7 +162,9 @@ public class OrganisasjonBestillingService {
                 .bruker(bruker)
                 .build();
 
-        organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+        if (isNotBlank(request.getMalBestillingNavn())) {
+            organisasjonBestillingMalService.saveOrganisasjonBestillingMal(bestilling, request.getMalBestillingNavn(), bruker);
+        }
 
         return saveBestillingToDB(bestilling);
     }
