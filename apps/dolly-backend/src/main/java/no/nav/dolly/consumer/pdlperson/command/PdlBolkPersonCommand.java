@@ -8,7 +8,6 @@ import no.nav.dolly.util.WebClientFilter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.util.retry.Retry;
 
@@ -25,7 +24,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.HEADER_NAV_CONSUMER_ID;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RequiredArgsConstructor
-public class PdlBolkPersonCommand implements Callable<Flux<JsonNode>> {
+public class PdlBolkPersonCommand implements Callable<Mono<JsonNode>> {
 
     private static final String TEMA = "Tema";
     private static final String GRAPHQL_URL = "/graphql";
@@ -37,7 +36,7 @@ public class PdlBolkPersonCommand implements Callable<Flux<JsonNode>> {
     private final String token;
 
     @Override
-    public Flux<JsonNode> call() {
+    public Mono<JsonNode> call() {
 
         return webClient
                 .post()
@@ -53,7 +52,7 @@ public class PdlBolkPersonCommand implements Callable<Flux<JsonNode>> {
                         .fromValue(new GraphQLRequest(hentQueryResource(MULTI_PERSON_QUERY),
                                 Map.of("identer", identer))))
                 .retrieve()
-                .bodyToFlux(JsonNode.class)
+                .bodyToMono(JsonNode.class)
                 .doOnError(WebClientFilter::logErrorMessage)
                 .retryWhen(Retry.backoff(3, Duration.ofSeconds(5))
                         .filter(WebClientFilter::is5xxException))

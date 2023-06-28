@@ -126,7 +126,7 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL, maks BLOCK_SIZE = 50 identer")
-    public Flux<JsonNode> pdlPerson(@RequestParam("identer") List<String> identer) {
+    public Mono<JsonNode> pdlPerson(@RequestParam("identer") List<String> identer) {
 
         return pdlPersonConsumer.getPdlPersonerJson(identer);
     }

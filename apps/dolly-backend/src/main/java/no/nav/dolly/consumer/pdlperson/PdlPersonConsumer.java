@@ -18,6 +18,7 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -71,10 +72,10 @@ public class PdlPersonConsumer implements ConsumerStatus {
     }
 
     @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
-    public Flux<JsonNode> getPdlPersonerJson(List<String> identer) {
+    public Mono<JsonNode> getPdlPersonerJson(List<String> identer) {
 
         return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new PdlBolkPersonCommand(webClient, identer, token.getTokenValue()).call());
+                .flatMap(token -> new PdlBolkPersonCommand(webClient, identer, token.getTokenValue()).call());
     }
 
     @Override
