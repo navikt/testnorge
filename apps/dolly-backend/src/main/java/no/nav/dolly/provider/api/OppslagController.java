@@ -26,7 +26,6 @@ import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer;
 import no.nav.dolly.consumer.pdlperson.PdlPersonConsumer.PDL_MILJOER;
 import no.nav.dolly.consumer.profil.ProfilApiConsumer;
 import no.nav.dolly.domain.PdlPerson.Navn;
-import no.nav.dolly.domain.PdlPersonBolk;
 import no.nav.dolly.domain.resultset.SystemTyper;
 import no.nav.dolly.domain.resultset.kodeverk.KodeverkAdjusted;
 import no.nav.dolly.exceptions.NotFoundException;
@@ -56,7 +55,6 @@ import java.util.Map;
 import java.util.Set;
 
 import static java.lang.String.format;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.config.CachingConfig.CACHE_HELSEPERSONELL;
 import static no.nav.dolly.config.CachingConfig.CACHE_KODEVERK;
 
@@ -128,12 +126,9 @@ public class OppslagController {
 
     @GetMapping("/pdlperson/identer")
     @Operation(description = "Hent flere personer angitt ved identer fra PDL, maks BLOCK_SIZE = 50 identer")
-    public PdlPersonBolk pdlPerson(@RequestParam("identer") List<String> identer) {
-        var personer = pdlPersonConsumer.getPdlPersoner(identer)
-                .collectList()
-                .block();
+    public Mono<JsonNode> pdlPerson(@RequestParam("identer") List<String> identer) {
 
-        return nonNull(personer) && !personer.isEmpty() ? personer.get(0) : null;
+        return pdlPersonConsumer.getPdlPersonerJson(identer);
     }
 
     @GetMapping("/inntektstub/{ident}")
