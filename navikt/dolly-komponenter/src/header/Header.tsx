@@ -36,7 +36,7 @@ export type HeaderProps = {
   children?: React.ReactNode;
 };
 
-const Header = ({ children, title, profile }: HeaderProps) => (
+export default ({ children, title, profile }: HeaderProps) => (
   <StyledHeader>
     <Logo src={navLogo} alt="Nav logo" />
     <VerticalLine />
@@ -60,7 +60,3 @@ const Header = ({ children, title, profile }: HeaderProps) => (
     )}
   </StyledHeader>
 );
-
-Header.displayName = 'Header';
-
-export default Header;

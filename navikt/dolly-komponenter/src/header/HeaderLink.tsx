@@ -22,12 +22,8 @@ type Props = {
   isActive: () => boolean;
 };
 
-const HeaderLink = ({ href, children, isActive }: Props) => (
+export default ({ href, children, isActive }: Props) => (
   <HeaderLinkStyle href={href} isActive={isActive}>
     {children}
   </HeaderLinkStyle>
 );
-
-HeaderLink.displayName = 'HeaderLink';
-
-export default HeaderLink;
