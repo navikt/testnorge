@@ -2,7 +2,7 @@ import { Label, Select as NavSelect } from '@navikt/ds-react';
 import React from 'react';
 
 import Select from 'react-select';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 
 import './Select.less';
 

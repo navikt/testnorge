@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 import { navLogo } from '@navikt/dolly-assets/src';
 
 const StyledHeader = styled.header`
