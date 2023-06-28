@@ -3,6 +3,8 @@ import '@navikt/ds-css';
 export * from './alert';
 export * from './alertstripe';
 export * from './date-picker';
+export * from './header';
+export * from './page';
 export * from './profil';
 export * from './form';
 export * from './loadable-component';

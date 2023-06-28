@@ -10,4 +10,10 @@ const HeaderLinksGroupStyle = styled.div`
   justify-content: center;
 `;
 
-export default ({ children }: Props) => <HeaderLinksGroupStyle>{children}</HeaderLinksGroupStyle>;
+const HeaderLinksGroup = ({ children }: Props) => (
+  <HeaderLinksGroupStyle>{children}</HeaderLinksGroupStyle>
+);
+
+HeaderLinksGroup.displayName = 'HeaderLinksGroup';
+
+export default HeaderLinksGroup;
