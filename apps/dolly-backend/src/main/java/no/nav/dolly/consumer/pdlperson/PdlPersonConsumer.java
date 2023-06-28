@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.config.credentials.PdlProxyProperties;
+import no.nav.dolly.consumer.pdlperson.command.PdlBolkPersonCommand;
 import no.nav.dolly.consumer.pdlperson.command.PdlBolkPersonGetCommand;
 import no.nav.dolly.consumer.pdlperson.command.PdlPersonGetCommand;
 import no.nav.dolly.domain.PdlPersonBolk;
@@ -67,6 +68,13 @@ public class PdlPersonConsumer implements ConsumerStatus {
                                 identer.subList(index * BLOCK_SIZE, Math.min((index + 1) * BLOCK_SIZE, identer.size())),
                                 token.getTokenValue()
                         ).call()));
+    }
+
+    @Timed(name = "providers", tags = { "operation", "pdl_getPersoner" })
+    public Flux<JsonNode> getPdlPersonerJson(List<String> identer) {
+
+        return tokenService.exchange(serviceProperties)
+                .flatMapMany(token -> new PdlBolkPersonCommand(webClient, identer, token.getTokenValue()).call());
     }
 
     @Override
