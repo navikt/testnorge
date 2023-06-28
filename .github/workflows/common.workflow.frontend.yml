@@ -164,56 +164,6 @@ jobs:
       do-deploy-test: ${{ env.do-deploy-test }}
       do-deploy: ${{ env.do-deploy }}
 
-  # Only used by dolly-frontend.
-  deploy-unstable:
-    needs: build
-    if: needs.build.outputs.do-deploy-unstable == 'true'
-    concurrency: ${{ inputs.image-suffix }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Deploy (unstable)"
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
-          VAR: image=${{ needs.build.outputs.image }}
-
-  # Only used by dolly-frontend.
-  deploy-idporten:
-    needs: build
-    if: needs.build.outputs.do-deploy-idporten == 'true'
-    concurrency: ${{ inputs.image-suffix }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Deploy (idporten)"
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
-          VAR: image=${{ needs.build.outputs.image }}
-
-  deploy-test:
-    needs: build
-    if: needs.build.outputs.do-deploy-test == 'true'
-    concurrency: ${{ inputs.image-suffix }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Deploy (test)"
-        uses: nais/deploy/actions/deploy@v1
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{ needs.build.outputs.image }}
-
   deploy:
     needs: build
     if: needs.build.outputs.do-deploy == 'true'
@@ -228,4 +178,54 @@ jobs:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
+          VAR: image=${{ needs.build.outputs.image }}
+
+  deploy-test:
+    needs: build
+    if: needs.build.outputs.do-deploy-test == 'true'
+    concurrency: ${{ inputs.image-suffix }}-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy (test)"
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          VAR: image=${{ needs.build.outputs.image }}
+
+  # Only used by dolly-frontend.
+  deploy-idporten:
+    needs: build
+    if: needs.build.outputs.do-deploy-idporten == 'true'
+    concurrency: ${{ inputs.image-suffix }}-idporten
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy (idporten)"
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.working-directory }}/config.idporten.yml
+          VAR: image=${{ needs.build.outputs.image }}
+
+  # Only used by dolly-frontend.
+  deploy-unstable:
+    needs: build
+    if: needs.build.outputs.do-deploy-unstable == 'true'
+    concurrency: ${{ inputs.image-suffix }}-unstable
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy (unstable)"
+        uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.working-directory }}/config.unstable.yml
           VAR: image=${{ needs.build.outputs.image }}
