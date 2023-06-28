@@ -38,7 +38,7 @@ const StyledDaypicker = styled(DayPicker)`
   }
 `;
 
-export default ({ label, onBlur, required = false }: Props) => {
+export default ({ label, onBlur }: Props) => {
   const [selected, setSelected] = useState<Date>(new Date());
   const [inputValue, setInputValue] = useState<string>('');
   const [isPopperOpen, setIsPopperOpen] = useState(false);
