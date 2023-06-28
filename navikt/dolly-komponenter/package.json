@@ -53,7 +53,6 @@
     "@types/eslint": "^8.4.5",
     "@types/react": "^18.0.17",
     "@types/react-dom": "^18.0.6",
-    "@types/styled-components": "^5.1.25",
     "babel-loader": "^9.1.2",
     "babel-preset-react-app": "^10.0.1",
     "css-loader": "^6.7.3",
@@ -65,7 +64,7 @@
     "rollup-plugin-postcss": "^4.0.2",
     "rollup-plugin-svg": "^2.0.0",
     "rollup-plugin-typescript2": "^0.35.0",
-    "typescript": "^5.0.4"
+    "typescript": "^5.1.5"
   },
   "repository": "https://github.com/navikt/testnorge.git",
   "prettier": {
