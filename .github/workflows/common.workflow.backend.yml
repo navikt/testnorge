@@ -75,7 +75,7 @@ jobs:
     secrets:
       NAV_TOKEN: ${{ secrets.NAV_TOKEN }}
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-    uses: navikt/testnorge/.github/workflows/common.scan.sonar.yml@master
+    uses: ./.github/workflows/common.scan.sonar.yml
     with:
       working-directory: ${{ inputs.working-directory }}
 
