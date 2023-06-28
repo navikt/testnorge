@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { Select } from '../../select';
 import { DatePicker } from '../../date-picker';
 import { TextField } from '@navikt/ds-react';

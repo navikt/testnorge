@@ -1,5 +1,5 @@
 import React from 'react';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { dollyLogo } from '@navikt/dolly-assets/src';
 
 export type ProfilProps = {

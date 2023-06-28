@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { Button } from '@navikt/ds-react';
 
 const Knapp = styled(Button)`

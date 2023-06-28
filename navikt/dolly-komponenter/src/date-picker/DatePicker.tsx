@@ -2,7 +2,7 @@ import React, { ChangeEventHandler, useRef, useState } from 'react';
 import { format, isValid, parse } from 'date-fns';
 import { DayPicker } from 'react-day-picker';
 import { usePopper } from 'react-popper';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { TextField } from '@navikt/ds-react';
 import 'react-day-picker/dist/style.css';
 import { ChildrenBlur } from './ChildrenBlur';

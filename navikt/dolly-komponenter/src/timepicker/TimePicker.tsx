@@ -5,7 +5,7 @@ import { addYears, subYears } from 'date-fns';
 // @ts-ignore
 import locale_nb from 'date-fns/locale/nb';
 import 'react-datepicker/dist/react-datepicker.css';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 import { InputFormItem } from '../form';
 
 registerLocale('nb', locale_nb);

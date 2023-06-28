@@ -1,5 +1,5 @@
 import { DatePickerFormItem, InputFormItem, SelectFormItem } from './item';
-import styled from 'styled-components';
+import { styled } from 'styled-components';
 
 const Form = styled.form`
   display: flex;
