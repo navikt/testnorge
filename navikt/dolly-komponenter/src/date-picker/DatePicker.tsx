@@ -9,7 +9,6 @@ import { ChildrenBlur } from './ChildrenBlur';
 
 type Props = {
   id: string;
-  required?: boolean;
   label: string;
   onBlur: (value: string) => void;
   error?: string;
@@ -104,7 +103,6 @@ export default ({ label, onBlur, required = false }: Props) => {
             <StyledDaypicker
               mode="single"
               selected={selected}
-              required={required}
               defaultMonth={selected}
               onSelect={handleDaySelect}
             />
