@@ -107,7 +107,11 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 				<VegadresseVelger formikBag={formikBag} path={`${path}.vegadresse`} key={`veg_${idx}`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'POSTBOKSADRESSE' && (
 				<Postboksadresse formikBag={formikBag} path={`${path}.postboksadresse`} />
@@ -130,9 +134,7 @@ export const KontaktadresseForm = ({ formikBag, path, idx }: KontaktadresseFormV
 					value={_.get(formikBag.values, `${path}.opprettCoAdresseNavn.fornavn`)}
 				/>
 			</div>
-			<AvansertForm
-				path={path}
-			/>
+			<AvansertForm path={path} />
 		</React.Fragment>
 	)
 }
