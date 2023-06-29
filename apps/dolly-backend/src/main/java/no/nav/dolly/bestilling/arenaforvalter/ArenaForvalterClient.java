@@ -144,16 +144,23 @@ public class ArenaForvalterClient implements ClientRegister {
                     return arenaNyeBrukere;
                 })
                 .flatMap(arenaNyeBrukere -> {
-                    if (isNull(arenadata.getInaktiveringDato())) {
+
+                    if (arenaNyeBrukere.getNyeBrukere().stream()
+                            .anyMatch(ArenaNyBruker::hasKvalifiseringsgruppe)) {
 
                         return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
                                 .flatMap(this::getBrukerStatus)
                                 .map(response -> OPPRETTET + response);
-                    } else {
+
+                    } else if (nonNull(arenadata.getInaktiveringDato())) {
+
                         return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, miljoe)
                                 .map(respons -> respons.getStatus().is2xxSuccessful() ?
                                         "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
                                 .map(response -> INAKTIVERT + response);
+                    } else {
+
+                        return Flux.empty();
                     }
                 });
     }
