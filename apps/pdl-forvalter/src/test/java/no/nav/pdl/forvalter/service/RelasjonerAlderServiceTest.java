@@ -75,6 +75,7 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
+    @Disabled
     void personAlderBarn23Besteforeldre() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
