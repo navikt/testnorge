@@ -2,7 +2,7 @@ import { hasNoValues } from '@/components/fagsystem/pdl/visning/partials/relasjo
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import { DoedfoedtBarn } from '@/components/fagsystem/pdlf/PdlTypes'
+import { DoedfoedtBarnData } from '@/components/fagsystem/pdlf/PdlTypes'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { formatDate } from '@/utils/DataFormatter'
 
@@ -11,7 +11,7 @@ type DataProps = {
 }
 
 type DoedfoedtBarnProps = {
-	doedfoedtBarn: DoedfoedtBarn
+	doedfoedtBarn: DoedfoedtBarnData
 	idx?: number
 }
 
@@ -33,7 +33,7 @@ export const PdlDoedfoedtBarn = ({ data }: DataProps) => {
 			<SubOverskrift label="Dødfødt barn" iconKind="doedfoedt" />
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
-					{(data: DoedfoedtBarn, idx: number) => (
+					{(data: DoedfoedtBarnData, idx: number) => (
 						<DoedfoedtBarnVisning doedfoedtBarn={data} idx={idx} />
 					)}
 				</DollyFieldArray>
