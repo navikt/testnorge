@@ -4,6 +4,7 @@ import { DatePickerFormItem, InputFormItem, Line, SelectFormItem } from '@navikt
 import reducer, { Action, State } from './FodselsmeldingReducer';
 import { sendFodselsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
+import { format } from 'date-fns';
 
 export const initState: State = {
   miljoOptions: [],
@@ -11,7 +12,7 @@ export const initState: State = {
   identType: 'FNR',
   farsIdent: '',
   morsIdent: '',
-  foedselsdato: '',
+  foedselsdato: format(new Date(), 'y-MM-dd'),
   address: 'LAG_NY_ADRESSE',
   miljoer: [],
   validate: false,

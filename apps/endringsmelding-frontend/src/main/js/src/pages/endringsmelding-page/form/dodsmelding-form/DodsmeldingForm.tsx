@@ -4,12 +4,13 @@ import { DatePickerFormItem, Line, SelectFormItem } from '@navikt/dolly-komponen
 import reducer, { Action, State } from './DodsmeldingReducer';
 import { sendDodsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
+import { format } from 'date-fns';
 
 export const initState: State = {
   miljoOptions: [],
   handling: 'SETTE_DOEDSDATO',
   ident: '',
-  doedsdato: '',
+  doedsdato: format(new Date(), 'y-MM-dd'),
   miljoer: [],
   validate: false,
 };
@@ -41,12 +42,12 @@ export default () => {
   const getSuccessMessage = () => {
     const miljoer = state.miljoer?.join(', ');
     if (state.handling === 'SETTE_DOEDSDATO') {
-      return `Send dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
+      return `Dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
     }
     if (state.handling === 'ENDRET_DOEDSDATO') {
-      return `Endret dødsdato til ${state.doedsdato} for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
+      return `Dødsdato endret til ${state.doedsdato} for ident ${state.ident} i miljø ${miljoer}.`;
     }
-    return `Annullert dødsmelding for ident ${state.ident} ble sendt til miljø ${miljoer}.`;
+    return `Dødsmelding annulert for ident ${state.ident} i miljø ${miljoer}.`;
   };
   return (
     <EndringsmeldingForm

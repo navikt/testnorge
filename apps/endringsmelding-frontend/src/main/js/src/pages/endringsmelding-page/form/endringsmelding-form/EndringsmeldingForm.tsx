@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useReducer } from 'react';
 import { Search } from '@/components/search';
 
 import {
@@ -11,7 +11,6 @@ import {
 } from '@navikt/dolly-komponenter';
 import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
-import { useIdentSearch } from '@/useIdentSearch';
 
 type Props<T> = {
   children: React.ReactNode;
@@ -48,16 +47,6 @@ export default <T extends {}>({
   if (state.warningMessages) {
     console.log(state.warningMessages);
   }
-
-  const [search, setSearch] = useState(null);
-  const { error, identer, loading } = useIdentSearch(search);
-
-  useEffect(() => {
-    setMiljoer(identer?.map((ident) => ident.miljoe));
-    error
-      ? dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION })
-      : dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-  }, [identer, error]);
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
