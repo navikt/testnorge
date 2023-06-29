@@ -12,6 +12,8 @@ import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehov;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehovResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -148,21 +150,39 @@ public class ArenaForvalterClient implements ClientRegister {
                     if (arenaNyeBrukere.getNyeBrukere().stream()
                             .anyMatch(ArenaNyBruker::hasKvalifiseringsgruppe)) {
 
-                        return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
-                                .flatMap(this::getBrukerStatus)
-                                .map(response -> OPPRETTET + response);
+                        if (isNull(arbeidssoker.getRegistrertDato())) {
+                            return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
+                                    .flatMap(this::getBrukerStatus)
+                                    .map(response -> OPPRETTET + response);
+
+                        } else {
+                            return arenaForvalterConsumer.postInnsatsbehov(buildInnsatsbehov(ident, miljoe, arenaNyeBrukere.getNyeBrukere()))
+                                    .flatMap(this::getInnsatsStatus)
+                                    .map(response -> OPPRETTET + response);
+                        }
 
                     } else if (nonNull(arenadata.getInaktiveringDato())) {
 
                         return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, miljoe)
-                                .map(respons -> respons.getStatus().is2xxSuccessful() ?
-                                        "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
+                                        .map(respons -> respons.getStatus().is2xxSuccessful() ?
+                                                "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
                                 .map(response -> INAKTIVERT + response);
                     } else {
 
                         return Flux.empty();
                     }
                 });
+    }
+
+    private static ArenaInnsatsbehov buildInnsatsbehov(String ident, String miljoe, List<ArenaNyBruker> arenaNyBruker) {
+
+        return ArenaInnsatsbehov.builder()
+                .personident(ident)
+                .miljoe(miljoe)
+                .nyeEndreInnsatsbehov(List.of(ArenaInnsatsbehov.EndreInnsatsbehov.builder()
+                        .kvalifiseringsgruppe(arenaNyBruker.get(0).getKvalifiseringsgruppe())
+                        .build()))
+                .build();
     }
 
     private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaStatusResponse arbeidssoker) {
@@ -270,35 +290,52 @@ public class ArenaForvalterClient implements ClientRegister {
     private Mono<String> getBrukerStatus(ArenaNyeBrukereResponse response) {
 
         return Flux.concat(Flux.just(response.getStatus())
-                        .filter(status -> !status.is2xxSuccessful())
-                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
-                Flux.fromIterable(response.getArbeidsokerList())
-                        .map(nyBruker -> nyBruker.getStatus() == ArenaBruker.BrukerStatus.OK ?
-                                "OK" :
-                                encodeStatus(AVSLAG + nyBruker.getStatus()))
-                        .collect(Collectors.joining()),
-                Flux.fromIterable(response.getNyBrukerFeilList())
-                        .map(brukerFeil ->
-                                encodeStatus(String.format(STATUS_FMT, brukerFeil.getNyBrukerFeilstatus(), brukerFeil.getMelding())))
-                        .collect(Collectors.joining()))
+                                .filter(status -> !status.is2xxSuccessful())
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                        Flux.fromIterable(response.getArbeidsokerList())
+                                .map(nyBruker -> nyBruker.getStatus() == ArenaBruker.BrukerStatus.OK ?
+                                        "OK" :
+                                        encodeStatus(AVSLAG + nyBruker.getStatus()))
+                                .collect(Collectors.joining()),
+                        Flux.fromIterable(response.getNyBrukerFeilList())
+                                .map(brukerFeil ->
+                                        encodeStatus(String.format(STATUS_FMT, brukerFeil.getNyBrukerFeilstatus(), brukerFeil.getMelding())))
+                                .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
+    }
+
+    private Mono<String> getInnsatsStatus(ArenaInnsatsbehovResponse response) {
+
+        if (response.getStatus().is2xxSuccessful() && response.getNyeEndreInnsatsbehovFeilList().isEmpty()) {
+
+            return Mono.just("OK");
+        } else if (!response.getStatus().is2xxSuccessful()) {
+
+            return Mono.just(errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+        } else {
+
+            return Flux.fromIterable(response.getNyeEndreInnsatsbehovFeilList())
+                    .map(feil ->
+                            encodeStatus(String.format(STATUS_FMT, feil.getNyEndreInnsatsbehovFeilstatus(), feil.getMelding())))
+                    .collect(Collectors.joining());
+        }
     }
 
     private Mono<String> getAapStatus(AapResponse response) {
 
         return Flux.concat(Flux.just(response.getStatus())
-                        .filter(status -> !status.is2xxSuccessful())
-                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
-                Flux.fromIterable(response.getNyeAap())
-                        .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
-                                "OK" :
-                                encodeStatus(AVSLAG + nyAap.getBegrunnelse()))
-                        .collect(Collectors.joining()),
-                Flux.fromIterable(response.getNyeAapFeilList())
-                        .map(aapFeil ->
-                                encodeStatus(String.format(STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding())))
-                        .collect(Collectors.joining()))
+                                .filter(status -> !status.is2xxSuccessful())
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                        Flux.fromIterable(response.getNyeAap())
+                                .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
+                                        "OK" :
+                                        encodeStatus(AVSLAG + nyAap.getBegrunnelse()))
+                                .collect(Collectors.joining()),
+                        Flux.fromIterable(response.getNyeAapFeilList())
+                                .map(aapFeil ->
+                                        encodeStatus(String.format(STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding())))
+                                .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
     }
@@ -306,17 +343,17 @@ public class ArenaForvalterClient implements ClientRegister {
     private Mono<String> getAap115Status(Aap115Response response) {
 
         return Flux.concat(Flux.just(response.getStatus())
-                        .filter(status -> !status.is2xxSuccessful())
-                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
-                Flux.fromIterable(response.getNyeAap115())
-                        .map(nyAap115 -> "JA".equals(nyAap115.getUtfall()) ?
-                                "OK" :
-                                encodeStatus(AVSLAG + nyAap115.getBegrunnelse()))
-                        .collect(Collectors.joining()),
-                Flux.fromIterable(response.getNyeAapFeilList())
-                        .map(aap115Feil ->
-                                encodeStatus(String.format(STATUS_FMT, aap115Feil.getNyAapFeilstatus(), aap115Feil.getMelding())))
-                        .collect(Collectors.joining()))
+                                .filter(status -> !status.is2xxSuccessful())
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                        Flux.fromIterable(response.getNyeAap115())
+                                .map(nyAap115 -> "JA".equals(nyAap115.getUtfall()) ?
+                                        "OK" :
+                                        encodeStatus(AVSLAG + nyAap115.getBegrunnelse()))
+                                .collect(Collectors.joining()),
+                        Flux.fromIterable(response.getNyeAapFeilList())
+                                .map(aap115Feil ->
+                                        encodeStatus(String.format(STATUS_FMT, aap115Feil.getNyAapFeilstatus(), aap115Feil.getMelding())))
+                                .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
     }
@@ -324,17 +361,22 @@ public class ArenaForvalterClient implements ClientRegister {
     private Mono<String> getDagpengerStatus(ArenaNyeDagpengerResponse response) {
 
         return Flux.concat(Flux.just(response.getStatus())
-                        .filter(status -> !status.is2xxSuccessful())
-                        .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
-                Flux.fromIterable(response.getNyeDagpResponse())
-                        .map(nyDagP -> "JA".equals(nyDagP.getUtfall()) ?
-                                "OK" :
-                                encodeStatus(AVSLAG + nyDagP.getBegrunnelse()))
-                        .collect(Collectors.joining()),
-                Flux.fromIterable(response.getNyeDagpFeilList())
-                        .map(dagpFeil ->
-                                encodeStatus(String.format(STATUS_FMT, dagpFeil.getNyDagpFeilstatus(), dagpFeil.getMelding())))
-                        .collect(Collectors.joining()))
+                                .filter(status -> !status.is2xxSuccessful())
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                        Flux.fromIterable(response.getNyeDagp())
+                                .map(nyDagP -> "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
+                                        "OK" :
+                                        encodeStatus(AVSLAG + nyDagP.getNyeDagpResponse().getBegrunnelse()))
+                                .collect(Collectors.joining()),
+                        Flux.fromIterable(response.getNyeDagpResponse())
+                                .map(nyDagP -> "JA".equals(nyDagP.getUtfall()) ?
+                                        "OK" :
+                                        encodeStatus(AVSLAG + nyDagP.getBegrunnelse()))
+                                .collect(Collectors.joining()),
+                        Flux.fromIterable(response.getNyeDagpFeilList())
+                                .map(dagpFeil ->
+                                        encodeStatus(String.format(STATUS_FMT, dagpFeil.getNyDagpFeilstatus(), dagpFeil.getMelding())))
+                                .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
     }
@@ -343,4 +385,9 @@ public class ArenaForvalterClient implements ClientRegister {
 
         return nonNull(localDateTime) ? localDateTime.toLocalDate() : null;
     }
+
+//    private static void findAndStopAktivYtelse(ArenaStatusResponse arenaStatus) {
+//
+//        if (arenaStatus.getVedtakListe().
+//    }
 }

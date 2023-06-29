@@ -1,18 +1,18 @@
 package no.nav.dolly.bestilling.arenaforvalter.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 @Data
-@Builder
 @NoArgsConstructor
-@AllArgsConstructor
-public class InaktiverResponse {
+@ToString(callSuper = true)
+public class InaktiverResponse extends ArenaResponse {
 
-    private HttpStatus status;
-    private String feilmelding;
-    private String miljoe;
+    @Builder
+    public InaktiverResponse(HttpStatus status, String miljoe, String feilmelding) {
+        super(status, miljoe, feilmelding);
+    }
 }

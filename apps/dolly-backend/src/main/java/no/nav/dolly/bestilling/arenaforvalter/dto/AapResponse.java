@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
@@ -13,14 +15,17 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @NoArgsConstructor
-@AllArgsConstructor
-public class AapResponse {
+public class AapResponse extends ArenaResponse {
 
-    private HttpStatus status;
-    private String feilmelding;
-    private String miljoe;
+    @Builder
+    public AapResponse(HttpStatus status, String miljoe, String feilmelding, List<Aap> nyeAap, List<NyAapFeilV1> nyeAapFeilList) {
+        super(status, miljoe, feilmelding);
+        this.nyeAap = nyeAap;
+        this.nyeAapFeilList = nyeAapFeilList;
+    }
 
     @Schema(description = "AAP-rettigheter for brukeren")
     private List<Aap> nyeAap;
