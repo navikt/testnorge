@@ -43,7 +43,7 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Denne feiler av og til og trenger oppdatering")
     void personAlderBarn23Forelder41() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
@@ -75,7 +75,7 @@ class RelasjonerAlderServiceTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Denne feiler av og til og trenger oppdatering")
     void personAlderBarn23Besteforeldre() {
 
         doReturn(fixedClock.instant()).when(clock).instant();
