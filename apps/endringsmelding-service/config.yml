@@ -6,6 +6,10 @@ metadata:
   labels:
     team: dolly
 spec:
+  frontend:
+    generatedConfig:
+      mountPath: /usr/share/nginx/html/assets/nais.js
+
   image: {{image}}
   port: 8080
   webproxy: true
