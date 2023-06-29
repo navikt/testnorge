@@ -38,7 +38,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
-    private final EnkelAdresseService dummyAdresseService;
+    private final EnkelAdresseService enkelAdresseService;
 
     public KontaktAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer,
                                  AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade,
@@ -46,7 +46,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.dummyAdresseService = enkelAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {
@@ -118,7 +118,7 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
         } else if (nonNull(kontaktadresse.getUtenlandskAdresse())) {
 
-            kontaktadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster()));
+            kontaktadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(kontaktadresse.getUtenlandskAdresse(), getLandkode(person), kontaktadresse.getMaster()));
         }
 
         if (Master.PDL == kontaktadresse.getMaster()) {

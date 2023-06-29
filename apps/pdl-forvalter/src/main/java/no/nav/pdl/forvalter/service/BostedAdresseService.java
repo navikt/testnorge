@@ -39,11 +39,11 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     private final EnkelAdresseService enkelAdresseService;
     private final MapperFacade mapperFacade;
 
-    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, EnkelAdresseService dummyAdresseService, MapperFacade mapperFacade) {
+    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, EnkelAdresseService enkelAdresseService, MapperFacade mapperFacade) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.enkelAdresseService = dummyAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
