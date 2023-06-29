@@ -143,7 +143,11 @@ export const BostedsadresseForm = ({
 				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'UKJENT_BOSTED' && (
 				<UkjentBosted formikBag={formikBag} path={`${path}.ukjentBosted`} />

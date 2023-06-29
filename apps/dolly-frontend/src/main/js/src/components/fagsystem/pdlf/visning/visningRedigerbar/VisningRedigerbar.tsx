@@ -38,6 +38,7 @@ import {
 	sivilstand,
 	kontaktDoedsbo,
 	forelderBarnRelasjon,
+	doedfoedtBarn,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -54,6 +55,7 @@ import {
 	foreldreansvarForBarn,
 } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -86,6 +88,7 @@ enum Attributt {
 	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
 	ForelderBarnRelasjon = 'forelderBarnRelasjon',
 	Foreldreansvar = 'foreldreansvar',
+	DoedfoedtBarn = 'doedfoedtBarn',
 }
 
 const FieldArrayEdit = styled.div`
@@ -321,6 +324,8 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.DoedfoedtBarn:
+				return <DoedfoedtBarnForm formikBag={formikBag} path={path} />
 		}
 	}
 
@@ -349,6 +354,7 @@ export const VisningRedigerbar = ({
 					otherwise: () => foreldreansvarForBarn,
 				})
 			),
+			doedfoedtBarn: ifPresent('doedfoedtBarn', doedfoedtBarn),
 		},
 		[
 			['navn', 'navn'],
@@ -367,6 +373,7 @@ export const VisningRedigerbar = ({
 			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
 			['foreldreansvar', 'foreldreansvar'],
+			['doedfoedtBarn', 'doedfoedtBarn'],
 		]
 	)
 

@@ -4,6 +4,7 @@ import { DatePickerFormItem, InputFormItem, Line, SelectFormItem } from '@navikt
 import reducer, { Action, State } from './FodselsmeldingReducer';
 import { sendFodselsmelding } from '@/service/EndringsmeldingService';
 import { EndringsmeldingForm } from '../endringsmelding-form';
+import { format } from 'date-fns';
 
 export const initState: State = {
   miljoOptions: [],
@@ -11,7 +12,7 @@ export const initState: State = {
   identType: 'FNR',
   farsIdent: '',
   morsIdent: '',
-  foedselsdato: '',
+  foedselsdato: format(new Date(), 'y-MM-dd'),
   address: 'LAG_NY_ADRESSE',
   miljoer: [],
   validate: false,
@@ -57,9 +58,9 @@ export default () => {
       valid={onValidate}
       setIdent={(ident) => dispatch({ type: Action.SET_MORS_IDENT_ACTION, value: ident.trim() })}
       getSuccessMessage={getSuccessMessage}
-      setMiljoer={(miljoer) =>
-        dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer })
-      }
+      setMiljoer={(miljoer) => {
+        dispatch({ type: Action.SET_MILJOER_OPTIONS_ACTION, value: miljoer });
+      }}
     >
       <Line>
         <InputFormItem
@@ -123,10 +124,14 @@ export default () => {
           htmlId="miljo-select"
           label="Send til miljo*"
           error={state.validate && !notEmptyList(state.miljoer) ? 'Påkrevd' : null}
-          options={state.miljoOptions.map((value: string) => ({
-            value: value,
-            label: value.toUpperCase(),
-          }))}
+          options={
+            !state.miljoOptions || state.miljoOptions?.length === 0
+              ? []
+              : state.miljoOptions?.map((value: string) => ({
+                  value: value,
+                  label: value.toUpperCase(),
+                }))
+          }
         />
         <SelectFormItem
           label="Adresse"

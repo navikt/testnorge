@@ -62,7 +62,8 @@ jobs:
   start:
     runs-on: ubuntu-latest
     steps:
-      - run: |
+      - name: "Logging"
+        run: |
           echo "branch: ${{ github.ref }}"
           echo "inputs: ${{ toJSON(inputs) }}"
           echo "env: ${{ toJSON(env) }}"
@@ -120,32 +121,34 @@ jobs:
       do-deploy-test: ${{ env.do-deploy-test }}
       do-deploy: ${{ env.do-deploy }}
 
-  deploy-test:
-    needs: build
-    if: needs.build.outputs.do-deploy-test == 'true'
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v3
-      - name: "Deploy (test)"
-        env:
-          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
-          CLUSTER: ${{ inputs.cluster }}
-          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
-          VAR: image=${{ needs.build.outputs.image }}
-        uses: nais/deploy/actions/deploy@v1
-
   deploy:
     needs: build
     if: needs.build.outputs.do-deploy == 'true'
+    concurrency: ${{ inputs.image-suffix }}
     runs-on: ubuntu-latest
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
       - name: "Deploy"
+        uses: nais/deploy/actions/deploy@v1
         env:
           APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
           CLUSTER: ${{ inputs.cluster }}
           RESOURCE: ${{ inputs.working-directory }}/${{ inputs.nais-manifest }}
           VAR: image=${{ needs.build.outputs.image }}
+
+  deploy-test:
+    needs: build
+    if: needs.build.outputs.do-deploy-test == 'true'
+    concurrency: ${{ inputs.image-suffix }}-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Deploy (test)"
         uses: nais/deploy/actions/deploy@v1
+        env:
+          APIKEY: ${{ secrets.NAIS_DOLLY_DEPLOY_API_KEY }}
+          CLUSTER: ${{ inputs.cluster }}
+          RESOURCE: ${{ inputs.working-directory }}/config.test.yml
+          VAR: image=${{ needs.build.outputs.image }}

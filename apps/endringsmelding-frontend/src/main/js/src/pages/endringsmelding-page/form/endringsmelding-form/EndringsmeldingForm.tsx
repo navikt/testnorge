@@ -9,7 +9,6 @@ import {
   SuccessAlertstripe,
   WarningAlertstripe,
 } from '@navikt/dolly-komponenter';
-import { fetchMiljoer } from '@/service/EndringsmeldingService';
 import { Action, reducer, State } from './EndringsmeldingReducer';
 import { BadRequestError } from '@navikt/dolly-lib/lib/error';
 
@@ -30,7 +29,7 @@ type Props<T> = {
 export const initState: State = {
   ident: '',
   loading: false,
-  show: false,
+  show: true,
 };
 
 export default <T extends {}>({
@@ -48,17 +47,6 @@ export default <T extends {}>({
   if (state.warningMessages) {
     console.log(state.warningMessages);
   }
-
-  const onSearch = (value: string) =>
-    fetchMiljoer(value)
-      .then((response) => {
-        setMiljoer(response);
-        dispatch({ type: Action.SET_HENT_MILJOER_SUCCESS_ACTION });
-      })
-      .catch((e) => {
-        dispatch({ type: Action.SET_HENT_MILJOER_ERROR_ACTION });
-        throw e;
-      });
 
   const onSubmit = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -84,11 +72,12 @@ export default <T extends {}>({
   return (
     <Form>
       <Search
-        onSearch={onSearch}
         onChange={(value) => {
           setIdent(value);
           dispatch({ type: Action.SET_IDENT_ACTION, value: value });
         }}
+        setMiljoer={setMiljoer}
+        dispatch={dispatch}
         labels={{
           label: labels.search,
           button: 'Søk etter person',

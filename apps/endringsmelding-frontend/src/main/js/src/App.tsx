@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Header, ProfilLoader } from '@navikt/dolly-komponenter';
 import { EndringsmeldingPage } from '@/pages';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import LoginPage from '@/pages/login-page/LoginPage';
 import ProfilService from './service/ProfilService';
 
