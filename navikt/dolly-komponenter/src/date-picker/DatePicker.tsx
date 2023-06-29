@@ -104,9 +104,8 @@ export default ({ label, onBlur, required = false }: Props) => {
             <StyledDaypicker
               mode="single"
               selected={selected}
-              required={required}
               defaultMonth={selected}
-              onSelect={handleDaySelect}
+              onDayClick={handleDaySelect}
             />
           </div>
         )}
