@@ -131,7 +131,11 @@ export const OppholdsadresseForm = ({ formikBag, path, idx }: OppholdsadresseFor
 				<MatrikkeladresseVelger formikBag={formikBag} path={`${path}.matrikkeladresse`} />
 			)}
 			{valgtAdressetype === 'UTENLANDSK_ADRESSE' && (
-				<UtenlandskAdresse formikBag={formikBag} path={`${path}.utenlandskAdresse`} />
+				<UtenlandskAdresse
+					formikBag={formikBag}
+					path={`${path}.utenlandskAdresse`}
+					master={_.get(formikBag.values, `${path}.master`)}
+				/>
 			)}
 			{valgtAdressetype === 'OPPHOLD_ANNET_STED' && (
 				<OppholdAnnetSted formikBag={formikBag} path={`${path}.oppholdAnnetSted`} />
