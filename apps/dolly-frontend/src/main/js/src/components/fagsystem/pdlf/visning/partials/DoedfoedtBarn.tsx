@@ -61,11 +61,10 @@ export const DoedfoedtBarnVisning = ({
 	const doedfoedtBarnValues = redigertDoedfoedtBarnPdlf
 		? redigertDoedfoedtBarnPdlf
 		: doedfoedtBarnData
-	let redigertDoedfoedtBarnValues = redigertDoedfoedtBarnPdlf
-		? {
-				doedfoedtBarn: Object.assign(_.cloneDeep(initialDoedfoedtBarn), redigertDoedfoedtBarnPdlf),
-		  }
-		: null
+
+	let redigertDoedfoedtBarnValues = redigertDoedfoedtBarnPdlf && {
+		doedfoedtBarn: Object.assign(_.cloneDeep(initialDoedfoedtBarn), redigertDoedfoedtBarnPdlf),
+	}
 
 	return (
 		<VisningRedigerbarConnector
