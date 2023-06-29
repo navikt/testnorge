@@ -6,7 +6,7 @@ metadata:
   labels:
     team: dolly
 spec:
-  image: {{ image }}
+  image: {{image}}
   port: 8080
   webproxy: true
   tokenx:
@@ -26,6 +26,8 @@ spec:
         - application: testnav-endringsmelding-frontend
           cluster: dev-gcp
     outbound:
+      rules:
+        - application: testnav-tps-messaging-service
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
   liveness:
