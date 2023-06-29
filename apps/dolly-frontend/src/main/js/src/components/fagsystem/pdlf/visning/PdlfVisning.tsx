@@ -167,7 +167,11 @@ export const PdlfVisning = ({ fagsystemData, loading, tmpPersoner }) => {
 				/>
 				<DoedfoedtBarnVisning data={data?.person?.doedfoedtBarn} />
 				<FalskIdentitet data={data?.person?.falskIdentitet} />
-				<UtenlandsId data={data?.person?.utenlandskIdentifikasjonsnummer} />
+				<UtenlandsId
+					data={data?.person?.utenlandskIdentifikasjonsnummer}
+					tmpPersoner={tmpPdlforvalter}
+					ident={ident}
+				/>
 				<IdenthistorikkVisning relasjoner={data?.relasjoner} />
 				<KontaktinformasjonForDoedsbo
 					data={data?.person?.kontaktinformasjonForDoedsbo}

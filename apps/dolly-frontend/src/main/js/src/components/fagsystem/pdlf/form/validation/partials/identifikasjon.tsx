@@ -20,10 +20,8 @@ export const falskIdentitet = Yup.array().of(
 	})
 )
 
-export const utenlandskId = Yup.array().of(
-	Yup.object({
-		identifikasjonsnummer: requiredString,
-		opphoert: requiredString,
-		utstederland: requiredString,
-	})
-)
+export const utenlandskId = Yup.object({
+	identifikasjonsnummer: requiredString,
+	utstederland: requiredString,
+	opphoert: Yup.boolean(),
+})

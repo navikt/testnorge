@@ -126,7 +126,7 @@ export const validation = {
 			utflytting: ifPresent('$pdldata.person.utflytting', Yup.array().of(utflytting)),
 			utenlandskIdentifikasjonsnummer: ifPresent(
 				'$pdldata.person.utenlandskIdentifikasjonsnummer',
-				utenlandskId
+				Yup.array().of(utenlandskId)
 			),
 			kontaktinformasjonForDoedsbo: ifPresent(
 				'$pdldata.person.kontaktinformasjonForDoedsbo',

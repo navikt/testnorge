@@ -38,6 +38,7 @@ import {
 	sivilstand,
 	kontaktDoedsbo,
 	forelderBarnRelasjon,
+	utenlandskId,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -54,6 +55,7 @@ import {
 	foreldreansvarForBarn,
 } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -86,6 +88,7 @@ enum Attributt {
 	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
 	ForelderBarnRelasjon = 'forelderBarnRelasjon',
 	Foreldreansvar = 'foreldreansvar',
+	UtenlandskIdentifikasjonsnummer = 'utenlandskIdentifikasjonsnummer',
 }
 
 const FieldArrayEdit = styled.div`
@@ -321,6 +324,8 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.UtenlandskIdentifikasjonsnummer:
+				return <UtenlandsIdForm path={path} />
 		}
 	}
 
@@ -349,6 +354,7 @@ export const VisningRedigerbar = ({
 					otherwise: () => foreldreansvarForBarn,
 				})
 			),
+			utenlandskIdentifikasjonsnummer: ifPresent('utenlandskIdentifikasjonsnummer', utenlandskId),
 		},
 		[
 			['navn', 'navn'],
@@ -367,6 +373,7 @@ export const VisningRedigerbar = ({
 			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
 			['foreldreansvar', 'foreldreansvar'],
+			['utenlandskIdentifikasjonsnummer', 'utenlandskIdentifikasjonsnummer'],
 		]
 	)
 
