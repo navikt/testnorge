@@ -37,15 +37,15 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
-    private final UtenlandskAdresseService utenlandskAdresseService;
+    private final EnkelAdresseService enkelAdresseService;
 
     public OppholdsadresseService(GenererNavnServiceConsumer genererNavnServiceConsumer,
                                   AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade,
-                                  UtenlandskAdresseService utenlandskAdresseService) {
+                                  EnkelAdresseService enkelAdresseService) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.utenlandskAdresseService = utenlandskAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     public List<OppholdsadresseDTO> convert(PersonDTO person) {
@@ -124,7 +124,7 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
         } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
 
-            oppholdsadresse.setUtenlandskAdresse(utenlandskAdresseService.getUtenlandskAdresse(
+            oppholdsadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(
                     oppholdsadresse.getUtenlandskAdresse(), getLandkode(person), oppholdsadresse.getMaster()));
         }
 

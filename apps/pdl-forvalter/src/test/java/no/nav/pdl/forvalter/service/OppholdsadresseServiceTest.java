@@ -41,7 +41,7 @@ class OppholdsadresseServiceTest {
     private MapperFacade mapperFacade;
 
     @Mock
-    private UtenlandskAdresseService utenlandskAdresseService;
+    private EnkelAdresseService enkelAdresseService;
 
     @InjectMocks
     private OppholdsadresseService oppholdsadresseService;
@@ -184,7 +184,7 @@ class OppholdsadresseServiceTest {
                         .build())))
                 .build();
 
-        when(utenlandskAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
+        when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
 
         var target = oppholdsadresseService.convert(request).get(0);
 

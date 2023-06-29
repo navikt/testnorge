@@ -38,15 +38,15 @@ public class KontaktAdresseService extends AdresseService<KontaktadresseDTO, Per
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
-    private final UtenlandskAdresseService dummyAdresseService;
+    private final EnkelAdresseService dummyAdresseService;
 
     public KontaktAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer,
                                  AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade,
-                                 UtenlandskAdresseService utenlandskAdresseService) {
+                                 EnkelAdresseService enkelAdresseService) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.dummyAdresseService = utenlandskAdresseService;
+        this.dummyAdresseService = enkelAdresseService;
     }
 
     private static void validatePostBoksAdresse(KontaktadresseDTO.PostboksadresseDTO postboksadresse) {

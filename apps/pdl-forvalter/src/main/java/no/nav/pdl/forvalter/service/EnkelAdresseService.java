@@ -16,7 +16,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class UtenlandskAdresseService {
+public class EnkelAdresseService {
 
     private static final String POSTBOKS_ADRESSE_EIER = "SOT6 Vika";
     private static final String POSTBOKS_ADRESSE_POSTBOKS = "2094";
@@ -48,6 +48,7 @@ public class UtenlandskAdresseService {
     public UtenlandskAdresseDTO getUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String landkode, DbVersjonDTO.Master master) {
 
         if (utenlandskAdresse.isEmpty()) {
+
             return UtenlandskAdresseDTO.builder()
                     .adressenavnNummer(ADRESSE_NAVN_NUMMER)
                     .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
@@ -58,6 +59,7 @@ public class UtenlandskAdresseService {
                     .build();
 
         } else {
+
             var oppdatertAdresse = mapperFacade.map(utenlandskAdresse, UtenlandskAdresseDTO.class);
 
             if (isBlank(oppdatertAdresse.getLandkode())) {
