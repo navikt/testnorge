@@ -54,8 +54,7 @@ public class EnkelAdresseService {
                     .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
                     .bySted(ADRESSE_3_UTLAND)
                     .postkode(ADRESSE_POSTKODE)
-                    .landkode(isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
-                            geografiskeKodeverkConsumer.getTilfeldigLand())
+                    .landkode(getLandkode(landkode))
                     .build();
 
         } else {
@@ -63,8 +62,7 @@ public class EnkelAdresseService {
             var oppdatertAdresse = mapperFacade.map(utenlandskAdresse, UtenlandskAdresseDTO.class);
 
             if (isBlank(oppdatertAdresse.getLandkode())) {
-                oppdatertAdresse.setLandkode(isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
-                        geografiskeKodeverkConsumer.getTilfeldigLand());
+                oppdatertAdresse.setLandkode(getLandkode(landkode));
             }
 
             if (isBlank(oppdatertAdresse.getAdressenavnNummer()) && isBlank(oppdatertAdresse.getPostboksNummerNavn())) {
@@ -73,5 +71,11 @@ public class EnkelAdresseService {
 
             return oppdatertAdresse;
         }
+    }
+
+    private String getLandkode(String landkode) {
+
+        return isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
+                geografiskeKodeverkConsumer.getTilfeldigLand();
     }
 }
