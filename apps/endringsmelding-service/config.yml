@@ -26,9 +26,10 @@ spec:
         - application: testnav-endringsmelding-frontend
           cluster: dev-gcp
     outbound:
+      rules:
+        - application: testnav-tps-messaging-service
       external:
         - host: tps-forvalteren-proxy.dev-fss-pub.nais.io
-        - host: testnav-tps-messaging-service.intern.dev.nav.no
   liveness:
     path: /internal/isAlive
     initialDelay: 4
