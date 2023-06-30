@@ -207,11 +207,13 @@ public class ArenaForvalterClient implements ClientRegister {
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap115())
                         .flatMap(aap115 -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
                                         .filter(vedtak -> "AA115".equals(vedtak.getRettighet().getKode()))
+                                        .filter(vedtak -> "Aktiv".equals(vedtak.getSak().getStatus()))
                                         .flatMap(vedtak -> {
                                             var opphoerRequest = mapperFacade.map(request, Aap115Request.class);
                                             opphoerRequest.getNyeAap115()
                                                     .forEach(opphoer -> {
                                                         opphoer.setVedtaktype(Aap115.VedtaksType.S);
+                                                        opphoer.setFraDato(vedtak.getFraDato());
                                                         opphoer.setTilDato(toDate(aap115.getFraDato()));
                                                     });
                                             return arenaForvalterConsumer.postAap115(opphoerRequest)
@@ -238,11 +240,13 @@ public class ArenaForvalterClient implements ClientRegister {
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap())
                         .flatMap(aap -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
                                         .filter(vedtak -> "AAP".equals(vedtak.getRettighet().getKode()))
+                                        .filter(vedtak -> "Aktiv".equals(vedtak.getSak().getStatus()))
                                         .flatMap(vedtak -> {
                                             var opphoerRequest = mapperFacade.map(request, AapRequest.class);
                                             opphoerRequest.getNyeAap()
                                                     .forEach(opphoer -> {
                                                         opphoer.setVedtaktype(Aap.VedtakType.S);
+                                                        opphoer.setFraDato(vedtak.getFraDato());
                                                         opphoer.setTilDato(toDate(aap.getFraDato()));
                                                     });
                                             return arenaForvalterConsumer.postAap(opphoerRequest)
@@ -269,11 +273,16 @@ public class ArenaForvalterClient implements ClientRegister {
                 .flatMap(request -> Flux.fromIterable(arenadata.getDagpenger())
                         .flatMap(dagp -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
                                         .filter(vedtak -> "DAGP".equals(vedtak.getRettighet().getKode()))
+                                        .filter(vedtak -> "Aktiv".equals(vedtak.getSak().getStatus()))
                                         .flatMap(vedtak -> {
                                             var opphoerRequest = mapperFacade.map(request, ArenaDagpenger.class);
                                             opphoerRequest.getNyeDagp()
                                                     .forEach(opphoer -> {
                                                         opphoer.setVedtaktype(ArenaDagpenger.VedtaksType.S);
+                                                        opphoer.setVedtaksperiode(ArenaDagpenger.Vedtaksperiode.builder()
+                                                                .fom(vedtak.getFraDato())
+                                                                .tom(vedtak.getTilDato())
+                                                                .build());
                                                         opphoer.setStansFomDato(toDate(dagp.getFraDato()));
                                                     });
                                             return arenaForvalterConsumer.postArenaDagpenger(opphoerRequest)
