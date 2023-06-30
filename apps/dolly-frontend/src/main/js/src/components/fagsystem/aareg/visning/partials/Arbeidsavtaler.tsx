@@ -4,6 +4,7 @@ import { ArbeidKodeverk } from '@/config/kodeverk'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
 import * as _ from 'lodash-es'
 import React from 'react'
+import { Fartoy } from '@/components/fagsystem/aareg/visning/partials/Fartoy'
 
 export const Arbeidsavtaler = ({ data }) => {
 	if (!data || data.length === 0) {
@@ -22,7 +23,11 @@ export const Arbeidsavtaler = ({ data }) => {
 			<ErrorBoundary>
 				<div className="person-visning_content">
 					<TitleValue title="Yrke" value={detaljer.yrke} kodeverk={ArbeidKodeverk.Yrker} />
-					{/* //TODO: Ansettelsesform mangler fra Aareg */}
+					<TitleValue
+						title="Ansettelsesform"
+						value={detaljer.ansettelsesform}
+						kodeverk={ArbeidKodeverk.AnsettelsesformAareg}
+					/>
 					<TitleValue
 						title="Stillingsprosent"
 						value={detaljer.stillingsprosent === 0 ? '0' : detaljer.stillingsprosent}
@@ -43,6 +48,7 @@ export const Arbeidsavtaler = ({ data }) => {
 					/>
 				</div>
 			</ErrorBoundary>
+			{detaljer.type === 'Maritim' && <Fartoy data={detaljer} />}
 		</React.Fragment>
 	)
 }

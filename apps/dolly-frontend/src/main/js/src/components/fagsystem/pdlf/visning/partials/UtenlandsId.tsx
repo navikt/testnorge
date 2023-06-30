@@ -4,8 +4,64 @@ import { TitleValue } from '@/components/ui/titleValue/TitleValue'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
 import { oversettBoolean } from '@/utils/DataFormatter'
 import { ErrorBoundary } from '@/components/ui/appError/ErrorBoundary'
+import React from 'react'
+import { initialUtenlandsIdValues } from '@/components/fagsystem/pdlf/form/initialValues'
+import * as _ from 'lodash-es'
+import VisningRedigerbarConnector from '@/components/fagsystem/pdlf/visning/visningRedigerbar/VisningRedigerbarConnector'
+import { OpplysningSlettet } from '@/components/fagsystem/pdlf/visning/visningRedigerbar/OpplysningSlettet'
 
-export const UtenlandsId = ({ data }) => {
+const UtenlandsIdLes = ({ data, idx }) => {
+	if (!data) {
+		return null
+	}
+	return (
+		<div className="person-visning_content" key={idx}>
+			<TitleValue title="Identifikasjonsnummer" value={data.identifikasjonsnummer} />
+			<TitleValue
+				title="Utstederland"
+				value={data.utstederland}
+				kodeverk={AdresseKodeverk.Utstederland}
+			/>
+			<TitleValue title="Opphørt" value={oversettBoolean(Boolean(data.opphoert))} />
+		</div>
+	)
+}
+
+export const UtenlandsIdVisning = ({ utenlandsIdData, idx, data, tmpPersoner, ident }) => {
+	const initUtenlandsId = Object.assign(_.cloneDeep(initialUtenlandsIdValues), data[idx])
+	let initialValues = { utenlandskIdentifikasjonsnummer: initUtenlandsId }
+
+	const redigertUtenlandsIdPdlf = _.get(
+		tmpPersoner,
+		`${ident}.person.utenlandskIdentifikasjonsnummer`
+	)?.find((a) => a.id === utenlandsIdData.id)
+
+	const slettetUtenlandsIdPdlf = tmpPersoner?.hasOwnProperty(ident) && !redigertUtenlandsIdPdlf
+	if (slettetUtenlandsIdPdlf) {
+		return <OpplysningSlettet />
+	}
+
+	const utenlandsIdValues = redigertUtenlandsIdPdlf ? redigertUtenlandsIdPdlf : utenlandsIdData
+
+	let redigertUtenlandsIdValues = redigertUtenlandsIdPdlf && {
+		utenlandskIdentifikasjonsnummer: Object.assign(
+			_.cloneDeep(initUtenlandsId),
+			redigertUtenlandsIdPdlf
+		),
+	}
+
+	return (
+		<VisningRedigerbarConnector
+			dataVisning={<UtenlandsIdLes data={utenlandsIdValues} idx={idx} />}
+			initialValues={initialValues}
+			redigertAttributt={redigertUtenlandsIdValues}
+			path="utenlandskIdentifikasjonsnummer"
+			ident={ident}
+		/>
+	)
+}
+
+export const UtenlandsId = ({ data, tmpPersoner, ident }) => {
 	if (!data || data.length === 0) {
 		return null
 	}
@@ -16,15 +72,13 @@ export const UtenlandsId = ({ data }) => {
 			<ErrorBoundary>
 				<DollyFieldArray data={data} nested>
 					{(id, idx) => (
-						<div className="person-visning_content" key={idx}>
-							<TitleValue title="Identifikasjonsnummer" value={id.identifikasjonsnummer} />
-							<TitleValue
-								title="Utstederland"
-								value={id.utstederland}
-								kodeverk={AdresseKodeverk.Utstederland}
-							/>
-							<TitleValue title="Opphørt" value={oversettBoolean(Boolean(id.opphoert))} />
-						</div>
+						<UtenlandsIdVisning
+							utenlandsIdData={id}
+							idx={idx}
+							data={data}
+							tmpPersoner={tmpPersoner}
+							ident={ident}
+						/>
 					)}
 				</DollyFieldArray>
 			</ErrorBoundary>
