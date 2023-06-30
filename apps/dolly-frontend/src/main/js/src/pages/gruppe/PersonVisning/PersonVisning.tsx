@@ -40,6 +40,7 @@ import { sjekkManglerAaregData } from '@/components/fagsystem/aareg/visning/Visn
 import { useAmeldinger, useArbeidsforhold } from '@/utils/hooks/useOrganisasjoner'
 import {
 	useArbeidsplassencvData,
+	useArenaData,
 	useDokarkivData,
 	useHistarkData,
 	useInstData,
@@ -159,6 +160,11 @@ export default ({
 		harArbeidsplassenBestilling(bestillingerFagsystemer)
 	)
 
+	const { loading: loadingArenaData, arenaData } = useArenaData(ident.ident, true)
+	//TODO: skriv harArenaBestilling
+	// console.log('loadingArenaData: ', loadingArenaData) //TODO - SLETT MEG
+	// console.log('arenaData: ', arenaData) //TODO - SLETT MEG
+
 	const getGruppeIdenter = () => {
 		return useAsync(async () => DollyApi.getGruppeById(gruppeId), [DollyApi.getGruppeById])
 	}
@@ -172,7 +178,7 @@ export default ({
 	}
 
 	const { sigrunstub, inntektstub, brregstub, krrstub, arenaforvalteren, udistub } = data
-
+	// console.log('data: ', data) //TODO - SLETT MEG
 	const manglerFagsystemdata = () => {
 		if (
 			[sigrunstub, inntektstub, krrstub].some(
@@ -377,9 +383,11 @@ export default ({
 					/>
 				)}
 				<ArenaVisning
-					data={arenaforvalteren}
+					// data={arenaforvalteren}
+					data={arenaData}
 					bestillinger={bestillingListe}
-					loading={loading.arenaforvalteren}
+					// loading={loading.arenaforvalteren}
+					loading={loadingArenaData}
 					ident={ident}
 					tilgjengeligMiljoe={tilgjengeligMiljoe}
 				/>

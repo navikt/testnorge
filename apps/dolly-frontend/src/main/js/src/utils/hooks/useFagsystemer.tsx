@@ -1,6 +1,14 @@
 import useSWR from 'swr'
-import { fetcher, multiFetcherDokarkiv, multiFetcherInst, multiFetcherPensjon } from '@/api'
 import {
+	fetcher,
+	multiFetcherAll,
+	multiFetcherArena,
+	multiFetcherDokarkiv,
+	multiFetcherInst,
+	multiFetcherPensjon,
+} from '@/api'
+import {
+	useArenaEnvironments,
 	useDokarkivEnvironments,
 	useInstEnvironments,
 	usePensjonEnvironments,
@@ -23,6 +31,12 @@ const tpUrl = (ident, miljoer) =>
 const instUrl = (ident, miljoer) =>
 	miljoer?.map((miljo) => ({
 		url: `/testnav-inst-proxy/api/v1/institusjonsopphold/person?environments=${miljo}`,
+		miljo: miljo,
+	}))
+
+const arenaUrl = (ident, miljoer) =>
+	miljoer?.map((miljo) => ({
+		url: `/dolly-backend/api/v1/arena/ident/${ident}/miljoe/${miljo}`,
 		miljo: miljo,
 	}))
 
@@ -149,6 +163,22 @@ export const useArbeidsplassencvHjemmel = (ident: string) => {
 
 	return {
 		arbeidsplassencvHjemmel: data,
+		loading: isLoading,
+		error: error,
+	}
+}
+
+export const useArenaData = (ident, harArenaBestilling) => {
+	const { arenaEnvironments } = useArenaEnvironments()
+
+	const { data, isLoading, error } = useSWR<any, Error>(
+		harArenaBestilling ? arenaUrl(ident, arenaEnvironments) : null,
+		multiFetcherArena
+	)
+	// console.log('data: ', data) //TODO - SLETT MEG
+
+	return {
+		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),
 		loading: isLoading,
 		error: error,
 	}

@@ -11,10 +11,11 @@ import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
 import StyledAlert from '@/components/ui/alert/StyledAlert'
 
 const Visning = ({ data }) => {
-	if (!data || data.length === 0) {
+	if (!data) {
 		return null
 	}
-	const arenaData = data[0]
+	console.log('data: ', data) //TODO - SLETT MEG
+	const arenaData = data
 	if (arenaData.error) {
 		return (
 			<StyledAlert variant={'info'} size={'small'}>
@@ -89,7 +90,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
-
+	// console.log('data: ', data) //TODO - SLETT MEG
 	const execute = useCallback(() => {
 		const getTags = async () => {
 			setTagsLoading(true)
@@ -141,7 +142,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 		}
 		return vData
 	})
-
+	// console.log('visningData: ', visningData) //TODO - SLETT MEG
 	const filteredData =
 		tilgjengeligMiljoe && visningData.filter((item) => item.miljo === tilgjengeligMiljoe)
 
@@ -153,7 +154,8 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 				bestilteMiljoer={bestilteMiljoer}
 				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 				errorMiljoer={errorMiljoer}
-				data={filteredData || visningData}
+				// data={filteredData || visningData}
+				data={data}
 			>
 				<Visning />
 			</MiljoTabs>
