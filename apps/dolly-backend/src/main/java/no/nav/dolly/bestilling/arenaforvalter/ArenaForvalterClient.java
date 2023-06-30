@@ -206,7 +206,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap115())
                         .flatMap(aap115 -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
-                                        .filter(vedtak -> "AA115".equals(vedtak.getRettighet().getNavn()))
+                                        .filter(vedtak -> "AA115".equals(vedtak.getRettighet().getKode()))
                                         .flatMap(vedtak -> {
                                             var opphoerRequest = mapperFacade.map(request, Aap115Request.class);
                                             opphoerRequest.getNyeAap115()
@@ -237,7 +237,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap())
                         .flatMap(aap -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
-                                        .filter(vedtak -> "AAP".equals(vedtak.getRettighet().getNavn()))
+                                        .filter(vedtak -> "AAP".equals(vedtak.getRettighet().getKode()))
                                         .flatMap(vedtak -> {
                                             var opphoerRequest = mapperFacade.map(request, AapRequest.class);
                                             opphoerRequest.getNyeAap()
@@ -268,7 +268,7 @@ public class ArenaForvalterClient implements ClientRegister {
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getDagpenger())
                         .flatMap(dagp -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
-                                        .filter(vedtak -> "DAGP".equals(vedtak.getRettighet().getNavn()))
+                                        .filter(vedtak -> "DAGP".equals(vedtak.getRettighet().getKode()))
                                         .flatMap(vedtak -> {
                                             var opphoerRequest = mapperFacade.map(request, ArenaDagpenger.class);
                                             opphoerRequest.getNyeDagp()
