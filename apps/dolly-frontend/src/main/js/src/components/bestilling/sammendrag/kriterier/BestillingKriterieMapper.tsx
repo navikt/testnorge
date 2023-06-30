@@ -786,8 +786,8 @@ const mapUtenlandskIdentifikasjonsnummer = (utenlandskIdentifikasjonsnummer, dat
 						numberHeader: `Utenlandsk ID ${idx + 1}`,
 					},
 					obj('Utenlandsk ID', item.identifikasjonsnummer),
-					obj('Utenlandsk ID opphørt', oversettBoolean(item.opphoert)),
 					obj('Utstederland', item.utstederland, AdresseKodeverk.Utstederland),
+					obj('Utenlandsk ID opphørt', oversettBoolean(item.opphoert)),
 				]
 			}),
 		}
