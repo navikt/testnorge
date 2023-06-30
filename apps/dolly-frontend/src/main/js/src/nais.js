@@ -1,5 +1,5 @@
 export default {
-	telemetryCollectorURL: 'https://telemetry.ekstern.dev.nav.no/collect',
+	telemetryCollectorURL: 'http://localhost:12347/collect',
 	app: {
 		name: 'dolly-frontend-dev',
 		version: 'dev',
