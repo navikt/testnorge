@@ -55,6 +55,9 @@ class BestillingServiceTest {
     private BestillingKontrollRepository bestillingKontrollRepository;
 
     @Mock
+    private BestillingMalService bestillingMalService;
+
+    @Mock
     private TestgruppeRepository testgruppeRepository;
 
     @Mock

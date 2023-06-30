@@ -18,9 +18,9 @@ export default function Panel({
 	informasjonstekst = null,
 	iconType,
 	forceOpen = false,
+	setPanelOpen = null,
 }) {
 	const [isOpen, toggleOpen] = useToggle(startOpen)
-
 	const shouldOpen = isOpen || forceOpen
 
 	const renderContent = children ? children : content
@@ -37,7 +37,13 @@ export default function Panel({
 
 	return (
 		<div className={shouldOpen ? 'dolly-panel dolly-panel-open' : 'dolly-panel'}>
-			<div className="dolly-panel-heading" onClick={toggleOpen}>
+			<div
+				className="dolly-panel-heading"
+				onClick={() => {
+					setPanelOpen && setPanelOpen(!startOpen)
+					toggleOpen()
+				}}
+			>
 				{iconType && <Icon size={45} kind={iconType} className="header-icon" />}
 				<h2>{heading}</h2>
 

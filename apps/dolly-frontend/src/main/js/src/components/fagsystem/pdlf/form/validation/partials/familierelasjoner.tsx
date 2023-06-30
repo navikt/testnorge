@@ -172,11 +172,9 @@ export const nyPerson = Yup.object({
 	gradering: Yup.string().nullable(),
 })
 
-export const doedfoedtBarn = Yup.array().of(
-	Yup.object({
-		dato: requiredDate.nullable(),
-	})
-)
+export const doedfoedtBarn = Yup.object({
+	dato: requiredDate.nullable(),
+})
 
 export const sivilstand = Yup.object({
 	type: requiredString,

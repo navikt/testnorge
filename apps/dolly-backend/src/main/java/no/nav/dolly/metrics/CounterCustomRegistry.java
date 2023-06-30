@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.Objects.nonNull;
-import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Component
 @RequiredArgsConstructor
@@ -48,8 +47,6 @@ public class CounterCustomRegistry {
         addTag(tags, nonNull(bestilling.getHistark()), "HISTARK");
         addTag(tags, nonNull(bestilling.getSykemelding()), "SYKEMELDING");
         addTag(tags, nonNull(bestilling.getBrregstub()), "BRREGSTUB");
-
-        addTag(tags, isNotBlank(bestilling.getMalBestillingNavn()), "MALBESTILLING");
 
         invoke(BESTILLING_TAG, tags);
     }

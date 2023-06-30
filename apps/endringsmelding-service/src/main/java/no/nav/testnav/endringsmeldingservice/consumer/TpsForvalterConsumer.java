@@ -2,7 +2,6 @@ package no.nav.testnav.endringsmeldingservice.consumer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import no.nav.testnav.endringsmeldingservice.config.credentias.TpsForvalterenProxyServiceProperties;
-import no.nav.testnav.endringsmeldingservice.consumer.command.GetIdentEnvironmentsCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendDoedsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.command.SendFoedselsmeldingCommand;
 import no.nav.testnav.endringsmeldingservice.consumer.dto.DoedsmeldingDTO;
@@ -49,12 +48,6 @@ public class TpsForvalterConsumer {
                 .exchangeStrategies(jacksonStrategy)
                 .baseUrl(serverProperties.getUrl())
                 .build();
-    }
-
-    public Mono<Set<String>> hentMiljoer(String ident) {
-        return accessTokenService
-                .exchange(serverProperties)
-                .flatMap(accessToken -> new GetIdentEnvironmentsCommand(webClient, ident, accessToken.getTokenValue()).call());
     }
 
     public Mono<Status> sendFoedselsmelding(FoedselsmeldingDTO dto, Set<String> miljoer) {

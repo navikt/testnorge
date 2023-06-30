@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Objects.isNull;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.FolkeregisterPersonstatusDTO.FolkeregisterPersonstatus.BOSATT;
@@ -65,11 +66,10 @@ public class ArtifactGjeldendeService {
         personRepository.findByIdent(ident)
                 .ifPresent(hovedperson -> {
                     setGjeldendeForRelasjon(hovedperson.getPerson());
-                    var relasjoner = hovedperson.getRelasjoner().stream()
+                    hovedperson.getRelasjoner().stream()
                             .map(DbRelasjon::getRelatertPerson)
-                            .toList();
-
-                    relasjoner.forEach(relasjon -> setGjeldendeForRelasjon(relasjon.getPerson()));
+                            .filter(Objects::nonNull)
+                            .forEach(relasjon -> setGjeldendeForRelasjon(relasjon.getPerson()));
                 });
     }
 

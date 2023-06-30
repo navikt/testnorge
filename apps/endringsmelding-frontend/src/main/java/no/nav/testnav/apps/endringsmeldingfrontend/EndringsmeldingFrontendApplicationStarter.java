@@ -36,19 +36,6 @@ public class EndringsmeldingFrontendApplicationStarter {
     private final ProfilApiServiceProperties profilApiServiceProperties;
     private final TokenExchange tokenExchange;
 
-    public static void main(String[] args) {
-        SpringApplication.run(EndringsmeldingFrontendApplicationStarter.class, args);
-    }
-
-    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
-        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
-                .apply(exchange -> {
-                    return tokenExchange
-                            .exchange(serverProperties, exchange)
-                            .map(AccessToken::getTokenValue);
-                });
-    }
-
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder
@@ -64,6 +51,19 @@ public class EndringsmeldingFrontendApplicationStarter {
                         addAuthenticationHeaderFilterFrom(profilApiServiceProperties)
                 ))
                 .build();
+    }
+
+    public static void main(String[] args) {
+        SpringApplication.run(EndringsmeldingFrontendApplicationStarter.class, args);
+    }
+
+    private GatewayFilter addAuthenticationHeaderFilterFrom(ServerProperties serverProperties) {
+        return new AddAuthenticationHeaderToRequestGatewayFilterFactory()
+                .apply(exchange -> {
+                    return tokenExchange
+                            .exchange(serverProperties, exchange)
+                            .map(AccessToken::getTokenValue);
+                });
     }
 
     private Function<PredicateSpec, Buildable<Route>> createRoute(String segment, String host, GatewayFilter filter) {

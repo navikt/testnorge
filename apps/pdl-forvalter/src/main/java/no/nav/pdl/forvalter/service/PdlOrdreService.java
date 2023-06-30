@@ -26,11 +26,13 @@ import no.nav.testnav.libs.dto.pdlforvalter.v1.ForelderBarnRelasjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.ForeldreansvarDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.FullmaktDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktinformasjonForDoedsboDTO;
+import no.nav.testnav.libs.dto.pdlforvalter.v1.NavnDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.OrdreResponseDTO.PersonHendelserDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.PersonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.SivilstandDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.VergemaalDTO;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
@@ -249,7 +251,9 @@ public class PdlOrdreService {
                         deployService.createOrdre(PDL_FOLKEREGISTER_PERSONSTATUS, oppretting.getPerson().getIdent(), mapperFacade.mapAsList(oppretting.getPerson().getPerson().getFolkeregisterPersonstatus(), FolkeregisterPersonstatus.class)),
                         deployService.createOrdre(PDL_ADRESSEBESKYTTELSE, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getAdressebeskyttelse()),
                         deployService.createOrdre(PDL_DOEDSFALL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getDoedsfall())),
-                        deployService.createOrdre(PDL_NAVN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavn()),
+                        deployService.createOrdre(PDL_NAVN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getNavn().stream()
+                                .map(this::toUpperCase)
+                                .toList()),
                         deployService.createOrdre(PDL_KJOENN, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getKjoenn()),
                         deployService.createOrdre(PDL_FOEDSEL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getFoedsel())),
                         deployService.createOrdre(PDL_STATSBORGERSKAP, oppretting.getPerson().getIdent(), oppretting.getPerson().getPerson().getStatsborgerskap()),
@@ -274,6 +278,16 @@ public class PdlOrdreService {
                         deployService.createOrdre(PDL_SIKKERHETSTILTAK_URL, oppretting.getPerson().getIdent(), utenHistorikk(oppretting.getPerson().getPerson().getSikkerhetstiltak())))
                 .flatMap(Collection::stream)
                 .toList();
+    }
+
+    private NavnDTO toUpperCase(NavnDTO artifact) {
+
+        var navn = mapperFacade.map(artifact, NavnDTO.class);
+        navn.setFornavn(StringUtils.toRootUpperCase(artifact.getFornavn()));
+        navn.setMellomnavn(StringUtils.toRootUpperCase(artifact.getMellomnavn()));
+        navn.setEtternavn(StringUtils.toRootUpperCase(artifact.getEtternavn()));
+
+        return navn;
     }
 
     private List<? extends DbVersjonDTO> utenHistorikk(List<? extends DbVersjonDTO> artifacter) {

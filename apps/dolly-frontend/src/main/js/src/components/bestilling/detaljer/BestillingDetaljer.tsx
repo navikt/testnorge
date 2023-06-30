@@ -71,6 +71,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 					>
 						GJENOPPRETT
 					</Button>
+					<Button onClick={openMalModal} kind={'maler'} className="svg-icon-blue">
+						OPPRETT NY MAL
+					</Button>
 				</div>
 			)}
 
@@ -83,7 +86,9 @@ export default function BestillingDetaljer({ bestilling, iLaastGruppe, brukerId,
 				/>
 			)}
 
-			{isMalModalOpen && <MalModal id={bestilling.id} closeModal={closeMalModal} />}
+			{isMalModalOpen && (
+				<MalModal id={bestilling.id} erOrganisasjon={erOrganisasjon} closeModal={closeMalModal} />
+			)}
 		</div>
 	)
 }

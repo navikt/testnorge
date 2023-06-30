@@ -5,12 +5,33 @@ import { FormikProps } from 'formik'
 import * as _ from 'lodash-es'
 import { AvansertForm } from '@/components/fagsystem/pdlf/form/partials/avansert/AvansertForm'
 import { FormikDatepicker } from '@/components/ui/form/inputs/datepicker/Datepicker'
+import { DatepickerWrapper } from '@/components/ui/form/inputs/datepicker/DatepickerStyled'
 
-interface DoedfoedtBarnForm {
+interface DoedfoedtBarnProps {
 	formikBag: FormikProps<{}>
+	path?: string
 }
 
-export const DoedfoedtBarn = ({ formikBag }: DoedfoedtBarnForm) => {
+export const DoedfoedtBarnForm = ({ formikBag, path }: DoedfoedtBarnProps) => {
+	return (
+		<div className="flexbox--flex-wrap">
+			<DatepickerWrapper>
+				<FormikDatepicker
+					name={`${path}.dato`}
+					label="Dødsdato"
+					fastfield={false}
+					maxDate={new Date()}
+				/>
+			</DatepickerWrapper>
+			<AvansertForm
+				path={path}
+				kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
+			/>
+		</div>
+	)
+}
+
+export const DoedfoedtBarn = ({ formikBag }: DoedfoedtBarnProps) => {
 	return (
 		<FormikDollyFieldArray
 			name="pdldata.person.doedfoedtBarn"
@@ -18,22 +39,7 @@ export const DoedfoedtBarn = ({ formikBag }: DoedfoedtBarnForm) => {
 			newEntry={initialDoedfoedtBarn}
 			canBeEmpty={false}
 		>
-			{(path: string) => {
-				return (
-					<div className="flexbox--flex-wrap">
-						<FormikDatepicker
-							name={`${path}.dato`}
-							label="Dødsdato"
-							fastfield={false}
-							maxDate={new Date()}
-						/>
-						<AvansertForm
-							path={path}
-							kanVelgeMaster={_.get(formikBag.values, `${path}.bekreftelsesdato`) === null}
-						/>
-					</div>
-				)
-			}}
+			{(path: string) => <DoedfoedtBarnForm formikBag={formikBag} path={path} />}
 		</FormikDollyFieldArray>
 	)
 }

@@ -38,6 +38,8 @@ import {
 	sivilstand,
 	kontaktDoedsbo,
 	forelderBarnRelasjon,
+	doedfoedtBarn,
+	utenlandskId,
 } from '@/components/fagsystem/pdlf/form/validation/partials'
 import { ifPresent, validate } from '@/utils/YupValidations'
 import {
@@ -54,6 +56,8 @@ import {
 	foreldreansvarForBarn,
 } from '@/components/fagsystem/pdlf/form/validation/partials/familierelasjoner'
 import { DeltBostedForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/forelderBarnRelasjon/DeltBosted'
+import { DoedfoedtBarnForm } from '@/components/fagsystem/pdlf/form/partials/familierelasjoner/doedfoedtBarn/DoedfoedtBarn'
+import { UtenlandsIdForm } from '@/components/fagsystem/pdlf/form/partials/identifikasjon/utenlandsId/UtenlandsId'
 
 type VisningTypes = {
 	getPdlForvalter: Function
@@ -86,6 +90,8 @@ enum Attributt {
 	KontaktinformasjonForDoedsbo = 'kontaktinformasjonForDoedsbo',
 	ForelderBarnRelasjon = 'forelderBarnRelasjon',
 	Foreldreansvar = 'foreldreansvar',
+	DoedfoedtBarn = 'doedfoedtBarn',
+	UtenlandskIdentifikasjonsnummer = 'utenlandskIdentifikasjonsnummer',
 }
 
 const FieldArrayEdit = styled.div`
@@ -321,6 +327,10 @@ export const VisningRedigerbar = ({
 						eksisterendeNyPerson={eksisterendeNyPerson}
 					/>
 				)
+			case Attributt.DoedfoedtBarn:
+				return <DoedfoedtBarnForm formikBag={formikBag} path={path} />
+			case Attributt.UtenlandskIdentifikasjonsnummer:
+				return <UtenlandsIdForm path={path} />
 		}
 	}
 
@@ -349,6 +359,8 @@ export const VisningRedigerbar = ({
 					otherwise: () => foreldreansvarForBarn,
 				})
 			),
+			doedfoedtBarn: ifPresent('doedfoedtBarn', doedfoedtBarn),
+			utenlandskIdentifikasjonsnummer: ifPresent('utenlandskIdentifikasjonsnummer', utenlandskId),
 		},
 		[
 			['navn', 'navn'],
@@ -367,6 +379,8 @@ export const VisningRedigerbar = ({
 			['kontaktinformasjonForDoedsbo', 'kontaktinformasjonForDoedsbo'],
 			['forelderBarnRelasjon', 'forelderBarnRelasjon'],
 			['foreldreansvar', 'foreldreansvar'],
+			['doedfoedtBarn', 'doedfoedtBarn'],
+			['utenlandskIdentifikasjonsnummer', 'utenlandskIdentifikasjonsnummer'],
 		]
 	)
 
