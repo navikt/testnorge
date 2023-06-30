@@ -1,4 +1,4 @@
-package no.nav.registre.sdforvalter.provider.rs.v2;
+package no.nav.registre.sdforvalter.provider.rs.v1;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,7 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @TestPropertySource(
         locations = "classpath:application-test.yml"
 )
-class StaticDataControllerV2EregIntegrationTest {
+class StaticDataControllerV1EregIntegrationTest {
     private static final String EREG_API = "/api/v1/faste-data/ereg";
     @Autowired
     private MockMvc mvc;
