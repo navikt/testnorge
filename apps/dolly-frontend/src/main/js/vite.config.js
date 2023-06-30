@@ -45,10 +45,6 @@ function __preserveRef(key, v) {
 export default defineConfig(({ mode }) => ({
 	base: '/',
 	build: {
-		manifest: true,
-		rollupOptions: {
-			external: ['./nais.js'],
-		},
 		outDir: 'build',
 		cssCodeSplit: false,
 	},
