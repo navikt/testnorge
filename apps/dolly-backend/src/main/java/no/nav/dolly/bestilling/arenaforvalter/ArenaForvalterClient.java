@@ -324,20 +324,26 @@ public class ArenaForvalterClient implements ClientRegister {
 
     private Mono<String> getAapStatus(AapResponse response) {
 
-        return Flux.concat(Flux.just(response.getStatus())
-                                .filter(status -> !status.is2xxSuccessful())
-                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
-                        Flux.fromIterable(response.getNyeAap())
-                                .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
-                                        "OK" :
-                                        encodeStatus(AVSLAG + nyAap.getBegrunnelse()))
-                                .collect(Collectors.joining()),
-                        Flux.fromIterable(response.getNyeAapFeilList())
-                                .map(aapFeil ->
-                                        encodeStatus(String.format(STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding())))
-                                .collect(Collectors.joining()))
+        if (response.getStatus().is2xxSuccessful() && response.getNyeAap().isEmpty() && response.getNyeAapFeilList().isEmpty()) {
 
-                .collect(Collectors.joining());
+            return Mono.just("OK");
+        } else {
+
+            return Flux.concat(Flux.just(response.getStatus())
+                                    .filter(status -> !status.is2xxSuccessful())
+                                    .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                            Flux.fromIterable(response.getNyeAap())
+                                    .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
+                                            "OK" :
+                                            encodeStatus(AVSLAG + nyAap.getBegrunnelse()))
+                                    .collect(Collectors.joining()),
+                            Flux.fromIterable(response.getNyeAapFeilList())
+                                    .map(aapFeil ->
+                                            encodeStatus(String.format(STATUS_FMT, aapFeil.getNyAapFeilstatus(), aapFeil.getMelding())))
+                                    .collect(Collectors.joining()))
+
+                    .collect(Collectors.joining());
+        }
     }
 
     private Mono<String> getAap115Status(Aap115Response response) {
