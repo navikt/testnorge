@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/api/v1/person")
 @Tag(
         name = "PersonController",
-        description = "Henter personer fra database."
+        description = "Henter ulik personinformasjon basert på identer i database."
 )
 public class PersonController {
 
