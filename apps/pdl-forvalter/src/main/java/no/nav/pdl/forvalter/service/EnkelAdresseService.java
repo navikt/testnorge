@@ -1,6 +1,7 @@
 package no.nav.pdl.forvalter.service;
 
 import lombok.RequiredArgsConstructor;
+import ma.glasnost.orika.MapperFacade;
 import no.nav.pdl.forvalter.consumer.GeografiskeKodeverkConsumer;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO;
 import no.nav.testnav.libs.dto.pdlforvalter.v1.KontaktadresseDTO;
@@ -10,11 +11,12 @@ import org.springframework.stereotype.Service;
 
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.FREG;
 import static no.nav.testnav.libs.dto.pdlforvalter.v1.DbVersjonDTO.Master.PDL;
+import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @Service
 @RequiredArgsConstructor
-public class DummyAdresseService {
+public class EnkelAdresseService {
 
     private static final String POSTBOKS_ADRESSE_EIER = "SOT6 Vika";
     private static final String POSTBOKS_ADRESSE_POSTBOKS = "2094";
@@ -26,6 +28,8 @@ public class DummyAdresseService {
     private static final String ADRESSE_POSTKODE = "3000";
 
     private final GeografiskeKodeverkConsumer geografiskeKodeverkConsumer;
+
+    private final MapperFacade mapperFacade;
 
     public static KontaktadresseDTO getStrengtFortroligKontaktadresse() {
 
@@ -41,15 +45,37 @@ public class DummyAdresseService {
                 .build();
     }
 
-    public UtenlandskAdresseDTO getUtenlandskAdresse(String landkode, DbVersjonDTO.Master master) {
+    public UtenlandskAdresseDTO getUtenlandskAdresse(UtenlandskAdresseDTO utenlandskAdresse, String landkode, DbVersjonDTO.Master master) {
 
-        return UtenlandskAdresseDTO.builder()
-                .adressenavnNummer(ADRESSE_NAVN_NUMMER)
-                .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
-                .bySted(ADRESSE_3_UTLAND)
-                .postkode(ADRESSE_POSTKODE)
-                .landkode(isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
-                        geografiskeKodeverkConsumer.getTilfeldigLand())
-                .build();
+        if (utenlandskAdresse.isEmpty()) {
+
+            return UtenlandskAdresseDTO.builder()
+                    .adressenavnNummer(ADRESSE_NAVN_NUMMER)
+                    .regionDistriktOmraade(master == PDL ? ADRESSE_BY_STED : null)
+                    .bySted(ADRESSE_3_UTLAND)
+                    .postkode(ADRESSE_POSTKODE)
+                    .landkode(getLandkode(landkode))
+                    .build();
+
+        } else {
+
+            var oppdatertAdresse = mapperFacade.map(utenlandskAdresse, UtenlandskAdresseDTO.class);
+
+            if (isBlank(oppdatertAdresse.getLandkode())) {
+                oppdatertAdresse.setLandkode(getLandkode(landkode));
+            }
+
+            if (isBlank(oppdatertAdresse.getAdressenavnNummer()) && isBlank(oppdatertAdresse.getPostboksNummerNavn())) {
+                oppdatertAdresse.setAdressenavnNummer(ADRESSE_NAVN_NUMMER);
+            }
+
+            return oppdatertAdresse;
+        }
+    }
+
+    private String getLandkode(String landkode) {
+
+        return isNotBlank(landkode) && !"NOR".equals(landkode) ? landkode :
+                geografiskeKodeverkConsumer.getTilfeldigLand();
     }
 }
