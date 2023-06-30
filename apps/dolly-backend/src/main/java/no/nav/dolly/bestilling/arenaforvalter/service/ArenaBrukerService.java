@@ -35,8 +35,8 @@ public class ArenaBrukerService {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    public Flux<String> sendArenaBruker(Arenadata arenadata, ArenaStatusResponse arbeidssoker,
-                                         String ident, String miljoe) {
+    public Flux<String> sendBruker(Arenadata arenadata, ArenaStatusResponse arbeidssoker,
+                                   String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .map(arenadata1 -> {
