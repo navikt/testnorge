@@ -6,13 +6,19 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.registre.sdforvalter.adapter.AaregAdapter;
+import no.nav.registre.sdforvalter.adapter.EregAdapter;
 import no.nav.registre.sdforvalter.adapter.KrrAdapter;
 import no.nav.registre.sdforvalter.adapter.TpsIdenterAdapter;
 import no.nav.registre.sdforvalter.domain.AaregListe;
+import no.nav.registre.sdforvalter.domain.EregListe;
 import no.nav.registre.sdforvalter.domain.KrrListe;
 import no.nav.registre.sdforvalter.domain.TpsIdentListe;
 import no.nav.registre.sdforvalter.service.IdentService;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @RestController
@@ -20,14 +26,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/v1/faste-data")
 @Tag(
         name = "StaticDataControllerV1",
-        description = "Operasjoner på statiske TPS-/AAREG- og KRR-data lagret i database."
+        description = "Operasjoner på statiske TPS-/AAREG-/KRR- og EREG-data lagret i database."
 )
 public class StaticDataControllerV1 {
+
+    private static final int CACHE_HOURS = 24;
 
     private final IdentService identService;
     private final TpsIdenterAdapter tpsIdenterAdapter;
     private final AaregAdapter aaregAdapter;
     private final KrrAdapter krrAdapter;
+    private final EregAdapter eregAdapter;
 
     @GetMapping("/tps")
     @Operation(description = "Henter TPS-identer fra tabell TPS_IDENTER.")
@@ -66,4 +75,24 @@ public class StaticDataControllerV1 {
     public KrrListe createKrr(@RequestBody KrrListe liste) {
         return krrAdapter.save(liste);
     }
+
+    @GetMapping("/ereg")
+    @Operation(description = "Henter fra tabell EREG.")
+    public ResponseEntity<EregListe> getEregStaticData(@RequestParam(name = "gruppe", required = false) String gruppe) {
+        var cacheControl = CacheControl
+                .maxAge(CACHE_HOURS, TimeUnit.HOURS)
+                .noTransform()
+                .mustRevalidate();
+        return ResponseEntity
+                .ok()
+                .cacheControl(cacheControl)
+                .body(eregAdapter.fetchBy(gruppe));
+    }
+
+    @PostMapping("/ereg")
+    @Operation(description = "Lagrer i tabell EREG.")
+    public EregListe createEregStaticData(@RequestBody EregListe eregs) {
+        return eregAdapter.save(eregs);
+    }
+
 }
