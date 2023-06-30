@@ -50,7 +50,7 @@ consumers:
     url: http://testnav-varslinger-service-dev.intern.dev.nav.no
   testnav-person-organisasjon-tilgang-service:
     name: testnav-person-organisasjon-tilgang-service-dev
-    url: https://testnav-person-organisasjon-tilgang-service-dev.intern.dev.nav.no
+    url: https://testnav-person-organisasjon-tilgang-service.intern.dev.nav.no
   oppsummeringsdokument-service:
     url: https://oppsummeringsdokument-service.intern.dev.nav.no
   testnav-bruker-service:
