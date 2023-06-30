@@ -57,13 +57,13 @@ public class BestillingMalService {
                                         bestillingMal.getBruker() :
                                         Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
                                 .build())
+                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                         .toList()));
 
         malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn)
-                        .thenComparing(RsMalBestilling::getId).reversed())
+                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                 .toList());
 
         return malBestillingWrapper;
@@ -80,6 +80,7 @@ public class BestillingMalService {
                         .id(bestilling.getId())
                         .bestilling(mapperFacade.map(bestilling, RsBestilling.class))
                         .build())
+                .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                 .toList();
     }
 
@@ -101,6 +102,7 @@ public class BestillingMalService {
                                         bestillingMal.getBruker() :
                                         Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
                                 .build())
+                        .sorted(Comparator.comparing(RsMalBestilling::getMalNavn))
                         .toList()));
 
         return RsMalBestillingWrapper.builder()

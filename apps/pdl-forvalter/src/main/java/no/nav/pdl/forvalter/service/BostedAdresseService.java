@@ -36,14 +36,14 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
     private static final String VALIDATION_MASTER_PDL_ERROR = "Bostedsadresse: utenlandsk adresse krever at master er PDL";
 
     private final AdresseServiceConsumer adresseServiceConsumer;
-    private final DummyAdresseService dummyAdresseService;
+    private final EnkelAdresseService enkelAdresseService;
     private final MapperFacade mapperFacade;
 
-    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, DummyAdresseService dummyAdresseService, MapperFacade mapperFacade) {
+    public BostedAdresseService(GenererNavnServiceConsumer genererNavnServiceConsumer, AdresseServiceConsumer adresseServiceConsumer, EnkelAdresseService enkelAdresseService, MapperFacade mapperFacade) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.dummyAdresseService = dummyAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     public List<BostedadresseDTO> convert(PersonDTO person, Boolean relaxed) {
@@ -159,11 +159,9 @@ public class BostedAdresseService extends AdresseService<BostedadresseDTO, Perso
         } else if (nonNull(bostedadresse.getUtenlandskAdresse())) {
 
             bostedadresse.setMaster(Master.PDL);
-            if (bostedadresse.getUtenlandskAdresse().isEmpty()) {
 
-                bostedadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person),
-                        bostedadresse.getMaster()));
-            }
+            bostedadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(bostedadresse.getUtenlandskAdresse(), getLandkode(person),
+                    bostedadresse.getMaster()));
         }
 
         bostedadresse.setCoAdressenavn(genererCoNavn(bostedadresse.getOpprettCoAdresseNavn()));

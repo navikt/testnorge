@@ -37,15 +37,15 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
 
     private final AdresseServiceConsumer adresseServiceConsumer;
     private final MapperFacade mapperFacade;
-    private final DummyAdresseService dummyAdresseService;
+    private final EnkelAdresseService enkelAdresseService;
 
     public OppholdsadresseService(GenererNavnServiceConsumer genererNavnServiceConsumer,
                                   AdresseServiceConsumer adresseServiceConsumer, MapperFacade mapperFacade,
-                                  DummyAdresseService dummyAdresseService) {
+                                  EnkelAdresseService enkelAdresseService) {
         super(genererNavnServiceConsumer);
         this.adresseServiceConsumer = adresseServiceConsumer;
         this.mapperFacade = mapperFacade;
-        this.dummyAdresseService = dummyAdresseService;
+        this.enkelAdresseService = enkelAdresseService;
     }
 
     public List<OppholdsadresseDTO> convert(PersonDTO person) {
@@ -122,9 +122,10 @@ public class OppholdsadresseService extends AdresseService<OppholdsadresseDTO, P
             oppholdsadresse.setAdresseIdentifikatorFraMatrikkelen(matrikkeladresse.getMatrikkelId());
             mapperFacade.map(matrikkeladresse, oppholdsadresse.getMatrikkeladresse());
 
-        } else if (nonNull(oppholdsadresse.getUtenlandskAdresse()) &&
-                oppholdsadresse.getUtenlandskAdresse().isEmpty()) {
-            oppholdsadresse.setUtenlandskAdresse(dummyAdresseService.getUtenlandskAdresse(getLandkode(person), oppholdsadresse.getMaster()));
+        } else if (nonNull(oppholdsadresse.getUtenlandskAdresse())) {
+
+            oppholdsadresse.setUtenlandskAdresse(enkelAdresseService.getUtenlandskAdresse(
+                    oppholdsadresse.getUtenlandskAdresse(), getLandkode(person), oppholdsadresse.getMaster()));
         }
 
         oppholdsadresse.setCoAdressenavn(genererCoNavn(oppholdsadresse.getOpprettCoAdresseNavn()));

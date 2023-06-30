@@ -84,13 +84,13 @@ public class OrganisasjonBestillingMalService {
                                         bestilling1.getBruker() :
                                         Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
                                 .build())
+                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
                         .toList()));
 
         malBestillingWrapper.getMalbestillinger().putAll(malBestillinger);
         malBestillingWrapper.getMalbestillinger().put(ALLE, malBestillinger.values().stream()
                 .flatMap(Collection::stream)
-                .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn)
-                        .thenComparing(RsOrganisasjonMalBestilling::getId).reversed())
+                .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
                 .toList());
 
         return malBestillingWrapper;
@@ -112,6 +112,7 @@ public class OrganisasjonBestillingMalService {
                                         bestilling1.getBruker() :
                                         Bruker.builder().brukerId(ANONYM).brukernavn(ANONYM).build(), RsBrukerUtenFavoritter.class))
                                 .build())
+                        .sorted(Comparator.comparing(RsOrganisasjonMalBestilling::getMalNavn))
                         .toList()));
 
         return RsOrganisasjonMalBestillingWrapper.builder()

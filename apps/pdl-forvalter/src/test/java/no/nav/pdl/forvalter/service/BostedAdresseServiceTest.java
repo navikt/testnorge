@@ -44,7 +44,7 @@ class BostedAdresseServiceTest {
     private AdresseServiceConsumer adresseServiceConsumer;
 
     @Mock
-    private DummyAdresseService dummyAdresseService;
+    private EnkelAdresseService enkelAdresseService;
 
     @Mock
     private MapperFacade mapperFacade;
@@ -254,7 +254,7 @@ class BostedAdresseServiceTest {
                         .build())))
                 .build();
 
-        when(dummyAdresseService.getUtenlandskAdresse(any(), any())).thenReturn(new UtenlandskAdresseDTO());
+        when(enkelAdresseService.getUtenlandskAdresse(any(), any(), any())).thenReturn(new UtenlandskAdresseDTO());
 
         var target = bostedAdresseService.convert(request, null).get(0);
 
