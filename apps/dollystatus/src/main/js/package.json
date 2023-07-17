@@ -14,9 +14,9 @@
     "react-use": "^17.4.0"
   },
   "devDependencies": {
-    "@navikt/ds-css": "^2.7.6",
-    "@navikt/ds-icons": "^2.7.6",
-    "@navikt/ds-react": "^2.7.6",
+    "@navikt/ds-css": "^4.6.1",
+    "@navikt/ds-icons": "^3.4.3",
+    "@navikt/ds-react": "^4.6.1",
     "@types/react": "^18.0.25",
     "@vitejs/plugin-react": "^4.0.0",
     "babel-plugin-styled-components": "^2.0.7",
