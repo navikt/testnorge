@@ -33,6 +33,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import static java.util.Collections.emptyList;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 import static no.nav.pdl.forvalter.utils.SyntetiskFraIdentUtility.isSyntetisk;
@@ -307,7 +308,7 @@ public class ForeldreansvarService implements BiValidation<ForeldreansvarDTO, Pe
         foreldreansvar.setNyAnsvarlig(null);
 
         // Foreldreanvar settes kun på barn ikke på foreldre
-        hovedperson.setForeldreansvar(null);
+        hovedperson.setForeldreansvar(emptyList());
     }
 
     private List<BarnRelasjon> getBarnRelasjoner(ForeldreansvarDTO foreldreansvar, PersonDTO hovedperson) {
