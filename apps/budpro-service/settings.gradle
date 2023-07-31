@@ -1,0 +1,3 @@
+rootProject.name = 'budpro-service'
+
+includeBuild '../../libs/servlet-core'

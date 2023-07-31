@@ -1,0 +1,10 @@
+spring:
+  cloud:
+    vault:
+      host: vault.adeo.no
+      port: 443
+  security:
+    oauth2:
+      resourceserver:
+        aad:
+          accepted-audience: ${azure.app.client.id}, api://${azure.app.client.id}

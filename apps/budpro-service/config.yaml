@@ -1,0 +1,41 @@
+apiVersion: "nais.io/v1alpha1"
+kind: "Application"
+metadata:
+  name: "budpro-service"
+  namespace: "dolly"
+  labels:
+    "team": "dolly"
+spec:
+  image: {{image}}
+  liveness:
+    path: "/internal/health/liveness"
+    initialDelay: 20
+    timeout: 60
+  readiness:
+    path: "/internal/health/readiness"
+    initialDelay: 20
+    timeout: 60
+  replicas:
+    min: 1
+    max: 1
+    cpuThresholdPercentage: 50
+  prometheus:
+    enabled: true
+    path: "/internal/prometheus"
+  resources:
+    limits:
+      cpu: "200m"
+      memory: "256Mi"
+    requests:
+      cpu: "200m"
+      memory: "256Mi"
+  ingresses:
+    - "https://budpro-service.intern.dev.nav.no"
+  accessPolicy:
+    inbound:
+      rules:
+        - application: team-dolly-lokal-app
+          cluster: dev-gcp
+    outbound:
+      rules:
+        - application: generer-navn-service
