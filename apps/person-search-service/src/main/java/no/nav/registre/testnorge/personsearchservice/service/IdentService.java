@@ -46,7 +46,6 @@ public class IdentService {
         return IdentSearch.builder()
                 .page(1)
                 .pageSize(10)
-                .excludeTags(List.of("ARENASYNT"))
                 .tags(List.of("DOLLY", "TESTNORGE"))
                 .ident(ident)
                 .navn(navn)
