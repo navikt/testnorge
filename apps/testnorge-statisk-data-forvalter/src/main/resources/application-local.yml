@@ -1,9 +1,3 @@
-azure:
-  app:
-    client:
-      id: ${client_id}
-      secret: ${client_secret}
-
 spring:
   h2:
     console:
