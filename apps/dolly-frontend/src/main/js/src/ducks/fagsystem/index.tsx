@@ -1,6 +1,6 @@
 import { createActions } from 'redux-actions'
 import {
-	ArenaApi,
+	// ArenaApi,
 	BankkontoApi,
 	BrregstubApi,
 	DollyApi,
@@ -48,12 +48,12 @@ export const actions = createActions(
 				ident,
 			}),
 		],
-		getArena: [
-			ArenaApi.getPerson,
-			(ident) => ({
-				ident,
-			}),
-		],
+		// getArena: [
+		// 	ArenaApi.getPerson,
+		// 	(ident) => ({
+		// 		ident,
+		// 	}),
+		// ],
 		getUdi: [
 			DollyApi.getUdiPerson,
 			(ident) => ({
@@ -115,7 +115,7 @@ const initialState = {
 	sigrunstub: {},
 	inntektstub: {},
 	krrstub: {},
-	arenaforvalteren: {},
+	// arenaforvalteren: {},
 	pdl: {},
 	pdlforvalter: {},
 	instdata: {},
@@ -154,9 +154,9 @@ export default handleActions(
 		[onSuccess(actions.getKrr)](state, action) {
 			state.krrstub[action.meta.ident] = action.payload.data
 		},
-		[onSuccess(actions.getArena)](state, action) {
-			state.arenaforvalteren[action.meta.ident] = action.payload.data
-		},
+		// [onSuccess(actions.getArena)](state, action) {
+		// 	state.arenaforvalteren[action.meta.ident] = action.payload.data
+		// },
 		[onSuccess(actions.getUdi)](state, action) {
 			state.udistub[action.meta.ident] = action.payload?.data?.person
 		},
@@ -213,7 +213,7 @@ const deleteIdentState = (state, ident) => {
 	delete state.sigrunstub[ident]
 	delete state.inntektstub[ident]
 	delete state.krrstub[ident]
-	delete state.arenaforvalteren[ident]
+	// delete state.arenaforvalteren[ident]
 	delete state.pdl[ident]
 	delete state.pdlforvalter[ident]
 	delete state.udistub[ident]
@@ -265,8 +265,11 @@ export const fetchDataFraFagsystemer = (person, bestillingerById) => (dispatch) 
 				return dispatch(actions.getInntektstub(personId))
 			case 'TPS_MESSAGING':
 				return dispatch(actions.getTpsMessaging(personId))
-			case 'ARENA':
-				return dispatch(actions.getArena(personId))
+			//TODO: Fjerne 2x Arena?
+			// case 'ARENA':
+			// 	return dispatch(actions.getArena(personId))
+			// case 'ARENA_BRUKER':
+			// 	return dispatch(actions.getArena(personId))
 			case 'UDISTUB':
 				return dispatch(actions.getUdi(personId))
 			case 'BRREGSTUB':
@@ -460,7 +463,7 @@ export const selectDataForIdent = (state, ident) => {
 		sigrunstub: state.fagsystem.sigrunstub[ident],
 		inntektstub: state.fagsystem.inntektstub[ident],
 		krrstub: state.fagsystem.krrstub[ident],
-		arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
+		// arenaforvalteren: state.fagsystem.arenaforvalteren[ident],
 		pdl: state.fagsystem.pdl[ident],
 		pdlforvalter: state.fagsystem.pdlforvalter[ident],
 		udistub: state.fagsystem.udistub[ident],

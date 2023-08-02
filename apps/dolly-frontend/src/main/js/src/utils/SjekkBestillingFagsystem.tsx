@@ -87,3 +87,13 @@ export const harArbeidsplassenBestilling = (bestillingerFagsystemer) => {
 	})
 	return arbeidsplassen
 }
+
+export const harArenaBestilling = (bestillingerFagsystemer) => {
+	let arena = false
+	bestillingerFagsystemer?.forEach((i) => {
+		if (i.arenaforvalter) {
+			arena = true
+		}
+	})
+	return arena
+}

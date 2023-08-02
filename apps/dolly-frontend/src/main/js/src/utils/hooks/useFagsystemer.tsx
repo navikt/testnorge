@@ -168,14 +168,13 @@ export const useArbeidsplassencvHjemmel = (ident: string) => {
 	}
 }
 
-export const useArenaData = (ident, harArenaBestilling) => {
+export const useArenaData = (ident: string, harArenaBestilling: boolean) => {
 	const { arenaEnvironments } = useArenaEnvironments()
 
 	const { data, isLoading, error } = useSWR<any, Error>(
 		harArenaBestilling ? arenaUrl(ident, arenaEnvironments) : null,
 		multiFetcherArena
 	)
-	// console.log('data: ', data) //TODO - SLETT MEG
 
 	return {
 		arenaData: data?.sort((a, b) => a.miljo?.localeCompare(b.miljo)),

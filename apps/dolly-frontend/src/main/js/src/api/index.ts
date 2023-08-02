@@ -56,7 +56,9 @@ export const multiFetcherArena = (miljoUrlListe, headers = null) => {
 	return Promise.all(
 		miljoUrlListe.map((obj) =>
 			fetcher(obj.url, headers).then((result) => {
-				return { miljo: obj.miljo, data: result, status: result?.status }
+				const filteredResult =
+					result?.status === 'NO_CONTENT' || result?.status === 'NOT_FOUND' ? null : result
+				return { miljo: obj.miljo, data: filteredResult, status: result?.status }
 			})
 		)
 	)

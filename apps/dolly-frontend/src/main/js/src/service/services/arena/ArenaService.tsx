@@ -9,3 +9,5 @@ export default {
 		return Request.get(endpoint, { 'Nav-Call-Id': _uuid(), 'Nav-Consumer-Id': 'dolly' })
 	},
 }
+
+//TODO: SLETTE HELE ARENASERVICE?!

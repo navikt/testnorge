@@ -14,8 +14,17 @@ const Visning = ({ data }) => {
 	if (!data) {
 		return null
 	}
-	console.log('data: ', data) //TODO - SLETT MEG
+
 	const arenaData = data
+
+	if (arenaData.feilmelding) {
+		return (
+			<StyledAlert variant={'warning'} size={'small'}>
+				{arenaData.feilmelding}
+			</StyledAlert>
+		)
+	}
+
 	if (arenaData.error) {
 		return (
 			<StyledAlert variant={'info'} size={'small'}>
@@ -25,49 +34,78 @@ const Visning = ({ data }) => {
 		)
 	}
 
+	const vedtakListe = arenaData.vedtakListe
+
 	return (
 		<div className="person-visning_content">
-			<TitleValue title="Brukertype" value={arenaData.brukertype} />
-			<TitleValue title="Servicebehov" value={arenaData.servicebehov} />
-			<TitleValue title="Inaktiv fra dato" value={arenaData.inaktiveringDato} />
-			<TitleValue
-				title="Automatisk innsending av meldekort"
-				value={arenaData.automatiskInnsendingAvMeldekort}
-			/>
-
-			{arenaData.aap115?.[0] && (
-				<DollyFieldArray header="11.5 vedtak" data={arenaData.aap115} nested>
-					{(vedtak, idx) => (
-						<React.Fragment key={idx}>
-							<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />
-						</React.Fragment>
+			<TitleValue title="Registrert" value={formatDate(arenaData.registrertDato)} />
+			<TitleValue title="Sist inaktiv" value={formatDate(arenaData.sistInaktivDato)} />
+			{/*lokalkontor*/}
+			<TitleValue title="Formidlingsgruppe" value={arenaData.formidlingsgruppe?.navn} />
+			<TitleValue title="Servicegruppe" value={arenaData.servicegruppe?.navn} />
+			<TitleValue title="Rettighetsgruppe" value={arenaData.rettighetsgruppe?.navn} />
+			{/*meldeplikt*/}
+			{/*meldeform*/}
+			{/*meldegruppe*/}
+			{vedtakListe && vedtakListe.length > 0 && (
+				<DollyFieldArray data={vedtakListe} header="Vedtak" nested>
+					{(vedtak) => (
+						<>
+							<TitleValue title="Sakstype" value={vedtak.sak?.navn} />
+							<TitleValue title="Status på sak" value={vedtak.sak?.status} />
+							<TitleValue title="Saksnummer" value={vedtak.sak?.sakNr} />
+							<TitleValue title="Vedtaksnummer" value={vedtak.vedtakNr} />
+							<TitleValue title="Vedtaksrettighet" value={vedtak.rettighet?.navn} />
+							<TitleValue title="Aktivitetsfase" value={vedtak.aktivitetFase?.navn} />
+							<TitleValue title="Vedtakstype" value={vedtak.type?.navn} />
+							<TitleValue title="Vedtakstatus" value={vedtak.status?.navn} />
+							<TitleValue title="Utfall" value={vedtak.utfall} />
+							<TitleValue title="Vedtak fra dato" value={formatDate(vedtak.fraDato)} />
+							<TitleValue title="Vedtak til dato" value={formatDate(vedtak.tilDato)} />
+						</>
 					)}
 				</DollyFieldArray>
 			)}
 
-			{arenaData.aap?.[0] && (
-				<DollyFieldArray header="AAP-UA vedtak" data={arenaData.aap} nested>
-					{(vedtak, idx) => (
-						<React.Fragment key={idx}>
-							<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />
-							<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
-			)}
-
-			{arenaData.dagpenger?.[0] && (
-				<DollyFieldArray header="Dagpenger vedtak" data={arenaData.dagpenger} nested>
-					{(vedtak, idx) => (
-						<React.Fragment key={idx}>
-							<TitleValue title="Rettighet kode" value={vedtak.rettighetKode} />
-							<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />
-							<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />
-							<TitleValue title="Mottatt dato" value={formatDate(vedtak.mottattDato)} />
-						</React.Fragment>
-					)}
-				</DollyFieldArray>
-			)}
+			{/*Gammelt:*/}
+			{/*<TitleValue title="Brukertype" value={arenaData.brukertype} />*/}
+			{/*<TitleValue title="Servicebehov" value={arenaData.servicebehov} />*/}
+			{/*<TitleValue title="Inaktiv fra dato" value={arenaData.inaktiveringDato} />*/}
+			{/*<TitleValue*/}
+			{/*	title="Automatisk innsending av meldekort"*/}
+			{/*	value={arenaData.automatiskInnsendingAvMeldekort}*/}
+			{/*/>*/}
+			{/*{arenaData.aap115?.[0] && (*/}
+			{/*	<DollyFieldArray header="11.5 vedtak" data={arenaData.aap115} nested>*/}
+			{/*		{(vedtak, idx) => (*/}
+			{/*			<React.Fragment key={idx}>*/}
+			{/*				<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />*/}
+			{/*			</React.Fragment>*/}
+			{/*		)}*/}
+			{/*	</DollyFieldArray>*/}
+			{/*)}*/}
+			{/*{arenaData.aap?.[0] && (*/}
+			{/*	<DollyFieldArray header="AAP-UA vedtak" data={arenaData.aap} nested>*/}
+			{/*		{(vedtak, idx) => (*/}
+			{/*			<React.Fragment key={idx}>*/}
+			{/*				<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />*/}
+			{/*				<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />*/}
+			{/*			</React.Fragment>*/}
+			{/*		)}*/}
+			{/*	</DollyFieldArray>*/}
+			{/*)}*/}
+			{/*{arenaData.dagpenger?.[0] && (*/}
+			{/*	<DollyFieldArray header="Dagpenger vedtak" data={arenaData.dagpenger} nested>*/}
+			{/*		{(vedtak, idx) => (*/}
+			{/*			<React.Fragment key={idx}>*/}
+			{/*				<TitleValue title="Rettighet kode" value={vedtak.rettighetKode} />*/}
+			{/*				<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />*/}
+			{/*				<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />*/}
+			{/*				<TitleValue title="Mottatt dato" value={formatDate(vedtak.mottattDato)} />*/}
+			{/*			</React.Fragment>*/}
+			{/*		)}*/}
+			{/*	</DollyFieldArray>*/}
+			{/*)}*/}
 		</div>
 	)
 }
@@ -90,7 +128,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
 	const [tagsloading, setTagsLoading] = useState(false)
 	const mountedRef = useRef(true)
-	// console.log('data: ', data) //TODO - SLETT MEG
+
 	const execute = useCallback(() => {
 		const getTags = async () => {
 			setTagsLoading(true)
@@ -142,11 +180,12 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 		}
 		return vData
 	})
-	// console.log('visningData: ', visningData) //TODO - SLETT MEG
+
 	const filteredData =
 		tilgjengeligMiljoe && visningData.filter((item) => item.miljo === tilgjengeligMiljoe)
 
 	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+
 	return (
 		<div>
 			<SubOverskrift label="Arbeidsytelser" iconKind="arena" />
@@ -168,7 +207,7 @@ const mapTilVisningData = (bestillinger, harArenaSyntTag, arenaMiljoer) => {
 
 	const getMiljoe = (bestilling) => {
 		return bestilling?.status
-			?.filter((status) => status.id === 'ARENA')?.[0]
+			?.filter((status) => status.id === 'ARENA_BRUKER')?.[0]
 			?.statuser?.filter((status) => status.melding === 'OK')?.[0]
 			?.detaljert?.map((detalj) => detalj.miljo)
 	}
