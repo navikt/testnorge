@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.arenaforvalter.utils;
+package no.nav.dolly.bestilling.arenaforvalter.service;
 
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;

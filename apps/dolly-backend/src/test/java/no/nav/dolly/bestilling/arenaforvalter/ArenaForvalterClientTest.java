@@ -2,10 +2,12 @@ package no.nav.dolly.bestilling.arenaforvalter;
 
 import no.nav.dolly.bestilling.ClientFuture;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaEksisterendeVedtakService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -62,6 +64,9 @@ class ArenaForvalterClientTest {
     @Mock
     private ArenaDagpengerService arenaDagpengerService;
 
+    @Mock
+    private ArenaEksisterendeVedtakService arenaEksisterendeVedtakService;
+
     @InjectMocks
     private ArenaForvalterClient arenaForvalterClient;
 
@@ -82,6 +87,8 @@ class ArenaForvalterClientTest {
                 .thenReturn(Mono.just(ArenaStatusResponse.builder()
                         .status(HttpStatus.OK)
                         .build()));
+        when(arenaEksisterendeVedtakService.getArenaOperasjoner(any(), any()))
+                .thenReturn(ArenaVedtakOperasjoner.builder().build());
         when(arenaBrukerService.sendBruker(any(), any(), any(), any()))
                 .thenReturn(Flux.just("Oppretting: OK"));
         when(arenaAap115Service.sendAap115(any(), any(), any())).thenReturn(Flux.empty());
@@ -117,6 +124,8 @@ class ArenaForvalterClientTest {
                         .status(HttpStatus.OK)
                         .build()));
 
+        when(arenaEksisterendeVedtakService.getArenaOperasjoner(any(), any()))
+                .thenReturn(ArenaVedtakOperasjoner.builder().build());
         when(arenaBrukerService.sendBruker(any(), any(), any(), any()))
                 .thenReturn(Flux.just("Oppretting: DUPLIKAT:message: 555 User Defined Resource Error"));
         when(arenaAap115Service.sendAap115(any(), any(), any())).thenReturn(Flux.empty());
@@ -148,7 +157,7 @@ class ArenaForvalterClientTest {
         var gjenopprett = arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                 .build(), progress, false);
 
-        Assertions.assertThrows(NullPointerException.class, () -> gjenopprett .blockFirst());
+        Assertions.assertThrows(NullPointerException.class, () -> gjenopprett.blockFirst());
     }
 
     @Test

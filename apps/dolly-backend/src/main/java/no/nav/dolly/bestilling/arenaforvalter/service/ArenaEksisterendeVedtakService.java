@@ -1,4 +1,4 @@
-package no.nav.dolly.bestilling.arenaforvalter.utils;
+package no.nav.dolly.bestilling.arenaforvalter.service;
 
 import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
