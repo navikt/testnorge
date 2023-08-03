@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
+import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksistendeVedtakUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -68,18 +69,19 @@ public class ArenaForvalterClient implements ClientRegister {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> arenaForvalterConsumer.getArenaBruker(ident, miljoe)
-                        .flatMapMany(arenaArbeidsokerStatus -> Flux.concat(
+                        .map(arenaArbeidsokerStatus -> ArenaEksistendeVedtakUtil.getArenaOperasjoner(arenadata, arenaArbeidsokerStatus))
+                        .flatMapMany(arenaOperasjoner -> Flux.concat(
 
-                                arenaBrukerService.sendBruker(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                arenaBrukerService.sendBruker(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(brukerStatus -> fmtResponse(miljoe, BRUKER, brukerStatus)),
 
-                                arenaAap115Service.sendAap115(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                arenaAap115Service.sendAap115(arenadata, ident, miljoe)
                                         .map(aap115tstaus -> fmtResponse(miljoe, AAP115, aap115tstaus)),
 
-                                arenaAapService.sendAap(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                arenaAapService.sendAap(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(aapStataus -> fmtResponse(miljoe, AAP, aapStataus)),
 
-                                arenaDagpengerService.sendDagpenger(arenadata, arenaArbeidsokerStatus, ident, miljoe)
+                                arenaDagpengerService.sendDagpenger(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
                         )))
                 .collect(Collectors.joining(","));

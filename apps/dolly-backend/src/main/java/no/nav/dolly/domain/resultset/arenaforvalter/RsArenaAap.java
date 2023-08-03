@@ -4,7 +4,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,11 +15,12 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 @Data
-@Builder
+@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "AAP-rettigheter for brukeren")
-public class RsArenaAap {
+public class RsArenaAap extends ArenaPeriode{
 
     public enum VedtakType {O, E, G, S}
 
@@ -29,11 +32,9 @@ public class RsArenaAap {
     private MedlemFolketrygden medlemFolketrygden;
     private List<AndreOkonomYtelser> andreOkonomYtelserListe;
     private List<Saksopplysning> institusjonsopphold;
-    private LocalDateTime fraDato;
     private LocalDateTime justertFra;
     private List<Vilkaar> vilkaar;
     private String utfall;
-    private LocalDateTime tilDato;
     private PeriodeAAP periode;
     private String vedtaksvariant;
     private String begrunnelse;

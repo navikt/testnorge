@@ -15,7 +15,6 @@ import java.util.List;
 
 import static java.util.Objects.isNull;
 
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -88,7 +87,7 @@ public class ArenaStatusResponse extends ArenaResponse {
 
     @Data
     @SuperBuilder
-    @EqualsAndHashCode(callSuper=true)
+    @EqualsAndHashCode(callSuper = true)
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Sak extends Egenskap {
@@ -112,5 +111,12 @@ public class ArenaStatusResponse extends ArenaResponse {
         private String utfall;
         private LocalDate fraDato;
         private LocalDate tilDato;
+
+        public boolean isVedtak() {
+
+            return "Ja".equals(utfall) &&
+                    ("AAP".equals(rettighet.getKode()) ||
+                    "DAGO".equals(rettighet.getKode()));
+        }
     }
 }

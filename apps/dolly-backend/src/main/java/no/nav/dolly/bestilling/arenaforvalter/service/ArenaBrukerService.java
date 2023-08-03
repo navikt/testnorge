@@ -6,7 +6,7 @@ import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehov;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehovResponse;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeBrukere;
@@ -35,7 +35,7 @@ public class ArenaBrukerService {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    public Flux<String> sendBruker(Arenadata arenadata, ArenaStatusResponse arbeidssoker,
+    public Flux<String> sendBruker(Arenadata arenadata, ArenaVedtakOperasjoner arbeidssoker,
                                    String ident, String miljoe) {
 
         return Flux.just(arenadata)
@@ -90,7 +90,7 @@ public class ArenaBrukerService {
                 .build();
     }
 
-    private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaStatusResponse arbeidssoker) {
+    private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaVedtakOperasjoner arbeidssoker) {
 
         return Stream.of(bruker.getAktiveringsDato(), arbeidssoker.getRegistrertDato())
                 .filter(Objects::nonNull)

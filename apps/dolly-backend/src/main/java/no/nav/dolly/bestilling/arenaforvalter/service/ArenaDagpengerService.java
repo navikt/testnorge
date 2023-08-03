@@ -5,7 +5,7 @@ import ma.glasnost.orika.MapperFacade;
 import ma.glasnost.orika.MappingContext;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaDagpenger;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyeDagpengerResponse;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -17,6 +17,7 @@ import reactor.core.publisher.Mono;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Service
@@ -27,7 +28,7 @@ public class ArenaDagpengerService {
     private final MapperFacade mapperFacade;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    public Flux<String> sendDagpenger(Arenadata arenadata, ArenaStatusResponse status, String ident, String miljoe) {
+    public Flux<String> sendDagpenger(Arenadata arenadata, ArenaVedtakOperasjoner operasjoner, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getDagpenger().isEmpty())
@@ -39,17 +40,16 @@ public class ArenaDagpengerService {
                     return mapperFacade.map(arenadata1, ArenaDagpenger.class, context);
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getDagpenger())
-                        .flatMap(dagp -> Flux.concat(Flux.fromIterable(status.getVedtakListe())
-                                        .filter(vedtak -> "DAGP".equals(vedtak.getRettighet().getKode()))
-                                        .filter(vedtak -> "Aktiv".equals(vedtak.getSak().getStatus()))
-                                        .flatMap(vedtak -> {
+                        .flatMap(dagp -> Flux.concat(Flux.just(operasjoner.getDagpengeVedtak())
+                                        .filter(operasjon -> nonNull(operasjoner.getDagpengeVedtak().getAvslutteVedtak()))
+                                        .flatMap(operasjon -> {
                                             var opphoerRequest = mapperFacade.map(request, ArenaDagpenger.class);
                                             opphoerRequest.getNyeDagp()
                                                     .forEach(opphoer -> {
                                                         opphoer.setVedtaktype(ArenaDagpenger.VedtaksType.S);
                                                         opphoer.setVedtaksperiode(ArenaDagpenger.Vedtaksperiode.builder()
-                                                                .fom(vedtak.getFraDato())
-                                                                .tom(vedtak.getTilDato())
+                                                                .fom(operasjon.getAvslutteVedtak().getFom())
+                                                                .tom(operasjon.getAvslutteVedtak().getTom())
                                                                 .build());
                                                         opphoer.setStansFomDato(ArenaUtils.toDate(dagp.getFraDato()));
                                                     });
@@ -58,10 +58,18 @@ public class ArenaDagpengerService {
                                                     .map(response -> ArenaUtils.STANSET + response);
 
                                         }),
-                                arenaForvalterConsumer.postArenaDagpenger(request)
-                                        .flatMap(this::getDagpengerStatus)
-                                        .map(response -> ArenaUtils.OPPRETTET + response)
-                        )));
+                                Flux.just(operasjoner.getDagpengeVedtak())
+                                                        .flatMap(vedtak -> {
+                                                            if (nonNull(vedtak.getNyttVedtak())) {
+                                                                request.getNyeDagp().forEach(dagp1 ->
+                                                                        dagp1.getVedtaksperiode().setTom(vedtak.getNyttVedtak().getTom()));
+                                                                return arenaForvalterConsumer.postArenaDagpenger(request)
+                                                                        .flatMap(this::getDagpengerStatus)
+                                                                        .map(response -> ArenaUtils.OPPRETTET + response);
+                                                            } else {
+                                                                return Flux.just(ArenaUtils.OPPRETTET + "OK");
+                                                            }
+                                                        }))));
     }
 
     private Mono<String> getDagpengerStatus(ArenaNyeDagpengerResponse response) {
