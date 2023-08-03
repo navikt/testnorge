@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
-import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakService;
+import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -45,7 +45,6 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ArenaAap115Service arenaAap115Service;
     private final ArenaAapService arenaAapService;
     private final ArenaDagpengerService arenaDagpengerService;
-    private final ArenaEksisterendeVedtakService arenaEksisterendeVedtakService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -70,7 +69,7 @@ public class ArenaForvalterClient implements ClientRegister {
 
         return Flux.fromIterable(miljoer)
                 .flatMap(miljoe -> arenaForvalterConsumer.getArenaBruker(ident, miljoe)
-                        .map(arenaArbeidsokerStatus -> arenaEksisterendeVedtakService.getArenaOperasjoner(arenadata, arenaArbeidsokerStatus))
+                        .map(arenaArbeidsokerStatus -> ArenaEksisterendeVedtakUtil.getArenaOperasjoner(arenadata, arenaArbeidsokerStatus))
                         .flatMapMany(arenaOperasjoner -> Flux.concat(
 
                                 arenaBrukerService.sendBruker(arenadata, arenaOperasjoner, ident, miljoe)

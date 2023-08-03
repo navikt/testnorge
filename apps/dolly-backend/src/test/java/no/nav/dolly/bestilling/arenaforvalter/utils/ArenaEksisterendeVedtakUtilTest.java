@@ -6,8 +6,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,16 +17,13 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-@ExtendWith(MockitoExtension.class)
-class ArenaEksisterendeVedtakServiceTest {
-
-    @InjectMocks
-    private ArenaEksisterendeVedtakService arenaEksisterendeVedtakService;
+@ExtendWith(SpringExtension.class)
+class ArenaEksisterendeVedtakUtilTest {
 
     @Test
     void vedtakAapEksistererIkke() {
 
-        var util = arenaEksisterendeVedtakService.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2023, 3, 1, 0, 0))
                                 .build()))
@@ -46,7 +42,7 @@ class ArenaEksisterendeVedtakServiceTest {
     @Test
     void vedtakAapEksistereAllerede() {
 
-        var util = arenaEksisterendeVedtakService.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2023, 1, 1, 0, 0))
                                 .build()))
@@ -64,7 +60,7 @@ class ArenaEksisterendeVedtakServiceTest {
     @Test
     void vedtakAapOverlapperEksisterende() {
 
-        var util = arenaEksisterendeVedtakService.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2023, 3, 1, 0, 0))
                                 .build()))
@@ -84,7 +80,7 @@ class ArenaEksisterendeVedtakServiceTest {
     @Test
     void vedtakAapForanledningerEksisterende() {
 
-        var util = arenaEksisterendeVedtakService.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2022, 10, 1, 0, 0))
                                 .build()))
@@ -103,7 +99,7 @@ class ArenaEksisterendeVedtakServiceTest {
     @Test
     void vedtakDagpengerEksisterAllleredeIngenEndring() {
 
-        var util = arenaEksisterendeVedtakService.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .dagpenger(List.of(RsArenaDagpenger.builder()
                                 .fraDato(LocalDateTime.of(2023, 1, 1, 0, 0))
                                 .tilDato(LocalDateTime.of(2023, 4, 30, 0, 0))
