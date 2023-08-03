@@ -20,6 +20,8 @@ public class ArenaVedtakOperasjoner {
 
         private Periode avslutteVedtak;
 
+        private boolean eksisterendeVedtak;
+
         private Periode nyttVedtak;
     }
 

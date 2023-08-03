@@ -20,7 +20,7 @@ import static no.nav.dolly.util.TokenXUtil.getUserJwt;
 public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
 
     private static final String ARENA_URL = "/{miljoe}/arena/syntetiser/brukeroppfolging/personstatusytelse";
-    private static final String IDENT = "fodselsnr";
+    private static final String FODSELSNR = "fodselsnr";
 
     private final WebClient webClient;
     private final String ident;
@@ -36,7 +36,7 @@ public class ArenaGetCommand implements Callable<Mono<ArenaStatusResponse>> {
                         .build(miljoe))
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                 .header(UserConstant.USER_HEADER_JWT, getUserJwt())
-                .header(IDENT, ident)
+                .header(FODSELSNR, ident)
                 .retrieve()
                 .onStatus(HttpStatus.NO_CONTENT::equals, ClientResponse::createException)
                 .bodyToMono(ArenaStatusResponse.class)

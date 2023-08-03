@@ -32,7 +32,7 @@ public final class BestillingArenaforvalterStatusMapper {
     public static List<RsStatusRapport> buildArenaStatusMap(List<BestillingProgress> progressList) {
 
         //melding    // status    environment    ident
-        Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents = new HashMap();
+        Map<String, Map<String, Map<String, List<String>>>> meldStatusMiljoeIdents = new HashMap<>();
 
         progressList.forEach(progress -> {
             if (isNotBlank(progress.getArenaforvalterStatus())) {
@@ -92,7 +92,7 @@ public final class BestillingArenaforvalterStatusMapper {
             }
         } else {
             Map<String, Map<String, List<String>>> statusMap = new HashMap<>();
-            Map<String, List<String>> miljoeIdent = new HashMap();
+            Map<String, List<String>> miljoeIdent = new HashMap<>();
             miljoeIdent.put(miljoe, new ArrayList<>(List.of(ident)));
             statusMap.put(status, miljoeIdent);
             msgStatusIdents.put(melding, statusMap);

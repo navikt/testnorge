@@ -21,7 +21,7 @@ import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @UtilityClass
-public class ArenaEksistendeVedtakUtil {
+public class ArenaEksisterendeVedtakUtil {
 
     enum Ytelse {AAP, DAGO}
 
@@ -31,6 +31,7 @@ public class ArenaEksistendeVedtakUtil {
                 .registrertDato(response.getRegistrertDato())
                 .aapVedtak(ArenaVedtakOperasjoner.Operasjon.builder()
                         .avslutteVedtak(getAvslutteVedtak(Ytelse.AAP, arenadata, response.getVedtakListe()))
+                        .eksisterendeVedtak(isVedtak(response.getVedtakListe(), "O", arenadata.getAap()))
                         .nyttVedtak(isNull(arenadata.getInaktiveringDato()) &&
                                 !arenadata.getAap().isEmpty() &&
                                 !isVedtak(response.getVedtakListe(), "O", arenadata.getAap()) ?
@@ -45,6 +46,7 @@ public class ArenaEksistendeVedtakUtil {
                         .build())
                 .dagpengeVedtak(ArenaVedtakOperasjoner.Operasjon.builder()
                         .avslutteVedtak(getAvslutteVedtak(Ytelse.DAGO, arenadata, response.getVedtakListe()))
+                        .eksisterendeVedtak(isVedtak(response.getVedtakListe(), "O", arenadata.getDagpenger()))
                         .nyttVedtak(isNull(arenadata.getInaktiveringDato()) &&
                                 !arenadata.getDagpenger().isEmpty() &&
                                 !isVedtak(response.getVedtakListe(), "O", arenadata.getDagpenger()) ?

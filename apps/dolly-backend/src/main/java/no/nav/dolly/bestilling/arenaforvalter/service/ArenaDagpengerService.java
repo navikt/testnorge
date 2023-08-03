@@ -59,17 +59,18 @@ public class ArenaDagpengerService {
 
                                         }),
                                 Flux.just(operasjoner.getDagpengeVedtak())
-                                                        .flatMap(vedtak -> {
-                                                            if (nonNull(vedtak.getNyttVedtak())) {
-                                                                request.getNyeDagp().forEach(dagp1 ->
-                                                                        dagp1.getVedtaksperiode().setTom(vedtak.getNyttVedtak().getTom()));
-                                                                return arenaForvalterConsumer.postArenaDagpenger(request)
-                                                                        .flatMap(this::getDagpengerStatus)
-                                                                        .map(response -> ArenaUtils.OPPRETTET + response);
-                                                            } else {
-                                                                return Flux.just(ArenaUtils.OPPRETTET + "OK");
-                                                            }
-                                                        }))));
+                                        .filter(vedtak -> nonNull(vedtak.getNyttVedtak()))
+                                        .flatMap(vedtak -> {
+                                            request.getNyeDagp().forEach(dagp1 ->
+                                                    dagp1.getVedtaksperiode().setTom(vedtak.getNyttVedtak().getTom()));
+                                            return arenaForvalterConsumer.postArenaDagpenger(request)
+                                                    .flatMap(this::getDagpengerStatus)
+                                                    .map(response -> ArenaUtils.OPPRETTET + response);
+                                        }),
+                                Flux.just(operasjoner.getDagpengeVedtak())
+                                        .filter(ArenaVedtakOperasjoner.Operasjon::isEksisterendeVedtak)
+                                        .map(vedtak -> ArenaUtils.OPPRETTET + "OK")
+                        )));
     }
 
     private Mono<String> getDagpengerStatus(ArenaNyeDagpengerResponse response) {

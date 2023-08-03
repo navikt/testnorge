@@ -18,12 +18,12 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 @ExtendWith(SpringExtension.class)
-class ArenaEksistendeVedtakUtilTest {
+class ArenaEksisterendeVedtakUtilTest {
 
     @Test
     void vedtakAapEksistererIkke() {
 
-        var util = ArenaEksistendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2023, 3, 1, 0, 0))
                                 .build()))
@@ -31,16 +31,18 @@ class ArenaEksistendeVedtakUtilTest {
                 new ArenaStatusResponse());
 
         assertThat(util.getAapVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getAapVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getAapVedtak().getNyttVedtak().getFom(), is(equalTo(LocalDate.of(2023, 3, 1))));
         assertThat(util.getAapVedtak().getNyttVedtak().getTom(), is(nullValue()));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getDagpengeVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getDagpengeVedtak().getNyttVedtak(), is(nullValue()));
     }
 
     @Test
     void vedtakAapEksistereAllerede() {
 
-        var util = ArenaEksistendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2023, 1, 1, 0, 0))
                                 .build()))
@@ -48,15 +50,17 @@ class ArenaEksistendeVedtakUtilTest {
                 getVedtak());
 
         assertThat(util.getAapVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getAapVedtak().isEksisterendeVedtak(), is(true));
         assertThat(util.getAapVedtak().getNyttVedtak(), is(nullValue()));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getDagpengeVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getDagpengeVedtak().getNyttVedtak(), is(nullValue()));
     }
 
     @Test
     void vedtakAapOverlapperEksisterende() {
 
-        var util = ArenaEksistendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2023, 3, 1, 0, 0))
                                 .build()))
@@ -64,17 +68,19 @@ class ArenaEksistendeVedtakUtilTest {
                 getVedtak());
 
         assertThat(util.getAapVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getAapVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getAapVedtak().getNyttVedtak().getFom(), is(equalTo(LocalDate.of(2023, 3, 1))));
         assertThat(util.getAapVedtak().getNyttVedtak().getTom(), is(equalTo(LocalDate.of(2023, 4, 30))));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak().getFom(), is(equalTo(LocalDate.of(2023, 1, 1))));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak().getTom(), is(equalTo(LocalDate.of(2023, 2, 28))));
+        assertThat(util.getDagpengeVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getDagpengeVedtak().getNyttVedtak(), is(nullValue()));
     }
 
     @Test
     void vedtakAapForanledningerEksisterende() {
 
-        var util = ArenaEksistendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .aap(List.of(RsArenaAap.builder()
                                 .fraDato(LocalDateTime.of(2022, 10, 1, 0, 0))
                                 .build()))
@@ -82,16 +88,18 @@ class ArenaEksistendeVedtakUtilTest {
                 getVedtak());
 
         assertThat(util.getAapVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getAapVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getAapVedtak().getNyttVedtak().getFom(), is(equalTo(LocalDate.of(2022, 10, 1))));
         assertThat(util.getAapVedtak().getNyttVedtak().getTom(), is(equalTo(LocalDate.of(2022, 12, 31))));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getDagpengeVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getDagpengeVedtak().getNyttVedtak(), is(nullValue()));
     }
 
     @Test
     void vedtakDagpengerEksisterAllleredeIngenEndring() {
 
-        var util = ArenaEksistendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
+        var util = ArenaEksisterendeVedtakUtil.getArenaOperasjoner(Arenadata.builder()
                         .dagpenger(List.of(RsArenaDagpenger.builder()
                                 .fraDato(LocalDateTime.of(2023, 1, 1, 0, 0))
                                 .tilDato(LocalDateTime.of(2023, 4, 30, 0, 0))
@@ -100,8 +108,10 @@ class ArenaEksistendeVedtakUtilTest {
                 getVedtak());
 
         assertThat(util.getAapVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getAapVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getAapVedtak().getNyttVedtak(), is(nullValue()));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak(), is(nullValue()));
+        assertThat(util.getDagpengeVedtak().isEksisterendeVedtak(), is(true));
         assertThat(util.getDagpengeVedtak().getNyttVedtak(), is(nullValue()));
     }
 

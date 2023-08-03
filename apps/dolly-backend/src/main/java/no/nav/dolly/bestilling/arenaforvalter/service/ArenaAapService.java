@@ -42,7 +42,7 @@ public class ArenaAapService {
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap())
                         .flatMap(aap -> Flux.concat(Flux.just(operasjoner.getAapVedtak())
-                                                .filter(operasjon -> nonNull(operasjon.getAvslutteVedtak()))
+                                        .filter(operasjon -> nonNull(operasjon.getAvslutteVedtak()))
                                         .flatMap(operasjon -> {
                                             var opphoerRequest = mapperFacade.map(request, AapRequest.class);
                                             opphoerRequest.getNyeAap()
@@ -56,16 +56,17 @@ public class ArenaAapService {
                                                     .map(response -> ArenaUtils.STANSET + response);
                                         }),
                                 Flux.just(operasjoner.getAapVedtak())
+                                        .filter(vedtak -> nonNull(vedtak.getNyttVedtak()))
                                         .flatMap(vedtak -> {
-                                            if (nonNull(vedtak.getNyttVedtak())) {
-                                                request.getNyeAap().forEach(vedtak1 -> vedtak1.setTilDato(vedtak.getNyttVedtak().getTom()));
-                                                return arenaForvalterConsumer.postAap(request)
-                                                        .flatMap(this::getAapStatus)
-                                                        .map(response -> ArenaUtils.OPPRETTET + response);
-                                            } else {
-                                                return Flux.just(ArenaUtils.OPPRETTET + "OK");
-                                            }
-                                        }))));
+                                            request.getNyeAap().forEach(vedtak1 -> vedtak1.setTilDato(vedtak.getNyttVedtak().getTom()));
+                                            return arenaForvalterConsumer.postAap(request)
+                                                    .flatMap(this::getAapStatus)
+                                                    .map(response -> ArenaUtils.OPPRETTET + response);
+                                        }),
+                                Flux.just(operasjoner.getAapVedtak())
+                                        .filter(ArenaVedtakOperasjoner.Operasjon::isEksisterendeVedtak)
+                                        .map(vedtak -> ArenaUtils.OPPRETTET + "OK")
+                        )));
     }
 
     private Mono<String> getAapStatus(AapResponse response) {
