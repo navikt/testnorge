@@ -8,7 +8,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
-import no.nav.dolly.bestilling.arenaforvalter.service.ArenaEksisterendeVedtakService;
+import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
