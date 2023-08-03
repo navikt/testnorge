@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 
 @Configuration(enforceUniqueMethods = false)
 @EnableCaching
+@SuppressWarnings("java:S3740")
 public class CachingConfig {
 
     public static final String CACHE_BESTILLING = "bestilling";

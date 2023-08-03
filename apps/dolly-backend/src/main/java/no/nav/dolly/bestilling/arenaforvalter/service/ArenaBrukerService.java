@@ -128,6 +128,13 @@ public class ArenaBrukerService {
                         Flux.fromIterable(response.getNyBrukerFeilList())
                                 .map(brukerFeil ->
                                         encodeStatus(String.format(ArenaUtils.STATUS_FMT, brukerFeil.getNyBrukerFeilstatus(), brukerFeil.getMelding())))
+                                .map(decoded -> {
+                                    if (decoded.contains("404 Not Found")) {
+                                        return "404 Not Found";
+                                    } else {
+                                        return decoded;
+                                    }
+                                })
                                 .collect(Collectors.joining()))
 
                 .collect(Collectors.joining());
