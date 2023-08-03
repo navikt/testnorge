@@ -1,6 +1,6 @@
 package no.nav.dolly.bestilling.arenaforvalter.utils;
 
-import lombok.experimental.UtilityClass;
+import lombok.RequiredArgsConstructor;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaPeriode;
@@ -8,6 +8,7 @@ import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.util.NullcheckUtil;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,12 +21,13 @@ import java.util.stream.Stream;
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
-@UtilityClass
-public class ArenaEksisterendeVedtakUtil {
+@Service
+@RequiredArgsConstructor
+public class ArenaEksisterendeVedtakService {
 
-    enum Ytelse {AAP, DAGO}
+    private enum Ytelse {AAP, DAGO}
 
-    public static ArenaVedtakOperasjoner getArenaOperasjoner(Arenadata arenadata, ArenaStatusResponse response) {
+    public ArenaVedtakOperasjoner getArenaOperasjoner(Arenadata arenadata, ArenaStatusResponse response) {
 
         return ArenaVedtakOperasjoner.builder()
                 .registrertDato(response.getRegistrertDato())
@@ -147,7 +149,7 @@ public class ArenaEksisterendeVedtakUtil {
                 .toList();
     }
 
-    private LocalDate toLocalDate(LocalDateTime tid) {
+    private static LocalDate toLocalDate(LocalDateTime tid) {
 
         return nonNull(tid) ? tid.toLocalDate() : null;
     }
