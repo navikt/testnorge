@@ -2,6 +2,8 @@ package no.nav.dolly.bestilling.arenaforvalter.dto;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
 
@@ -19,7 +21,7 @@ public class ArenaVedtakOperasjoner {
     @Builder
     public static class Operasjon {
 
-        private Periode avslutteVedtak;
+        private StansPeriode avslutteVedtak;
 
         private boolean eksisterendeVedtak;
 
@@ -27,10 +29,18 @@ public class ArenaVedtakOperasjoner {
     }
 
     @Data
-    @Builder
+    @SuperBuilder
     public static class Periode {
 
         private LocalDate fom;
         private LocalDate tom;
+    }
+
+    @Data
+    @EqualsAndHashCode(callSuper = true)
+    @SuperBuilder
+    public static class StansPeriode extends Periode{
+
+        private LocalDate stansFra;
     }
 }

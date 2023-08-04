@@ -120,11 +120,11 @@ public class ArenaEksisterendeVedtakUtil {
         return tom.get();
     }
 
-    private static ArenaVedtakOperasjoner.Periode getAvslutteVedtak(Ytelse ytelse, Arenadata request, List<ArenaStatusResponse.Vedtak> vedtak) {
+    private static ArenaVedtakOperasjoner.StansPeriode getAvslutteVedtak(Ytelse ytelse, Arenadata request, List<ArenaStatusResponse.Vedtak> vedtak) {
 
         var vedtaker = getVedtaker(vedtak, ytelse);
 
-        var periode = new AtomicReference<ArenaVedtakOperasjoner.Periode>(null);
+        var periode = new AtomicReference<ArenaVedtakOperasjoner.StansPeriode>(null);
 
         Stream.of(
                         request.getAap(),
@@ -141,15 +141,16 @@ public class ArenaEksisterendeVedtakUtil {
 
                     if (!vedtaker.isEmpty() &&
                             arenaPeriode.getFraDato().toLocalDate().isAfter(vedtaker.get(finalI).getFraDato()) &&
-                            (isNull(vedtak.get(finalI).getTilDato()) ||
-                                    vedtak.get(finalI).getTilDato().isAfter(arenaPeriode.getFraDato().toLocalDate()))) {
+                            (isNull(vedtaker.get(finalI).getTilDato()) ||
+                                    vedtaker.get(finalI).getTilDato().isAfter(arenaPeriode.getFraDato().toLocalDate()))) {
 
                         Stream.of(NullcheckUtil.nullcheckSetDefaultValue(vedtaker.get(finalI).getTilDato(), LocalDate.now()),
                                         arenaPeriode.getFraDato().toLocalDate().minusDays(1))
                                 .min(Comparator.comparing(LocalDate::from))
-                                .ifPresent(tomDato -> periode.set(ArenaVedtakOperasjoner.Periode.builder()
+                                .ifPresent(stansDato -> periode.set(ArenaVedtakOperasjoner.StansPeriode.builder()
                                         .fom(vedtaker.get(finalI).getFraDato())
-                                        .tom(tomDato)
+                                        .tom(vedtaker.get(finalI).getTilDato())
+                                        .stansFra(stansDato)
                                         .build()));
                     }
                 });

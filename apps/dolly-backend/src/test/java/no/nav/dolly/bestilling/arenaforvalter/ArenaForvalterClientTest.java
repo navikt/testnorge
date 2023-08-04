@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyBestillingRequest;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
@@ -62,6 +63,9 @@ class ArenaForvalterClientTest {
     @Mock
     private ArenaDagpengerService arenaDagpengerService;
 
+    @Mock
+    private ArenaStansYtelseService arenaStansYtelseService;
+
     @InjectMocks
     private ArenaForvalterClient arenaForvalterClient;
 
@@ -87,6 +91,7 @@ class ArenaForvalterClientTest {
         when(arenaAap115Service.sendAap115(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
 
         RsDollyBestillingRequest request = new RsDollyBestillingRequest();
         request.setArenaforvalter(Arenadata.builder().build());
@@ -122,6 +127,7 @@ class ArenaForvalterClientTest {
         when(arenaAap115Service.sendAap115(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaStansYtelseService.stopYtelse(any(), any(), any())).thenReturn(Flux.empty());
 
         StepVerifier.create(arenaForvalterClient.gjenopprett(request, DollyPerson.builder().ident(IDENT)
                                 .build(), progress, false)

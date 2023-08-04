@@ -8,6 +8,7 @@ import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAap115Service;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaAapService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaBrukerService;
 import no.nav.dolly.bestilling.arenaforvalter.service.ArenaDagpengerService;
+import no.nav.dolly.bestilling.arenaforvalter.service.ArenaStansYtelseService;
 import no.nav.dolly.bestilling.arenaforvalter.utils.ArenaEksisterendeVedtakUtil;
 import no.nav.dolly.domain.jpa.BestillingProgress;
 import no.nav.dolly.domain.resultset.RsDollyUtvidetBestilling;
@@ -23,7 +24,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
-import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.AAP115;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.BRUKER;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.DAGPENGER;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.fmtResponse;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 
 @Slf4j
@@ -32,12 +37,7 @@ import static no.nav.dolly.errorhandling.ErrorStatusDecoder.getInfoVenter;
 public class ArenaForvalterClient implements ClientRegister {
 
     private static final String MILJOE_FMT = "%s$%s";
-    private static final String MILJOE2_FMT = "%s$%s %s";
     private static final String SYSTEM = "Arena";
-    private static final String BRUKER = "BRUKER";
-    private static final String AAP115 = "AAP115";
-    private static final String AAP = "AAP";
-    private static final String DAGPENGER = "DAGP";
 
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final TransactionHelperService transactionHelperService;
@@ -45,6 +45,7 @@ public class ArenaForvalterClient implements ClientRegister {
     private final ArenaAap115Service arenaAap115Service;
     private final ArenaAapService arenaAapService;
     private final ArenaDagpengerService arenaDagpengerService;
+    private final ArenaStansYtelseService arenaStansYtelseService;
 
     @Override
     public Flux<ClientFuture> gjenopprett(RsDollyUtvidetBestilling bestilling, DollyPerson dollyPerson, BestillingProgress progress, boolean isOpprettEndre) {
@@ -78,6 +79,8 @@ public class ArenaForvalterClient implements ClientRegister {
                                 arenaAap115Service.sendAap115(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(aap115tstaus -> fmtResponse(miljoe, AAP115, aap115tstaus)),
 
+                                arenaStansYtelseService.stopYtelse(arenaOperasjoner, ident, miljoe),
+
                                 arenaAapService.sendAap(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(aapStataus -> fmtResponse(miljoe, AAP, aapStataus)),
 
@@ -85,11 +88,6 @@ public class ArenaForvalterClient implements ClientRegister {
                                         .map(dagpengerStatus -> fmtResponse(miljoe, DAGPENGER, dagpengerStatus))
                         )))
                 .collect(Collectors.joining(","));
-    }
-
-    private static String fmtResponse(String miljoe, String system, String status) {
-
-        return encodeStatus(String.format(MILJOE2_FMT, miljoe, system, status));
     }
 
     private ClientFuture futurePersist(BestillingProgress progress, String status) {
