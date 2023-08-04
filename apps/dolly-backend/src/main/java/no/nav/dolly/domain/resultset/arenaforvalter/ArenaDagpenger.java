@@ -65,6 +65,10 @@ public class ArenaDagpenger {
         private VedtaksType vedtaktype;
         private String utfall;
         private LocalDate stansFomDato;
+        private String harVedtaksbrev;
+        private String harRedigerbartBrev;
+        private String saksbehandlersTilleggsbegrunnelseForVedtaket;
+        private String saksbehandler;
 
         public List<Vilkaar> getVilkaar() {
             if (isNull(vilkaar)) {
