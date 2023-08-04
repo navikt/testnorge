@@ -77,7 +77,6 @@ public class GjenopprettGruppeService extends DollyBestillingService {
             var coBestillinger = identService.getBestillingerFromGruppe(bestilling.getGruppe());
 
             var counter = new AtomicInteger(0);
-//            var emptyBestillingFlag = new ConcurrentHashMap<String, Boolean>();
             Flux.fromIterable(bestilling.getGruppe().getTestidenter())
                     .delayElements(Duration.ofSeconds(counter.incrementAndGet() % 20 == 0 ? 30 : 0))
                     .flatMap(testident -> opprettProgress(bestilling, testident.getMaster(), testident.getIdent())
@@ -98,8 +97,6 @@ public class GjenopprettGruppeService extends DollyBestillingService {
                                                                     .sort(Comparator.comparing(GruppeBestillingIdent::getBestillingid))
                                                                     .filter(cobestilling -> ident.equals(cobestilling.getIdent()))
                                                                     .flatMap(cobestilling -> createBestilling(bestilling, cobestilling)
-//                                                                            .filter(bestillingRequest -> isNotTrue(emptyBestillingFlag.putIfAbsent(ident, true)) ||
-//                                                                                    RsDollyBestilling.isNonEmpty(bestillingRequest))
                                                                             .flatMap(bestillingRequest -> Flux.concat(
                                                                                     gjenopprettKlienter(dollyPerson, bestillingRequest,
                                                                                             fase2Klienter(),
