@@ -11,6 +11,7 @@ public class ArenaVedtakOperasjoner {
 
     private LocalDate registrertDato;
 
+    private Operasjon aa115;
     private Operasjon aapVedtak;
     private Operasjon dagpengeVedtak;
 

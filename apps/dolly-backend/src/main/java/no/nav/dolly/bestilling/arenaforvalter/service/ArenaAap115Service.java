@@ -7,6 +7,7 @@ import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
+import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import reactor.core.publisher.Mono;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Service
@@ -26,7 +28,7 @@ public class ArenaAap115Service {
     private final ArenaForvalterConsumer arenaForvalterConsumer;
     private final ErrorStatusDecoder errorStatusDecoder;
 
-    public Flux<String> sendAap115(Arenadata arenadata, String ident, String miljoe) {
+    public Flux<String> sendAap115(Arenadata arenadata, ArenaVedtakOperasjoner operasjoner, String ident, String miljoe) {
 
         return Flux.just(arenadata)
                 .filter(arenadata1 -> !arenadata1.getAap115().isEmpty())
@@ -38,10 +40,16 @@ public class ArenaAap115Service {
                     return mapperFacade.map(arenadata1, Aap115Request.class, context);
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap115())
-                        .flatMap(aap115 -> arenaForvalterConsumer.postAap115(request)
-                                        .flatMap(this::getAap115Status)
-                                        .map(response -> ArenaUtils.OPPRETTET + response)
-                        ));
+                        .flatMap(aap115 -> Flux.concat(
+                                Flux.just(operasjoner.getAa115())
+                                        .filter(operasjon -> nonNull(operasjon.getNyttVedtak()))
+                                        .flatMap(operasjon -> arenaForvalterConsumer.postAap115(request)
+                                                .flatMap(this::getAap115Status)
+                                                .map(response -> ArenaUtils.OPPRETTET + response)),
+                                Flux.just(operasjoner.getAa115())
+                                        .filter(ArenaVedtakOperasjoner.Operasjon::isEksisterendeVedtak)
+                                        .map(operasjon -> ArenaUtils.OPPRETTET + "OK")
+                        )));
     }
 
     private Mono<String> getAap115Status(Aap115Response response) {

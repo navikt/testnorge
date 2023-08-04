@@ -40,7 +40,8 @@ public class ArenaDagpengerService {
                     return mapperFacade.map(arenadata1, ArenaDagpenger.class, context);
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getDagpenger())
-                        .flatMap(dagp -> Flux.concat(Flux.just(operasjoner.getDagpengeVedtak())
+                        .flatMap(dagp -> Flux.concat(
+                                Flux.just(operasjoner.getDagpengeVedtak())
                                         .filter(operasjon -> nonNull(operasjoner.getDagpengeVedtak().getAvslutteVedtak()))
                                         .flatMap(operasjon -> {
                                             var opphoerRequest = mapperFacade.map(request, ArenaDagpenger.class);

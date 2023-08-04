@@ -41,7 +41,8 @@ public class ArenaAapService {
                     return mapperFacade.map(arenadata1, AapRequest.class, context);
                 })
                 .flatMap(request -> Flux.fromIterable(arenadata.getAap())
-                        .flatMap(aap -> Flux.concat(Flux.just(operasjoner.getAapVedtak())
+                        .flatMap(aap -> Flux.concat(
+                                Flux.just(operasjoner.getAapVedtak())
                                         .filter(operasjon -> nonNull(operasjon.getAvslutteVedtak()))
                                         .flatMap(operasjon -> {
                                             var opphoerRequest = mapperFacade.map(request, AapRequest.class);

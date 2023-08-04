@@ -6,6 +6,7 @@ import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaPeriode;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
+import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap115;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaDagpenger;
 import no.nav.dolly.util.NullcheckUtil;
 
@@ -23,18 +24,31 @@ import static java.util.Objects.nonNull;
 @UtilityClass
 public class ArenaEksisterendeVedtakUtil {
 
-    enum Ytelse {AAP, DAGO}
+    enum Ytelse {AA115, AAP, DAGO}
 
     public static ArenaVedtakOperasjoner getArenaOperasjoner(Arenadata arenadata, ArenaStatusResponse response) {
 
         return ArenaVedtakOperasjoner.builder()
                 .registrertDato(response.getRegistrertDato())
+                .aa115(ArenaVedtakOperasjoner.Operasjon.builder()
+                        .eksisterendeVedtak(isVedtak(arenadata.getAap115(), response))
+                        .nyttVedtak(isNull(arenadata.getInaktiveringDato()) &&
+                                !isVedtak(arenadata.getAap115(), response) ?
+                                arenadata.getAap115().stream()
+                                        .map(aap115 ->
+                                                ArenaVedtakOperasjoner.Periode.builder()
+                                                        .fom(aap115.getFraDato().toLocalDate())
+                                                        .tom(toLocalDate(aap115.getTilDato()))
+                                                        .build())
+                                        .findFirst()
+                                        .orElse(null) : null)
+                        .build())
                 .aapVedtak(ArenaVedtakOperasjoner.Operasjon.builder()
                         .avslutteVedtak(getAvslutteVedtak(Ytelse.AAP, arenadata, response.getVedtakListe()))
-                        .eksisterendeVedtak(isVedtak(response.getVedtakListe(), "O", arenadata.getAap()))
+                        .eksisterendeVedtak(isVedtak(arenadata.getAap(), response.getVedtakListe()))
                         .nyttVedtak(isNull(arenadata.getInaktiveringDato()) &&
                                 !arenadata.getAap().isEmpty() &&
-                                !isVedtak(response.getVedtakListe(), "O", arenadata.getAap()) ?
+                                !isVedtak(arenadata.getAap(), response.getVedtakListe()) ?
                                 ArenaVedtakOperasjoner.Periode.builder()
                                         .fom(arenadata.getAap().stream()
                                                 .map(RsArenaAap::getFraDato)
@@ -46,10 +60,10 @@ public class ArenaEksisterendeVedtakUtil {
                         .build())
                 .dagpengeVedtak(ArenaVedtakOperasjoner.Operasjon.builder()
                         .avslutteVedtak(getAvslutteVedtak(Ytelse.DAGO, arenadata, response.getVedtakListe()))
-                        .eksisterendeVedtak(isVedtak(response.getVedtakListe(), "O", arenadata.getDagpenger()))
+                        .eksisterendeVedtak(isVedtak(arenadata.getDagpenger(), response.getVedtakListe()))
                         .nyttVedtak(isNull(arenadata.getInaktiveringDato()) &&
                                 !arenadata.getDagpenger().isEmpty() &&
-                                !isVedtak(response.getVedtakListe(), "O", arenadata.getDagpenger()) ?
+                                !isVedtak(arenadata.getDagpenger(), response.getVedtakListe()) ?
                                 ArenaVedtakOperasjoner.Periode.builder()
                                         .fom(arenadata.getDagpenger().stream()
                                                 .map(RsArenaDagpenger::getFraDato)
@@ -62,11 +76,20 @@ public class ArenaEksisterendeVedtakUtil {
                 .build();
     }
 
-    private static boolean isVedtak(List<ArenaStatusResponse.Vedtak> vedtak, String operasjon, List<? extends ArenaPeriode> request) {
+    private static boolean isVedtak(List<RsArenaAap115> aap115Req, ArenaStatusResponse response) {
 
-        return vedtak.stream().anyMatch(vedtak1 -> operasjon.equals(vedtak1.getType().getKode()) &&
+        return response.getVedtakListe().stream()
+                .anyMatch(vedtak -> "O".equals(vedtak.getType().getKode()) &&
+                        Ytelse.AA115.name().equals(vedtak.getRettighet().getKode()) &&
+                        aap115Req.stream().anyMatch(aap115 ->
+                                aap115.getFraDato().toLocalDate().equals(vedtak.getFraDato())));
+    }
+
+    private static boolean isVedtak(List<? extends ArenaPeriode> request, List<ArenaStatusResponse.Vedtak> vedtak) {
+
+        return vedtak.stream().anyMatch(vedtak1 -> "O".equals(vedtak1.getType().getKode()) &&
                 vedtak1.isVedtak() &&
-                request.stream().anyMatch(aap -> aap.getFraDato().toLocalDate().equals(vedtak1.getFraDato())));
+                request.stream().anyMatch(req -> req.getFraDato().toLocalDate().equals(vedtak1.getFraDato())));
     }
 
     private static LocalDate getNyttVedtakTom(List<? extends ArenaPeriode> request, List<ArenaStatusResponse.Vedtak> vedtak) {
@@ -119,7 +142,7 @@ public class ArenaEksisterendeVedtakUtil {
                     if (!vedtaker.isEmpty() &&
                             arenaPeriode.getFraDato().toLocalDate().isAfter(vedtaker.get(finalI).getFraDato()) &&
                             (isNull(vedtak.get(finalI).getTilDato()) ||
-                            vedtak.get(finalI).getTilDato().isAfter(arenaPeriode.getFraDato().toLocalDate()))) {
+                                    vedtak.get(finalI).getTilDato().isAfter(arenaPeriode.getFraDato().toLocalDate()))) {
 
                         Stream.of(NullcheckUtil.nullcheckSetDefaultValue(vedtaker.get(finalI).getTilDato(), LocalDate.now()),
                                         arenaPeriode.getFraDato().toLocalDate().minusDays(1))

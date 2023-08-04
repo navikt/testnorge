@@ -84,7 +84,7 @@ class ArenaForvalterClientTest {
                         .build()));
         when(arenaBrukerService.sendBruker(any(), any(), any(), any()))
                 .thenReturn(Flux.just("Oppretting: OK"));
-        when(arenaAap115Service.sendAap115(any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaAap115Service.sendAap115(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
 
@@ -119,7 +119,7 @@ class ArenaForvalterClientTest {
 
         when(arenaBrukerService.sendBruker(any(), any(), any(), any()))
                 .thenReturn(Flux.just("Oppretting: DUPLIKAT:message: 555 User Defined Resource Error"));
-        when(arenaAap115Service.sendAap115(any(), any(), any())).thenReturn(Flux.empty());
+        when(arenaAap115Service.sendAap115(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaAapService.sendAap(any(), any(), any(), any())).thenReturn(Flux.empty());
         when(arenaDagpengerService.sendDagpenger(any(), any(), any(), any())).thenReturn(Flux.empty());
 

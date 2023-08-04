@@ -75,7 +75,7 @@ public class ArenaForvalterClient implements ClientRegister {
                                 arenaBrukerService.sendBruker(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(brukerStatus -> fmtResponse(miljoe, BRUKER, brukerStatus)),
 
-                                arenaAap115Service.sendAap115(arenadata, ident, miljoe)
+                                arenaAap115Service.sendAap115(arenadata, arenaOperasjoner, ident, miljoe)
                                         .map(aap115tstaus -> fmtResponse(miljoe, AAP115, aap115tstaus)),
 
                                 arenaAapService.sendAap(arenadata, arenaOperasjoner, ident, miljoe)
