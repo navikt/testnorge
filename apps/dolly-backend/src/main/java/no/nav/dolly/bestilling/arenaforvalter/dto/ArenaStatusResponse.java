@@ -1,13 +1,11 @@
 package no.nav.dolly.bestilling.arenaforvalter.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.springframework.http.HttpStatus;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,7 +14,9 @@ import java.util.List;
 import static java.util.Objects.isNull;
 
 @Data
+@SuperBuilder
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor
 @NoArgsConstructor
 @ToString(callSuper = true)
 public class ArenaStatusResponse extends ArenaResponse {
@@ -36,26 +36,6 @@ public class ArenaStatusResponse extends ArenaResponse {
     private String meldeform;
     private String meldegruppe;
     private List<Vedtak> vedtakListe;
-
-    @Builder
-    public ArenaStatusResponse(HttpStatus status, String miljoe, String feilmelding, String fodselsnr, LocalDate registrertDato, LocalDate sistInaktivDato, String maalform, String statsborgerLand, String bosattStatus, NavKontor lokalkontor, String hovedmaal, Egenskap formidlingsgruppe, Egenskap servicegruppe, Egenskap rettighetsgruppe, Boolean meldeplikt, String meldeform, String meldegruppe, List<Vedtak> vedtakListe) {
-        super(status, miljoe, feilmelding);
-        this.fodselsnr = fodselsnr;
-        this.registrertDato = registrertDato;
-        this.sistInaktivDato = sistInaktivDato;
-        this.maalform = maalform;
-        this.statsborgerLand = statsborgerLand;
-        this.bosattStatus = bosattStatus;
-        this.lokalkontor = lokalkontor;
-        this.hovedmaal = hovedmaal;
-        this.formidlingsgruppe = formidlingsgruppe;
-        this.servicegruppe = servicegruppe;
-        this.rettighetsgruppe = rettighetsgruppe;
-        this.meldeplikt = meldeplikt;
-        this.meldeform = meldeform;
-        this.meldegruppe = meldegruppe;
-        this.vedtakListe = vedtakListe;
-    }
 
     public List<Vedtak> getVedtakListe() {
 
