@@ -27,8 +27,8 @@ public class HelsepersonellController {
 
     @Cacheable(CACHE_HELSEPERSONELL)
     @GetMapping
-    public List<HelsepersonellDTO> getHelsepersonell() {
+    public HelsepersonellListeDTO getHelsepersonell() {
 
-        return helsepersonellService.getHelsepersonell();
+        return new HelsepersonellListeDTO(helsepersonellService.getHelsepersonell());
     }
 }
