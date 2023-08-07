@@ -1,5 +1,8 @@
 AAD_ISSUER_URI: https://login.microsoftonline.com/62366534-1ec3-4962-8869-9b5535279d0b
 spring:
+  cloud:
+    vault:
+      enabled: false
   main:
     banner-mode: off
   application:
@@ -23,31 +26,6 @@ springdoc:
   swagger-ui:
     disable-swagger-default-url: true
     url: /v3/api-docs
-
-samhandlerregisteret.api.threads: 10
-hodejegeren.api.threads: 2
-
-dolly.helsepersonell.gruppeId: 5614
-
-helsepersonell.controller.cache.hours: 24
-
-consumers:
-  testnav-samhandlerregisteret-proxy:
-    cluster: dev-fss
-    namespace: dolly
-    threads: 10
-    name: testnav-samhandlerregisteret-proxy
-    url: https://testnav-samhandlerregisteret-proxy.dev-fss-pub.nais.io
-  dolly-backend:
-    cluster: dev-gcp
-    namespace: dolly
-    name: dolly-backend
-    url: http://dolly-backend.dolly.svc.cluster.local
-  testnav-pdl-proxy:
-    name: testnav-pdl-proxy
-    namespace: dolly
-    url: https://testnav-pdl-proxy.dev-fss-pub.nais.io
-    cluster: dev-fss
 
 management:
   endpoints:
