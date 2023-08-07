@@ -1,10 +1,9 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import SubOverskrift from '@/components/ui/subOverskrift/SubOverskrift'
 import { TitleValue } from '@/components/ui/titleValue/TitleValue'
-import { formatDate, oversettBoolean } from '@/utils/DataFormatter'
+import { formatDate } from '@/utils/DataFormatter'
 import Loading from '@/components/ui/loading/Loading'
 import { DollyFieldArray } from '@/components/ui/form/fieldArray/DollyFieldArray'
-import * as _ from 'lodash-es'
 import { DollyApi } from '@/service/Api'
 import { MiljoTabs } from '@/components/ui/miljoTabs/MiljoTabs'
 import { useArenaEnvironments } from '@/utils/hooks/useEnvironments'
@@ -41,6 +40,7 @@ const Visning = ({ data }) => {
 			<TitleValue title="Registrert" value={formatDate(arenaData.registrertDato)} />
 			<TitleValue title="Sist inaktiv" value={formatDate(arenaData.sistInaktivDato)} />
 			{/*lokalkontor*/}
+			<TitleValue title="Hovedmål" value={arenaData.hovedmaal} />
 			<TitleValue title="Formidlingsgruppe" value={arenaData.formidlingsgruppe?.navn} />
 			<TitleValue title="Servicegruppe" value={arenaData.servicegruppe?.navn} />
 			<TitleValue title="Rettighetsgruppe" value={arenaData.rettighetsgruppe?.navn} />
@@ -56,7 +56,7 @@ const Visning = ({ data }) => {
 							<TitleValue title="Saksnummer" value={vedtak.sak?.sakNr} />
 							<TitleValue title="Vedtaksnummer" value={vedtak.vedtakNr} />
 							<TitleValue title="Vedtaksrettighet" value={vedtak.rettighet?.navn} />
-							<TitleValue title="Aktivitetsfase" value={vedtak.aktivitetFase?.navn} />
+							<TitleValue title="Aktivitetsfase" value={vedtak.aktivitetfase?.navn} />
 							<TitleValue title="Vedtakstype" value={vedtak.type?.navn} />
 							<TitleValue title="Vedtakstatus" value={vedtak.status?.navn} />
 							<TitleValue title="Utfall" value={vedtak.utfall} />
@@ -66,46 +66,6 @@ const Visning = ({ data }) => {
 					)}
 				</DollyFieldArray>
 			)}
-
-			{/*Gammelt:*/}
-			{/*<TitleValue title="Brukertype" value={arenaData.brukertype} />*/}
-			{/*<TitleValue title="Servicebehov" value={arenaData.servicebehov} />*/}
-			{/*<TitleValue title="Inaktiv fra dato" value={arenaData.inaktiveringDato} />*/}
-			{/*<TitleValue*/}
-			{/*	title="Automatisk innsending av meldekort"*/}
-			{/*	value={arenaData.automatiskInnsendingAvMeldekort}*/}
-			{/*/>*/}
-			{/*{arenaData.aap115?.[0] && (*/}
-			{/*	<DollyFieldArray header="11.5 vedtak" data={arenaData.aap115} nested>*/}
-			{/*		{(vedtak, idx) => (*/}
-			{/*			<React.Fragment key={idx}>*/}
-			{/*				<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />*/}
-			{/*			</React.Fragment>*/}
-			{/*		)}*/}
-			{/*	</DollyFieldArray>*/}
-			{/*)}*/}
-			{/*{arenaData.aap?.[0] && (*/}
-			{/*	<DollyFieldArray header="AAP-UA vedtak" data={arenaData.aap} nested>*/}
-			{/*		{(vedtak, idx) => (*/}
-			{/*			<React.Fragment key={idx}>*/}
-			{/*				<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />*/}
-			{/*				<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />*/}
-			{/*			</React.Fragment>*/}
-			{/*		)}*/}
-			{/*	</DollyFieldArray>*/}
-			{/*)}*/}
-			{/*{arenaData.dagpenger?.[0] && (*/}
-			{/*	<DollyFieldArray header="Dagpenger vedtak" data={arenaData.dagpenger} nested>*/}
-			{/*		{(vedtak, idx) => (*/}
-			{/*			<React.Fragment key={idx}>*/}
-			{/*				<TitleValue title="Rettighet kode" value={vedtak.rettighetKode} />*/}
-			{/*				<TitleValue title="Fra dato" value={formatDate(vedtak.fraDato)} />*/}
-			{/*				<TitleValue title="Til dato" value={formatDate(vedtak.tilDato)} />*/}
-			{/*				<TitleValue title="Mottatt dato" value={formatDate(vedtak.mottattDato)} />*/}
-			{/*			</React.Fragment>*/}
-			{/*		)}*/}
-			{/*	</DollyFieldArray>*/}
-			{/*)}*/}
 		</div>
 	)
 }
@@ -113,16 +73,6 @@ const Visning = ({ data }) => {
 const ARENASYNT = 'ARENASYNT'
 const SYNT_MILJOE = 'q2'
 const SYNT_INFO = 'Denne identen kan allerede være registrert i Arena Q2 med eller uten ytelser'
-
-const initialVisningData = {
-	brukertype: undefined,
-	servicebehov: undefined,
-	inaktiveringDato: undefined,
-	automatiskInnsendingAvMeldekort: undefined,
-	aap115: [],
-	aap: [],
-	dagpenger: [],
-}
 
 export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligMiljoe }) => {
 	const [harArenasyntTag, setHarArenasyntTag] = useState(false)
@@ -155,6 +105,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 			mountedRef.current = false
 		}
 	}, [])
+
 	const { arenaEnvironments, loading: loadingArena } = useArenaEnvironments()
 
 	if (loading || tagsloading || loadingArena) {
@@ -167,24 +118,19 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	const arenaBestillinger = bestillinger.filter((bestilling) =>
 		bestilling.data.hasOwnProperty('arenaforvalter')
 	)
-	let visningData = mapTilVisningData(arenaBestillinger, harArenasyntTag, arenaEnvironments)
-	const bestilteMiljoer = visningData
-		.filter((best) => best.data?.length > 0)
-		.map((best) => best.miljo)
-
-	const miljoerMedData = data?.arbeidsokerList?.map((arb) => arb.miljoe)
+	const bestilteMiljoer = getBestilteMiljoer(arenaBestillinger, arenaEnvironments)
+	const miljoerMedData = data?.map((arb) => arb.miljo)
 	const errorMiljoer = bestilteMiljoer.filter((m) => !miljoerMedData?.includes(m))
-	visningData = visningData.map((vData) => {
-		if (vData.data?.length > 0) {
-			vData.data[0].error = !miljoerMedData?.includes(vData.miljo)
-		}
-		return vData
+
+	const visningData = data?.map((miljoData) => {
+		const info = miljoData.miljo === SYNT_MILJOE && harArenasyntTag ? SYNT_INFO : null
+		return { ...miljoData, info: info }
 	})
 
 	const filteredData =
-		tilgjengeligMiljoe && visningData.filter((item) => item.miljo === tilgjengeligMiljoe)
+		tilgjengeligMiljoe && data.filter((item) => item.miljo === tilgjengeligMiljoe)
 
-	const forsteMiljo = visningData.find((miljoData) => miljoData?.data?.length > 0)?.miljo
+	const forsteMiljo = data.find((miljoData) => miljoData?.data)?.miljo
 
 	return (
 		<div>
@@ -193,8 +139,7 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 				bestilteMiljoer={bestilteMiljoer}
 				forsteMiljo={forsteMiljo ? forsteMiljo : SYNT_MILJOE}
 				errorMiljoer={errorMiljoer}
-				// data={filteredData || visningData}
-				data={data}
+				data={filteredData || visningData}
 			>
 				<Visning />
 			</MiljoTabs>
@@ -202,79 +147,21 @@ export const ArenaVisning = ({ data, ident, bestillinger, loading, tilgjengeligM
 	)
 }
 
-const mapTilVisningData = (bestillinger, harArenaSyntTag, arenaMiljoer) => {
-	const miljoeData = []
-
+const getBestilteMiljoer = (bestillinger, arenaMiljoer) => {
+	const bestilteMiljoer = []
 	const getMiljoe = (bestilling) => {
 		return bestilling?.status
 			?.filter((status) => status.id === 'ARENA_BRUKER')?.[0]
 			?.statuser?.filter((status) => status.melding === 'OK')?.[0]
 			?.detaljert?.map((detalj) => detalj.miljo)
 	}
-
-	for (const miljoe of arenaMiljoer) {
-		const data = []
-		for (const bestilling of bestillinger) {
-			if (getMiljoe(bestilling)?.includes(miljoe)) {
-				data.push(bestilling)
+	arenaMiljoer.forEach((miljoe) => {
+		bestillinger.forEach((bestilling) => {
+			const bestMiljoe = getMiljoe(bestilling)
+			if (bestMiljoe?.includes(miljoe)) {
+				bestilteMiljoer.push(miljoe)
 			}
-		}
-
-		const info = miljoe === SYNT_MILJOE && harArenaSyntTag ? SYNT_INFO : null
-
-		let visningData = []
-		if (data.length > 0) {
-			const sortedBestillinger = data.length > 0 ? _.orderBy(data, ['id'], ['desc']) : []
-			const sisteArenaBestilling = sortedBestillinger?.[0]
-			let mappedData = { ...initialVisningData }
-			fyllVisningData(sisteArenaBestilling, mappedData)
-			visningData.push(mappedData)
-		}
-
-		miljoeData.push({ miljo: miljoe, data: visningData, info: info })
-	}
-
-	return miljoeData
-}
-
-function fyllVisningData(bestilling, visningData) {
-	if (!bestilling) {
-		return null
-	}
-	const {
-		arenaBrukertype,
-		kvalifiseringsgruppe,
-		inaktiveringDato,
-		automatiskInnsendingAvMeldekort,
-		aap115,
-		aap,
-		dagpenger,
-	} = bestilling.data.arenaforvalter
-	visningData.brukertype =
-		arenaBrukertype === 'MED_SERVICEBEHOV' ? 'Med servicebehov' : 'Uten servicebehov'
-	visningData.servicebehov = servicebehovKodeTilBeskrivelse(kvalifiseringsgruppe)
-	visningData.inaktiveringDato = formatDate(inaktiveringDato)
-	visningData.automatiskInnsendingAvMeldekort = oversettBoolean(automatiskInnsendingAvMeldekort)
-
-	if (aap115) visningData.aap115 = visningData.aap115.concat(aap115)
-	if (aap) visningData.aap = visningData.aap.concat(aap)
-	if (dagpenger) visningData.dagpenger = visningData.dagpenger.concat(dagpenger)
-}
-
-function servicebehovKodeTilBeskrivelse(value) {
-	if (!value) {
-		return null
-	}
-	switch (value) {
-		case 'IKVAL':
-			return 'IKVAL - Standardinnsats'
-		case 'BFORM':
-			return 'BFORM - Situasjonsbestemt innsats'
-		case 'BATT':
-			return 'BATT - Spesielt tilpasset innsats'
-		case 'VARIG':
-			return 'VARIG - Varig tilpasset innsats'
-		default:
-			return value
-	}
+		})
+	})
+	return bestilteMiljoer
 }
