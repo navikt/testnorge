@@ -28,6 +28,7 @@ initializeFaro({
 	url: 'https://telemetry.ekstern.dev.nav.no/collect',
 	app: {
 		name: 'dolly-frontend-unstable',
+		version: 'dev',
 	},
 	instrumentations: [
 		...getWebInstrumentations(),
