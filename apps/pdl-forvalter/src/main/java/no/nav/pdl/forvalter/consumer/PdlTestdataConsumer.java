@@ -48,9 +48,8 @@ public class PdlTestdataConsumer {
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
-                .filters(exchangeFilterFunctions -> {
-                    exchangeFilterFunctions.add(logRequest());
-                })
+                .filters(exchangeFilterFunctions ->
+                    exchangeFilterFunctions.add(logRequest()))
                 .build();
         this.objectMapper = objectMapper;
     }
