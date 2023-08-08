@@ -1,15 +1,12 @@
 package no.nav.registre.sdforvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Value;
-
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 import no.nav.registre.sdforvalter.database.model.GruppeModel;
 
-@Value
-@NoArgsConstructor(force = true)
-@AllArgsConstructor
+@Getter
+@Schema(description = "En definert gruppe.")
 public class Gruppe {
 
     @JsonProperty

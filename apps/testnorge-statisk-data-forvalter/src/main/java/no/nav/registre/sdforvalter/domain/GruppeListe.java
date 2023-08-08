@@ -1,23 +1,22 @@
 package no.nav.registre.sdforvalter.domain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
+import no.nav.registre.sdforvalter.database.model.GruppeModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import no.nav.registre.sdforvalter.database.model.GruppeModel;
-
-@NoArgsConstructor(force = true)
-@AllArgsConstructor
+@Getter
+@Schema(description = "En liste definerte grupper.")
 public class GruppeListe {
 
     @JsonProperty
-    private final List<Gruppe> liste;
+    private final List<Gruppe> liste = new ArrayList<>();
 
-    public GruppeListe(Iterable<GruppeModel> itrable) {
-        liste = new ArrayList<>();
-        itrable.forEach(model -> liste.add(new Gruppe(model)));
+    public GruppeListe(Iterable<GruppeModel> iterable) {
+        iterable.forEach(model -> liste.add(new Gruppe(model)));
     }
+
 }

@@ -25,7 +25,9 @@ public class InstProxyApplicationStarter {
     @Bean
     public RouteLocator customRouteLocator(RouteLocatorBuilder builder) {
         return builder.routes()
-                .route(spec -> spec.path("/**").uri("https://opphold-testdata.dev.adeo.no"))
+                .route(spec -> spec
+                        .path("/**")
+                        .uri("https://institusjon-opphold-testdata.dev.intern.nav.no/"))
                 .build();
     }
 }
