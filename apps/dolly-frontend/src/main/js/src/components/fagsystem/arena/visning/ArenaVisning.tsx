@@ -39,14 +39,10 @@ const Visning = ({ data }) => {
 		<div className="person-visning_content">
 			<TitleValue title="Registrert" value={formatDate(arenaData.registrertDato)} />
 			<TitleValue title="Sist inaktiv" value={formatDate(arenaData.sistInaktivDato)} />
-			{/*lokalkontor*/}
 			<TitleValue title="Hovedmål" value={arenaData.hovedmaal} />
 			<TitleValue title="Formidlingsgruppe" value={arenaData.formidlingsgruppe?.navn} />
 			<TitleValue title="Servicegruppe" value={arenaData.servicegruppe?.navn} />
 			<TitleValue title="Rettighetsgruppe" value={arenaData.rettighetsgruppe?.navn} />
-			{/*meldeplikt*/}
-			{/*meldeform*/}
-			{/*meldegruppe*/}
 			{vedtakListe && vedtakListe.length > 0 && (
 				<DollyFieldArray data={vedtakListe} header="Vedtak" nested>
 					{(vedtak) => (
