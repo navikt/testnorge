@@ -59,7 +59,6 @@ public class PdlTestdataConsumer {
 
         return (clientRequest, next) -> {
             var buffer = new StringBuilder(250)
-                    .append(System.lineSeparator())
                     .append("Request: ")
                     .append(clientRequest.method())
                     .append(' ')
