@@ -19,6 +19,7 @@ import no.nav.testnav.libs.securitycore.domain.AccessToken;
 import no.nav.testnav.libs.securitycore.domain.ServerProperties;
 import no.nav.testnav.libs.servletsecurity.exchange.TokenExchange;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -47,8 +48,21 @@ public class PdlTestdataConsumer {
         this.properties = properties;
         this.webClient = WebClient.builder()
                 .baseUrl(properties.getUrl())
+                .filters(exchangeFilterFunctions -> {
+                    exchangeFilterFunctions.add(logRequest());
+                })
                 .build();
         this.objectMapper = objectMapper;
+    }
+
+    private ExchangeFilterFunction logRequest() {
+        return (clientRequest, next) -> {
+            log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
+            clientRequest.headers()
+                    .forEach((name, values) -> values
+                            .forEach(value -> log.info("{}={}", name, value.contains("Bearer ") ? "Bearer token" : value)));
+            return next.exchange(clientRequest);
+        };
     }
 
     public Flux<OrdreResponseDTO.PdlStatusDTO> send(OrdreRequest orders) {
