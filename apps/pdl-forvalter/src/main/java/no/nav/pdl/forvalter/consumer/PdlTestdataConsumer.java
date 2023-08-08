@@ -58,7 +58,7 @@ public class PdlTestdataConsumer {
     private ExchangeFilterFunction logRequest() {
 
         return (clientRequest, next) -> {
-            var buffer = new StringBuilder('\t')
+            var buffer = new StringBuilder(250)
                     .append(System.lineSeparator())
                     .append("Request: ")
                     .append(clientRequest.method())
@@ -73,7 +73,7 @@ public class PdlTestdataConsumer {
                                     .append('=')
                                     .append(value.contains("Bearer ") ? "Bearer token" : value)
                                     .append(System.lineSeparator())));
-            log.info(buffer.substring(0, buffer.length() - 1));
+            log.trace(buffer.substring(0, buffer.length() - 1));
             return next.exchange(clientRequest);
         };
     }
