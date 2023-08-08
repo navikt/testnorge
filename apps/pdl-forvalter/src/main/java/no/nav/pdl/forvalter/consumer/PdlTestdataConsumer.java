@@ -56,11 +56,24 @@ public class PdlTestdataConsumer {
     }
 
     private ExchangeFilterFunction logRequest() {
+
         return (clientRequest, next) -> {
-            log.info("Request: {} {}", clientRequest.method(), clientRequest.url());
+            var buffer = new StringBuilder('\t')
+                    .append(System.lineSeparator())
+                    .append("Request: ")
+                    .append(clientRequest.method())
+                    .append(' ')
+                    .append(clientRequest.url())
+                    .append(System.lineSeparator());
+
             clientRequest.headers()
                     .forEach((name, values) -> values
-                            .forEach(value -> log.info("{}={}", name, value.contains("Bearer ") ? "Bearer token" : value)));
+                            .forEach(value -> buffer.append('\t')
+                                    .append(name)
+                                    .append('=')
+                                    .append(value.contains("Bearer ") ? "Bearer token" : value)
+                                    .append(System.lineSeparator())));
+            log.info(buffer.substring(0, buffer.length() - 1));
             return next.exchange(clientRequest);
         };
     }
