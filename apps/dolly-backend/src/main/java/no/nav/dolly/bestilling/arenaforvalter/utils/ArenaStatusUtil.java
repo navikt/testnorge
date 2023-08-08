@@ -10,7 +10,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.stream.Collectors;
 
+import static java.util.Objects.nonNull;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
+import static org.apache.commons.lang3.StringUtils.isNotBlank;
 
 @UtilityClass
 public class ArenaStatusUtil {
@@ -28,7 +30,8 @@ public class ArenaStatusUtil {
                                 .filter(status -> !status.is2xxSuccessful())
                                 .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
                         Flux.fromIterable(response.getNyeDagp())
-                                .map(nyDagP -> "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
+                                .filter(nyDagP -> nonNull(nyDagP.getNyeDagpResponse()))
+                                .map(nyDagP ->  "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
                                         "OK" :
                                         encodeStatus(ArenaUtils.AVSLAG + nyDagP.getNyeDagpResponse().getBegrunnelse()))
                                 .collect(Collectors.joining()),
@@ -71,6 +74,6 @@ public class ArenaStatusUtil {
 
     public static String fmtResponse(String miljoe, String system, String status) {
 
-        return encodeStatus(String.format(MILJOE_FMT, miljoe, system, status));
+        return encodeStatus(String.format(MILJOE_FMT, miljoe, system, isNotBlank(status) ? status : "OK"));
     }
 }

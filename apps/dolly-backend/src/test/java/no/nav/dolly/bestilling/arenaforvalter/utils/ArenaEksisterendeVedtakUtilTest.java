@@ -72,7 +72,7 @@ class ArenaEksisterendeVedtakUtilTest {
         assertThat(util.getAapVedtak().getNyttVedtak().getFom(), is(equalTo(LocalDate.of(2023, 3, 1))));
         assertThat(util.getAapVedtak().getNyttVedtak().getTom(), is(equalTo(LocalDate.of(2023, 4, 30))));
         assertThat(util.getDagpengeVedtak().getAvslutteVedtak().getFom(), is(equalTo(LocalDate.of(2023, 1, 1))));
-        assertThat(util.getDagpengeVedtak().getAvslutteVedtak().getStansFra(), is(equalTo(LocalDate.of(2023, 2, 28))));
+        assertThat(util.getDagpengeVedtak().getAvslutteVedtak().getTom(), is(equalTo(LocalDate.of(2023, 2, 28))));
         assertThat(util.getDagpengeVedtak().isEksisterendeVedtak(), is(false));
         assertThat(util.getDagpengeVedtak().getNyttVedtak(), is(nullValue()));
     }

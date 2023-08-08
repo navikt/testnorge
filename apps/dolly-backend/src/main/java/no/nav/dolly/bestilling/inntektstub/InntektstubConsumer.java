@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.inntektstub;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.v3.core.util.Json;
 import lombok.extern.slf4j.Slf4j;
 import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektstub.command.InntektstubDeleteCommand;
@@ -78,7 +77,7 @@ public class InntektstubConsumer implements ConsumerStatus {
     @Timed(name = "providers", tags = { "operation", "inntk_postInntekter" })
     public Flux<Inntektsinformasjon> postInntekter(List<Inntektsinformasjon> inntektsinformasjon) {
 
-        log.info("Sender inntektstub: {}", Json.pretty(inntektsinformasjon));
+        log.info("Sender inntektstub: {}", inntektsinformasjon);
 
         return tokenService.exchange(serviceProperties)
                 .flatMapMany(token -> new InntektstubPostCommand(webClient, inntektsinformasjon, token.getTokenValue()).call());

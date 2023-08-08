@@ -120,11 +120,11 @@ public class ArenaEksisterendeVedtakUtil {
         return tom.get();
     }
 
-    private static ArenaVedtakOperasjoner.StansPeriode getAvslutteVedtak(Ytelse ytelse, Arenadata request, List<ArenaStatusResponse.Vedtak> vedtak) {
+    private static ArenaVedtakOperasjoner.Periode getAvslutteVedtak(Ytelse ytelse, Arenadata request, List<ArenaStatusResponse.Vedtak> vedtak) {
 
         var vedtaker = getVedtaker(vedtak, ytelse);
 
-        var periode = new AtomicReference<ArenaVedtakOperasjoner.StansPeriode>(null);
+        var periode = new AtomicReference<ArenaVedtakOperasjoner.Periode>(null);
 
         Stream.of(
                         request.getAap(),
@@ -147,10 +147,9 @@ public class ArenaEksisterendeVedtakUtil {
                         Stream.of(NullcheckUtil.nullcheckSetDefaultValue(vedtaker.get(finalI).getTilDato(), LocalDate.now()),
                                         arenaPeriode.getFraDato().toLocalDate().minusDays(1))
                                 .min(Comparator.comparing(LocalDate::from))
-                                .ifPresent(stansDato -> periode.set(ArenaVedtakOperasjoner.StansPeriode.builder()
+                                .ifPresent(stansDato -> periode.set(ArenaVedtakOperasjoner.Periode.builder()
                                         .fom(vedtaker.get(finalI).getFraDato())
-                                        .tom(vedtaker.get(finalI).getTilDato())
-                                        .stansFra(stansDato)
+                                        .tom(stansDato)
                                         .build()));
                     }
                 });
