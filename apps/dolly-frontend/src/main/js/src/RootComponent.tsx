@@ -14,6 +14,7 @@ import { history, store } from '@/Store'
 import { HistoryRouter as Router } from 'redux-first-history/rr6'
 import { SWRConfig } from 'swr'
 import { App } from '@/app/App'
+import nais from '../nais.js'
 
 import {
 	FaroRoutes,
@@ -25,11 +26,8 @@ import {
 
 initializeFaro({
 	paused: window.location.hostname.includes('localhost'),
-	url: 'https://telemetry.ekstern.dev.nav.no/collect',
-	app: {
-		name: 'dolly-frontend-unstable',
-		version: 'dev',
-	},
+	url: nais.telemetryCollectorURL,
+	app: nais.app,
 	instrumentations: [
 		...getWebInstrumentations(),
 

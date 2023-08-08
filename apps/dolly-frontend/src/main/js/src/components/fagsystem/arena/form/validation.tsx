@@ -88,12 +88,16 @@ const overlapp25aarsdag = (fradato, tildato, values) => {
 	} else {
 		foedtEtter.setFullYear(foedtEtter.getFullYear() + 25)
 		foedtFoer.setFullYear(foedtFoer.getFullYear() + 25)
-		return overlapperMedliste(fradato.toISOString(), tildato.toISOString(), [
-			{
-				fraDato: foedtEtter.toISOString(),
-				tilDato: foedtFoer.toISOString(),
-			},
-		])
+		return overlapperMedliste(
+			fradato.toISOString().substring(0, 19),
+			tildato.toISOString().substring(0, 19),
+			[
+				{
+					fraDato: foedtEtter.toISOString().substring(0, 19),
+					tilDato: foedtFoer.toISOString().substring(0, 19),
+				},
+			],
+		)
 	}
 }
 
@@ -155,7 +159,7 @@ const ingenOverlappFraTildato = (tildato, values) => {
 
 	if (values.tidligereBestillinger) {
 		const arenaBestillinger = values.tidligereBestillinger.filter((bestilling) =>
-			bestilling.data.hasOwnProperty('arenaforvalter')
+			bestilling.data.hasOwnProperty('arenaforvalter'),
 		)
 		for (let bestilling of arenaBestillinger) {
 			let arenaInfo = bestilling.data.arenaforvalter
@@ -192,7 +196,7 @@ const validFradato = (vedtakType) => {
 					return datoOverlapperIkkeAndreVedtak(
 						vedtakType,
 						naavaerendeVerdier,
-						values.tidligereBestillinger
+						values.tidligereBestillinger,
 					)
 				} else {
 					let annenVedtakType = vedtakType === 'aap' ? 'dagpenger' : 'aap'
@@ -200,10 +204,10 @@ const validFradato = (vedtakType) => {
 					return datoIkkeMellom(
 						naavaerendeVerdier[vedtakType]?.fraDato,
 						naavaerendeVerdier[annenVedtakType]?.fraDato,
-						naavaerendeVerdier[annenVedtakType]?.tilDato
+						naavaerendeVerdier[annenVedtakType]?.tilDato,
 					)
 				}
-			}
+			},
 		)
 		.nullable()
 		.required(messages.required)
@@ -214,7 +218,7 @@ const datoOverlapperIkkeAndreVedtak = (vedtaktype, naeverendeVerdier, tidligereB
 	const nyDatoTil = naeverendeVerdier[vedtaktype]?.tilDato
 
 	const arenaBestillinger = tidligereBestillinger.filter((bestilling) =>
-		bestilling.data.hasOwnProperty('arenaforvalter')
+		bestilling.data.hasOwnProperty('arenaforvalter'),
 	)
 
 	for (const [key, value] of Object.entries(naeverendeVerdier)) {
@@ -268,7 +272,7 @@ export const validation = Yup.object({
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
 						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
 				)
 				.test(
 					'avslutter-ved-67',
@@ -277,11 +281,11 @@ export const validation = Yup.object({
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.aap[0]?.fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
 				)
 				.nullable()
 				.required(messages.required),
-		})
+		}),
 	),
 	aap115: Yup.array().of(
 		Yup.object({
@@ -292,11 +296,11 @@ export const validation = Yup.object({
 					function validDate(fradato) {
 						const values = this.options.context
 						return !erEtter67aarsdag(new Date(fradato), null, values)
-					}
+					},
 				)
 				.nullable()
 				.required(messages.required),
-		})
+		}),
 	),
 	arenaBrukertype: requiredString,
 	inaktiveringDato: Yup.mixed()
@@ -335,7 +339,7 @@ export const validation = Yup.object({
 							return true
 						}
 						return ingenOverlappFraTildato(tildato, this.options.context)
-					}
+					},
 				)
 				.test(
 					'overlapper-ikke-25',
@@ -347,7 +351,7 @@ export const validation = Yup.object({
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
 						return !overlapp25aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
 				)
 				.test(
 					'avslutter-ved-67',
@@ -359,10 +363,10 @@ export const validation = Yup.object({
 						const values = this.options.context
 						const fradato = this.options.context.arenaforvalter.dagpenger[0]?.fraDato
 						return !erEtter67aarsdag(new Date(fradato), new Date(tildato), values)
-					}
+					},
 				)
 				.nullable(),
 			mottattDato: Yup.date().nullable(),
-		})
+		}),
 	),
 })
