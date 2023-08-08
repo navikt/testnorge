@@ -17,6 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@babel/preset-flow": "^7.18.6",
+    "@grafana/faro-react": "^1.1.2",
     "@grafana/faro-web-sdk": "^1.1.1",
     "@navikt/ds-css-internal": "^3.4.3",
     "@navikt/ds-react-internal": "^3.4.3",
