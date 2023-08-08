@@ -1,6 +1,6 @@
 {
   "name": "dolly",
-  "version": "2.5.13",
+  "version": "2.5.14",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -96,7 +96,7 @@
     "cypress-react-selector": "^3.0.0",
     "dot-prop": "^8.0.0",
     "eslint": "^8.29.0",
-    "eslint-config-prettier": "^8.5.0",
+    "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "eslint-plugin-react": "^7.31.11",
     "fetch-retry": "^5.0.3",
