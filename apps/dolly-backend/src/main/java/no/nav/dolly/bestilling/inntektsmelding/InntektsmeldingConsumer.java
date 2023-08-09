@@ -1,6 +1,7 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
 import lombok.extern.slf4j.Slf4j;
+import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCommand;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
@@ -19,7 +20,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Slf4j
 @Service
-public class InntektsmeldingConsumer {
+public class InntektsmeldingConsumer implements ConsumerStatus {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -48,7 +49,18 @@ public class InntektsmeldingConsumer {
                         token.getTokenValue(), inntekstsmelding, callId).call());
     }
 
+    @Override
+    public String serviceUrl() {
+        return serviceProperties.getUrl();
+    }
+
+    @Override
+    public String consumerName() {
+        return "testnav-inntektsmelding-service";
+    }
+
     private static String getNavCallId() {
         return format("%s %s", CONSUMER, UUID.randomUUID());
     }
+
 }
