@@ -1,7 +1,6 @@
 package no.nav.dolly.bestilling.inntektsmelding;
 
 import lombok.extern.slf4j.Slf4j;
-import no.nav.dolly.bestilling.ConsumerStatus;
 import no.nav.dolly.bestilling.inntektsmelding.command.OpprettInntektsmeldingCommand;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingRequest;
 import no.nav.dolly.bestilling.inntektsmelding.domain.InntektsmeldingResponse;
@@ -20,7 +19,7 @@ import static no.nav.dolly.domain.CommonKeysAndUtils.CONSUMER;
 
 @Slf4j
 @Service
-public class InntektsmeldingConsumer implements ConsumerStatus {
+public class InntektsmeldingConsumer {
 
     private final TokenExchange tokenService;
     private final WebClient webClient;
@@ -38,11 +37,7 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
                 .build();
     }
 
-    private static String getNavCallId() {
-        return format("%s %s", CONSUMER, UUID.randomUUID());
-    }
-
-    @Timed(name = "providers", tags = {"operation", "inntektsmelding_opprett"})
+    @Timed(name = "providers", tags = { "operation", "inntektsmelding_opprett" })
     public Flux<InntektsmeldingResponse> postInntektsmelding(InntektsmeldingRequest inntekstsmelding) {
 
         var callId = getNavCallId();
@@ -53,14 +48,7 @@ public class InntektsmeldingConsumer implements ConsumerStatus {
                         token.getTokenValue(), inntekstsmelding, callId).call());
     }
 
-    @Override
-    public String serviceUrl() {
-        return serviceProperties.getUrl();
+    private static String getNavCallId() {
+        return format("%s %s", CONSUMER, UUID.randomUUID());
     }
-
-    @Override
-    public String consumerName() {
-        return "testnav-inntektsmelding-service";
-    }
-
 }
