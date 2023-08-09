@@ -18,8 +18,8 @@ public class StatusController {
         var statusWebClient = WebClient.builder().build();
 
         var pensjonStatus = checkConsumerStatus(
-                "https://pensjon-testdata-facade.pensjontestdata.svc.nais.local/isAlive",
-                "https://pensjon-testdata-facade.pensjontestdata.svc.nais.local/isReady",
+                "https://pensjon-testdata-facade.dev.adeo.no/isAlive",
+                "https://pensjon-testdata-facade.dev.adeo.no/isReady",
                 statusWebClient);
         pensjonStatus.put("team", TEAM_PENSJON_TESTDATA);
 
