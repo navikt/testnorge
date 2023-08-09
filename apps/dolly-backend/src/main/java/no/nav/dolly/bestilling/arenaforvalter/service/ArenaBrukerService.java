@@ -25,6 +25,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Service
@@ -105,7 +106,7 @@ public class ArenaBrukerService {
             return Mono.just("OK");
         } else if (!response.getStatus().is2xxSuccessful()) {
 
-            return Mono.just(errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding()));
+            return Mono.just(errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding())));
         } else {
 
             return Flux.fromIterable(response.getNyeEndreInnsatsbehovFeilList())
@@ -119,7 +120,7 @@ public class ArenaBrukerService {
 
         return Flux.concat(Flux.just(response.getStatus())
                                 .filter(status -> !status.is2xxSuccessful())
-                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                         Flux.fromIterable(response.getArbeidsokerList())
                                 .map(nyBruker -> nyBruker.getStatus() == ArenaBruker.BrukerStatus.OK ?
                                         "OK" :

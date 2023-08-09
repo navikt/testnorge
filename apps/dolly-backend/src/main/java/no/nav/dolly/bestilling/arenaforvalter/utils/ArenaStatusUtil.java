@@ -1,5 +1,7 @@
 package no.nav.dolly.bestilling.arenaforvalter.utils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.experimental.UtilityClass;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
@@ -8,6 +10,7 @@ import no.nav.dolly.errorhandling.ErrorStatusDecoder;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
@@ -28,7 +31,7 @@ public class ArenaStatusUtil {
 
         return Flux.concat(Flux.just(response.getStatus())
                                 .filter(status -> !status.is2xxSuccessful())
-                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                         Flux.fromIterable(response.getNyeDagp())
                                 .filter(nyDagP -> nonNull(nyDagP.getNyeDagpResponse()))
                                 .map(nyDagP ->  "JA".equals(nyDagP.getNyeDagpResponse().getUtfall()) ?
@@ -57,7 +60,7 @@ public class ArenaStatusUtil {
 
             return Flux.concat(Flux.just(response.getStatus())
                                     .filter(status -> !status.is2xxSuccessful())
-                                    .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                                    .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                             Flux.fromIterable(response.getNyeAap())
                                     .map(nyAap -> "JA".equals(nyAap.getUtfall()) ?
                                             "OK" :
@@ -75,5 +78,16 @@ public class ArenaStatusUtil {
     public static String fmtResponse(String miljoe, String system, String status) {
 
         return encodeStatus(String.format(MILJOE_FMT, miljoe, system, isNotBlank(status) ? status : "OK"));
+    }
+
+    public static String getMessage(String jsonFeilmelding) {
+
+        try {
+            var status = new ObjectMapper().readValue(jsonFeilmelding, Map.class);
+            return status.containsKey("message") ? (String) status.get("message") : jsonFeilmelding;
+
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

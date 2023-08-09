@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
+import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
 @Service
@@ -56,7 +57,7 @@ public class ArenaAap115Service {
 
         return Flux.concat(Flux.just(response.getStatus())
                                 .filter(status -> !status.is2xxSuccessful())
-                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), response.getFeilmelding())),
+                                .map(status -> errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding()))),
                         Flux.fromIterable(response.getNyeAap115())
                                 .map(nyAap115 -> "JA".equals(nyAap115.getUtfall()) ?
                                         "OK" :
