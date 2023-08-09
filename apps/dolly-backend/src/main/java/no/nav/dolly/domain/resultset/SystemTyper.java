@@ -16,7 +16,7 @@ public enum SystemTyper {
     SIGRUNSTUB("Skatteinntekt grunnlag (SIGRUN)"),
     ARENA("Arena fagsystem"),
     ARENA_BRUKER("Arenabruker"),
-    ARENA_AAP("Arena AAP"),
+    ARENA_AAP("Arena AAP ytelse"),
     ARENA_AAP115("Arena AAP15"),
     ARENA_DAGP("Arena dagpenger"),
     UDISTUB("Utlendingsdirektoratet (UDI)"),
