@@ -102,7 +102,7 @@ class ArenaForvalterClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$BRUKER= Info= Oppretting startet mot Arena ...")));
                     assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$BRUKER Oppretting= OK")));
                 })
                 .verifyComplete();
@@ -135,7 +135,7 @@ class ArenaForvalterClientTest {
                 .assertNext(status -> {
                     verify(transactionHelperService, times(2))
                             .persister(any(BestillingProgress.class), any(), statusCaptor.capture());
-                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$Info= Oppretting startet mot Arena ...")));
+                    assertThat(statusCaptor.getAllValues().get(0), Matchers.is(equalTo("q2$BRUKER= Info= Oppretting startet mot Arena ...")));
                     assertThat(statusCaptor.getAllValues().get(1), Matchers.is(equalTo("q2$BRUKER Oppretting= DUPLIKAT=message= 555 User Defined Resource Error")));
                 })
                 .verifyComplete();
