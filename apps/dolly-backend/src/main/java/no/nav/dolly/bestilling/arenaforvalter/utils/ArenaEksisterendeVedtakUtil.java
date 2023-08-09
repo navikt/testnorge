@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.arenaforvalter.utils;
 import lombok.experimental.UtilityClass;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaPeriode;
 import no.nav.dolly.domain.resultset.arenaforvalter.Arenadata;
 import no.nav.dolly.domain.resultset.arenaforvalter.RsArenaAap;
@@ -30,6 +31,8 @@ public class ArenaEksisterendeVedtakUtil {
 
         return ArenaVedtakOperasjoner.builder()
                 .registrertDato(response.getRegistrertDato())
+                .kvalifiseringsgruppe(nonNull(response.getServicegruppe()) ?
+                        ArenaKvalifiseringsgruppe.valueOf(response.getServicegruppe().getKode()) : null)
                 .aa115(ArenaVedtakOperasjoner.Operasjon.builder()
                         .eksisterendeVedtak(isVedtak(arenadata.getAap115(), response))
                         .nyttVedtak(isNull(arenadata.getInaktiveringDato()) &&

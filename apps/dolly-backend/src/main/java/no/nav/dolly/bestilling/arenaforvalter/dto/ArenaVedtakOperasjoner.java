@@ -3,6 +3,7 @@ package no.nav.dolly.bestilling.arenaforvalter.dto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.SuperBuilder;
+import no.nav.dolly.domain.resultset.arenaforvalter.ArenaKvalifiseringsgruppe;
 
 import java.time.LocalDate;
 
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 public class ArenaVedtakOperasjoner {
 
     private LocalDate registrertDato;
+    private ArenaKvalifiseringsgruppe kvalifiseringsgruppe;
 
     private Operasjon aa115;
     private Operasjon aapVedtak;

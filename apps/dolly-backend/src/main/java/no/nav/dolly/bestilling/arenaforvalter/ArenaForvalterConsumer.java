@@ -10,13 +10,10 @@ import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostAap115;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenaBruker;
 import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostArenadagpenger;
-import no.nav.dolly.bestilling.arenaforvalter.command.ArenaforvalterPostInnsatsbehov;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Request;
 import no.nav.dolly.bestilling.arenaforvalter.dto.Aap115Response;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapRequest;
 import no.nav.dolly.bestilling.arenaforvalter.dto.AapResponse;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehov;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehovResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaStatusResponse;
 import no.nav.dolly.config.credentials.ArenaforvalterProxyProperties;
@@ -68,14 +65,6 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
                                 .delayElements(Duration.ofMillis(100))
                                 .flatMap(ident -> new ArenaForvalterDeleteCommand(webClient, ident, miljoe,
                                         token.getTokenValue()).call())));
-    }
-
-    @Timed(name = "providers", tags = {"operation", "arena_deleteIdent"})
-    public Mono<ArenaResponse> inaktiverBruker(String ident, String miljoe) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMap(token -> new ArenaForvalterDeleteCommand(webClient, ident, miljoe, token.getTokenValue()).call()
-                .doOnNext(response -> log.info("Inaktivert bruker {} mot Arenaforvalter {}", ident, response)));
     }
 
     @Timed(name = "providers", tags = {"operation", "arena_postBruker"})
@@ -131,14 +120,6 @@ public class ArenaForvalterConsumer implements ConsumerStatus {
         return tokenService.exchange(serviceProperties)
                 .flatMap(token -> new ArenaGetCommand(webClient, ident, miljoe, token.getTokenValue()).call())
                 .doOnNext(response -> log.info("Hentet bruker {} fra Arena miljoe {} {}", ident, miljoe, response));
-    }
-
-    @Timed(name = "providers", tags = {"operation", "arena_getEnvironments"})
-    public Flux<ArenaInnsatsbehovResponse> postInnsatsbehov(ArenaInnsatsbehov innsatsbehov) {
-
-        return tokenService.exchange(serviceProperties)
-                .flatMapMany(token -> new ArenaforvalterPostInnsatsbehov(webClient, innsatsbehov, token.getTokenValue()).call())
-                .doOnNext(response -> log.info("Sendt innsatsbehov for {} til Arenaforvalter {}", innsatsbehov.getPersonident(), response));
     }
 
     @Override

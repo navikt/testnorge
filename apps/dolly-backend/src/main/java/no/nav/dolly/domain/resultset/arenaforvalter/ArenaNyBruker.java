@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.util.List;
 
+import static java.util.Objects.isNull;
 import static java.util.Objects.nonNull;
 
 @Data
@@ -32,4 +33,9 @@ public class ArenaNyBruker {
     public boolean hasKvalifiseringsgruppe() {
         return nonNull(kvalifiseringsgruppe);
     }
+
+    @JsonIgnore
+    public boolean hasServicebehov() {
+        return isNull(utenServicebehov);
+    };
 }

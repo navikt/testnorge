@@ -4,8 +4,6 @@ import lombok.RequiredArgsConstructor;
 import ma.glasnost.orika.MapperFacade;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaForvalterConsumer;
 import no.nav.dolly.bestilling.arenaforvalter.ArenaUtils;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehov;
-import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaInnsatsbehovResponse;
 import no.nav.dolly.bestilling.arenaforvalter.dto.ArenaVedtakOperasjoner;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaBruker;
 import no.nav.dolly.domain.resultset.arenaforvalter.ArenaNyBruker;
@@ -23,8 +21,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Objects.isNull;
-import static java.util.Objects.nonNull;
 import static no.nav.dolly.bestilling.arenaforvalter.utils.ArenaStatusUtil.getMessage;
 import static no.nav.dolly.errorhandling.ErrorStatusDecoder.encodeStatus;
 
@@ -54,41 +50,18 @@ public class ArenaBrukerService {
                 })
                 .flatMap(arenaNyeBrukere -> {
 
-                    if (arenaNyeBrukere.getNyeBrukere().stream()
-                            .anyMatch(ArenaNyBruker::hasKvalifiseringsgruppe)) {
+                    arenaNyeBrukere.getNyeBrukere().stream()
+                            .findFirst()
+                            .ifPresent(nyBruker -> {
+                                if (nyBruker.hasServicebehov() && !nyBruker.hasKvalifiseringsgruppe()) {
+                                    nyBruker.setKvalifiseringsgruppe(arbeidssoker.getKvalifiseringsgruppe());
+                                }
+                            });
 
-                        if (isNull(arbeidssoker.getRegistrertDato())) {
-                            return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
-                                    .flatMap(this::getBrukerStatus)
-                                    .map(response -> ArenaUtils.OPPRETTET + response);
-
-                        } else {
-                            return arenaForvalterConsumer.postInnsatsbehov(buildInnsatsbehov(ident, miljoe, arenaNyeBrukere.getNyeBrukere()))
-                                    .flatMap(this::getInnsatsStatus)
-                                    .map(response -> ArenaUtils.OPPRETTET + response);
-                        }
-
-                    } else if (nonNull(arenadata.getInaktiveringDato())) {
-
-                        return Flux.from(arenaForvalterConsumer.inaktiverBruker(ident, miljoe)
-                                        .map(respons -> respons.getStatus().is2xxSuccessful() ?
-                                                "OK" : errorStatusDecoder.getErrorText(respons.getStatus(), respons.getFeilmelding())))
-                                .map(response -> ArenaUtils.INAKTIVERT + response);
-                    } else {
-
-                        return Flux.empty();
-                    }
+                    return arenaForvalterConsumer.postArenaBruker(arenaNyeBrukere)
+                            .flatMap(this::getBrukerStatus)
+                            .map(response -> ArenaUtils.OPPRETTET + response);
                 });
-    }
-    private static ArenaInnsatsbehov buildInnsatsbehov(String ident, String miljoe, List<ArenaNyBruker> arenaNyBruker) {
-
-        return ArenaInnsatsbehov.builder()
-                .personident(ident)
-                .miljoe(miljoe)
-                .nyeEndreInnsatsbehov(List.of(ArenaInnsatsbehov.EndreInnsatsbehov.builder()
-                        .kvalifiseringsgruppe(arenaNyBruker.get(0).getKvalifiseringsgruppe())
-                        .build()))
-                .build();
     }
 
     private static LocalDate oppdaterAktiveringsdato(ArenaNyBruker bruker, ArenaVedtakOperasjoner arbeidssoker) {
@@ -97,23 +70,6 @@ public class ArenaBrukerService {
                 .filter(Objects::nonNull)
                 .max(LocalDate::compareTo)
                 .orElse(LocalDate.now());
-    }
-
-    private Mono<String> getInnsatsStatus(ArenaInnsatsbehovResponse response) {
-
-        if (response.getStatus().is2xxSuccessful() && response.getNyeEndreInnsatsbehovFeilList().isEmpty()) {
-
-            return Mono.just("OK");
-        } else if (!response.getStatus().is2xxSuccessful()) {
-
-            return Mono.just(errorStatusDecoder.getErrorText(response.getStatus(), getMessage(response.getFeilmelding())));
-        } else {
-
-            return Flux.fromIterable(response.getNyeEndreInnsatsbehovFeilList())
-                    .map(feil ->
-                            encodeStatus(String.format(ArenaUtils.STATUS_FMT, feil.getNyEndreInnsatsbehovFeilstatus(), feil.getMelding())))
-                    .collect(Collectors.joining());
-        }
     }
 
     private Mono<String> getBrukerStatus(ArenaNyeBrukereResponse response) {
@@ -132,6 +88,8 @@ public class ArenaBrukerService {
                                 .map(decoded -> {
                                     if (decoded.contains("404 Not Found")) {
                                         return "404 Not Found";
+                                    } else if (decoded.contains("FINNES_ALLEREDE_PAA_VALGT_MILJO")) {
+                                        return "OK";
                                     } else {
                                         return decoded;
                                     }
