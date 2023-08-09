@@ -88,7 +88,9 @@ public class ArenaBrukerService {
                                 .map(decoded -> {
                                     if (decoded.contains("404 Not Found")) {
                                         return "404 Not Found";
-                                    } else if (decoded.contains("FINNES_ALLEREDE_PAA_VALGT_MILJO")) {
+                                    } else if (decoded.contains("FINNES_ALLEREDE_PAA_VALGT_MILJO") ||
+                                                decoded.contains("kan ikke reaktiveres siden denne er under behandling for " +
+                                            "aktivering eller har status som aktivert ved forsøk på aktivering")) {
                                         return "OK";
                                     } else {
                                         return decoded;
